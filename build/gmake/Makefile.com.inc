@@ -5,9 +5,8 @@
 # $Source: /usr/cvsroot/project_explorer/linux/Makefile.com.inc,v $
 #-----------------------------------------------------------------------------
 
-# Settings depending on the host
-HOSTNAME = $(shell hostname)
-BOOST_POSTFIX = $(shell $(PWD)/../../../fuego/build/gmake/boost_postfix.sh)
+MAKEFILE_DIR=$(dir $(lastword $(MAKEFILE_LIST)))
+BOOST_POSTFIX = $(shell $(MAKEFILE_DIR)/boost_postfix.sh)
 
 #------------------------------------------------------------------------------
 
