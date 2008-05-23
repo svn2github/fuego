@@ -22,8 +22,8 @@ doxygen:
         done
 	(DATE=`date`; \
         for p in $(PAGES); do \
-            sed "s/\$$datetime/$$DATE/" <$$p >fuego-doc/$$p; done)
-	cp go.jpg doxygen.css fuego-doc
+            sed "s/\$$datetime/$$DATE/" <pages/$$p >fuego-doc/$$p; done)
+	cp pages/go.jpg pages/doxygen.css fuego-doc
 
 clean:
 	@for dir in $(PROJECTS); do \
