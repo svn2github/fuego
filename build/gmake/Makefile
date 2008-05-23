@@ -45,7 +45,7 @@ clean:
            fi; \
          done
 	@echo ""
-	$(MAKE) -C test clean
+	$(MAKE) -C unittestmain clean
 
 .PHONY: tags
 tags:
