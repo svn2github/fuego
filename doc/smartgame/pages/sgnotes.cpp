@@ -1,4 +1,4 @@
-/** @page sgnotes Notes for Module SmartGo
+/** @page sgnotes Notes for the SmartGame Library
 
 @section sgnotessystem System Header
 
