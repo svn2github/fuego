@@ -1,8 +1,5 @@
 #-----------------------------------------------------------------------------
 # GNU Makefile for static libraries: project dependent part
-#
-# $Id: Makefile.prj.inc,v 1.37 2007/02/21 18:35:30 emarkus Exp $
-# $Source: /usr/cvsroot/project_explorer/linux/gtp/Makefile.prj.inc,v $
 #-----------------------------------------------------------------------------
 
 NAME = fuego_gtpengine
