@@ -60,9 +60,9 @@ test-all: test-debug test-release
 .PHONY: test-debug
 test-debug: debug
 	@echo -e "\n--------------- test (dbg)"; \
-	$(MAKE) -C test run-debug
+	$(MAKE) -C unittestmain run-debug
 
 .PHONY: test-release
 test-release: release
 	@echo -e "\n--------------- test (rel)"; \
-	$(MAKE) -C test run-release
+	$(MAKE) -C unittestmain run-release
