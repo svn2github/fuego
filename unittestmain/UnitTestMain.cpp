@@ -4,6 +4,9 @@
 */
 //----------------------------------------------------------------------------
 
+#include "SgSystem.h"
+
+#include "SgInit.h"
 #include <boost/version.hpp>
 
 #define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
@@ -15,10 +18,12 @@ namespace {
 
 void Init()
 {
+    SgInit();
 }
 
 void Fini()
 {
+    SgFini();
 }
 
 } // namespace
@@ -29,8 +34,6 @@ void Fini()
 
 #include <cstdlib>
 #include <boost/test/auto_unit_test.hpp>
-//#include "SgSystem.h"
-//#include "SgInit.h"
 
 boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[])
 {

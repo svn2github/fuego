@@ -2,7 +2,8 @@
 # be generated before the documentation of the projects that depend on them)
 PROJECTS = \
   general \
-  gtpengine
+  gtpengine \
+  smartgame
 
 PAGES = \
   index.html \
