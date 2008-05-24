@@ -1,7 +1,9 @@
 Fuego is a collection of C++ libraries for developing software for the
 game of Go. It includes a Go player using Monte-Carlo tree search.
 
-The initial version of the code was released by the Computer Go group at the University of Alberta and is based in parts on the previous projects Smart Game Board and Explorer.
+The initial version of the code was released by the Computer Go group at
+the University of Alberta and is based in parts on the previous projects
+Smart Game Board and Explorer.
 
 License
 =======
