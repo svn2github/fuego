@@ -8,7 +8,8 @@
 # All projects to build in this order.
 PROJECTS = \
   gtpengine \
-  smartgame
+  smartgame \
+  go
 
 # sequentially to avoid same sub-target in sub-make invoked twice
 .PHONY: default

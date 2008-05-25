@@ -4,5 +4,5 @@ doxygen:
 	doxygen doxygen.cfg
 
 clean:
-	rm -rf ../explorer-doc/gtp-doc
+	rm -rf ../fuego-doc/gtpengine-doc gtpengine.tags
 

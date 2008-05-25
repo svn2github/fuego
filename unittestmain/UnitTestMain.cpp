@@ -6,6 +6,7 @@
 
 #include "SgSystem.h"
 
+#include "GoInit.h"
 #include "SgInit.h"
 #include <boost/version.hpp>
 
@@ -19,10 +20,12 @@ namespace {
 void Init()
 {
     SgInit();
+    GoInit();
 }
 
 void Fini()
 {
+    GoFini();
     SgFini();
 }
 

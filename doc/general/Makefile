@@ -4,5 +4,5 @@ doxygen:
 	doxygen doxygen.cfg
 
 clean:
-	rm -rf ../explorer-doc/general
+	rm -rf ../fuego-doc/general
 

@@ -1,0 +1,86 @@
+//----------------------------------------------------------------------------
+/** @file GoGtpCommandUtil.h
+    Utils for Go GTP commands
+*/
+//----------------------------------------------------------------------------
+
+#ifndef GOGTPCOMMANDUTIL_H
+#define GOGTPCOMMANDUTIL_H
+
+#include <cstddef>
+#include "SgBlackWhite.h"
+#include "SgBoardColor.h"
+#include "SgList.h"
+#include "SgPoint.h"
+
+class GtpCommand;
+class GoBoard;
+template<typename T> class SgPointArray;
+
+//----------------------------------------------------------------------------
+
+namespace GoGtpCommandUtil
+{
+
+    SgEmptyBlackWhite EmptyBlackWhiteArg(const GtpCommand& cmd,
+                                         std::size_t number);
+
+    SgBlackWhite BlackWhiteArg(const GtpCommand& cmd, std::size_t number);
+
+    SgPoint EmptyPointArg(const GtpCommand& cmd, std::size_t number,
+                          const GoBoard& board);
+
+    /** Return the handicap stone locations as defined by the GTP standard.
+        See GTP version 2 specification, section 4.1.1 Fixed Handicap
+        Placement.
+        @param size Size of the board.
+        @param n Number of handicap stones (0, 2, 3, 4, 5, 6, 7, 8, 9).
+        @returns Location of the handicap stones.
+        @throws GtpFailure If handicap locations are not defined for this
+        number and board size.
+    */
+    SgList<SgPoint> GetHandicapStones(int size, int n);
+
+    SgMove MoveArg(const GtpCommand& cmd, std::size_t number,
+                   const GoBoard& board);
+
+    SgPoint PointArg(const GtpCommand& cmd, const GoBoard& board);
+    
+    SgPoint PointArg(const GtpCommand& cmd, std::size_t number,
+                     const GoBoard& board);
+
+    /** Return point list argument starting a given argument number to the
+        end of arguments.
+    */
+    SgList<SgPoint> PointListArg(const GtpCommand& cmd, std::size_t number,
+                                 const GoBoard& board);
+
+    /** Return point list argument using all arguments. */
+    SgList<SgPoint> PointListArg(const GtpCommand& cmd, const GoBoard& board);
+
+    void RespondNumberArray(GtpCommand& cmd, const SgPointArray<int>& array,
+                            int scale, const GoBoard& board);
+
+    /** Sort response to gogui-analyze_commands alphabetically by label.
+        Useful if the response to gogui-analyze_commands was concatenated
+        from different components and should be displayed alphabetically.
+        @param response Old response in the format expected by
+        gogui-analyze_commands
+        @return New response, lines sorted by analyze label
+    */
+    std::string SortResponseAnalyzeCommands(const std::string& response);
+
+    SgPoint StoneArg(const GtpCommand& cmd, std::size_t number,
+                     const GoBoard& board);
+}
+
+inline SgList<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
+                                                      const GoBoard& board)
+{
+    return PointListArg(cmd, 0, board);
+}
+
+//----------------------------------------------------------------------------
+
+#endif // GOGTPCOMMANDUTIL_H
+
