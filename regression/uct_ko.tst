@@ -1,0 +1,67 @@
+#-----------------------------------------------------------------------------
+# Ko fighting tests for GoUctPlayer.
+#
+# Explorer regression test suite
+#-----------------------------------------------------------------------------
+
+ex_player uct
+uct_param_player max_games 50000
+
+#-----------------------------------------------------------------------------
+
+loadsgf sgf/games/2007/CGOS/199550.sgf 29
+10 reg_genmove b
+#? [D4]*
+# B can play this ko fight to kill W
+
+loadsgf sgf/games/2008/CGOS/251434-variation.sgf 68
+20 reg_genmove w
+#? [E1]*
+# komi changed to 5.5 to make this an interesting problem.
+# W can play this ko fight.
+
+loadsgf sgf/games/2008/CGOS/251434-variation.sgf 69
+30 reg_genmove b
+#? [G7]*
+# only threat.
+
+loadsgf sgf/games/2008/CGOS/251434-variation.sgf 71
+40 reg_genmove b
+#? [F1]
+
+loadsgf sgf/games/2008/CGOS/251434-variation.sgf 72
+50 reg_genmove w
+#? [B3|A4|A3]
+# W has threats here.
+
+loadsgf sgf/games/2008/CGOS/251434-variation.sgf 73
+60 reg_genmove b
+#? [E1]*
+# if B answers there are no more threats
+
+loadsgf sgf/games/2008/CGOS/251434-variation.sgf 74
+70 reg_genmove w
+#? [A4]*
+# W has threats here.
+
+loadsgf sgf/games/2007/CGOS/107439.sgf 29
+80 reg_genmove b
+#? [D3|G2]*
+# avoid ko here, it is dangerous
+
+loadsgf sgf/games/2007/CGOS/189715.sgf 73
+90 reg_genmove b
+#? [A3]
+# safer, keeps ko simple
+
+100 sg_compare_float 0.5 uct_value
+#? [1]
+
+loadsgf sgf/games/2007/CGOS/189715.sgf 77
+110 reg_genmove b
+#? [B4|E3]
+# B4 is best, win by double ko. E3 also wins game.
+
+120 sg_compare_float 0.5 uct_value
+#? [1]
+

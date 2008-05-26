@@ -1,0 +1,5 @@
+# Basic tests for UCT-Player
+# Tests in basics should be fast, specific and produce no unexpected fails
+# or passes.
+uct_basics.tst
+uct_playout.tst
