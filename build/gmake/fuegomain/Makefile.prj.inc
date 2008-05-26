@@ -8,12 +8,16 @@ REL_NAME = $(NAME)
 
 VPATH = ../../..
 
+# Define Fugo version using svnversion for development versions.
+# Replace this line by release version for releases.
+FUEGO_VERSION= SVN:$(shell cd ../../..; svnversion)
+
 DBG_OBJDIR = ../build/obj/$(NAME)/debug
 REL_OBJDIR = ../build/obj/$(NAME)/release
 DBG_BINDIR = ../build/debug
 REL_BINDIR = ../build/release
 
-PROJ_CXXFLAGS = -DUNIX=1 -I../../../go -I../../../gouct -I../../../gtpengine -I../../../smartgame
+PROJ_CXXFLAGS = -DUNIX=1 -DVERSION="$(FUEGO_VERSION)" -I../../../go -I../../../gouct -I../../../gtpengine -I../../../smartgame
 PROJ_DBG_CXXFLAGS = $(PROJ_CXXFLAGS)
 PROJ_REL_CXXFLAGS = $(PROJ_CXXFLAGS)
 
