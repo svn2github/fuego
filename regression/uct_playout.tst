@@ -1,10 +1,7 @@
 #-----------------------------------------------------------------------------
 # Tests using playout policy directly for move generation.
-#
-# Explorer regression test suite
 #-----------------------------------------------------------------------------
 
-ex_player uct
 uct_param_player search_mode playout_policy
 
 #-----------------------------------------------------------------------------

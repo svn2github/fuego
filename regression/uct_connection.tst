@@ -1,10 +1,7 @@
 #-----------------------------------------------------------------------------
-# Tests for generating connecting moves for GoUctPlayer.
-#
-# Explorer regression test suite
+# Tests for generating connecting moves for GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-ex_player uct
 uct_param_player max_games 50000
 book_load ../go/book.dat
 

@@ -1,10 +1,7 @@
 #-----------------------------------------------------------------------------
-# Blunder avoidance tests for GoUctPlayer.
-#
-# Explorer regression test suite
+# Blunder avoidance tests for GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-ex_player uct
 uct_param_player max_games 50000
 komi 7.5
 

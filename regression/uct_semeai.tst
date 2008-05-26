@@ -1,10 +1,7 @@
 #-----------------------------------------------------------------------------
-# Semeai tests for GoUctPlayer.
-#
-# Explorer regression test suite
+# Semeai tests for GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-ex_player uct
 uct_param_player max_games 50000
 
 #-----------------------------------------------------------------------------

@@ -1,12 +1,9 @@
 #-----------------------------------------------------------------------------
-# Fight on when behind - create chances - tests for GoUctPlayer.
+# Fight on when behind - create chances - tests for GoUctGlobalSearchPlayer.
 # Also test cases where only one move avoids immediate disaster, e.g.
 # connect against a big atari in unfavorable position.
-#
-# Explorer regression test suite
 #-----------------------------------------------------------------------------
 
-ex_player uct
 uct_param_player max_games 50000
 
 #-----------------------------------------------------------------------------

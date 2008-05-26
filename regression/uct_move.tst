@@ -1,10 +1,7 @@
 #-----------------------------------------------------------------------------
-# Tests for bug fixes in playouts of GoUctPlayer.
-#
-# Explorer regression test suite
+# Tests for bug fixes in playouts of GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-ex_player uct
 uct_param_player max_games 50000
 uct_stat_player_clear
 
