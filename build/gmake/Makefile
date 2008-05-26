@@ -10,7 +10,8 @@ PROJECTS = \
   gtpengine \
   smartgame \
   go \
-  gouct
+  gouct \
+  fuegomain
 
 # sequentially to avoid same sub-target in sub-make invoked twice
 .PHONY: default

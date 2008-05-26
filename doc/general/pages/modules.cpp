@@ -15,11 +15,11 @@
         go [label="Go", color=black]
         sg -> go
 
-        go_uct [label="GoUct", color=black]
-        go -> go_uct
+        gouct [label="GoUct", color=black]
+        go -> gouct
 
-        gtp_uct [label="GtpUct", color=blue]
-        go_uct -> gtp_uct
+        fuegomain [label="FuegoMain", color=blue]
+        gouct -> fuegomain
     }
     @enddot
 */

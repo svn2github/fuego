@@ -5,7 +5,8 @@ PROJECTS = \
   gtpengine \
   smartgame \
   go \
-  gouct
+  gouct \
+  fuegomain
 
 PAGES = \
   index.html \
