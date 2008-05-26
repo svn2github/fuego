@@ -25,6 +25,8 @@ public:
 
     void CmdAnalyzeCommands(GtpCommand& cmd);
 
+    void CmdName(GtpCommand& cmd);
+
 private:
     GoUctCommands m_uctCommands;
 };

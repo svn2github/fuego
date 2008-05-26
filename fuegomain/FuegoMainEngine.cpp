@@ -37,4 +37,9 @@ void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));
 }
 
+void FuegoMainEngine::CmdName(GtpCommand& cmd)
+{
+    cmd << "Fuego";
+}
+
 //----------------------------------------------------------------------------
