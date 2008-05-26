@@ -39,7 +39,7 @@ public:
 
     /** @page gouctgtpcommands GoUctCommands Commands
         - @link CmdBounds() @c uct_bounds @endlink
-        - @link CmdEstimatorStat() @c uct_bounds @endlink
+        - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
         - @link CmdMoves() @c uct_moves @endlink
         - @link CmdParamGlobalSearch() @c uct_param_globalsearch @endlink
