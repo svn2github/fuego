@@ -4,7 +4,8 @@ PROJECTS = \
   general \
   gtpengine \
   smartgame \
-  go
+  go \
+  gouct
 
 PAGES = \
   index.html \
