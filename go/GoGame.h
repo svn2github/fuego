@@ -115,8 +115,8 @@ public:
     bool CanGoInDirection(SgNode::Direction dir) const;
 
     /** Set up the text or property to search for.
-        Modifies the GoInDirection command when prevDepthFirst or
-        nextDepthFirst is passed.
+        Modifies the GoInDirection command when PREV_DEPTHFIRST or
+        NEXT_DEPTHFIRST is passed.
         An empty text restores it to next/previous node.
     */
     void SetUpFind(const std::string& text);

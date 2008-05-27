@@ -251,54 +251,54 @@ SgNode* SgNode::NodeInDirection(Direction dir) const
     SgNode* node = 0;
     switch (dir)
     {
-    case previous:
+    case PREVIOUS:
         node = Father();
         break;
-    case next:
+    case NEXT:
         node = LeftMostSon();
         break;
-    case nextRightMost:
+    case NEXT_RIGHTMOST:
         node = RightMostSon();
         break;
-    case prevDepthFirst:
+    case PREV_DEPTHFIRST:
         node = PrevDepthFirst();
         break;
-    case nextDepthFirst:
+    case NEXT_DEPTHFIRST:
         node = NextDepthFirst();
         break;
-    case prevTerminal:
+    case PREV_TERMINAL:
         node = PrevDepthFirst();
         while (! node->IsTerminal())
             node = node->PrevDepthFirst();
         break;
-    case nextTerminal:
+    case NEXT_TERMINAL:
         node = NextDepthFirst();
         while (! node->IsTerminal())
             node = node->NextDepthFirst();
         break;
-    case prevBranch:
+    case PREV_BRANCH:
         node = Father();
         while (node && node->HasFather() && ! node->IsBranchPoint())
             node = node->Father();
         break;
-    case nextBranch:
+    case NEXT_BRANCH:
         node = LeftMostSon();
         while (node && ! node->IsTerminal() && ! node->IsBranchPoint())
             node = node->LeftMostSon();
         break;
-    case leftBrother:
+    case LEFT_BROTHER:
         if (HasLeftBrother())
             node = LeftBrother();
         else if (HasBrother())
             node = Father()->RightMostSon(); // wrap around
         break;
-    case rightBrother:
+    case RIGHT_BROTHER:
         if (HasRightBrother())
             node = RightBrother();
         else if (HasBrother())
             node = Father()->LeftMostSon(); // wrap around
         break;
-    case mainBranch:
+    case MAIN_BRANCH:
         {
             SgNode* t = const_cast<SgNode*>(this);
             while (t->HasFather())
@@ -309,10 +309,10 @@ SgNode* SgNode::NodeInDirection(Direction dir) const
             }
         }
         break;
-    case startOfGame:
+    case START_OF_GAME:
         node = Root();
         break;
-    case endOfGame:
+    case END_OF_GAME:
         node = const_cast<SgNode*>(this);
         while (! node->IsTerminal())
             node = node->LeftMostSon();
@@ -326,7 +326,7 @@ SgNode* SgNode::NodeInDirection(Direction dir) const
 SgNode* SgNode::FindNodeInDirection(Direction dir, const string& findText)
 {
     SgNode* node = NodeInDirection(dir);
-    if (dir == prevDepthFirst || dir == nextDepthFirst)
+    if (dir == PREV_DEPTHFIRST || dir == NEXT_DEPTHFIRST)
     {
         // Go through whole tree until found node or back at current node.
         SgPropID id = SgProp::ConvertFindTextToPropID(findText);

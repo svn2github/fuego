@@ -141,11 +141,11 @@ int GoGameRecord::CurrentMoveNumber() const
 
 void GoGameRecord::DeleteCurrentNode()
 {
-    if (CanGoInDirection(SgNode::previous))
+    if (CanGoInDirection(SgNode::PREVIOUS))
     {
         // Delete the current node, go to the previous move.
         SgNode* node = CurrentNode();
-        GoInDirection(SgNode::previous);
+        GoInDirection(SgNode::PREVIOUS);
         delete node;
 
         // Make sure UpdateComment knows that this node is gone.
@@ -430,20 +430,20 @@ bool GoGameUtil::GotoBeforeMove(GoGameRecord* game, int moveNumber)
     SG_ASSERT(moveNumber == -1 || moveNumber > 0);
     if (moveNumber > 0)
     {
-        while (game->CanGoInDirection(SgNode::next)
+        while (game->CanGoInDirection(SgNode::NEXT)
                && ! game->CurrentNode()->HasProp(SG_PROP_MOVE)
                && ! game->CurrentNode()->LeftMostSon()->HasProp(SG_PROP_MOVE))
-            game->GoInDirection(SgNode::next);
+            game->GoInDirection(SgNode::NEXT);
         while (game->CurrentMoveNumber() < moveNumber - 1
-               && game->CanGoInDirection(SgNode::next))
-            game->GoInDirection(SgNode::next);
+               && game->CanGoInDirection(SgNode::NEXT))
+            game->GoInDirection(SgNode::NEXT);
         if (game->CurrentMoveNumber() != moveNumber - 1)
             return false;
     }
     else
     {
-        while (game->CanGoInDirection(SgNode::next))
-            game->GoInDirection(SgNode::next);
+        while (game->CanGoInDirection(SgNode::NEXT))
+            game->GoInDirection(SgNode::NEXT);
     }
     return true;
 }

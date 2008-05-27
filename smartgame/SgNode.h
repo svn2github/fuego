@@ -41,20 +41,20 @@ class SgNode
 {
 public:
     enum Direction {
-        previous,
-        next,
-        nextRightMost,
-        prevDepthFirst,
-        nextDepthFirst,
-        prevTerminal,
-        nextTerminal,
-        prevBranch,
-        nextBranch,
-        leftBrother,
-        rightBrother,
-        mainBranch,
-        startOfGame,
-        endOfGame
+        PREVIOUS,
+        NEXT,
+        NEXT_RIGHTMOST,
+        PREV_DEPTHFIRST,
+        NEXT_DEPTHFIRST,
+        PREV_TERMINAL,
+        NEXT_TERMINAL,
+        PREV_BRANCH,
+        NEXT_BRANCH,
+        LEFT_BROTHER,
+        RIGHT_BROTHER,
+        MAIN_BRANCH,
+        START_OF_GAME,
+        END_OF_GAME
     };
 
     SgNode();
@@ -155,8 +155,8 @@ public:
     SgNode* NodeInDirection(Direction dir) const;
 
     /** Find the next node with the given text in the given direction.
-        If dir is prevDepthFirst or nextDepthFirst, otherwise simply pass the
-        query on to NodeInDirection.
+        If dir is PREV_DEPTHFIRST or NEXT_DEPTHFIRST, otherwise simply pass
+        the query on to NodeInDirection.
     */
     SgNode* FindNodeInDirection(Direction dir, const std::string& findText);
 
