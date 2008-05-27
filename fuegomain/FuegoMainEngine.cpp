@@ -46,7 +46,7 @@ void FuegoMainEngine::CmdName(GtpCommand& cmd)
 /** Return Fuego version.
     If the macro VERSION was defined by the build system during the compile
     time, its value will be used as the version, otherwise the version
-    is "(__DATE__)"
+    is "(__DATE__)". If compiled in debug mode, " (dbg)" will be added.
 */
 void FuegoMainEngine::CmdVersion(GtpCommand& cmd)
 {
@@ -54,6 +54,9 @@ void FuegoMainEngine::CmdVersion(GtpCommand& cmd)
     cmd << BOOST_PP_STRINGIZE(VERSION);
 #else
     cmd << "(" __DATE__ ")";
+#endif
+#ifdef _DEBUG
+    cmd << " (dbg)";
 #endif
 }
 
