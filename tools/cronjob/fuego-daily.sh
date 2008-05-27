@@ -16,14 +16,16 @@ FUEGO_DIR=$(dirname $0)/../..
 FUEGO_WEB_SERVER=fuego.sourceforge.net
 FUEGO_WEB_DIR=/home/groups/f/fu/fuego/htdocs
 
-# Update the checked out sources
+# Update the checked out sources.
+# Exit immediately if nothing was changed (svn status code U, A, D did not
+# occur).
 
 cd $FUEGO_DIR
-svn update
+svn update | awk '/[UAD] /{exit 1}' && exit
 
-# Generate documentation and upload it to the web server
+# Generate documentation and put it on the web server
 
 cd $FUEGO_DIR/doc
-make || exit -1
+make || exit 1
 ssh $FUEGO_WEB_SERVER mkdir -p $FUEGO_WEB_DIR/doc/daily
 rsync -r fuego-doc $FUEGO_WEB_SERVER:$FUEGO_WEB_DIR/doc/daily
