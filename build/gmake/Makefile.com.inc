@@ -1,8 +1,5 @@
 #-----------------------------------------------------------------------------
 # GNU Makefile: common part for all targets
-#
-# $Id: Makefile.com.inc,v 1.36 2008/03/04 22:39:39 mmueller Exp $
-# $Source: /usr/cvsroot/project_explorer/linux/Makefile.com.inc,v $
 #-----------------------------------------------------------------------------
 
 MAKEFILE_DIR=$(dir $(lastword $(MAKEFILE_LIST)))

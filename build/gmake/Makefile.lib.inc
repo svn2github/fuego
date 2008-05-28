@@ -1,8 +1,5 @@
 #------------------------------------------------------------------------------
 # GNU Makefile: part for static libraries
-#
-# $Id: Makefile.lib.inc,v 1.5 2004/03/15 21:14:21 emarkus Exp $
-# $Source: /usr/cvsroot/project_explorer/linux/Makefile.lib.inc,v $
 #------------------------------------------------------------------------------
 
 $(DBG_BINDIR)/$(DBG_NAME): $(DBG_OBJS)
