@@ -1,8 +1,6 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 # Script to identify correct Boost library extensions to use.
-# $Source: /usr/cvsroot/project_explorer/linux/boost_postfix.sh,v $
-# $Id: boost_postfix.sh,v 1.3 2008/04/26 18:16:28 emarkus Exp $
 #-----------------------------------------------------------------------------
 
 ALL_LIBRARY_PATHS=/usr/local/lib:/usr/lib:$LIBRARY_PATH:$LD_LIBRARY_PATH
