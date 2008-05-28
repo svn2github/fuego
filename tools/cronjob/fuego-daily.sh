@@ -15,6 +15,7 @@
 FUEGO_DIR=$(dirname $0)/../..
 FUEGO_WEB_SERVER=fuego.sourceforge.net
 FUEGO_WEB_DIR=/home/groups/f/fu/fuego/htdocs
+SVN_BACKUP_DIR=$FUEGO_DIR/../fuego_svn_backup
 
 # Update the checked out sources.
 # Exit immediately if nothing was changed (svn status code U, A, D did not
@@ -29,3 +30,7 @@ cd $FUEGO_DIR/doc
 make || exit 1
 ssh $FUEGO_WEB_SERVER mkdir -p $FUEGO_WEB_DIR/doc/daily
 rsync -r fuego-doc $FUEGO_WEB_SERVER:$FUEGO_WEB_DIR/doc/daily
+
+# Backup subversion repository
+
+rsync -av fuego.svn.sourceforge.net::svn/fuego/* $SVN_BACKUP_DIR
