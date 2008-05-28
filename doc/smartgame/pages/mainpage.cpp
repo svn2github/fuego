@@ -14,11 +14,11 @@
     - Utility classes and platform dependent functionality:
       SgStatistics, SgTime
     - Search algorithms:
-      SgSearch, CpSearch, SgUctSearch
+      SgSearch, SgUctSearch
     - Classes for using the SGF file format:
       SgNode, SgProp
     - Utility classes for Go Text Protocol engines extending the functionality
-      of module Gtp (GTP can also be used for other games than Go):
+      of the GtpEngine library (GTP can also be used for other games than Go):
       SgGtpCommands, SgGtpUtil
 
     @section sgdependencies Dependencies
