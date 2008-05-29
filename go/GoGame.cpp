@@ -524,7 +524,7 @@ GoPlayerMove GoGame::PlayOneMove(SgBlackWhite color)
     GoPlayer* player = m_player[color];
     UpdatePlayer(color);
     SgBlackWhite toPlay = Board().ToPlay();
-    SgMove move = player->ComputeMove(time, toPlay);
+    SgMove move = player->GenMove(time, toPlay);
     return GoPlayerMove(toPlay, move);
 }
 

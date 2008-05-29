@@ -61,7 +61,7 @@ public:
     /** Statistics collected by GoUctGlobalSearchPlayer. */
     struct Statistics
     {
-        std::size_t m_nuComputeMove;
+        std::size_t m_nuGenMove;
 
         SgStatisticsExt<float,std::size_t> m_reuse;
 
@@ -94,7 +94,7 @@ public:
     /** @name Virtual functions of GoPlayer */
     // @{
 
-    SgMove ComputeMove(const SgTimeRecord& time, SgBlackWhite toPlay);
+    SgMove GenMove(const SgTimeRecord& time, SgBlackWhite toPlay);
 
     std::string Name() const;
 
@@ -127,7 +127,7 @@ public:
     // @{
 
     /** Ignore time settings of the game.
-        Ignore time record given to ComputeMove() and only obeys maximum
+        Ignore time record given to GenMove() and only obeys maximum
         number of games and maximum time. Default is true.
     */
     bool IgnoreClock() const;
@@ -161,7 +161,7 @@ public:
 
     /** Monitor statistics to a file.
         The file is read when SetMonitorStatFile() is called (if it exists)
-        and saved after each ComputeMove(). This allows to collect
+        and saved after each GenMove(). This allows to collect
         statistics, even if the executable is run multiple times (e.g. during
         a gogui-twogtp run with restarts). An empty file name means no
         monitoring is done.
@@ -290,7 +290,7 @@ private:
     */
     SgUctTree m_initTree;
 
-    SgMove ComputeMovePlayoutPolicy(SgBlackWhite toPlay);
+    SgMove GenMovePlayoutPolicy(SgBlackWhite toPlay);
 
     SgPoint DoSearch(SgBlackWhite toPlay, double maxTime);
 

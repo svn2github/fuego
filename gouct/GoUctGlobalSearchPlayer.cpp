@@ -53,7 +53,7 @@ GoUctGlobalSearchPlayer::Statistics::Statistics()
 
 void GoUctGlobalSearchPlayer::Statistics::Clear()
 {
-    m_nuComputeMove = 0;
+    m_nuGenMove = 0;
     m_gamesPerSecond.Clear();
     m_reuse.Clear();
 }
@@ -67,7 +67,7 @@ void GoUctGlobalSearchPlayer::Statistics::Load(std::istream& in)
         in.setstate(ios_base::failbit);
         return;
     }
-    in >> m_nuComputeMove;
+    in >> m_nuGenMove;
     in >> label;
     if (label != "GAMES_PER_SEC")
     {
@@ -86,7 +86,7 @@ void GoUctGlobalSearchPlayer::Statistics::Load(std::istream& in)
 
 void GoUctGlobalSearchPlayer::Statistics::Write(ostream& out) const
 {
-    out << SgWriteLabel("NuComputeMove") << m_nuComputeMove << '\n'
+    out << SgWriteLabel("NuGenMove") << m_nuGenMove << '\n'
         << SgWriteLabel("GamesPerSec");
     m_gamesPerSecond.Write(out);
     out << '\n'
@@ -97,7 +97,7 @@ void GoUctGlobalSearchPlayer::Statistics::Write(ostream& out) const
 
 void GoUctGlobalSearchPlayer::Statistics::Save(std::ostream& out) const
 {
-    out << "NU_COMPUTE_MOVE " << m_nuComputeMove << '\n'
+    out << "NU_GEN_MOVE " << m_nuGenMove << '\n'
         << "GAMES_PER_SEC ";
     m_gamesPerSecond.SaveAsText(out);
     out << '\n'
@@ -143,18 +143,18 @@ void GoUctGlobalSearchPlayer::ClearStatistics()
     m_statistics.Clear();
 }
 
-SgMove GoUctGlobalSearchPlayer::ComputeMove(const SgTimeRecord& time,
-                                            SgBlackWhite toPlay)
+SgMove GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
+                                        SgBlackWhite toPlay)
 {
-    ++m_statistics.m_nuComputeMove;
+    ++m_statistics.m_nuGenMove;
     if (m_searchMode == GOUCT_SEARCHMODE_PLAYOUTPOLICY)
-        return ComputeMovePlayoutPolicy(toPlay);
+        return GenMovePlayoutPolicy(toPlay);
     SgMove move = SG_NULLMOVE;
     if (GoBoardUtil::PassWins(Board(), toPlay))
     {
         move = SG_PASS;
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::ComputeMove: "
+            "GoUctGlobalSearchPlayer::GenMove: "
             "Pass wins (Tromp-Taylor rules)\n";
     }
     else
@@ -182,7 +182,7 @@ SgMove GoUctGlobalSearchPlayer::ComputeMove(const SgTimeRecord& time,
         {
             // Shouldn't happen ?
             SgDebug() <<
-                "WARNING: GoUctGlobalSearchPlayer::ComputeMove: "
+                "WARNING: GoUctGlobalSearchPlayer::GenMove: "
                 "Search generated SG_NULLMOVE\n";
             move = SG_PASS;
         }
@@ -193,7 +193,7 @@ SgMove GoUctGlobalSearchPlayer::ComputeMove(const SgTimeRecord& time,
     return move;
 }
 
-SgMove GoUctGlobalSearchPlayer::ComputeMovePlayoutPolicy(SgBlackWhite toPlay)
+SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
 {
     GoBoard& bd = Board();
     GoBoardRestorer restorer(bd);
@@ -208,7 +208,7 @@ SgMove GoUctGlobalSearchPlayer::ComputeMovePlayoutPolicy(SgBlackWhite toPlay)
     if (move == SG_NULLMOVE)
     {
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::ComputeMove: "
+            "GoUctGlobalSearchPlayer::GenMove: "
             "GoUctPlayoutPolicy generated SG_NULLMOVE\n";
         return SG_PASS;
     }
@@ -359,7 +359,7 @@ void GoUctGlobalSearchPlayer::Ponder()
         return;
     if (! m_reuseSubtree)
     {
-        // Don't ponder, wouldn't use the result in the next ComputeMove
+        // Don't ponder, wouldn't use the result in the next GenMove
         // anyway if reuseSubtree is not enabled
         SgDebug() << "Warning: Pondering needs reuse_subtree enabled.\n";
         return;

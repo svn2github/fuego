@@ -37,9 +37,9 @@ public:
     /** Player is assumed to be initialized if its board exists */
     bool IsInitialized() const;
 
-    /** Compute a move. */
-    virtual SgMove ComputeMove(const SgTimeRecord& time,
-                               SgBlackWhite toPlay) = 0;
+    /** Generate a move. */
+    virtual SgMove GenMove(const SgTimeRecord& time,
+                           SgBlackWhite toPlay) = 0;
 
     /** Get node for appending search traces */
     SgNode* CurrentNode() const;

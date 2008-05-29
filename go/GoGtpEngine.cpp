@@ -1207,7 +1207,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color)
             "GoGtpEngine::GenMove: "
             "Using move from opening book\n";
     if (move == SG_NULLMOVE)
-        move = player.ComputeMove(time, color);
+        move = player.GenMove(time, color);
     m_timeLastMove = SgTime::Get() - startTime;
     if (move == SG_NULLMOVE)
         throw GtpFailure() << player.Name() << " generated NULLMOVE";
