@@ -6,8 +6,8 @@
 # Since SourceForge discourages auto-updaters, it should *not* be run on the
 # SourceForge shell server, but on a private machine.
 # To run it, check out a version of fuego to a dedicated directory, for
-# example ~/fuego-daily (don't use this checked out version for other tasks).
-# Then register ~/fuego-daily/fuego/tools/cronjob/fuego-daily.sh as a
+# example ~/fuego_daily (don't use this checked out version for other tasks).
+# Then register ~/fuego_daily/fuego/tools/cronjob/fuego_daily.sh as a
 # cron job to run once a day.
 # You need to have set up password-less ssh to fuego.sourceforge.net
 # (see http://alexandria.wiki.sourceforge.net/SSH+Key+Generation)
