@@ -12,7 +12,6 @@
 #include <iomanip>
 #include <limits>
 #include <time.h>
-#include "GoBoardCheckPerformance.h"
 #include "GoGtpCommandUtil.h"
 #include "GoLadder.h"
 #include "GoNodeUtil.h"
@@ -96,7 +95,6 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath,
     RegisterCmd("get_komi", &GoGtpEngine::CmdGetKomi);
     RegisterCmd("gg-undo", &GoGtpEngine::CmdGGUndo);
     RegisterCmd("go_board", &GoGtpEngine::CmdBoard);
-    RegisterCmd("go_check_performance", &GoGtpEngine::CmdCheckPerformance);
     RegisterCmd("go_ladder", &GoGtpEngine::CmdLadder);
     RegisterCmd("go_param", &GoGtpEngine::CmdParam);
     RegisterCmd("go_param_rules", &GoGtpEngine::CmdParamRules);
@@ -354,13 +352,6 @@ void GoGtpEngine::CmdBoardSize(GtpCommand& cmd)
     if (Board().MoveNumber() > 0)
         GameFinished();
     Init(cmd.IntArg(0, SG_MIN_SIZE, SG_MAX_SIZE));
-}
-
-/** Run performance tests in SgBoardCheckPerformance. */
-void GoGtpEngine::CmdCheckPerformance(GtpCommand& cmd)
-{
-    cmd.CheckArgNone();
-    GoBoardCheckPerformance::CheckPerformance(Board(), cmd);
 }
 
 /** Init new game.

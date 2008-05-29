@@ -36,7 +36,6 @@ public:
         - @link CmdGetKomi() @c get_komi @endlink
         - @link CmdGGUndo() @c gg-undo @endlink
         - @link CmdBoard() @c go_board @endlink
-        - @link CmdCheckPerformance() @c go_check_performance @endlink
         - @link CmdClock() @c go_clock @endlink
         - @link CmdLadder() @c go_ladder @endlink
         - @link CmdParam() @c go_param @endlink
@@ -78,7 +77,6 @@ public:
     virtual void CmdAnalyzeCommands(GtpCommand&);
     virtual void CmdBoard(GtpCommand&);
     virtual void CmdBoardSize(GtpCommand&);
-    virtual void CmdCheckPerformance(GtpCommand&);
     virtual void CmdClearBoard(GtpCommand&);
     virtual void CmdClock(GtpCommand&);
     virtual void CmdFinalScore(GtpCommand&);
