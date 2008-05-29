@@ -71,9 +71,11 @@ string KoRuleToString(GoRules::KoRule rule)
 
 //----------------------------------------------------------------------------
 
-GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath)
+GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath,
+                         bool noPlayer)
     : GtpEngine(in, out),
       m_player(0),
+      m_noPlayer(noPlayer),
       m_acceptIllegal(false),
       m_autoSave(false),
       m_autoShowBoard(false),
@@ -88,21 +90,16 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath)
       m_bookCommands(m_board, m_book)
 {
     RegisterCmd("all_legal", &GoGtpEngine::CmdAllLegal);
-    RegisterCmd("all_move_values", &GoGtpEngine::CmdAllMoveValues);
     RegisterCmd("boardsize", &GoGtpEngine::CmdBoardSize);
     RegisterCmd("clear_board", &GoGtpEngine::CmdClearBoard);
-    RegisterCmd("final_score", &GoGtpEngine::CmdFinalScore);
     RegisterCmd("fixed_handicap", &GoGtpEngine::CmdFixedHandicap);
-    RegisterCmd("genmove", &GoGtpEngine::CmdGenMove);
     RegisterCmd("get_komi", &GoGtpEngine::CmdGetKomi);
     RegisterCmd("gg-undo", &GoGtpEngine::CmdGGUndo);
     RegisterCmd("go_board", &GoGtpEngine::CmdBoard);
     RegisterCmd("go_check_performance", &GoGtpEngine::CmdCheckPerformance);
-    RegisterCmd("go_clock", &GoGtpEngine::CmdClock);
     RegisterCmd("go_ladder", &GoGtpEngine::CmdLadder);
     RegisterCmd("go_param", &GoGtpEngine::CmdParam);
     RegisterCmd("go_param_rules", &GoGtpEngine::CmdParamRules);
-    RegisterCmd("go_param_timecontrol", &GoGtpEngine::CmdParamTimecontrol);
     RegisterCmd("go_player_board", &GoGtpEngine::CmdPlayerBoard);
     RegisterCmd("go_point_info", &GoGtpEngine::CmdPointInfo);
     RegisterCmd("go_point_numbers", &GoGtpEngine::CmdPointNumbers);
@@ -120,17 +117,26 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath)
     RegisterCmd("loadsgf", &GoGtpEngine::CmdLoadSgf);
     RegisterCmd("place_free_handicap", &GoGtpEngine::CmdPlaceFreeHandicap);
     RegisterCmd("play", &GoGtpEngine::CmdPlay);
-    RegisterCmd("reg_genmove", &GoGtpEngine::CmdRegGenMove);
-    RegisterCmd("reg_genmove_toplay", &GoGtpEngine::CmdRegGenMoveToPlay);
     RegisterCmd("savesgf", &GoGtpEngine::CmdSaveSgf);
     RegisterCmd("showboard", &GoGtpEngine::CmdShowBoard);
     RegisterCmd("set_free_handicap", &GoGtpEngine::CmdSetFreeHandicap);
-    RegisterCmd("time_lastmove", &GoGtpEngine::CmdTimeLastMove);
     RegisterCmd("time_left", &GoGtpEngine::CmdTimeLeft);
     RegisterCmd("time_settings", &GoGtpEngine::CmdTimeSettings);
     RegisterCmd("undo", &GoGtpEngine::CmdUndo);
     m_sgCommands.Register(*this);
-    m_bookCommands.Register(*this);
+    if (! noPlayer)
+    {
+        RegisterCmd("all_move_values", &GoGtpEngine::CmdAllMoveValues);
+        RegisterCmd("final_score", &GoGtpEngine::CmdFinalScore);
+        RegisterCmd("genmove", &GoGtpEngine::CmdGenMove);
+        RegisterCmd("go_clock", &GoGtpEngine::CmdClock);
+        RegisterCmd("go_param_timecontrol",
+                    &GoGtpEngine::CmdParamTimecontrol);
+        RegisterCmd("reg_genmove", &GoGtpEngine::CmdRegGenMove);
+        RegisterCmd("reg_genmove_toplay", &GoGtpEngine::CmdRegGenMoveToPlay);
+        RegisterCmd("time_lastmove", &GoGtpEngine::CmdTimeLastMove);
+        m_bookCommands.Register(*this);
+    }
 }
 
 GoGtpEngine::~GoGtpEngine()
@@ -303,23 +309,15 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
     cmd <<
-        "string/Final Score/final_score\n"
-        "plist/Final Status List Alive/final_status_list alive\n"
-        "plist/Final Status List Dead/final_status_list dead\n"
-        "plist/Final Status List Seki/final_status_list seki\n"
         "hpstring/Go Board/go_board\n"
         "hstring/Go Check Performance/go_check_performance\n"
-        "hstring/Go Clock/go_clock\n"
         "param/Go Param/go_param\n"
         "param/Go Param Rules/go_param_rules\n"
-        "param/Go Param TimeControl/go_param_timecontrol\n"
         "hpstring/Go Point Info/go_point_info %p\n"
         "sboard/Go Point Numbers/go_point_numbers\n"
         "none/Go Rules/go_rules %s\n"
         "string/Go Static Ladder/go_static_ladder %p\n"
-        "varc/Reg GenMove/reg_genmove %c\n"
         "plist/All Legal/all_legal %c\n"
-        "pspairs/All Move Values/all_move_values\n"
         "string/ShowBoard/showboard\n"
         "string/CpuTime/cputime\n"
         "string/Get Komi/get_komi\n"
@@ -328,7 +326,17 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
         "none/Set Random Seed/set_random_seed %s\n"
         "none/SaveSgf/savesgf %w\n";
     m_sgCommands.AddGoGuiAnalyzeCommands(cmd);
-    m_bookCommands.AddGoGuiAnalyzeCommands(cmd);
+    if (! m_noPlayer)
+    {
+        m_bookCommands.AddGoGuiAnalyzeCommands(cmd);
+        cmd <<
+            "pspairs/All Move Values/all_move_values\n"
+            "string/Final Score/final_score\n"
+            "plist/Final Status List Alive/final_status_list alive\n"
+            "plist/Final Status List Dead/final_status_list dead\n"
+            "plist/Final Status List Seki/final_status_list seki\n"
+            "varc/Reg GenMove/reg_genmove %c\n";
+    }
 }
 
 /** Print some information about game board.

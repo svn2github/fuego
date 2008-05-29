@@ -119,8 +119,18 @@ public:
     virtual void CmdUndo(GtpCommand&);
     // @} // @name
 
+    /** Constructor.
+        @param in See parameter @in in GtpEngine::GtpEngine
+        @param out See parameter @out in GtpEngine::GtpEngine
+        @param programPath File path to the executable. Needed for
+        SgGtpCommands::CmdDebugger
+        @param noPlayer Indicate that the subclass will not set a player
+        with SetPlayer(). Useful for GTP engines that cannot play moves
+        (e.g. TsumeGo solvers) This causes player-specific GTP commands,
+        like @c reg_genmove) not to be registered.
+    */
     GoGtpEngine(std::istream& in, std::ostream& out,
-                const char* programPath = 0);
+                const char* programPath = 0, bool noPlayer = false);
 
     ~GoGtpEngine();
 
@@ -286,6 +296,8 @@ protected:
     void RulesChanged();
 
 private:
+    bool m_noPlayer;
+
     /** Accept illegal ko or suicide moves in CmdPlay() */
     bool m_acceptIllegal;
 
