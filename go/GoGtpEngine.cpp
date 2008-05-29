@@ -308,7 +308,6 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     cmd.CheckArgNone();
     cmd <<
         "hpstring/Go Board/go_board\n"
-        "hstring/Go Check Performance/go_check_performance\n"
         "param/Go Param/go_param\n"
         "param/Go Param Rules/go_param_rules\n"
         "hpstring/Go Point Info/go_point_info %p\n"
