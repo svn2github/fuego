@@ -41,6 +41,7 @@ SRC_CPP= \
   go/GoGame.cpp \
   go/GoGtpCommandUtil.cpp \
   go/GoGtpEngine.cpp \
+  go/GoGtpExtraCommands.cpp \
   go/GoGtpTimeSettings.cpp \
   go/GoInfluence.cpp \
   go/GoInit.cpp \

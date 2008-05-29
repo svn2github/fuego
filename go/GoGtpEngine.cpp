@@ -13,7 +13,6 @@
 #include <limits>
 #include <time.h>
 #include "GoGtpCommandUtil.h"
-#include "GoLadder.h"
 #include "GoNodeUtil.h"
 #include "GoPlayer.h"
 #include "GoTimeControl.h"
@@ -95,7 +94,6 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath,
     RegisterCmd("get_komi", &GoGtpEngine::CmdGetKomi);
     RegisterCmd("gg-undo", &GoGtpEngine::CmdGGUndo);
     RegisterCmd("go_board", &GoGtpEngine::CmdBoard);
-    RegisterCmd("go_ladder", &GoGtpEngine::CmdLadder);
     RegisterCmd("go_param", &GoGtpEngine::CmdParam);
     RegisterCmd("go_param_rules", &GoGtpEngine::CmdParamRules);
     RegisterCmd("go_player_board", &GoGtpEngine::CmdPlayerBoard);
@@ -103,7 +101,6 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath,
     RegisterCmd("go_point_numbers", &GoGtpEngine::CmdPointNumbers);
     RegisterCmd("go_rules", &GoGtpEngine::CmdRules);
     RegisterCmd("go_set_info", &GoGtpEngine::CmdSetInfo);
-    RegisterCmd("go_static_ladder", &GoGtpEngine::CmdStaticLadder);
     RegisterCmd("gogui-analyze_commands", &GoGtpEngine::CmdAnalyzeCommands);
     RegisterCmd("gogui-interrupt", &GoGtpEngine::CmdInterrupt);
     RegisterCmd("gogui-play_sequence", &GoGtpEngine::CmdPlaySequence);
@@ -313,7 +310,6 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
         "hpstring/Go Point Info/go_point_info %p\n"
         "sboard/Go Point Numbers/go_point_numbers\n"
         "none/Go Rules/go_rules %s\n"
-        "string/Go Static Ladder/go_static_ladder %p\n"
         "plist/All Legal/all_legal %c\n"
         "string/ShowBoard/showboard\n"
         "string/CpuTime/cputime\n"
@@ -491,32 +487,6 @@ void GoGtpEngine::CmdKomi(GtpCommand& cmd)
     catch (const GoKomi::InvalidKomi& e)
     {
         throw GtpFailure(e.what());
-    }
-}
-
-/** Return fast ladder status.
-    Arguments: prey point<br>
-    Returns: escaped|captured|unsettled<br>
-    @see FastLadderStatus
-*/
-void GoGtpEngine::CmdLadder(GtpCommand& cmd)
-{
-    cmd.CheckNuArg(1);
-    SgPoint prey = StoneArg(cmd, 0);
-    GoLadder::Status status = GoLadder::LadderStatus(Board(), prey);
-    switch (status)
-    {
-    case GoLadder::Escaped:
-        cmd << "escaped";
-        break;
-    case GoLadder::Captured:
-        cmd << "captured";
-        break;
-    case GoLadder::Unsettled:
-        cmd << "unsettled";
-        break;
-    default:
-        throw GtpFailure() << "Unexpected ladder status: " << status;
     }
 }
 
@@ -1052,25 +1022,6 @@ void GoGtpEngine::CmdShowBoard(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
     cmd << '\n' << Board();
-}
-
-/** Return static ladder status.
-    Arguments: prey point<br>
-    Returns: escaped|captured|unsettled<br>
-    @see GoStaticLadder
-*/
-void GoGtpEngine::CmdStaticLadder(GtpCommand& cmd)
-{
-    cmd.CheckNuArg(1);
-    SgPoint p = StoneArg(cmd, 0);
-    const GoBoard& bd = Board();
-    SgBlackWhite c = bd.GetColor(p);
-    if (GoStaticLadder::IsLadder(bd, p, c))
-        cmd << "captured";
-    else if (GoStaticLadder::IsLadder(bd, p, OppBW(c)))
-        cmd << "unsettled";
-    else
-        cmd << "escaped";
 }
 
 /** Time of last ganmove command. */

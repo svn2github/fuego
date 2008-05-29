@@ -37,7 +37,6 @@ public:
         - @link CmdGGUndo() @c gg-undo @endlink
         - @link CmdBoard() @c go_board @endlink
         - @link CmdClock() @c go_clock @endlink
-        - @link CmdLadder() @c go_ladder @endlink
         - @link CmdParam() @c go_param @endlink
         - @link CmdParamRules() @c go_param_rules @endlink
         - @link CmdParamTimecontrol() @c go_param_timecontrol @endlink
@@ -46,7 +45,6 @@ public:
         - @link CmdPointInfo() @c go_point_info @endlink
         - @link CmdRules() @c go_rules @endlink
         - @link CmdSetInfo() @c go_set_info @endlink
-        - @link CmdStaticLadder() @c go_static_ladder @endlink
         - @link CmdAnalyzeCommands() @c gogui-analyze_commands @endlink
         - @link CmdInterrupt() @c gogui-interrupt @endlink
         - @link CmdPlaySequence() @c gogui-play_sequence @endlink
@@ -87,7 +85,6 @@ public:
     virtual void CmdInterrupt(GtpCommand&);
     virtual void CmdIsLegal(GtpCommand&);
     virtual void CmdKomi(GtpCommand&);
-    virtual void CmdLadder(GtpCommand&);
     virtual void CmdListStones(GtpCommand&);
     virtual void CmdLoadSgf(GtpCommand&);
     virtual void CmdName(GtpCommand&);
@@ -110,7 +107,6 @@ public:
     virtual void CmdSetup(GtpCommand&);
     virtual void CmdSetupPlayer(GtpCommand&);
     virtual void CmdShowBoard(GtpCommand&);
-    virtual void CmdStaticLadder(GtpCommand&);
     virtual void CmdTimeLastMove(GtpCommand&);
     virtual void CmdTimeLeft(GtpCommand&);
     virtual void CmdTimeSettings(GtpCommand&);
@@ -440,4 +436,3 @@ private:
 //----------------------------------------------------------------------------
 
 #endif // GOGTPENGINE_H
-
