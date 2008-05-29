@@ -330,9 +330,6 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
         cmd <<
             "pspairs/All Move Values/all_move_values\n"
             "string/Final Score/final_score\n"
-            "plist/Final Status List Alive/final_status_list alive\n"
-            "plist/Final Status List Dead/final_status_list dead\n"
-            "plist/Final Status List Seki/final_status_list seki\n"
             "varc/Reg GenMove/reg_genmove %c\n";
     }
 }
