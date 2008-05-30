@@ -12,6 +12,8 @@
 #include "GoSafetyUtil.h"
 #include "SgIO.h"
 
+using GoSafetyUtil::AddToSafe;
+
 //----------------------------------------------------------------------------
 
 GoStaticSafetySolver::GoStaticSafetySolver(const GoBoard& board,

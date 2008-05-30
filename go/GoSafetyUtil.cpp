@@ -1,17 +1,25 @@
 //----------------------------------------------------------------------------
 /** @file GoSafetyUtil.cpp
-    @see GoSafetyUtil.h.
+    See GoSafetyUtil.h.
 */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
 #include "GoSafetyUtil.h"
 
+#include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeUtil.h"
+#include "GoRegionBoard.h"
 #include "SgBWSet.h"
+#include "SgList.h"
+#include "SgPointSet.h"
 #include "SgPointSetUtil.h"
 #include "SgWrite.h"
+
+using GoSafetyUtil::Find2Libs;
+using GoSafetyUtil::MightMakeLife;
+using GoSafetyUtil::ReduceToAnchors;
 
 //----------------------------------------------------------------------------
 
@@ -153,9 +161,9 @@ void TestLiberty(SgPoint lib, const SgPointSet& libs,
 
 //----------------------------------------------------------------------------
 
-void AddToSafe(const GoBoard& board, const SgPointSet& pts,
-               SgBlackWhite color, SgBWSet* safe, const char* reason,
-               int depth, bool addBoundary)
+void GoSafetyUtil::AddToSafe(const GoBoard& board, const SgPointSet& pts,
+                             SgBlackWhite color, SgBWSet* safe,
+                             const char* reason, int depth, bool addBoundary)
 {
     SG_UNUSED(reason);
     SG_UNUSED(depth);
@@ -180,9 +188,11 @@ void AddToSafe(const GoBoard& board, const SgPointSet& pts,
                   << SgWritePointSetID(pts) << '\n';
 }
 
-bool ExtendedMightMakeLife(const GoBoard& board, GoRegionBoard* regions,
-                 const SgPointSet& area, 
-                 const SgPointSet& safe, SgBlackWhite color)
+bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
+                                         GoRegionBoard* regions,
+                                         const SgPointSet& area,
+                                         const SgPointSet& safe,
+                                         SgBlackWhite color)
 {
     const GoRegion* r = 0;
 
@@ -249,8 +259,9 @@ bool ExtendedMightMakeLife(const GoBoard& board, GoRegionBoard* regions,
     return false;
 }
 
-bool MightMakeLife(const GoBoard& board, const SgPointSet& area, 
-                 const SgPointSet& safe, SgBlackWhite color)
+bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
+                                 const SgPointSet& area,
+                                 const SgPointSet& safe, SgBlackWhite color)
 {
     const int size = board.Size();
     SgPointSet eyePts = (area - safe.Border(size)) - board.All(color);
@@ -278,7 +289,7 @@ bool MightMakeLife(const GoBoard& board, const SgPointSet& area,
     return false;
 }
 
-bool Find2Libs(SgPoint p, SgPointSet* libs)
+bool GoSafetyUtil::Find2Libs(SgPoint p, SgPointSet* libs)
 {
     int nuLibs = 0; 
     SgList<SgPoint> foundLibs;
@@ -300,8 +311,8 @@ bool Find2Libs(SgPoint p, SgPointSet* libs)
     return nuLibs >= 2;
 }
 
-bool Find2BestLibs(SgPoint p, const SgPointSet& libs,
-                    SgPointSet interior, SgMiaiPair* miaiPair)
+bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
+                                 SgPointSet interior, SgMiaiPair* miaiPair)
 {
     int nuLibs = 0;
     SgList<SgPoint> allLibs; // liberties of point p
@@ -372,9 +383,11 @@ bool Find2BestLibs(SgPoint p, const SgPointSet& libs,
     }
 }
 
-bool ExtendedIsTerritory(const GoBoard& board, GoRegionBoard* regions,
-                 const SgPointSet& pts,
-                 const SgPointSet& safe, SgBlackWhite color)
+bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
+                                       GoRegionBoard* regions,
+                                       const SgPointSet& pts,
+                                       const SgPointSet& safe,
+                                       SgBlackWhite color)
 {
     const int size = board.Size();
     SgPointSet boundary(pts.Border(size));
@@ -387,9 +400,9 @@ bool ExtendedIsTerritory(const GoBoard& board, GoRegionBoard* regions,
 
     return IsTerritory(board, pts, safe, color);
 }
-                 
-bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
-                 const SgPointSet& safe, SgBlackWhite color)
+
+bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
+                               const SgPointSet& safe, SgBlackWhite color)
 {
     const int size = board.Size();
     SgPointSet boundary(pts.Border(size));
@@ -406,8 +419,9 @@ bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
     return false;
 }
 
-void ReduceToAnchors(const GoBoard& board, const SgPointSet& stones,
-                     SgList<SgPoint>* anchors)
+void GoSafetyUtil::ReduceToAnchors(const GoBoard& board,
+                                   const SgPointSet& stones,
+                                   SgList<SgPoint>* anchors)
 {
     SG_ASSERT(anchors->IsEmpty());
     for (SgSetIterator it(stones); it; ++it)

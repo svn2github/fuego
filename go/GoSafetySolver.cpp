@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSafetySolver.cpp
-    @see GoSafetySolver.h.
+    See GoSafetySolver.h.
 */
 //----------------------------------------------------------------------------
 
@@ -11,6 +11,10 @@
 #include "GoChain.h"
 #include "GoSafetyUtil.h"
 #include "SgConnCompIterator.h"
+
+using GoSafetyUtil::AddToSafe;
+using GoSafetyUtil::ExtendedIsTerritory;
+using GoSafetyUtil::IsTerritory;
 
 //----------------------------------------------------------------------------
 

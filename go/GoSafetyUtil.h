@@ -7,66 +7,72 @@
 #ifndef GO_SAFETYUTIL_H
 #define GO_SAFETYUTIL_H
 
-#include "GoBoard.h"
-#include "GoRegionBoard.h"
 #include "SgBlackWhite.h"
-#include "SgList.h"
 #include "SgMiaiStrategy.h"
 #include "SgPoint.h"
-#include "SgPointSet.h"
+
+class GoBoard;
+class GoRegion;
+class GoRegionBoard;
+class SgBWSet;
+template<typename T> class SgList;
+class SgPointSet;
 
 //----------------------------------------------------------------------------
 
-/** Add pts to *safe[color] */
-void AddToSafe(const GoBoard& board, const SgPointSet& pts,
-               SgBlackWhite color, SgBWSet* safe, const char* reason,
-               int depth, bool addBoundary);
+namespace GoSafetyUtil
+{
 
-/** Stronger version of IsTerritory that uses region information
-    This version checks for opponent nakade inside the area.
-    Useful for proving safe semeai test cases after resolving semeai.
-*/
-bool ExtendedIsTerritory(const GoBoard& board, GoRegionBoard* regions, 
-                 const SgPointSet& pts,
-                 const SgPointSet& safe, SgBlackWhite color);
+    /** Add pts to *safe[color] */
+    void AddToSafe(const GoBoard& board, const SgPointSet& pts,
+                   SgBlackWhite color, SgBWSet* safe, const char* reason,
+                   int depth, bool addBoundary);
 
-/** Simple static territory check for surrounded area */
-bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
-                 const SgPointSet& safe, SgBlackWhite color);
+    /** Stronger version of IsTerritory that uses region information
+        This version checks for opponent nakade inside the area.
+        Useful for proving safe semeai test cases after resolving semeai.
+    */
+    bool ExtendedIsTerritory(const GoBoard& board, GoRegionBoard* regions,
+                             const SgPointSet& pts,
+                             const SgPointSet& safe, SgBlackWhite color);
 
-/** Given set of stones, reduce to block anchors */
-void ReduceToAnchors(const GoBoard& board, const SgPointSet& stones,
-                     SgList<SgPoint>* anchors);
+    /** Simple static territory check for surrounded area */
+    bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
+                     const SgPointSet& safe, SgBlackWhite color);
 
-/** helper function for 1-vitality test
-    try to find two matching liberties for point p, subtract them from libs
-    if found.
-*/
-bool Find2Libs(SgPoint p, SgPointSet* libs);
+    /** Given set of stones, reduce to block anchors */
+    void ReduceToAnchors(const GoBoard& board, const SgPointSet& stones,
+                         SgList<SgPoint>* anchors);
 
-/** helper function for 1-vitality test, similar to Find2Libs(), but
-    try to find miaiPair of two best liberties 
-    (not shared with other interior points).
-*/
-bool Find2BestLibs(SgPoint p, const SgPointSet& libs,
-                   SgPointSet interior, SgMiaiPair* miaiPair);
+    /** Helper function for 1-vitality test.
+        Try to find two matching liberties for point p, subtract them from
+        libs if found.
+    */
+    bool Find2Libs(SgPoint p, SgPointSet* libs);
 
-/** Extended version of MightMakeLife. Recognizes some nakade shapes
-    as dead. Useful mostly for semeai solver.
-*/
-bool ExtendedMightMakeLife(const GoBoard& board, GoRegionBoard* regions,
-                   const SgPointSet& area, 
-                   const SgPointSet& safe,
-                   SgBlackWhite color);
+    /** Helper function for 1-vitality test.
+        Similar to Find2Libs(), but try to find miaiPair of two best liberties
+        (not shared with other interior points).
+    */
+    bool Find2BestLibs(SgPoint p, const SgPointSet& libs,
+                       SgPointSet interior, SgMiaiPair* miaiPair);
 
-/** Test whether color can make 2 eyes inside a surrounded area.
-    Precondition: area surrounded by safe stones of opponent.
-    Basic test, handles 1 and 2 point eyes only.
- */
-bool MightMakeLife(const GoBoard& board, 
-                   const SgPointSet& area, 
-                   const SgPointSet& safe,
-                   SgBlackWhite color);
+    /** Extended version of MightMakeLife.
+        Recognizes some nakade shapes as dead. Useful mostly for semeai
+        solver.
+    */
+    bool ExtendedMightMakeLife(const GoBoard& board, GoRegionBoard* regions,
+                               const SgPointSet& area, const SgPointSet& safe,
+                               SgBlackWhite color);
+
+    /** Test whether color can make 2 eyes inside a surrounded area.
+        Precondition: area surrounded by safe stones of opponent.
+        Basic test, handles 1 and 2 point eyes only.
+    */
+    bool MightMakeLife(const GoBoard& board, const SgPointSet& area,
+                       const SgPointSet& safe, SgBlackWhite color);
+
+} // namespace GoSafetyUtil
 
 //----------------------------------------------------------------------------
 

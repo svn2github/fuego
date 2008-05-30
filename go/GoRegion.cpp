@@ -28,11 +28,15 @@ using GoBoardUtil::ExpandToBlocks;
 using GoEyeUtil::IsSplitPt;
 using GoEyeUtil::TestNakade;
 using GoRegionUtil::IsSmallRegion;
+using GoSafetyUtil::Find2BestLibs;
+using GoSafetyUtil::Find2Libs;
+using GoSafetyUtil::MightMakeLife;
 
 //----------------------------------------------------------------------------
 
-const bool CHECK = SG_CHECK && true,
-           HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
+const bool CHECK = SG_CHECK && true;
+
+const bool HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
 
 const bool WRITEDEBUG = false;
 
