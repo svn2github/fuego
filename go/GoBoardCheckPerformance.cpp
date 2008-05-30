@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardCheckPerformance.cpp
-    @see GoBoardCheckPerformance.h
+    See GoBoardCheckPerformance.h
 */
 //----------------------------------------------------------------------------
 

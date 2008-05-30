@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgProp.cpp
-    @see SgProp.h.
+    See SgProp.h.
 
     Implementation details:
 

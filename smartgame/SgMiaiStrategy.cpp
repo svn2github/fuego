@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgMiaiStrategy.cpp
-    @see SgMiaiStrategy.h
+    See SgMiaiStrategy.h
 */
 //----------------------------------------------------------------------------
 
@@ -10,6 +10,7 @@
 #include "SgWrite.h"
 
 //----------------------------------------------------------------------------
+
 void SgMiaiStrategy::Write(std::ostream& stream) const
 {
     SgStrategy::Write(stream);
