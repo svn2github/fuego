@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBLOCK_H
-#define GOBLOCK_H
+#ifndef GO_BLOCK_H
+#define GO_BLOCK_H
 
 #include <iosfwd>
 #include "GoBoard.h"
@@ -214,4 +214,4 @@ std::ostream& operator<<(std::ostream& stream, const GoBlock& b);
 
 //----------------------------------------------------------------------------
 
-#endif // GOBLOCK_H
+#endif // GO_BLOCK_H

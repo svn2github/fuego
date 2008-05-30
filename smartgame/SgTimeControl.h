@@ -2,8 +2,8 @@
 /** @file SgTimeControl.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGTIMECONTROL_H
-#define SGTIMECONTROL_H
+#ifndef SG_TIMECONTROL_H
+#define SG_TIMECONTROL_H
 
 #include "SgBlackWhite.h"
 
@@ -171,4 +171,4 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SGTIMECONTROL_H
+#endif // SG_TIMECONTROL_H

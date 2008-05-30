@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSTREAMFMTRESTORER_H
-#define SGSTREAMFMTRESTORER_H
+#ifndef SG_STREAMFMTRESTORER_H
+#define SG_STREAMFMTRESTORER_H
 
 #include <iostream>
 #include <fstream>
@@ -43,4 +43,4 @@ inline SgStreamFmtRestorer::~SgStreamFmtRestorer()
 
 //----------------------------------------------------------------------------
 
-#endif // SGSTREAMFMTRESTORER_H
+#endif // SG_STREAMFMTRESTORER_H

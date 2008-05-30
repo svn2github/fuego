@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTPATTERNS_H
-#define GOUCTPATTERNS_H
+#ifndef GOUCT_PATTERNS_H
+#define GOUCT_PATTERNS_H
 
 #include "GoBoard.h"
 #include "SgBoardColor.h"
@@ -561,5 +561,4 @@ int GoUctPatterns<BOARD>::SetupCodedPosition(GoBoard& bd, int code)
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTPATTERNS_H
-
+#endif // GOUCT_PATTERNS_H

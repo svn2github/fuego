@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GORULES_H
-#define GORULES_H
+#ifndef GO_RULES_H
+#define GO_RULES_H
 
 #include <iosfwd>
 #include <string>
@@ -240,11 +240,9 @@ inline bool GoRules::TwoPassesEndGame() const
     return m_twoPassesEndGame;
 }
 
-//----------------------------------------------------------------------------
-
 std::ostream& operator<<(std::ostream& out, GoRules::KoRule koRule);
 
 //----------------------------------------------------------------------------
 
-#endif // GORULES_H
+#endif // GO_RULES_H
 

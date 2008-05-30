@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef FUEGOMAINENGINE_H
-#define FUEGOMAINENGINE_H
+#ifndef FUEGOMAIN_ENGINE_H
+#define FUEGOMAIN_ENGINE_H
 
 #include "GoGtpEngine.h"
 #include "GoUctCommands.h"
@@ -33,5 +33,5 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // FUEGOMAINENGINE_H
+#endif // FUEGOMAIN_ENGINE_H
 

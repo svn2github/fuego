@@ -8,8 +8,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOARD_H
-#define GOBOARD_H
+#ifndef GO_BOARD_H
+#define GO_BOARD_H
 
 #include <bitset>
 #include <cstring>
@@ -1854,5 +1854,5 @@ inline void GoBoard::SetKillCaptures(bool kill)
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOARD_H
+#endif // GO_BOARD_H
 

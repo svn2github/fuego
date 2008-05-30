@@ -8,8 +8,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBENSONSOLVER_H
-#define GOBENSONSOLVER_H
+#ifndef GO_BENSONSOLVER_H
+#define GO_BENSONSOLVER_H
 
 #include "GoBoard.h"
 #include "GoRegion.h"
@@ -23,7 +23,9 @@ class GoBensonSolver : public GoStaticSafetySolver
 public:
     /** If regions = 0, creates its own */
     explicit GoBensonSolver(GoBoard& board, GoRegionBoard* regions = 0)
-    : GoStaticSafetySolver(board, regions) {}
+        : GoStaticSafetySolver(board, regions)
+    {
+    }
 
     /** Main function, compute safe points */
     void FindSafePoints(SgBWSet* safe);
@@ -31,4 +33,4 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // GOBENSONSOLVER_H
+#endif // GO_BENSONSOLVER_H

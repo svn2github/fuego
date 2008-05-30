@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGEXCEPTION_H
-#define SGEXCEPTION_H
+#ifndef SG_EXCEPTION_H
+#define SG_EXCEPTION_H
 
 #include <exception>
 #include <string>
@@ -35,5 +35,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGEXCEPTION_H
-
+#endif // SG_EXCEPTION_H

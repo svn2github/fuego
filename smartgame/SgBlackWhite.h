@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGBLACKWHITE_H
-#define SGBLACKWHITE_H
+#ifndef SG_BLACKWHITE_H
+#define SG_BLACKWHITE_H
 
 #include <boost/static_assert.hpp>
 
@@ -101,6 +101,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGBLACKWHITE_H
-
-
+#endif // SG_BLACKWHITE_H

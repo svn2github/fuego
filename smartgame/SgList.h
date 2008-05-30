@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGLIST_H
-#define SGLIST_H
+#ifndef SG_LIST_H
+#define SG_LIST_H
 
 #include <algorithm>
 #include <climits>
@@ -1900,4 +1900,4 @@ void SgListOf<T>::RemoveDuplicateContent()
 
 //----------------------------------------------------------------------------
 
-#endif // SGLIST_H
+#endif // SG_LIST_H

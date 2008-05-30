@@ -2,8 +2,8 @@
 /** @file GoUctRootFilter.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTROOTFILTER_H
-#define GOUCTROOTFILTER_H
+#ifndef GOUCT_ROOTFILTER_H
+#define GOUCT_ROOTFILTER_H
 
 #include <vector>
 #include "SgPoint.h"
@@ -35,4 +35,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTROOTFILTER_H
+#endif // GOUCT_ROOTFILTER_H

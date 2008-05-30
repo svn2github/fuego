@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTGLOBALSEARCHPLAYER_H
-#define GOUCTGLOBALSEARCHPLAYER_H
+#ifndef GOUCT_GLOBALSEARCHPLAYER_H
+#define GOUCT_GLOBALSEARCHPLAYER_H
 
 #include <vector>
 #include "GoBoard.h"
@@ -424,4 +424,4 @@ inline bool GoUctGlobalSearchPlayer::TreeValidForCurrentNode() const
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTGLOBALSEARCHPLAYER_H
+#endif // GOUCT_GLOBALSEARCHPLAYER_H

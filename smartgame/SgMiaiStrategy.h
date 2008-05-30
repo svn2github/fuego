@@ -1,12 +1,11 @@
 //----------------------------------------------------------------------------
 /** @file SgMiaiStrategy.h
     Simple strategy for winning a specified goal using paired moves.
-
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGMIAISTRATEGY_H
-#define SGMIAISTRATEGY_H
+#ifndef SG_MIAISTRATEGY_H
+#define SG_MIAISTRATEGY_H
 
 #include <utility>
 #include "SgArray.h"
@@ -17,15 +16,17 @@
 #include "SgPointSet.h"
 #include "SgStrategy.h"
 
-
+//----------------------------------------------------------------------------
 
 typedef std::pair<SgPoint, SgPoint> SgMiaiPair;
 
 SgPoint Other(const SgMiaiPair& pair, SgPoint p);
+
 //----------------------------------------------------------------------------
 
 /** Pair of moves strategy - if opponent plays one we must play other */
-class SgMiaiStrategy : public SgStrategy
+class SgMiaiStrategy
+    : public SgStrategy
 {
 public:
     /** Initialized to empty strategy; use AddPair */
@@ -96,4 +97,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGMIAISTRATEGY_H
+#endif // SG_MIAISTRATEGY_H

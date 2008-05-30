@@ -8,8 +8,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOLADDER_H
-#define GOLADDER_H
+#ifndef GO_LADDER_H
+#define GO_LADDER_H
 
 #include "SgBoardColor.h"
 #include "SgList.h"
@@ -92,5 +92,5 @@ SgPoint TryLadder(GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
 
 //----------------------------------------------------------------------------
 
-#endif // GOLADDER_H
+#endif // GO_LADDER_H
 

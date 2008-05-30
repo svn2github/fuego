@@ -9,8 +9,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOGAME_H
-#define GOGAME_H
+#ifndef GO_GAME_H
+#define GO_GAME_H
 
 #include <string>
 #include "GoBoard.h"
@@ -394,5 +394,5 @@ inline GoPlayer* GoGame::Player(SgBlackWhite player)
 
 //----------------------------------------------------------------------------
 
-#endif // GOGAME_H
+#endif // GO_GAME_H
 

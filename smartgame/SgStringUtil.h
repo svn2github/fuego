@@ -2,8 +2,8 @@
 /** @file SgStringUtil.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGSTRINGUTIL_H
-#define SGSTRINGUTIL_H
+#ifndef SG_STRINGUTIL_H
+#define SG_STRINGUTIL_H
 
 #include <vector>
 #include <string>
@@ -21,4 +21,4 @@ namespace SgStringUtil
 
 //----------------------------------------------------------------------------
 
-#endif // SGSTRINGUTIL_H
+#endif // SG_STRINGUTIL_H

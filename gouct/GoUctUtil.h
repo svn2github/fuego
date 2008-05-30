@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTUTIL_H
-#define GOUCTUTIL_H
+#ifndef GOUCT_UTIL_H
+#define GOUCT_UTIL_H
 
 #include <iosfwd>
 #include "GoBoard.h"
@@ -356,5 +356,4 @@ bool SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[], SgPoint nb)
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTUTIL_H
-
+#endif // GOUCT_UTIL_H

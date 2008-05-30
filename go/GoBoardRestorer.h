@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOARDRESTORER_H
-#define GOBOARDRESTORER_H
+#ifndef GO_BOARDRESTORER_H
+#define GO_BOARDRESTORER_H
 
 #include "GoBoard.h"
 
@@ -32,4 +32,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOARDRESTORER_H
+#endif // GO_BOARDRESTORER_H

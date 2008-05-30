@@ -8,10 +8,12 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOEYECOUNT_H
-#define GOEYECOUNT_H
+#ifndef GO_EYECOUNT_H
+#define GO_EYECOUNT_H
 
 #include <ostream>
+
+//----------------------------------------------------------------------------
 
 /** Quick summary of eye status
     @todo there are more cases, see Landman's paper
@@ -27,6 +29,8 @@ enum GoEyeStatus
     EYE_ONE_AND_HALF,
     EYE_TWO
 };
+
+//----------------------------------------------------------------------------
 
 /** upper and lower bounds on number of eyes and potential eyes */
 class GoEyeCount
@@ -164,4 +168,4 @@ std::ostream& operator<<(std::ostream& stream, const GoEyeCount& s);
 
 //----------------------------------------------------------------------------
 
-#endif // GOEYECOUNT_H
+#endif // GO_EYECOUNT_H

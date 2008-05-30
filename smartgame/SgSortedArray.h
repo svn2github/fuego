@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSORTEDARRAY_H
-#define SGSORTEDARRAY_H
+#ifndef SG_SORTEDARRAY_H
+#define SG_SORTEDARRAY_H
 
 #include "SgList.h"
 
@@ -174,5 +174,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGSORTEDARRAY_H
-
+#endif // SG_SORTEDARRAY_H

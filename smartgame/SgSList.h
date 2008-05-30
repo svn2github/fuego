@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSLIST_H
-#define SGSLIST_H
+#ifndef SG_SLIST_H
+#define SG_SLIST_H
 
 //----------------------------------------------------------------------------
 
@@ -314,5 +314,4 @@ bool SgSList<T, SIZE>::SameElements(const SgSList& list) const
 
 //----------------------------------------------------------------------------
 
-#endif // SGSLIST_H
-
+#endif // SG_SLIST_H

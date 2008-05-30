@@ -4,13 +4,15 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOREGIONUTIL_H
-#define GOREGIONUTIL_H
+#ifndef GO_REGIONUTIL_H
+#define GO_REGIONUTIL_H
 
 #include "GoBoard.h"
 #include "SgBlackWhite.h"
 #include "SgPointSet.h"
 #include "SgList.h"
+
+//----------------------------------------------------------------------------
 
 /** checks for 1-vitality, as explained in[Mueller 95, p.****] */
 bool StaticIs1VitalAndConnected(const GoBoard& board, 
@@ -47,4 +49,4 @@ void FindCurrentAnchors(const GoBoard& board,
                         SgList<SgPoint>* currentAnchors);
 //----------------------------------------------------------------------------
 
-#endif // GOREGIONUTIL_H
+#endif // GO_REGIONUTIL_H

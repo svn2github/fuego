@@ -7,8 +7,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGLISTUTILITY_H
-#define SGLISTUTILITY_H
+#ifndef SG_LISTUTILITY_H
+#define SG_LISTUTILITY_H
 
 #include "SgList.h"
 
@@ -28,4 +28,4 @@ namespace SgListUtility
 
 //----------------------------------------------------------------------------
 
-#endif // SGLISTUTILITY_H
+#endif // SG_LISTUTILITY_H

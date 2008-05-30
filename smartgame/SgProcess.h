@@ -2,8 +2,8 @@
 /** @file SgProcess.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGPROCESS_H
-#define SGPROCESS_H
+#ifndef SG_PROCESS_H
+#define SG_PROCESS_H
 
 #include <ext/stdio_filebuf.h> // GCC specific
 #include <iosfwd>
@@ -53,4 +53,4 @@ inline std::ostream& SgProcess::Output()
 
 //----------------------------------------------------------------------------
 
-#endif // SGPROCESS_H
+#endif // SG_PROCESS_H

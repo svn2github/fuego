@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTDEFAULTPLAYOUTPOLICY_H
-#define GOUCTDEFAULTPLAYOUTPOLICY_H
+#ifndef GOUCT_DEFAULTPLAYOUTPOLICY_H
+#define GOUCT_DEFAULTPLAYOUTPOLICY_H
 
 #include <iostream>
 #include "GoUctGlobalSearch.h"
@@ -812,4 +812,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTDEFAULTPLAYOUTPOLICY_H
+#endif // GOUCT_DEFAULTPLAYOUTPOLICY_H

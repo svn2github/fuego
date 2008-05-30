@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGHASHTABLE_H
-#define SGHASHTABLE_H
+#ifndef SG_HASHTABLE_H
+#define SG_HASHTABLE_H
 
 #include "SgHash.h"
 #include "SgWrite.h"
@@ -208,5 +208,4 @@ std::ostream& operator<<(std::ostream& out, const SgHashTable<DATA>& hash)
     return out;
 }
 
-#endif // SGHASHTABLE_H
-
+#endif // SG_HASHTABLE_H

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOSAFETYUTIL_H
-#define GOSAFETYUTIL_H
+#ifndef GO_SAFETYUTIL_H
+#define GO_SAFETYUTIL_H
 
 #include "GoBoard.h"
 #include "GoRegionBoard.h"
@@ -16,6 +16,7 @@
 #include "SgPointSet.h"
 
 //----------------------------------------------------------------------------
+
 /** Add pts to *safe[color] */
 void AddToSafe(const GoBoard& board, const SgPointSet& pts,
                SgBlackWhite color, SgBWSet* safe, const char* reason,
@@ -66,6 +67,7 @@ bool MightMakeLife(const GoBoard& board,
                    const SgPointSet& area, 
                    const SgPointSet& safe,
                    SgBlackWhite color);
+
 //----------------------------------------------------------------------------
 
-#endif // GOSAFETYUTIL_H
+#endif // GO_SAFETYUTIL_H

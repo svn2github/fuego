@@ -2,8 +2,8 @@
 /** @file GoBoardUpdater.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOARDUPDATER_H
-#define GOBOARDUPDATER_H
+#ifndef GO_BOARDUPDATER_H
+#define GO_BOARDUPDATER_H
 
 #include <vector>
 
@@ -31,4 +31,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOARDUPDATER_H
+#endif // GO_BOARDUPDATER_H

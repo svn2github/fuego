@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTCOMMANDS_H
-#define GOUCTCOMMANDS_H
+#ifndef GOUCT_COMMANDS_H
+#define GOUCT_COMMANDS_H
 
 #include <string>
 #include "GtpEngine.h"
@@ -115,4 +115,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTCOMMANDS_H
+#endif // GOUCT_COMMANDS_H

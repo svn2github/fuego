@@ -2,8 +2,8 @@
 /** @file SgGameWriter.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGGAMEWRITER_H
-#define SGGAMEWRITER_H
+#ifndef SG_GAMEWRITER_H
+#define SG_GAMEWRITER_H
 
 #include <iosfwd>
 #include "SgProp.h"
@@ -67,4 +67,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGGAMEWRITER_H
+#endif // SG_GAMEWRITER_H

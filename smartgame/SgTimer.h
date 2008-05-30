@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGTIMER_H
-#define SGTIMER_H
+#ifndef SG_TIMER_H
+#define SG_TIMER_H
 
 #include "SgTime.h"
 
@@ -110,5 +110,4 @@ inline void SgTimer::Stop()
 
 //----------------------------------------------------------------------------
 
-#endif // SGTIMER_H
-
+#endif // SG_TIMER_H

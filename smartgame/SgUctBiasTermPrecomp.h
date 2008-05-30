@@ -2,8 +2,8 @@
 /** @file SgUctBiasTermPrecomp.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGUCTBIASTERMPRECOMP_H
-#define SGUCTBIASTERMPRECOMP_H
+#ifndef SG_UCTBIASTERMPRECOMP_H
+#define SG_UCTBIASTERMPRECOMP_H
 
 #include <cmath>
 #include <cstddef>
@@ -76,4 +76,4 @@ inline float SgUctBiasTermPrecomp::Value(std::size_t posCount,
 
 //----------------------------------------------------------------------------
 
-#endif // SGUCTBIASTERMPRECOMP_H
+#endif // SG_UCTBIASTERMPRECOMP_H

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOTIMECONTROL_H
-#define GOTIMECONTROL_H
+#ifndef GO_TIMECONTROL_H
+#define GO_TIMECONTROL_H
 
 #include "SgTimeControl.h"
 
@@ -52,4 +52,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOTIMECONTROL_H
+#endif // GO_TIMECONTROL_H

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGEVALUATEDMOVES_H
-#define SGEVALUATEDMOVES_H
+#ifndef SG_EVALUATEDMOVES_H
+#define SG_EVALUATEDMOVES_H
 
 #include "SgPointSet.h"
 
@@ -153,5 +153,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGEVALUATEDMOVES_H
-
+#endif // SG_EVALUATEDMOVES_H

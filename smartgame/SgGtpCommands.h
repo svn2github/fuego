@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGGTPCOMMANDS_H
-#define SGGTPCOMMANDS_H
+#ifndef SG_GTPCOMMANDS_H
+#define SG_GTPCOMMANDS_H
 
 #include "GtpEngine.h"
 
@@ -88,5 +88,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGGTPCOMMANDS_H
-
+#endif // SG_GTPCOMMANDS_H

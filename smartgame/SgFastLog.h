@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGFASTLOG_H
-#define SGFASTLOG_H
+#ifndef SG_FASTLOG_H
+#define SG_FASTLOG_H
 
 //----------------------------------------------------------------------------
 
@@ -61,4 +61,4 @@ inline float SgFastLog::Log(float val) const
 
 //----------------------------------------------------------------------------
 
-#endif // SGFASTLOG_H
+#endif // SG_FASTLOG_H

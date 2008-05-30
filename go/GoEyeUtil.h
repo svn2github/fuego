@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOEYEUTIL_H
-#define GOEYEUTIL_H
+#ifndef GO_EYEUTIL_H
+#define GO_EYEUTIL_H
 
 #include "GoBoard.h"
 #include "SgPoint.h"
@@ -221,5 +221,5 @@ SgPoint GoEyeUtil::EmptyNeighbor(const BOARD& bd, SgPoint p)
 
 //----------------------------------------------------------------------------
 
-#endif // GOEYEUTIL_H
+#endif // GO_EYEUTIL_H
 

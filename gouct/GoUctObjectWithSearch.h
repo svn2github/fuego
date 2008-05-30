@@ -2,8 +2,8 @@
 /** @file GoUctObjectWithSearch.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTOBJECTWITHSEARCH_H
-#define GOUCTOBJECTWITHSEARCH_H
+#ifndef GOUCT_OBJECTWITHSEARCH_H
+#define GOUCT_OBJECTWITHSEARCH_H
 
 class GoUctSearch;
 
@@ -25,4 +25,4 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTOBJECTWITHSEARCH_H
+#endif // GOUCT_OBJECTWITHSEARCH_H

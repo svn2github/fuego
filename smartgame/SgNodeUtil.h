@@ -2,8 +2,8 @@
 /** @file SgNodeUtil.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGNODEUTIL_H
-#define SGNODEUTIL_H
+#ifndef SG_NODEUTIL_H
+#define SG_NODEUTIL_H
 
 class SgNode;
 class SgTimeRecord;
@@ -29,4 +29,4 @@ namespace SgNodeUtil
 
 //----------------------------------------------------------------------------
 
-#endif // SGNODEUTIL_H
+#endif // SG_NODEUTIL_H

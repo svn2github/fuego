@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOCHAIN_H
-#define GOCHAIN_H
+#ifndef GO_CHAIN_H
+#define GO_CHAIN_H
 
 #include <iosfwd>
 #include "GoBlock.h"
@@ -164,4 +164,4 @@ std::ostream& operator<<(std::ostream& stream, const GoChain& c);
 
 //----------------------------------------------------------------------------
 
-#endif // GOCHAIN_H
+#endif // GO_CHAIN_H

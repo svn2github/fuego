@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOSTATICLADDER_H
-#define GOSTATICLADDER_H
+#ifndef GO_STATICLADDER_H
+#define GO_STATICLADDER_H
 
 #include "SgBlackWhite.h"
 #include "SgPoint.h"
@@ -31,4 +31,4 @@ namespace GoStaticLadder
 
 //----------------------------------------------------------------------------
 
-#endif // GOSTATICLADDER_H
+#endif // GO_STATICLADDER_H

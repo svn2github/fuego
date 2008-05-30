@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOMOVEEXECUTOR_H
-#define GOMOVEEXECUTOR_H
+#ifndef GO_MOVEEXECUTOR_H
+#define GO_MOVEEXECUTOR_H
 
 #include "GoBoardUtil.h"
 
@@ -66,5 +66,5 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOMOVEEXECUTOR_H
+#endif // GO_MOVEEXECUTOR_H
 

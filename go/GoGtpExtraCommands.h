@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOGTPEXTRACOMMANDS_H
-#define GOGTPEXTRACOMMANDS_H
+#ifndef GO_GTPEXTRACOMMANDS_H
+#define GO_GTPEXTRACOMMANDS_H
 
 #include <string>
 #include "GtpEngine.h"
@@ -55,4 +55,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOGTPEXTRACOMMANDS_H
+#endif // GO_GTPEXTRACOMMANDS_H

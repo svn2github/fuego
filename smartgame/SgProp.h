@@ -9,8 +9,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGPROP_H
-#define SGPROP_H
+#ifndef SG_PROP_H
+#define SG_PROP_H
 
 #include <string>
 #include <vector>
@@ -1468,6 +1468,4 @@ extern SgPropID SG_PROP_NOT_WHITE;
 
 //----------------------------------------------------------------------------
 
-#endif // SGPROP_H
-
-
+#endif // SG_PROP_H

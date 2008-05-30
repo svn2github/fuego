@@ -2,8 +2,8 @@
 /** @file GoUctPureRandomGenerator.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTPURERANDOMGENERATOR_H
-#define GOUCTPURERANDOMGENERATOR_H
+#ifndef GOUCT_PURERANDOMGENERATOR_H
+#define GOUCT_PURERANDOMGENERATOR_H
 
 #include <vector>
 #include "GoBoard.h"
@@ -167,4 +167,4 @@ inline void GoUctPureRandomGenerator<BOARD>::Start()
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTPURERANDOMGENERATOR_H
+#endif // GOUCT_PURERANDOMGENERATOR_H

@@ -4,8 +4,8 @@
  */
 //----------------------------------------------------------------------------
 
-#ifndef SGIO_H
-#define SGIO_H
+#ifndef SG_IO_H
+#define SG_IO_H
 
 #include <iosfwd>
 #include <sstream>
@@ -78,5 +78,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGIO_H
-
+#endif // SG_IO_H

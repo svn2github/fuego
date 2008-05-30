@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGGTPUTIL_H
-#define SGGTPUTIL_H
+#ifndef SG_GTPUTIL_H
+#define SG_GTPUTIL_H
 
 class GtpCommand;
 class SgPointSet;
@@ -25,5 +25,4 @@ namespace SgGtpUtil
 
 //----------------------------------------------------------------------------
 
-#endif // SGGTPUTIL_H
-
+#endif // SG_GTPUTIL_H

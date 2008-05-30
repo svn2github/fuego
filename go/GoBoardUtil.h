@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOARDUTIL_H
-#define GOBOARDUTIL_H
+#ifndef GO_BOARDUTIL_H
+#define GO_BOARDUTIL_H
 
 #include "GoBoard.h"
 #include "SgPoint.h"
@@ -980,4 +980,4 @@ std::ostream& operator<<(std::ostream& stream, const WriteMap &w);
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOARDUTIL_H
+#endif // GO_BOARDUTIL_H

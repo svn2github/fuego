@@ -7,8 +7,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSEARCH_H
-#define SGSEARCH_H
+#ifndef SG_SEARCH_H
+#define SG_SEARCH_H
 
 #include "SgBlackWhite.h"
 #include "SgHash.h"
@@ -1156,5 +1156,4 @@ const int SureValue = PosValue - (MaxNuKo + 1) * MaxSearchDepth;
 
 //----------------------------------------------------------------------------
 
-#endif // SGSEARCH_H
-
+#endif // SG_SEARCH_H

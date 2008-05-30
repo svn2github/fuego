@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGINCREMENTALSTACK_H
-#define SGINCREMENTALSTACK_H
+#ifndef SG_INCREMENTALSTACK_H
+#define SG_INCREMENTALSTACK_H
 
 #include "SgBoardColor.h"
 #include "SgList.h"
@@ -119,5 +119,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGINCREMENTALSTACK_H
-
+#endif // SG_INCREMENTALSTACK_H

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOSTATICSAFETYSOLVER_H
-#define GOSTATICSAFETYSOLVER_H
+#ifndef GO_STATICSAFETYSOLVER_H
+#define GO_STATICSAFETYSOLVER_H
 
 #include "GoBoard.h"
 #include "GoRegion.h"
@@ -214,4 +214,4 @@ inline const GoRegionBoard* GoStaticSafetySolver::Regions() const
 
 //----------------------------------------------------------------------------
 
-#endif // GOSTATICSAFETYSOLVER_H
+#endif // GO_STATICSAFETYSOLVER_H

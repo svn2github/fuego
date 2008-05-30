@@ -2,8 +2,8 @@
 /** @file GoKomi.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOKOMI_H
-#define GOKOMI_H
+#ifndef GO_KOMI_H
+#define GO_KOMI_H
 
 #include <string>
 #include "SgException.h"
@@ -129,5 +129,5 @@ inline float GoKomi::ToFloat() const
 
 //----------------------------------------------------------------------------
 
-#endif // GOKOMI_H
+#endif // GO_KOMI_H
 

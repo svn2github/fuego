@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOGTPENGINE_H
-#define GOGTPENGINE_H
+#ifndef GO_GTPENGINE_H
+#define GO_GTPENGINE_H
 
 #include "GoBoard.h"
 #include "GoBook.h"
@@ -435,4 +435,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOGTPENGINE_H
+#endif // GO_GTPENGINE_H

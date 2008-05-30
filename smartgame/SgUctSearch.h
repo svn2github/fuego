@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGUCTSEARCH_H
-#define SGUCTSEARCH_H
+#ifndef SG_UCTSEARCH_H
+#define SG_UCTSEARCH_H
 
 #include <fstream>
 #include <vector>
@@ -1241,4 +1241,4 @@ inline bool SgUctSearch::UseSignatures() const
 
 //----------------------------------------------------------------------------
 
-#endif // SGUCTSEARCH_H
+#endif // SG_UCTSEARCH_H

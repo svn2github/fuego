@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGBOARDCOLOR_H
-#define SGBOARDCOLOR_H
+#ifndef SG_BOARDCOLOR_H
+#define SG_BOARDCOLOR_H
 
 #include <climits>
 #include "SgBlackWhite.h"
@@ -106,5 +106,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGSGBOARDCOLOR_H
-
+#endif // SG_SGBOARDCOLOR_H

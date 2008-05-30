@@ -12,8 +12,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOREGION_H
-#define GOREGION_H
+#ifndef GO_REGION_H
+#define GO_REGION_H
 
 #include <bitset>
 #include <iosfwd>
@@ -444,11 +444,9 @@ private:
     #endif
 };
 
-//----------------------------------------------------------------------------
-
 std::ostream& operator<<(std::ostream& stream, const GoRegion& r);
 
 //----------------------------------------------------------------------------
 
-#endif // GOREGION_H
+#endif // GO_REGION_H
 

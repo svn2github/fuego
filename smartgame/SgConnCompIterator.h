@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGCONNCOMPITERATOR_H
-#define SGCONNCOMPITERATOR_H
+#ifndef SG_CONNCOMPITERATOR_H
+#define SG_CONNCOMPITERATOR_H
 
 #include "SgPointSet.h"
 
@@ -75,5 +75,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGCONNCOMPITERATOR_H
-
+#endif // SG_CONNCOMPITERATOR_H

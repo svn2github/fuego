@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGNBITERATOR_H
-#define SGNBITERATOR_H
+#ifndef SG_NBITERATOR_H
+#define SG_NBITERATOR_H
 
 #include <algorithm>
 #include "SgPoint.h"
@@ -180,5 +180,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGNBITERATOR_H
-
+#endif // SG_NBITERATOR_H

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGPOINTARRAY_H
-#define SGPOINTARRAY_H
+#ifndef SG_POINTARRAY_H
+#define SG_POINTARRAY_H
 
 #include <iomanip>
 #include <iostream>
@@ -172,5 +172,4 @@ std::ostream& operator<<(std::ostream& out,
 
 //----------------------------------------------------------------------------
 
-#endif // SGPOINTARRAY_H
-
+#endif // SG_POINTARRAY_H

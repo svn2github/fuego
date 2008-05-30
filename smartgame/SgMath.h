@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGMATH_H
-#define SGMATH_H
+#ifndef SG_MATH_H
+#define SG_MATH_H
 
 #include <cmath>
 
@@ -32,5 +32,4 @@ inline int SgMath::RoundToInt(double v)
 }
 //----------------------------------------------------------------------------
 
-#endif // SGMATH_H
-
+#endif // SG_MATH_H

@@ -7,8 +7,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOARDCHECKPERFORMANCE_H
-#define GOBOARDCHECKPERFORMANCE_H
+#ifndef GO_BOARDCHECKPERFORMANCE_H
+#define GO_BOARDCHECKPERFORMANCE_H
 
 #include <iosfwd>
 #include "GoBoard.h"
@@ -55,4 +55,4 @@ void CheckPerformance(const GoBoard& board, std::ostream& out);
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOARDCHECKPERFORMANCE_H
+#endif // GO_BOARDCHECKPERFORMANCE_H

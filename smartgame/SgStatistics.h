@@ -8,8 +8,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSTATISTICS_H
-#define SGSTATISTICS_H
+#ifndef SG_STATISTICS_H
+#define SG_STATISTICS_H
 
 #include <cmath>
 #include <iostream>
@@ -587,4 +587,4 @@ void SgHistogram<FLOAT,INT>::WriteWithLabels(std::ostream& out,
 
 //----------------------------------------------------------------------------
 
-#endif
+#endif // SG_STATISTICS_H

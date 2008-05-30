@@ -2,8 +2,8 @@
 /** @file GoPlayerMove.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOPLAYERMOVE_H
-#define GOPLAYERMOVE_H
+#ifndef GO_PLAYERMOVE_H
+#define GO_PLAYERMOVE_H
 
 #include <iosfwd>
 #include "SgBlackWhite.h"
@@ -85,4 +85,4 @@ std::ostream& operator<<(std::ostream& out, GoPlayerMove mv);
 
 //----------------------------------------------------------------------------
 
-#endif // GOPLAYERMOVE_H
+#endif // GO_PLAYERMOVE_H

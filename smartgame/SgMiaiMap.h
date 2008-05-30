@@ -5,8 +5,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGMIAIMAP_H
-#define SGMIAIMAP_H
+#ifndef SG_MIAIMAP_H
+#define SG_MIAIMAP_H
 
 #include "SgArray.h"
 #include "SgBlackWhite.h"
@@ -14,6 +14,7 @@
 #include "SgMiaiStrategy.h"
 #include "SgPoint.h"
 
+//----------------------------------------------------------------------------
 
 /** Efficient implementation of a SgMiaiStrategy.
     The miai strategy must be achievable (not broken).
@@ -62,8 +63,4 @@ std::ostream& operator<<(std::ostream& stream, const SgStrategy& s);
 
 //----------------------------------------------------------------------------
 
-#endif // SGMIAIMAP_H
-
-
-
-
+#endif // SG_MIAIMAP_H

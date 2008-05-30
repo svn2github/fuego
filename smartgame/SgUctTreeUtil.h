@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGUCTTREEUTIL_H
-#define SGUCTTREEUTIL_H
+#ifndef SG_UCTTREEUTIL_H
+#define SG_UCTTREEUTIL_H
 
 #include <cstddef>
 #include <iosfwd>
@@ -74,4 +74,4 @@ namespace SgUctTreeUtil
 
 //----------------------------------------------------------------------------
 
-#endif // SGUCTTREEUTIL_H
+#endif // SG_UCTTREEUTIL_H

@@ -7,12 +7,13 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOSAFETYSOLVER_H
-#define GOSAFETYSOLVER_H
+#ifndef GO_SAFETYSOLVER_H
+#define GO_SAFETYSOLVER_H
 
 #include "GoStaticSafetySolver.h"
 
 //----------------------------------------------------------------------------
+
 /** Improved static detection of safe blocks and regions
     Uses static rules to find 1-vital, 2-vital and safely surrounded areas.
 */
@@ -85,4 +86,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOSAFETYSOLVER_H
+#endif // GO_SAFETYSOLVER_H

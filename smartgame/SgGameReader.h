@@ -2,8 +2,8 @@
 /** @file SgGameReader.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGGAMEREADER_H
-#define SGGAMEREADER_H
+#ifndef SG_GAMEREADER_H
+#define SG_GAMEREADER_H
 
 #include <bitset>
 #include <map>
@@ -118,4 +118,4 @@ inline SgNode* SgGameReader::ReadGame()
 
 //----------------------------------------------------------------------------
 
-#endif // SGGAMEREADER_H
+#endif // SG_GAMEREADER_H

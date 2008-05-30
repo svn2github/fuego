@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOOK_H
-#define GOBOOK_H
+#ifndef GO_BOOK_H
+#define GO_BOOK_H
 
 #include <iosfwd>
 #include <map>
@@ -208,4 +208,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOOK_H
+#endif // GO_BOOK_H

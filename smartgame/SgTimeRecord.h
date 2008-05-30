@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGTIMERECORD_H
-#define SGTIMERECORD_H
+#ifndef SG_TIMERECORD_H
+#define SG_TIMERECORD_H
 
 #include <iosfwd>
 #include "SgBWArray.h"
@@ -211,5 +211,4 @@ std::ostream& operator<<(std::ostream& out, SgClockState clockState);
 
 //----------------------------------------------------------------------------
 
-#endif // SGTIMERECORD_H
-
+#endif // SG_TIMERECORD_H

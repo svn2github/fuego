@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOGTPTIMESETTINGS_H
-#define GOGTPTIMESETTINGS_H
+#ifndef GO_GTPTIMESETTINGS_H
+#define GO_GTPTIMESETTINGS_H
 
 //----------------------------------------------------------------------------
 
@@ -70,5 +70,5 @@ inline int GoGtpTimeSettings::ByoYomiStones() const
 
 //----------------------------------------------------------------------------
 
-#endif // GOGTPTIMESETTINGS_H
+#endif // GO_GTPTIMESETTINGS_H
 

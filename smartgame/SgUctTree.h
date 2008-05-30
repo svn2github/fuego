@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGUCTTREE_H
-#define SGUCTTREE_H
+#ifndef SG_UCTTREE_H
+#define SG_UCTTREE_H
 
 #include <stack>
 #include <boost/shared_ptr.hpp>
@@ -628,4 +628,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGUCTTREE_H
+#endif // SG_UCTTREE_H

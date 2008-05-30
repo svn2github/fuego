@@ -2,8 +2,8 @@
 /** @file SgUctPriorKnowledgeEven.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGUCTPRIORKNOWLEDGEEVEN_H
-#define SGUCTPRIORKNOWLEDGEEVEN_H
+#ifndef SG_UCTPRIORKNOWLEDGEEVEN_H
+#define SG_UCTPRIORKNOWLEDGEEVEN_H
 
 #include "SgUctSearch.h"
 
@@ -46,4 +46,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGUCTPRIORKNOWLEDGEEVEN_H
+#endif // SG_UCTPRIORKNOWLEDGEEVEN_H

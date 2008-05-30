@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGEBWARRAY_H
-#define SGEBWARRAY_H
+#ifndef SG_EBWARRAY_H
+#define SG_EBWARRAY_H
 
 #include "SgBoardColor.h"
 
@@ -66,5 +66,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGEBWARRAY_H
-
+#endif // SG_EBWARRAY_H

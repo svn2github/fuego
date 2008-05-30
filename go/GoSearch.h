@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOSEARCH_H
-#define GOSEARCH_H
+#ifndef GO_SEARCH_H
+#define GO_SEARCH_H
 
 #include "SgSearch.h"
 
@@ -78,5 +78,4 @@ inline const GoBoard& GoSearch::Board() const
 
 //----------------------------------------------------------------------------
 
-#endif // GOSEARCH_H
-
+#endif // GO_SEARCH_H

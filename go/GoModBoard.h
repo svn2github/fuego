@@ -2,8 +2,8 @@
 /** @file GoModBoard.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOMODBOARD_H
-#define GOMODBOARD_H
+#ifndef GO_MODBOARD_H
+#define GO_MODBOARD_H
 
 #include "GoAssertBoardRestored.h"
 
@@ -121,4 +121,4 @@ inline void GoModBoard::Init(GoBoard& bd)
 
 //----------------------------------------------------------------------------
 
-#endif // GOMODBOARD_H
+#endif // GO_MODBOARD_H

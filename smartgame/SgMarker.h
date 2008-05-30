@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGMARKER_H
-#define SGMARKER_H
+#ifndef SG_MARKER_H
+#define SG_MARKER_H
 
 #include "SgArray.h"
 #include "SgList.h"
@@ -161,5 +161,4 @@ inline SgReserveMarker::~SgReserveMarker()
 
 //----------------------------------------------------------------------------
 
-#endif // SGMARKER_H
-
+#endif // SG_MARKER_H

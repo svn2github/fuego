@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTBOARD_H
-#define GOUCTBOARD_H
+#ifndef GOUCT_BOARD_H
+#define GOUCT_BOARD_H
 
 #include <bitset>
 #include <cstring>
@@ -932,5 +932,6 @@ inline int GoUctBoard::Up(SgPoint p) const
 }
 
 //----------------------------------------------------------------------------
-#endif // GOUCTBOARD_H
+
+#endif // GOUCT_BOARD_H
 

@@ -4,8 +4,8 @@
  */
 //----------------------------------------------------------------------------
 
-#ifndef GOMOTIVE_H
-#define GOMOTIVE_H
+#ifndef GO_MOTIVE_H
+#define GO_MOTIVE_H
 
 #include <bitset>
 #include <iosfwd>
@@ -122,4 +122,4 @@ std::ostream& operator<<(std::ostream& out, GoModifier modifier);
 
 //----------------------------------------------------------------------------
 
-#endif // GOMOTIVE_H
+#endif // GO_MOTIVE_H

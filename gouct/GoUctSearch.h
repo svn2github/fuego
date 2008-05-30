@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTSEARCH_H
-#define GOUCTSEARCH_H
+#ifndef GOUCT_SEARCH_H
+#define GOUCT_SEARCH_H
 
 #include <iosfwd>
 #include "GoBoard.h"
@@ -346,4 +346,4 @@ namespace GoUctSearchUtil
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTSEARCH_H
+#endif // GOUCT_SEARCH_H

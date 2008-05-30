@@ -2,8 +2,8 @@
 /** @file SgGtpClient.h */
 //----------------------------------------------------------------------------
 
-#ifndef SGGTPCLIENT_H
-#define SGGTPCLIENT_H
+#ifndef SG_GTPCLIENT_H
+#define SG_GTPCLIENT_H
 
 #include <iostream>
 #include <string>
@@ -57,4 +57,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGGTPCLIENT_H
+#endif // SG_GTPCLIENT_H

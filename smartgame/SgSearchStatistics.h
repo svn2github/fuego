@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSEARCHSTATISTICS_H
-#define SGSEARCHSTATISTICS_H
+#ifndef SG_SEARCHSTATISTICS_H
+#define SG_SEARCHSTATISTICS_H
 
 #include <iosfwd>
 
@@ -142,5 +142,4 @@ inline double SgSearchStatistics::TimeUsed() const
 
 //----------------------------------------------------------------------------
 
-#endif // SGSEARCHSTATISTICS_H
-
+#endif // SG_SEARCHSTATISTICS_H

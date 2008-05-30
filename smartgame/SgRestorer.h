@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGRESTORER_H
-#define SGRESTORER_H
+#ifndef SG_RESTORER_H
+#define SG_RESTORER_H
 
 //----------------------------------------------------------------------------
 
@@ -59,9 +59,9 @@ public:
     }
 
 private:
-    T*  m_variable;
+    T* m_variable;
 
-    T   m_oldState;
+    T m_oldState;
 
     /** Not implemented. */
     SgAssertRestored(const SgAssertRestored&);
@@ -72,5 +72,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGRESTORER_H
-
+#endif // SG_RESTORER_H

@@ -8,8 +8,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGHASH_H
-#define SGHASH_H
+#ifndef SG_HASH_H
+#define SG_HASH_H
 
 #include <algorithm>
 #include <bitset>
@@ -355,4 +355,4 @@ namespace SgHashUtil
 
 //----------------------------------------------------------------------------
 
-#endif // SGHASH_H
+#endif // SG_HASH_H

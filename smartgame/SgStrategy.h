@@ -8,8 +8,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSTRATEGY_H
-#define SGSTRATEGY_H
+#ifndef SG_STRATEGY_H
+#define SG_STRATEGY_H
 
 #include "SgArray.h"
 #include "SgBlackWhite.h"
@@ -76,4 +76,4 @@ std::ostream& operator<<(std::ostream& stream, const SgStrategy& s);
 
 //----------------------------------------------------------------------------
 
-#endif // SGSTRATEGY_H
+#endif // SG_STRATEGY_H

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGRANDOM_H
-#define SGRANDOM_H
+#ifndef SG_RANDOM_H
+#define SG_RANDOM_H
 
 #include <algorithm>
 #include <list>
@@ -143,4 +143,4 @@ float SgRandomFloat(float min, float max);
 
 //----------------------------------------------------------------------------
 
-#endif // SGRANDOM_H
+#endif // SG_RANDOM_H

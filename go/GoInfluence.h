@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOINFLUENCE_H
-#define GOINFLUENCE_H
+#ifndef GO_INFLUENCE_H
+#define GO_INFLUENCE_H
 
 #include "GoBoard.h"
 #include "GoGame.h"
@@ -13,8 +13,9 @@
 #include "SgPointArray.h"
 
 //----------------------------------------------------------------------------
+
 namespace GoInfluence {
-//----------------------------------------------------------------------------
+
 /** Compute influence by nuExpand expansions followed by nuShrink
     contractions.
     Starts from the player's stones.
@@ -35,9 +36,9 @@ int Influence(const GoBoard& board, SgBlackWhite color, int nuExpand,
 void ComputeInfluence(const GoBoard& board, const SgBWSet& stopPts,
                       SgBWArray<SgPointArray<int> >* influence);
 
-//----------------------------------------------------------------------------
 } // namespace GoInfluence
+
 //----------------------------------------------------------------------------
 
-#endif // GOINFLUENCE_H
+#endif // GO_INFLUENCE_H
 

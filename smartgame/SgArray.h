@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGARRAY_H
-#define SGARRAY_H
+#ifndef SG_ARRAY_H
+#define SG_ARRAY_H
 
 #include <cstring>
 
@@ -258,5 +258,4 @@ void SgArray<T,SIZE>::Fill(const T& val)
 
 //----------------------------------------------------------------------------
 
-#endif // SGARRAY_H
-
+#endif // SG_ARRAY_H

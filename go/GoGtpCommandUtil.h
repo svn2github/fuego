@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOGTPCOMMANDUTIL_H
-#define GOGTPCOMMANDUTIL_H
+#ifndef GO_GTPCOMMANDUTIL_H
+#define GO_GTPCOMMANDUTIL_H
 
 #include <cstddef>
 #include "SgBlackWhite.h"
@@ -82,5 +82,5 @@ inline SgList<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
 
 //----------------------------------------------------------------------------
 
-#endif // GOGTPCOMMANDUTIL_H
+#endif // GO_GTPCOMMANDUTIL_H
 

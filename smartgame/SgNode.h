@@ -23,8 +23,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGNODE_H
-#define SGNODE_H
+#ifndef SG_NODE_H
+#define SG_NODE_H
 
 #include <string>
 #include "SgProp.h"
@@ -608,5 +608,5 @@ private:
 };
 
 //----------------------------------------------------------------------------
-#endif // SGNODE_H
 
+#endif // SG_NODE_H

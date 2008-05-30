@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGBWARRAY_H
-#define SGBWARRAY_H
+#ifndef SG_BWARRAY_H
+#define SG_BWARRAY_H
 
 #include <boost/static_assert.hpp>
 #include "SgBlackWhite.h"
@@ -99,5 +99,4 @@ inline const T& SgBWArray<T>::operator[](SgBlackWhite color) const
 
 //----------------------------------------------------------------------------
 
-#endif // SGBWARRAY_H
-
+#endif // SG_BWARRAY_H

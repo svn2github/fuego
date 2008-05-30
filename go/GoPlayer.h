@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOPLAYER_H
-#define GOPLAYER_H
+#ifndef GO_PLAYER_H
+#define GO_PLAYER_H
 
 #include <string>
 #include "GoBoard.h"
@@ -163,5 +163,5 @@ inline void GoPlayer::SetVariant(int variant)
     
 //----------------------------------------------------------------------------
 
-#endif // GOPLAYER_H
+#endif // GO_PLAYER_H
 

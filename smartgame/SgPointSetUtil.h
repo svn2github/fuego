@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGPOINTSETUTIL_H
-#define SGPOINTSETUTIL_H
+#ifndef SG_POINTSETUTIL_H
+#define SG_POINTSETUTIL_H
 
 #include <iosfwd>
 #include <string>
@@ -76,5 +76,4 @@ std::istream& operator>>(std::istream& in, SgPointSet& pointSet);
 
 //----------------------------------------------------------------------------
 
-#endif // SGPOINTSETUTIL_H
-
+#endif // SG_POINTSETUTIL_H

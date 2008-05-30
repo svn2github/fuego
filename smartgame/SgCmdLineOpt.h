@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGCMDLINEOPT_H
-#define SGCMDLINEOPT_H
+#ifndef SG_CMDLINEOPT_H
+#define SG_CMDLINEOPT_H
 
 #include <map>
 #include <string>
@@ -131,5 +131,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif
-
+#endif // SG_CMDLINEOPT_H

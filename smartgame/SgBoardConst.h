@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGBOARDCONST_H
-#define SGBOARDCONST_H
+#ifndef SG_BOARDCONST_H
+#define SG_BOARDCONST_H
 
 #include <boost/shared_ptr.hpp>
 #include "SgArray.h"
@@ -381,4 +381,4 @@ inline SgNbIterator::SgNbIterator(const SgBoardConst& boardConst, SgPoint p)
 
 //----------------------------------------------------------------------------
 
-#endif // SGBOARDCONST_H
+#endif // SG_BOARDCONST_H

@@ -2,8 +2,8 @@
 /** @file GoBoardSynchronizer.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOBOARDSYNCHRONIZER_H
-#define GOBOARDSYNCHRONIZER_H
+#ifndef GO_BOARDSYNCHRONIZER_H
+#define GO_BOARDSYNCHRONIZER_H
 
 #include "GoPlayerMove.h"
 
@@ -91,5 +91,5 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOBOARDSYNCHRONIZER_H
+#endif // GO_BOARDSYNCHRONIZER_H
 

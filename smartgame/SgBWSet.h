@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGBWSET_H
-#define SGBWSET_H
+#ifndef SG_BWSET_H
+#define SG_BWSET_H
 
 #include "SgPointSet.h"
 #include "SgBWArray.h"
@@ -97,5 +97,4 @@ inline std::ostream& operator<<(std::ostream& out, const SgBWSet& set)
 
 //----------------------------------------------------------------------------
 
-#endif // SGBWSET_H
-
+#endif // SG_BWSET_H

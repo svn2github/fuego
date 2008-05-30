@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGPOINTITERATOR_H
-#define SGPOINTITERATOR_H
+#ifndef SG_POINTITERATOR_H
+#define SG_POINTITERATOR_H
 
 #include "SgPoint.h"
 
@@ -53,5 +53,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SGPOINTITERATOR_H
-
+#endif // SG_POINTITERATOR_H

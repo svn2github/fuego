@@ -67,8 +67,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGPOINT_H
-#define SGPOINT_H
+#ifndef SG_POINT_H
+#define SG_POINT_H
 
 #include <climits>
 #include <cstdlib>
@@ -349,5 +349,4 @@ int InvRotation(int rotation);
 
 //----------------------------------------------------------------------------
 
-#endif // SGPOINT_H
-
+#endif // SG_POINT_H

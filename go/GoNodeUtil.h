@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GONODEUTIL_H
-#define GONODEUTIL_H
+#ifndef GO_NODEUTIL_H
+#define GO_NODEUTIL_H
 
 #include "GoKomi.h"
 
@@ -27,5 +27,5 @@ namespace GoNodeUtil
 
 //----------------------------------------------------------------------------
 
-#endif // GONODEUTIL_H
+#endif // GO_NODEUTIL_H
 

@@ -4,13 +4,11 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOREGIONBOARD_H
-#define GOREGIONBOARD_H
+#ifndef GO_REGIONBOARD_H
+#define GO_REGIONBOARD_H
 
 #include "GoBoard.h"
 #include "GoRegion.h"
-
-//----------------------------------------------------------------------------
 
 class GoBlock;
 class GoChain;
@@ -330,4 +328,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOREGIONBOARD_H
+#endif // GO_REGIONBOARD_H

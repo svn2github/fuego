@@ -7,8 +7,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGSORTEDMOVES_H
-#define SGSORTEDMOVES_H
+#ifndef SG_SORTEDMOVES_H
+#define SG_SORTEDMOVES_H
 
 #include <iostream>
 #include "SgList.h"
@@ -413,5 +413,4 @@ std::ostream& operator<<(std::ostream& str,
 
 //----------------------------------------------------------------------------
 
-#endif // SGSORTEDMOVES_H
-
+#endif // SG_SORTEDMOVES_H

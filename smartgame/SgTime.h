@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGTIME_H
-#define SGTIME_H
+#ifndef SG_TIME_H
+#define SG_TIME_H
 
 #include <string>
 
@@ -50,5 +50,4 @@ std::string TodaysDate();
 
 //----------------------------------------------------------------------------
 
-#endif // SGTIME_H
-
+#endif // SG_TIME_H

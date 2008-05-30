@@ -5,8 +5,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTESTIMATORSTAT_H
-#define GOUCTESTIMATORSTAT_H
+#ifndef GOUCT_ESTIMATORSTAT_H
+#define GOUCT_ESTIMATORSTAT_H
 
 #include <cstddef>
 #include <string>
@@ -38,4 +38,4 @@ namespace GoUctEstimatorStat
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTESTIMATORSTAT_H
+#endif // GOUCT_ESTIMATORSTAT_H

@@ -2,8 +2,8 @@
 /** @file GoAssertBoardRestored.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOASSERTBOARDRESTORED_H
-#define GOASSERTBOARDRESTORED_H
+#ifndef GO_ASSERTBOARDRESTORED_H
+#define GO_ASSERTBOARDRESTORED_H
 
 #include "GoBoard.h"
 
@@ -132,4 +132,4 @@ inline void GoAssertBoardRestored::Init(const GoBoard& bd)
 
 //----------------------------------------------------------------------------
 
-#endif // GOASSERTBOARDRESTORED_H
+#endif // GO_ASSERTBOARDRESTORED_H

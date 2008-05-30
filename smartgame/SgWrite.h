@@ -6,8 +6,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGWRITE_H
-#define SGWRITE_H
+#ifndef SG_WRITE_H
+#define SG_WRITE_H
 
 #include <iomanip>
 #include <iosfwd>
@@ -182,6 +182,4 @@ std::ostream& operator<<(std::ostream& out, const SgWriteBoolAsInt& write);
 
 //----------------------------------------------------------------------------
 
-#endif // SGWRITE_H
-
-
+#endif // SG_WRITE_H

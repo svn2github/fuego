@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGPOINTSET_H
-#define SGPOINTSET_H
+#ifndef SG_POINTSET_H
+#define SG_POINTSET_H
 
 #include <algorithm>
 #include <bitset>
@@ -652,5 +652,4 @@ inline bool SgSimpleSet::NewMark(SgPoint p)
 
 //----------------------------------------------------------------------------
 
-#endif // SGPOINTSET_H
-
+#endif // SG_POINTSET_H

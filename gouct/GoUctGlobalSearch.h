@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCTGLOBALSEARCH_H
-#define GOUCTGLOBALSEARCH_H
+#ifndef GOUCT_GLOBALSEARCH_H
+#define GOUCT_GLOBALSEARCH_H
 
 #include "GoBoard.h"
 #include "GoRegionBoard.h"
@@ -395,4 +395,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCTGLOBALSEARCH_H
+#endif // GOUCT_GLOBALSEARCH_H

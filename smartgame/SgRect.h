@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SGRECT_H
-#define SGRECT_H
+#ifndef SG_RECT_H
+#define SG_RECT_H
 
 #include "SgList.h"
 #include "SgPoint.h"
@@ -187,6 +187,7 @@ private:
 };
 
 //----------------------------------------------------------------------------
+
 /** Iterator for rectangle on the Go board, based on SgRect object
 */
 class SgRectIterator
@@ -222,16 +223,15 @@ public:
     }
     
 private:
-
     const SgRect& m_rect;
-    SgPoint m_cursor, m_end;
-};
 
-//----------------------------------------------------------------------------
+    SgPoint m_cursor;
+
+    SgPoint m_end;
+};
 
 std::ostream& operator<<(std::ostream& stream, const SgRect& rect);
 
 //----------------------------------------------------------------------------
 
-#endif // SGRECT_H
-
+#endif // SG_RECT_H
