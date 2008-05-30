@@ -15,7 +15,7 @@
     (static libraries) or applications (executables).
 
     There is a global Makefile in the <tt>build/gmake</tt> subfolder
-    for building all projects in the right order.
+    for building all modules in the right order.
 
     - <tt>make debug</tt>
       Builds the debug version
