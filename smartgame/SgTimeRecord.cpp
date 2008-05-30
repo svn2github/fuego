@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgNode.h"
 #include "SgProp.h"
 #include "SgTime.h"

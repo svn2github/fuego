@@ -10,7 +10,7 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include "GoBoard.h"
 #include "GoTimeControl.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgTimeRecord.h"
 
 using namespace std;

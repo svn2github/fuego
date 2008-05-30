@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <iostream>
 #include <unistd.h>
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgRandom.h"
 #include "SgTime.h"
 

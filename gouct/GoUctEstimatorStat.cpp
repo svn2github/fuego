@@ -10,7 +10,7 @@
 #include <boost/format.hpp>
 #include "GoModBoard.h"
 #include "GoUctSearch.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgUctTreeUtil.h"
 
 using namespace std;

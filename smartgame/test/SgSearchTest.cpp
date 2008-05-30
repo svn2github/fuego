@@ -9,8 +9,8 @@
 #include <sstream>
 #include <vector>
 #include <boost/test/auto_unit_test.hpp>
+#include "SgDebug.h"
 #include "SgHashTable.h"
-#include "SgIO.h"
 #include "SgSearch.h"
 
 using namespace std;

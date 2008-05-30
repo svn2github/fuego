@@ -8,8 +8,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "SgDebug.h"
 #include "SgException.h"
-#include "SgIO.h"
 #include "SgNode.h"
 
 using namespace std;

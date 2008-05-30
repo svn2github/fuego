@@ -8,8 +8,8 @@
 #define GO_BOARDUTIL_H
 
 #include "GoBoard.h"
+#include "SgDebug.h"
 #include "SgPoint.h"
-#include "SgIO.h"
 #include "SgStack.h"
 
 //----------------------------------------------------------------------------

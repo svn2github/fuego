@@ -13,8 +13,8 @@
 #include "GoBoardUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoModBoard.h"
+#include "SgDebug.h"
 #include "SgException.h"
-#include "SgIO.h"
 #include "SgWrite.h"
 
 using namespace std;

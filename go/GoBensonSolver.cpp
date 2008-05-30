@@ -8,7 +8,7 @@
 #include "GoBensonSolver.h"
 
 #include "GoBlock.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 
 const bool DEBUG_BENSON = false;
 

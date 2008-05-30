@@ -12,8 +12,8 @@
 #include <limits>
 #include <sstream>
 #include <math.h>
+#include "SgDebug.h"
 #include "SgHashTable.h"
-#include "SgIO.h"
 #include "SgList.h"
 #include "SgMath.h"
 #include "SgNode.h"

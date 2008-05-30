@@ -12,9 +12,9 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 #include <boost/version.hpp>
+#include "SgDebug.h"
 #include "SgHashTable.h"
 #include "SgMath.h"
-#include "SgIO.h"
 #include "SgWrite.h"
 
 using namespace std;

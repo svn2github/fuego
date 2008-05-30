@@ -8,7 +8,7 @@
 #include "SgEvaluatedMoves.h"
 
 #include <iomanip>
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgRandom.h"
 #include "SgWrite.h"
 

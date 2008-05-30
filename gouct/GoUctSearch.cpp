@@ -11,8 +11,8 @@
 #include "GoBoardUtil.h"
 #include "GoNodeUtil.h"
 #include "GoUctUtil.h"
+#include "SgDebug.h"
 #include "SgGameWriter.h"
-#include "SgIO.h"
 #include "SgNode.h"
 #include "SgUctTreeUtil.h"
 

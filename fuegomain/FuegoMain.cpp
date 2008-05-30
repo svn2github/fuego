@@ -10,9 +10,9 @@
 #include "FuegoMainEngine.h"
 #include "GoInit.h"
 #include "SgCmdLineOpt.h"
+#include "SgDebug.h"
 #include "SgException.h"
 #include "SgInit.h"
-#include "SgIO.h"
 
 using namespace std;
 

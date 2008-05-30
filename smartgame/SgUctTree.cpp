@@ -7,7 +7,7 @@
 #include "SgSystem.h"
 #include "SgUctTree.h"
 
-#include "SgIO.h"
+#include "SgDebug.h"
 
 using namespace std;
 using boost::shared_ptr;

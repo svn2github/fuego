@@ -9,7 +9,7 @@
 #include "GoBoardUtil.h"
 #include "GoModBoard.h"
 #include "GoUctUtil.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgStreamFmtRestorer.h"
 
 using namespace std;

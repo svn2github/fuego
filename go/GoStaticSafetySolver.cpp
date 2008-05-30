@@ -10,7 +10,7 @@
 #include "GoBlock.h"
 #include "GoChain.h"
 #include "GoSafetyUtil.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 
 using GoSafetyUtil::AddToSafe;
 

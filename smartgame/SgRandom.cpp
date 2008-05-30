@@ -9,7 +9,7 @@
 
 #include <cstdlib>
 #include <functional>
-#include "SgIO.h"
+#include "SgDebug.h"
 
 using namespace std;
 using boost::scoped_ptr;

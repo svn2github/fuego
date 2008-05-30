@@ -7,7 +7,7 @@
 #include "SgSystem.h"
 #include "SgTimeControl.h"
 
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgTimeRecord.h"
 
 using namespace std;

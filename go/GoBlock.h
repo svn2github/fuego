@@ -11,7 +11,7 @@
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "SgBlackWhite.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgList.h"
 #include "SgPoint.h"
 

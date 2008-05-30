@@ -12,8 +12,8 @@
 #include "GoChain.h"
 #include "GoEyeUtil.h"
 #include "GoRegion.h"
+#include "SgDebug.h"
 #include "SgConnCompIterator.h"
-#include "SgIO.h"
 #include "SgWrite.h"
 
 //----------------------------------------------------------------------------

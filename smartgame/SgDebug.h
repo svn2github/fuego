@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
-/** @file SgIO.h
+/** @file SgDebug.h
     Logging stream.
  */
 //----------------------------------------------------------------------------
 
-#ifndef SG_IO_H
-#define SG_IO_H
+#ifndef SG_DEBUG_H
+#define SG_DEBUG_H
 
 #include <iosfwd>
 #include <sstream>
@@ -78,4 +78,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SG_IO_H
+#endif // SG_DEBUG_H

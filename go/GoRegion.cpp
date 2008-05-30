@@ -17,7 +17,7 @@
 #include "GoRegionUtil.h"
 #include "GoSafetyUtil.h"
 #include "SgConnCompIterator.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgList.h"
 #include "SgNbIterator.h"
 #include "SgPointArray.h"

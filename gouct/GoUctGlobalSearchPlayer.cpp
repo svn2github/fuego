@@ -13,7 +13,7 @@
 #include "GoBoardUtil.h"
 #include "GoUctDefaultPlayoutPolicy.h"
 #include "GoUctUtil.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 #include "SgNbIterator.h"
 #include "SgNode.h"
 #include "SgSList.h"

@@ -15,8 +15,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "SgDebug.h"
 #include "SgException.h"
-#include "SgIO.h"
 #include "SgStringUtil.h"
 
 using namespace std;

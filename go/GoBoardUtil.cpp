@@ -14,8 +14,8 @@
 #include "GoModBoard.h"
 #include "GoMoveExecutor.h"
 #include "GoSafetySolver.h"
+#include "SgDebug.h"
 #include "SgException.h"
-#include "SgIO.h"
 #include "SgNbIterator.h"
 #include "SgProp.h"
 

@@ -29,6 +29,7 @@ SRC_CPP= \
   smartgame/SgBoardConst.cpp \
   smartgame/SgCmdLineOpt.cpp \
   smartgame/SgConnCompIterator.cpp \
+  smartgame/SgDebug.cpp \
   smartgame/SgEvaluatedMoves.cpp \
   smartgame/SgException.cpp \
   smartgame/SgFastLog.cpp \
@@ -39,7 +40,6 @@ SRC_CPP= \
   smartgame/SgGtpUtil.cpp \
   smartgame/SgIncrementalStack.cpp \
   smartgame/SgInit.cpp \
-  smartgame/SgIO.cpp \
   smartgame/SgListUtility.cpp \
   smartgame/SgMemCheck.cpp \
   smartgame/SgMiaiMap.cpp \

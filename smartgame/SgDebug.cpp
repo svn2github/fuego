@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
-/** @file SgIO.cpp
-    @see SgIO.h
+/** @file SgDebug.cpp
+    See SgDebug.h
  */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "SgIO.h"
+#include "SgDebug.h"
 
 #include <fstream>
 #include <iostream>
