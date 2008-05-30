@@ -114,8 +114,8 @@ public:
     // @} // @name
 
     /** Constructor.
-        @param in See parameter @in in GtpEngine::GtpEngine
-        @param out See parameter @out in GtpEngine::GtpEngine
+        @param in See parameter @c in in GtpEngine::GtpEngine
+        @param out See parameter @c out in GtpEngine::GtpEngine
         @param programPath File path to the executable. Needed for
         SgGtpCommands::CmdDebugger
         @param noPlayer Indicate that the subclass will not set a player
