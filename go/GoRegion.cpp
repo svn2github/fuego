@@ -27,6 +27,7 @@
 using GoBoardUtil::ExpandToBlocks;
 using GoEyeUtil::IsSplitPt;
 using GoEyeUtil::TestNakade;
+using GoRegionUtil::IsSmallRegion;
 
 //----------------------------------------------------------------------------
 
@@ -36,8 +37,8 @@ const bool CHECK = SG_CHECK && true,
 const bool WRITEDEBUG = false;
 
 //----------------------------------------------------------------------------
+
 namespace {
-//----------------------------------------------------------------------------
 
 /** Two intersection points in region */
 bool Has2IPs(const GoBoard& board, const SgPointSet& points,
@@ -106,8 +107,8 @@ inline bool AdjacentToAll(SgPoint p, const SgList<SgPoint>& points)
     return true;
 }
 
-//----------------------------------------------------------------------------
 } // namespace
+
 //----------------------------------------------------------------------------
 
 GoRegion::GoRegion(const GoBoard& board, const SgPointSet& points,

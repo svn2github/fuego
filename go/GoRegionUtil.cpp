@@ -7,12 +7,16 @@
 #include "SgSystem.h"
 #include "GoRegionUtil.h"
 
+#include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeUtil.h"
+#include "SgList.h"
+#include "SgPointSet.h"
 
 //----------------------------------------------------------------------------
+
 namespace {
-//----------------------------------------------------------------------------
+
 bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region, 
                             const SgList<SgPoint>& boundaryAnchors)
 {
@@ -102,7 +106,7 @@ bool TwoSeparateEyes(const GoBoard& bd, const SgPointSet& pts,
     
     if (pts.Disjoint(bd.All(color)) && ! pts.IsConnected())
     {
-        if ( IsSingleBlock(bd, boundary, color))
+        if (GoRegionUtil::IsSingleBlock(bd, boundary, color))
             return true;
         else
         {
@@ -123,13 +127,13 @@ bool TwoSeparateEyes(const GoBoard& bd, const SgPointSet& pts,
     return false;
 }
 
-//----------------------------------------------------------------------------
 } // namespace
+
 //----------------------------------------------------------------------------
 
-void FindCurrentAnchors(const GoBoard& board,
-                        const SgList<SgPoint>& origAnchors,
-                        SgList<SgPoint>* currentAnchors)
+void GoRegionUtil::FindCurrentAnchors(const GoBoard& board,
+                                      const SgList<SgPoint>& origAnchors,
+                                      SgList<SgPoint>* currentAnchors)
 {
     SG_ASSERT(currentAnchors->IsEmpty());
     for (SgListIterator<SgPoint> it(origAnchors); it; ++it)
@@ -142,8 +146,9 @@ void FindCurrentAnchors(const GoBoard& board,
 //  using after all interior points are 2conn proved, return true if
 //  two intersection points are found or single boundary block forms 
 //  two separate eyes.
-bool Has2IPorEyes(const GoBoard& board, const SgPointSet& pts, 
-                  SgBlackWhite color, const SgList<SgPoint>& boundaryAnchors)
+bool GoRegionUtil::Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
+                                SgBlackWhite color,
+                                const SgList<SgPoint>& boundaryAnchors)
 {
     const int size = board.Size();
     SgPointSet boundary(pts.Border(size));
@@ -161,9 +166,10 @@ bool Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
 }
 
 
-bool Has2SureLiberties(const GoBoard& board, const SgPointSet& pts, 
-                       SgBlackWhite color,
-                       const SgList<SgPoint>& boundaryAnchors)
+bool GoRegionUtil::Has2SureLiberties(const GoBoard& board,
+                                     const SgPointSet& pts,
+                                     SgBlackWhite color,
+                                     const SgList<SgPoint>& boundaryAnchors)
 {
     const int size = board.Size();
     SgPointSet boundary(pts.Border(size));
@@ -190,8 +196,8 @@ bool Has2SureLiberties(const GoBoard& board, const SgPointSet& pts,
     return false;
 }
 
-bool IsSingleBlock(const GoBoard& board, const SgPointSet& pts,
-                   SgBlackWhite color)
+bool GoRegionUtil::IsSingleBlock(const GoBoard& board, const SgPointSet& pts,
+                                 SgBlackWhite color)
 // do pts belong to only one block?
 // also returns true in case pts is empty set. ASSERTs non-empty now.
 {
@@ -216,15 +222,16 @@ bool IsSingleBlock(const GoBoard& board, const SgPointSet& pts,
     return true;
 }
 
-bool IsSmallRegion(const GoBoard& board, const SgPointSet& pts,
-                   SgBlackWhite opp)
+bool GoRegionUtil::IsSmallRegion(const GoBoard& board, const SgPointSet& pts,
+                                 SgBlackWhite opp)
 {
     const int size = board.Size();
     return pts.Kernel(size).SubsetOf(board.All(opp));
 }
 
-bool StaticIs1VitalAndConnected(const GoBoard& board, const SgPointSet& pts,
-                                SgBlackWhite color)
+bool GoRegionUtil::StaticIs1VitalAndConnected(const GoBoard& board,
+                                              const SgPointSet& pts,
+                                              SgBlackWhite color)
 {
     // type 1:small region with two connection points for all blocks
     SgList<SgPoint> anchors;
@@ -257,3 +264,4 @@ bool StaticIs1VitalAndConnected(const GoBoard& board, const SgPointSet& pts,
     return is1Vital;    
 }
 
+//----------------------------------------------------------------------------
