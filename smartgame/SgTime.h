@@ -42,11 +42,9 @@ namespace SgTime
 
     /** Set default time mode. */
     void SetDefaultMode(SgTimeMode mode);
+
+    std::string TodaysDate();
 }
-
-//----------------------------------------------------------------------------
-
-std::string TodaysDate();
 
 //----------------------------------------------------------------------------
 

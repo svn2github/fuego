@@ -122,9 +122,7 @@ void SgTime::SetDefaultMode(SgTimeMode mode)
     g_defaultMode = mode;
 }
 
-//----------------------------------------------------------------------------
-
-string TodaysDate()
+string SgTime::TodaysDate()
 {
     time_t systime = time(0);
     struct tm* currtime = localtime(&systime);
