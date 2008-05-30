@@ -10,7 +10,8 @@ VPATH = ../../..
 
 # Define Fugo version using svnversion for development versions.
 # Replace this line by release version for releases.
-FUEGO_VERSION= SVN:$(shell cd ../../..; svnversion)
+#FUEGO_VERSION= SVN:$(shell cd ../../..; svnversion)
+FUEGO_VERSION=0.1
 
 DBG_OBJDIR = ../build/obj/$(NAME)/debug
 REL_OBJDIR = ../build/obj/$(NAME)/release
