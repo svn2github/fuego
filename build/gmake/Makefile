@@ -24,7 +24,7 @@ debug:
 	@for dir in $(PROJECTS); do \
            if test -f $$dir/Makefile; then \
              echo -e "\n--------------- $$dir (dbg)"; \
-             $(MAKE) -C $$dir debug || exit -1; \
+             $(MAKE) -C $$dir debug || exit 1; \
            fi; \
         done
 	@echo ""
@@ -34,7 +34,7 @@ release:
 	@for dir in $(PROJECTS); do \
            if test -f $$dir/Makefile; then \
              echo -e "\n--------------- $$dir (rel)"; \
-             $(MAKE) -C $$dir release || exit -1; \
+             $(MAKE) -C $$dir release || exit 1; \
            fi; \
         done
 	@echo ""
@@ -44,7 +44,7 @@ clean:
 	@for dir in $(PROJECTS); do \
            if test -f $$dir/Makefile; then \
              echo -e "\n--------------- Removing temporary files for $$dir"; \
-             $(MAKE) -C $$dir clean || exit -1; \
+             $(MAKE) -C $$dir clean || exit 1; \
            fi; \
          done
 	@echo ""
