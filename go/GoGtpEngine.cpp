@@ -182,7 +182,7 @@ void GoGtpEngine::AutoSave() const
     }
     catch (const GtpFailure& failure)
     {
-        SgDebug() << failure.Response() << '\n';
+        SgWarning() << failure.Response() << '\n';
     }
 }
 
@@ -537,7 +537,7 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
         throw GtpFailure("no games in file");
     if (reader.GetWarnings().any())
     {
-        SgDebug() << "Warning: " << fileName << ":\n";
+        SgWarning() << fileName << ":\n";
         reader.PrintWarnings(SgDebug());
     }
     if (Board().MoveNumber() > 0)

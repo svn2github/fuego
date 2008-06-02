@@ -345,8 +345,8 @@ void GoUctSearch::OnStartSearch()
     {
         m_root = GoNodeUtil::CreateRoot(m_bd);
         if (LockFree())
-            SgDebug() <<
-                "WARNING: GoUctSearch: keep games will be ignored"
+            SgWarning() <<
+                "GoUctSearch: keep games will be ignored"
                 " in lock free search\n";
     }
     m_toPlay = m_bd.ToPlay(); // Not needed if SetToPlay() was called

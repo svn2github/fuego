@@ -23,7 +23,7 @@ static ofstream s_nullStream;
 
 static auto_ptr<ofstream> s_fileStream;
 
-#if UNIX 
+#if UNIX
 #define textoutputstream cerr
 #else
 #define textoutputstream cout
@@ -40,6 +40,12 @@ std::ostream& SgDebug()
         SG_ASSERT(false);
     }
     return *g_debugStrPtr;
+}
+
+std::ostream& SgWarning()
+{
+    SgDebug() << "WARNING: ";
+    return SgDebug();
 }
 
 //----------------------------------------------------------------------------

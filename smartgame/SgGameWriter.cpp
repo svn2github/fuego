@@ -112,7 +112,7 @@ void SgGameWriter::HandleProps(const SgNode* node, int& boardSize) const
         if (value >= SG_MIN_SIZE && value <= SG_MAX_SIZE)
             boardSize = value;
         else
-            SgDebug() << "Warning: Invalid size " << value;
+            SgWarning() << "Invalid size " << value;
     }
 }
 

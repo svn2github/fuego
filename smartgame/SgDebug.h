@@ -15,6 +15,13 @@
 /** Current logging stream. */
 std::ostream& SgDebug();
 
+/** Write warning prefix to logging stream and return it.
+    Writes "WARNING: " to the logging stream and returns it for outputting
+    the rest of the warning line. Lines beginning with this prefix are
+    displayed in a different color than regular stderr output in GoGui.
+*/
+std::ostream& SgWarning();
+
 //----------------------------------------------------------------------------
 
 /** Set logging stream to file.
@@ -45,7 +52,7 @@ public:
     explicit SgDebugToNewFile();
 
     void SetFile(const char* filename);
-    
+
     ~SgDebugToNewFile();
 
 private:

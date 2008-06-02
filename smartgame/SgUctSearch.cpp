@@ -995,15 +995,12 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
         // to the total real time, even if there is no other load on the
         // machine, because the time, while threads are waiting for a lock
         // does not contribute to the cputime.
-        SgDebug() <<
-            "WARNING: SgUctSearch: "
-            "using cpu time with multiple threads\n";
+        SgWarning() << "SgUctSearch: using cpu time with multiple threads\n";
     if (m_useSignatures)
     {
         size_t range = SignatureRange();
         if (range == 0)
-            SgDebug() <<
-                "WARNING: SgUctSearch: signatures enabled but range is 0\n";
+            SgWarning() << "SgUctSearch: signatures enabled but range is 0\n";
         m_signatureStat.resize(range);
         for (size_t i = 0; i < range; ++i)
             m_signatureStat[i].Clear();
@@ -1020,8 +1017,8 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
         if (m_tree.HasCapacity(0, m_tree.Root().NuChildren()))
             m_tree.ApplyFilter(0, m_tree.Root(), rootFilter);
         else
-            SgDebug() <<
-                "WARNING: SgUctSearch::StartSearch: "
+            SgWarning() <<
+                "SgUctSearch::StartSearch: "
                 "root filter not applied (tree reached maximum size)\n";
     }
     m_gameLengthStat.Clear();

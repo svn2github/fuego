@@ -181,8 +181,8 @@ SgMove GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
         if (move == SG_NULLMOVE)
         {
             // Shouldn't happen ?
-            SgDebug() <<
-                "WARNING: GoUctGlobalSearchPlayer::GenMove: "
+            SgWarning() <<
+                "GoUctGlobalSearchPlayer::GenMove: "
                 "Search generated SG_NULLMOVE\n";
             move = SG_PASS;
         }
@@ -361,7 +361,7 @@ void GoUctGlobalSearchPlayer::Ponder()
     {
         // Don't ponder, wouldn't use the result in the next GenMove
         // anyway if reuseSubtree is not enabled
-        SgDebug() << "Warning: Pondering needs reuse_subtree enabled.\n";
+        SgWarning() << "Pondering needs reuse_subtree enabled.\n";
         return;
     }
     SgDebug() << "GoUctGlobalSearchPlayer::Ponder Start\n";
