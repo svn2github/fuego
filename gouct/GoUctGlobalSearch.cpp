@@ -283,7 +283,7 @@ void GoUctGlobalSearch::OnStartSearch()
     GoUctSearch::OnStartSearch();
     m_safe.Clear();
     m_allSafe.Fill(false);
-    if (USE_SAFETY_SOLVER)
+    if (GOUCT_USE_SAFETY_SOLVER)
     {
         GoBoard& bd = Board();
         GoSafetySolver solver(bd, &m_regions);

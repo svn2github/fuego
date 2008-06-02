@@ -12,7 +12,13 @@
 
 //----------------------------------------------------------------------------
 
-const bool USE_SAFETY_SOLVER = false;
+/** Enable the usage of the safety solver (currently not functional).
+    Compile-time constant to enable the usage of the safety solver. This
+    cost some performance and there are no experiments yet showing that it
+    improves the playing strength. It is also currently not functional,
+    since it has not been updated after code changes.
+*/
+const bool GOUCT_USE_SAFETY_SOLVER = false;
 
 //----------------------------------------------------------------------------
 
