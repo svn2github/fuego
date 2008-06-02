@@ -917,6 +917,7 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
 
 const SgUctNode& SgUctSearch::SelectChild(const SgUctNode& node)
 {
+    SG_ASSERT(node.HasChildren());
     size_t posCount = node.PosCount();
     if (posCount == 0)
         // If position count is zero, return first child
