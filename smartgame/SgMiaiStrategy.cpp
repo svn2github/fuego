@@ -11,6 +11,14 @@
 
 //----------------------------------------------------------------------------
 
+SgPoint SgMiaiPairUtil::Other(const SgMiaiPair& pair, SgPoint p)
+{
+    SG_ASSERT(pair.first == p || pair.second == p);
+    return pair.first == p ? pair.second : pair.first;
+}
+
+//----------------------------------------------------------------------------
+
 void SgMiaiStrategy::Write(std::ostream& stream) const
 {
     SgStrategy::Write(stream);
@@ -116,14 +124,8 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
         // move other endpoint of toChange to open threats
     for (SgListIterator<SgMiaiPair> it(toChange); it; ++it)
     {
-        m_openThreats.Append(Other(*it, p));
+        m_openThreats.Append(SgMiaiPairUtil::Other(*it, p));
     }
-}
-    
-SgPoint Other(const SgMiaiPair& pair, SgPoint p)
-{
-    SG_ASSERT(pair.first == p || pair.second == p);
-    return pair.first == p ? pair.second : pair.first;
 }
 
 bool SgMiaiStrategy::HasOverlappingMiaiPairs() const

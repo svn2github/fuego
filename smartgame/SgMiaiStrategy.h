@@ -20,7 +20,12 @@
 
 typedef std::pair<SgPoint, SgPoint> SgMiaiPair;
 
-SgPoint Other(const SgMiaiPair& pair, SgPoint p);
+//----------------------------------------------------------------------------
+
+namespace SgMiaiPairUtil
+{
+    SgPoint Other(const SgMiaiPair& pair, SgPoint p);
+}
 
 //----------------------------------------------------------------------------
 
