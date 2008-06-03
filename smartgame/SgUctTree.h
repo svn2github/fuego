@@ -138,7 +138,7 @@ inline SgUctNode::SgUctNode(SgMove move)
       m_posCount(0),
       m_signature(std::numeric_limits<size_t>::max())
 {
-    // m_firstChild is not initialized, only defined in m_nuChildren > 0
+    // m_firstChild is not initialized, only defined if m_nuChildren > 0
 }
 
 inline void SgUctNode::AddGameResult(float eval)
