@@ -119,6 +119,9 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         // nodes, because allocators are used differently. We don't copy
         // the children and set the pos count to zero (should reflect the sum
         // of children move counts)
+        SgDebug() <<
+            "SgUctTree::CopySubtree: "
+            "Tree truncated (low allocator capacity)\n";
         targetNode.SetPosCount(0);
         return;
     }
