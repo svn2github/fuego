@@ -2,8 +2,7 @@
 
 # Patched version of cgos3.tcl (as downloaded on 2007-10-29 from
 # http://cgos.boardspace.net) to inform the player about the opponent's name
-# and game result using the command go_set_info used by
-# project_explorer/go/GoGtpEngine.
+# and game result using the command go_set_info used by fuego/go/GoGtpEngine.
 # Patched lines are marked with the comment PATCHED
 
 set server cgos.boardspace.net
