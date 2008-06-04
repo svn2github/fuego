@@ -441,6 +441,18 @@ public:
     void ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                      const std::vector<SgMove>& rootFilter);
 
+    /** @name Functions for debugging */
+    // @{
+
+    /** Do some consistency checks.
+        @throws SgException if inconsistencies are detected.
+    */
+    void CheckConsistency() const;
+
+    void DumpDebugInfo(std::ostream& out) const;
+
+    // @} // @name
+
 private:
     std::size_t m_maxNodes;
 
@@ -468,6 +480,8 @@ private:
                      const SgUctNode& node,
                      std::size_t& currentAllocatorId,
                      bool warnTruncate) const;
+
+    void ThrowConsistencyError(const std::string& message) const;
 };
 
 inline void SgUctTree::AddGameResult(const SgUctNode& node,

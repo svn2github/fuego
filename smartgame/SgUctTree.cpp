@@ -7,9 +7,11 @@
 #include "SgSystem.h"
 #include "SgUctTree.h"
 
+#include <boost/format.hpp>
 #include "SgDebug.h"
 
 using namespace std;
+using boost::format;
 using boost::shared_ptr;
 
 //----------------------------------------------------------------------------
@@ -70,6 +72,13 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
     nonConstNode.SetFirstChild(firstChild);
     nonConstNode.SetNuChildren(nuChildren);
+}
+
+void SgUctTree::CheckConsistency() const
+{
+    for (SgUctTreeIterator it(*this); it; ++it)
+        if (! Contains(*it))
+            ThrowConsistencyError(str(format("! Contains(%1%)") % &(*it)));
 }
 
 void SgUctTree::Clear()
@@ -203,6 +212,15 @@ void SgUctTree::CreateChildren(std::size_t allocatorId, const SgUctNode& node,
     nonConstNode.SetNuChildren(nuChildren);
 }
 
+void SgUctTree::DumpDebugInfo(std::ostream& out) const
+{
+    for (size_t i = 0; i < NuAllocators(); ++i)
+        out << "Allocator " << i
+            << " size=" << Allocator(i).m_nodes.size()
+            << " begin=" << &(*Allocator(i).m_nodes.begin())
+            << " end=" << &(*Allocator(i).m_nodes.end()) << '\n';
+}
+
 void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
                                bool warnTruncate) const
 {
@@ -246,6 +264,12 @@ void SgUctTree::Swap(SgUctTree& tree)
     swap(m_root, tree.m_root);
     for (size_t i = 0; i < NuAllocators(); ++i)
         Allocator(i).Swap(tree.Allocator(i));
+}
+
+void SgUctTree::ThrowConsistencyError(const string& message) const
+{
+    DumpDebugInfo(SgDebug());
+    throw SgException("SgUctTree::ThrowConsistencyError: " + message);
 }
 
 //----------------------------------------------------------------------------
