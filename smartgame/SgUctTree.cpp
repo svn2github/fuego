@@ -214,6 +214,7 @@ void SgUctTree::CreateChildren(std::size_t allocatorId, const SgUctNode& node,
 
 void SgUctTree::DumpDebugInfo(std::ostream& out) const
 {
+    out << "Root " << &m_root << '\n';
     for (size_t i = 0; i < NuAllocators(); ++i)
         out << "Allocator " << i
             << " size=" << Allocator(i).m_nodes.size()
