@@ -330,14 +330,21 @@ public:
 
 /** @page sguctsearchlockfree Lock-free usage of SgUctSearch
     SgUctSearch can be used in a lock-free way for improved multi-threaded
-    performance. Lock-free usage is enabled with
+    performance. Then, the threads access the common data structures (like
+    the tree) without any locking. Lock-free usage is enabled with
     SgUctSearch::SetLockFree(true).
-    However, it depends on the memory model of the platform, if lock-free
-    usage works. If the CPU is allowed to do instruction-reordering, the
-    program may crash.
-    Note that statistics collected during the search may not be accurate if
-    lock-free usage is enabled, because counts and mean values may be
-    manipulated concurrently.
+
+    It depends on the memory model of the platform, if lock-free usage
+    works. It assumes that writes of some basic types (size_t, int, float,
+    pointers) are atomic and that the compiler or CPU does not reorder certain
+    instructions. In particular, SgUctNode::SetNuChildren() is always called
+    after the children were created, such that SgUctNode::HasChildren()
+    returns only true, if the children are ready to use. Because of the
+    platform-dependency, lock-free is not enabled by default.
+
+    Note that statistics collected during the search may not be accurate in
+    lock-free usage, because counts and mean values may be manipulated
+    concurrently.
 */
 
 /** @page sguctsearchweights Estimator weights in SgUctSearch

@@ -283,9 +283,11 @@ public:
     void SetMaxNodes(std::size_t maxNodes);
 
     /** Check if allocator contains node.
-        Only used for assertions. May not be available in future
-        implementations. Also not portable, because the result of comparisons
-        of pointers belonginf to different variables is undefined.
+        This function uses pointer comparisons. Since the result of
+        comparisons for pointers to elements in different containers
+        is platform-dependent, it is only guaranteed that it returns true,
+        if not node belongs to the allocator, but not that it returns false
+        for nodes not in the allocator.
     */
     bool Contains(const SgUctNode& node) const;
 
@@ -449,6 +451,15 @@ public:
     */
     void CheckConsistency() const;
 
+    /** Check if tree contains node.
+        This function uses pointer comparisons. Since the result of
+        comparisons for pointers to elements in different containers
+        is platform-dependent, it is only guaranteed that it returns true,
+        if not node belongs to the allocator, but not that it returns false
+        for nodes not in the tree.
+    */
+    bool Contains(const SgUctNode& node) const;
+
     void DumpDebugInfo(std::ostream& out) const;
 
     // @} // @name
@@ -473,8 +484,6 @@ private:
     SgUctAllocator& Allocator(std::size_t i);
 
     const SgUctAllocator& Allocator(std::size_t i) const;
-
-    bool Contains(const SgUctNode& node) const;
 
     void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                      const SgUctNode& node,
