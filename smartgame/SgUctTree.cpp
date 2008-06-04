@@ -297,8 +297,8 @@ void SgUctTreeIterator::operator++()
     while (! m_stack.empty())
     {
         SgUctChildIterator& it = *m_stack.top();
-        if (it)
-            ++it;
+        SG_ASSERT(it);
+        ++it;
         if (it)
         {
             m_current = &(*it);
