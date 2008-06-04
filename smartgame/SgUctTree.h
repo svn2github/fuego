@@ -396,8 +396,11 @@ public:
         @param[out] target The resulting subtree. Must have the same maximum
         number of nodes. Will be cleared before using.
         @param node The start node of the subtree.
+        @param warnTruncate Print warning to SgDebug() if tree was truncated
+        due to reassigning nodes to different allocators
     */
-    void ExtractSubtree(SgUctTree& target, const SgUctNode& node) const;
+    void ExtractSubtree(SgUctTree& target, const SgUctNode& node,
+                        bool warnTruncate) const;
 
     const SgUctNode& Root() const;
 
@@ -463,7 +466,8 @@ private:
 
     void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                      const SgUctNode& node,
-                     std::size_t& currentAllocatorId) const;
+                     std::size_t& currentAllocatorId,
+                     bool warnTruncate) const;
 };
 
 inline void SgUctTree::AddGameResult(const SgUctNode& node,

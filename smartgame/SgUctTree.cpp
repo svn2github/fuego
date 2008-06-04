@@ -102,7 +102,8 @@ bool SgUctTree::Contains(const SgUctNode& node) const
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
-                            std::size_t& currentAllocatorId) const
+                            std::size_t& currentAllocatorId,
+                            bool warnTruncate) const
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(target.Contains(targetNode));
@@ -119,9 +120,10 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         // nodes, because allocators are used differently. We don't copy
         // the children and set the pos count to zero (should reflect the sum
         // of children move counts)
-        SgDebug() <<
-            "SgUctTree::CopySubtree: "
-            "Tree truncated (low allocator capacity)\n";
+        if (warnTruncate)
+            SgDebug() <<
+                "SgUctTree::CopySubtree: "
+                "Tree truncated (low allocator capacity)\n";
         targetNode.SetPosCount(0);
         return;
     }
@@ -150,7 +152,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
         CopySubtree(target, targetNodes[firstTargetChild + i], child,
-                    currentAllocatorId);
+                    currentAllocatorId, warnTruncate);
     }
 }
 
@@ -201,7 +203,8 @@ void SgUctTree::CreateChildren(std::size_t allocatorId, const SgUctNode& node,
     nonConstNode.SetNuChildren(nuChildren);
 }
 
-void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node) const
+void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
+                               bool warnTruncate) const
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(&target != this);
@@ -209,7 +212,7 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node) const
     SG_ASSERT(Contains(node));
     target.Clear();
     size_t allocatorId = 0;
-    CopySubtree(target, target.m_root, node, allocatorId);
+    CopySubtree(target, target.m_root, node, allocatorId, warnTruncate);
 }
 
 std::size_t SgUctTree::NuNodes() const

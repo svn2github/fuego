@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree)
     vector<SgMove> sequence;
     sequence.push_back(20);
     sequence.push_back(50);
-    SgUctTreeUtil::ExtractSubtree(tree, target, sequence);
+    SgUctTreeUtil::ExtractSubtree(tree, target, sequence, false);
     BOOST_CHECK_EQUAL(3u, target.NuNodes());
 
     node = SgUctTreeUtil::FindChildWithMove(target, target.Root(), 60);
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree_Overflow)
     target.CreateAllocators(2);
     target.SetMaxNodes(10);
     vector<SgMove> sequence;
-    SgUctTreeUtil::ExtractSubtree(tree, target, sequence);
+    SgUctTreeUtil::ExtractSubtree(tree, target, sequence, false);
 
     // We don't care, if ExtractSubtree cuts the target tree or ensures
     // that the target nodes are distributed evenly, as long as none of the

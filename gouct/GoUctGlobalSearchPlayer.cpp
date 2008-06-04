@@ -320,7 +320,8 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay)
             "Cannot reuse tree (search had different color)\n";
         return;
     }
-    SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence);
+    SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence,
+                                  true);
     size_t initTreeNodes = m_initTree.NuNodes();
     size_t oldTreeNodes = m_search.Tree().NuNodes();
     if (oldTreeNodes > 1 && initTreeNodes > 1)
