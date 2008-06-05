@@ -8,6 +8,7 @@
 #include "SgBoardConst.h"
 
 #include <algorithm>
+#include "SgInit.h"
 #include "SgStack.h"
 
 using namespace std;
@@ -194,6 +195,7 @@ void SgBoardConst::Create(SgGrid size)
 SgBoardConst::SgBoardConst(SgGrid size)
 {
     SG_ASSERT_GRIDRANGE(size);
+    SgInitCheck();
     Create(size);
 }
 

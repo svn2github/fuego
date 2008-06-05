@@ -9,6 +9,7 @@
 
 #include <boost/static_assert.hpp>
 #include <algorithm>
+#include "GoInit.h"
 #include "SgNbIterator.h"
 #include "SgStack.h"
 
@@ -53,6 +54,7 @@ GoBoard::GoBoard(int size, const GoSetup& setup, const GoRules& rules)
       m_moves(new SgSList<StackEntry,GO_MAX_NUM_MOVES>())
 
 {
+    GoInitCheck();
     Init(size, rules, setup);
 }
 
