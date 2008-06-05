@@ -9,6 +9,9 @@
 
 //----------------------------------------------------------------------------
 
+/** Used in SgInit(); public only as a side effect of the implementation. */
+void SgInitImpl(bool compiledInDebugMode);
+
 /** Call all lower-level Fini functions.
     This function must be called after using the SmartGo module.
     Also calls SgMemCheck.
@@ -26,7 +29,16 @@ void SgFini();
     - Property
     @throws SgException on error
 */
-void SgInit();
+inline void SgInit()
+{
+    // This function must be inline, it needs to use the setting of _DEBUG
+    // of the user code including this header
+#ifdef _DEBUG
+    SgInitImpl(true);
+#else
+    SgInitImpl(false);
+#endif
+}
 
 /** Check that SgInit was called.
     @throws SgException if not
