@@ -108,6 +108,8 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     @param node The node in the source tree to be copied.
     @param currentAllocatorId The current node allocator. Will be incremented
     in each call to CopySubtree to use node allocators of target tree evenly.
+    @param warnTruncate Print warning to SgDebug() if tree was truncated due
+    to reassigning nodes to different allocators
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
