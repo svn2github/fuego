@@ -43,7 +43,7 @@ public:
 
     void Clear();
 
-    INT Count() const;
+    const INT& Count() const;
 
     /** Initialize with values.
         Equivalent to calling Clear() and calling @c count times
@@ -51,7 +51,7 @@ public:
     */
     void Initialize(FLOAT val, INT count);
 
-    FLOAT Mean() const;
+    const FLOAT& Mean() const;
 
     /** Write in human readable format. */
     void Write(std::ostream& out) const;
@@ -106,7 +106,7 @@ void SgStatisticsBase<FLOAT,INT>::Clear()
 }
 
 template<typename FLOAT, typename INT>
-INT SgStatisticsBase<FLOAT,INT>::Count() const
+const INT& SgStatisticsBase<FLOAT,INT>::Count() const
 {
     return m_count;
 }
@@ -125,7 +125,7 @@ void SgStatisticsBase<FLOAT,INT>::LoadFromText(std::istream& in)
 }
 
 template<typename FLOAT, typename INT>
-FLOAT SgStatisticsBase<FLOAT,INT>::Mean() const
+const FLOAT& SgStatisticsBase<FLOAT,INT>::Mean() const
 {
     return m_mean;
 }
