@@ -6,6 +6,7 @@
 
 #include "SgSystem.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <functional>
