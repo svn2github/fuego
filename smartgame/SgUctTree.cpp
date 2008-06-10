@@ -64,12 +64,9 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
         }
     }
 
-    // SetNuChildren() must be called last, because of SgUctTree guarantees
-    // that the children exist, if NuChildren() is greater zero.
-    // See multi-threading comment at class SgUctSearch.
-    // NOTE: no guarantee yet, that compiler does not reorder these
-    // instructions
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
+    // Write order dependency: SgUctSearch in lock-free mode assumes that
+    // m_firstChild is valid if m_nuChildren is greater zero
     nonConstNode.SetFirstChild(firstChild);
     nonConstNode.SetNuChildren(nuChildren);
 }
@@ -205,11 +202,8 @@ void SgUctTree::CreateChildren(std::size_t allocatorId, const SgUctNode& node,
         nodes.push_back(child);
     }
 
-    // SetNuChildren() must be called last, because of SgUctTree guarantees
-    // that the children exist, if NuChildren() is greater zero.
-    // See multi-threading comment at class SgUctSearch.
-    // NOTE: no guarantee yet, that compiler does not reorder these
-    // instructions
+    // Write order dependency: SgUctSearch in lock-free mode assumes that
+    // m_firstChild is valid if m_nuChildren is greater zero
     nonConstNode.SetFirstChild(firstChild);
     nonConstNode.SetNuChildren(nuChildren);
 }

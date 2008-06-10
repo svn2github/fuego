@@ -39,8 +39,7 @@ book_load ../../book/book.dat
 
 sg_param time_mode real
 uct_param_search number_threads 8
-# lock_free currently causes crashes
-uct_param_search lock_free 0
+uct_param_search lock_free 1
 EOF
 
 # Append 2>/dev/stderr to invocation, otherwise cgos3.tcl will not pass

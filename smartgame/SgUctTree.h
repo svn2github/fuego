@@ -16,9 +16,19 @@
 
 typedef SgStatisticsBase<float,std::size_t> SgUctStatisticsBase;
 
+typedef SgStatisticsBase<volatile float,volatile std::size_t>
+    SgUctStatisticsBaseVolatile;
+
 //----------------------------------------------------------------------------
 
-/** Node used in SgUctTree. */
+/** Node used in SgUctTree.
+    All data members are declared as volatile to avoid that the compiler
+    re-orders writes, which can break assumptions made by SgUctSearch in
+    lock-free mode (see @ref sguctsearchlockfree). For example, the search
+    relies on the fact that m_firstChild is valid, if m_nuChildren is greater
+    zero or that the mean value of the move and RAVE value statistics is valid
+    if the corresponding count is greater zero.
+*/
 class SgUctNode
 {
 public:
@@ -117,19 +127,19 @@ public:
     void SetSignature(std::size_t sig);
 
 private:
-    SgUctStatisticsBase m_statistics;
+    SgUctStatisticsBaseVolatile m_statistics;
 
-    const SgUctNode* m_firstChild;
+    const SgUctNode* volatile m_firstChild;
 
-    int m_nuChildren;
+    volatile int m_nuChildren;
 
-    SgMove m_move;
+    volatile SgMove m_move;
 
-    SgUctStatisticsBase m_raveValue;
+    SgUctStatisticsBaseVolatile m_raveValue;
 
-    std::size_t m_posCount;
+    volatile std::size_t m_posCount;
 
-    std::size_t m_signature;
+    volatile std::size_t m_signature;
 };
 
 inline SgUctNode::SgUctNode(SgMove move)

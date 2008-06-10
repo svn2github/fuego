@@ -501,7 +501,8 @@ float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
     return bound;
 }
 
-const SgUctStatisticsBase& SgUctSearch::GetSignatureStat(SgMove mv) const
+const SgUctStatisticsBaseVolatile& SgUctSearch::GetSignatureStat(SgMove mv)
+    const
 {
     if (m_threads.size() == 0)
         throw SgException("SgUctSearch::GetSignatureStat: "
@@ -546,7 +547,7 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
         if (sig != numeric_limits<size_t>::max())
         {
             SG_ASSERT(sig < m_signatureStat.size());
-            SgUctStatisticsBase stat = m_signatureStat[sig];
+            const SgUctStatisticsBaseVolatile& stat = m_signatureStat[sig];
             size_t sigCount = stat.Count();
             if (sigCount > 0)
             {

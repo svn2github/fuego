@@ -3,6 +3,10 @@ This file contains information about Fuego releases.
 Current development version
 ===========================
 
+* Declare data members of UCT nodes and signature statistis as volatile.
+  This avoids that the compiler reorders writes, which could cause crashes
+  if the UCT search is used in lock-free mode.
+
 
 Version 0.1 - 2008 May 30
 =========================

@@ -552,7 +552,7 @@ public:
     */
     float GetBound(const SgUctNode& node, const SgUctNode& child) const;
 
-    const SgUctStatisticsBase& GetSignatureStat(SgMove mv) const;
+    const SgUctStatisticsBaseVolatile& GetSignatureStat(SgMove mv) const;
 
     // @} // @name
 
@@ -962,7 +962,7 @@ private:
     SgFastLog m_fastLog;
 #endif
 
-    std::vector<SgUctStatisticsBase> m_signatureStat;
+    std::vector<SgUctStatisticsBaseVolatile> m_signatureStat;
 
     void ApplyRootFilter(std::vector<SgMove>& moves);
 

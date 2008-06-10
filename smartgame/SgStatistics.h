@@ -87,10 +87,15 @@ SgStatisticsBase<FLOAT,INT>::SgStatisticsBase(FLOAT val, INT count)
 template<typename FLOAT, typename INT>
 void SgStatisticsBase<FLOAT,INT>::Add(FLOAT val)
 {
-    ++m_count;
-    SG_ASSERT(m_count > 0); // overflow
+    // Write order dependency: at least on class (SgUctSearch in lock-free
+    // mode) uses SgStatisticsBase concurrently without locking and assumes
+    // that m_mean is valid, if m_count is greater zero
+    INT count = m_count;
+    ++count;
+    SG_ASSERT(count > 0); // overflow
     val -= m_mean;
-    m_mean +=  val / m_count;
+    m_mean +=  val / count;
+    m_count = count;
 }
 
 template<typename FLOAT, typename INT>
