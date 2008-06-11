@@ -341,10 +341,19 @@ public:
     after the children were created, such that SgUctNode::HasChildren()
     returns only true, if the children are ready to use. Because of the
     platform-dependency, lock-free is not enabled by default.
-
-    Note that statistics collected during the search may not be accurate in
+    Statistics collected during the search may not be accurate in
     lock-free usage, because counts and mean values may be manipulated
     concurrently.
+
+    In particular, the IA-32 and Intel-64 architecture guarantees these
+    assumptions. Writes of the used data types are atomic (if properly
+    aligned) and writes by one CPU are seen in the same order by other CPUs
+    (the data should still be declared as volatile to avoid, the the compiler
+    reorders writes for optimization purposes). In addition, the architecture
+    synchronizes CPU caches after writes. See
+    <a href="http://download.intel.com/design/processor/manuals/253668.pdf">
+    Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
+    7.1 (Locked Atomic Operations) and 7.2 (Memory Ordering).
 */
 
 /** @page sguctsearchweights Estimator weights in SgUctSearch
