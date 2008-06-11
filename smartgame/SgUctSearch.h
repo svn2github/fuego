@@ -590,6 +590,15 @@ public:
     /** See BiasTermConstant() */
     void SetBiasTermConstant(float biasTermConstant);
 
+    /** Don't use a bias term.
+        Logically equivalent to setting the bias term constant to zero,
+        but faster, because the bias term computation is skipped.
+    */
+    bool NoBiasTerm() const;
+
+    /** See NoBiasTerm() */
+    void SetNoBiasTerm(bool enable);
+
     /** Maximum number of nodes in the tree. */
     std::size_t MaxNodes() const;
 
@@ -843,6 +852,9 @@ private:
     /** See Rave() */
     bool m_rave;
 
+    /** See NoBiasTerm() */
+    bool m_noBiasTerm;
+
     /** See SgUctMoveSelect */
     SgUctMoveSelect m_moveSelect;
 
@@ -1091,6 +1103,11 @@ inline const SgUctStatisticsExt& SgUctSearch::MovesInTreeStat() const
     return m_movesInTreeStat;
 }
 
+inline bool SgUctSearch::NoBiasTerm() const
+{
+    return m_noBiasTerm;
+}
+
 inline std::size_t SgUctSearch::NumberThreads() const
 {
     return m_numberThreads;
@@ -1172,6 +1189,11 @@ inline void SgUctSearch::SetMaxNodes(std::size_t maxNodes)
 inline void SgUctSearch::SetMoveSelect(SgUctMoveSelect moveSelect)
 {
     m_moveSelect = moveSelect;
+}
+
+inline void SgUctSearch::SetNoBiasTerm(bool enable)
+{
+    m_noBiasTerm = enable;
 }
 
 inline void SgUctSearch::SetNumberPlayouts(std::size_t n)

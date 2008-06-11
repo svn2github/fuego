@@ -216,6 +216,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
     : m_threadStateFactory(threadStateFactory),
       m_logGames(false),
       m_rave(false),
+      m_noBiasTerm(false),
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_priorInit(SG_UCTPRIORINIT_BOTH),
       m_raveCheckSame(false),
@@ -495,10 +496,15 @@ float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
         value = GetValueEstimateRaveNoSig(child);
     else
         value = GetValueEstimate(child);
-    size_t moveCount = child.MoveCount();
-    float bound = value + m_biasTermConstant
-        * m_biasTermPrecomp.Get(posCount, logPosCount, moveCount + 1);
-    return bound;
+    if (m_noBiasTerm)
+        return value;
+    else
+    {
+        size_t moveCount = child.MoveCount();
+        float bound = value + m_biasTermConstant
+            * m_biasTermPrecomp.Get(posCount, logPosCount, moveCount + 1);
+        return bound;
+    }
 }
 
 const SgUctStatisticsBaseVolatile& SgUctSearch::GetSignatureStat(SgMove mv)
