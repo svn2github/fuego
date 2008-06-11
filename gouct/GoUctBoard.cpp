@@ -51,7 +51,7 @@ void GoUctBoard::CheckConsistency() const
         if (IsBorder(p))
             continue;
         int c = m_color[p];
-        SG_ASSERT(IsEmptyBlackWhite(c));
+        SG_ASSERT_EBW(c);
         int n = 0;
         for (SgNb4Iterator it(p); it; ++it)
             if (m_color[*it] == SG_EMPTY)
@@ -366,7 +366,7 @@ int GoUctBoard::AdjacentBlocks(SgPoint point, int maxLib, SgPoint anchors[],
 {
     SG_DEBUG_ONLY(maxAnchors);
     SG_ASSERT(Occupied(point));
-    const SgBlackWhite other = OppBW(GetStone(point));
+    const SgBlackWhite other = SgOppBW(GetStone(point));
     int n = 0;
     SgReserveMarker reserve(m_marker);
     SG_UNUSED(reserve);
@@ -484,7 +484,7 @@ void GoUctBoard::KillBlock(SgPoint p)
 {
     Block* block = m_block[p];
     SgBlackWhite c = GetColor(p);
-    SgBlackWhite opp = OppBW(c);
+    SgBlackWhite opp = SgOppBW(c);
     for (Block::StoneIterator it(block->Stones()); it; ++it)
     {
         SgPoint stn = *it;
@@ -509,7 +509,7 @@ void GoUctBoard::Play(SgPoint p, SgBlackWhite player)
     CheckConsistency();
     m_koPoint = SG_NULLPOINT;
     m_capturedStones.Clear();
-    SgBlackWhite opp = OppBW(player);
+    SgBlackWhite opp = SgOppBW(player);
     if (p == SG_PASS)
     {
         m_toPlay = opp;

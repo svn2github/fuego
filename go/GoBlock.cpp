@@ -93,7 +93,7 @@ void GoBlock::Write(std::ostream& stream) const
 
 void GoBlock::WriteID(std::ostream& stream) const
 {
-    stream << ' ' << BW(Color())
+    stream << ' ' << SgBW(Color())
            << " Block " << SgWritePoint(Anchor());
 }
 

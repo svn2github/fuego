@@ -88,7 +88,7 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
 
     SgPointSet libs = pts & bd.AllEmpty() & safe.Border(size);
     SgPointSet interior = pts - libs;
-    interior -= bd.All(OppBW(color)); // remove opp. stones.
+    interior -= bd.All(SgOppBW(color)); // remove opp. stones.
     SgList<SgPoint> unsafeInterior;
     ReduceToAnchors(bd, interior & bd.All(color), &unsafeInterior);
     unsafe.Concat(&unsafeInterior);
@@ -125,7 +125,7 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
     // try to prove opp. can't live inside.
     if (maxNuOmissions == 1)
     {
-        SgBlackWhite opp(OppBW(color));
+        SgBlackWhite opp(SgOppBW(color));
         if (! MightMakeLife(bd, interior, safe, opp))
             /* */ return true; /* */
     }
@@ -197,7 +197,7 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
     const GoRegion* r = 0;
 
     if (DEBUG_ExtendedMightMakeLife)
-        SgDebug() << "ExtendedMightMakeLife for " << BW(color) 
+        SgDebug() << "ExtendedMightMakeLife for " << SgBW(color)
                   << " area " << area << '\n';
     
     // Check if region is a nakade shape that fills all potential eye space
@@ -393,7 +393,7 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
     SgPointSet boundary(pts.Border(size));
     if (boundary.SubsetOf(safe))
     {
-        SgBlackWhite opp = OppBW(color);
+        SgBlackWhite opp = SgOppBW(color);
         if (! ExtendedMightMakeLife(board, regions, pts, safe, opp))
             /* */ return true; /* */
     }
@@ -408,7 +408,7 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
     SgPointSet boundary(pts.Border(size));
     if (boundary.SubsetOf(safe))
     {
-        SgBlackWhite opp = OppBW(color);
+        SgBlackWhite opp = SgOppBW(color);
         if (! MightMakeLife(board, pts, safe, opp))
             /* */ return true; /* */
     }

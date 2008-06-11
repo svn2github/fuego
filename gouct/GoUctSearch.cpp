@@ -157,7 +157,7 @@ void AppendGame(SgNode* node, size_t gameNumber, int threadId,
     for (size_t i = 0; i < nuMovesInTree; ++i)
     {
         node = AppendChild(node, toPlay, info.m_inTreeSequence[i]);
-        toPlay = OppBW(toPlay);
+        toPlay = SgOppBW(toPlay);
     }
     SgNode* lastInTreeNode = node;
     SgBlackWhite lastInTreeToPlay = toPlay;
@@ -173,7 +173,7 @@ void AppendGame(SgNode* node, size_t gameNumber, int threadId,
         for (size_t j = nuMovesInTree; j < info.m_sequence[i].size(); ++j)
         {
             node = AppendChild(node, toPlay, info.m_sequence[i][j]);
-            toPlay = OppBW(toPlay);
+            toPlay = SgOppBW(toPlay);
         }
     }
 }

@@ -201,7 +201,7 @@ bool TestSearch::Execute(SgMove move, int* delta, int depth)
         SgDebug() << "TestSearch::Execute: " << move << '\n';
     SG_ASSERT(*delta == SgSearch::DEPTH_UNIT);
     SG_UNUSED(delta);
-    m_toPlay = OppBW(m_toPlay);
+    m_toPlay = SgOppBW(m_toPlay);
     size_t child = CurrentNode().m_child;
     while (child != NO_NODE)
     {
@@ -244,7 +244,7 @@ void TestSearch::TakeBack()
 {
     if (m_write)
         SgDebug() << "TestSearch::TakeBack\n";
-    m_toPlay = OppBW(m_toPlay);
+    m_toPlay = SgOppBW(m_toPlay);
     m_currentNode = CurrentNode().m_father;
     SG_ASSERT(m_currentNode != NO_NODE);
 }

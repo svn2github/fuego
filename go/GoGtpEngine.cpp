@@ -254,7 +254,7 @@ void GoGtpEngine::CheckLegal(string message, SgBlackWhite color, SgPoint move,
     if (illegal)
     {
         int moveNumber = GetGame().CurrentMoveNumber() + 1;
-        throw GtpFailure() << message << moveNumber << ' ' << BW(color)
+        throw GtpFailure() << message << moveNumber << ' ' << SgBW(color)
                            << ' ' << SgWritePoint(move) << reason;
     }
 }
@@ -820,7 +820,7 @@ void GoGtpEngine::CmdPointInfo(GtpCommand& cmd)
     SgPoint p = PointArg(cmd);
     const GoBoard& bd = Board();
     cmd << "Point:\n"
-        << SgWriteLabel("Color") << EBW(bd.GetColor(p)) << '\n'
+        << SgWriteLabel("Color") << SgEBW(bd.GetColor(p)) << '\n'
         << SgWriteLabel("InCenter") << bd.InCenter(p) << '\n'
         << SgWriteLabel("InCorner") << bd.InCorner(p) << '\n'
         << SgWriteLabel("Line") << bd.Line(p) << '\n'
@@ -1360,12 +1360,12 @@ void GoGtpEngine::WriteBoardInfo(GtpCommand& cmd, const GoBoard& bd)
     cmd << "Board:\n"
         << SgWriteLabel("Hash") << bd.GetHashCode() << '\n'
         << SgWriteLabel("HashToPlay") << bd.GetHashCodeInclToPlay() << '\n'
-        << SgWriteLabel("KoColor") << EBW(bd.KoColor()) << '\n'
+        << SgWriteLabel("KoColor") << SgEBW(bd.KoColor()) << '\n'
         << SgWriteLabel("MoveNumber") << bd.MoveNumber() << '\n'
         << SgWriteLabel("NumStones[B]") << bd.TotalNumStones(SG_BLACK) << '\n'
         << SgWriteLabel("NumStones[W]") << bd.TotalNumStones(SG_WHITE) << '\n'
         << SgWriteLabel("NumEmpty") << bd.TotalNumEmpty() << '\n'
-        << SgWriteLabel("ToPlay") << BW(bd.ToPlay()) << '\n'
+        << SgWriteLabel("ToPlay") << SgBW(bd.ToPlay()) << '\n'
         << SgWriteLabel("CountPlay") << bd.CountPlay() << '\n'
         << "Sets:\n"
         << SgWritePointSet(bd.AllPoints(), "AllPoints")

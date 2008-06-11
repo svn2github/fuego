@@ -496,7 +496,7 @@ int GoLadderBoard::Ladder(SgPoint prey, SgBlackWhite toPlay,
         return GoodForPrey;
     int result = 0;
     m_preyColor = m_board.GetStone(prey);
-    m_hunterColor = OppBW(m_preyColor);
+    m_hunterColor = SgOppBW(m_preyColor);
     int numLib = m_board.NumLiberties(prey);
     if (2 < numLib)
         result = GoodForPrey;
@@ -612,7 +612,7 @@ bool GoLadderBoard::IsSnapback(SgPoint prey)
     if (m_board.IsSingleStone(prey) && m_board.InAtari(prey))
     {
         SgPoint liberty = *GoBoard::LibertyIterator(m_board, prey);
-        if (PlayIfLegal(m_board, liberty, OppBW(m_board.GetStone(prey))))
+        if (PlayIfLegal(m_board, liberty, SgOppBW(m_board.GetStone(prey))))
         {
             isSnapback = (m_board.InAtari(liberty)
                           && ! m_board.IsSingleStone(liberty));
@@ -684,7 +684,7 @@ Status LadderStatus(GoBoard& bd, SgPoint prey, bool twoLibIsEscape,
     SgBlackWhite preyColor = bd.GetStone(prey);
     SgList<SgPoint> captureSequence;
     Status status = Escaped;
-    if (ladderBoard->Ladder(prey, OppBW(preyColor), &captureSequence,
+    if (ladderBoard->Ladder(prey, SgOppBW(preyColor), &captureSequence,
                             twoLibIsEscape) < 0)
     {
         SgList<SgPoint> escapeSequence;
@@ -731,7 +731,7 @@ bool IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty, SgBlackWhite col,
     GoBoard& bd = mbd.Board();
     
     const SgBlackWhite toPlay = bd1.ToPlay();
-    bd.SetToPlay(OppBW(col));
+    bd.SetToPlay(SgOppBW(col));
     bool isProtected;
     if (! PlayIfLegal(bd, liberty))
         isProtected = bd.LastMoveInfo(isSuicide);

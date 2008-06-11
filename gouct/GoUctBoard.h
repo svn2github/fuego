@@ -336,7 +336,7 @@ private:
 
         void InitSingleStoneBlock(SgBlackWhite c, SgPoint anchor)
         {
-            SG_ASSERT(IsBlackWhite(c));
+            SG_ASSERT_BW(c);
             m_color = c;
             m_anchor = anchor;
             m_stones.SetTo(anchor);
@@ -345,7 +345,7 @@ private:
 
         void InitNewBlock(SgBlackWhite c, SgPoint anchor)
         {
-            SG_ASSERT(IsBlackWhite(c));
+            SG_ASSERT_BW(c);
             m_color = c;
             m_anchor = anchor;
             m_stones.Clear();
@@ -704,7 +704,7 @@ inline bool GoUctBoard::IsLibertyOfBlock(SgPoint p, SgPoint anchor) const
 
 inline bool GoUctBoard::CanCapture(SgPoint p, SgBlackWhite c) const
 {
-    SgBlackWhite opp = OppBW(c);
+    SgBlackWhite opp = SgOppBW(c);
     for (SgNb4Iterator nb(p); nb; ++nb)
         if (IsColor(*nb, opp) && AtMostNumLibs(*nb, 1))
             return true;
@@ -715,7 +715,7 @@ inline bool GoUctBoard::IsSuicide(SgPoint p, SgBlackWhite toPlay) const
 {
     if (HasEmptyNeighbors(p))
         return false;
-    SgBlackWhite opp = OppBW(toPlay);
+    SgBlackWhite opp = SgOppBW(toPlay);
     for (SgNb4Iterator it(p); it; ++it)
     {
         if (IsBorder(*it))
@@ -738,7 +738,7 @@ inline bool GoUctBoard::IsBorder(SgPoint p) const
 inline bool GoUctBoard::IsColor(SgPoint p, int c) const
 {
     SG_ASSERT(p != SG_PASS);
-    SG_ASSERT(IsEmptyBlackWhite(c));
+    SG_ASSERT_EBW(c);
     return m_color[p] == c;
 }
 
@@ -875,7 +875,7 @@ inline bool GoUctBoard::OccupiedInAtari(SgPoint p) const
 
 inline SgBlackWhite GoUctBoard::Opponent() const
 {
-    return OppBW(m_toPlay);
+    return SgOppBW(m_toPlay);
 }
 
 inline void GoUctBoard::Play(GoPlayerMove move)

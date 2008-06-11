@@ -67,7 +67,7 @@ void GoGtpExtraCommands::CmdStaticLadder(GtpCommand& cmd)
     SgBlackWhite c = m_bd.GetColor(p);
     if (GoStaticLadder::IsLadder(m_bd, p, c))
         cmd << "captured";
-    else if (GoStaticLadder::IsLadder(m_bd, p, OppBW(c)))
+    else if (GoStaticLadder::IsLadder(m_bd, p, SgOppBW(c)))
         cmd << "unsettled";
     else
         cmd << "escaped";

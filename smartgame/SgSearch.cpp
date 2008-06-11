@@ -420,7 +420,7 @@ bool SgSearch::CallExecute(SgMove move, int* delta, int depth)
 {
     if (DEBUG_SEARCH)
         SgDebug() << "SgSearch::CallExecute: d=" << depth << ' '
-                  << BW(GetToPlay()) << ' ' << MoveString(move) << '\n';
+                  << SgBW(GetToPlay()) << ' ' << MoveString(move) << '\n';
     if (Execute(move, delta, depth))
     {
         m_stat.IncNumMoves();

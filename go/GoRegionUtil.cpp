@@ -115,7 +115,7 @@ bool TwoSeparateEyes(const GoBoard& bd, const SgPointSet& pts,
             {
                 for (SgSetIterator it(area); it; ++it)
                 {
-                    if (bd.IsLegal(*it, OppBW(color)))
+                    if (bd.IsLegal(*it, SgOppBW(color)))
                     {   
                         return false;
                     }
@@ -239,7 +239,7 @@ bool GoRegionUtil::StaticIs1VitalAndConnected(const GoBoard& board,
     
     bool is1Vital = false;
     
-    if (IsSmallRegion(board, pts, OppBW(color)))
+    if (IsSmallRegion(board, pts, SgOppBW(color)))
     {
         if (anchors.MaxLength(1)) // single block, connected.
             /* */ return true; /* */

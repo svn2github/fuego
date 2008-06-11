@@ -474,7 +474,7 @@ inline bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p)
     if (bd.NumEmptyNeighbors(p) >= 2)
         return false;
     const SgBlackWhite toPlay = bd.ToPlay();
-    const SgBlackWhite opp = OppBW(toPlay);
+    const SgBlackWhite opp = SgOppBW(toPlay);
     SgPoint lib = SG_NULLPOINT;
     bool hasOwnNb = false;
     bool hasCapture = false;
@@ -652,7 +652,7 @@ std::ostream& GoWriteBoard(std::ostream& out, const BOARD& bd)
             // More important info first, because the number of infos shown
             // depends on the board size
             if (row == 1)
-                buffer << BW(bd.ToPlay()) << " to play";
+                buffer << SgBW(bd.ToPlay()) << " to play";
         }
         buffer << '\n';
     }

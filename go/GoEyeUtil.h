@@ -152,7 +152,7 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
     // Function is inline despite its large size, because it returns quickly
     // on average, which makes the function call an overhead
 
-    SgBlackWhite opp = OppBW(c);
+    SgBlackWhite opp = SgOppBW(c);
     if (bd.HasEmptyNeighbors(p) || bd.HasNeighbors(p, opp))
         return false;
     SgSList<SgPoint,2> anchors;

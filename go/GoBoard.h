@@ -642,7 +642,7 @@ private:
 
         void Init(SgBlackWhite c, SgPoint anchor)
         {
-            SG_ASSERT(IsBlackWhite(c));
+            SG_ASSERT_BW(c);
             m_color = c;
             m_anchor = anchor;
             m_stones.SetTo(anchor);
@@ -652,7 +652,7 @@ private:
         void Init(SgBlackWhite c, SgPoint anchor, SgPointSList stones,
                   LibertyList liberties)
         {
-            SG_ASSERT(IsBlackWhite(c));
+            SG_ASSERT_BW(c);
             SG_ASSERT(stones.Contains(anchor));
             m_color = c;
             m_anchor = anchor;
@@ -1361,7 +1361,7 @@ inline SgPoint GoBoard::Get2ndLastMove() const
     const StackEntry& entry1 = (*m_moves)[moveNumber - 1];
     const StackEntry& entry2 = (*m_moves)[moveNumber - 2];
     SgBlackWhite toPlay = ToPlay();
-    if (entry1.m_color != OppBW(toPlay) || entry2.m_color != toPlay)
+    if (entry1.m_color != SgOppBW(toPlay) || entry2.m_color != toPlay)
         return SG_NULLMOVE;
     return entry2.m_point;
 }
@@ -1387,7 +1387,7 @@ inline SgPoint GoBoard::GetLastMove() const
     if (moveNumber == 0)
         return SG_NULLMOVE;
     const StackEntry& entry = (*m_moves)[moveNumber - 1];
-    if (entry.m_color != OppBW(ToPlay()))
+    if (entry.m_color != SgOppBW(ToPlay()))
         return SG_NULLMOVE;
     return entry.m_point;
 }
@@ -1466,7 +1466,7 @@ inline bool GoBoard::IsLibertyOfBlock(SgPoint p, SgPoint anchor) const
 
 inline bool GoBoard::CanCapture(SgPoint p, SgBlackWhite c) const
 {
-    SgBlackWhite opp = OppBW(c);
+    SgBlackWhite opp = SgOppBW(c);
     for (SgNb4Iterator nb(p); nb; ++nb)
         if (IsColor(*nb, opp) && AtMostNumLibs(*nb, 1))
             return true;
@@ -1492,7 +1492,7 @@ inline bool GoBoard::IsSuicide(SgPoint p, SgBlackWhite toPlay) const
 {
     if (HasEmptyNeighbors(p))
         return false;
-    SgBlackWhite opp = OppBW(toPlay);
+    SgBlackWhite opp = SgOppBW(toPlay);
     for (SgNb4Iterator it(p); it; ++it)
     {
         if (IsBorder(*it))
@@ -1515,7 +1515,7 @@ inline bool GoBoard::IsBorder(SgPoint p) const
 inline bool GoBoard::IsColor(SgPoint p, int c) const
 {
     SG_ASSERT(p != SG_PASS);
-    SG_ASSERT(IsEmptyBlackWhite(c));
+    SG_ASSERT_EBW(c);
     return m_state.m_color[p] == c;
 }
 
@@ -1744,7 +1744,7 @@ inline bool GoBoard::OnEdge(SgPoint p) const
 
 inline SgBlackWhite GoBoard::Opponent() const
 {
-    return OppBW(m_state.m_toPlay);
+    return SgOppBW(m_state.m_toPlay);
 }
 
 inline void GoBoard::Play(GoPlayerMove move)

@@ -40,7 +40,7 @@ std::ostream& operator<<(std::ostream& stream, const SgStrategy& s)
 
 void SgStrategy::Write(std::ostream& stream) const
 {
-    stream << "Player " << BW(m_player)
+    stream << "Player " << SgBW(m_player)
            << ", Status " << Status()
            << '\n';
 }

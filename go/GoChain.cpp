@@ -82,7 +82,7 @@ bool GoChain::AllEmptyAreLiberties(const SgPointSet& area) const
 
 void GoChain::WriteID(std::ostream& stream) const
 {
-    stream << ' '<< BW(Color()) << " GoChain " 
+    stream << ' '<< SgBW(Color()) << " GoChain "
            << SgWritePoint(Anchor());
 }
 

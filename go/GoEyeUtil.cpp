@@ -144,7 +144,7 @@ bool AlmostFilledByLivingShape(const GoBoard& bd,
                           SgBlackWhite stoneColor)
 {
     // area must be surrounded by opponent.
-    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(OppBW(stoneColor))));
+    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(SgOppBW(stoneColor))));
 
     if ((points & bd.AllEmpty()).IsSize(1))
     {
@@ -161,7 +161,7 @@ bool ContainsLivingShape(const GoBoard& bd,
                           SgBlackWhite stoneColor)
 {
     // area must be surrounded by opponent.
-    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(OppBW(stoneColor))));
+    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(SgOppBW(stoneColor))));
 
     return IsAlwaysAliveBlock(points & bd.All(stoneColor));
 }
@@ -174,7 +174,7 @@ bool AlmostFilledByNakade(const GoBoard& bd,
                           SgBlackWhite stoneColor)
 {
     // area must be surrounded by opponent.
-    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(OppBW(stoneColor))));
+    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(SgOppBW(stoneColor))));
 
     if ((points & bd.AllEmpty()).IsSize(1))
     {
@@ -247,40 +247,41 @@ GoEyeStatus Special2x3Cases(const GoBoard& bd,
             const SgPoint p = stones.PointOf();
             switch (nuStones)
             {
-            case 1 : // o.. Single stone on edge can kill by diagonal move
+            case 1: // o.. Single stone on edge can kill by diagonal move
                      // ...
-                if (bd.Line(p) == 1 && bd.HasNeighbors(p, OppBW(stoneColor)))
+                if (bd.Line(p) == 1
+                    && bd.HasNeighbors(p, SgOppBW(stoneColor)))
                     return EYE_ONE_AND_HALF;
-            break;
-            case 2 : // o.o 1.5 eyes. B can make sente seki, W can kill
-                     // ...
-                     if (   bd.Line(p) == 1
-                         && code == 2
-                         && NuEdgePoints(bd, stones) == 2
-                        )
-                         return EYE_ONE_AND_HALF;
-                     // o.. followup from case 1: only 1 eye
-                     // .o.
-                     if (   code == 2
-                         && code8 == 20
-                        )
-                     {
-                        const SgPoint p1 = (stones & bd.LineSet(1)).PointOf();
-                        if (bd.HasNeighbors(p1, OppBW(stoneColor)))
-                            return EYE_ONE;
-                     }
-            break;
+                break;
+            case 2: // o.o 1.5 eyes. B can make sente seki, W can kill
+                // ...
+                if (   bd.Line(p) == 1
+                       && code == 2
+                       && NuEdgePoints(bd, stones) == 2
+                    )
+                    return EYE_ONE_AND_HALF;
+                // o.. followup from case 1: only 1 eye
+                // .o.
+                if (   code == 2
+                    && code8 == 20
+                       )
+                {
+                    const SgPoint p1 = (stones & bd.LineSet(1)).PointOf();
+                    if (bd.HasNeighbors(p1, SgOppBW(stoneColor)))
+                        return EYE_ONE;
+                }
+                break;
             case 3 : // o.o 1 eye
                      // .o.
-                      if (   code == 3
-                         && code8 == 120
-                         )
-                     {
-                        const SgPoint p1 = (stones & bd.LineSet(1)).PointOf();
-                        if (bd.HasNeighbors(p1, OppBW(stoneColor)))
-                            return EYE_ONE;
-                     }
-            break;
+                if (   code == 3
+                    && code8 == 120
+                    )
+                {
+                    const SgPoint p1 = (stones & bd.LineSet(1)).PointOf();
+                    if (bd.HasNeighbors(p1, SgOppBW(stoneColor)))
+                        return EYE_ONE;
+                }
+                break;
             }
         }
     }
@@ -390,7 +391,7 @@ bool TwoDiagonalStonesInBulkyFour(const GoBoard& bd,
                                   SgBlackWhite stoneColor)
 {
     // bulky four area must be surrounded by opponent.
-    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(OppBW(stoneColor))));
+    SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(SgOppBW(stoneColor))));
     
     if ((points & bd.All(stoneColor)).IsSize(2))
     {
@@ -471,7 +472,7 @@ bool GoEyeUtil::IsSinglePointEye(const GoBoard& bd, SgPoint p,
                                  SgBlackWhite color)
 {
     SG_ASSERT(bd.IsEmpty(p));
-    const SgBlackWhite opp = OppBW(color);
+    const SgBlackWhite opp = SgOppBW(color);
     if (bd.HasEmptyNeighbors(p) || bd.HasNeighbors(p, opp))
         return false;
     if (bd.Line(p) == 1)
@@ -484,7 +485,7 @@ bool GoEyeUtil::IsPossibleEye(const GoBoard& board, SgBlackWhite color,
 {
     bool isPossibleEye = false;
     SG_ASSERT(board.GetColor(p) != color);
-    const SgBlackWhite opp = OppBW(color);
+    const SgBlackWhite opp = SgOppBW(color);
     if (board.Line(p) == 1) // corner or edge
     {
         const int nuOwn = (board.Pos(p) == 1) ? 2 : 4;
@@ -532,7 +533,7 @@ bool AreSameBlocks(const SgPoint anchors1[], const SgPoint anchors2[])
 bool GoEyeUtil::IsTwoPointEye(const GoBoard& bd, SgPoint p, 
                    SgBlackWhite color)
 {
-    const SgBlackWhite opp = OppBW(color);
+    const SgBlackWhite opp = SgOppBW(color);
     if (bd.NumEmptyNeighbors(p) == 1
         && bd.NumNeighbors(p, opp) == 0
         )
@@ -558,7 +559,7 @@ bool GoEyeUtil::NumberOfMoveToEye(const GoBoard& board, SgBlackWhite color,
                                   SgPoint p, int& number)
 {
     SG_ASSERT(board.IsEmpty(p));
-    SgBlackWhite att = OppBW(color);  // attacker
+    SgBlackWhite att = SgOppBW(color);  // attacker
 
     if ( board.Line(p) == 1) // corner or edge
     {
@@ -592,7 +593,7 @@ bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p,
     if (!board.IsColor(p, SG_EMPTY))
         return false;
     // All adjacent neighbours must be friendly
-    SgBoardColor opp = OppBW(color);
+    SgBoardColor opp = SgOppBW(color);
     for (SgNb4Iterator adj(p); adj; ++adj)
     {
         SgBoardColor adjColor = board.GetColor(*adj);
@@ -640,7 +641,7 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
         return false;
     
     // If opponent stone then it must be captured to make eye
-    if (board.IsColor(p, OppBW(color)))
+    if (board.IsColor(p, SgOppBW(color)))
     {
         capturing = true;
     
@@ -664,7 +665,7 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
         }
         
         // If adjacent opponent then can never be an eye
-        else if (board.IsColor(adj, OppBW(color)))
+        else if (board.IsColor(adj, SgOppBW(color)))
         {
             if (capturing)
                 counted.Include(adj); // must capture and then fill
@@ -690,7 +691,7 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
                 cost = 1;
             }
             
-            else if (board.IsColor(diag, OppBW(color)))
+            else if (board.IsColor(diag, SgOppBW(color)))
             {
                 // quick safety test
                 if (SinglePointSafe2(board, diag))
@@ -722,7 +723,7 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
         }
         
         // Opponent stones on diagonals must be captured and filled
-        else if (board.IsColor(diag, OppBW(color)))
+        else if (board.IsColor(diag, SgOppBW(color)))
         {
             if (SinglePointSafe2(board, diag))
                 return false;
@@ -858,7 +859,7 @@ void GoEyeUtil::TestNakade(const SgPointSet& points,
     SG_UNUSED(makeFalse);
     isNakade = makeNakade = maybeSeki = sureSeki = false;
     SgPoint vitalP(SG_NULLPOINT);
-    const SgBlackWhite opp = OppBW(color);
+    const SgBlackWhite opp = SgOppBW(color);
     const int nuPoints = points.Size();
     
     SG_ASSERT(nuPoints >= 3); // don't call for smaller areas, no need,

@@ -77,7 +77,7 @@ void GoBoard::CheckConsistency() const
         if (IsBorder(p))
             continue;
         int c = m_state.m_color[p];
-        SG_ASSERT(IsEmptyBlackWhite(c));
+        SG_ASSERT_EBW(c);
         int n = 0;
         for (SgNb4Iterator it(p); it; ++it)
             if (m_state.m_color[*it] == SG_EMPTY)
@@ -160,7 +160,7 @@ bool GoBoard::CheckKo(SgBlackWhite player)
     if (KoRepetitionAllowed()
         && (m_koLoser != player)
         && (! m_koModifiesHash || (m_state.m_koLevel < MAX_KOLEVEL))
-        && (m_koColor != OppBW(player)))
+        && (m_koColor != SgOppBW(player)))
     {
         ++m_state.m_koLevel;
         m_koColor = player;
@@ -390,7 +390,7 @@ void GoBoard::RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c)
 
 void GoBoard::RestoreKill(Block* block, SgBlackWhite c)
 {
-    SgBlackWhite opp = OppBW(c);
+    SgBlackWhite opp = SgOppBW(c);
     for (Block::StoneIterator it(block->Stones()); it; ++it)
     {
         SgPoint stn = *it;
@@ -465,7 +465,7 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
     }
     if (m_killCaptures)
         for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
-            RestoreKill(*it, OppBW(entry.m_color));
+            RestoreKill(*it, SgOppBW(entry.m_color));
     AddLibToAdjBlocks(p);
 }
 
@@ -551,7 +551,7 @@ void GoBoard::Init(int size, const GoRules& rules, const GoSetup& setup)
 
 void GoBoard::InitBlock(GoBoard::Block& block, SgBlackWhite c, SgPoint anchor)
 {
-    SG_ASSERT(IsBlackWhite(c));
+    SG_ASSERT_BW(c);
     Block::LibertyList liberties;
     SgPointSList stones;
     SgReserveMarker reserve(m_marker);
@@ -597,7 +597,7 @@ int GoBoard::AdjacentBlocks(SgPoint point, int maxLib, SgPoint anchors[],
 {
     SG_DEBUG_ONLY(maxAnchors);
     SG_ASSERT(Occupied(point));
-    const SgBlackWhite other = OppBW(GetStone(point));
+    const SgBlackWhite other = SgOppBW(GetStone(point));
     int n = 0;
     SgReserveMarker reserve(m_marker);
     SG_UNUSED(reserve);
@@ -738,7 +738,7 @@ void GoBoard::KillBlock(SgPoint p)
 {
     Block* block = m_state.m_block[p];
     SgBlackWhite c = GetColor(p);
-    SgBlackWhite opp = OppBW(c);
+    SgBlackWhite opp = SgOppBW(c);
     for (Block::StoneIterator it(block->Stones()); it; ++it)
     {
         SgPoint stn = *it;
@@ -835,7 +835,7 @@ void GoBoard::Play(SgPoint p, SgBlackWhite player)
     m_state.m_koPoint = SG_NULLPOINT;
     m_capturedStones.Clear();
     m_moveInfo.reset();
-    SgBlackWhite opp = OppBW(player);
+    SgBlackWhite opp = SgOppBW(player);
     if (IsPass(p))
     {
         m_state.m_toPlay = opp;

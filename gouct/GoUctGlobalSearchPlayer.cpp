@@ -292,7 +292,7 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay)
         }
         if (node->HasProp(SG_PROP_MOVE))
         {
-            if (! HasMove(node, OppBW(toPlay)))
+            if (! HasMove(node, SgOppBW(toPlay)))
             {
                 SgDebug() <<
                     "GoUctGlobalSearchPlayer::FindInitTree: "
@@ -302,7 +302,7 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay)
             SgPoint p = node->NodeMove();
             SG_ASSERT(p != SG_NULLMOVE);
             sequence.insert(sequence.begin(), p);
-            toPlay = OppBW(toPlay);
+            toPlay = SgOppBW(toPlay);
         }
         node = node->Father();
         if (node == 0)

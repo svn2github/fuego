@@ -85,7 +85,7 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
         SgPoint move = child.Move();
         out << "(;" << (toPlay == SG_BLACK ? 'B' : 'W') << '['
             << PointToSgfString(move, boardSize, SG_PROPPOINTFMT_GO) << ']';
-        SaveNode(out, tree, child, OppBW(toPlay), boardSize);
+        SaveNode(out, tree, child, SgOppBW(toPlay), boardSize);
         out << ")\n";
     }
 }
@@ -161,7 +161,7 @@ void GoUctUtil::PrintBestSequence(const SgUctSearch& search,
     {
         out << (toPlay == SG_BLACK ? " B ": " W ")
             << SgWritePoint(sequence[i]);
-        toPlay = OppBW(toPlay);
+        toPlay = SgOppBW(toPlay);
     }
 }
 

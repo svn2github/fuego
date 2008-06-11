@@ -231,7 +231,7 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
     {
         if (! GoBoardUtil::SelfAtari(bd, p))
             return false;
-        SgBlackWhite opp = OppBW(toPlay);
+        SgBlackWhite opp = SgOppBW(toPlay);
         SgPoint replaceMove = SG_NULLMOVE;
         // Replace move is the liberty we would have after playing at p
         for (SgNb4Iterator it(p); it; ++it)
@@ -275,7 +275,7 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
             {
                 // check if p is a capturing move: then stay with p.
                 SgPoint anchors[4 + 1];
-                bd.NeighborBlocks(p, OppBW(toPlay), 1, anchors);
+                bd.NeighborBlocks(p, SgOppBW(toPlay), 1, anchors);
                 if (anchors[0] != SG_ENDPOINT)
                     // at least one neighbor in atari exists
                     return false;

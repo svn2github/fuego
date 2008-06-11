@@ -1182,7 +1182,7 @@ bool SgPropPlayer::FromString(const std::vector<std::string>& values,
 
 void SgPropPlayer::ChangeToOpponent()
 {
-    m_player = OppBW(m_player);
+    m_player = SgOppBW(m_player);
 }
 
 //----------------------------------------------------------------------------

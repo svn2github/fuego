@@ -23,20 +23,20 @@ BOOST_STATIC_ASSERT(SG_BLACK + 1 == SG_WHITE);
 /** SG_BLACK or SG_WHITE */
 typedef int SgBlackWhite;
 
-inline bool IsBlackWhite(int c)
+inline bool SgIsBlackWhite(int c)
 {
     return c == SG_BLACK || c == SG_WHITE;
 }
 
-#define SG_ASSERT_BW(c) SG_ASSERT(IsBlackWhite(c))
+#define SG_ASSERT_BW(c) SG_ASSERT(SgIsBlackWhite(c))
 
-inline SgBlackWhite OppBW(SgBlackWhite c)
+inline SgBlackWhite SgOppBW(SgBlackWhite c)
 {
     SG_ASSERT_BW(c);
     return SG_BLACK + SG_WHITE - c;
 }
 
-inline char BW(SgBlackWhite color)
+inline char SgBW(SgBlackWhite color)
 {
     SG_ASSERT_BW(color);
     return color == SG_BLACK ? 'B' : 'W';
@@ -80,7 +80,7 @@ public:
     /** Return the value of the current element. */
     SgBlackWhite Opp() const
     {
-        return OppBW(m_color);
+        return SgOppBW(m_color);
     }
 
     /** Return true if iteration is valid, otherwise false. */

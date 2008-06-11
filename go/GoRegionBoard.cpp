@@ -224,7 +224,7 @@ void GoRegionBoard::OnExecutedUncodedMove(int move, SgBlackWhite moveColor)
             if (fWasCapture)
             {
             //  FindNewNeighborRegions(move, moveColor);
-                MergeAdjacentAndAddBlock(move, OppBW(moveColor));
+                MergeAdjacentAndAddBlock(move, SgOppBW(moveColor));
             }
 
             m_code = Board().GetHashCode();

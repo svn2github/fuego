@@ -115,9 +115,9 @@ template<class BOARD>
 bool GoUctPatterns<BOARD>::CheckCut1(const GoBoard& bd, SgPoint p,
                                      SgBlackWhite c, int cDir, int otherDir)
 {
-    SG_ASSERT(IsBlackWhite(c));
+    SG_ASSERT_BW(c);
     return bd.IsColor(p + otherDir, c)
-        && bd.IsColor(p + cDir + otherDir, OppBW(c));
+        && bd.IsColor(p + cDir + otherDir, SgOppBW(c));
 }
 
 template<class BOARD>
@@ -125,9 +125,9 @@ bool GoUctPatterns<BOARD>::CheckCut2(const GoBoard& bd, SgPoint p,
                                      const SgBlackWhite c, int cDir,
                                      int otherDir)
 {
-    SG_ASSERT(IsBlackWhite(c));
+    SG_ASSERT_BW(c);
     SG_ASSERT(bd.IsColor(p + cDir, c));
-    const SgBlackWhite opp = OppBW(c);
+    const SgBlackWhite opp = SgOppBW(c);
     return bd.IsColor(p - cDir, c)
         && (   (   bd.IsColor(p + otherDir, opp)
                 && ! bd.IsColor(p - otherDir + cDir, c)
@@ -181,7 +181,7 @@ inline int GoUctPatterns<BOARD>::CodeOfEdgeNeighbors(const BOARD& bd,
 template<class BOARD>
 inline int GoUctPatterns<BOARD>::EBWCode(SgEmptyBlackWhite c)
 {
-    SG_ASSERT(IsEmptyBlackWhite(c));
+    SG_ASSERT_EBW(c);
     int code = c & (SG_BLACK | SG_WHITE);
     SG_ASSERT(code >= 0 && code <= 2);
     return code;
@@ -296,7 +296,7 @@ bool GoUctPatterns<BOARD>::MatchCut(const GoBoard& bd, SgPoint p)
     //cut2
     if (   c1 != SG_EMPTY
         && bd.NumNeighbors(p, c1) == 2
-        && bd.NumNeighbors(p, OppBW(c1)) > 0
+        && bd.NumNeighbors(p, SgOppBW(c1)) > 0
         && bd.NumDiagonals(p, c1) <= 2
         && CheckCut2(bd, p, c1, SG_NS, SG_WE)
        )
@@ -304,7 +304,7 @@ bool GoUctPatterns<BOARD>::MatchCut(const GoBoard& bd, SgPoint p)
     const SgEmptyBlackWhite c3 = bd.GetColor(p + SG_WE);
     if (   c3 != SG_EMPTY
         && bd.NumNeighbors(p, c3) == 2
-        && bd.NumNeighbors(p, OppBW(c3)) > 0
+        && bd.NumNeighbors(p, SgOppBW(c3)) > 0
         && bd.NumDiagonals(p, c3) <= 2
         && CheckCut2(bd, p, c3, SG_WE, SG_NS)
        )
@@ -327,10 +327,10 @@ bool GoUctPatterns<BOARD>::MatchEdge(const GoBoard& bd, SgPoint p,
        )
     {
         const SgEmptyBlackWhite c1 = bd.GetColor(p + side);
-        if (c1 != SG_EMPTY && bd.GetColor(p + side + up) == OppBW(c1))
+        if (c1 != SG_EMPTY && bd.GetColor(p + side + up) == SgOppBW(c1))
             return true;
         const SgEmptyBlackWhite c2 = bd.GetColor(p - side);
-        if (c2 != SG_EMPTY && bd.GetColor(p - side + up) == OppBW(c2))
+        if (c2 != SG_EMPTY && bd.GetColor(p - side + up) == SgOppBW(c2))
             return true;
     }
 
@@ -345,12 +345,12 @@ bool GoUctPatterns<BOARD>::MatchEdge(const GoBoard& bd, SgPoint p,
     const SgBlackWhite toPlay = bd.ToPlay();
     // edge3
     if (    upColor == toPlay
-        && bd.NumDiagonals(p, OppBW(upColor)) > 0
+        && bd.NumDiagonals(p, SgOppBW(upColor)) > 0
         )
         return true;
 
     // edge4
-    if (   upColor == OppBW(toPlay)
+    if (   upColor == SgOppBW(toPlay)
         && bd.NumNeighbors(p, upColor) <= 2
         && bd.NumDiagonals(p, toPlay) > 0
        )
@@ -365,7 +365,7 @@ bool GoUctPatterns<BOARD>::MatchEdge(const GoBoard& bd, SgPoint p,
             return true;
     }
     // edge5
-    if (   upColor == OppBW(toPlay)
+    if (   upColor == SgOppBW(toPlay)
         && bd.NumNeighbors(p, upColor) == 2
         && bd.NumNeighbors(p, toPlay) == 1
         )
@@ -407,7 +407,7 @@ bool GoUctPatterns<BOARD>::MatchHane(const GoBoard& bd, SgPoint p,
     {
         SG_ASSERT(nuBlack + nuWhite == 1);
         const SgBlackWhite col = (nuBlack == 1) ? SG_BLACK : SG_WHITE;
-        const SgBlackWhite opp = OppBW(col);
+        const SgBlackWhite opp = SgOppBW(col);
         const int dir = FindDir(bd, p, col);
         const int otherDir = OtherDir(dir);
         if (   bd.IsEmpty(p + dir + otherDir)
@@ -425,7 +425,7 @@ bool GoUctPatterns<BOARD>::MatchHane(const GoBoard& bd, SgPoint p,
             {
                 const SgEmptyBlackWhite c2 =
                 bd.GetColor(p + dir - otherDir);
-                if (OppBW(c1) == c2)
+                if (SgOppBW(c1) == c2)
                     return true; // hane4
             }
         }

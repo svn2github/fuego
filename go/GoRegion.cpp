@@ -631,7 +631,7 @@ bool GoRegion::IsCorridor() const
     SG_ASSERT(! m_computedFlags.test(isCorridor));
     for (SgSetIterator it(Points()); it; ++it)
     {
-        if ((m_bd.NumNeighbors(*it, OppBW(Color()))
+        if ((m_bd.NumNeighbors(*it, SgOppBW(Color()))
              + m_bd.NumEmptyNeighbors(*it)) > 2)
             return false;
         if (m_bd.NumNeighbors(*it, Color()) == 0)
@@ -699,7 +699,7 @@ void GoRegion::ReInitialize()
 
 void GoRegion::WriteID(std::ostream& stream) const
 {
-    stream << BW(Color()) << " Region "
+    stream << SgBW(Color()) << " Region "
            << SgWritePoint(Points().Center());
 }
 
@@ -810,7 +810,7 @@ void GoRegion::DoComputeFlag(GoRegionFlag flag)
     switch(flag)
     {
     case isSmall:
-        SetFlag(isSmall, IsSmallRegion(m_bd, Points(), OppBW(Color())));
+        SetFlag(isSmall, IsSmallRegion(m_bd, Points(), SgOppBW(Color())));
         break;
     case isCorridor:
         SetFlag(isCorridor, IsCorridor());
@@ -861,7 +861,7 @@ void GoRegion::DoComputeFlag(GoRegionFlag flag)
         break;
     case oppCanLiveInside: // assuming Dep() is safe.
         SetFlag(oppCanLiveInside,
-                MightMakeLife(m_bd, Points(), Dep(), OppBW(Color())));
+                MightMakeLife(m_bd, Points(), Dep(), SgOppBW(Color())));
         break;
     case atLeastSeki:
         SG_ASSERT(false);

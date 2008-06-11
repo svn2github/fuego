@@ -40,18 +40,18 @@ typedef int SgBoardColor;
 #define SG_ASSERT_COLOR(c) \
 SG_ASSERT(c == SG_BLACK || c == SG_WHITE || c == SG_EMPTY || c == SG_BORDER)
 
-inline bool IsEmptyBlackWhite(SgBoardColor c)
+inline bool SgIsEmptyBlackWhite(SgBoardColor c)
 {
     return c == SG_BLACK || c == SG_WHITE || c == SG_EMPTY;
 }
 
-inline SgBoardColor Opp(SgBoardColor c)
+inline SgBoardColor SgOpp(SgBoardColor c)
 {
     SG_ASSERT_COLOR(c);
-    return c <= SG_WHITE ? OppBW(c) : c;
+    return c <= SG_WHITE ? SgOppBW(c) : c;
 }
 
-inline char EBW(SgEmptyBlackWhite color)
+inline char SgEBW(SgEmptyBlackWhite color)
 {
     SG_ASSERT_EBW(color);
     return color == SG_EMPTY ? 'E' : color == SG_BLACK ? 'B' : 'W';
@@ -91,7 +91,7 @@ public:
     /** Return true if iteration is valid, otherwise false. */
     operator bool() const
     {
-        return IsEmptyBlackWhite(m_color);
+        return SgIsEmptyBlackWhite(m_color);
     }
 
 private:

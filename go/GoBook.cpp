@@ -54,7 +54,7 @@ vector<SgPoint> GetSequence(const GoBoard& bd)
             throw SgException("cannot add position "
                               "(non-alternating move sequence)");
         result.push_back(move.Point());
-        toPlay = OppBW(toPlay);
+        toPlay = SgOppBW(toPlay);
     }
     return result;
 }

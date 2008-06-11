@@ -133,7 +133,7 @@ void TestThreadState::Execute(SgMove move)
 {
     if (WRITE)
         SgDebug() << "TestUctSearch::Execute: " << move << '\n';
-    m_toPlay = OppBW(m_toPlay);
+    m_toPlay = SgOppBW(m_toPlay);
     size_t child = CurrentNode().m_child;
     while (child != NO_NODE)
     {
@@ -200,7 +200,7 @@ void TestThreadState::TakeBack(size_t nuMoves)
         SgDebug() << "TestUctSearch::TakeBack\n";
     for (size_t i = 1; i <= nuMoves; ++i)
     {
-        m_toPlay = OppBW(m_toPlay);
+        m_toPlay = SgOppBW(m_toPlay);
         m_currentNode = CurrentNode().m_father;
         SG_ASSERT(m_currentNode != NO_NODE);
     }
