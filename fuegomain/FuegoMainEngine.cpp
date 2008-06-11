@@ -7,7 +7,7 @@
 #include "SgSystem.h"
 #include "FuegoMainEngine.h"
 
-#include <boost/preprocessor/stringize.hpp>
+#include "FuegoMainUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoUctGlobalSearchPlayer.h"
 
@@ -44,20 +44,11 @@ void FuegoMainEngine::CmdName(GtpCommand& cmd)
 }
 
 /** Return Fuego version.
-    If the macro VERSION was defined by the build system during the compile
-    time, its value will be used as the version, otherwise the version
-    is "(__DATE__)". If compiled in debug mode, " (dbg)" will be added.
+    @see FuegoMainUtil::Version()
 */
 void FuegoMainEngine::CmdVersion(GtpCommand& cmd)
 {
-#ifdef VERSION
-    cmd << BOOST_PP_STRINGIZE(VERSION);
-#else
-    cmd << "(" __DATE__ ")";
-#endif
-#ifdef _DEBUG
-    cmd << " (dbg)";
-#endif
+    cmd << FuegoMainUtil::Version();
 }
 
 //----------------------------------------------------------------------------

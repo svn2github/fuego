@@ -46,4 +46,5 @@ default : all
 
 SRC_CPP= \
   fuegomain/FuegoMain.cpp \
-  fuegomain/FuegoMainEngine.cpp
+  fuegomain/FuegoMainEngine.cpp \
+  fuegomain/FuegoMainUtil.cpp

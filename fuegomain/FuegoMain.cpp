@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "FuegoMainEngine.h"
+#include "FuegoMainUtil.h"
 #include "GoInit.h"
 #include "SgCmdLineOpt.h"
 #include "SgDebug.h"
@@ -94,6 +95,7 @@ int main(int argc, char** argv)
     {
         SgInit();
         GoInit();
+        SgDebug() << "Fuego " << FuegoMainUtil::Version() << '\n';
         MainLoop();
         GoFini();
         SgFini();
