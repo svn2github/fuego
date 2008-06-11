@@ -15,14 +15,27 @@
     @section generalstylenaming Naming Conventions
 
     - Use meaningful names
-    - Underscore is only used for member prefix and in all uppercase names
-    - Macros and constants are all uppercase
+    - Underscore is only used for member prefix and in all-uppercase names
+    - Macros and constants are all-uppercase
     - Types (classes, structs, typedefs) and functions are capitalized;
-      no all uppercase abbreviations (e.g. GtpEngine, not GTPEngine)
+      no all-uppercase abbreviations (e.g. GtpEngine, not GTPEngine)
     - Variables begin with a lower case, member variables use the prefix m_,
       static variables s_, global variables g_
     - Names that are in the global namespace use a short prefix unique for
       each module
+
+    @section generalstylecomments Comments
+
+    - Functions, classes, etc. are documented using Javadoc-style
+      <a href="http://www.doxygen.org">Doxygen</a> syntax.
+    - The documentation is a single multi-line comment block, starting with
+      <tt>/**</tt>, followed by the (auto-)brief description in the first
+      line, followed by the detailed description.
+    - Public functions are documented at the declaration in the header file,
+      private functions at the definition in the cpp-file (exception: GTP
+      commend callbacks are documented at the definition in the cpp-file
+      to increase the probability that the documentation kept up-to-date
+      if the GTP command arguments change)
 
     @section generalstylefiles Files
 
