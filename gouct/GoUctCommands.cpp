@@ -432,10 +432,8 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     Parameters:
     @arg @c keep_games See GoUctSearch::KeepGames
     @arg @c lock_free See SgUctSearch::LockFree
-    @arg @c log_games See GoUctSearch::LogGames
+    @arg @c log_games See SgUctSearch::LogGames
     @arg @c no_bias_term See SgUctSearch::NoBiasTerm
-    @arg @c number_threads See GoUctSearch::NumberThreads
-    @arg @c number_playouts See GoUctSearch::NumberPlayouts
     @arg @c rave See SgUctSearch::Rave
     @arg @c rave_check_same SgUctSearch::RaveCheckSame
     @arg @c use_signatures SgUctSearch::UseSignatures
@@ -445,6 +443,8 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     @arg @c live_gfx @c none|counts|sequence See GoUctSearch::LiveGfx
     @arg @c live_gfx_interval See GoUctSearch::LiveGfxInterval
     @arg @c move_select @c value|count|bound|rave See SgUctSearch::MoveSelect
+    @arg @c number_threads See SgUctSearch::NumberThreads
+    @arg @c number_playouts See SgUctSearch::NumberPlayouts
     @arg @c prior_init @c move|rave|both See SgUctSearch::PriorInit
     @arg @c rave_weight_final See SgUctSearch::RaveWeightFinal
     @arg @c rave_weight_initial See SgUctSearch::RaveWeightInitial
