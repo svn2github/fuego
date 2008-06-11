@@ -70,6 +70,19 @@ void ParseOptions(int argc, char** argv)
         SgRandom::SetSeed(opt.GetInteger("srand"));
 }
 
+void PrintStartupMessage()
+{
+    SgDebug()
+        << "Fuego " << FuegoMainUtil::Version() << '\n' <<
+        "Copyright by the authors of the Fuego project.\n"
+        "See http://fuego.sf.net for information about Fuego. Fuego comes\n"
+        "with NO WARRANTY to the extent permitted by law. This program is\n"
+        "free software; you can redistribute it and/or modify it under the\n"
+        "terms of the GNU Lesser General Public License as published by the\n"
+        "Free Software Foundation - version 3. For more information about\n"
+        "these matters, see the files named COPYING and COPYING.LESSER\n";
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -95,7 +108,7 @@ int main(int argc, char** argv)
     {
         SgInit();
         GoInit();
-        SgDebug() << "Fuego " << FuegoMainUtil::Version() << '\n';
+        PrintStartupMessage();
         MainLoop();
         GoFini();
         SgFini();
