@@ -81,11 +81,6 @@ public:
     */
     void IncPosCount();
 
-    /** Increment the position count.
-        See PosCount()
-    */
-    void IncPosCount(std::size_t count);
-
     void SetPosCount(std::size_t value);
 
     /** Initialize value with prior knowledge. */
@@ -183,11 +178,6 @@ inline bool SgUctNode::HasChildren() const
 inline void SgUctNode::IncPosCount()
 {
     ++m_posCount;
-}
-
-inline void SgUctNode::IncPosCount(std::size_t count)
-{
-    m_posCount += count;
 }
 
 inline void SgUctNode::InitializeValue(float value, std::size_t count)
@@ -433,8 +423,11 @@ public:
     */
     void AddRaveValue(const SgUctNode& node, float value);
 
-    void InitializeValue(const SgUctNode& node, const SgUctNode& child,
-                         float value, std::size_t count);
+    /** Initialize the value and count of a node. */
+    void InitializeValue(const SgUctNode& node, float value,
+                         std::size_t count);
+
+    void SetPosCount(const SgUctNode& node, size_t posCount);
 
     /** Initialize the rave value and count of a move node with prior
         knowledge.
@@ -541,15 +534,12 @@ inline bool SgUctTree::HasCapacity(std::size_t allocatorId,
 }
 
 inline void SgUctTree::InitializeValue(const SgUctNode& node,
-                                       const SgUctNode& child,
                                        float value, std::size_t count)
 {
     SG_ASSERT(Contains(node));
-    SG_ASSERT(Contains(child));
-    // Parameters are const-references, because only the tree is allowed
+    // Parameter is const-reference, because only the tree is allowed
     // to modify nodes
-    const_cast<SgUctNode&>(node).IncPosCount(count);
-    const_cast<SgUctNode&>(child).InitializeValue(value, count);
+    const_cast<SgUctNode&>(node).InitializeValue(value, count);
 }
 
 inline void SgUctTree::InitializeRaveValue(const SgUctNode& node,
@@ -579,6 +569,14 @@ inline std::size_t SgUctTree::NuNodes(std::size_t allocatorId) const
 inline const SgUctNode& SgUctTree::Root() const
 {
     return m_root;
+}
+
+inline void SgUctTree::SetPosCount(const SgUctNode& node, size_t posCount)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    const_cast<SgUctNode&>(node).SetPosCount(posCount);
 }
 
 inline void SgUctTree::SetSignature(const SgUctNode& node, std::size_t sig)

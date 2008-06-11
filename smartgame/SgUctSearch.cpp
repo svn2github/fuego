@@ -620,6 +620,7 @@ void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
     SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
     SG_ASSERT(priorKnowledge != 0);
     priorKnowledge->ProcessPosition();
+    size_t posCount = 0;
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
@@ -631,12 +632,16 @@ void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
             continue;
         if (m_priorInit == SG_UCTPRIORINIT_MOVE
             || m_priorInit == SG_UCTPRIORINIT_BOTH)
-            m_tree.InitializeValue(node, child, InverseEval(value), count);
+        {
+            m_tree.InitializeValue(child, InverseEval(value), count);
+            posCount += count;
+        }
         if (m_rave &&
             (m_priorInit == SG_UCTPRIORINIT_RAVE
              || m_priorInit == SG_UCTPRIORINIT_BOTH))
             m_tree.InitializeRaveValue(child, value, count);
     }
+    m_tree.SetPosCount(node, posCount);
 }
 
 string SgUctSearch::LastGameSummaryLine() const
