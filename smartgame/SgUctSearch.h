@@ -29,13 +29,93 @@
 
 //----------------------------------------------------------------------------
 
+/** @defgroup sguctgroup Monte Carlo tree search
+    Keeps a tree with statistics for each node visited more than a
+    certain number of times, and then continues with random playout
+    (not necessarily uniform random).
+    Within the tree, the move with the highest upper confidence bound is
+    chosen according to the basic UCT formula:
+    @f[ \bar{X}_j + c \sqrt{\frac{\log{n}}{T_j(n)}} @f]
+    with:
+    - @f$ j @f$ the move index
+    - @f$ X_{j,\gamma} @f$ reward for move @f$ j @f$ at sample @f$ \gamma @f$
+    - @f$ n @f$ number of times the father node was visited
+    - @f$ T_j(n) @f$ number of times the move has been played
+    - @f$ c @f$ an appropriate constant
+
+    References:
+    - Kocsis, Szepesvari: Bandit based Monte-Carlo Planning.
+      http://zaphod.aml.sztaki.hu/papers/ecml06.pdf
+    - Auer, Cesa-Bianchi, Fischer:
+      Finite-time Analysis of the Multiarmed Bandit Problem.
+      http://homes.dsi.unimi.it/~cesabian/Pubblicazioni/ml-02.pdf
+    - Gelly, Wang, Munos, Teytaud: Modification of UCT with patterns in
+      Monte-Carlo Go.
+      http://hal.inria.fr/docs/00/12/15/16/PDF/RR-6062.pdf
+    - Silver, Gelly: Combining Online and Offline Knowledge in UCT.
+      http://www.machinelearning.org/proceedings/icml2007/papers/387.pdf
+
+    @see
+    - @ref sguctsearchlockfree
+    - @ref sguctsearchweights
+*/
+
+/** @page sguctsearchlockfree Lock-free usage of SgUctSearch
+    SgUctSearch can be used in a lock-free way for improved multi-threaded
+    performance. Then, the threads access the common data structures (like
+    the tree) without any locking. Lock-free usage is enabled with
+    SgUctSearch::SetLockFree(true).
+
+    It depends on the memory model of the platform, if lock-free usage
+    works. It assumes that writes of some basic types (size_t, int, float,
+    pointers) are atomic and that the compiler or CPU does not reorder certain
+    instructions. In particular, SgUctNode::SetNuChildren() is always called
+    after the children were created, such that SgUctNode::HasChildren()
+    returns only true, if the children are ready to use. Because of the
+    platform-dependency, lock-free is not enabled by default.
+    Statistics collected during the search may not be accurate in
+    lock-free usage, because counts and mean values may be manipulated
+    concurrently.
+
+    In particular, the IA-32 and Intel-64 architecture guarantees these
+    assumptions. Writes of the used data types are atomic (if properly
+    aligned) and writes by one CPU are seen in the same order by other CPUs
+    (the data should still be declared as volatile to avoid, that the compiler
+    reorders writes for optimization purposes). In addition, the architecture
+    synchronizes CPU caches after writes. See
+    <a href="http://download.intel.com/design/processor/manuals/253668.pdf">
+    Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
+    7.1 (Locked Atomic Operations) and 7.2 (Memory Ordering).
+*/
+
+/** @page sguctsearchweights Estimator weights in SgUctSearch
+    The (unnormalized) weights given to the estimators (move value,
+    RAVE value, and signature value) have the form:
+    @f[ \frac{c_i}{\frac{1}{N} + \frac{c_i}{c_f}} @f]
+    with:
+    - @f$ N @f$ sample count of the estimator
+    - @f$ c_i @f$ Initial weight parameter; this is they weight if
+      @f$ N = 1 @f$ and @f$ c_f \gg c_i @f$
+    - @f$ c_f @f$ Final weight parameter; this is they weight if
+      @f$ N \rightarrow \infty @f$
+
+    For the move value, @f$ c_i = c_f = 0 @f$, so the weight is simply
+    @f$ N_{\rm move} @f$.
+    If no estimator has a sample count yet, the first-play-urgency parameter
+    is used for the value estimate.
+*/
+
+//----------------------------------------------------------------------------
+
 typedef SgStatistics<float,std::size_t> SgUctStatistics;
 
 typedef SgStatisticsExt<float,std::size_t> SgUctStatisticsExt;
 
 //----------------------------------------------------------------------------
 
-/** Game result, sequence and nodes of one Monte-Carlo game in SgUctSearch. */
+/** Game result, sequence and nodes of one Monte-Carlo game in SgUctSearch.
+    @ingroup sguctgroup
+*/
 struct SgUctGameInfo
 {
     /** The game result of the playout(s).
@@ -80,7 +160,9 @@ struct SgUctGameInfo
 
 //----------------------------------------------------------------------------
 
-/** Provides an initialization of unknown states. */
+/** Provides an initialization of unknown states.
+    @ingroup sguctgroup
+*/
 class SgUctPriorKnowledge
 {
 public:
@@ -106,6 +188,7 @@ class SgUctThreadState;
 
 /** Create SgUctPriorKnowledge instances.
     Needs one per thread.
+    @ingroup sguctgroup
 */
 class SgUctPriorKnowledgeFactory
 {
@@ -122,6 +205,7 @@ public:
     perspective. Typically, this function will return 1 - eval, if 0/1
     (loss/win) evaluations are used, and -eval, if a evaluation function
     symmetrical to 0 is used.
+    @ingroup sguctgroup
 */
 class SgUctInverseEvalFunc
 {
@@ -139,7 +223,9 @@ public:
 
 //----------------------------------------------------------------------------
 
-/** Move selection strategy after search is finished. */
+/** Move selection strategy after search is finished.
+    @ingroup sguctgroup
+*/
 enum SgUctMoveSelect
 {
     /** Select move with highest mean value. */
@@ -162,6 +248,7 @@ enum SgUctMoveSelect
 /** How the prior knowledge is used to initialize the values.
     This is only used, if a prior knowledge class was set with
     SgUctSearch::SetPriorKnowledge.
+    @ingroup sguctgroup
 */
 enum SgUctPriorInit
 {
@@ -185,6 +272,7 @@ enum SgUctPriorInit
     (e.g. SgRandom(), SgList)
     @note Technically it is possible to use a non-thread safe implementation
     of subclasses, as long as the search is run with only one thread.
+    @ingroup sguctgroup
 */
 class SgUctThreadState
 {
@@ -268,7 +356,7 @@ public:
     */
     virtual SgBlackWhite ToPlay() const = 0;
 
-    // @} // @name
+    // @} // name
 
 
     /** @name Virtual functions */
@@ -307,7 +395,7 @@ public:
     */
     virtual std::size_t GetSignature(SgMove mv) const;
 
-    // @} // @name
+    // @} // name
 };
 
 //----------------------------------------------------------------------------
@@ -316,6 +404,7 @@ class SgUctSearch;
 
 /** Create game specific thread state.
     @see SgUctThreadState
+    @ingroup sguctgroup
 */
 class SgUctThreadStateFactory
 {
@@ -328,80 +417,8 @@ public:
 
 //----------------------------------------------------------------------------
 
-/** @page sguctsearchlockfree Lock-free usage of SgUctSearch
-    SgUctSearch can be used in a lock-free way for improved multi-threaded
-    performance. Then, the threads access the common data structures (like
-    the tree) without any locking. Lock-free usage is enabled with
-    SgUctSearch::SetLockFree(true).
-
-    It depends on the memory model of the platform, if lock-free usage
-    works. It assumes that writes of some basic types (size_t, int, float,
-    pointers) are atomic and that the compiler or CPU does not reorder certain
-    instructions. In particular, SgUctNode::SetNuChildren() is always called
-    after the children were created, such that SgUctNode::HasChildren()
-    returns only true, if the children are ready to use. Because of the
-    platform-dependency, lock-free is not enabled by default.
-    Statistics collected during the search may not be accurate in
-    lock-free usage, because counts and mean values may be manipulated
-    concurrently.
-
-    In particular, the IA-32 and Intel-64 architecture guarantees these
-    assumptions. Writes of the used data types are atomic (if properly
-    aligned) and writes by one CPU are seen in the same order by other CPUs
-    (the data should still be declared as volatile to avoid, that the compiler
-    reorders writes for optimization purposes). In addition, the architecture
-    synchronizes CPU caches after writes. See
-    <a href="http://download.intel.com/design/processor/manuals/253668.pdf">
-    Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
-    7.1 (Locked Atomic Operations) and 7.2 (Memory Ordering).
-*/
-
-/** @page sguctsearchweights Estimator weights in SgUctSearch
-    The (unnormalized) weights given to the estimators (move value,
-    RAVE value, and signature value) have the form:
-    @f[ \frac{c_i}{\frac{1}{N} + \frac{c_i}{c_f}} @f]
-    with:
-    - @f$ N @f$ sample count of the estimator
-    - @f$ c_i @f$ Initial weight parameter; this is they weight if
-      @f$ N = 1 @f$ and @f$ c_f \gg c_i @f$
-    - @f$ c_f @f$ Final weight parameter; this is they weight if
-      @f$ N \rightarrow \infty @f$
-
-    For the move value, @f$ c_i = c_f = 0 @f$, so the weight is simply
-    @f$ N_{\rm move} @f$.
-    If no estimator has a sample count yet, the first-play-urgency parameter
-    is used for the value estimate.
-*/
-
-/** Game-independent Monte-Carlo search using UCT.
-    Keeps a tree with statistics for each node visited more than a
-    certain number of times, and then continues with random playout
-    (not necessarily uniform random).
-    Within the tree, the move with the highest upper confidence bound is
-    chosen either according to the basic UCT formula:
-    @f[ \bar{X}_j + c \sqrt{\frac{\log{n}}{T_j(n)}} @f]
-    with:
-    - @f$ j @f$ the move index
-    - @f$ X_{j,\gamma} @f$ reward for move @f$ j @f$ at sample @f$ \gamma @f$
-    - @f$ n @f$ number of times the father node was visited
-    - @f$ T_j(n) @f$ number of times the move has been played
-    - @f$ c @f$ an appropriate constant
-
-    References:
-    - Kocsis, Szepesvari: Bandit based Monte-Carlo Planning.
-      http://zaphod.aml.sztaki.hu/papers/ecml06.pdf
-    - Auer, Cesa-Bianchi, Fischer:
-      Finite-time Analysis of the Multiarmed Bandit Problem.
-      http://homes.dsi.unimi.it/~cesabian/Pubblicazioni/ml-02.pdf
-    - Gelly, Wang, Munos, Teytaud: Modification of UCT with patterns in
-      Monte-Carlo Go.
-      http://hal.inria.fr/docs/00/12/15/16/PDF/RR-6062.pdf
-    - Silver, Gelly: Combining Online and Offline Knowledge in UCT.
-      http://www.machinelearning.org/proceedings/icml2007/papers/387.pdf
-
-    @see
-    - @ref sguctsearchlockfree
-    - @ref sguctsearchweights
+/** Monte Carlo tree search using UCT.
+    @ingroup sguctgroup
 */
 class SgUctSearch
     : public SgUctInverseEvalFunc
@@ -451,7 +468,7 @@ public:
     */
     virtual float UnknownEval() const = 0;
 
-    // @} // @name
+    // @} // name
 
 
     /** @name Virtual functions */
@@ -486,7 +503,7 @@ public:
     */
     virtual std::size_t SignatureRange() const;
 
-    // @} // @name
+    // @} // name
 
 
     /** @name Search functions */
@@ -563,7 +580,7 @@ public:
 
     const SgUctStatisticsBaseVolatile& GetSignatureStat(SgMove mv) const;
 
-    // @} // @name
+    // @} // name
 
 
     /** @name Search data */
@@ -584,7 +601,7 @@ public:
 
     const SgUctTree& Tree() const;
 
-    // @} // @name
+    // @} // name
 
 
     /** @name Parameters */
@@ -754,7 +771,7 @@ public:
     /** See @ref sguctsearchweights. */
     void SetSignatureWeightFinal(float value);
 
-    // @} // @name
+    // @} // name
 
 
     /** @name Statistics */
@@ -774,7 +791,7 @@ public:
 
     void WriteStatistics(std::ostream& out) const;
 
-    // @} // @name
+    // @} // name
 
     /** Get state of one of the threads.
         Requires: ThreadsCreated()

@@ -17,7 +17,9 @@ class SgUctInverseEvalFunc;
 
 //----------------------------------------------------------------------------
 
-/** Statistical properties of a SgUctTree. */
+/** Statistical properties of a SgUctTree.
+    @ingroup sguctgroup
+*/
 class SgUctTreeStatistics
 {
 public:
@@ -50,6 +52,9 @@ std::ostream& operator<<(std::ostream& out, const SgUctTreeStatistics& stat);
 
 //----------------------------------------------------------------------------
 
+/** Utility functions for users of SgUctTree.
+    @ingroup sguctgroup
+*/
 namespace SgUctTreeUtil
 {
     /** Extract the subtree from the node after a sequence of moves.

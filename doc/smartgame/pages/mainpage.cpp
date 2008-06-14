@@ -29,5 +29,6 @@
 
     - @ref sgnotes
     - @ref sgboardrepresentation
+    - @ref sguctgroup
 */
 

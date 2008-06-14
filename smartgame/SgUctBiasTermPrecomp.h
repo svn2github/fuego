@@ -11,7 +11,9 @@
 
 //----------------------------------------------------------------------------
 
-/** Precomputes part of the bias term formula for small counts. */
+/** Precomputes part of the bias term formula for small counts.
+    @ingroup sguctgroup
+*/
 class SgUctBiasTermPrecomp
 {
 public:

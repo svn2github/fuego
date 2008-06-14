@@ -28,6 +28,7 @@ typedef SgStatisticsBase<volatile float,volatile std::size_t>
     relies on the fact that m_firstChild is valid, if m_nuChildren is greater
     zero or that the mean value of the move and RAVE value statistics is valid
     if the corresponding count is greater zero.
+    @ingroup sguctgroup
 */
 class SgUctNode
 {
@@ -260,6 +261,7 @@ inline std::size_t SgUctNode::Signature() const
 /** Allocater for nodes used in the implementation of SgUctTree.
     Each thread has its own node allocator to allow lock-free usage of
     SgUctTree.
+    @ingroup sguctgroup
 */
 class SgUctAllocator
 {
@@ -338,6 +340,7 @@ inline void SgUctAllocator::SetMaxNodes(std::size_t maxNodes)
     the integrity of the tree structure.
     The tree can be used in a lock-free way during a search (see
     @ref sguctsearchlockfree).
+    @ingroup sguctgroup
 */
 class SgUctTree
 {
@@ -589,7 +592,9 @@ inline void SgUctTree::SetSignature(const SgUctNode& node, std::size_t sig)
 
 //----------------------------------------------------------------------------
 
-/** Iterator over all children of a node. */
+/** Iterator over all children of a node.
+    @ingroup sguctgroup
+*/
 class SgUctChildIterator
 {
 public:
@@ -637,7 +642,9 @@ inline SgUctChildIterator::operator bool() const
 
 //----------------------------------------------------------------------------
 
-/** Iterator for traversing a tree depth-first. */
+/** Iterator for traversing a tree depth-first.
+    @ingroup sguctgroup
+*/
 class SgUctTreeIterator
 {
 public:

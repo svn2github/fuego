@@ -13,6 +13,7 @@
     Takes advantage of the fact that most positions encountered on-policy are
     likely to be close. Initializes moves with the value 0.5 and a
     configurable count (by default 50, which worked well in 9x9-Go).
+    @ingroup sguctgroup
 */
 class SgUctPriorKnowledgeEven
     : public SgUctPriorKnowledge
@@ -32,6 +33,9 @@ private:
 
 //----------------------------------------------------------------------------
 
+/** Factory for SgUctPriorKnowledgeEven.
+    @ingroup sguctgroup
+*/
 class SgUctPriorKnowledgeEvenFactory
     : public SgUctPriorKnowledgeFactory
 {
