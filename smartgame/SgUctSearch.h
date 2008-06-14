@@ -30,9 +30,11 @@
 //----------------------------------------------------------------------------
 
 /** @defgroup sguctgroup Monte Carlo tree search
-    Keeps a tree with statistics for each node visited more than a
-    certain number of times, and then continues with random playout
-    (not necessarily uniform random).
+    Game-independent Monte Carlo tree search using UCT.
+
+    The main class SgUctSearch keeps a tree with statistics for each node
+    visited more than a certain number of times, and then continues with
+    random playout (not necessarily uniform random).
     Within the tree, the move with the highest upper confidence bound is
     chosen according to the basic UCT formula:
     @f[ \bar{X}_j + c \sqrt{\frac{\log{n}}{T_j(n)}} @f]
@@ -44,16 +46,19 @@
     - @f$ c @f$ an appropriate constant
 
     References:
-    - Kocsis, Szepesvari: Bandit based Monte-Carlo Planning.
-      http://zaphod.aml.sztaki.hu/papers/ecml06.pdf
+    - Kocsis, Szepesvari:
+      <a href="http://zaphod.aml.sztaki.hu/papers/ecml06.pdf">
+      Bandit based Monte-Carlo Planning</a>
     - Auer, Cesa-Bianchi, Fischer:
-      Finite-time Analysis of the Multiarmed Bandit Problem.
-      http://homes.dsi.unimi.it/~cesabian/Pubblicazioni/ml-02.pdf
-    - Gelly, Wang, Munos, Teytaud: Modification of UCT with patterns in
-      Monte-Carlo Go.
-      http://hal.inria.fr/docs/00/12/15/16/PDF/RR-6062.pdf
-    - Silver, Gelly: Combining Online and Offline Knowledge in UCT.
-      http://www.machinelearning.org/proceedings/icml2007/papers/387.pdf
+      <a href="http://homes.dsi.unimi.it/~cesabian/Pubblicazioni/ml-02.pdf">
+      Finite-time Analysis of the Multiarmed Bandit Problem</a>
+    - Gelly, Wang, Munos, Teytaud:
+      <a href="http://hal.inria.fr/docs/00/12/15/16/PDF/RR-6062.pdf">
+      Modification of UCT with patterns in Monte-Carlo Go</a>
+    - Silver, Gelly:
+      <a href=
+      "http://www.machinelearning.org/proceedings/icml2007/papers/387.pdf">
+      Combining Online and Offline Knowledge in UCT</a>
 
     @see
     - @ref sguctsearchlockfree
