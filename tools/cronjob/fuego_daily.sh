@@ -13,8 +13,8 @@
 # (see http://alexandria.wiki.sourceforge.net/SSH+Key+Generation)
 
 FUEGO_DIR=$(dirname $0)/../..
-FUEGO_WEB_SERVER=fuego.sourceforge.net
-FUEGO_WEB_DIR=/home/groups/f/fu/fuego/htdocs
+FUEGO_WEB_SERVER=games.cs.ualberta.ca
+FUEGO_WEB_DIR=/usr/brazeau/misc/games/go/fuego
 SVN_BACKUP_DIR=$FUEGO_DIR/../fuego_svn_backup
 
 # Update the checked out sources.
@@ -24,12 +24,12 @@ SVN_BACKUP_DIR=$FUEGO_DIR/../fuego_svn_backup
 cd $FUEGO_DIR
 svn update | awk '/[UAD] /{exit 1}' && exit
 
-# Generate documentation and put it on the web server
+# Generate documentation and put it on the UofA web server. Don't use
+# fuego.sourceforge.net, because it allows only 100 MB webspace
 
 cd $FUEGO_DIR/doc
 make || exit 1
-ssh $FUEGO_WEB_SERVER mkdir -p $FUEGO_WEB_DIR/doc/daily
-rsync -r fuego-doc $FUEGO_WEB_SERVER:$FUEGO_WEB_DIR/doc/daily
+rsync -r fuego-doc $FUEGO_WEB_SERVER:$FUEGO_WEB_DIR
 
 # Backup subversion repository
 
