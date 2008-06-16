@@ -17,11 +17,12 @@ usage() {
 Usage: $0 [options] [testsuite]
 
 Options:
-  -r Use release version of program (only for program abbreviations)
+  -d Append date to name of ouput directory
   -h Print help and exit
   -l Long output
   -p Program, using full command or a program abbreviation
      (currently only fuego). Default is fuego.
+  -r Use release version of program (only for program abbreviations)
   -t Single test file to run (without extension .tst or .list)
 
 The test files are expected to have the file endings .tst or .list.
@@ -97,6 +98,10 @@ runtest() {
     if [[ "$RESULT_EXT" != "" ]]; then
 	TEST_DIR="$TEST_DIR-$RESULT_EXT"
     fi
+    if (( $APPEND_DATE != 0 )); then
+        DATE=$(date +'%Y%M%d')
+	TEST_DIR="$TEST_DIR-$DATE"
+    fi
     mkdir -p "$TEST_DIR"
     
     if (( $LONG_OUTPUT != 0 )); then
@@ -122,10 +127,12 @@ EOF
 
 RELEASE=0
 LONG_OUTPUT=0
+APPEND_DATE=0
 PROGRAM=""
 TESTFILE=""
-while getopts "hlp:rt:" OPT; do
+while getopts "dhlp:rt:" OPT; do
 case "$OPT" in
+    d)   APPEND_DATE=1;;
     h)   usage; exit 0;;
     l)   LONG_OUTPUT=1;;
     p)   PROGRAM="$OPTARG";;
