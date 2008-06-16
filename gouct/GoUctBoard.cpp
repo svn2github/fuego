@@ -209,20 +209,6 @@ bool GoUctBoard::IsAdjacentTo(SgPoint p,
             || m_block[p + SG_NS] == block);
 }
 
-void GoUctBoard::KillAdjacentOpponentBlocks(SgPoint p, SgBlackWhite opp)
-{
-    if (NumNeighbors(p, opp) == 0)
-        return;
-    if (IsColor(p - SG_NS, opp) && ! HasLiberties(p - SG_NS))
-        KillBlock(p - SG_NS);
-    if (IsColor(p - SG_WE, opp) && ! HasLiberties(p - SG_WE))
-        KillBlock(p - SG_WE);
-    if (IsColor(p + SG_WE, opp) && ! HasLiberties(p + SG_WE))
-        KillBlock(p + SG_WE);
-    if (IsColor(p + SG_NS, opp) && ! HasLiberties(p + SG_NS))
-        KillBlock(p + SG_NS);
-}
-
 void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
 {
     // Stone already placed
@@ -268,15 +254,6 @@ void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
         largestBlock->AppendLiberty(p + SG_WE);
     if (IsEmpty(p + SG_NS) && m_marker.NewMark(p + SG_NS))
         largestBlock->AppendLiberty(p + SG_NS);
-}
-
-void GoUctBoard::RemoveLibFromAdjBlocks(SgPoint p)
-{
-    if (NumNeighbors(p, SG_BLACK) == 0 && NumNeighbors(p, SG_WHITE) == 0)
-        return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
-        (*it)->ExcludeLiberty(p);
 }
 
 void GoUctBoard::RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c)
@@ -464,6 +441,21 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
     ++nuNeighbors[p + SG_NS];
 }
 
+/** Remove liberty from adjacent blocks and kill opponent blocks without
+    liberties.
+*/
+void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp)
+{
+    SgSList<Block*,4> blocks = GetAdjacentBlocks(p);
+    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    {
+        Block* b = *it;
+        b->ExcludeLiberty(p);
+        if (b->Color() == opp && b->NumLiberties() == 0)
+            KillBlock(b);
+    }
+}
+
 void GoUctBoard::RemoveStone(SgPoint p)
 {
     SgBlackWhite c = GetStone(p);
@@ -480,10 +472,9 @@ void GoUctBoard::RemoveStone(SgPoint p)
     --nuNeighbors[p + SG_NS];
 }
 
-void GoUctBoard::KillBlock(SgPoint p)
+void GoUctBoard::KillBlock(const Block* block)
 {
-    Block* block = m_block[p];
-    SgBlackWhite c = GetColor(p);
+    SgBlackWhite c = block->Color();
     SgBlackWhite opp = SgOppBW(c);
     for (Block::StoneIterator it(block->Stones()); it; ++it)
     {
@@ -498,7 +489,7 @@ void GoUctBoard::KillBlock(SgPoint p)
     if (nuStones == 1)
         // Remember that single stone was captured, check conditions on
         // capturing block later
-        m_koPoint = p;
+        m_koPoint = block->Anchor();
 }
 
 void GoUctBoard::Play(SgPoint p, SgBlackWhite player)
@@ -516,8 +507,8 @@ void GoUctBoard::Play(SgPoint p, SgBlackWhite player)
         return;
     }
     AddStone(p, player);
-    RemoveLibFromAdjBlocks(p);
-    KillAdjacentOpponentBlocks(p, opp);
+    if (NumNeighbors(p, SG_BLACK) > 0 || NumNeighbors(p, SG_WHITE) > 0)
+        RemoveLibAndKill(p, opp);
     UpdateBlocksAfterAddStone(p, player);
     if (m_koPoint != SG_NULLPOINT)
         if (NumStones(p) > 1 || NumLiberties(p) > 1)

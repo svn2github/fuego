@@ -573,7 +573,7 @@ public:
         ignoring any possible repetition. */
     bool CanCapture(SgPoint p, SgBlackWhite c) const;
 
-    /** Whether stones are actually removed from the board when a 
+    /** Whether stones are actually removed from the board when a
         capturing move is made (default is true) */
     void SetKillCaptures(bool kill);
 
@@ -908,7 +908,7 @@ private:
     SgArray<bool,SG_MAXPOINT> m_isBorder;
 
     SgSList<StackEntry,GO_MAX_NUM_MOVES>* m_moves;
-    
+
     bool m_killCaptures;
 
     static bool IsPass(SgPoint p);
@@ -945,13 +945,10 @@ private:
 
     bool IsAdjacentTo(SgPoint p, const Block* block) const;
 
-    void KillAdjacentOpponentBlocks(SgPoint p, SgBlackWhite opp,
-                                    StackEntry& entry);
-
     void MergeBlocks(SgPoint p, SgBlackWhite c,
                      const SgSList<Block*,4>& adjBlocks);
 
-    void RemoveLibFromAdjBlocks(SgPoint p);
+    void RemoveLibAndKill(SgPoint p, SgBlackWhite opp, StackEntry& entry);
 
     void RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c);
 
@@ -981,7 +978,7 @@ private:
 
     void RemoveStoneForUndo(SgPoint p);
 
-    void KillBlock(SgPoint p);
+    void KillBlock(const Block* block);
 
     bool HasLiberties(SgPoint p) const;
 

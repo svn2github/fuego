@@ -428,11 +428,9 @@ private:
 
     bool IsAdjacentTo(SgPoint p, const Block* block) const;
 
-    void KillAdjacentOpponentBlocks(SgPoint p, SgBlackWhite opp);
-
     void MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks);
 
-    void RemoveLibFromAdjBlocks(SgPoint p);
+    void RemoveLibAndKill(SgPoint p, SgBlackWhite opp);
 
     void RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c);
 
@@ -446,7 +444,7 @@ private:
 
     void RemoveStone(SgPoint p);
 
-    void KillBlock(SgPoint p);
+    void KillBlock(const Block* block);
 
     bool HasLiberties(SgPoint p) const;
 
