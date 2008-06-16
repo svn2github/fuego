@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBlock.h
-    A block contained in a @see GoRegionBoard.
+    A block contained in a GoRegionBoard.
 */
 //----------------------------------------------------------------------------
 
@@ -21,6 +21,7 @@ class GoRegion;
 
 /** A block augmented by a list of its healthy regions.
     Used together with GoRegion in GoRegionBoard.
+    @todo Avoid cyclic dependency with GoBlock
 */
 class GoBlock
 {

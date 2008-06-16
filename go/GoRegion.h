@@ -4,7 +4,7 @@
 
     A GoRegion is a maximal connected set of points surrounded by stones 
     of the same color.
-    
+
     Regions compute properties such as 1-vitality,
     2-vitality [Mueller 95, p. 62-63],[Mueller 97b].
     They are used for static and search-based safety solvers.
@@ -31,7 +31,10 @@ class GoRegionBoard;
 
 //----------------------------------------------------------------------------
 
-/** Information computed about a GoRegion */
+/** Information computed about a GoRegion.
+    @todo Does not follow naming convention for constants in global
+    namespace; rename to all-uppercase and use prefix GO_
+*/
 enum GoRegionFlag
 {
     isSmall,
@@ -68,10 +71,10 @@ typedef std::bitset<nuRegionFlag> GoRegionFlags;
     is contained in exactly one black region.
     Similarly each empty point, and each point occupied by black,
     is contained in exactly one white region.
-    
+
     A region keeps data such as its color, the blocks and chains of its color,
     the eye status, and a strategy to follow to keep the region safe.
-    
+
     Regions can provide liberties for its boundary blocks.
     They can be "1-vital" or "2-vital". This is used by safety solvers.
     For details see [Mueller 1997]:
@@ -79,6 +82,8 @@ typedef std::bitset<nuRegionFlag> GoRegionFlags;
     static rules and search. In H.�Matsubara, editor, Game Programming
     Workshop in Japan '97, pages 80-86, Computer Shogi Association, Tokyo, 
     Japan, 1997.
+
+    @todo Avoid cyclic dependency with GoBlock
 */
 class GoRegion
 {
@@ -139,7 +144,7 @@ public:
 
     /** Interior blocks of region: all liberties are in m_points */
     SgListOf<GoBlock> InteriorBlocks() const;
-    
+
     /** Is block an interior block of this region? */
     bool IsInteriorBlock(const GoBlock* block) const;
 
@@ -151,7 +156,7 @@ public:
 
     /** all points of region's blocks - even those not contained in Dep() */
     SgPointSet BlocksPoints() const;
-    
+
     /** area of points plus interior blocks */
     SgPointSet PointsPlusInteriorBlocks() const;
 
@@ -224,7 +229,7 @@ public:
     {   m_computedFlags.set(flag);
         m_flags.set(flag, value);
     }
-    
+
     /** store search depth used in ExVital1Task for 1vc search */
     void Set1VCDepth(int depth) {m_1vcDepth = depth;}
 
@@ -246,7 +251,7 @@ public:
 
     /** is any adjacent block safe? */
     bool SomeBlockIsSafe() const;
-    
+
     /** are all adjacent block safe? */
     bool AllBlockIsSafe() const;
 
@@ -293,27 +298,27 @@ public:
         recursive extension.
     */
     bool Find2ConnForAll() const;
-    
+
     /** find 2-connection paths for all interior empty points, using recursive
         extension. 
     */
     bool Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                                  SgList<SgPoint>& usedLibs) const;
-    
+
     /** An IP divides a region into two eyes AND connects all surrounding
         blocks, this one defines that ip has to be adjancent to all interior
         points.
     */
     bool Has2IPs(const SgList<SgPoint>& interiorEmpty, SgMiaiPair* ips) const;
-    
+
     /** whether there are 2 intersection points, doesn't have to be adjacent
         to all interior points.
     */
     bool Has2IntersectionPoints(const SgList<SgPoint> usedLibs) const;
-    
+
     /** Get all intersections points inside region */
     void GetIPs(SgList<SgPoint>* ips) const;
-    
+
     /** Get all SgMiaiPairs that can divide the region. A dividing 
         SgMiaiPair has two adjacent points that are libs from the 
         same boundary block, and they are split points for region.
@@ -400,7 +405,7 @@ private:
 
     /** search depth used in ExVital1Task for 1vc search */
     int m_1vcDepth;
-    
+
     /** Miai strategy to keep region safe. */
     SgMiaiStrategy m_miaiStrategy;
 
