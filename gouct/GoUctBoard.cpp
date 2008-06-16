@@ -265,16 +265,17 @@ void GoUctBoard::RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c)
         (*it)->ExcludeLiberty(p);
 }
 
-void GoUctBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c)
+void GoUctBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
+                                           const SgSList<Block*,4>& adjBlocks)
 {
     // Stone already placed
     SG_ASSERT(IsColor(p, c));
-    if (NumNeighbors(p, c) == 0)
+    int nuNeighbors = NumNeighbors(p, c);
+    if (nuNeighbors == 0)
         CreateSingleStoneBlock(p, c);
     else
     {
-        SgSList<Block*,4> adjBlocks = GetAdjacentBlocks(p, c);
-        if (adjBlocks.Length() == 1)
+        if (nuNeighbors == 1)
             AddStoneToBlock(p, adjBlocks[0]);
         else
             MergeBlocks(p, adjBlocks);
@@ -443,16 +444,24 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
 
 /** Remove liberty from adjacent blocks and kill opponent blocks without
     liberties.
+    As a side effect, computes adjacent blocks of own color to avoid a
+    decond call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone().
 */
-void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp)
+void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
+                                  SgSList<Block*,4>& adjBlocks)
 {
     SgSList<Block*,4> blocks = GetAdjacentBlocks(p);
     for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
     {
         Block* b = *it;
         b->ExcludeLiberty(p);
-        if (b->Color() == opp && b->NumLiberties() == 0)
-            KillBlock(b);
+        if (b->Color() == opp)
+        {
+            if (b->NumLiberties() == 0)
+                KillBlock(b);
+        }
+        else
+            adjBlocks.Append(b);
     }
 }
 
@@ -507,9 +516,10 @@ void GoUctBoard::Play(SgPoint p, SgBlackWhite player)
         return;
     }
     AddStone(p, player);
+    SgSList<Block*,4> adjBlocks;
     if (NumNeighbors(p, SG_BLACK) > 0 || NumNeighbors(p, SG_WHITE) > 0)
-        RemoveLibAndKill(p, opp);
-    UpdateBlocksAfterAddStone(p, player);
+        RemoveLibAndKill(p, opp, adjBlocks);
+    UpdateBlocksAfterAddStone(p, player, adjBlocks);
     if (m_koPoint != SG_NULLPOINT)
         if (NumStones(p) > 1 || NumLiberties(p) > 1)
             m_koPoint = SG_NULLPOINT;
