@@ -49,5 +49,5 @@ EOF
 # Append 2>/dev/stderr to invocation, otherwise cgos3.tcl will not pass
 # through stderr of the Go program
 ./cgos3.patched.tcl "$NAME" "$PASSWORD" \
-  "$FUEGO -config config-9-8c.gtp 2>/dev/stderr" \
+  "$FUEGO -size 9 -config config-9-8c.gtp 2>/dev/stderr" \
   gracefully_exit_server-9-8c
