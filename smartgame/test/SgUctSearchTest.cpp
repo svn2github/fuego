@@ -87,9 +87,11 @@ public:
 
     void Execute(SgMove move);
 
+    void ExecutePlayout(SgMove move);
+
     void GenerateAllMoves(vector<SgMove>& moves);
 
-    SgMove GenerateRandomMove(bool& skipRaveUpdate);
+    SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
     void StartSearch();
 
@@ -147,6 +149,11 @@ void TestThreadState::Execute(SgMove move)
     SG_ASSERT(false);
 }
 
+void TestThreadState::ExecutePlayout(SgMove move)
+{
+    Execute(move);
+}
+
 float TestThreadState::Evaluate()
 {
     if (WRITE)
@@ -172,7 +179,7 @@ void TestThreadState::GenerateAllMoves(vector<SgMove>& moves)
         SgDebug() << '\n';
 }
 
-SgMove TestThreadState::GenerateRandomMove(bool& skipRaveUpdate)
+SgMove TestThreadState::GeneratePlayoutMove(bool& skipRaveUpdate)
 {
     SG_UNUSED(skipRaveUpdate);
     // Search does not use randomness

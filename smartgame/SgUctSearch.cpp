@@ -785,7 +785,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state,
     return true;
 }
 
-/** Finish the game using GenerateRandomMove().
+/** Finish the game using GeneratePlayoutMove().
     @param state The thread state.
     @param playout The number of the playout.
     @return @c false if game was aborted
@@ -801,12 +801,12 @@ bool SgUctSearch::PlayoutGame(SgUctThreadState& state, std::size_t playout)
         if (sequence.size() == m_maxGameLength)
             return false;
         bool skipRave = false;
-        SgMove move = state.GenerateRandomMove(skipRave);
+        SgMove move = state.GeneratePlayoutMove(skipRave);
         if (move == SG_NULLMOVE)
             break;
         if (m_useSignatures)
             signatures.push_back(state.GetSignature(move));
-        state.Execute(move);
+        state.ExecutePlayout(move);
         sequence.push_back(move);
         skipRaveUpdate.push_back(skipRave);
     }

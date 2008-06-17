@@ -217,21 +217,21 @@ void GoUctState::Dump(ostream& out) const
 
 void GoUctState::Execute(SgMove move)
 {
-    if (m_isInPlayout)
-    {
-        SG_ASSERT(move == SG_PASS || ! m_uctBd.Occupied(move));
-        m_uctBd.Play(move);
-    }
-    else
-    {
-        SG_ASSERT(move == SG_PASS || ! m_bd.Occupied(move));
-        // Temporarily switch ko rule to SIMPLEKO to avoid slow full board
-        // repetition test in GoBoard::Play()
-        GoRestoreKoRule restoreKoRule(m_bd);
-        m_bd.Rules().SetKoRule(GoRules::SIMPLEKO);
-        m_bd.Play(move);
-        SG_ASSERT(! m_bd.LastMoveInfo(isIllegal));
-    }
+    SG_ASSERT(! m_isInPlayout);
+    SG_ASSERT(move == SG_PASS || ! m_bd.Occupied(move));
+    // Temporarily switch ko rule to SIMPLEKO to avoid slow full board
+    // repetition test in GoBoard::Play()
+    GoRestoreKoRule restoreKoRule(m_bd);
+    m_bd.Rules().SetKoRule(GoRules::SIMPLEKO);
+    m_bd.Play(move);
+    SG_ASSERT(! m_bd.LastMoveInfo(isIllegal));
+}
+
+void GoUctState::ExecutePlayout(SgMove move)
+{
+    SG_ASSERT(m_isInPlayout);
+    SG_ASSERT(move == SG_PASS || ! m_uctBd.Occupied(move));
+    m_uctBd.Play(move);
 }
 
 void GoUctState::GameStart()

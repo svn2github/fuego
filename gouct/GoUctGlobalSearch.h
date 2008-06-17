@@ -252,9 +252,9 @@ public:
 
     void GenerateAllMoves(std::vector<SgMove>& moves);
 
-    SgMove GenerateRandomMove(bool& skipRaveUpdate);
+    SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
-    void Execute(SgMove move);
+    void ExecutePlayout(SgMove move);
 
     void GameStart();
 

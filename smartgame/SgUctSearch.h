@@ -315,7 +315,7 @@ public:
     // @{
 
     /** Evaluate end-of-game position.
-        Will only be called if GenerateAllMoves() or GenerateRandomMove()
+        Will only be called if GenerateAllMoves() or GeneratePlayoutMove()
         returns no moves. Should return larger values if position is better
         for the player to move.
     */
@@ -325,6 +325,14 @@ public:
         @param move The move
      */
     virtual void Execute(SgMove move) = 0;
+
+    /** Execute a move in the playout phase.
+        For optimization if the subclass uses uses a different game state
+        representation in the playout phase. Otherwise the function can be
+        implemented in the subclass by simply calling Execute().
+        @param move The move
+     */
+    virtual void ExecutePlayout(SgMove move) = 0;
 
     /** Generate moves.
         Moves will be explored in the order of the returned list.
@@ -339,7 +347,7 @@ public:
         ignored.
         @return The move or SG_NULLMOVE at the end of the game.
     */
-    virtual SgMove GenerateRandomMove(bool& skipRaveUpdate) = 0;
+    virtual SgMove GeneratePlayoutMove(bool& skipRaveUpdate) = 0;
 
     /** Start search.
         This function should do any necessary preparations for playing games
