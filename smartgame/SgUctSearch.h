@@ -360,7 +360,13 @@ public:
     /** Take back moves played in the in-tree phase. */
     virtual void TakeBackInTree(std::size_t nuMoves) = 0;
 
-    /** Take back moves played in the playout phase. */
+    /** Take back moves played in the playout phase.
+        The search engine does not assume that the moves are really taken back
+        after this function is called. If the subclass implements the playout
+        in s separate state, which is initialized in StartPlayout() and does
+        not support undo, the implementation of this function can be left
+        empty in the subclass.
+    */
     virtual void TakeBackPlayout(std::size_t nuMoves) = 0;
 
     /** Color to play in the current position.
