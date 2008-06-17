@@ -1,4 +1,9 @@
-This file contains information about Fuego releases.
+This file contains information about Fuego releases. It also contains a
+(probably incomplete) list of the most important changes or of all
+critical bugfixes in releases from a bugfix branch. For a detailed changelog
+of changes in the main development branch, consult the version control
+history.
+
 
 Current development version
 ===========================
