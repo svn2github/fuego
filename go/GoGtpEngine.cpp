@@ -69,8 +69,8 @@ string KoRuleToString(GoRules::KoRule rule)
 
 //----------------------------------------------------------------------------
 
-GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath,
-                         bool noPlayer)
+GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int initialBoardSize,
+                         const char* programPath, bool noPlayer)
     : GtpEngine(in, out),
       m_player(0),
       m_noPlayer(noPlayer),
@@ -83,6 +83,7 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, const char* programPath,
       m_timeLastMove(0),
       m_timeLimit(10),
       m_overhead(0),
+      m_board(initialBoardSize),
       m_game(m_board),
       m_sgCommands(*this, programPath),
       m_bookCommands(m_board, m_book)

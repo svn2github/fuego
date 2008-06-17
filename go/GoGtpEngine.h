@@ -116,6 +116,7 @@ public:
     /** Constructor.
         @param in See parameter @c in in GtpEngine::GtpEngine
         @param out See parameter @c out in GtpEngine::GtpEngine
+        @param initialBoardSize Initial size of the board
         @param programPath File path to the executable. Needed for
         SgGtpCommands::CmdDebugger
         @param noPlayer Indicate that the subclass will not set a player
@@ -123,7 +124,7 @@ public:
         (e.g. TsumeGo solvers) This causes player-specific GTP commands,
         like @c reg_genmove) not to be registered.
     */
-    GoGtpEngine(std::istream& in, std::ostream& out,
+    GoGtpEngine(std::istream& in, std::ostream& out, int initialBoardSize,
                 const char* programPath = 0, bool noPlayer = false);
 
     ~GoGtpEngine();

@@ -24,7 +24,9 @@ namespace {
 /** @name Settings from command line options */
 // @{
 
-bool g_quiet = false;
+bool g_quiet;
+
+int g_initialBoardSize;
 
 string g_config;
 
@@ -34,7 +36,7 @@ const char* g_programPath;
 
 void MainLoop()
 {
-    FuegoMainEngine engine(cin, cout, g_programPath);
+    FuegoMainEngine engine(cin, cout, g_initialBoardSize, g_programPath);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_config != "")
         engine.ExecuteFile(g_config);
@@ -49,6 +51,7 @@ void ParseOptions(int argc, char** argv)
     specs.push_back("help");
     specs.push_back("quiet");
     specs.push_back("srand:");
+    specs.push_back("size:");
     opt.Parse(argc, argv, specs);
     if (opt.GetArguments().size() > 0)
         throw SgException("No arguments allowed");
@@ -60,14 +63,15 @@ void ParseOptions(int argc, char** argv)
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
             "  -quiet       don't print debug messages\n"
+            "  -size        initial board size\n"
             "  -srand       set random seed (-1:none, 0:time(0))\n";
         exit(0);
     }
     g_config = opt.GetString("config", "");
-    if (opt.Contains("quiet"))
-        g_quiet = true;
+    g_quiet = opt.Contains("quiet");
     if (opt.Contains("srand"))
         SgRandom::SetSeed(opt.GetInteger("srand"));
+    g_initialBoardSize = opt.GetInteger("size", 19);
 }
 
 void PrintStartupMessage()

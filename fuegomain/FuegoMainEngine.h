@@ -19,7 +19,7 @@ class FuegoMainEngine
 {
 public:
     FuegoMainEngine(std::istream& in, std::ostream& out,
-                    const char* programPath = 0);
+                    int initialBoardSize, const char* programPath = 0);
 
     ~FuegoMainEngine();
 

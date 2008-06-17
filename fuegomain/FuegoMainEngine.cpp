@@ -16,8 +16,9 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 FuegoMainEngine::FuegoMainEngine(istream& in, ostream& out,
+                                 int initialBoardSize,
                                  const char* programPath)
-    : GoGtpEngine(in, out, programPath),
+    : GoGtpEngine(in, out, initialBoardSize, programPath),
       m_uctCommands(Board(), m_player)
 {
     m_uctCommands.Register(*this);
