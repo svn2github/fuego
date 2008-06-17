@@ -17,8 +17,8 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
-       : m_mercyRule(true),
-         m_scoreModification(0.02)
+    : m_mercyRule(true),
+      m_scoreModification(0.02)
 {
 }
 
