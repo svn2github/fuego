@@ -99,7 +99,7 @@ runtest() {
 	TEST_DIR="$TEST_DIR-$RESULT_EXT"
     fi
     if (( $APPEND_DATE != 0 )); then
-        DATE=$(date +'%Y%M%d')
+        DATE=$(date +'%Y%m%d')
 	TEST_DIR="$TEST_DIR-$DATE"
     fi
     mkdir -p "$TEST_DIR"
