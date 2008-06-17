@@ -247,9 +247,13 @@ std::size_t GoUctState::GetSignature(SgMove mv) const
         return g_signature.Get(m_bd, mv);
 }
 
-void GoUctState::StartPlayouts()
+void GoUctState::StartPlayout()
 {
     m_uctBd.Init(m_bd);
+}
+
+void GoUctState::StartPlayouts()
+{
     m_isInPlayout = true;
 }
 
