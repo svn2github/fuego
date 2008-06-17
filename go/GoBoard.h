@@ -573,10 +573,6 @@ public:
         ignoring any possible repetition. */
     bool CanCapture(SgPoint p, SgBlackWhite c) const;
 
-    /** Whether stones are actually removed from the board when a
-        capturing move is made (default is true) */
-    void SetKillCaptures(bool kill);
-
     /** %Player who has immediately retaken a ko.
         It is SG_EMPTY if no player has done it.
     */
@@ -908,8 +904,6 @@ private:
     SgArray<bool,SG_MAXPOINT> m_isBorder;
 
     SgSList<StackEntry,GO_MAX_NUM_MOVES>* m_moves;
-
-    bool m_killCaptures;
 
     static bool IsPass(SgPoint p);
 
@@ -1842,11 +1836,6 @@ inline int GoBoard::TotalNumStones(SgBlackWhite color) const
 inline int GoBoard::Up(SgPoint p) const
 {
     return m_const.Up(p);
-}
-
-inline void GoBoard::SetKillCaptures(bool kill)
-{
-    m_killCaptures = kill;
 }
 
 //----------------------------------------------------------------------------

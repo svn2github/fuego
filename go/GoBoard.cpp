@@ -403,7 +403,7 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
         return;
     SgBlackWhite c = entry.m_color;
     Block* block = entry.m_suicide;
-    if (block != 0 && m_killCaptures)
+    if (block != 0)
         RestoreKill(block, c);
     RemoveStone(p);
     --m_state.m_numStones[c];
@@ -426,9 +426,8 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
         }
         m_blockList->Pop();
     }
-    if (m_killCaptures)
-        for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
-            RestoreKill(*it, SgOppBW(entry.m_color));
+    for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
+        RestoreKill(*it, SgOppBW(entry.m_color));
     AddLibToAdjBlocks(p);
 }
 
@@ -508,7 +507,6 @@ void GoBoard::Init(int size, const GoRules& rules, const GoSetup& setup)
         }
     }
     m_snapshot->m_moveNumber = -1;
-    m_killCaptures = true;
     CheckConsistency();
 }
 
@@ -773,8 +771,7 @@ bool GoBoard::CheckSuicide(SgPoint p, StackEntry& entry)
     if (! HasLiberties(p))
     {
         entry.m_suicide = m_state.m_block[p];
-        if (m_killCaptures)
-            KillBlock(entry.m_suicide);
+        KillBlock(entry.m_suicide);
         m_moveInfo.set(isSuicide);
         return m_rules.AllowSuicide();
     }
@@ -864,7 +861,7 @@ void GoBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
     {
         Block* b = *it;
         b->ExcludeLiberty(p);
-        if (b->Color() == opp && b->NumLiberties() == 0 && m_killCaptures)
+        if (b->Color() == opp && b->NumLiberties() == 0)
         {
             entry.m_killed.Append(b);
             KillBlock(b);
