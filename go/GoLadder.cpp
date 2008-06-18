@@ -578,8 +578,8 @@ bool Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
     return (result < 0);
 }
 
-Status LadderStatus(GoBoard& bd, SgPoint prey, bool twoLibIsEscape,
-                    SgPoint* toCapture, SgPoint* toEscape)
+GoLadderStatus LadderStatus(GoBoard& bd, SgPoint prey, bool twoLibIsEscape,
+                            SgPoint* toCapture, SgPoint* toEscape)
 {
     SG_ASSERT(bd.IsValidPoint(prey));
     SG_ASSERT(bd.Occupied(prey));
@@ -591,17 +591,17 @@ Status LadderStatus(GoBoard& bd, SgPoint prey, bool twoLibIsEscape,
     GoLadderBoard ladderBoard(bd);
     SgBlackWhite preyColor = bd.GetStone(prey);
     SgList<SgPoint> captureSequence;
-    Status status = Escaped;
+    GoLadderStatus status = GO_LADDER_ESCAPED;
     if (ladderBoard.Ladder(prey, SgOppBW(preyColor), &captureSequence,
                            twoLibIsEscape) < 0)
     {
         SgList<SgPoint> escapeSequence;
         if (ladderBoard.Ladder(prey, preyColor, &escapeSequence,
                                twoLibIsEscape) < 0)
-            status = Captured;
+            status = GO_LADDER_CAPTURED;
         else
         {
-            status = Unsettled;
+            status = GO_LADDER_UNSETTLED;
             // Unsettled = ladder depends on who plays first, so there must
             // be a move that can be played.
             SG_ASSERT(captureSequence.NonEmpty());

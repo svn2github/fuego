@@ -38,16 +38,16 @@ void GoGtpExtraCommands::CmdLadder(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgPoint prey = StoneArg(cmd, 0, m_bd);
-    GoLadder::Status status = GoLadder::LadderStatus(m_bd, prey);
+    GoLadderStatus status = GoLadder::LadderStatus(m_bd, prey);
     switch (status)
     {
-    case GoLadder::Escaped:
+    case GO_LADDER_ESCAPED:
         cmd << "escaped";
         break;
-    case GoLadder::Captured:
+    case GO_LADDER_CAPTURED:
         cmd << "captured";
         break;
-    case GoLadder::Unsettled:
+    case GO_LADDER_UNSETTLED:
         cmd << "unsettled";
         break;
     default:

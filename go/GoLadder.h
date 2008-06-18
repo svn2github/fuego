@@ -20,37 +20,24 @@ class GoBoard;
 
 //----------------------------------------------------------------------------
 
-namespace GoLadder {
-
-enum Status
+enum GoLadderStatus
 {
     /** Don't know anything about the status of this block. */
-    Unknown,
+    GO_LADDER_UNKNOWN,
 
     /** Definitely captured, regardless of who plays first. */
-    Captured,
-
-    /** Captured if first player can win ko. */
-    CapturedKo,
-
-    /** Can be captured, not sure whether it can escape. */
-    CanBeCaptured,
+    GO_LADDER_CAPTURED,
 
     /** Capture or escape depends on who plays first. */
-    Unsettled,
-
-    /** Status depends on who plays first and who wins ko. */
-    UnsettledKo,
-
-    /** Can escape, not sure whether it can be captured. */
-    CanEscape,
+    GO_LADDER_UNSETTLED,
 
     /** Definitely escaped, regardless of who plays first. */
-    Escaped,
-
-    /** Escaped if first player can win ko. */
-    EscapedKo
+    GO_LADDER_ESCAPED
 };
+
+//----------------------------------------------------------------------------
+
+namespace GoLadder {
 
 /** Return whether or not the block at 'prey' can be captured in a ladder when
     'toPlay' plays first.
@@ -71,8 +58,9 @@ bool Ladder(GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
     Otherwise, leave '*toCapture' and '*toEscape' unchanged. The point at
     'prey' must be occupied. 
 */
-Status LadderStatus(GoBoard& bd, SgPoint prey, bool fTwoLibIsEscape = false,
-                    SgPoint* toCapture = 0, SgPoint* toEscape = 0);
+GoLadderStatus LadderStatus(GoBoard& bd, SgPoint prey,
+                            bool fTwoLibIsEscape = false,
+                            SgPoint* toCapture = 0, SgPoint* toEscape = 0);
 
 /** Check if this is a chain connection point, or a ko cut point.
     Try to play there as opponent, then check:
