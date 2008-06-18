@@ -20,9 +20,13 @@ using GoBoardUtil::PlayIfLegal;
 
 //----------------------------------------------------------------------------
 
-const int GoodForPrey = 1000;
+namespace {
 
-const int GoodForHunter = -1000;
+const int GOOD_FOR_PREY = 1000;
+
+const int GOOD_FOR_HUNTER = -1000;
+
+} // namespace
 
 //----------------------------------------------------------------------------
 
@@ -153,7 +157,7 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
     {
         if (sequence)
             sequence->Clear();
-        result = GoodForPrey - depth;
+        result = GOOD_FOR_PREY - depth;
     }
     return result;
 }
@@ -247,7 +251,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
     {
         if (sequence)
             sequence->Clear();
-        result = GoodForHunter+depth;
+        result = GOOD_FOR_HUNTER+depth;
     }
     m_partOfPrey.Exclude(move);
     m_partOfPrey.Exclude(newStones);
@@ -260,7 +264,7 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
                          SgList<SgPoint>* sequence)
 {
     if (CheckMoveOverflow())
-        return GoodForPrey;
+        return GOOD_FOR_PREY;
     int result = 0;
     for (SgListIterator<SgPoint> iter(adjBlk); iter; ++iter)
     {
@@ -270,7 +274,7 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
         {
             if (sequence)
                 sequence->SetTo(move);
-            result = GoodForPrey - depth;
+            result = GOOD_FOR_PREY - depth;
         }
         else if (move != lib1)
         {
@@ -306,7 +310,7 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
                            SgList<SgPoint>* sequence)
 {
     if (CheckMoveOverflow())
-        return GoodForPrey;
+        return GOOD_FOR_PREY;
     int result = 0;
     switch (numLib)
     {
@@ -316,7 +320,7 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
                 sequence->SetTo(lib1);
             // TODO: should probably test for IsSnapback here, but don't have
             // the right information available.
-            result = GoodForHunter + depth;
+            result = GOOD_FOR_HUNTER + depth;
             break;
         }
     case 2:
@@ -375,7 +379,7 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
         {
             if (sequence)
                 sequence->Clear();
-            result = GoodForPrey - depth;
+            result = GOOD_FOR_PREY - depth;
             break;
         }
     }
@@ -422,13 +426,13 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
     if (! m_board.Occupied(prey))
         return 0;
     if (CheckMoveOverflow())
-        return GoodForPrey;
+        return GOOD_FOR_PREY;
     int result = 0;
     m_preyColor = m_board.GetStone(prey);
     m_hunterColor = SgOppBW(m_preyColor);
     int numLib = m_board.NumLiberties(prey);
     if (2 < numLib)
-        result = GoodForPrey;
+        result = GOOD_FOR_PREY;
     else
     {
         SgList<SgPoint> libs;
@@ -447,7 +451,7 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
             else if (twoLibIsEscape) // prey to play, numLib >= 2
                 // For example, Explorer cannot treat this case as a ladder,
                 // it messes up the logic
-                result = GoodForPrey;
+                result = GOOD_FOR_PREY;
             else
             {
                 // Prey to play, two liberties. This is usually good, but
@@ -499,7 +503,7 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
                         {
                             if (sequence)
                                 sequence->Append(*it);
-                            result = GoodForPrey;
+                            result = GOOD_FOR_PREY;
                         }
                         m_board.Undo();
                     }
@@ -512,13 +516,13 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
                 // that do lead to escape (e.g. approach moves), but
                 // ladder algorithm doesn't know about those.
                 if (result == 0)
-                    result = GoodForHunter;
+                    result = GOOD_FOR_HUNTER;
             }
         }
         else
         {
             if (IsSnapback(prey))
-                result = GoodForPrey;
+                result = GOOD_FOR_PREY;
             else
             {
                 // AR: split HunterLadder into two methods (1 vs 2 libs)
