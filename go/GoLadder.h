@@ -14,6 +14,7 @@
 #include "SgBoardColor.h"
 #include "SgList.h"
 #include "SgPoint.h"
+#include "SgPointSet.h"
 
 class GoBoard;
 
@@ -89,6 +90,74 @@ bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col);
 SgPoint TryLadder(GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
 
 } // namespace GoLadder
+
+//----------------------------------------------------------------------------
+
+/** This class contains all the ladder-specific stuff. */
+class GoLadderBoard
+{
+public:
+    GoLadderBoard(GoBoard& board);
+
+    ~GoLadderBoard() {}
+
+    /** Main ladder routine.
+        twoLibIsEscape: if prey is to play and has two libs, does it count as
+        an immediate escape, or shall we keep trying to capture?
+    */
+    int Ladder(SgPoint prey, SgBlackWhite toPlay, SgList<SgPoint>* sequence,
+               bool twoLibIsEscape = false);
+
+    bool IsBoard(const GoBoard& board) const;
+
+private:
+    /** Maximum number of moves in ladder.
+        If board has simple ko rule, ladders could not terminate.
+    */
+    static const int MAX_LADDER_MOVES = 200;
+
+    /** Maximum move number before ladder should be aborted. */
+    int m_maxMoveNumber;
+
+    GoBoard& m_board;
+
+    SgPointSet m_partOfPrey;
+
+    SgBlackWhite m_preyColor;
+
+    SgBlackWhite m_hunterColor;
+
+    bool CheckMoveOverflow() const;
+
+    void InitMaxMoveNumber();
+
+    bool PointIsAdjToPrey(SgPoint p);
+
+    bool BlockIsAdjToPrey(SgPoint p, int numAdj);
+
+    void MarkStonesAsPrey(SgPoint p, SgList<SgPoint>* stones = 0);
+
+    void FilterAdjacent(SgList<SgPoint>* adjBlocks);
+
+    int PlayHunterMove(int depth, SgPoint move, SgPoint lib1, SgPoint lib2,
+                       const SgList<SgPoint>& adjBlk, 
+                       SgList<SgPoint>* sequence);
+
+    int PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
+                     const SgList<SgPoint>& adjBlk, 
+                     SgList<SgPoint>* sequence);
+
+    bool IsSnapback(SgPoint prey);
+
+    int PreyLadder(int depth, SgPoint lib1, const SgList<SgPoint>& adjBlk,
+                   SgList<SgPoint>* sequence);
+
+    int HunterLadder(int depth, int numLib, SgPoint lib1, SgPoint lib2,
+                     const SgList<SgPoint>& adjBlk, 
+                     SgList<SgPoint>* sequence);
+
+    void ReduceToBlocks(SgList<SgPoint>* stones);
+};
 
 //----------------------------------------------------------------------------
 
