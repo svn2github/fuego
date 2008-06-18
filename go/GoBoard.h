@@ -68,7 +68,7 @@ typedef std::bitset<nuMoveInfoFlag> GoMoveInfo;
 //----------------------------------------------------------------------------
 
 /** Static list having enough room for all points on board and SG_PASS. */
-typedef SgSList<SgPoint,SG_MAX_ONBOARD + 1> GoPointSList;
+typedef SgSList<SgPoint,SG_MAX_ONBOARD + 1> GoPointList;
 
 /** Static list having enough room for longest move sequence supported by
     GoBoard.
@@ -81,7 +81,7 @@ typedef SgSList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
 class GoSetup
 {
 public:
-    SgBWArray<GoPointSList> m_stones;
+    SgBWArray<GoPointList> m_stones;
 
     SgBlackWhite m_player;
 
@@ -423,7 +423,7 @@ public:
         Includes captures and suicide stones.
         Only valid directly after a GoBoard::Play, otherwise undefined.
     */
-    const GoPointSList& CapturedStones() const;
+    const GoPointList& CapturedStones() const;
 
     /** The stones captured by the most recent move.
         @see CapturedStones
@@ -627,7 +627,7 @@ private:
 
         typedef LibertyList::Iterator LibertyIterator;
 
-        typedef GoPointSList::Iterator StoneIterator;
+        typedef GoPointList::Iterator StoneIterator;
 
         SgPoint Anchor() const { return m_anchor; }
 
@@ -648,7 +648,7 @@ private:
             m_liberties.Clear();
         }
 
-        void Init(SgBlackWhite c, SgPoint anchor, GoPointSList stones,
+        void Init(SgBlackWhite c, SgPoint anchor, GoPointList stones,
                   LibertyList liberties)
         {
             SG_ASSERT_BW(c);
@@ -669,7 +669,7 @@ private:
 
         void SetAnchor(SgPoint p) { m_anchor = p; }
 
-        const GoPointSList& Stones() const { return m_stones; }
+        const GoPointList& Stones() const { return m_stones; }
 
         void UpdateAnchor(SgPoint p) { if (p < m_anchor) m_anchor = p; }
 
@@ -680,7 +680,7 @@ private:
 
         LibertyList m_liberties;
 
-        GoPointSList m_stones;
+        GoPointList m_stones;
     };
 
     /** Board hash code.
@@ -889,7 +889,7 @@ private:
 
     mutable SgMarker m_marker;
 
-    GoPointSList m_capturedStones;
+    GoPointList m_capturedStones;
 
     /** Arbitrary repetition for both players. */
     bool m_allowAnyRepetition;
@@ -1307,7 +1307,7 @@ inline bool GoBoard::CanUndo() const
     return (m_moves->Length() > 0);
 }
 
-inline const GoPointSList& GoBoard::CapturedStones() const
+inline const GoPointList& GoBoard::CapturedStones() const
 {
     return m_capturedStones;
 }

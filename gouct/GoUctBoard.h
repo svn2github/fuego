@@ -194,7 +194,7 @@ public:
         Can be used for incremental update of other data structures.
         Only valid directly after a GoUctBoard::Play, otherwise undefined.
     */
-    const GoPointSList& CapturedStones() const;
+    const GoPointList& CapturedStones() const;
 
     /** The stones captured by the most recent move.
         @see CapturedStones
@@ -322,7 +322,7 @@ private:
 
         typedef LibertyList::Iterator LibertyIterator;
 
-        typedef GoPointSList::Iterator StoneIterator;
+        typedef GoPointList::Iterator StoneIterator;
 
         SgPoint Anchor() const { return m_anchor; }
 
@@ -358,7 +358,7 @@ private:
 
         int NumStones() const { return m_stones.Length(); }
 
-        const GoPointSList& Stones() const { return m_stones; }
+        const GoPointList& Stones() const { return m_stones; }
 
     private:
         SgPoint m_anchor;
@@ -367,7 +367,7 @@ private:
 
         LibertyList m_liberties;
 
-        GoPointSList m_stones;
+        GoPointList m_stones;
     };
 
     SgPoint m_lastMove;
@@ -404,7 +404,7 @@ private:
 
     mutable SgMarker m_marker;
 
-    GoPointSList m_capturedStones;
+    GoPointList m_capturedStones;
 
     SgArray<bool,SG_MAXPOINT> m_isBorder;
 
@@ -601,7 +601,7 @@ inline bool GoUctBoard::AtMostNumLibs(SgPoint block, int n) const
     return NumLiberties(block) <= n;
 }
 
-inline const GoPointSList& GoUctBoard::CapturedStones() const
+inline const GoPointList& GoUctBoard::CapturedStones() const
 {
     return m_capturedStones;
 }

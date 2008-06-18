@@ -113,7 +113,7 @@ void GoBoard::CheckConsistencyBlock(SgPoint point) const
 {
     SG_ASSERT(Occupied(point));
     SgBlackWhite color = GetColor(point);
-    GoPointSList stones;
+    GoPointList stones;
     Block::LibertyList liberties;
     SgMarker mark;
     SgStack<SgPoint,SG_MAXPOINT> stack;
@@ -484,7 +484,7 @@ void GoBoard::Init(int size, const GoRules& rules, const GoSetup& setup)
     }
     m_setup = setup;
     for (SgBWIterator c; c; ++c)
-        for (GoPointSList::Iterator it(setup.m_stones[*c]); it; ++it)
+        for (GoPointList::Iterator it(setup.m_stones[*c]); it; ++it)
         {
             SgPoint p = *it;
             SG_ASSERT(IsValidPoint(p));
@@ -514,7 +514,7 @@ void GoBoard::InitBlock(GoBoard::Block& block, SgBlackWhite c, SgPoint anchor)
 {
     SG_ASSERT_BW(c);
     Block::LibertyList liberties;
-    GoPointSList stones;
+    GoPointList stones;
     SgReserveMarker reserve(m_marker);
     m_marker.Clear();
     SgStack<SgPoint,SG_MAX_ONBOARD> stack;
@@ -748,12 +748,12 @@ bool GoBoard::FullBoardRepetition() const
             for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
             {
                 Block* killed = *it;
-                for (GoPointSList::Iterator stn(killed->Stones()); stn; ++stn)
+                for (GoPointList::Iterator stn(killed->Stones()); stn; ++stn)
                     UpdateChanges(*stn, changes[killed->Color()], nuChanges);
             }
             Block* suicide = entry.m_suicide;
             if (suicide != 0)
-                for (GoPointSList::Iterator stn(suicide->Stones()); stn;
+                for (GoPointList::Iterator stn(suicide->Stones()); stn;
                      ++stn)
                     UpdateChanges(*stn, changes[suicide->Color()], nuChanges);
         }

@@ -135,7 +135,7 @@ inline void GoUctPureRandomGenerator<BOARD>::OnPlay()
 {
     // Don't remove stone played, too expensive, check later in Generate()
     // that generated point is still empty
-    for (GoPointSList::Iterator it(m_bd.CapturedStones()); it; ++it)
+    for (GoPointList::Iterator it(m_bd.CapturedStones()); it; ++it)
         Insert(*it);
     CheckConsistency();
 }

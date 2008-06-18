@@ -211,7 +211,7 @@ void GoBoardUtil::DumpBoard(const GoBoard& bd, std::ostream& out)
             SgBlackWhite c = *it;
             int stoneNumber = 0;
             out << (c == SG_BLACK ? "AB" : "AW");
-            for (GoPointSList::Iterator it2(setup.m_stones[c]); it2; ++it2)
+            for (GoPointList::Iterator it2(setup.m_stones[c]); it2; ++it2)
             {
                 SgPoint p = *it2;
                 ++stoneNumber;
@@ -881,7 +881,7 @@ SgRect GoBoardUtil::GetDirtyRegion(const GoBoard& bd, SgMove move,
     // Check if this move did make a capture
     if (! premove && bd.CapturingMove())
     {
-        for (GoPointSList::Iterator icaptures(bd.CapturedStones()); icaptures;
+        for (GoPointList::Iterator icaptures(bd.CapturedStones()); icaptures;
              ++icaptures)
         {
             dirty.Include(*icaptures);

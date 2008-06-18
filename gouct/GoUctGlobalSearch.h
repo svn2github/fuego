@@ -291,7 +291,7 @@ private:
     int m_stoneDiff;
 
     /** The area in which moves should be generated. */
-    GoPointSList m_area;
+    GoPointList m_area;
 
     /** See SetMercyRule() */
     float m_mercyRuleResult;

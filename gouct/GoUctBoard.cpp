@@ -78,7 +78,7 @@ void GoUctBoard::CheckConsistencyBlock(SgPoint point) const
 {
     SG_ASSERT(Occupied(point));
     SgBlackWhite color = GetColor(point);
-    GoPointSList stones;
+    GoPointList stones;
     Block::LibertyList liberties;
     SgMarker mark;
     SgStack<SgPoint,SG_MAXPOINT> stack;
