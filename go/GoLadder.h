@@ -37,57 +37,13 @@ enum GoLadderStatus
 
 //----------------------------------------------------------------------------
 
-namespace GoLadder {
-
-/** Return whether or not the block at 'prey' can be captured in a ladder when
-    'toPlay' plays first.
-    True means capture, false means escape. If 'sequence' is not 0, return a
-    sequence of moves to capture or escape (need not be the optimal sequence).
-    Return an empty sequence if the prey is already captured or has escaped,
-    without needing to play a move.
-    If the prey can be temporarily removed from the board but can capture
-    back immediately (snapback), return that the prey cannot be captured.
-*/
-bool Ladder(GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
-            bool fTwoLibIsEscape = false, SgList<SgPoint>* sequence = 0);
-
-/** Return whether the block at 'prey' is captured, escaped, or unsettled
-    with regards to capture in a ladder.
-    If it is unsettled, set '*toCapture' and '*toEscape' (if not 0) to the
-    capturing/escaping move to play.
-    Otherwise, leave '*toCapture' and '*toEscape' unchanged. The point at
-    'prey' must be occupied. 
-*/
-GoLadderStatus LadderStatus(GoBoard& bd, SgPoint prey,
-                            bool fTwoLibIsEscape = false,
-                            SgPoint* toCapture = 0, SgPoint* toEscape = 0);
-
-/** Check if this is a chain connection point, or a ko cut point.
-    Try to play there as opponent, then check:
-    - Suicide
-    - self removal, self atari
-    - can be captured by ladder?
-    - is it a Ko?
-*/
-bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col,
-                        bool& byLadder, bool& isKoCut, bool tryLadder = true);
-
-/** Simple form, calls the complex form and ignores bool results */
-bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col);
-
-SgPoint TryLadder(GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
-
-} // namespace GoLadder
-
-//----------------------------------------------------------------------------
-
 /** This class contains all the ladder-specific stuff. */
-class GoLadderBoard
+class GoLadder
 {
 public:
-    GoLadderBoard(GoBoard& board);
+    GoLadder(GoBoard& board);
 
-    ~GoLadderBoard() {}
+    ~GoLadder() {}
 
     /** Main ladder routine.
         twoLibIsEscape: if prey is to play and has two libs, does it count as
@@ -146,6 +102,50 @@ private:
 
     void ReduceToBlocks(SgList<SgPoint>* stones);
 };
+
+//----------------------------------------------------------------------------
+
+namespace GoLadderUtil {
+
+/** Return whether or not the block at 'prey' can be captured in a ladder when
+    'toPlay' plays first.
+    True means capture, false means escape. If 'sequence' is not 0, return a
+    sequence of moves to capture or escape (need not be the optimal sequence).
+    Return an empty sequence if the prey is already captured or has escaped,
+    without needing to play a move.
+    If the prey can be temporarily removed from the board but can capture
+    back immediately (snapback), return that the prey cannot be captured.
+*/
+bool Ladder(GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
+            bool fTwoLibIsEscape = false, SgList<SgPoint>* sequence = 0);
+
+/** Return whether the block at 'prey' is captured, escaped, or unsettled
+    with regards to capture in a ladder.
+    If it is unsettled, set '*toCapture' and '*toEscape' (if not 0) to the
+    capturing/escaping move to play.
+    Otherwise, leave '*toCapture' and '*toEscape' unchanged. The point at
+    'prey' must be occupied. 
+*/
+GoLadderStatus LadderStatus(GoBoard& bd, SgPoint prey,
+                            bool fTwoLibIsEscape = false,
+                            SgPoint* toCapture = 0, SgPoint* toEscape = 0);
+
+/** Check if this is a chain connection point, or a ko cut point.
+    Try to play there as opponent, then check:
+    - Suicide
+    - self removal, self atari
+    - can be captured by ladder?
+    - is it a Ko?
+*/
+bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col,
+                        bool& byLadder, bool& isKoCut, bool tryLadder = true);
+
+/** Simple form, calls the complex form and ignores bool results */
+bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col);
+
+SgPoint TryLadder(GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
+
+} // namespace GoLadderUtil
 
 //----------------------------------------------------------------------------
 

@@ -38,7 +38,7 @@ void GoGtpExtraCommands::CmdLadder(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgPoint prey = StoneArg(cmd, 0, m_bd);
-    GoLadderStatus status = GoLadder::LadderStatus(m_bd, prey);
+    GoLadderStatus status = GoLadderUtil::LadderStatus(m_bd, prey);
     switch (status)
     {
     case GO_LADDER_ESCAPED:
