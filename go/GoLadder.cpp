@@ -553,27 +553,6 @@ bool GoLadderBoard::IsSnapback(SgPoint prey)
 
 //----------------------------------------------------------------------------
 
-/** Caches the most recently used LadderBoard. */
-class GoLadderCache
-{
-public:
-    static GoLadderBoard* GetLadderBoard(GoBoard& board);
-
-private:
-    static auto_ptr<GoLadderBoard> s_ladderBoard;
-};
-
-auto_ptr<GoLadderBoard> GoLadderCache::s_ladderBoard;
-
-GoLadderBoard* GoLadderCache::GetLadderBoard(GoBoard& board)
-{
-    if (s_ladderBoard.get() == 0 || ! s_ladderBoard->IsBoard(board))
-        s_ladderBoard.reset(new GoLadderBoard(board));
-    return s_ladderBoard.get();
-}
-
-//----------------------------------------------------------------------------
-
 namespace GoLadder {
 
 bool Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
@@ -589,8 +568,8 @@ bool Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
 #ifdef _DEBUG
     SgHashCode oldHash = bd.GetHashCode();
 #endif    
-    GoLadderBoard* ladderBoard = GoLadderCache::GetLadderBoard(bd);
-    int result = ladderBoard->Ladder(prey, toPlay, sequence, twoLibIsEscape);
+    GoLadderBoard ladderBoard(bd);
+    int result = ladderBoard.Ladder(prey, toPlay, sequence, twoLibIsEscape);
 #ifdef _DEBUG
     // Make sure Ladder didn't change the board position.
     SG_ASSERT(oldHash == bd.GetHashCode());
@@ -609,16 +588,16 @@ Status LadderStatus(GoBoard& bd, SgPoint prey, bool twoLibIsEscape,
 #endif
     // Unsettled only if can capture when hunter plays first, and can escape
     // if prey plays first.
-    GoLadderBoard* ladderBoard = GoLadderCache::GetLadderBoard(bd);
+    GoLadderBoard ladderBoard(bd);
     SgBlackWhite preyColor = bd.GetStone(prey);
     SgList<SgPoint> captureSequence;
     Status status = Escaped;
-    if (ladderBoard->Ladder(prey, SgOppBW(preyColor), &captureSequence,
-                            twoLibIsEscape) < 0)
+    if (ladderBoard.Ladder(prey, SgOppBW(preyColor), &captureSequence,
+                           twoLibIsEscape) < 0)
     {
         SgList<SgPoint> escapeSequence;
-        if (ladderBoard->Ladder(prey, preyColor, &escapeSequence,
-                                twoLibIsEscape) < 0)
+        if (ladderBoard.Ladder(prey, preyColor, &escapeSequence,
+                               twoLibIsEscape) < 0)
             status = Captured;
         else
         {
