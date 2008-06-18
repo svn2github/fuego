@@ -20,11 +20,6 @@ using GoBoardUtil::PlayIfLegal;
 
 //----------------------------------------------------------------------------
 
-/** Maximum stack size.
-    5 per move, max. 500 moves
-*/
-const int MaxLadderStack = 2500;
-
 const int GoodForPrey = 1000;
 
 const int GoodForHunter = -1000;
