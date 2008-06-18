@@ -67,10 +67,13 @@ typedef std::bitset<nuMoveInfoFlag> GoMoveInfo;
 
 //----------------------------------------------------------------------------
 
-/** SgSList having enough room for all points on board and SG_PASS. */
-typedef SgSList<SgPoint,SG_MAX_ONBOARD + 1> SgPointSList;
+/** Static list having enough room for all points on board and SG_PASS. */
+typedef SgSList<SgPoint,SG_MAX_ONBOARD + 1> GoPointSList;
 
-typedef SgPointSList::Iterator SgPointSListIterator;
+/** Static list having enough room for longest move sequence supported by
+    GoBoard.
+*/
+typedef SgSList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
 
 //----------------------------------------------------------------------------
 
@@ -78,7 +81,7 @@ typedef SgPointSList::Iterator SgPointSListIterator;
 class GoSetup
 {
 public:
-    SgBWArray<SgPointSList> m_stones;
+    SgBWArray<GoPointSList> m_stones;
 
     SgBlackWhite m_player;
 
@@ -420,7 +423,7 @@ public:
         Includes captures and suicide stones.
         Only valid directly after a GoBoard::Play, otherwise undefined.
     */
-    const SgPointSList& CapturedStones() const;
+    const GoPointSList& CapturedStones() const;
 
     /** The stones captured by the most recent move.
         @see CapturedStones
@@ -624,7 +627,7 @@ private:
 
         typedef LibertyList::Iterator LibertyIterator;
 
-        typedef SgPointSList::Iterator StoneIterator;
+        typedef GoPointSList::Iterator StoneIterator;
 
         SgPoint Anchor() const { return m_anchor; }
 
@@ -645,7 +648,7 @@ private:
             m_liberties.Clear();
         }
 
-        void Init(SgBlackWhite c, SgPoint anchor, SgPointSList stones,
+        void Init(SgBlackWhite c, SgPoint anchor, GoPointSList stones,
                   LibertyList liberties)
         {
             SG_ASSERT_BW(c);
@@ -666,7 +669,7 @@ private:
 
         void SetAnchor(SgPoint p) { m_anchor = p; }
 
-        const SgPointSList& Stones() const { return m_stones; }
+        const GoPointSList& Stones() const { return m_stones; }
 
         void UpdateAnchor(SgPoint p) { if (p < m_anchor) m_anchor = p; }
 
@@ -677,7 +680,7 @@ private:
 
         LibertyList m_liberties;
 
-        SgPointSList m_stones;
+        GoPointSList m_stones;
     };
 
     /** Board hash code.
@@ -886,7 +889,7 @@ private:
 
     mutable SgMarker m_marker;
 
-    SgPointSList m_capturedStones;
+    GoPointSList m_capturedStones;
 
     /** Arbitrary repetition for both players. */
     bool m_allowAnyRepetition;
@@ -1304,7 +1307,7 @@ inline bool GoBoard::CanUndo() const
     return (m_moves->Length() > 0);
 }
 
-inline const SgPointSList& GoBoard::CapturedStones() const
+inline const GoPointSList& GoBoard::CapturedStones() const
 {
     return m_capturedStones;
 }

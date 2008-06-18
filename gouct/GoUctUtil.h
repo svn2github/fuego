@@ -152,7 +152,7 @@ namespace GoUctUtil
     */
     template<class BOARD>
     SgPoint SelectRandom(const BOARD& bd, SgBlackWhite toPlay,
-                         SgPointSList& emptyPts,
+                         GoPointSList& emptyPts,
                          SgRandom& random);
 
     /** Return statistics of all children of a node.
@@ -322,7 +322,7 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
 template<class BOARD>
 inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
                                        SgBlackWhite toPlay,
-                                       SgPointSList& emptyPts,
+                                       GoPointSList& emptyPts,
                                        SgRandom& random)
 {
     while (true)

@@ -214,7 +214,8 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         if (m_board.CapturingMove())
         {   // Add the points at the captured stones that are adjacent to the
             // prey to the liberties, at least if exactly one stone captured.
-            for (SgPointSListIterator it(m_board.CapturedStones()); it; ++it)
+            for (GoPointSList::Iterator it(m_board.CapturedStones()); it;
+                 ++it)
             {
                 SgPoint stone = *it;
                 if (PointIsAdjToPrey(stone))

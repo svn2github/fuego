@@ -201,7 +201,7 @@ private:
             @param[out] moves The resulting list of capture moves. The passed
             in list is expected to be empty.
         */
-        void Generate(SgPointSList& moves);
+        void Generate(GoPointSList& moves);
 
     private:
         const BOARD& m_bd;
@@ -246,7 +246,7 @@ private:
         This list is not used in GenerateMove(), if a pure random move
         is generated.
     */
-    SgPointSList m_moves;
+    GoPointSList m_moves;
 
     /** The area for which moves should not be generated.
         Set by search.
@@ -342,7 +342,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator::OnPlay()
 
 template<class BOARD>
 void GoUctDefaultPlayoutPolicy<BOARD>
-::CaptureGenerator::Generate(SgPointSList& moves)
+::CaptureGenerator::Generate(GoPointSList& moves)
 {
     SG_ASSERT(moves.IsEmpty());
     const SgBlackWhite opp = m_bd.Opponent();
@@ -693,7 +693,7 @@ GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
                 result.Append(*it);
     }
     // Move in m_moves are not checked yet, if legal etc.
-    for (SgPointSList::Iterator it(m_moves); it; ++it)
+    for (GoPointSList::Iterator it(m_moves); it; ++it)
         if (m_checked || GeneratePoint(*it))
             result.Append(*it);
     return result;
@@ -717,7 +717,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>
                 values[*it] = 0;
             else
                 values[*it] = 0.5;
-        for (SgPointSList::Iterator it(m_moves); it; ++it)
+        for (GoPointSList::Iterator it(m_moves); it; ++it)
             // Move in m_moves are not checked yet, if legal etc.
             if (GoUctUtil::GeneratePoint<BOARD>(bd, *it, bd.ToPlay()))
                 values[*it] = 1;
