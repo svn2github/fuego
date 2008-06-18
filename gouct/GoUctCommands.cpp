@@ -196,7 +196,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "param/Uct Param Player/uct_param_player\n"
         "param/Uct Param Search/uct_param_search\n"
         "plist/Uct Patterns/uct_patterns\n"
-        "plist/Uct Policy Moves/uct_policy_moves\n"
+        "pstring/Uct Policy Moves/uct_policy_moves\n"
         "sboard/Uct Rave Values/uct_rave_values\n"
         "plist/Uct Root Filter/uct_root_filter\n"
         "none/Uct SaveGames/uct_savegames %w\n"
@@ -550,10 +550,10 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
             cmd << SgWritePoint(*it) << ' ';
 }
 
-/** Return list of equivalent best moves in playout policy.
+/** Return equivalent best moves in playout policy.
     See GoUctDefaultPlayoutPolicy::GetEquivalentBestMoves() <br>
     Arguments: none <br>
-    Returns: List of points.
+    Returns: Move type string followed by move list on a single line.
 */
 void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 {
@@ -565,13 +565,10 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
                                               safe, allSafe);
     policy.StartPlayout();
     policy.GenerateMove();
+    cmd << GoUctDefaultPlayoutPolicyTypeStr(policy.MoveType());
     SgSList<SgPoint,SG_MAXPOINT> moves = policy.GetEquivalentBestMoves();
     for (int i = 0; i < moves.Length(); ++i)
-    {
-        if (i > 0)
-            cmd << ' ';
-        cmd << SgWritePoint(moves[i]);
-    }
+        cmd << ' ' << SgWritePoint(moves[i]);
 }
 
 /** Show RAVE values of last search at root position.

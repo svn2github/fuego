@@ -7,6 +7,7 @@
 #define GOUCT_DEFAULTPLAYOUTPOLICY_H
 
 #include <iostream>
+#include <boost/array.hpp>
 #include "GoUctGlobalSearch.h"
 #include "GoUctPatterns.h"
 #include "GoUctPureRandomGenerator.h"
@@ -35,14 +36,40 @@ public:
 
 //----------------------------------------------------------------------------
 
+/** Move types used in GoUctDefaultPlayoutPolicy. */
+enum GoUctDefaultPlayoutPolicyType
+{
+    GOUCT_ATARI_CAPTURE,
+
+    GOUCT_ATARI_DEFEND,
+
+    GOUCT_LOWLIB,
+
+    GOUCT_PATTERN,
+
+    GOUCT_CAPTURE,
+
+    GOUCT_RANDOM,
+
+    GOUCT_SELFATARI_CORRECTION,
+
+    GOUCT_CLUMP_CORRECTION,
+
+    GOUCT_PASS,
+
+    _GOUCT_NU_DEFAULT_PLAYOUT_TYPE
+};
+
+const char* GoUctDefaultPlayoutPolicyTypeStr(
+                                          GoUctDefaultPlayoutPolicyType type);
+
+//----------------------------------------------------------------------------
+
 /** Statistics collected by GoUctDefaultPlayoutPolicy */
 struct GoUctDefaultPlayoutPolicyStat
 {
     /** Number of moves generated. */
     std::size_t m_nuMoves;
-
-    /** Number of pure random moves played. */
-    std::size_t m_nuRandMoves;
 
     /** Length of sequences of consecutive non-pure-random moves. */
     SgUctStatistics m_nonRandLen;
@@ -51,6 +78,9 @@ struct GoUctDefaultPlayoutPolicyStat
         Does not include the length of the move list for pure random moves.
     */
     SgUctStatistics m_moveListLen;
+
+    /** Number of moves of a certain type. */
+    boost::array<std::size_t,_GOUCT_NU_DEFAULT_PLAYOUT_TYPE> m_nuMoveType;
 
     void Clear();
 
@@ -113,7 +143,12 @@ public:
 
     void OnPlay();
 
-    /** true if most recently generated move was cleanup */
+    /** Return the type of the last move generated. */
+    GoUctDefaultPlayoutPolicyType MoveType() const;
+
+    /** true if most recently generated move was cleanup
+        @todo Is this function still in use? If not, remove.
+    */
     bool WasCleanupMove();
 
     // @} // @name
@@ -193,10 +228,8 @@ private:
     /** true if most recent move was generated in cleanup phase.  */
     bool m_wasCleanupMove;
 
-    /** Was the last move randomly selected from all legal moves.
-        True, if none of the non-random rules triggered.
-    */
-    bool m_wasPureRandom;
+    /** Type of the last generated move. */
+    GoUctDefaultPlayoutPolicyType m_moveType;
 
     /** See GoUctDefaultPlayoutPolicyStat::m_nonRandLen. */
     std::size_t m_nonRandLen;
@@ -238,7 +271,7 @@ private:
     */
     bool CorrectMove(
                     GoUctDefaultPlayoutPolicy<BOARD>::Corrector& corrFunction,
-                    SgPoint& mv);
+                    SgPoint& mv, GoUctDefaultPlayoutPolicyType moveType);
 
     bool GainsLiberties(SgPoint anchor, SgPoint lib) const;
 
@@ -360,7 +393,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::ClearStatistics()
 template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::CorrectMove(
                     GoUctDefaultPlayoutPolicy<BOARD>::Corrector& corrFunction,
-                    SgPoint& mv)
+                    SgPoint& mv, GoUctDefaultPlayoutPolicyType moveType)
 {
 #if DEBUG
     const SgPoint oldMv = mv;
@@ -371,7 +404,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::CorrectMove(
 
     m_moves.Clear();
     m_moves.Append(mv);
-    m_wasPureRandom = false;
+    m_moveType = moveType;
 
 #if DEBUG
     if (DEBUG_CORRECT_MOVE)
@@ -532,55 +565,75 @@ SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
     SgPoint mv = SG_NULLMOVE;
     if (m_param.m_pureRandom)
     {
-        m_wasPureRandom = true;
+        m_moveType = GOUCT_RANDOM;
         mv = m_pureRandomGenerator.Generate();
         if (mv == SG_NULLMOVE)
+        {
+            m_moveType = GOUCT_PASS;
             mv = SG_PASS;
+        }
         return mv;
     }
-    m_wasPureRandom = false;
     m_lastMove = bd.GetLastMove();
     if (   ! IsSpecialMove(m_lastMove) // skip if Pass or Null
         && ! bd.IsEmpty(m_lastMove) // skip if move was suicide
        )
     {
         if (GenerateAtariCaptureMove())
+        {
+            m_moveType = GOUCT_ATARI_CAPTURE;
             mv = SelectRandom();
+        }
         if (mv == SG_NULLMOVE && GenerateAtariDefenseMove())
+        {
+            m_moveType = GOUCT_ATARI_DEFEND;
             mv = SelectRandom();
+        }
         if (mv == SG_NULLMOVE && GenerateLowLibMove(m_lastMove))
+        {
+            m_moveType = GOUCT_LOWLIB;
             mv = SelectRandom();
+        }
         if (mv == SG_NULLMOVE && GeneratePatternMove())
+        {
+            m_moveType = GOUCT_PATTERN;
             mv = SelectRandom();
+        }
     }
     if (mv == SG_NULLMOVE)
     {
+        m_moveType = GOUCT_CAPTURE;
         m_captureGenerator.Generate(m_moves);
         mv = SelectRandom();
     }
     if (mv == SG_NULLMOVE)
     {
-        m_wasPureRandom = true;
+        m_moveType = GOUCT_RANDOM;
         mv = m_pureRandomGenerator.Generate();
     }
 
-    if (m_param.m_statisticsEnabled)
-        UpdateStatistics();
-
     if (mv == SG_NULLMOVE)
+    {
+        m_moveType = GOUCT_PASS;
         mv = SG_PASS;
+    }
     else
     {
         SG_ASSERT(bd.IsLegal(mv));
-        m_checked =
-            CorrectMove(GoUctUtil::DoSelfAtariCorrection, mv);
+        m_checked = CorrectMove(GoUctUtil::DoSelfAtariCorrection, mv,
+                                GOUCT_SELFATARI_CORRECTION);
         SG_ASSERT(m_wasCleanupMove || ! m_allSafe[mv]);
         if (m_param.m_useClumpCorrection && ! m_checked)
-            CorrectMove(GoUctUtil::DoClumpCorrection, mv);
+            CorrectMove(GoUctUtil::DoClumpCorrection, mv,
+                        GOUCT_CLUMP_CORRECTION);
     }
     SG_ASSERT(mv == SG_PASS || m_wasCleanupMove || ! m_allSafe[mv]);
     SG_ASSERT(bd.IsLegal(mv));
     SG_ASSERT(mv == SG_PASS || ! bd.IsSuicide(mv));
+
+    if (m_param.m_statisticsEnabled)
+        UpdateStatistics();
+
     return mv;
 }
 
@@ -633,7 +686,7 @@ GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
 {
     SgSList<SgPoint,SG_MAXPOINT> result;
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    if (m_wasPureRandom)
+    if (m_moveType == GOUCT_RANDOM)
     {
         for (typename BOARD::Iterator it(bd); it; ++it)
             if (bd.IsEmpty(*it) && GeneratePoint(*it))
@@ -653,7 +706,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>
 {
     StartPlayout();
     GenerateMove();
-    if (m_wasPureRandom)
+    if (m_moveType == GOUCT_RANDOM)
         counts.Fill(0);
     else
     {
@@ -671,6 +724,13 @@ void GoUctDefaultPlayoutPolicy<BOARD>
         counts.Fill(9);
     }
     EndPlayout();
+}
+
+template<class BOARD>
+GoUctDefaultPlayoutPolicyType GoUctDefaultPlayoutPolicy<BOARD>::MoveType()
+    const
+{
+    return m_moveType;
 }
 
 template<class BOARD>
@@ -706,14 +766,14 @@ template<class BOARD>
 void GoUctDefaultPlayoutPolicy<BOARD>::UpdateStatistics()
 {
     ++m_statistics.m_nuMoves;
-    if (m_wasPureRandom)
+    ++m_statistics.m_nuMoveType[m_moveType];
+    if (m_moveType == GOUCT_RANDOM)
     {
         if (m_nonRandLen > 0)
         {
             m_statistics.m_nonRandLen.Add(m_nonRandLen);
             m_nonRandLen = 0;
         }
-        ++m_statistics.m_nuRandMoves;
     }
     else
     {
