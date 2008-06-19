@@ -133,10 +133,14 @@ inline SgPoint GoUctPureRandomGenerator<BOARD>::Generate()
 template<class BOARD>
 inline void GoUctPureRandomGenerator<BOARD>::OnPlay()
 {
-    // Don't remove stone played, too expensive, check later in Generate()
-    // that generated point is still empty
-    for (GoPointList::Iterator it(m_bd.CapturedStones()); it; ++it)
-        Insert(*it);
+    const GoPointList& capturedStones = m_bd.CapturedStones();
+    if (! capturedStones.IsEmpty())
+    {
+        // Don't remove stone played, too expensive, check later in Generate()
+        // that generated point is still empty
+        for (GoPointList::Iterator it(capturedStones); it; ++it)
+            Insert(*it);
+    }
     CheckConsistency();
 }
 
