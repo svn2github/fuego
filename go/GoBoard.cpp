@@ -226,7 +226,6 @@ void GoBoard::AddStoneToBlock(SgPoint p, SgBlackWhite c, Block* block,
         entry.m_newLibs.Append(p + SG_NS);
     }
     entry.m_oldAnchor = block->Anchor();
-    block->UpdateAnchor(p);
     m_state.m_block[p] = block;
 }
 
@@ -329,7 +328,6 @@ void GoBoard::MergeBlocks(SgPoint p, SgBlackWhite c,
         for (Block::LibertyIterator lib(adjBlock->Liberties()); lib; ++lib)
             if (m_marker.NewMark(*lib))
                 block.AppendLiberty(*lib);
-        block.UpdateAnchor(adjBlock->Anchor());
     }
     m_state.m_block[p] = &block;
     if (IsEmpty(p - SG_NS) && m_marker.NewMark(p - SG_NS))
