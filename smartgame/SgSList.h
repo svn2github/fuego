@@ -87,6 +87,11 @@ public:
     */
     bool Exclude(const T& val);
 
+    /** Append value at the end of the list if it's not already in the
+        list.
+    */
+    void Include(const T& val);
+
     /** Build intersection with other list.
         List may not contain duplicate entries.
     */
@@ -296,6 +301,13 @@ bool SgSList<T, SIZE>::Exclude(const T& val)
             return true;
         }
     return false;
+}
+
+template<typename T, int SIZE>
+void SgSList<T, SIZE>::Include(const T& val)
+{
+    if (! Contains(val))
+        Append(val);
 }
 
 template<typename T, int SIZE>

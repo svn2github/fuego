@@ -207,6 +207,26 @@ BOOST_AUTO_TEST_CASE(SgSListTest_Exclude_3)
     BOOST_CHECK_EQUAL(a[1], 2);
 }
 
+BOOST_AUTO_TEST_CASE(SgSListTest_Include)
+{
+    SgSList<int,10> a;
+    a.Append(2);
+    a.Append(1);
+    a.Append(3);
+    a.Include(5);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+    BOOST_CHECK_EQUAL(a[0], 2);
+    BOOST_CHECK_EQUAL(a[1], 1);
+    BOOST_CHECK_EQUAL(a[2], 3);
+    BOOST_CHECK_EQUAL(a[3], 5);
+    a.Include(5);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+    BOOST_CHECK_EQUAL(a[0], 2);
+    BOOST_CHECK_EQUAL(a[1], 1);
+    BOOST_CHECK_EQUAL(a[2], 3);
+    BOOST_CHECK_EQUAL(a[3], 5);
+}
+
 BOOST_AUTO_TEST_CASE(SgSListTest_Intersect)
 {
     SgSList<int,10> a;
