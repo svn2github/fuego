@@ -7,6 +7,8 @@ RESULT_DIR="html"
 TESTSUITE_DEFAULT="basics.suite"
 FUEGO_REL="../build/gmake/build/release/fuego -srand 1"
 FUEGO_DBG="../build/gmake/build/debug/fuego -srand 1"
+FUEGOTEST_REL="../build/gmake/build/release/fuego_test -srand 1"
+FUEGOTEST_DBG="../build/gmake/build/debug/fuego_test -srand 1"
 
 #-----------------------------------------------------------------------------
 # Functions
@@ -21,7 +23,7 @@ Options:
   -h Print help and exit
   -l Long output
   -p Program, using full command or a program abbreviation
-     (currently only fuego). Default is fuego.
+     (fuego,fuego_test). Default is fuego.
   -r Use release version of program (only for program abbreviations)
   -t Single test file to run (without extension .tst or .list)
 
@@ -50,6 +52,15 @@ setprogram() {
 	    else
 		PROGRAM_CMD="$FUEGO_DBG"
 		RESULT_EXT="fuego_dbg"
+	    fi
+	    ;;
+	fuego_test)
+	    if (( $RELEASE != 0 )); then
+		PROGRAM_CMD="$FUEGOTEST_REL"
+		RESULT_EXT="fuego_test"
+	    else
+		PROGRAM_CMD="$FUEGOTEST_DBG"
+		RESULT_EXT="fuego_test_dbg"
 	    fi
 	    ;;
 	*)
