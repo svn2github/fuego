@@ -6,6 +6,7 @@ PROJECTS = \
   smartgame \
   go \
   gouct \
+  fuegotest \
   fuegomain
 
 PAGES = \

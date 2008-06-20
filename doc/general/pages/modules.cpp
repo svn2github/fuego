@@ -18,6 +18,9 @@
         gouct [label="GoUct", color=black]
         go -> gouct
 
+        fuegotest [label="FuegoTest", color=blue]
+        gouct -> fuegotest
+
         fuegomain [label="FuegoMain", color=blue]
         gouct -> fuegomain
     }

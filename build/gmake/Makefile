@@ -11,6 +11,7 @@ PROJECTS = \
   smartgame \
   go \
   gouct \
+  fuegotest \
   fuegomain
 
 # sequentially to avoid same sub-target in sub-make invoked twice
