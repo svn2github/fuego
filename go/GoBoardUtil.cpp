@@ -515,20 +515,9 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
                                   SgSList<SgPoint,SG_MAXPOINT>& anchors)
 {
     anchors.Clear();
-    for (SgListIterator<SgPoint> stone(stones); stone; ++stone)
-    {
-        if (bd.Occupied(*stone))
-        {
-            for (int i = anchors.Length() - 1; i >= 0; --i)
-            {
-                if (bd.Anchor(*stone) == anchors[i])
-                    goto LB_RTA;
-            }
-            anchors.Append(bd.Anchor(*stone));
-        }
-    LB_RTA:
-        continue;
-    }
+    for (SgListIterator<SgPoint> it(stones); it; ++it)
+        if (bd.Occupied(*it))
+            anchors.Include(*it);
 }
 
 void GoBoardUtil::RegionCode(const GoBoard& bd, const SgList<SgPoint>& region,

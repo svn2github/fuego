@@ -232,14 +232,16 @@ namespace GoBoardUtil
     bool PlayIfLegal(GoBoard& bd, SgPoint p);
 
     /** Keep only the anchor of each block in the list.
-        Points not occupied are removed from the list.
-        The initial list may contain duplicate stones;
-        these will be thrown out. The returned list will be sorted by anchors.
+        Points not occupied are removed from the list. The initial list may
+        contain duplicate stones; these will be thrown out. The returned list
+        will be sorted by anchors.
     */
     void ReduceToAnchors(const GoBoard& bd, SgList<SgPoint>* stones);
 
-    /** SgSList version of ReduceToAnchors,
-        returning the number of anchors.
+    /** Keep only the anchor of each block in the list.
+        Points not occupied are removed from the list. The initial list may
+        contain duplicate stones; these will be thrown out. The returned list
+        will not be sorted by anchors.
     */
     void ReduceToAnchors(const GoBoard& bd, const SgList<SgPoint>& stones,
                          SgSList<SgPoint,SG_MAXPOINT> &anchors);
