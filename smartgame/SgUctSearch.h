@@ -57,7 +57,7 @@
       Modification of UCT with patterns in Monte-Carlo Go</a>
     - Silver, Gelly:
       <a href=
-      "http://www.machinelearning.org/proceedings/icml2007/papers/387.pdf">
+      "http://imls.engr.oregonstate.edu/www/htdocs/proceedings/icml2007/papers/387.pdf">
       Combining Online and Offline Knowledge in UCT</a>
 
     @see
