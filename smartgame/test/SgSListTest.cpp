@@ -57,8 +57,8 @@ BOOST_AUTO_TEST_CASE(SgSListTest_Assign)
     BOOST_CHECK_EQUAL(b.Length(), 3);
     BOOST_REQUIRE(b.Length() == 3);
     BOOST_CHECK_EQUAL(b[0], 1);
-    BOOST_CHECK_EQUAL(b[1], 2);    
-    BOOST_CHECK_EQUAL(b[2], 3);    
+    BOOST_CHECK_EQUAL(b[1], 2);
+    BOOST_CHECK_EQUAL(b[2], 3);
 }
 
 BOOST_AUTO_TEST_CASE(SgSListTest_Clear)
@@ -80,8 +80,8 @@ BOOST_AUTO_TEST_CASE(SgSListTest_ConstructorCopy)
     BOOST_CHECK_EQUAL(b.Length(), 3);
     BOOST_REQUIRE(b.Length() == 3);
     BOOST_CHECK_EQUAL(b[0], 1);
-    BOOST_CHECK_EQUAL(b[1], 2);    
-    BOOST_CHECK_EQUAL(b[2], 3);    
+    BOOST_CHECK_EQUAL(b[1], 2);
+    BOOST_CHECK_EQUAL(b[2], 3);
 }
 
 BOOST_AUTO_TEST_CASE(SgSListTest_ConstructorDefault)
@@ -178,9 +178,9 @@ BOOST_AUTO_TEST_CASE(SgSListTest_Exclude_1)
     a.Append(3);
     BOOST_CHECK(a.Exclude(1));
     BOOST_CHECK(! a.Exclude(5));
-    BOOST_CHECK_EQUAL(a.Length(), 2);    
-    BOOST_CHECK_EQUAL(a[0], 3);    
-    BOOST_CHECK_EQUAL(a[1], 2);    
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(a[0], 3);
+    BOOST_CHECK_EQUAL(a[1], 2);
 }
 
 BOOST_AUTO_TEST_CASE(SgSListTest_Exclude_2)
@@ -190,9 +190,9 @@ BOOST_AUTO_TEST_CASE(SgSListTest_Exclude_2)
     a.Append(2);
     a.Append(3);
     BOOST_CHECK(a.Exclude(2));
-    BOOST_CHECK_EQUAL(a.Length(), 2);    
-    BOOST_CHECK_EQUAL(a[0], 1);    
-    BOOST_CHECK_EQUAL(a[1], 3);    
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(a[0], 1);
+    BOOST_CHECK_EQUAL(a[1], 3);
 }
 
 BOOST_AUTO_TEST_CASE(SgSListTest_Exclude_3)
@@ -202,9 +202,9 @@ BOOST_AUTO_TEST_CASE(SgSListTest_Exclude_3)
     a.Append(2);
     a.Append(3);
     BOOST_CHECK(a.Exclude(3));
-    BOOST_CHECK_EQUAL(a.Length(), 2);    
+    BOOST_CHECK_EQUAL(a.Length(), 2);
     BOOST_CHECK_EQUAL(a[0], 1);
-    BOOST_CHECK_EQUAL(a[1], 2);    
+    BOOST_CHECK_EQUAL(a[1], 2);
 }
 
 BOOST_AUTO_TEST_CASE(SgSListTest_Intersect)
@@ -334,18 +334,18 @@ BOOST_AUTO_TEST_CASE(SgSListTest_RemoveFirst)
     a.Append(2);
     a.Append(3);
     a.RemoveFirst(2);
-    BOOST_CHECK_EQUAL(a.Length(), 2);    
-    BOOST_REQUIRE(a.Length() == 2);    
-    BOOST_CHECK_EQUAL(a[0], 1);    
-    BOOST_CHECK_EQUAL(a[1], 3);    
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_REQUIRE(a.Length() == 2);
+    BOOST_CHECK_EQUAL(a[0], 1);
+    BOOST_CHECK_EQUAL(a[1], 3);
     a.RemoveFirst(1);
-    BOOST_CHECK_EQUAL(a.Length(), 1);    
-    BOOST_REQUIRE(a.Length() == 1);    
-    BOOST_CHECK_EQUAL(a[0], 3);    
+    BOOST_CHECK_EQUAL(a.Length(), 1);
+    BOOST_REQUIRE(a.Length() == 1);
+    BOOST_CHECK_EQUAL(a[0], 3);
     a.RemoveFirst(1);
-    BOOST_CHECK_EQUAL(a.Length(), 1);    
-    BOOST_REQUIRE(a.Length() == 1);    
-    BOOST_CHECK_EQUAL(a[0], 3);    
+    BOOST_CHECK_EQUAL(a.Length(), 1);
+    BOOST_REQUIRE(a.Length() == 1);
+    BOOST_CHECK_EQUAL(a[0], 3);
 }
 
 BOOST_AUTO_TEST_CASE(SgSListTest_Resize)
