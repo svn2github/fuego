@@ -350,7 +350,6 @@ public:
 
     /** Append <code>elt</code> at the end of the list
         if it's not already in the list.
-        Inlined for performance and more detail in profiles.
     */
     void Include(const T& elt)
     {
