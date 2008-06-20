@@ -17,7 +17,7 @@ using namespace std;
 std::string FuegoMainUtil::Version()
 {
     ostringstream s;
-    #ifdef VERSION
+#ifdef VERSION
     s << BOOST_PP_STRINGIZE(VERSION);
 #else
     s << "(" __DATE__ ")";
