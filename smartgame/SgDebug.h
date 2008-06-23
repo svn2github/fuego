@@ -24,10 +24,8 @@ std::ostream& SgWarning();
 
 //----------------------------------------------------------------------------
 
-/** Set logging stream to file.
-    Uses the filename "explorer.out" by default.
-*/
-void SgDebugToFile(const char* filename = "explorer.out");
+/** Set logging stream to file. */
+void SgDebugToFile(const char* filename);
 
 /** Set logging stream to null stream.
     Discards everything written to SgDebug().
