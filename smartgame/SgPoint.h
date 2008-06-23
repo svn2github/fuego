@@ -25,10 +25,6 @@
     The board is surrounded by one line of border points (if size is
     SG_MAX_SIZE) in all directions; also diagonally out from the corners.
 
-    @note SG_MAXPOINT is one bigger than in the old Modula-2 version of
-    Explorer, since Point was <tt>INTEGER [0..SG_MAXPOINT]</tt>;
-    can now declare C arrays as <tt>[SG_MAXPOINT]</tt>.
-
     @section sgcoordinates Coordinates
 
     SgPointUtil::Pt, SgPointUtil::Row, and SgPointUtil::Col can be used to
