@@ -8,12 +8,6 @@
     implementation of GTP. These files include only standard C++ library
     files, so they could be used in other projects.
 
-    %GtpEngine is in its own module, because it does not depend on any other
-    code of project Explorer and is released separately under the LGPL
-    license.
-    File releases are currently made available here:
-    http://www.cs.ualberta.ca/~games/go/software/gtpengine/
-
     @section gtpdependencies Dependencies
 
     - @<none@>
