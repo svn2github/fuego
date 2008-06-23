@@ -897,6 +897,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_stat_player", &GoUctCommands::CmdStatPlayer);
     Register(e, "uct_stat_player_clear", &GoUctCommands::CmdStatPlayerClear);
     Register(e, "uct_stat_policy", &GoUctCommands::CmdStatPolicy);
+    Register(e, "uct_stat_policy_clear", &GoUctCommands::CmdStatPolicyClear);
     Register(e, "uct_stat_search", &GoUctCommands::CmdStatSearch);
     Register(e, "uct_value", &GoUctCommands::CmdValue);
 }
