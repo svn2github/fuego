@@ -261,7 +261,8 @@ GoUctGlobalSearch::GoUctGlobalSearch(GoBoard& bd,
     SetThreadStateFactory(stateFactory);
     SetFirstPlayUrgency(1);
     SetMoveSelect(SG_UCTMOVESELECT_COUNT);
-    SetBiasTermConstant(0.02);
+    SetNoBiasTerm(true);
+    //SetBiasTermConstant(0.02);
     SetRave(true);
     SetRaveWeightInitial(1.0);
     SetRaveWeightFinal(5000);
