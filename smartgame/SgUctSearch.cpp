@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
-#include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 #include <boost/version.hpp>
 #include "SgDebug.h"
@@ -23,7 +22,6 @@ using boost::condition;
 using boost::format;
 using boost::mutex;
 using boost::shared_ptr;
-using boost::trim_copy;
 
 #define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
 #define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
