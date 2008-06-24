@@ -37,6 +37,11 @@ int GoPlayer::MoveValue(SgPoint p)
     return numeric_limits<int>::min();
 }
 
+std::string GoPlayer::Name() const
+{
+    return "Unknown";
+}
+
 void GoPlayer::OnGameFinished()
 {
 }

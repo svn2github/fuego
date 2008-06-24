@@ -41,11 +41,13 @@ public:
     virtual SgMove GenMove(const SgTimeRecord& time,
                            SgBlackWhite toPlay) = 0;
 
+    /** Get the name of this player.
+        Default implementation returns "Unknown"
+    */
+    virtual std::string Name() const;
+
     /** Get node for appending search traces */
     SgNode* CurrentNode() const;
-
-    /** Get the name of this player. */
-    virtual std::string Name() const = 0;
 
     /** Set node for appending search traces */
     void SetCurrentNode(SgNode* node);
@@ -59,7 +61,7 @@ public:
         values; the units of the values are not specified.
      */
     virtual int MoveValue(SgPoint p);
-    
+
     /** Inform the player that the game was finished.
         This function gives the player the opportunity to do some work at
         the end of a game, for example perform some learning.
@@ -98,10 +100,10 @@ public:
 
     /** See m_variant */
     int Variant() const;
-    
+
     /** See m_variant */
     void SetVariant(int variant);
-    
+
 protected:
     /** Node in game tree. Used for appending search traces */
     SgNode* m_currentNode;
@@ -109,10 +111,10 @@ protected:
 private:
     /** The player's own Go board */
     GoBoard* m_board;
-    
+
     /** Player variant. Used for short-term testing of small modifications.
         The default variant is 0.
-        Do not use to create significantly different players - 
+        Do not use to create significantly different players -
         implement a new player instead.
     */
     int m_variant;
@@ -155,12 +157,12 @@ inline int GoPlayer::Variant() const
 {
     return m_variant;
 }
-    
+
 inline void GoPlayer::SetVariant(int variant)
 {
     m_variant = variant;
 }
-    
+
 //----------------------------------------------------------------------------
 
 #endif // GO_PLAYER_H
