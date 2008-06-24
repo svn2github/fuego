@@ -256,13 +256,15 @@ private:
 
     GoUctDefaultPlayoutPolicyStat m_statistics;
 
-    /** Try to correct the proposed move, typically by moving it.
-        Examples: selfataries, clumps.
+    /** Try to correct the proposed move, typically by moving it to a
+        'better' point such as other liberty or neighbor.
+        Examples implemented: self-ataries, clumps.
     */
     bool CorrectMove(
                     GoUctDefaultPlayoutPolicy<BOARD>::Corrector& corrFunction,
                     SgPoint& mv, GoUctDefaultPlayoutPolicyType moveType);
 
+    /** Test whether playing on lib increases the liberties of anchor block */
     bool GainsLiberties(SgPoint anchor, SgPoint lib) const;
 
     /** Captures if last move was self-atari */
@@ -271,9 +273,10 @@ private:
     /** Generate escapes if last move was atari. */
     bool GenerateAtariDefenseMove();
 
-    /** Generate low lib moves around last move */
+    /** Generate low lib moves around lastMove */
     bool GenerateLowLibMove(SgPoint lastMove);
 
+    /** Generate pattern move around last two moves */
     bool GeneratePatternMove();
 
     void GeneratePureRandom();
