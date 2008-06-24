@@ -93,4 +93,7 @@ loadsgf sgf/lifeanddeath/eye-tricky.sgf 6
 200 sg_compare_float 0.9 uct_value
 #? [1]
 
+loadsgf sgf/games/2008/gnu-uct3K-28.sgf 40
+210 reg_genmove w
+#? [G8|H9]
 

@@ -37,4 +37,55 @@ loadsgf sgf/games/2007/CGOS/107433.sgf 18
 #? [C6|G7|H7]
 # the game move B4 is a blunder, in own territory
 
+loadsgf sgf/games/2008/gnu-uct3K-11.sgf 56
+70 reg_genmove w
+#? [A1]*
+# must capture now to win by 0.5. Often the simulatons do not see that B
+# has a ko threat, so they waste a move and play inside territory.
+# Actually, W can still win - see next test - but capturing now 
+# is so much safer.
 
+loadsgf sgf/games/2008/gnu-uct3K-11.sgf 62
+80 reg_genmove w
+#? [A7]
+# must play this local ko threat to win.
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 21
+90 reg_genmove b
+#? [D6]*
+# not blunder yet, but capturing right away is simplest win.
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 25
+100 reg_genmove b
+#? [D6]*
+# must play this capture and fight to win.
+# takes over 100000 simulations to become best move,
+# and value is still very low - about 0.24.
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 27
+110 reg_genmove b
+#? [C7]*
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 29
+120 reg_genmove b
+#? [E1|B1]*
+# don't think C1 also works as ko threat
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 33
+130 reg_genmove b
+#? [C8|B6]*
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 35
+140 reg_genmove b
+#? [B6]*
+
+loadsgf sgf/games/2008/blunder-move-25.sgf 33
+150 reg_genmove b
+#? [B8|A8]*
+# see comments in sgf file on A8
+
+loadsgf sgf/games/2008/gnu-uct3K-17.sgf 58
+160 reg_genmove w
+#? [A2]*
+# with few simulations it likes throw-in A1, loses because no ko threats
+# A2 is trivial 0.5 pt win.

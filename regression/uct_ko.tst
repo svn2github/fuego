@@ -62,3 +62,16 @@ loadsgf sgf/games/2007/CGOS/189715.sgf 77
 120 sg_compare_float 0.5 uct_value
 #? [1]
 
+loadsgf sgf/games/2008/ko-bug.sgf 2
+reg_genmove b
+
+130 sg_compare_float 0.3 uct_value
+#? [-1]*
+# B is lost.
+
+loadsgf sgf/games/2008/ko-bug.sgf 4
+140 reg_genmove w
+#? [A9]*
+
+150 sg_compare_float 0.9 uct_value
+#? [1]*
