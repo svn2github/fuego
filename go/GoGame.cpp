@@ -483,6 +483,12 @@ void GoGame::DeletePlayer(SgBlackWhite color)
     m_player[color] = 0;
 }
 
+void GoGame::Init(int size, const GoRules& rules)
+{
+    GoGameRecord::Init(size, rules);
+    UpdatePlayers();
+}
+
 void GoGame::Init(SgNode* root, bool fTakeOwnership, bool fDeletePlayers)
 {
     if (fDeletePlayers)
@@ -491,6 +497,7 @@ void GoGame::Init(SgNode* root, bool fTakeOwnership, bool fDeletePlayers)
         DeletePlayer(SG_WHITE);
     }
     GoGameRecord::InitFromRoot(root, fTakeOwnership);
+    UpdatePlayers();
 }
 
 void GoGame::Init(int size, const GoRules& rules, bool fDeletePlayers)
@@ -501,6 +508,7 @@ void GoGame::Init(int size, const GoRules& rules, bool fDeletePlayers)
         DeletePlayer(SG_WHITE);
     }
     GoGameRecord::Init(size, rules);
+    UpdatePlayers();
 }
 
 void GoGame::OnGoToNode(SgNode* dest)
@@ -547,6 +555,7 @@ void GoGame::SetPlayer(SgBlackWhite color, GoPlayer* player)
     if (! (m_player[SG_BLACK] == m_player[SG_WHITE]))
         DeletePlayer(color);
     m_player[color] = player;
+    UpdatePlayers();
 }
 
 void GoGame::TurnClockOn(bool turnOn)

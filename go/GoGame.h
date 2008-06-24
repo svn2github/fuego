@@ -319,10 +319,7 @@ public:
     /** Needed to avoid hiding of inherited virtual function by the
         other variants of GoGame::Init.
     */
-    virtual void Init(int size, const GoRules& rules)
-    {
-        GoGameRecord::Init(size, rules);
-    }
+    void Init(int size, const GoRules& rules);
 
     void Init(SgNode* root, bool fTakeOwnership, bool fDeletePlayers);
 
