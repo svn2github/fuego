@@ -45,6 +45,7 @@ SRC_CPP= \
   go/test/GoBoardUtilTest.cpp \
   go/test/GoBookTest.cpp \
   go/test/GoEyeUtilTest.cpp \
+  go/test/GoGameTest.cpp \
   go/test/GoGameRecordTest.cpp \
   go/test/GoGtpCommandUtilTest.cpp \
   go/test/GoGtpTimeSettingsTest.cpp \

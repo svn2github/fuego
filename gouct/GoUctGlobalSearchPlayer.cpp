@@ -112,6 +112,7 @@ void GoUctGlobalSearchPlayer::Statistics::Save(std::ostream& out) const
 GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
     : GoPlayer(bd),
       m_searchMode(GOUCT_SEARCHMODE_UCT),
+      m_autoParam(true),
       m_ignoreClock(true),
       m_enablePonder(false),
       m_pruneRootMoves(false),
@@ -352,6 +353,18 @@ GoUctGlobalSearchPlayer::GetStatistics() const
 string GoUctGlobalSearchPlayer::Name() const
 {
     return "GoUctGlobalSearchPlayer";
+}
+
+void GoUctGlobalSearchPlayer::OnBoardChange()
+{
+    if (m_autoParam)
+    {
+        int size = Board().Size();
+        SgDebug() <<
+            "GoUctGlobalSearchPlayer: "
+            "Setting default parameters for size " << size << '\n';
+        m_search.SetDefaultParameters(size);
+    }
 }
 
 void GoUctGlobalSearchPlayer::Ponder()

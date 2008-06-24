@@ -322,6 +322,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
+    @arg @c auto_param See GoUctGlobalSearchPlayer::AutoParam
     @arg @c ignore_clock See GoUctGlobalSearchPlayer::IgnoreClock
     @arg @c reuse_subtree See GoUctGlobalSearchPlayer::ReuseSubtree
     @arg @c max_games See GoUctGlobalSearchPlayer::MaxGames
@@ -342,7 +343,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] ignore_clock " << p.IgnoreClock() << '\n'
+        cmd << "[bool] auto_param " << p.AutoParam() << '\n'
+            << "[bool] ignore_clock " << p.IgnoreClock() << '\n'
             << "[bool] ponder " << p.EnablePonder() << '\n'
             << "[bool] prune_root_moves " << p.PruneRootMoves() << '\n'
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
@@ -359,7 +361,9 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     else if (cmd.NuArg() >= 1 && cmd.NuArg() <= 2)
     {
         string name = cmd.Arg(0);
-        if (name == "ignore_clock")
+        if (name == "auto_param")
+            p.SetAutoParam(cmd.BoolArg(1));
+        else if (name == "ignore_clock")
             p.SetIgnoreClock(cmd.BoolArg(1));
         else if (name == "ponder")
             p.SetEnablePonder(cmd.BoolArg(1));

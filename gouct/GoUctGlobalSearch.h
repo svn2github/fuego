@@ -388,6 +388,9 @@ public:
 
     // @} // @name
 
+    /** Set default search parameters optimized for a board size. */
+    void SetDefaultParameters(int boardSize);
+
 private:
     SgBWSet m_safe;
 

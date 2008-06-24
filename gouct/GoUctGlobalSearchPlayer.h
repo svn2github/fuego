@@ -91,6 +91,15 @@ public:
 
     ~GoUctGlobalSearchPlayer();
 
+
+    /** @name Virtual functions of GoBoardSynchronizer */
+    // @{
+
+    void OnBoardChange();
+
+    // @} // @name
+
+
     /** @name Virtual functions of GoPlayer */
     // @{
 
@@ -125,6 +134,16 @@ public:
 
     /** @name Parameters */
     // @{
+
+    /** Automatically adapt the search parameters optimized for the current
+        board size.
+        If on, GoUctGlobalSearch::SetDefaultParameters will automatically
+        be called, if the board size changes.
+    */
+    bool AutoParam() const;
+
+    /** See AutoParam() */
+    void SetAutoParam(bool enable);
 
     /** Ignore time settings of the game.
         Ignore time record given to GenMove() and only obeys maximum
@@ -250,6 +269,9 @@ private:
     /** See GoUctGlobalSearchMode */
     GoUctGlobalSearchMode m_searchMode;
 
+    /** See AutoParam() */
+    bool m_autoParam;
+
     /** See IgnoreClock() */
     bool m_ignoreClock;
 
@@ -298,6 +320,11 @@ private:
 
     void SaveMonitorStatFile() const;
 };
+
+inline bool GoUctGlobalSearchPlayer::AutoParam() const
+{
+    return m_autoParam;
+}
 
 inline void GoUctGlobalSearchPlayer::ClearTreeValidForNode()
 {
@@ -374,6 +401,11 @@ inline GoUctRootFilter& GoUctGlobalSearchPlayer::RootFilter()
 inline GoUctGlobalSearchMode GoUctGlobalSearchPlayer::SearchMode() const
 {
     return m_searchMode;
+}
+
+inline void GoUctGlobalSearchPlayer::SetAutoParam(bool enable)
+{
+    m_autoParam = enable;
 }
 
 inline void GoUctGlobalSearchPlayer::SetIgnoreClock(bool enable)

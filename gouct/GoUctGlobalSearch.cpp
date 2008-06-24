@@ -259,16 +259,7 @@ GoUctGlobalSearch::GoUctGlobalSearch(GoBoard& bd,
         new GoUctGlobalSearchStateFactory(bd, *playoutFactory, m_safe,
                                           m_allSafe);
     SetThreadStateFactory(stateFactory);
-    SetFirstPlayUrgency(1);
-    SetMoveSelect(SG_UCTMOVESELECT_COUNT);
-    SetNoBiasTerm(true);
-    //SetBiasTermConstant(0.02);
-    SetRave(true);
-    SetRaveWeightInitial(1.0);
-    SetRaveWeightFinal(5000);
-    SetUseSignatures(false);
-    SetSignatureWeightInitial(0.2);
-    SetSignatureWeightFinal(500);
+    SetDefaultParameters(bd.Size());
 }
 
 float GoUctGlobalSearch::InverseEval(float eval) const
@@ -288,6 +279,29 @@ void GoUctGlobalSearch::OnStartSearch()
         solver.FindSafePoints(&m_safe);
         for (GoBoard::Iterator it(bd); it; ++it)
             m_allSafe[*it] = m_safe.OneContains(*it);
+    }
+}
+
+void GoUctGlobalSearch::SetDefaultParameters(int boardSize)
+{
+    SetFirstPlayUrgency(1);
+    SetMoveSelect(SG_UCTMOVESELECT_COUNT);
+    SetRave(true);
+    SetRaveWeightInitial(1.0);
+    SetRaveWeightFinal(5000);
+    SetUseSignatures(false);
+    SetSignatureWeightInitial(0.2);
+    SetSignatureWeightFinal(500);
+    if (boardSize <= 13)
+    {
+        // These parameters were mainly tested on 9x9
+        SetNoBiasTerm(false);
+        SetBiasTermConstant(0.02);
+    }
+    else
+    {
+        // These parameters were mainly tested on 19x19
+        SetNoBiasTerm(true);
     }
 }
 
