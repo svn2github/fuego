@@ -5,6 +5,7 @@ PROJECTS = \
   gtpengine \
   smartgame \
   go \
+  simpleplayers \
   gouct \
   fuegotest \
   fuegomain

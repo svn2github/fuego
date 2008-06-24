@@ -15,6 +15,9 @@
         go [label="Go", color=black]
         sg -> go
 
+        sp [label="SimplePlayers", color=black]
+        go -> sp
+
         gouct [label="GoUct", color=black]
         go -> gouct
 
