@@ -84,7 +84,8 @@ void PrintStartupMessage()
         "free software; you can redistribute it and/or modify it under the\n"
         "terms of the GNU Lesser General Public License as published by the\n"
         "Free Software Foundation - version 3. For more information about\n"
-        "these matters, see the files named COPYING and COPYING.LESSER\n";
+        "these matters, see the files named COPYING and COPYING.LESSER\n"
+        "\n";
 }
 
 } // namespace
