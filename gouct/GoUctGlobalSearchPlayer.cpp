@@ -145,8 +145,8 @@ void GoUctGlobalSearchPlayer::ClearStatistics()
     m_statistics.Clear();
 }
 
-SgMove GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
-                                        SgBlackWhite toPlay)
+SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
+                                         SgBlackWhite toPlay)
 {
     ++m_statistics.m_nuGenMove;
     if (m_searchMode == GOUCT_SEARCHMODE_PLAYOUTPOLICY)

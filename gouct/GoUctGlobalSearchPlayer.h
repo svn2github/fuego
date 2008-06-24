@@ -103,7 +103,7 @@ public:
     /** @name Virtual functions of GoPlayer */
     // @{
 
-    SgMove GenMove(const SgTimeRecord& time, SgBlackWhite toPlay);
+    SgPoint GenMove(const SgTimeRecord& time, SgBlackWhite toPlay);
 
     std::string Name() const;
 

@@ -38,8 +38,8 @@ public:
     bool IsInitialized() const;
 
     /** Generate a move. */
-    virtual SgMove GenMove(const SgTimeRecord& time,
-                           SgBlackWhite toPlay) = 0;
+    virtual SgPoint GenMove(const SgTimeRecord& time,
+                            SgBlackWhite toPlay) = 0;
 
     /** Get the name of this player.
         Default implementation returns "Unknown"
