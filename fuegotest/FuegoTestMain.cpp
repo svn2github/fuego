@@ -62,7 +62,7 @@ void ParseOptions(int argc, char** argv)
             "  -config file execute GTP commands from file before\n"
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
-            "  -player      player (average|capture|chainey|dumbtactic\n"
+            "  -player      player (average|capture|dumbtactic|greedy\n"
             "                |greedy|influence|ladder|liberty|maxeye|minlib\n"
             "                |no-search|random|safe)\n"
             "  -quiet       don't print debug messages\n"

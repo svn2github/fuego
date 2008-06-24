@@ -13,7 +13,6 @@
 #include "GoGtpExtraCommands.h"
 #include "SpAveragePlayer.h"
 #include "SpCapturePlayer.h"
-#include "SpChaineyPlayer.h"
 #include "SpDumbTacticalPlayer.h"
 #include "SpGreedyPlayer.h"
 #include "SpInfluencePlayer.h"
@@ -78,9 +77,8 @@ void FuegoTestEngine::CmdPlayer(GtpCommand& cmd)
     if (cmd.NuArg() == 0)
     {
         cmd <<
-            "[list/<none>/average/capture/chainey/dumbtactic/greedy/"
-            "influence/ladder/liberty/maxeye/minlib/no-search/random/safe] "
-            "player "
+            "[list/<none>/average/capture/dumbtactic/greedy/influence/"
+            "ladder/liberty/maxeye/minlib/no-search/random/safe] player "
             << (m_playerId == "" ? "<none>" : m_playerId) << '\n';
     }
     else if (cmd.NuArg() >= 1 && cmd.NuArg() <= 2)
@@ -128,8 +126,6 @@ GoPlayer* FuegoTestEngine::CreatePlayer(const string& playerId)
         return new SpAveragePlayer(bd);
     if (playerId == "capture")
         return new SpCapturePlayer(bd);
-    if (playerId == "chainey")
-        return new SpChaineyPlayer(bd);
     if (playerId == "dumbtactic")
         return new SpDumbTacticalPlayer(bd);
     if (playerId == "greedy")

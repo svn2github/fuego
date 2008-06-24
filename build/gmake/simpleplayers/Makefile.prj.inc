@@ -28,7 +28,6 @@ default : all
 SRC_CPP= \
   simpleplayers/SpAveragePlayer.cpp \
   simpleplayers/SpCapturePlayer.cpp \
-  simpleplayers/SpChaineyPlayer.cpp \
   simpleplayers/SpDumbTacticalPlayer.cpp \
   simpleplayers/SpGreedyPlayer.cpp \
   simpleplayers/SpInfluencePlayer.cpp \
