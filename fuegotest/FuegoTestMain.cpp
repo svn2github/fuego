@@ -27,13 +27,16 @@ bool g_quiet;
 
 string g_config;
 
+/** Player string as in FuegoTestEngine::SetPlayer */
+string g_player;
+
 const char* g_programPath;
 
 // @} // @name
 
 void MainLoop()
 {
-    FuegoTestEngine engine(cin, cout, 19, g_programPath);
+    FuegoTestEngine engine(cin, cout, 19, g_programPath, g_player);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_config != "")
         engine.ExecuteFile(g_config);
@@ -46,6 +49,7 @@ void ParseOptions(int argc, char** argv)
     vector<string> specs;
     specs.push_back("config:");
     specs.push_back("help");
+    specs.push_back("player:");
     specs.push_back("quiet");
     specs.push_back("srand:");
     opt.Parse(argc, argv, specs);
@@ -58,11 +62,15 @@ void ParseOptions(int argc, char** argv)
             "  -config file execute GTP commands from file before\n"
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
+            "  -player      player (average|capture|chainey|dumbtactic\n"
+            "                |greedy|influence|ladder|liberty|maxeye|minlib\n"
+            "                |no-search|random|safe)\n"
             "  -quiet       don't print debug messages\n"
             "  -srand       set random seed (-1:none, 0:time(0))\n";
         exit(0);
     }
     g_config = opt.GetString("config", "");
+    g_player = opt.GetString("player", "");
     g_quiet = opt.Contains("quiet");
     if (opt.Contains("srand"))
         SgRandom::SetSeed(opt.GetInteger("srand"));

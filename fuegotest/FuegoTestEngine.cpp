@@ -8,20 +8,37 @@
 #include "FuegoTestEngine.h"
 
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/algorithm/string.hpp>
 #include "GoGtpCommandUtil.h"
 #include "GoGtpExtraCommands.h"
+#include "SpAveragePlayer.h"
+#include "SpCapturePlayer.h"
+#include "SpChaineyPlayer.h"
+#include "SpDumbTacticalPlayer.h"
+#include "SpGreedyPlayer.h"
+#include "SpInfluencePlayer.h"
+#include "SpLadderPlayer.h"
+#include "SpLibertyPlayer.h"
+#include "SpMaxEyePlayer.h"
+#include "SpMinLibPlayer.h"
+#include "SpRandomPlayer.h"
+#include "SpSafePlayer.h"
 
 using namespace std;
+using boost::trim_copy;
 
 //----------------------------------------------------------------------------
 
 FuegoTestEngine::FuegoTestEngine(istream& in, ostream& out,
                                  int initialBoardSize,
-                                 const char* programPath)
-    : GoGtpEngine(in, out, initialBoardSize, programPath, true),
+                                 const char* programPath,
+                                 const string& player)
+    : GoGtpEngine(in, out, initialBoardSize, programPath),
       m_extraCommands(Board())
 {
+    RegisterCmd("fuegotest_player", &FuegoTestEngine::CmdPlayer);
     m_extraCommands.Register(*this);
+    SetPlayer(player);
 }
 
 FuegoTestEngine::~FuegoTestEngine()
@@ -32,13 +49,62 @@ void FuegoTestEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
     GoGtpEngine::CmdAnalyzeCommands(cmd);
     m_extraCommands.AddGoGuiAnalyzeCommands(cmd);
+    cmd <<
+        "param/FuegoTest Player/fuegotest_player\n";
     string response = cmd.Response();
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));
 }
 
 void FuegoTestEngine::CmdName(GtpCommand& cmd)
 {
-    cmd << "FuegoTest";
+    if (m_playerId == "")
+        cmd << "FuegoTest";
+    else
+        GoGtpEngine::CmdName(cmd);
+}
+
+/** Player selection.
+    This command is compatible with the GoGui analyze command type "param".
+    It has only a single parameter "player" for the player id (there is no
+    other analyze command type but "param" in GoGui to get a GoGui list
+    dialog)
+
+    Parameters:
+    @arg @c player Player id as in FuegoTestEngine::SetPlayer
+*/
+void FuegoTestEngine::CmdPlayer(GtpCommand& cmd)
+{
+    cmd.CheckNuArgLessEqual(2);
+    if (cmd.NuArg() == 0)
+    {
+        cmd <<
+            "[list/<none>/average/capture/chainey/dumbtactic/greedy/"
+            "influence/ladder/liberty/maxeye/minlib/no-search/random/safe] "
+            "player "
+            << (m_playerId == "" ? "<none>" : m_playerId) << '\n';
+    }
+    else if (cmd.NuArg() >= 1 && cmd.NuArg() <= 2)
+    {
+        string name = cmd.Arg(0);
+        if (name == "player")
+        {
+            try
+            {
+                string id = trim_copy(cmd.RemainingLine(0));
+                if (id == "<none>")
+                    id = "";
+                SetPlayer(id);
+            }
+            catch (const SgException& e)
+            {
+                throw GtpFailure(e.what());
+            }
+        }
+        else
+            throw GtpFailure() << "unknown parameter: " << name;
+    }
+    else
+        throw GtpFailure() << "need 0 or 2 arguments";
 }
 
 void FuegoTestEngine::CmdVersion(GtpCommand& cmd)
@@ -51,6 +117,51 @@ void FuegoTestEngine::CmdVersion(GtpCommand& cmd)
 #ifdef _DEBUG
     cmd << " (dbg)";
 #endif
+}
+
+GoPlayer* FuegoTestEngine::CreatePlayer(const string& playerId)
+{
+    GoBoard& bd = Board();
+    if (playerId == "")
+        return 0;
+    if (playerId == "average")
+        return new SpAveragePlayer(bd);
+    if (playerId == "capture")
+        return new SpCapturePlayer(bd);
+    if (playerId == "chainey")
+        return new SpChaineyPlayer(bd);
+    if (playerId == "dumbtactic")
+        return new SpDumbTacticalPlayer(bd);
+    if (playerId == "greedy")
+        return new SpGreedyPlayer(bd);
+    if (playerId == "influence")
+        return new SpInfluencePlayer(bd);
+    if (playerId == "ladder")
+        return new SpLadderPlayer(bd);
+    if (playerId == "liberty")
+        return new SpLibertyPlayer(bd);
+    if (playerId == "maxeye")
+        return new SpMaxEyePlayer(bd, true);
+    if (playerId == "minlib")
+        return new SpMinLibPlayer(bd);
+    if (playerId == "random")
+        return new SpRandomPlayer(bd);
+    if (playerId == "safe")
+        return new SpSafePlayer(bd);
+    throw SgException("unknown player " + playerId);
+}
+
+void FuegoTestEngine::RegisterCmd(const string& name,
+                                  GtpCallback<FuegoTestEngine>::Method method)
+{
+    Register(name, new GtpCallback<FuegoTestEngine>(this, method));
+}
+
+void FuegoTestEngine::SetPlayer(const string& playerId)
+{
+    GoPlayer* player = CreatePlayer(playerId);
+    GoGtpEngine::SetPlayer(player);
+    m_playerId = playerId;
 }
 
 //----------------------------------------------------------------------------

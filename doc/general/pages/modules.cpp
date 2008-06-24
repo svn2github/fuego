@@ -23,6 +23,7 @@
 
         fuegotest [label="FuegoTest", color=blue]
         gouct -> fuegotest
+        sp -> fuegotest
 
         fuegomain [label="FuegoMain", color=blue]
         gouct -> fuegomain
