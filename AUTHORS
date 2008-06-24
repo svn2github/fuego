@@ -12,5 +12,5 @@ Anders Kierulf (original Smart Game Board code)
 Contributors
 ============
 
-David Silver (improvements to SgHash)
+David Silver (SpDumbTactic player, improvements to SgHash)
 Xiaozhen Niu (parts of GoRegionUtil, GoSafetyUtil)
