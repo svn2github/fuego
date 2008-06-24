@@ -126,8 +126,8 @@ GoUctGlobalSearchPrior PriorKnowledgeArg(const GtpCommand& cmd, size_t number)
         return GOUCT_PRIORKNOWLEDGE_NONE;
     if (arg == "even")
         return GOUCT_PRIORKNOWLEDGE_EVEN;
-    if (arg == "policy")
-        return GOUCT_PRIORKNOWLEDGE_POLICY;
+    if (arg == "default")
+        return GOUCT_PRIORKNOWLEDGE_DEFAULT;
     throw GtpFailure() << "unknown prior knowledge argument \"" << arg << '"';
 }
 
@@ -139,8 +139,8 @@ string PriorKnowledgeToString(GoUctGlobalSearchPrior prior)
         return "none";
     case GOUCT_PRIORKNOWLEDGE_EVEN:
         return "even";
-    case GOUCT_PRIORKNOWLEDGE_POLICY:
-        return "policy";
+    case GOUCT_PRIORKNOWLEDGE_DEFAULT:
+        return "default";
     default:
         SG_ASSERT(false);
         return "?";
@@ -350,7 +350,7 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[string] max_nodes " << p.MaxNodes() << '\n'
             << "[string] max_time " << p.MaxTime() << '\n'
             << "[string] monitor_stat_file " << p.MonitorStatFile() << '\n'
-            << "[list/none/even/policy] prior_knowledge "
+            << "[list/none/even/default] prior_knowledge "
             << PriorKnowledgeToString(p.PriorKnowledge()) << '\n'
             << "[string] resign_threshold " << p.ResignThreshold() << '\n'
             << "[list/playout_policy/uct/one_ply] search_mode "
@@ -566,7 +566,7 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
     policy.StartPlayout();
     policy.GenerateMove();
     cmd << GoUctDefaultPlayoutPolicyTypeStr(policy.MoveType());
-    SgSList<SgPoint,SG_MAXPOINT> moves = policy.GetEquivalentBestMoves();
+    GoPointList moves = policy.GetEquivalentBestMoves();
     for (int i = 0; i < moves.Length(); ++i)
         cmd << ' ' << SgWritePoint(moves[i]);
 }

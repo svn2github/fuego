@@ -168,20 +168,10 @@ public:
     // @} // @name
 
 
-    /** Use the list of equivalent best moves to initialize prior
-        knowledge values.
-        The resulting value array is indexed by moves. If the move was pure
-        random, all init counts are 0. Otherwise the values for all equivalent
-        best moves is 1, for all other moves 0.
-        @see PriorInitCount()
-    */
-    void GetPriorKnowledge(SgArray<float,SG_PASS+1>& values,
-                           SgArray<std::size_t,SG_PASS+1>& counts);
-
     /** Return the list of equivalent best moves from last move generation.
         The played move was randomly selected from this list.
     */
-    SgSList<SgPoint,SG_MAXPOINT> GetEquivalentBestMoves() const;
+    GoPointList GetEquivalentBestMoves() const;
 
 private:
     /** A function that possibly corrects a given point */
@@ -681,10 +671,9 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePoint(SgPoint p) const
 }
 
 template<class BOARD>
-SgSList<SgPoint,SG_MAXPOINT>
-GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
+GoPointList GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
 {
-    SgSList<SgPoint,SG_MAXPOINT> result;
+    GoPointList result;
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     if (m_moveType == GOUCT_RANDOM)
     {
@@ -697,33 +686,6 @@ GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
         if (m_checked || GeneratePoint(*it))
             result.Append(*it);
     return result;
-}
-
-template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>
-::GetPriorKnowledge(SgArray<float,SG_PASS+1>& values,
-                    SgArray<std::size_t,SG_PASS+1>& counts)
-{
-    StartPlayout();
-    GenerateMove();
-    if (m_moveType == GOUCT_RANDOM)
-        counts.Fill(0);
-    else
-    {
-        const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-        values[SG_PASS] = 0;
-        for (typename BOARD::Iterator it(bd); it; ++it)
-            if (bd.IsEmpty(*it) && GoBoardUtil::SelfAtari(bd, *it))
-                values[*it] = 0;
-            else
-                values[*it] = 0.5;
-        for (GoPointList::Iterator it(m_moves); it; ++it)
-            // Move in m_moves are not checked yet, if legal etc.
-            if (GoUctUtil::GeneratePoint<BOARD>(bd, *it, bd.ToPlay()))
-                values[*it] = 1;
-        counts.Fill(9);
-    }
-    EndPlayout();
 }
 
 template<class BOARD>
@@ -827,48 +789,6 @@ GoUctDefaultPlayoutPolicyFactory<BOARD>::Create(const BOARD& bd)
                                 *GoUctPlayoutPolicyFactory<BOARD>::m_safe,
                                 *GoUctPlayoutPolicyFactory<BOARD>::m_allSafe);
 }
-
-//----------------------------------------------------------------------------
-
-/** Uses GoUctDefaultPlayoutPolicy to generate prior knowledge.
-    See GoUctDefaultPlayoutPolicy::GetPriorKnowledge
-*/
-class GoUctPolicyPriorKnowledge
-    : public SgUctPriorKnowledge
-{
-public:
-    GoUctPolicyPriorKnowledge(const GoBoard& bd,
-                              const GoUctDefaultPlayoutPolicyParam& param,
-                              const SgBWSet& safe,
-                              const SgPointArray<bool>& allSafe);
-
-    void ProcessPosition();
-
-    void InitializeMove(SgMove move, float& value, std::size_t& count);
-
-private:
-    GoUctDefaultPlayoutPolicy<GoBoard> m_policy;
-
-    SgArray<float,SG_PASS+1> m_values;
-
-    SgArray<std::size_t,SG_PASS+1> m_counts;
-};
-
-//----------------------------------------------------------------------------
-
-class GoUctPolicyPriorKnowledgeFactory
-    : public SgUctPriorKnowledgeFactory
-{
-public:
-    /** Stores a reference to param */
-    GoUctPolicyPriorKnowledgeFactory(const GoUctDefaultPlayoutPolicyParam&
-                                     param);
-
-    SgUctPriorKnowledge* Create(SgUctThreadState& state);
-
-private:
-    const GoUctDefaultPlayoutPolicyParam& m_param;
-};
 
 //----------------------------------------------------------------------------
 

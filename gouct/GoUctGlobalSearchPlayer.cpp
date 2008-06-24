@@ -12,6 +12,7 @@
 #include "GoBoardRestorer.h"
 #include "GoBoardUtil.h"
 #include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctUtil.h"
 #include "SgDebug.h"
 #include "SgNbIterator.h"
@@ -117,7 +118,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_reuseSubtree(false),
       m_maxTime(1e10),
       m_resignThreshold(0.03),
-      m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_POLICY),
+      m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(100000),
       m_search(Board(),
                new GoUctDefaultPlayoutPolicyFactory<GoUctBoard>(
@@ -429,8 +430,8 @@ void GoUctGlobalSearchPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
     case GOUCT_PRIORKNOWLEDGE_EVEN:
         factory = new SgUctPriorKnowledgeEvenFactory(30);
         break;
-    case GOUCT_PRIORKNOWLEDGE_POLICY:
-        factory = new GoUctPolicyPriorKnowledgeFactory(m_playoutPolicyParam);
+    case GOUCT_PRIORKNOWLEDGE_DEFAULT:
+        factory = new GoUctDefaultPriorKnowledgeFactory(m_playoutPolicyParam);
         break;
     default:
         SG_ASSERT(false);

@@ -7,14 +7,9 @@
 #include "GoUctDefaultPlayoutPolicy.h"
 
 #include <algorithm>
-#include "GoBoardUtil.h"
-#include "GoModBoard.h"
-#include "GoUctUtil.h"
-#include "SgDebug.h"
 #include "SgStreamFmtRestorer.h"
 
 using namespace std;
-using GoUctUtil::SelectRandom;
 
 //----------------------------------------------------------------------------
 
@@ -85,48 +80,6 @@ void GoUctDefaultPlayoutPolicyStat::Write(std::ostream& out) const
         << SgWriteLabel("MoveListLen");
     m_moveListLen.Write(out);
     out << '\n';
-}
-
-//----------------------------------------------------------------------------
-
-GoUctPolicyPriorKnowledge::GoUctPolicyPriorKnowledge(const GoBoard& bd,
-                              const GoUctDefaultPlayoutPolicyParam& param,
-                              const SgBWSet& safe,
-                              const SgPointArray<bool>& allSafe)
-    : m_policy(bd, param, safe, allSafe)
-{
-}
-
-void GoUctPolicyPriorKnowledge::ProcessPosition()
-{
-    m_policy.GetPriorKnowledge(m_values, m_counts);
-}
-
-void GoUctPolicyPriorKnowledge::InitializeMove(SgMove move, float& value,
-                                               std::size_t& count)
-{
-    value = m_values[move];
-    count = m_counts[move];
-}
-
-//----------------------------------------------------------------------------
-
-GoUctPolicyPriorKnowledgeFactory
-::GoUctPolicyPriorKnowledgeFactory(const GoUctDefaultPlayoutPolicyParam&
-                                   param)
-    : m_param(param)
-{
-}
-
-SgUctPriorKnowledge*
-GoUctPolicyPriorKnowledgeFactory::Create(SgUctThreadState& state)
-{
-    GoUctGlobalSearchState& globalSearchState
-        = dynamic_cast<GoUctGlobalSearchState&>(state);
-    return new GoUctPolicyPriorKnowledge(globalSearchState.Board(),
-                                         m_param,
-                                         globalSearchState.m_safe,
-                                         globalSearchState.m_allSafe);
 }
 
 //----------------------------------------------------------------------------

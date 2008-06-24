@@ -30,8 +30,8 @@ enum GoUctGlobalSearchPrior
     /** Use SgUctPriorKnowledgeEven */
     GOUCT_PRIORKNOWLEDGE_EVEN,
 
-    /** Use GoUctPolicyPriorKnowledge */
-    GOUCT_PRIORKNOWLEDGE_POLICY
+    /** Use GoUctDefaultPriorKnowledge */
+    GOUCT_PRIORKNOWLEDGE_DEFAULT
 };
 
 //----------------------------------------------------------------------------

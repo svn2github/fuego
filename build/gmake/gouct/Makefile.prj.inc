@@ -29,6 +29,7 @@ SRC_CPP= \
   gouct/GoUctBoard.cpp \
   gouct/GoUctCommands.cpp \
   gouct/GoUctDefaultPlayoutPolicy.cpp \
+  gouct/GoUctDefaultPriorKnowledge.cpp \
   gouct/GoUctEstimatorStat.cpp \
   gouct/GoUctGlobalSearch.cpp \
   gouct/GoUctGlobalSearchPlayer.cpp \

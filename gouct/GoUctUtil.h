@@ -268,7 +268,7 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
         // should we shift to nb? Is it better than p?
         const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, p);
         // Check if legal, could violate superko (with BOARD=GoBoard in
-        // GoUctPolicyPriorKnowledge)
+        // GoUctDefaultPriorKnowledge)
         if (bd.IsLegal(nb))
         {
             if (bd.NumEmptyNeighbors(nb) >= 2)
