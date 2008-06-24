@@ -2,6 +2,7 @@ uct_basics.tst
 uct_blunder.tst
 uct_book.tst
 uct_connection.tst
+uct_direction_of_play.tst
 uct_endgame.tst
 uct_fight_on.tst
 uct_ko.tst
