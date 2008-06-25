@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPCAPTUREPLAYER_H
-#define SPCAPTUREPLAYER_H
+#ifndef SP_CAPTUREPLAYER_H
+#define SP_CAPTUREPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"
@@ -43,5 +43,5 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SPCAPTUREPLAYER_H
+#endif // SP_CAPTUREPLAYER_H
 

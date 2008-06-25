@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPSEARCHPLAYER_H
-#define SPSEARCHPLAYER_H
+#ifndef SP_SEARCHPLAYER_H
+#define SP_SEARCHPLAYER_H
 
 #include "GoBoard.h"
 #include "GoPlayer.h"
@@ -33,5 +33,5 @@ private:
 };
 //----------------------------------------------------------------------------
 
-#endif // SPSEARCHPLAYER_H
+#endif // SP_SEARCHPLAYER_H
 

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPLADDERPLAYER_H
-#define SPLADDERPLAYER_H
+#ifndef SP_LADDERPLAYER_H
+#define SP_LADDERPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"

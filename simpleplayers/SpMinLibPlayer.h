@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPMINLIBPLAYER_H
-#define SPMINLIBPLAYER_H
+#ifndef SP_MINLIBPLAYER_H
+#define SP_MINLIBPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"

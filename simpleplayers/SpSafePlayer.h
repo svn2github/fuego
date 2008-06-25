@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPSAFEPLAYER_H
-#define SPSAFEPLAYER_H
+#ifndef SP_SAFEPLAYER_H
+#define SP_SAFEPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"
@@ -45,5 +45,5 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SPSAFEPLAYER_H
+#endif // SP_SAFEPLAYER_H
 

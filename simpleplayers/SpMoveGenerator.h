@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPMOVEGENERATOR_H
-#define SPMOVEGENERATOR_H
+#ifndef SP_MOVEGENERATOR_H
+#define SP_MOVEGENERATOR_H
 
 #include "GoBoard.h"
 
@@ -73,5 +73,5 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SPMOVEGENERATOR_H
+#endif // SP_MOVEGENERATOR_H
 

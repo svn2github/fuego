@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPDUMBTACTICALPLAYER_H
-#define SPDUMBTACTICALPLAYER_H
+#ifndef SP_DUMBTACTICALPLAYER_H
+#define SP_DUMBTACTICALPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"
@@ -63,5 +63,5 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SPDUMBTACTICALPLAYER_H
+#endif // SP_DUMBTACTICALPLAYER_H
 

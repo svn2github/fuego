@@ -5,8 +5,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPMAXEYEPLAYER_H
-#define SPMAXEYEPLAYER_H
+#ifndef SP_MAXEYEPLAYER_H
+#define SP_MAXEYEPLAYER_H
 
 //----------------------------------------------------------------------------
 
@@ -52,5 +52,5 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SPMAXEYEPLAYER_H
+#endif // SP_MAXEYEPLAYER_H
 

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPINFLUENCEPLAYER_H
-#define SPINFLUENCEPLAYER_H
+#ifndef SP_INFLUENCEPLAYER_H
+#define SP_INFLUENCEPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"

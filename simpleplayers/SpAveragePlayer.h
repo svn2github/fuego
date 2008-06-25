@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPAVERAGEPLAYER_H
-#define SPAVERAGEPLAYER_H
+#ifndef SP_AVERAGEPLAYER_H
+#define SP_AVERAGEPLAYER_H
 
 #include <string>
 #include "SpSimplePlayer.h"

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPUTIL_H
-#define SPUTIL_H
+#ifndef SP_UTIL_H
+#define SP_UTIL_H
 
 #include "SgBlackWhite.h"
 #include "SgPointSet.h"
@@ -26,5 +26,5 @@ namespace SpUtil
 
 //----------------------------------------------------------------------------
 
-#endif // SPUTIL_H
+#endif // SP_UTIL_H
 

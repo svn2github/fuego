@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPSIMPLEPLAYER_H
-#define SPSIMPLEPLAYER_H
+#ifndef SP_SIMPLEPLAYER_H
+#define SP_SIMPLEPLAYER_H
 
 #include "GoBoard.h"
 #include "GoPlayer.h"
@@ -61,5 +61,5 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // SPSIMPLEPLAYER_H
+#endif // SP_SIMPLEPLAYER_H
 

@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPRANDOMPLAYER_H
-#define SPRANDOMPLAYER_H
+#ifndef SP_RANDOMPLAYER_H
+#define SP_RANDOMPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"

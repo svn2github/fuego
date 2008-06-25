@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPLIBERTYPLAYER_H
-#define SPLIBERTYPLAYER_H
+#ifndef SP_LIBERTYPLAYER_H
+#define SP_LIBERTYPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"

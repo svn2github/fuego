@@ -4,8 +4,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SPGREEDYPLAYER_H
-#define SPGREEDYPLAYER_H
+#ifndef SP_GREEDYPLAYER_H
+#define SP_GREEDYPLAYER_H
 
 #include "SpSimplePlayer.h"
 #include "SpMoveGenerator.h"
