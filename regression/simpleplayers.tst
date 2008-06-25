@@ -258,11 +258,3 @@ loadsgf sgf/simpleplayers/simpleplayers.3.sgf 3
 
 6130 reg_genmove white
 #? [C5]
-
-#-----------------------------------------------------------------------------
-# test pattern player
-
-fuegotest_param player pattern
-
-7100 reg_genmove black
-#? [!PASS]
