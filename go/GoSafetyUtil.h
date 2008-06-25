@@ -36,6 +36,27 @@ namespace GoSafetyUtil
                              const SgPointSet& pts,
                              const SgPointSet& safe, SgBlackWhite color);
 
+    /** See FindDameAndUnsurroundablePoints */
+    SgPointSet FindDamePoints(const GoBoard& board, const SgPointSet& empty,
+                              const SgBWSet& safe);
+
+    /** Find dame and unsurroundable points.
+        Given sets of empty points and safe points, compute subset of dame
+        points. Given safe B+W stones, find empty which are surely dame,
+        using the algorithm of [Mueller1995].
+        Unsurroundable points are empty points that can not be surrounded
+        by either player because they are adjacent to both player's safe
+        stones. However, they can potentially have an effect on unsafe stones
+        or on other empty points. Dame points are a subset of unsurroundable
+        points that have no effect on other points - no matter if they will
+        be occupied by Black, White, or remain empty.
+    */
+    void FindDameAndUnsurroundablePoints(const GoBoard& bd,
+                                         const SgPointSet& empty,
+                                         const SgBWSet& safe,
+                                         SgPointSet* dame,
+                                         SgPointSet* unsurroundable);
+
     /** Simple static territory check for surrounded area */
     bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
                      const SgPointSet& safe, SgBlackWhite color);

@@ -259,6 +259,52 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
     return false;
 }
 
+SgPointSet GoSafetyUtil::FindDamePoints(const GoBoard& bd,
+                                        const SgPointSet& empty,
+                                        const SgBWSet& safe)
+{
+    SgPointSet dame, unsurroundable;
+    FindDameAndUnsurroundablePoints(bd, empty, safe, &dame, &unsurroundable);
+    return dame;
+}
+
+void GoSafetyUtil::FindDameAndUnsurroundablePoints(const GoBoard& bd,
+                                                   const SgPointSet& empty,
+                                                   const SgBWSet& safe,
+                                                   SgPointSet* dame,
+                                                   SgPointSet* unsurroundable)
+{
+    SG_ASSERT(dame->IsEmpty());
+    SG_ASSERT(unsurroundable->IsEmpty());
+    const int size = bd.Size();
+    *unsurroundable =   safe[SG_BLACK].Border(size)
+                      & safe[SG_WHITE].Border(size)
+                      & empty;
+    SgPointSet maybeDame(*unsurroundable);
+    SgBWSet unsafe; // must exclude these
+    unsafe[SG_BLACK] = bd.All(SG_BLACK) - safe[SG_BLACK];
+    unsafe[SG_WHITE] = bd.All(SG_WHITE) - safe[SG_WHITE];
+    maybeDame -= unsafe[SG_BLACK].Border(size);
+    maybeDame -= unsafe[SG_WHITE].Border(size);
+    for (SgSetIterator it(maybeDame); it; ++it)
+    {
+        SgPoint p(*it);
+        bool isDame = true;
+        for (SgNb4Iterator it(p); it; ++it)
+        {
+            SgPoint nb(*it);
+            if (empty[nb] && ! unsurroundable->Contains(nb))
+            {
+            // can use unsurroundable instead of smaller set maybeDame
+                isDame = false;
+                break;
+            }
+        }
+        if (isDame)
+            dame->Include(p);
+    }
+}
+
 bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
                                  const SgPointSet& area,
                                  const SgPointSet& safe, SgBlackWhite color)
