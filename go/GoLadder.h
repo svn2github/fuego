@@ -11,12 +11,11 @@
 #ifndef GO_LADDER_H
 #define GO_LADDER_H
 
+#include "GoBoard.h"
 #include "SgBoardColor.h"
 #include "SgList.h"
 #include "SgPoint.h"
 #include "SgPointSet.h"
-
-class GoBoard;
 
 //----------------------------------------------------------------------------
 
@@ -81,26 +80,23 @@ private:
 
     void MarkStonesAsPrey(SgPoint p, SgList<SgPoint>* stones = 0);
 
-    void FilterAdjacent(SgList<SgPoint>* adjBlocks);
+    void FilterAdjacent(GoPointList& adjBlocks);
 
     int PlayHunterMove(int depth, SgPoint move, SgPoint lib1, SgPoint lib2,
-                       const SgList<SgPoint>& adjBlk, 
-                       SgList<SgPoint>* sequence);
+                       const GoPointList& adjBlk, SgList<SgPoint>* sequence);
 
     int PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
-                     const SgList<SgPoint>& adjBlk, 
-                     SgList<SgPoint>* sequence);
+                     const GoPointList& adjBlk, SgList<SgPoint>* sequence);
 
     bool IsSnapback(SgPoint prey);
 
-    int PreyLadder(int depth, SgPoint lib1, const SgList<SgPoint>& adjBlk,
+    int PreyLadder(int depth, SgPoint lib1, const GoPointList& adjBlk,
                    SgList<SgPoint>* sequence);
 
     int HunterLadder(int depth, int numLib, SgPoint lib1, SgPoint lib2,
-                     const SgList<SgPoint>& adjBlk, 
-                     SgList<SgPoint>* sequence);
+                     const GoPointList& adjBlk, SgList<SgPoint>* sequence);
 
-    void ReduceToBlocks(SgList<SgPoint>* stones);
+    void ReduceToBlocks(GoPointList& stones);
 };
 
 //----------------------------------------------------------------------------
