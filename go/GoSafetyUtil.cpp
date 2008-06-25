@@ -26,17 +26,17 @@ using GoSafetyUtil::ReduceToAnchors;
 namespace {
 
 const bool DEBUG_SAFETY = false;
-const bool DEBUG_ExtendedMightMakeLife = false;
+const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
 
 /** find 2 libs which would connect block to safe.
     if found, update libs and safe to indicate that the block is safe now:
     add block to safe, add block libs to libs, remove the two libs.
 */
-bool Find2Conn(const GoBoard& bd, SgPoint block, SgPointSet* libs, 
+bool Find2Conn(const GoBoard& bd, SgPoint block, SgPointSet* libs,
                     SgPointSet* usedLibs, SgPointSet* safe)
 {
     SG_ASSERT(libs->Disjoint(*usedLibs));
-    
+
     int nuLibs(0);
     SgList<SgPoint> blockLibs;
     for (GoBoard::LibertyIterator it(bd, block); it; ++it)
@@ -44,7 +44,7 @@ bool Find2Conn(const GoBoard& bd, SgPoint block, SgPointSet* libs,
         if (libs->Contains(*it))
         {
             blockLibs.Append(*it);
-            ++nuLibs; 
+            ++nuLibs;
             if (nuLibs >= 2)
                 break;
         }
@@ -63,26 +63,26 @@ bool Find2Conn(const GoBoard& bd, SgPoint block, SgPointSet* libs,
     return nuLibs >= 2;
 }
 
-/** Find connections for unsafe boundary and interior stones, 
+/** Find connections for unsafe boundary and interior stones,
     and interior empty points.
-    
+
     Can omit maxNuOmissions (0 or 1) empty points from checking.
     maxNuOmissions = 1 if testing whether opponent can make 2 eyes here,
     0 otherwise. Returns bool whether connections were found.
 */
-bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts, 
+bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
                 const SgPointSet& inSafe, SgBlackWhite color,
                 int maxNuOmissions = 0)
-{   
+{
     if (DEBUG_SAFETY)
-        SgDebug() << "Find2ConnForAll " << pts 
+        SgDebug() << "Find2ConnForAll " << pts
                   << "safe points - input: " << inSafe;
     SgPointSet safe(inSafe);
     SgList<SgPoint> unsafe;
     const int size = bd.Size();
     ReduceToAnchors(bd, pts.Border(size) - safe, &unsafe);
     // AR sort by # empty nbs in pts
-    
+
     if (DEBUG_SAFETY)
         SgDebug() << SgWritePointList(unsafe, "unsafe anchors: ");
 
@@ -92,7 +92,7 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
     SgList<SgPoint> unsafeInterior;
     ReduceToAnchors(bd, interior & bd.All(color), &unsafeInterior);
     unsafe.Concat(&unsafeInterior);
-    
+
     SgPointSet usedLibs;
     bool change = true;
     while (change && unsafe.NonEmpty() && libs.MinSetSize(2))
@@ -103,22 +103,22 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
             {
                 newSafe.Append(*it);
             }
-        
+
         unsafe.Exclude(newSafe);
         change = newSafe.NonEmpty();
     }
-    
+
     if (unsafe.NonEmpty()) // could not connect everything.
     {
         if (DEBUG_SAFETY)
-            SgDebug() 
+            SgDebug()
                 << SgWritePointList(unsafe, "could not connect unsafe: ");
         return false;
     }
     // now we know all blocks are safe. try to prove territory safe, too.
     // AR if terr. safety fails, still declare blocks safe, but put
     // miai strategy commitment on region.
-    
+
     interior = (pts & bd.AllEmpty()) - safe.Border(size);
     // new safe set after Find2Conn.
 
@@ -129,11 +129,11 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
         if (! MightMakeLife(bd, interior, safe, opp))
             /* */ return true; /* */
     }
-    
+
     // now try to find miai-paths to remaining interior empty points
-    // AR shortcut failure if maxNuOmissions = 0 and opp has eye: 
+    // AR shortcut failure if maxNuOmissions = 0 and opp has eye:
     // then this will never find anything.
-    
+
     for (SgSetIterator it(interior); it; ++it)
     {
         if (! Find2Libs(*it, &libs))
@@ -142,7 +142,7 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
                 return false;
         }
     }
-    
+
     return true;
 }
 
@@ -171,7 +171,7 @@ void GoSafetyUtil::AddToSafe(const GoBoard& board, const SgPointSet& pts,
     (*safe)[color] |= pts;
     safe->AssertDisjoint();
     SgPointSet empty = board.AllEmpty();
- 
+
     const int size = board.Size();
     if (addBoundary)
     {
@@ -196,10 +196,10 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
 {
     const GoRegion* r = 0;
 
-    if (DEBUG_ExtendedMightMakeLife)
+    if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
         SgDebug() << "ExtendedMightMakeLife for " << SgBW(color)
                   << " area " << area << '\n';
-    
+
     // Check if region is a nakade shape that fills all potential eye space
     for (SgListIteratorOf<GoRegion> it(regions->AllRegions(color)); it; ++it)
     {
@@ -207,7 +207,7 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
             &&  area.SupersetOf((*it)->BlocksPoints())
            )
         {
-            if (DEBUG_ExtendedMightMakeLife)
+            if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
             {
                 SgDebug() << "contains region ";
                 (*it)->WriteID(SgDebug());
@@ -224,15 +224,15 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
                 return true;
         }
     }
-    
-    if (DEBUG_ExtendedMightMakeLife)
+
+    if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
         SgDebug() << "case 2\n";
     SgPointSet rest = area;
     if (r == 0) // classical case. Call previous function
         return MightMakeLife(board, area, safe, color);
     else
     {
-        if (DEBUG_ExtendedMightMakeLife)
+        if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
             SgDebug() << "ExtendedMightMakeLife for " << area
                       << ": inside opp region " << *r << '\n';
         if (r->MaxPotEyes() <= 1)
@@ -246,8 +246,8 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
     const int size = board.Size();
     rest -= safe.Border(size);
     rest -= board.All(color);
-    
-    if (DEBUG_ExtendedMightMakeLife)
+
+    if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
         SgDebug() << "rest = " << rest << "\n";
     for (SgSetIterator it(rest); it; ++it)
     {
@@ -255,7 +255,7 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
         if (GoEyeUtil::CanBecomeSinglePointEye(board, p, safe))
             return true;
     }
-    
+
     return false;
 }
 
@@ -313,7 +313,7 @@ bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
     SgPointSet eyePts = (area - safe.Border(size)) - board.All(color);
     if (eyePts.MaxSetSize(1))
         return false;
-    
+
     SgPoint eye(SG_NULLPOINT), adjToEye(SG_NULLPOINT);
 
     for (SgSetIterator it(eyePts); it; ++it)
@@ -331,13 +331,13 @@ bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
                 /* */ return true; /* */
         }
     }
-    
+
     return false;
 }
 
 bool GoSafetyUtil::Find2Libs(SgPoint p, SgPointSet* libs)
 {
-    int nuLibs = 0; 
+    int nuLibs = 0;
     SgList<SgPoint> foundLibs;
     TestLiberty(p + SG_NS, *libs, &foundLibs, &nuLibs);
     TestLiberty(p + SG_WE, *libs, &foundLibs, &nuLibs);
@@ -352,8 +352,8 @@ bool GoSafetyUtil::Find2Libs(SgPoint p, SgPointSet* libs)
         SG_ASSERT(nuLibs == 2 && foundLibs.IsLength(2));
         libs->Exclude(foundLibs.Top());
         libs->Exclude(foundLibs.Tail());
-    }   
-    
+    }
+
     return nuLibs >= 2;
 }
 
@@ -376,13 +376,13 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
         miaiPair->first = allLibs.Top();
         miaiPair->second = allLibs.Tail();
         /* */ return true; /* */
-    } 
+    }
     else
     {
         SgList<SgPoint> shared, not_shared;
         SgPointSet others = interior;
         others.Exclude(p);
-        
+
         for (SgListIterator<SgPoint> it(allLibs); it; ++it)
         {
             bool share = false;
@@ -410,7 +410,7 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
         /*
         else if (not_shared.IsLength(2))
         {
-            
+
         }
         */
         // if only 1 not_shared lib, use this first, then another shared lib

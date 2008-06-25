@@ -33,10 +33,12 @@ FuegoTestEngine::FuegoTestEngine(istream& in, ostream& out,
                                  const char* programPath,
                                  const string& player)
     : GoGtpEngine(in, out, initialBoardSize, programPath),
-      m_extraCommands(Board())
+      m_extraCommands(Board()),
+      m_safetyCommands(Board())
 {
     RegisterCmd("fuegotest_param", &FuegoTestEngine::CmdParam);
     m_extraCommands.Register(*this);
+    m_safetyCommands.Register(*this);
     SetPlayer(player);
 }
 
@@ -48,6 +50,7 @@ void FuegoTestEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
     GoGtpEngine::CmdAnalyzeCommands(cmd);
     m_extraCommands.AddGoGuiAnalyzeCommands(cmd);
+    m_safetyCommands.AddGoGuiAnalyzeCommands(cmd);
     cmd <<
         "param/FuegoTest Param/fuegotest_param\n";
     string response = cmd.Response();

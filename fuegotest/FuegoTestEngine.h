@@ -8,6 +8,7 @@
 
 #include "GoGtpEngine.h"
 #include "GoGtpExtraCommands.h"
+#include "GoSafetyCommands.h"
 
 //----------------------------------------------------------------------------
 
@@ -42,6 +43,8 @@ public:
 
 private:
     GoGtpExtraCommands m_extraCommands;
+
+    GoSafetyCommands m_safetyCommands;
 
     /** Player ID as in CreatePlayer() */
     std::string m_playerId;

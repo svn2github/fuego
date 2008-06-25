@@ -55,6 +55,7 @@ SRC_CPP= \
   go/GoRegion.cpp \
   go/GoRegionBoard.cpp \
   go/GoRegionUtil.cpp \
+  go/GoSafetyCommands.cpp \
   go/GoSafetySolver.cpp \
   go/GoSafetyUtil.cpp \
   go/GoSearch.cpp \
