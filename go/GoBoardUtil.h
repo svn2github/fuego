@@ -46,10 +46,13 @@ namespace GoBoardUtil
                  int length,
                  int direction);
 
-    /** SgList version of GoBoard::AdjacentStones
-        Note that SgList is not thread-safe.
+    /** Get list of stones adjacent to a block. */
+    GoPointList AdjacentStones(const GoBoard& bd, SgPoint point);
+
+    /** Get list of stones adjacent to a block (SgList version).
+        @note SgList is not thread-safe.
     */
-    void AdjacentStones(const GoBoard& bd, SgPoint p,
+    void AdjacentStones(const GoBoard& bd, SgPoint point,
                         SgList<SgPoint>* stones);
 
     /** SgList version of GoBoard::AdjacentBlocks
@@ -207,8 +210,17 @@ namespace GoBoardUtil
         @param bd The board.
         @param p The point.
         @param c The color.
+        @return Resulting point list.
+    */
+    SgSList<SgPoint,4> NeighborsOfColor(const GoBoard& bd, SgPoint p, int c);
+
+    /** Get adjacent points with a color (SgList version).
+        @param bd The board.
+        @param p The point.
+        @param c The color.
         @param neighbors Resulting point list. Will be cleared before
         adding the points.
+        @note SgList is not thread-safe
     */
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgList<SgPoint>* neighbors);

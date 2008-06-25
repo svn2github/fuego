@@ -51,6 +51,34 @@ void GoBoardUtil::AddWall(GoBoard& bd,
     }
 }
 
+GoPointList GoBoardUtil::AdjacentStones(const GoBoard& bd, SgPoint point)
+{
+    SG_ASSERT(bd.IsValidPoint(point));
+    SG_ASSERT(bd.Occupied(point));
+    const SgBlackWhite other = SgOppBW(bd.GetStone(point));
+    GoPointList result;
+    SgMarker& mark = bd.m_userMarker;
+    SgReserveMarker reserve(mark);
+    SG_UNUSED(reserve);
+    mark.Clear();
+    for (GoBoard::StoneIterator it(bd, point); it; ++it)
+    {
+        if (bd.NumNeighbors(*it, other) > 0)
+        {
+            SgPoint p = *it;
+            if (bd.IsColor(p - SG_NS, other) && mark.NewMark(p - SG_NS))
+                result.Append(p - SG_NS);
+            if (bd.IsColor(p - SG_WE, other) && mark.NewMark(p - SG_WE))
+                result.Append(p - SG_WE);
+            if (bd.IsColor(p + SG_WE, other) && mark.NewMark(p + SG_WE))
+                result.Append(p + SG_WE);
+            if (bd.IsColor(p + SG_NS, other) && mark.NewMark(p + SG_NS))
+                result.Append(p + SG_NS);
+        }
+    };
+    return result;
+}
+
 void GoBoardUtil::AdjacentStones(const GoBoard& bd, SgPoint point,
                                  SgList<SgPoint>* stones)
 {
@@ -448,6 +476,21 @@ bool GoBoardUtil::ManySecondaryLibs(const GoBoard& bd, SgPoint block)
         }
     }
     return (nu >= limit);
+}
+
+SgSList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p,
+                                                 int c)
+{
+    SgSList<SgPoint,4> result;
+    if (bd.IsColor(p - SG_NS, c))
+        result.Append(p - SG_NS);
+    if (bd.IsColor(p - SG_WE, c))
+        result.Append(p - SG_WE);
+    if (bd.IsColor(p + SG_WE, c))
+        result.Append(p + SG_WE);
+    if (bd.IsColor(p + SG_NS, c))
+        result.Append(p + SG_NS);
+    return result;
 }
 
 void GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,

@@ -176,7 +176,38 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSnapback_2)
     BOOST_CHECK(IsSnapback(bd, Pt(3, 1)));
 }
 
+/** Test GoBoardUtil::NeighborsOfColor */
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
+{
+    GoSetup setup;
+    setup.AddBlack(Pt(1, 1));
+    setup.AddWhite(Pt(2, 1));
+    setup.AddWhite(Pt(1, 2));
+    GoBoard bd(19, setup);
+    SgSList<SgPoint,4> l;
+    l = NeighborsOfColor(bd, Pt(1, 1), SG_BLACK);
+    BOOST_CHECK_EQUAL(l.Length(), 0);
+    l = NeighborsOfColor(bd, Pt(1, 1), SG_WHITE);
+    BOOST_CHECK_EQUAL(l.Length(), 2);
+    BOOST_CHECK(l.Contains(Pt(2, 1)));
+    BOOST_CHECK(l.Contains(Pt(1, 2)));
+    l = NeighborsOfColor(bd, Pt(1, 1), SG_EMPTY);
+    BOOST_CHECK_EQUAL(l.Length(), 0);
+    l = NeighborsOfColor(bd, Pt(2, 2), SG_BLACK);
+    BOOST_CHECK_EQUAL(l.Length(), 0);
+    l = NeighborsOfColor(bd, Pt(2, 2), SG_WHITE);
+    BOOST_CHECK_EQUAL(l.Length(), 2);
+    BOOST_CHECK(l.Contains(Pt(2, 1)));
+    BOOST_CHECK(l.Contains(Pt(1, 2)));
+    l = NeighborsOfColor(bd, Pt(2, 2), SG_EMPTY);
+    BOOST_CHECK_EQUAL(l.Length(), 2);
+    BOOST_CHECK(l.Contains(Pt(3, 2)));
+    BOOST_CHECK(l.Contains(Pt(2, 3)));
+}
+
+
+/** Test GoBoardUtil::NeighborsOfColor (SgList version) */
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgList)
 {
     GoSetup setup;
     setup.AddBlack(Pt(1, 1));
