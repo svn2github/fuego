@@ -33,11 +33,11 @@ public:
     ~FuegoTestEngine();
 
     /** @page fuegotestenginecommands FuegoTestEngine Commands
-        - @link CmdPlayer() @c fuegotest_player @endlink
+        - @link CmdParam() @c fuegotest_param @endlink
     */
     void CmdAnalyzeCommands(GtpCommand& cmd);
     void CmdName(GtpCommand& cmd);
-    void CmdPlayer(GtpCommand& cmd);
+    void CmdParam(GtpCommand& cmd);
     void CmdVersion(GtpCommand& cmd);
 
 private:

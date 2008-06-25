@@ -35,7 +35,7 @@ FuegoTestEngine::FuegoTestEngine(istream& in, ostream& out,
     : GoGtpEngine(in, out, initialBoardSize, programPath),
       m_extraCommands(Board())
 {
-    RegisterCmd("fuegotest_player", &FuegoTestEngine::CmdPlayer);
+    RegisterCmd("fuegotest_param", &FuegoTestEngine::CmdParam);
     m_extraCommands.Register(*this);
     SetPlayer(player);
 }
@@ -49,7 +49,7 @@ void FuegoTestEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     GoGtpEngine::CmdAnalyzeCommands(cmd);
     m_extraCommands.AddGoGuiAnalyzeCommands(cmd);
     cmd <<
-        "param/FuegoTest Player/fuegotest_player\n";
+        "param/FuegoTest Param/fuegotest_param\n";
     string response = cmd.Response();
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));
 }
@@ -64,14 +64,11 @@ void FuegoTestEngine::CmdName(GtpCommand& cmd)
 
 /** Player selection.
     This command is compatible with the GoGui analyze command type "param".
-    It has only a single parameter "player" for the player id (there is no
-    other analyze command type but "param" in GoGui to get a GoGui list
-    dialog)
 
     Parameters:
     @arg @c player Player id as in FuegoTestEngine::SetPlayer
 */
-void FuegoTestEngine::CmdPlayer(GtpCommand& cmd)
+void FuegoTestEngine::CmdParam(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
     if (cmd.NuArg() == 0)
