@@ -59,7 +59,7 @@ public:
     /** Construct list with one element. */
     explicit SgSList(const T& val);
 
-    SgSList(const SgSList<T, SIZE>& list);
+    SgSList(const SgSList<T,SIZE>& list);
 
     SgSList& operator=(const SgSList& list);
 
@@ -73,7 +73,13 @@ public:
 
     void Append(const T& val);
 
-    void Append(const SgSList& list);
+    /** Append all elements of another list.
+        Works with lists of different maximum sizes.
+        Requires: Total resulting number of elements will fit into the target
+        list.
+    */
+    template<int SIZE2>
+    void Append(const SgSList<T,SIZE2>& list);
 
     void Clear();
 
@@ -138,65 +144,65 @@ private:
 //----------------------------------------------------------------------------
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::Iterator::Iterator(const SgSList& list)
+inline SgSList<T,SIZE>::Iterator::Iterator(const SgSList& list)
     : m_end(list.m_array + list.Length()),
       m_current(list.m_array)
 {
 }
 
 template<typename T, int SIZE>
-inline const T& SgSList<T, SIZE>::Iterator::operator*() const
+inline const T& SgSList<T,SIZE>::Iterator::operator*() const
 {
     SG_ASSERT(*this);
     return *m_current;
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::Iterator::operator++()
+inline void SgSList<T,SIZE>::Iterator::operator++()
 {
     ++m_current;
 }
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::Iterator::operator bool() const
+inline SgSList<T,SIZE>::Iterator::operator bool() const
 {
     return m_current < m_end;
 }
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::NonConstIterator::NonConstIterator(SgSList& list)
+inline SgSList<T,SIZE>::NonConstIterator::NonConstIterator(SgSList& list)
     : m_end(list.m_array + list.Length()),
       m_current(list.m_array)
 {
 }
 
 template<typename T, int SIZE>
-inline T& SgSList<T, SIZE>::NonConstIterator::operator*() const
+inline T& SgSList<T,SIZE>::NonConstIterator::operator*() const
 {
     SG_ASSERT(*this);
     return *m_current;
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::NonConstIterator::operator++()
+inline void SgSList<T,SIZE>::NonConstIterator::operator++()
 {
     ++m_current;
 }
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::NonConstIterator::operator bool() const
+inline SgSList<T,SIZE>::NonConstIterator::operator bool() const
 {
     return m_current < m_end;
 }
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::SgSList()
+inline SgSList<T,SIZE>::SgSList()
     : m_len(0)
 {
 }
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::SgSList(const T& val)
+inline SgSList<T,SIZE>::SgSList(const T& val)
 {
     SetTo(val);
     m_len = 1;
@@ -204,13 +210,13 @@ inline SgSList<T, SIZE>::SgSList(const T& val)
 }
 
 template<typename T, int SIZE>
-inline SgSList<T, SIZE>::SgSList(const SgSList<T, SIZE>& list)
+inline SgSList<T,SIZE>::SgSList(const SgSList<T,SIZE>& list)
 {
     *this = list;
 }
 
 template<typename T, int SIZE>
-SgSList<T, SIZE>& SgSList<T, SIZE>::operator=(const SgSList& list)
+SgSList<T,SIZE>& SgSList<T,SIZE>::operator=(const SgSList& list)
 {
     m_len = list.m_len;
     T* p = m_array;
@@ -221,7 +227,7 @@ SgSList<T, SIZE>& SgSList<T, SIZE>::operator=(const SgSList& list)
 }
 
 template<typename T, int SIZE>
-bool SgSList<T, SIZE>::operator==(const SgSList& list) const
+bool SgSList<T,SIZE>::operator==(const SgSList& list) const
 {
     if (m_len != list.m_len)
         return false;
@@ -234,13 +240,13 @@ bool SgSList<T, SIZE>::operator==(const SgSList& list) const
 }
 
 template<typename T, int SIZE>
-inline bool SgSList<T, SIZE>::operator!=(const SgSList& list) const
+inline bool SgSList<T,SIZE>::operator!=(const SgSList& list) const
 {
     return ! this->operator==(list);
 }
 
 template<typename T, int SIZE>
-inline T& SgSList<T, SIZE>::operator[](int index)
+inline T& SgSList<T,SIZE>::operator[](int index)
 {
     SG_ASSERT(index >= 0);
     SG_ASSERT(index < m_len);
@@ -248,7 +254,7 @@ inline T& SgSList<T, SIZE>::operator[](int index)
 }
 
 template<typename T, int SIZE>
-inline const T& SgSList<T, SIZE>::operator[](int index) const
+inline const T& SgSList<T,SIZE>::operator[](int index) const
 {
     SG_ASSERT(index >= 0);
     SG_ASSERT(index < m_len);
@@ -256,27 +262,28 @@ inline const T& SgSList<T, SIZE>::operator[](int index) const
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::Append(const T& val)
+inline void SgSList<T,SIZE>::Append(const T& val)
 {
     SG_ASSERT(m_len < SIZE);
     m_array[m_len++] = val;
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::Append(const SgSList& list)
+template<int SIZE2>
+inline void SgSList<T,SIZE>::Append(const SgSList<T,SIZE2>& list)
 {
-    for (Iterator it(list); it; ++it)
+    for (typename SgSList<T,SIZE2>::Iterator it(list); it; ++it)
         Append(*it);
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::Clear()
+inline void SgSList<T,SIZE>::Clear()
 {
     m_len = 0;
 }
 
 template<typename T, int SIZE>
-bool SgSList<T, SIZE>::Contains(const T& val) const
+bool SgSList<T,SIZE>::Contains(const T& val) const
 {
     int i;
     const T* t = m_array;
@@ -287,7 +294,7 @@ bool SgSList<T, SIZE>::Contains(const T& val) const
  }
 
 template<typename T, int SIZE>
-bool SgSList<T, SIZE>::Exclude(const T& val)
+bool SgSList<T,SIZE>::Exclude(const T& val)
 {
     // Go backwards through list, because with game playing programs
     // it is more likely that a recently added element is removed first
@@ -304,14 +311,14 @@ bool SgSList<T, SIZE>::Exclude(const T& val)
 }
 
 template<typename T, int SIZE>
-void SgSList<T, SIZE>::Include(const T& val)
+void SgSList<T,SIZE>::Include(const T& val)
 {
     if (! Contains(val))
         Append(val);
 }
 
 template<typename T, int SIZE>
-SgSList<T, SIZE> SgSList<T, SIZE>::Intersect(const SgSList<T, SIZE>& list)
+SgSList<T,SIZE> SgSList<T,SIZE>::Intersect(const SgSList<T,SIZE>& list)
     const
 {
     SgSList <T, SIZE> result;
@@ -326,40 +333,40 @@ SgSList<T, SIZE> SgSList<T, SIZE>::Intersect(const SgSList<T, SIZE>& list)
 }
 
 template<typename T, int SIZE>
-inline bool SgSList<T, SIZE>::IsEmpty() const
+inline bool SgSList<T,SIZE>::IsEmpty() const
 {
     return m_len == 0;
 }
 
 template<typename T, int SIZE>
-inline T& SgSList<T, SIZE>::Last()
+inline T& SgSList<T,SIZE>::Last()
 {
     SG_ASSERT(m_len > 0);
     return m_array[m_len - 1];
 }
 
 template<typename T, int SIZE>
-inline const T& SgSList<T, SIZE>::Last() const
+inline const T& SgSList<T,SIZE>::Last() const
 {
     SG_ASSERT(m_len > 0);
     return m_array[m_len - 1];
 }
 
 template<typename T, int SIZE>
-inline int SgSList<T, SIZE>::Length() const
+inline int SgSList<T,SIZE>::Length() const
 {
     return m_len;
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::Pop()
+inline void SgSList<T,SIZE>::Pop()
 {
     SG_ASSERT(m_len > 0);
     --m_len;
 }
 
 template<typename T, int SIZE>
-void SgSList<T, SIZE>::RemoveFirst(const T& val)
+void SgSList<T,SIZE>::RemoveFirst(const T& val)
 {
     int i;
     T* t = m_array;
@@ -374,7 +381,7 @@ void SgSList<T, SIZE>::RemoveFirst(const T& val)
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::Resize(int length)
+inline void SgSList<T,SIZE>::Resize(int length)
 {
     SG_ASSERT(length >= 0);
     SG_ASSERT(length <= SIZE);
@@ -382,7 +389,7 @@ inline void SgSList<T, SIZE>::Resize(int length)
 }
 
 template<typename T, int SIZE>
-bool SgSList<T, SIZE>::SameElements(const SgSList& list) const
+bool SgSList<T,SIZE>::SameElements(const SgSList& list) const
 {
     if (m_len != list.m_len)
         return false;
@@ -394,7 +401,7 @@ bool SgSList<T, SIZE>::SameElements(const SgSList& list) const
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T, SIZE>::SetTo(const T& val)
+inline void SgSList<T,SIZE>::SetTo(const T& val)
 {
     m_len = 1;
     m_array[0] = val;
