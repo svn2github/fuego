@@ -108,7 +108,7 @@ void GoUctUtil::GoGuiGfx(const SgUctSearch& search, SgBlackWhite toPlay,
             << SgWritePoint(move);
         const SgUctNode* bestValueGrandChild =
             search.FindBestChild(*bestValueChild);
-        if (bestValueChild != 0)
+        if (bestValueGrandChild != 0)
         {
             SgPoint move = bestValueGrandChild->Move();
             out << ' ' << (toPlay == SG_WHITE ? 'B' : 'W') << ' '
