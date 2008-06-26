@@ -422,7 +422,7 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
             for (Block::StoneIterator stn(block->Stones()); stn; ++stn)
                 m_state.m_block[*stn] = block;
         }
-        m_blockList->Pop();
+        m_blockList->PopBack();
     }
     for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
         RestoreKill(*it, SgOppBW(entry.m_color));
@@ -842,7 +842,7 @@ void GoBoard::Undo()
     const StackEntry& entry = m_moves->Last();
     RestoreState(entry);
     UpdateBlocksAfterUndo(entry);
-    m_moves->Pop();
+    m_moves->PopBack();
     CheckConsistency();
 }
 

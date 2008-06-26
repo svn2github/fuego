@@ -670,7 +670,7 @@ private:
 
         int NumStones() const { return m_stones.Length(); }
 
-        void PopStone() { m_stones.Pop(); }
+        void PopStone() { m_stones.PopBack(); }
 
         void SetAnchor(SgPoint p) { m_anchor = p; }
 

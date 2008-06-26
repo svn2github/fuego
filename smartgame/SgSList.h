@@ -111,7 +111,11 @@ public:
 
     int Length() const;
 
-    void Pop();
+    /** Remove the last element of the list.
+        Does not return the last element for efficiency. To get the last
+        element, use Last() before calling PopBack().
+    */
+    void PopBack();
 
     /** Remove first occurence of a value.
         Preserves order of remaining elements.
@@ -359,7 +363,7 @@ inline int SgSList<T,SIZE>::Length() const
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T,SIZE>::Pop()
+inline void SgSList<T,SIZE>::PopBack()
 {
     SG_ASSERT(m_len > 0);
     --m_len;

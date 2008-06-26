@@ -328,22 +328,22 @@ BOOST_AUTO_TEST_CASE(SgSListTest_NonConstIterator)
     BOOST_CHECK_EQUAL(a[2], 0);
 }
 
-BOOST_AUTO_TEST_CASE(SgSListTest_Pop)
+BOOST_AUTO_TEST_CASE(SgSListTest_PopBack)
 {
     SgSList<int, 10> a;
     a.Append(1);
     a.Append(2);
     a.Append(3);
-    a.Pop();
+    a.PopBack();
     BOOST_CHECK_EQUAL(a.Length(), 2);
     BOOST_REQUIRE(a.Length() == 2);
     BOOST_CHECK_EQUAL(a[0], 1);
     BOOST_CHECK_EQUAL(a[1], 2);
-    a.Pop();
+    a.PopBack();
     BOOST_CHECK_EQUAL(a.Length(), 1);
     BOOST_REQUIRE(a.Length() == 1);
     BOOST_CHECK_EQUAL(a[0], 1);
-    a.Pop();
+    a.PopBack();
     BOOST_CHECK_EQUAL(a.Length(), 0);
 }
 

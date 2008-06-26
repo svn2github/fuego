@@ -336,7 +336,7 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
         if (GeneratePoint(bd, p, toPlay))
             return p;
         emptyPts[index] = emptyPts[length - 1];
-        emptyPts.Pop();
+        emptyPts.PopBack();
     }
     return SG_NULLMOVE;
 }
