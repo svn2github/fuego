@@ -73,7 +73,7 @@
 
     It depends on the memory model of the platform, if lock-free usage
     works. It assumes that writes of some basic types (size_t, int, float,
-    pointers) are atomic and that the compiler or CPU does not reorder certain
+    pointers) are atomic and that the CPU does not reorder certain
     instructions. In particular, SgUctNode::SetNuChildren() is always called
     after the children were created, such that SgUctNode::HasChildren()
     returns only true, if the children are ready to use. Because of the
@@ -85,7 +85,7 @@
     In particular, the IA-32 and Intel-64 architecture guarantees these
     assumptions. Writes of the used data types are atomic (if properly
     aligned) and writes by one CPU are seen in the same order by other CPUs
-    (the data should still be declared as volatile to avoid, that the compiler
+    (the critical data is declared as volatile to avoid that the compiler
     reorders writes for optimization purposes). In addition, the architecture
     synchronizes CPU caches after writes. See
     <a href="http://download.intel.com/design/processor/manuals/253668.pdf">
