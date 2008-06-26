@@ -593,6 +593,10 @@ inline void SgUctTree::SetSignature(const SgUctNode& node, std::size_t sig)
 //----------------------------------------------------------------------------
 
 /** Iterator over all children of a node.
+    It was intentionally implemented to be used only, if at least one child
+    exists (checked with an assertion), since in many use cases, the case
+    of no children needs to be handled specially and should be checked
+    before doing a loop over all children.
     @ingroup sguctgroup
 */
 class SgUctChildIterator
