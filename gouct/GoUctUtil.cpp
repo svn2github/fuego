@@ -117,29 +117,31 @@ void GoUctUtil::GoGuiGfx(const SgUctSearch& search, SgBlackWhite toPlay,
     }
     out << '\n';
     out << "INFLUENCE";
-    for (SgUctChildIterator it(tree, root); it; ++it)
-    {
-        const SgUctNode& child = *it;
-        if (child.MoveCount() == 0)
-            continue;
-        float value = search.InverseEval(child.Mean());
-        // Scale to [-1,+1], black positive
-        double influence = value * 2 - 1;
-        if (toPlay == SG_WHITE)
-            influence *= -1;
-        SgPoint move = child.Move();
-        out << ' ' << SgWritePoint(move) << ' ' << fixed << setprecision(2)
-            << influence;
-    }
+    if (root.HasChildren())
+        for (SgUctChildIterator it(tree, root); it; ++it)
+        {
+            const SgUctNode& child = *it;
+            if (child.MoveCount() == 0)
+                continue;
+            float value = search.InverseEval(child.Mean());
+            // Scale to [-1,+1], black positive
+            double influence = value * 2 - 1;
+            if (toPlay == SG_WHITE)
+                influence *= -1;
+            SgPoint move = child.Move();
+            out << ' ' << SgWritePoint(move) << ' ' << fixed
+                << setprecision(2) << influence;
+        }
     out << '\n'
         << "LABEL";
-    for (SgUctChildIterator it(tree, root); it; ++it)
-    {
-        const SgUctNode& child = *it;
-        size_t count = child.MoveCount();
-        if (count > 0)
-            out << ' ' << SgWritePoint(child.Move()) << ' ' << count;
-    }
+    if (root.HasChildren())
+        for (SgUctChildIterator it(tree, root); it; ++it)
+        {
+            const SgUctNode& child = *it;
+            size_t count = child.MoveCount();
+            if (count > 0)
+                out << ' ' << SgWritePoint(child.Move()) << ' ' << count;
+        }
     out << '\n';
     GoGuiGfxStatus(search, out);
 }
