@@ -124,7 +124,7 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
     int result = 0;
     if (PlayIfLegal(m_board, move, m_hunterColor))
     {
-        // Find new adjacent blocks: only block just played can be new 
+        // Find new adjacent blocks: only block just played can be new
         // in atari.
         // But other blocks previously in atari may have gained new liberties
         // because the move captured a stone, or the move may have extended a
@@ -250,7 +250,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
     {
         if (sequence)
             sequence->Clear();
-        result = GOOD_FOR_HUNTER+depth;
+        result = GOOD_FOR_HUNTER + depth;
     }
     m_partOfPrey.Exclude(move);
     m_partOfPrey.Exclude(newStones);
@@ -344,8 +344,7 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
             {
                 // Two liberties, hunter to play, but not standard case.
                 if (! adjBlk.IsEmpty()
-                    && *GoBoard::LibertyIterator(m_board, adjBlk[0])
-                       == lib2)
+                    && *GoBoard::LibertyIterator(m_board, adjBlk[0]) == lib2)
                 {
                     swap(lib1, lib2); // protect hunter blocks in atari
                 }
@@ -398,8 +397,8 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
     else
     {
         GoPointList visited;
-        // AR: should use some kind of marks for efficiency, but
-        //     cannot use M since calling Stones, which uses it.
+        // TODO: create SgMarker member in GoLadder and use it for visited
+        // points
         GoPointList result;
         for (GoPointList::Iterator it(stones); it; ++it)
         {
@@ -529,7 +528,7 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
                                       sequence);
             }
         }
-    }   
+    }
     return result;
 }
 
@@ -567,7 +566,7 @@ bool GoLadderUtil::Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
     // ---> need to tell Martin if I find this
 #ifdef _DEBUG
     SgHashCode oldHash = bd.GetHashCode();
-#endif    
+#endif
     GoLadder ladder(bd);
     int result = ladder.Ladder(prey, toPlay, sequence, twoLibIsEscape);
 #ifdef _DEBUG
@@ -619,7 +618,7 @@ GoLadderStatus GoLadderUtil::LadderStatus(GoBoard& bd, SgPoint prey,
 #ifdef _DEBUG
     // Make sure Ladder didn't change the board position.
     SG_ASSERT(oldHash == bd.GetHashCode());
-#endif    
+#endif
     return status;
 }
 
@@ -640,7 +639,7 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
     isKoCut = false;
     GoModBoard mbd(bd1);
     GoBoard& bd = mbd.Board();
-    
+
     const SgBlackWhite toPlay = bd1.ToPlay();
     bd.SetToPlay(SgOppBW(col));
     bool isProtected;
@@ -649,14 +648,14 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
         // opponent cannot play there
     else
     {
-        if (bd.LastMoveInfo(isSuicide)) 
+        if (bd.LastMoveInfo(isSuicide))
            isProtected = true;
         else
         {
             if (bd.InAtari(liberty))
             {
                 if (bd.NumStones(liberty) > 1)
-                    isProtected = true; 
+                    isProtected = true;
                 else
                 {
                     SgPoint p = bd.TheLiberty(liberty);
@@ -669,7 +668,7 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
                     }
                     else
                         isProtected = false;
-                        
+
                     if (! isProtected)
                         isKoCut = true;
                 }
