@@ -1068,9 +1068,6 @@ private:
     float GetBound(std::size_t posCount, float logPosCount,
                    const SgUctNode& child) const;
 
-    float GetDecayWeight(float moveValue, size_t moveCount, size_t posCount,
-                         float raveValue, size_t raveCount) const;
-
     float GetValueEstimate(const SgUctNode& child) const;
 
     float GetValueEstimateRaveNoSig(const SgUctNode& child) const;
