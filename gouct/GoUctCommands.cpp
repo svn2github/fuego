@@ -91,34 +91,6 @@ string MoveSelectToString(SgUctMoveSelect moveSelect)
     }
 }
 
-SgUctPriorInit PriorInitArg(const GtpCommand& cmd, size_t number)
-{
-    string arg = cmd.ArgToLower(number);
-    if (arg == "move")
-        return SG_UCTPRIORINIT_MOVE;
-    if (arg == "rave")
-        return SG_UCTPRIORINIT_RAVE;
-    if (arg == "both")
-        return SG_UCTPRIORINIT_BOTH;
-    throw GtpFailure() << "unknown prior init argument \"" << arg << '"';
-}
-
-string PriorInitToString(SgUctPriorInit priorInit)
-{
-    switch (priorInit)
-    {
-    case SG_UCTPRIORINIT_MOVE:
-        return "move";
-    case SG_UCTPRIORINIT_RAVE:
-        return "rave";
-    case SG_UCTPRIORINIT_BOTH:
-        return "both";
-    default:
-        SG_ASSERT(false);
-        return "?";
-    }
-}
-
 GoUctGlobalSearchPrior PriorKnowledgeArg(const GtpCommand& cmd, size_t number)
 {
     string arg = cmd.ArgToLower(number);
@@ -449,7 +421,6 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     @arg @c move_select @c value|count|bound|rave See SgUctSearch::MoveSelect
     @arg @c number_threads See SgUctSearch::NumberThreads
     @arg @c number_playouts See SgUctSearch::NumberPlayouts
-    @arg @c prior_init @c move|rave|both See SgUctSearch::PriorInit
     @arg @c rave_weight_final See SgUctSearch::RaveWeightFinal
     @arg @c rave_weight_initial See SgUctSearch::RaveWeightInitial
     @arg @c signature_weight_final See SgUctSearch::SignatureWeightFinal
@@ -480,8 +451,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << MoveSelectToString(s.MoveSelect()) << '\n'
             << "[string] number_threads " << s.NumberThreads() << '\n'
             << "[string] number_playouts " << s.NumberPlayouts() << '\n'
-            << "[list/move/rave/both] prior_init "
-            << PriorInitToString(s.PriorInit()) << '\n'
             << "[string] rave_weight_final " << s.RaveWeightFinal() << '\n'
             << "[string] rave_weight_initial "
             << s.RaveWeightInitial() << '\n'
@@ -524,8 +493,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetNumberThreads(cmd.SizeTypeArg(1, 1));
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.IntArg(1, 1));
-        else if (name == "prior_init")
-            s.SetPriorInit(PriorInitArg(cmd, 1));
         else if (name == "rave_weight_final")
             s.SetRaveWeightFinal(cmd.FloatArg(1));
         else if (name == "rave_weight_initial")

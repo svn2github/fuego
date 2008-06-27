@@ -216,7 +216,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_rave(false),
       m_noBiasTerm(false),
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
-      m_priorInit(SG_UCTPRIORINIT_BOTH),
       m_raveCheckSame(false),
       m_lockFree(false),
       m_useSignatures(false),
@@ -628,15 +627,9 @@ void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
         priorKnowledge->InitializeMove(move, value, count);
         if (count == 0)
             continue;
-        if (m_priorInit == SG_UCTPRIORINIT_MOVE
-            || m_priorInit == SG_UCTPRIORINIT_BOTH)
-        {
-            m_tree.InitializeValue(child, InverseEval(value), count);
-            posCount += count;
-        }
-        if (m_rave &&
-            (m_priorInit == SG_UCTPRIORINIT_RAVE
-             || m_priorInit == SG_UCTPRIORINIT_BOTH))
+        m_tree.InitializeValue(child, InverseEval(value), count);
+        posCount += count;
+        if (m_rave)
             m_tree.InitializeRaveValue(child, value, count);
     }
     m_tree.SetPosCount(node, posCount);

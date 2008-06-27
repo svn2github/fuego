@@ -277,25 +277,6 @@ enum SgUctMoveSelect
 
 //----------------------------------------------------------------------------
 
-/** How the prior knowledge is used to initialize the values.
-    This is only used, if a prior knowledge class was set with
-    SgUctSearch::SetPriorKnowledge.
-    @ingroup sguctgroup
-*/
-enum SgUctPriorInit
-{
-    /** Initialize only the move value. */
-    SG_UCTPRIORINIT_MOVE,
-
-    /** Initialize only the RAVE value. */
-    SG_UCTPRIORINIT_RAVE,
-
-    /** Initialize both the move and the RAVE value. */
-    SG_UCTPRIORINIT_BOTH
-};
-
-//----------------------------------------------------------------------------
-
 /** Base class for the thread state.
     Subclasses must be thread-safe, it must be possible to use different
     instances of this class in different threads (after construction, the
@@ -774,12 +755,6 @@ public:
     /** See SgUctMoveSelect */
     void SetMoveSelect(SgUctMoveSelect moveSelect);
 
-    /** See SgUctPriorInit */
-    SgUctPriorInit PriorInit() const;
-
-    /** See SgUctPriorInit */
-    void SetPriorInit(SgUctPriorInit priorInit);
-
     /** Use move signatures.
         Move signatures are numbers computed by the subclass that represent a
         class of moves during the in-tree phase (e.g. a code encoding the
@@ -929,9 +904,6 @@ private:
 
     /** See SgUctMoveSelect */
     SgUctMoveSelect m_moveSelect;
-
-    /** See SgUctPriorInit */
-    SgUctPriorInit m_priorInit;
 
     /** See RaveCheckSame() */
     bool m_raveCheckSame;
@@ -1192,11 +1164,6 @@ inline void SgUctSearch::PlayGame(bool& isTreeOutOfMem)
     PlayGame(ThreadState(0), 0, isTreeOutOfMem);
 }
 
-inline SgUctPriorInit SgUctSearch::PriorInit() const
-{
-    return m_priorInit;
-}
-
 inline bool SgUctSearch::Rave() const
 {
     return m_rave;
@@ -1269,11 +1236,6 @@ inline void SgUctSearch::SetNumberPlayouts(std::size_t n)
 {
     SG_ASSERT(n >= 1);
     m_numberPlayouts = n;
-}
-
-inline void SgUctSearch::SetPriorInit(SgUctPriorInit priorInit)
-{
-    m_priorInit = priorInit;
 }
 
 inline void SgUctSearch::SetRaveCheckSame(bool enable)
