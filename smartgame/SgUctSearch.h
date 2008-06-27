@@ -94,18 +94,45 @@
 */
 
 /** @page sguctsearchweights Estimator weights in SgUctSearch
-    The (unnormalized) weights given to the estimators (move value,
-    RAVE value, and signature value) have the form:
-    @f[ \frac{c_i}{\frac{1}{N} + \frac{c_i}{c_f}} @f]
+    The weights of the estimators (move value, RAVE value, and signature
+    value) are chosen by assuming that the estimators are uncorrelated
+    and modeling the mean squared error of estimator @f$ i @f$ by a function
+    that depends on the number of samples and parameter constants, which
+    represent the variance and bias of the estimator and need to be
+    determined experimentally:
+
+    @f[
+    w_i = \frac{1}{Z} \frac{1}{{\rm MSE}_i}
+    \qquad Z = \sum_i \frac{1}{{\rm MSE}_i}
+    \qquad {\rm MSE}_i = \frac{c_{\rm variance}}{N_i} + c_{\rm bias}^2
+    @f]
+
+    Note that this formula is nearly equivalent to the formula suggested
+    by David Silver on the Computer Go mailing list for the case of two
+    estimators (move value and RAVE value) and used in newer versions of MoGo.
+    However, MoGo uses the measured variance of the current RAVE value (for
+    both the move weight and RAVE weight) instead variance parameter
+    constants.
+
+    The formula is then reformulated to use different constants that describe
+    the initial steepness and final asymptotic value of the unnormalized
+    weight:
+
+    @f[
+    Z w_i =
+    \frac{c_{\rm initial}}
+         {\frac{1}{N} + \frac{c_{\rm initial}}{c_{\rm final}}}
+    @f]
+
     with:
     - @f$ N @f$ sample count of the estimator
-    - @f$ c_i @f$ Initial weight parameter; this is they weight if
-      @f$ N = 1 @f$ and @f$ c_f \gg c_i @f$
-    - @f$ c_f @f$ Final weight parameter; this is they weight if
+    - @f$ c_{\rm initial} @f$ Initial weight parameter; this is they weight if
+      @f$ N = 1 @f$ and @f$ c_{\rm final} \gg c_{\rm initial} @f$
+    - @f$ c_{\rm final} @f$ Final weight parameter; this is they weight if
       @f$ N \rightarrow \infty @f$
 
-    For the move value, @f$ c_i = c_f = 0 @f$, so the weight is simply
-    @f$ N_{\rm move} @f$.
+    For the move value, @f$ c_{\rm initial} = c_{\rm final} = 0 @f$, so the
+    weight is simply @f$ N_{\rm move} @f$.
     If no estimator has a sample count yet, the first-play-urgency parameter
     is used for the value estimate.
 */
