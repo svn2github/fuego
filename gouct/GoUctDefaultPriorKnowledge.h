@@ -5,8 +5,17 @@
 #ifndef GOUCT_DEFAULTPRIORKNOWLEDGE_H
 #define GOUCT_DEFAULTPRIORKNOWLEDGE_H
 
+#include "GoLadder.h"
 #include "GoUctDefaultPlayoutPolicy.h"
 #include "SgUctSearch.h"
+
+//----------------------------------------------------------------------------
+
+/** Check ladder attack moves in GoUctDefaultPriorKnowledge.
+    Experimental compile-time switch. Also does not yet work with lock-free
+    multi-threading, because GoLadder is not yet thread-safe.
+*/
+const bool GOUCT_DEFAULTPRIORKNOWLEDGE_LADDERS = false;
 
 //----------------------------------------------------------------------------
 
@@ -34,6 +43,17 @@ private:
     SgArray<float,SG_PASS+1> m_values;
 
     SgArray<std::size_t,SG_PASS+1> m_counts;
+
+    GoLadder m_ladder;
+
+    /** Local variable in CheckLadderAttack.
+        Reused for efficiency.
+    */
+    mutable SgList<SgPoint> m_ladderSequence;
+
+    bool CheckLadderAttack(SgPoint& move);
+
+    void Initialize(SgPoint p, float value, std::size_t count);
 };
 
 //----------------------------------------------------------------------------

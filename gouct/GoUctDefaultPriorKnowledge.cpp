@@ -20,6 +20,35 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
 {
 }
 
+/** Check if ladder attack of last stone played succeeds.
+    @param[out] move The attack move, if successful
+    @return @true, if ladder attack is successful.
+*/
+bool GoUctDefaultPriorKnowledge::CheckLadderAttack(SgPoint& move)
+{
+    SgPoint last = m_bd.GetLastMove();
+    if (last == SG_NULLMOVE || last == SG_PASS
+        || ! m_bd.Occupied(last) /* Suicide could be allowed in in-tree
+                                    phase */
+        || m_bd.NumLiberties(last) != 2)
+        return false;
+    m_ladderSequence.Clear();
+    if (m_ladder.Ladder(m_bd, last, SgOppBW(m_bd.GetStone(last)),
+                        &m_ladderSequence, true))
+    {
+        move = m_ladderSequence[1];
+        return true;
+    }
+    return false;
+}
+
+void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
+                                            std::size_t count)
+{
+    m_values[p] = value;
+    m_counts[p] = count;
+}
+
 void GoUctDefaultPriorKnowledge::ProcessPosition()
 {
     m_policy.StartPlayout();
@@ -30,15 +59,32 @@ void GoUctDefaultPriorKnowledge::ProcessPosition()
     else
     {
         m_values[SG_PASS] = 0;
+
+        // Initialize all moves with 9 * 0.5, self-atari moves with 9 * 0
         for (GoBoard::Iterator it(m_bd); it; ++it)
             if (m_bd.IsEmpty(*it) && GoBoardUtil::SelfAtari(m_bd, *it))
-                m_values[*it] = 0;
+                Initialize(*it, 0, 9);
             else
-                m_values[*it] = 0.5;
-        GoPointList moves = m_policy.GetEquivalentBestMoves();
-        for (GoPointList::Iterator it(moves); it; ++it)
-            m_values[*it] = 1;
-        m_counts.Fill(9);
+                Initialize(*it, 0.5, 9);
+
+        // Check if ladder attack of last stone played succeeds and, if so,
+        // initialize it with n * 1 (unless playout policy would have played
+        // an atari defend/attack move, which is more urgent). The count n
+        // is roughly the length of a board-traversing ladder.
+        SgPoint ladderAttackMove;
+        if (GOUCT_DEFAULTPRIORKNOWLEDGE_LADDERS
+            && moveType != GOUCT_ATARI_CAPTURE
+            && moveType != GOUCT_ATARI_DEFEND
+            && CheckLadderAttack(ladderAttackMove))
+            Initialize(ladderAttackMove, 1, 3 * m_bd.Size());
+        else
+        {
+            // Initialize moves that would have been played by playout policy
+            // with 9 * 1
+            GoPointList moves = m_policy.GetEquivalentBestMoves();
+            for (GoPointList::Iterator it(moves); it; ++it)
+                Initialize(*it, 1, 9);
+        }
     }
     m_policy.EndPlayout();
 }
