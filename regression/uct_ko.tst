@@ -76,7 +76,7 @@ loadsgf sgf/games/2008/ko-bug.sgf 4
 150 sg_compare_float 0.9 uct_value
 #? [1]*
 
-loadsgf sgf/games/2008/386193-mogo-mannenko-bug.sgf 88
+loadsgf sgf/games/2008/CGOS/386193-mogo-mannenko-bug.sgf 88
 160 reg_genmove w
 #? [H9]
 # Mogo destroyed the mannen-ko, which is seki in this case.

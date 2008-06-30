@@ -90,7 +90,6 @@ loadsgf sgf/games/2008/gnu-uct3K-17.sgf 58
 # with few simulations it likes throw-in A1, loses because no ko threats
 # A2 is trivial 0.5 pt win.
 
-loadsgf sgf/games/2008/386221.sgf 63
+loadsgf sgf/games/2008/CGOS/386221.sgf 63
 170 reg_genmove b
 #? [G9]
-
