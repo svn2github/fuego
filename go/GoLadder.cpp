@@ -50,11 +50,6 @@ void GoLadder::InitMaxMoveNumber()
                           GO_MAX_NUM_MOVES - reserve);
 }
 
-bool GoLadder::IsBoard(const GoBoard& board) const
-{
-    return &m_board == &board;
-}
-
 /** Marks all stones in the block p as part of the prey.
     If 'stones' is not 0, then append the stones to the existing list.
 */

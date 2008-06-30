@@ -51,8 +51,6 @@ public:
     int Ladder(SgPoint prey, SgBlackWhite toPlay, SgList<SgPoint>* sequence,
                bool twoLibIsEscape = false);
 
-    bool IsBoard(const GoBoard& board) const;
-
 private:
     /** Maximum number of moves in ladder.
         If board has simple ko rule, ladders could not terminate.
