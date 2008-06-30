@@ -13,6 +13,7 @@
 
 #include "GoBoard.h"
 #include "SgBoardColor.h"
+#include "GoModBoard.h"
 #include "SgList.h"
 #include "SgPoint.h"
 #include "SgPointSet.h"
@@ -40,16 +41,14 @@ enum GoLadderStatus
 class GoLadder
 {
 public:
-    GoLadder(GoBoard& board);
-
-    ~GoLadder() {}
+    GoLadder();
 
     /** Main ladder routine.
         twoLibIsEscape: if prey is to play and has two libs, does it count as
         an immediate escape, or shall we keep trying to capture?
     */
-    int Ladder(SgPoint prey, SgBlackWhite toPlay, SgList<SgPoint>* sequence,
-               bool twoLibIsEscape = false);
+    int Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
+               SgList<SgPoint>* sequence, bool twoLibIsEscape = false);
 
 private:
     /** Maximum number of moves in ladder.
@@ -60,7 +59,7 @@ private:
     /** Maximum move number before ladder should be aborted. */
     int m_maxMoveNumber;
 
-    GoBoard& m_board;
+    GoBoard* m_bd;
 
     SgPointSet m_partOfPrey;
 
@@ -110,7 +109,7 @@ namespace GoLadderUtil {
     If the prey can be temporarily removed from the board but can capture
     back immediately (snapback), return that the prey cannot be captured.
 */
-bool Ladder(GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
+bool Ladder(const GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
             bool fTwoLibIsEscape = false, SgList<SgPoint>* sequence = 0);
 
 /** Return whether the block at 'prey' is captured, escaped, or unsettled
@@ -118,9 +117,9 @@ bool Ladder(GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
     If it is unsettled, set '*toCapture' and '*toEscape' (if not 0) to the
     capturing/escaping move to play.
     Otherwise, leave '*toCapture' and '*toEscape' unchanged. The point at
-    'prey' must be occupied. 
+    'prey' must be occupied.
 */
-GoLadderStatus LadderStatus(GoBoard& bd, SgPoint prey,
+GoLadderStatus LadderStatus(const GoBoard& bd, SgPoint prey,
                             bool fTwoLibIsEscape = false,
                             SgPoint* toCapture = 0, SgPoint* toEscape = 0);
 
@@ -137,7 +136,7 @@ bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col,
 /** Simple form, calls the complex form and ignores bool results */
 bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col);
 
-SgPoint TryLadder(GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
+SgPoint TryLadder(const GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
 
 } // namespace GoLadderUtil
 

@@ -30,15 +30,13 @@ const int GOOD_FOR_HUNTER = -1000;
 
 //----------------------------------------------------------------------------
 
-GoLadder::GoLadder(GoBoard& board)
-    : m_board(board),
-      m_partOfPrey()
+GoLadder::GoLadder()
 {
 }
 
 inline bool GoLadder::CheckMoveOverflow() const
 {
-    return (m_board.MoveNumber() >= m_maxMoveNumber);
+    return (m_bd->MoveNumber() >= m_maxMoveNumber);
 }
 
 void GoLadder::InitMaxMoveNumber()
@@ -46,7 +44,7 @@ void GoLadder::InitMaxMoveNumber()
     // reserve is the maximum number of moves played before recursion
     // 5 is an optimistic bound
     const int reserve = 5;
-    m_maxMoveNumber = min(m_board.MoveNumber() + MAX_LADDER_MOVES,
+    m_maxMoveNumber = min(m_bd->MoveNumber() + MAX_LADDER_MOVES,
                           GO_MAX_NUM_MOVES - reserve);
 }
 
@@ -55,10 +53,10 @@ void GoLadder::InitMaxMoveNumber()
 */
 void GoLadder::MarkStonesAsPrey(SgPoint p, SgList<SgPoint>* stones)
 {
-    SG_ASSERT(m_board.IsValidPoint(p));
-    if (m_board.Occupied(p))
+    SG_ASSERT(m_bd->IsValidPoint(p));
+    if (m_bd->Occupied(p))
     {
-        for (GoBoard::StoneIterator it(m_board, p); it; ++it)
+        for (GoBoard::StoneIterator it(*m_bd, p); it; ++it)
         {
             SgPoint p = *it;
             m_partOfPrey.Include(p);
@@ -81,8 +79,8 @@ void GoLadder::FilterAdjacent(GoPointList& adjBlocks)
     for (GoPointList::Iterator it(adjBlocks); it; ++it)
     {
         SgPoint block = *it;
-        if (m_board.IsColor(block, m_hunterColor)
-            && m_board.InAtari(block)
+        if (m_bd->IsColor(block, m_hunterColor)
+            && m_bd->InAtari(block)
             && BlockIsAdjToPrey(block, 1))
             temp.Append(block);
     }
@@ -100,8 +98,8 @@ bool GoLadder::PointIsAdjToPrey(SgPoint p)
 
 bool GoLadder::BlockIsAdjToPrey(SgPoint p, int numAdj)
 {
-    SG_ASSERT(m_board.IsColor(p, m_hunterColor));
-    for (GoBoard::StoneIterator it(m_board, p); it; ++it)
+    SG_ASSERT(m_bd->IsColor(p, m_hunterColor));
+    for (GoBoard::StoneIterator it(*m_bd, p); it; ++it)
         if (PointIsAdjToPrey(*it) && --numAdj == 0)
             return true;
     return false;
@@ -117,7 +115,7 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
     SG_ASSERT(move == lib1 || move == lib2);
     // TODO: only pass move and otherLib
     int result = 0;
-    if (PlayIfLegal(m_board, move, m_hunterColor))
+    if (PlayIfLegal(*m_bd, move, m_hunterColor))
     {
         // Find new adjacent blocks: only block just played can be new
         // in atari.
@@ -128,14 +126,14 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
         // anything, then the block will still be in atari afterwards - no
         // need to check again.
         GoPointList newAdj;
-        if (m_board.InAtari(move))
+        if (m_bd->InAtari(move))
             newAdj.Append(move);
         for (GoPointList::Iterator it(adjBlk); it; ++it)
         {
             SgPoint block = *it;
-            if (! m_board.AreInSameBlock(block, move))
+            if (! m_bd->AreInSameBlock(block, move))
             {
-                if (! m_board.CapturingMove() || m_board.InAtari(block))
+                if (! m_bd->CapturingMove() || m_bd->InAtari(block))
                     newAdj.Append(block);
             }
         }
@@ -144,7 +142,7 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
         result = PreyLadder(depth + 1, lib1, newAdj, sequence);
         if (sequence)
             sequence->Push(move);
-        m_board.Undo();
+        m_bd->Undo();
     }
     else
     {
@@ -170,7 +168,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
     SgList<SgPoint> neighbors;
     if (move == lib1)
     {
-        NeighborsOfColor(m_board, move, m_preyColor, &neighbors);
+        NeighborsOfColor(*m_bd, move, m_preyColor, &neighbors);
         for (SgListIterator<SgPoint> iter(neighbors); iter; ++iter)
         {
             SgPoint block = *iter;
@@ -178,25 +176,25 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
             {
                 MarkStonesAsPrey(block, &newStones);
                 GoPointList temp =
-                    GoBoardUtil::AdjacentStones(m_board, block);
+                    GoBoardUtil::AdjacentStones(*m_bd, block);
                 newAdj.Append(temp);
-                for (GoBoard::LibertyIterator it(m_board, block); it; ++it)
+                for (GoBoard::LibertyIterator it(*m_bd, block); it; ++it)
                     newLib.Include(*it);
             }
         }
         m_partOfPrey.Include(move);
     }
-    if (PlayIfLegal(m_board, move, m_preyColor))
+    if (PlayIfLegal(*m_bd, move, m_preyColor))
     {
         if (move == lib1)
         {
-            NeighborsOfColor(m_board, move, SG_EMPTY, &neighbors);
+            NeighborsOfColor(*m_bd, move, SG_EMPTY, &neighbors);
             for (SgListIterator<SgPoint> iter(newLib); iter; ++iter)
             {
                 SgPoint point = *iter;
                 // Test for Empty is necessary because newLib will include
                 // the move just played.
-                if (m_board.IsEmpty(point))
+                if (m_bd->IsEmpty(point))
                     neighbors.Include(point);
             }
         }
@@ -204,10 +202,10 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         {
             neighbors.Append(lib1);
         }
-        if (m_board.CapturingMove())
+        if (m_bd->CapturingMove())
         {   // Add the points at the captured stones that are adjacent to the
             // prey to the liberties, at least if exactly one stone captured.
-            for (GoPointList::Iterator it(m_board.CapturedStones()); it;
+            for (GoPointList::Iterator it(m_bd->CapturedStones()); it;
                  ++it)
             {
                 SgPoint stone = *it;
@@ -217,7 +215,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         }
         SG_ASSERT(! neighbors.IsEmpty());
         lib1 = neighbors.Pop();
-        SG_ASSERT(m_board.IsEmpty(lib1));
+        SG_ASSERT(m_bd->IsEmpty(lib1));
         SgPoint lib2;
         int numLib;
         if (neighbors.IsEmpty())
@@ -229,17 +227,17 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         {
             lib2 = neighbors.Pop();
             numLib = neighbors.IsEmpty() ? 2 : 3 /* or more */;
-            SG_ASSERT(m_board.IsEmpty(lib2));
+            SG_ASSERT(m_bd->IsEmpty(lib2));
         }
 
         SgSList<SgPoint,4> temp =
-            NeighborsOfColor(m_board, move, m_hunterColor);
+            NeighborsOfColor(*m_bd, move, m_hunterColor);
         newAdj.Append(temp);
         FilterAdjacent(newAdj);
         result = HunterLadder(depth+1, numLib, lib1, lib2, newAdj, sequence);
         if (sequence)
             sequence->Push(move);
-        m_board.Undo();
+        m_bd->Undo();
     }
     else
     {
@@ -263,7 +261,7 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
     for (GoPointList::Iterator iter(adjBlk); iter; ++iter)
     {
         SgPoint block = *iter;
-        SgPoint move = *GoBoard::LibertyIterator(m_board, block);
+        SgPoint move = *GoBoard::LibertyIterator(*m_bd, block);
         if (BlockIsAdjToPrey(block, 2))
         {
             if (sequence)
@@ -319,27 +317,26 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
         }
     case 2:
         {
-            if (m_board.NumEmptyNeighbors(lib1)
-                < m_board.NumEmptyNeighbors(lib2))
+            if (m_bd->NumEmptyNeighbors(lib1) < m_bd->NumEmptyNeighbors(lib2))
             {
                 swap(lib1, lib2);
             }
-            if (m_board.NumEmptyNeighbors(lib1) == 3
+            if (m_bd->NumEmptyNeighbors(lib1) == 3
                 && ! SgPointUtil::AreAdjacent(lib1, lib2))
             {
                 // If not playing at lib1, then prey will play at lib1 and
                 // get three liberties; little to update in this case.
-                m_board.Play(lib1, m_hunterColor);
+                m_bd->Play(lib1, m_hunterColor);
                 result = PreyLadder(depth + 1, lib2, adjBlk, sequence);
                 if (sequence)
                     sequence->Push(lib1);
-                m_board.Undo();
+                m_bd->Undo();
             }
             else
             {
                 // Two liberties, hunter to play, but not standard case.
                 if (! adjBlk.IsEmpty()
-                    && *GoBoard::LibertyIterator(m_board, adjBlk[0]) == lib2)
+                    && *GoBoard::LibertyIterator(*m_bd, adjBlk[0]) == lib2)
                 {
                     swap(lib1, lib2); // protect hunter blocks in atari
                 }
@@ -386,7 +383,7 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
         ; // nothing to do
     else if (stones.Length() <= 1)
     {
-        if (m_board.IsEmpty(stones[0]))
+        if (m_bd->IsEmpty(stones[0]))
             stones.Clear();
     }
     else
@@ -398,10 +395,10 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
         for (GoPointList::Iterator it(stones); it; ++it)
         {
             SgPoint stone = *it;
-            if (m_board.Occupied(stone) && ! visited.Contains(stone))
+            if (m_bd->Occupied(stone) && ! visited.Contains(stone))
             {
                 result.Append(stone);
-                for (GoBoard::StoneIterator it(m_board, stone); it; ++it)
+                for (GoBoard::StoneIterator it(*m_bd, stone); it; ++it)
                     visited.Append(*it);
             }
         }
@@ -410,31 +407,33 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
 }
 
 /** Main ladder routine */
-int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
+int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                      SgList<SgPoint>* sequence, bool twoLibIsEscape)
 {
+    GoModBoard modBoard;
+    m_bd = &modBoard.Board();
     InitMaxMoveNumber();
     if (sequence)
         sequence->Clear();
-    if (! m_board.Occupied(prey))
+    if (! m_bd->Occupied(prey))
         return 0;
     if (CheckMoveOverflow())
         return GOOD_FOR_PREY;
     int result = 0;
-    m_preyColor = m_board.GetStone(prey);
+    m_preyColor = m_bd->GetStone(prey);
     m_hunterColor = SgOppBW(m_preyColor);
-    int numLib = m_board.NumLiberties(prey);
+    int numLib = m_bd->NumLiberties(prey);
     if (2 < numLib)
         result = GOOD_FOR_PREY;
     else
     {
         SgList<SgPoint> libs;
-        for (GoBoard::LibertyIterator it(m_board, prey); it; ++it)
+        for (GoBoard::LibertyIterator it(*m_bd, prey); it; ++it)
             libs.Append(*it);
         SgPoint lib1 = libs.Pop();
         m_partOfPrey.Clear();
         MarkStonesAsPrey(prey);
-        GoPointList adjBlk = GoBoardUtil::AdjacentStones(m_board, prey);
+        GoPointList adjBlk = GoBoardUtil::AdjacentStones(*m_bd, prey);
         FilterAdjacent(adjBlk);
         if (toPlay == m_preyColor)
         {
@@ -459,16 +458,16 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
                 SgList<SgPoint> movesToTry;
 
                 // Liberties of adj. blocks with at most two liberties.
-                adjBlk = GoBoardUtil::AdjacentStones(m_board, prey);
+                adjBlk = GoBoardUtil::AdjacentStones(*m_bd, prey);
                 ReduceToBlocks(adjBlk);
                 for (GoPointList::Iterator iterAdj(adjBlk); iterAdj;
                      ++iterAdj)
                 {
                     SgPoint block = *iterAdj;
-                    SG_ASSERT(m_board.IsColor(block, m_hunterColor));
+                    SG_ASSERT(m_bd->IsColor(block, m_hunterColor));
                     SG_ASSERT(BlockIsAdjToPrey(block, 1));
-                    if (m_board.NumLiberties(block) <= 2)
-                        for (GoBoard::LibertyIterator it(m_board, block); it;
+                    if (m_bd->NumLiberties(block) <= 2)
+                        for (GoBoard::LibertyIterator it(*m_bd, block); it;
                              ++it)
                             movesToTry.Append(*it);
                 }
@@ -480,24 +479,24 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
 
                 // Moves one away from liberties.
                 SgList<SgPoint> neighbors;
-                NeighborsOfColor(m_board, lib1, SG_EMPTY, &neighbors);
+                NeighborsOfColor(*m_bd, lib1, SG_EMPTY, &neighbors);
                 movesToTry.Concat(&neighbors);
-                NeighborsOfColor(m_board, lib2, SG_EMPTY, &neighbors);
+                NeighborsOfColor(*m_bd, lib2, SG_EMPTY, &neighbors);
                 movesToTry.Concat(&neighbors);
 
                 // Try whether any of these moves lead to escape.
                 for (SgListIterator<SgPoint> it(movesToTry); it; ++it)
                 {
-                    if (PlayIfLegal(m_board, *it, m_preyColor))
+                    if (PlayIfLegal(*m_bd, *it, m_preyColor))
                     {
-                        if (Ladder(prey, m_hunterColor, 0, twoLibIsEscape)
+                        if (Ladder(bd, prey, m_hunterColor, 0, twoLibIsEscape)
                             > 0)
                         {
                             if (sequence)
                                 sequence->Append(*it);
                             result = GOOD_FOR_PREY;
                         }
-                        m_board.Undo();
+                        m_bd->Undo();
                     }
                     if (result != 0)
                         break;
@@ -534,14 +533,14 @@ int GoLadder::Ladder(SgPoint prey, SgBlackWhite toPlay,
 bool GoLadder::IsSnapback(SgPoint prey)
 {
     bool isSnapback = false;
-    if (m_board.IsSingleStone(prey) && m_board.InAtari(prey))
+    if (m_bd->IsSingleStone(prey) && m_bd->InAtari(prey))
     {
-        SgPoint liberty = *GoBoard::LibertyIterator(m_board, prey);
-        if (PlayIfLegal(m_board, liberty, SgOppBW(m_board.GetStone(prey))))
+        SgPoint liberty = *GoBoard::LibertyIterator(*m_bd, prey);
+        if (PlayIfLegal(*m_bd, liberty, SgOppBW(m_bd->GetStone(prey))))
         {
-            isSnapback = (m_board.InAtari(liberty)
-                          && ! m_board.IsSingleStone(liberty));
-            m_board.Undo();
+            isSnapback = (m_bd->InAtari(liberty)
+                          && ! m_bd->IsSingleStone(liberty));
+            m_bd->Undo();
         }
     }
     return isSnapback;
@@ -549,8 +548,9 @@ bool GoLadder::IsSnapback(SgPoint prey)
 
 //----------------------------------------------------------------------------
 
-bool GoLadderUtil::Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
-                          bool twoLibIsEscape, SgList<SgPoint>* sequence)
+bool GoLadderUtil::Ladder(const GoBoard& bd, SgPoint prey,
+                          SgBlackWhite toPlay, bool twoLibIsEscape,
+                          SgList<SgPoint>* sequence)
 {
     SG_ASSERT(bd.IsValidPoint(prey));
     SG_ASSERT(bd.Occupied(prey));
@@ -562,8 +562,8 @@ bool GoLadderUtil::Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
 #ifdef _DEBUG
     SgHashCode oldHash = bd.GetHashCode();
 #endif
-    GoLadder ladder(bd);
-    int result = ladder.Ladder(prey, toPlay, sequence, twoLibIsEscape);
+    GoLadder ladder;
+    int result = ladder.Ladder(bd, prey, toPlay, sequence, twoLibIsEscape);
 #ifdef _DEBUG
     // Make sure Ladder didn't change the board position.
     SG_ASSERT(oldHash == bd.GetHashCode());
@@ -572,7 +572,7 @@ bool GoLadderUtil::Ladder(GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
     return (result < 0);
 }
 
-GoLadderStatus GoLadderUtil::LadderStatus(GoBoard& bd, SgPoint prey,
+GoLadderStatus GoLadderUtil::LadderStatus(const GoBoard& bd, SgPoint prey,
                                           bool twoLibIsEscape,
                                           SgPoint* toCapture,
                                           SgPoint* toEscape)
@@ -584,15 +584,15 @@ GoLadderStatus GoLadderUtil::LadderStatus(GoBoard& bd, SgPoint prey,
 #endif
     // Unsettled only if can capture when hunter plays first, and can escape
     // if prey plays first.
-    GoLadder ladder(bd);
+    GoLadder ladder;
     SgBlackWhite preyColor = bd.GetStone(prey);
     SgList<SgPoint> captureSequence;
     GoLadderStatus status = GO_LADDER_ESCAPED;
-    if (ladder.Ladder(prey, SgOppBW(preyColor), &captureSequence,
+    if (ladder.Ladder(bd, prey, SgOppBW(preyColor), &captureSequence,
                       twoLibIsEscape) < 0)
     {
         SgList<SgPoint> escapeSequence;
-        if (ladder.Ladder(prey, preyColor, &escapeSequence,
+        if (ladder.Ladder(bd, prey, preyColor, &escapeSequence,
                           twoLibIsEscape) < 0)
             status = GO_LADDER_CAPTURED;
         else
@@ -693,7 +693,7 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
     - the point to play
     - SG_NULLMOVE in case of failure
 */
-SgPoint GoLadderUtil::TryLadder(GoBoard& bd, SgPoint prey,
+SgPoint GoLadderUtil::TryLadder(const GoBoard& bd, SgPoint prey,
                                 SgBlackWhite firstPlayer)
 {
     SgList<SgPoint> sequence;
