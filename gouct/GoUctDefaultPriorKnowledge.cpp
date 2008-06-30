@@ -34,7 +34,8 @@ bool GoUctDefaultPriorKnowledge::CheckLadderAttack(SgPoint& move)
         return false;
     m_ladderSequence.Clear();
     if (m_ladder.Ladder(m_bd, last, SgOppBW(m_bd.GetStone(last)),
-                        &m_ladderSequence, true))
+                        &m_ladderSequence, true)
+        && ! m_ladderSequence.IsEmpty())
     {
         move = m_ladderSequence[1];
         return true;
