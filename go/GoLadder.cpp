@@ -410,7 +410,7 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
 int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                      SgList<SgPoint>* sequence, bool twoLibIsEscape)
 {
-    GoModBoard modBoard;
+    GoModBoard modBoard(bd);
     m_bd = &modBoard.Board();
     InitMaxMoveNumber();
     if (sequence)
