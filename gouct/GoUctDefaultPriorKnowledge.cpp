@@ -22,7 +22,7 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
 
 /** Check if ladder attack of last stone played succeeds.
     @param[out] move The attack move, if successful
-    @return @true, if ladder attack is successful.
+    @return @c true, if ladder attack is successful.
 */
 bool GoUctDefaultPriorKnowledge::CheckLadderAttack(SgPoint& move)
 {
