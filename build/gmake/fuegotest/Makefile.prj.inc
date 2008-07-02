@@ -2,6 +2,8 @@
 # GNU Makefile for static libraries: project dependent part
 #-----------------------------------------------------------------------------
 
+include ../Makefile.version.inc
+
 NAME = fuego_test
 DBG_NAME = $(NAME)
 REL_NAME = $(NAME)
@@ -49,3 +51,9 @@ default : all
 SRC_CPP= \
   fuegotest/FuegoTestMain.cpp \
   fuegotest/FuegoTestEngine.cpp
+
+# These files need recompilation if FUEGO_VERSION changes
+$(DBG_OBJDIR)/fuegotest/FuegoTestMain.o : $(FUEGO_VERSION_TSTAMP)
+$(REL_OBJDIR)/fuegotest/FuegoTestMain.o : $(FUEGO_VERSION_TSTAMP)
+$(DBG_OBJDIR)/fuegotest/FuegoTestEngine.o : $(FUEGO_VERSION_TSTAMP)
+$(REL_OBJDIR)/fuegotest/FuegoTestEngine.o : $(FUEGO_VERSION_TSTAMP)

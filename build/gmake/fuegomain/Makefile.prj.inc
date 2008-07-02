@@ -2,17 +2,13 @@
 # GNU Makefile for static libraries: project dependent part
 #-----------------------------------------------------------------------------
 
+include ../Makefile.version.inc
+
 NAME = fuego
 DBG_NAME = $(NAME)
 REL_NAME = $(NAME)
 
 VPATH = ../../..
-
-# Define Fugo version using svnversion for development versions.
-# Replace this line by release version for releases. Development versions
-# should be build by appending .SVN$(shell cd ../../..; svnversion) to the
-# last released version
-FUEGO_VERSION= 0.1.SVN$(shell cd ../../..; svnversion)
 
 DBG_OBJDIR = ../build/obj/$(NAME)/debug
 REL_OBJDIR = ../build/obj/$(NAME)/release
@@ -48,3 +44,7 @@ SRC_CPP= \
   fuegomain/FuegoMain.cpp \
   fuegomain/FuegoMainEngine.cpp \
   fuegomain/FuegoMainUtil.cpp
+
+# These files need recompilation if FUEGO_VERSION changes
+$(DBG_OBJDIR)/fuegomain/FuegoMainUtil.o : $(FUEGO_VERSION_TSTAMP)
+$(REL_OBJDIR)/fuegomain/FuegoMainUtil.o : $(FUEGO_VERSION_TSTAMP)
