@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Main Makefile for project_explorer.
+# Main Makefile for making all Fuego modules
 # The sub-makefiles are invoked sequentially
 # (see: Peter Miller: Recursive Make Considered Harmful
 # http://aegis.sourceforge.net/auug97.pdf)
