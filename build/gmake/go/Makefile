@@ -59,4 +59,5 @@ SRC_CPP= \
 
 default : all
 
+include ../Makefile.com.inc
 include ../Makefile.lib.inc

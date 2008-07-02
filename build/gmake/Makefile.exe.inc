@@ -2,10 +2,6 @@
 # GNU Makefile: part for executables
 #-----------------------------------------------------------------------------
 
-MAKEFILE_DIR=$(dir $(lastword $(MAKEFILE_LIST)))
-
-include $(MAKEFILE_DIR)/Makefile.com.inc
-
 # Rules for linking
 
 $(DBG_BINDIR)/$(DBG_NAME): $(DBG_OBJS) $(PROJ_DBG_DEP)

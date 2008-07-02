@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------------------
 
 MAKEFILE_DIR=$(dir $(lastword $(MAKEFILE_LIST)))
-BOOST_POSTFIX = $(shell $(MAKEFILE_DIR)/boost_postfix.sh)
+BOOST_POSTFIX = $(shell $(MAKEFILE_DIR)boost_postfix.sh)
 
 #-----------------------------------------------------------------------------
 

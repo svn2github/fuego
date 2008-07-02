@@ -97,4 +97,5 @@ run-debug: debug
 run-release: release
 	../build/release/fuego_unittest
 
+include ../Makefile.com.inc
 include ../Makefile.exe.inc

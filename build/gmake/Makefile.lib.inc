@@ -2,11 +2,6 @@
 # GNU Makefile: part for static libraries
 #-----------------------------------------------------------------------------
 
-MAKEFILE_DIR=$(dir $(lastword $(MAKEFILE_LIST)))
-
-include $(MAKEFILE_DIR)/Makefile.com.inc
-
-
 $(DBG_BINDIR)/$(DBG_NAME): $(DBG_OBJS)
 	@echo "Creating $@"
 	mkdir -p $(dir $@)

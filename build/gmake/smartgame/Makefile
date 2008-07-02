@@ -65,4 +65,5 @@ SRC_CPP= \
   smartgame/SgUctTreeUtil.cpp \
   smartgame/SgWrite.cpp
 
+include ../Makefile.com.inc
 include ../Makefile.lib.inc

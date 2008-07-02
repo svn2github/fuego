@@ -45,4 +45,5 @@ default : all
 $(DBG_OBJDIR)/fuegomain/FuegoMainUtil.o : $(FUEGO_VERSION_TSTAMP)
 $(REL_OBJDIR)/fuegomain/FuegoMainUtil.o : $(FUEGO_VERSION_TSTAMP)
 
+include ../Makefile.com.inc
 include ../Makefile.exe.inc

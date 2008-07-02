@@ -54,4 +54,5 @@ $(REL_OBJDIR)/fuegotest/FuegoTestMain.o : $(FUEGO_VERSION_TSTAMP)
 $(DBG_OBJDIR)/fuegotest/FuegoTestEngine.o : $(FUEGO_VERSION_TSTAMP)
 $(REL_OBJDIR)/fuegotest/FuegoTestEngine.o : $(FUEGO_VERSION_TSTAMP)
 
+include ../Makefile.com.inc
 include ../Makefile.exe.inc

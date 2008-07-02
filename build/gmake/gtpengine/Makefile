@@ -22,6 +22,7 @@ PROJ_REL_LIB =
 SRC_CPP= \
   gtpengine/GtpEngine.cpp
 
-include ../Makefile.lib.inc
-
 default : all
+
+include ../Makefile.com.inc
+include ../Makefile.lib.inc
