@@ -1,5 +1,3 @@
-include ../Makefile.version.inc
-
 NAME = fuego_test
 DBG_NAME = $(NAME)
 REL_NAME = $(NAME)
@@ -47,12 +45,6 @@ SRC_CPP= \
   fuegotest/FuegoTestEngine.cpp
 
 default : all
-
-# These files need recompilation if FUEGO_VERSION changes
-$(DBG_OBJDIR)/fuegotest/FuegoTestMain.o : $(FUEGO_VERSION_TSTAMP)
-$(REL_OBJDIR)/fuegotest/FuegoTestMain.o : $(FUEGO_VERSION_TSTAMP)
-$(DBG_OBJDIR)/fuegotest/FuegoTestEngine.o : $(FUEGO_VERSION_TSTAMP)
-$(REL_OBJDIR)/fuegotest/FuegoTestEngine.o : $(FUEGO_VERSION_TSTAMP)
 
 include ../Makefile.com.inc
 include ../Makefile.exe.inc
