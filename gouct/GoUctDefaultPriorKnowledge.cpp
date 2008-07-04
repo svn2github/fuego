@@ -59,7 +59,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition()
         m_counts.Fill(0);
     else
     {
-        m_values[SG_PASS] = 0;
+        Initialize(SG_PASS, 0, 9);
 
         // Initialize all moves with 9 * 0.5, self-atari moves with 9 * 0
         for (GoBoard::Iterator it(m_bd); it; ++it)
