@@ -96,7 +96,7 @@ inline void GoUctPureRandomGenerator<BOARD>::CheckConsistency() const
                                                    (m_bd.CapturedStones())
                           << "Last move: "
                           << SgWritePoint(m_bd.GetLastMove()) << '\n';
-                ASSERT(false);
+                SG_ASSERT(false);
             }
     }
 #endif
