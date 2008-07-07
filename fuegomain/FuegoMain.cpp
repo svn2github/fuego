@@ -71,6 +71,9 @@ void ParseOptions(int argc, char** argv)
     g_quiet = opt.Contains("quiet");
     if (opt.Contains("srand"))
         SgRandom::SetSeed(opt.GetInteger("srand"));
+    else
+        // Don't be deterministic by default (0 means non-deterministic seed)
+        SgRandom::SetSeed(0);
     g_initialBoardSize = opt.GetInteger("size", 19);
 }
 
