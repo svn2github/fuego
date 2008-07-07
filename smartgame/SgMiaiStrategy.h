@@ -46,7 +46,7 @@ public:
     /** Set whole strategy */
     void SetStrategy(const SgList<SgMiaiPair>& miaiStrategies)
     {
-        //ASSERT(m_miaiStrategies.IsEmpty());
+        //SG_ASSERT(m_miaiStrategies.IsEmpty());
         m_miaiStrategies = miaiStrategies;
     }
     

@@ -699,7 +699,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     CallTakeBack();
                 else
                 {
-                    //ASSERT(false);
+                    //SG_ASSERT(false);
                     tryFirst = SG_NULLMOVE;
                 }
                 if (tryFirst != SG_NULLMOVE || data.IsExactValue())

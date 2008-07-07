@@ -58,12 +58,12 @@ SgAssertionHandler::~SgAssertionHandler()
 
 #if MW_COMPILER
 /** On Metrowerks compiler, always drop into the debugger
-    instead of aborting the program whenever an ASSERT fails
+    instead of aborting the program whenever an SG_ASSERT fails
 */
 static bool s_assert_continue = true;
 #else
 /** Set the shell variable SMARTGAME_ASSERT_CONTINUE to drop into the debugger
-    instead of aborting the program whenever an ASSERT fails
+    instead of aborting the program whenever an SG_ASSERT fails
 */
 static bool s_assertContinue = std::getenv("SMARTGAME_ASSERT_CONTINUE");
 #endif
