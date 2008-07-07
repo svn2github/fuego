@@ -262,8 +262,7 @@ namespace GoBoardUtil
     void RegionCode(const GoBoard& bd, const SgList<SgPoint>& region,
                     SgHashCode* c);
 
-    /** Returns false except for the first N moves of a Chinese handicap
-        game.
+    /** Returns true iff during the first N moves of a Chinese handicap game.
     */
     bool RemainingChineseHandicap(const GoBoard& bd);
 
@@ -274,8 +273,8 @@ namespace GoBoardUtil
     bool SelfAtari(const BOARD& bd, SgPoint p);
 
     /** Same as above, but also compute number of stones put into selfatari.
-         numStones is set only if countStones is true, and the return value
-         is also 'true'.
+         numStones is set only in case 1. countStones is true, and 
+         2. the return value is  'true'.
     */
     template<class BOARD>
     bool SelfAtari(const BOARD& bd, SgPoint p, int& numStones,
@@ -550,6 +549,92 @@ inline bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p)
            if (*it != lib && IsNeighborOfSome(bd, *it, anchors, toPlay))
                return false;
        }
+    }
+    return true;
+}
+
+template<class BOARD>
+bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones,
+                            bool countStones)
+{
+    SG_ASSERT(bd.IsEmpty(p));
+    // No self-atari, enough liberties
+    if (bd.NumEmptyNeighbors(p) >= 2)
+        return false;
+    const SgBlackWhite toPlay = bd.ToPlay();
+    const SgBlackWhite opp = SgOppBW(toPlay);
+    SgPoint lib = SG_NULLPOINT;
+    bool hasOwnNb = false;
+    bool hasCapture = false;
+    for (SgNb4Iterator it(p); it; ++it)
+    {
+        const SgPoint nb = *it;
+        const SgBlackWhite nbColor = bd.GetColor(nb);
+        if (nbColor == SG_EMPTY)
+        {
+            if (lib == SG_NULLPOINT)
+                lib = nb;
+            else if (lib != nb)
+                return false;
+        }
+        else if (nbColor == toPlay) // own stones
+        {
+            if (bd.NumLiberties(nb) > 2)
+                return false;
+            else // check block's liberties other than p
+                for (typename BOARD::LibertyIterator it(bd, nb); it; ++it)
+                {
+                    if (*it != p)
+                    {
+                        if (lib == SG_NULLPOINT)
+                            lib = *it;
+                        else if (lib != *it)
+                            return false;
+                    }
+                }
+            hasOwnNb = true;
+        }
+        else if (nbColor == opp) // opponent stones - count as lib if in atari
+        {
+            if (bd.InAtari(nb))
+            {
+                if (lib == SG_NULLPOINT)
+                {
+                    lib = *it;
+                    hasCapture = true;
+                }
+                else if (lib != *it)
+                    return false;
+            }
+        }
+    }
+
+    if (lib == SG_NULLPOINT) // suicide
+        return false;
+    if (! hasOwnNb && hasCapture) // ko-type capture, OK
+         return false;
+    if (hasOwnNb && hasCapture) // check if we gained other liberties
+    {
+        // lib == one of the captured stones.
+       SgPoint anchors[4 + 1];
+       bd.NeighborBlocks(p, toPlay, 1, anchors);
+       SG_ASSERT(bd.IsColor(lib, opp));
+       for (typename BOARD::StoneIterator it(bd, lib); it; ++it)
+       {
+           if (*it != lib && IsNeighborOfSome(bd, *it, anchors, toPlay))
+               return false;
+       }
+    }
+    if (countStones)
+    {
+        numStones = 1;
+        if (hasOwnNb)
+        {
+            SgPoint anchors[4 + 1];
+            bd.NeighborBlocks(p, toPlay, 1, anchors);
+            for (int i = 0; anchors[i] != SG_ENDPOINT; ++i)
+                numStones += bd.NumStones(anchors[i]);
+        }
     }
     return true;
 }
