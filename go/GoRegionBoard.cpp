@@ -426,7 +426,7 @@ void GoRegionBoard::FindNewNeighborRegions(SgPoint move,
 
     SgListOf<GoBlock> captures;
     PreviousBlocksAt(nb, OppBW(moveColor), &captures);
-    ASSERT(captures.NonEmpty());
+    SG_ASSERT(captures.NonEmpty());
 
     for (SgListIteratorOf<GoBlock> it(captures); it; ++it)
         BlockToRegion(*it);
@@ -498,7 +498,7 @@ void GoRegionBoard::OnUndoneMove()
 // Called after a move has been undone. The board is guaranteed to be in
 // a legal state.
 {
-    //ASSERT(false); // incremental code is incomplete, do not call
+    //SG_ASSERT(false); // incremental code is incomplete, do not call
     if (DEBUG_REGION_BOARD)
         SgDebug() << "OnUndoneMove " << '\n';
 

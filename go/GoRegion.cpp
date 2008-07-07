@@ -856,7 +856,7 @@ void GoRegion::DoComputeFlag(GoRegionFlag flag)
         // can have empty m_blocks list on empty board.
         //  SgPointSet boundary = pts.Border(board);
         //  boundary.ExpandToBlocks(board);
-        //  ASSERT(boundary.SubsetOf(board.All(color)));
+        //  SG_ASSERT(boundary.SubsetOf(board.All(color)));
         //      if (IsSingleBlock(board, boundary, color))
         break;
     case oppCanLiveInside: // assuming Dep() is safe.
@@ -968,12 +968,12 @@ void GoRegion::ComputeMultipleBlockEyeSpace()
         bool isFalse = FalseEye(eyeThreatened, eyeSafe);
         if (isFalse)
         {
-            ASSERT(minNuEyes == 0);
+            SG_ASSERT(minNuEyes == 0);
             m_eyes.SetEyes(0, 0);
         }
         else if (eyeThreatened)
         {
-            ASSERT(minNuEyes == 0);
+            SG_ASSERT(minNuEyes == 0);
             m_eyes.SetEyes(0, 1);
         }
         else
