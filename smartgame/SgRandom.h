@@ -20,6 +20,10 @@
     game playing programs usually need faster random numbers more than
     high quality ones. All random generators are internally registered to
     make it possible to change the random seed for all of them.
+
+    SgRandom is thread-safe (w.r.t. different instances) after construction
+    (the constructor is not thread-safe, because it uses a global variable
+    for registration).
 */
 class SgRandom
 {
