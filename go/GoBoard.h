@@ -144,10 +144,9 @@ inline void GoSetup::AddWhite(SgPoint p)
     encapsulated, it can only be accessed with GoBoard::LibertyIterator,
     GoBoard::LibertyCopyIterator, and GoBoard::StoneIterator.
 
-    At present, GoBoard can also handle a SG_COUPONMOVE, which is handled
-    like a SG_PASS. This is necessary, because CpSearch executes
-    SG_COUPONMOVE also on the game board, and GetToPlay() of the actual game
-    determines who is to play in the sum game.
+    Boards are thread-safe (w.r.t. different instances) after construction
+    (the constructor is not thread-safe, because it uses global variables
+    via SgBoardConst).
 
     @see
     - @ref goboardko
