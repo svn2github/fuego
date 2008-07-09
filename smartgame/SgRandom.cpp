@@ -12,7 +12,6 @@
 #include "SgDebug.h"
 
 using namespace std;
-using boost::scoped_ptr;
 
 //----------------------------------------------------------------------------
 
