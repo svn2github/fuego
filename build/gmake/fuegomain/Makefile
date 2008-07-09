@@ -11,7 +11,7 @@ REL_OBJDIR = ../build/obj/$(NAME)/release
 DBG_BINDIR = ../build/debug
 REL_BINDIR = ../build/release
 
-PROJ_CXXFLAGS = -DUNIX=1 -DVERSION="$(FUEGO_VERSION)" -I../../../go -I../../../gouct -I../../../gtpengine -I../../../smartgame
+PROJ_CXXFLAGS = -DUNIX=1 -DVERSION=$(FUEGO_VERSION) -I../../../go -I../../../gouct -I../../../gtpengine -I../../../smartgame
 PROJ_DBG_CXXFLAGS = $(PROJ_CXXFLAGS)
 PROJ_REL_CXXFLAGS = $(PROJ_CXXFLAGS)
 
@@ -38,6 +38,10 @@ SRC_CPP= \
   fuegomain/FuegoMain.cpp \
   fuegomain/FuegoMainEngine.cpp \
   fuegomain/FuegoMainUtil.cpp
+
+# These files need to be rebuilt if the version changes
+$(DBG_OBJDIR)/fuegomain/FuegoMainUtil.o: $(FUEGO_VERSION_FILE)
+$(REL_OBJDIR)/fuegomain/FuegoMainUtil.o: $(FUEGO_VERSION_FILE)
 
 default : all
 
