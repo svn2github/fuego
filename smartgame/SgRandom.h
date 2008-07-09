@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <list>
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/scoped_ptr.hpp>
 #include "SgArray.h"
 
 //----------------------------------------------------------------------------
