@@ -7,6 +7,7 @@
 #include "SgSystem.h"
 #include "GoGtpEngine.h"
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
@@ -151,6 +152,28 @@ void GoGtpEngine::AddPlayerProp(SgBlackWhite color, const string& name,
         (color == SG_BLACK ? SG_PROP_PLAYER_BLACK : SG_PROP_PLAYER_WHITE);
     if (overwrite || ! root.HasProp(SG_PROP_PLAYER))
         root.SetStringProp(SG_PROP_PLAYER, name);
+}
+
+void GoGtpEngine::AddPlayStatistics()
+{
+    // Default implementation does nothing
+}
+
+void GoGtpEngine::AddStatistics(const std::string& key,
+                                const std::string& value)
+{
+    SG_ASSERT(m_statisticsValues.size() == m_statisticsSlots.size());
+    if (value.find('\t') != string::npos)
+        throw SgException("GoGtpEngine::AddStatistics: value contains tab: '"
+                          + value + "'");
+    for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+        if (m_statisticsSlots[i] == key)
+        {
+            m_statisticsValues[i] = value;
+            return;
+        }
+    throw SgException("GoGtpEngine::AddStatistics: invalid key '" + key
+                      + "'");
 }
 
 void GoGtpEngine::ApplyTimeSettings()
@@ -571,6 +594,7 @@ void GoGtpEngine::CmdName(GtpCommand& cmd)
     @arg @c accept_illegal Accept illegal ko or suicide moves in CmdPlay()
     @arg @c debug_to_comment See SetDebugToComment()
     @arg @c overhead See SgTimeRecord::SetOverhead()
+    @arg @c statistics_file See SetStatisticsFile()
     @arg @c timelimit See TimeLimit()
 */
 void GoGtpEngine::CmdParam(GtpCommand& cmd)
@@ -583,6 +607,7 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
             << "[string] auto_save " << (m_autoSave ? m_autoSavePrefix : "")
             << '\n'
             << "[string] overhead " << m_overhead << '\n'
+            << "[string] statistics_file " << m_statisticsFile << '\n'
             << "[string] timelimit " << m_timeLimit << '\n';
     }
     else if (cmd.NuArg() >= 1 && cmd.NuArg() <= 2)
@@ -605,6 +630,8 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
             m_overhead = cmd.FloatArg(1);
             GetGame().Time().SetOverhead(m_overhead);
         }
+        else if (name == "statistics_file")
+            SetStatisticsFile(cmd.RemainingLine(0));
         else if (name == "timelimit")
             m_timeLimit = cmd.FloatArg(1);
         else
@@ -1082,6 +1109,11 @@ void GoGtpEngine::CheckMoveStackOverflow() const
         throw GtpFailure("move stack overflow");
 }
 
+std::vector<std::string> GoGtpEngine::CreateStatisticsSlots()
+{
+    return vector<string>();
+}
+
 SgBlackWhite GoGtpEngine::BlackWhiteArg(const GtpCommand& cmd,
                                         std::size_t number) const
 {
@@ -1138,6 +1170,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color)
 {
     SG_ASSERT_BW(color);
     CheckMoveStackOverflow();
+    StartStatistics();
     GoPlayer& player = Player();
     GoBoard& bd = Board();
     bd.SetToPlay(color);
@@ -1147,20 +1180,30 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color)
         time = SgTimeRecord(true, m_timeLimit);
     else
         time = GetGame().Time();
+    AddStatistics("GAME", m_autoSaveFileName);
+    AddStatistics("MOVE", GetGame().CurrentMoveNumber() + 1);
     SgPoint move = SG_NULLMOVE;
     move = m_book.LookupMove(bd);
     if (move != SG_NULLMOVE)
+    {
         SgDebug() <<
             "GoGtpEngine::GenMove: "
             "Using move from opening book\n";
+        AddStatistics("BOOK", 1);
+    }
+    else
+        AddStatistics("BOOK", 0);
     if (move == SG_NULLMOVE)
         move = player.GenMove(time, color);
     m_timeLastMove = SgTime::Get() - startTime;
+    AddStatistics("TIME", m_timeLastMove);
     if (move == SG_NULLMOVE)
         throw GtpFailure() << player.Name() << " generated NULLMOVE";
     if (move != SG_RESIGN)
         CheckLegal(player.Name() + " generated illegal move: ", color, move,
                    false);
+    AddPlayStatistics();
+    SaveStatistics();
     return move;
 }
 
@@ -1174,6 +1217,42 @@ void GoGtpEngine::Init(int size)
     m_game.Root().SetStringProp(SG_PROP_DATE, dateBuffer);
     ApplyTimeSettings();
     CreateAutoSaveFileName();
+}
+
+void GoGtpEngine::InitStatistics()
+{
+    m_statisticsSlots.clear();
+    m_statisticsSlots.push_back("GAME");
+    m_statisticsSlots.push_back("MOVE");
+    m_statisticsSlots.push_back("TIME");
+    m_statisticsSlots.push_back("BOOK");
+    vector<string> slots = CreateStatisticsSlots();
+    for (vector<string>::const_iterator i = slots.begin(); i != slots.end();
+         ++i)
+    {
+        if (i->find('\t') != string::npos)
+            throw SgException("GoGtpEngine::SetPlayer: statistics slot"
+                              " contains tab: '" + (*i) + "'");
+        if (find(m_statisticsSlots.begin(), m_statisticsSlots.end(), *i)
+            != m_statisticsSlots.end())
+            throw SgException("GoGtpEngine::SetPlayer: duplicate statistics"
+                              " slot '" + (*i) + "'");
+        m_statisticsSlots.push_back(*i);
+    }
+    ofstream out(m_statisticsFile.c_str(), ios::app);
+    // TODO: What to do with an existing file? We want a single file, if
+    // twogtp or Go server experiments are interrupted and restarted, but if
+    // the file is from different player, the format is not compatible.
+    // For now, we simple append to the file.
+    out << '#'; // Start header line with a comment character
+    for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+    {
+        out << m_statisticsSlots[i];
+        if (i < m_statisticsSlots.size() - 1)
+            out << '\t';
+        else
+            out << '\n';
+    }
 }
 
 SgPoint GoGtpEngine::MoveArg(const GtpCommand& cmd, std::size_t number) const
@@ -1293,6 +1372,22 @@ void GoGtpEngine::SaveGame(const std::string& fileName) const
     }
 }
 
+void GoGtpEngine::SaveStatistics()
+{
+    if (m_statisticsFile == "")
+        return;
+    SG_ASSERT(m_statisticsValues.size() == m_statisticsSlots.size());
+    ofstream out(m_statisticsFile.c_str(), ios::app);
+    for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+    {
+        out << m_statisticsValues[i];
+        if (i < m_statisticsSlots.size() - 1)
+            out << '\t';
+        else
+            out << '\n';
+    }
+}
+
 void GoGtpEngine::SetAutoSave(const std::string& prefix)
 {
     m_autoSave = true;
@@ -1307,6 +1402,12 @@ void GoGtpEngine::SetAutoShowBoard(bool showBoard)
         SgDebug() << Board();
 }
 
+inline void GoGtpEngine::SetStatisticsFile(const std::string& fileName)
+{
+    m_statisticsFile = fileName;
+    InitStatistics();
+}
+
 void GoGtpEngine::SetPlayer(GoPlayer* player)
 {
     m_player = player;
@@ -1314,6 +1415,7 @@ void GoGtpEngine::SetPlayer(GoPlayer* player)
     GetGame().SetPlayer(SG_WHITE, player);
     if (m_player != 0)
         m_player->OnNewGame();
+    InitStatistics();
 }
 
 void GoGtpEngine::SetNamedRules(const string& namedRules)
@@ -1321,6 +1423,12 @@ void GoGtpEngine::SetNamedRules(const string& namedRules)
     Board().Rules().SetNamedRules(namedRules);
     m_defaultRules.SetNamedRules(namedRules);
     RulesChanged();
+}
+
+void GoGtpEngine::StartStatistics()
+{
+    m_statisticsValues.clear();
+    m_statisticsValues.resize(m_statisticsSlots.size(), "-");
 }
 
 SgPoint GoGtpEngine::StoneArg(const GtpCommand& cmd, std::size_t number) const

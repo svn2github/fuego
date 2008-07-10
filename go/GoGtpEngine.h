@@ -7,6 +7,7 @@
 #ifndef GO_GTPENGINE_H
 #define GO_GTPENGINE_H
 
+#include <sstream>
 #include "GoBoard.h"
 #include "GoBook.h"
 #include "GoGame.h"
@@ -140,6 +141,13 @@ public:
     */
     void SetAutoSave(const std::string& prefix);
 
+    /** File to save statistics.
+        An empty string means that the statistics will not be saved (default
+        behavior).
+        @see CreateStatisticsSlots()
+    */
+    void SetStatisticsFile(const std::string& fileName);
+
     /** Automatically write board to SgDebug() after changes.
         Default is false.
     */
@@ -267,6 +275,38 @@ protected:
     void Play(SgBlackWhite color, SgPoint move);
 
 protected:
+    /** @name Statistics file */
+    // @{
+
+    /** Create additional slots for the statistics file.
+        This function will be called whenever a new player is set in
+        GoGtpEngine. The default implementation returns an empty list.
+        @return A list of slot headers. A header may not contain tabs. The
+        following headers are already used by GoGtpEngine:
+        GAME, MOVE, BOOK, TIME.
+        In GenMove(), AddPlayStatistics() will be called, in which the
+        subclass should use AddStatistics() to fill in the values. Only
+        defined slots may be used. Slots that are not filled in will get the
+        value '-'
+        @see SetStatisticsFile()
+    */
+    virtual std::vector<std::string> CreateStatisticsSlots();
+
+    /** Add statistics for the last generated move.
+        See CreateStatisticsSlots(). Default implementation does nothing.
+    */
+    virtual void AddPlayStatistics();
+
+    /** See CreateStatisticsSlots() */
+    void AddStatistics(const std::string& key, const std::string& value);
+
+    /** See CreateStatisticsSlots() */
+    template<typename T>
+    void AddStatistics(const std::string& key, const T& value);
+
+    // @}
+
+
     SgBlackWhite BlackWhiteArg(const GtpCommand& cmd,
                                std::size_t number) const;
 
@@ -287,9 +327,9 @@ protected:
 
     SgList<SgPoint> PointListArg(const GtpCommand& cmd) const;
 
-    void RulesChanged();
-
     SgPoint StoneArg(const GtpCommand& cmd, std::size_t number) const;
+
+    void RulesChanged();
 
 private:
     bool m_noPlayer;
@@ -348,6 +388,14 @@ private:
 
     std::string m_autoSavePrefix;
 
+    std::string m_statisticsFile;
+
+    /** See CreateStatisticsSlots() */
+    std::vector<std::string> m_statisticsSlots;
+
+    /** See CreateStatisticsSlots() */
+    std::vector<std::string> m_statisticsValues;
+
     void AddPlayerProp(SgBlackWhite color, const std::string& name,
                        bool overwrite);
 
@@ -361,6 +409,8 @@ private:
 
     void GameFinished();
 
+    void InitStatistics();
+
     void PlaceHandicap(const SgList<SgPoint>& stones);
 
     void RegisterCmd(const std::string& name,
@@ -368,10 +418,22 @@ private:
 
     void SaveGame(const std::string& fileName) const;
 
+    void SaveStatistics();
+
+    void StartStatistics();
+
     void Undo(int n);
 
     static void WriteBoardInfo(GtpCommand& cmd, const GoBoard& bd);
 };
+
+template<typename T>
+void GoGtpEngine::AddStatistics(const std::string& key, const T& value)
+{
+    std::ostringstream s;
+    s << value;
+    AddStatistics(key, s.str());
+}
 
 inline GoBoard& GoGtpEngine::Board()
 {
