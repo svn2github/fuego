@@ -177,17 +177,17 @@ public:
     double TimeLimit();
 
 #if GTPENGINE_PONDER
-    /** Ponder.
+    /** Implementation of GtpEngine::Ponder()
         Calls GoPlayer::Ponder() if a player is set.
     */
     void Ponder();
 
-    /** Stop pondering.
+    /** Implementation of GtpEngine::StopPonder()
         Calls SgSetUserAbort()
     */
     void StopPonder();
 
-    /** Stop pondering.
+    /** Implementation of GtpEngine::InitPonder()
         Calls SgSetUserAbort(false)
     */
     void InitPonder();
@@ -237,34 +237,14 @@ protected:
 
     void CheckMoveStackOverflow() const;
 
-    SgBlackWhite BlackWhiteArg(const GtpCommand& cmd,
-                               std::size_t number) const;
-
-    SgEmptyBlackWhite EmptyBlackWhiteArg(const GtpCommand& cmd,
-                                         std::size_t number) const;
-
-    SgPoint EmptyPointArg(const GtpCommand& cmd, std::size_t number) const;
-
     SgPoint GenMove(SgBlackWhite color);
 
     GoGame& GetGame();
 
     const GoGame& GetGame() const;
 
-    SgPoint MoveArg(const GtpCommand& cmd, std::size_t number) const;
-
     /** Throws GtpFailure if no player set. */
     GoPlayer& Player() const;
-
-    /** Check that number of arguments is one and get point argument. */
-    SgPoint PointArg(const GtpCommand& cmd) const;
-
-    SgPoint PointArg(const GtpCommand& cmd, std::size_t number) const;
-
-    SgList<SgPoint> PointListArg(const GtpCommand& cmd,
-                                 std::size_t number) const;
-
-    SgList<SgPoint> PointListArg(const GtpCommand& cmd) const;
 
     /** Write integer array response to command.
         Elements with the value numeric_limits<int>::min() are considered to
@@ -279,8 +259,6 @@ protected:
     */
     void SetPlayer(GoPlayer* player);
 
-    SgPoint StoneArg(const GtpCommand& cmd, std::size_t number) const;
-
     void Init(int size);
 
     /** Play a move in game and goto new node.
@@ -288,7 +266,30 @@ protected:
     */
     void Play(SgBlackWhite color, SgPoint move);
 
+protected:
+    SgBlackWhite BlackWhiteArg(const GtpCommand& cmd,
+                               std::size_t number) const;
+
+    SgEmptyBlackWhite EmptyBlackWhiteArg(const GtpCommand& cmd,
+                                         std::size_t number) const;
+
+    SgPoint EmptyPointArg(const GtpCommand& cmd, std::size_t number) const;
+
+    SgPoint MoveArg(const GtpCommand& cmd, std::size_t number) const;
+
+    /** Check that number of arguments is one and get point argument. */
+    SgPoint PointArg(const GtpCommand& cmd) const;
+
+    SgPoint PointArg(const GtpCommand& cmd, std::size_t number) const;
+
+    SgList<SgPoint> PointListArg(const GtpCommand& cmd,
+                                 std::size_t number) const;
+
+    SgList<SgPoint> PointListArg(const GtpCommand& cmd) const;
+
     void RulesChanged();
+
+    SgPoint StoneArg(const GtpCommand& cmd, std::size_t number) const;
 
 private:
     bool m_noPlayer;
