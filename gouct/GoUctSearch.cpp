@@ -372,9 +372,10 @@ void GoUctSearch::SaveGames(const string& fileName) const
     writer.WriteGame(*m_root, true, 0, "", 1, 19);
 }
 
-void GoUctSearch::SaveTree(std::ostream& out) const
+void GoUctSearch::SaveTree(std::ostream& out, int maxDepth) const
 {
-    GoUctUtil::SaveTree(Tree(), m_bd.Size(), m_stones, m_toPlay, out);
+    GoUctUtil::SaveTree(Tree(), m_bd.Size(), m_stones, m_toPlay, out,
+                        maxDepth);
 }
 
 std::size_t GoUctSearch::SignatureRange() const

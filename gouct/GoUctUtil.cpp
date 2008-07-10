@@ -35,15 +35,9 @@ void GoGuiGfxStatus(const SgUctSearch& search, ostream& out)
         << " Gm/s=" << static_cast<int>(search.GamesPerSecond()) << '\n';
 }
 
-/** Recursive function to save the UCT tree in SGF format.
-    @param out
-    @param tree
-    @param node
-    @param toPlay
-    @param boardSize
-*/
+/** Recursive function to save the UCT tree in SGF format. */
 void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
-              SgBlackWhite toPlay, int boardSize)
+              SgBlackWhite toPlay, int boardSize, int maxDepth, int depth)
 {
     out << "C[MoveCount " << node.MoveCount()
         << "\nPosCount " << node.PosCount()
@@ -77,6 +71,8 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
             << ':' << count << ']';
     }
     out << '\n';
+    if (maxDepth >= 0 && depth >= maxDepth)
+        return;
     for (SgUctChildIterator it(tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
@@ -85,7 +81,8 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
         SgPoint move = child.Move();
         out << "(;" << (toPlay == SG_BLACK ? 'B' : 'W') << '['
             << PointToSgfString(move, boardSize, SG_PROPPOINTFMT_GO) << ']';
-        SaveNode(out, tree, child, SgOppBW(toPlay), boardSize);
+        SaveNode(out, tree, child, SgOppBW(toPlay), boardSize, maxDepth,
+                 depth + 1);
         out << ")\n";
     }
 }
@@ -169,7 +166,7 @@ void GoUctUtil::PrintBestSequence(const SgUctSearch& search,
 
 void GoUctUtil::SaveTree(const SgUctTree& tree, int boardSize,
                          const SgBWSet& stones, SgBlackWhite toPlay,
-                         ostream& out)
+                         ostream& out, int maxDepth)
 {
     out << "(;FF[4]GM[1]SZ[" << boardSize << "]\n";
     for (SgBWIterator itColor; itColor; ++itColor)
@@ -184,7 +181,7 @@ void GoUctUtil::SaveTree(const SgUctTree& tree, int boardSize,
         out << '\n';
     }
     out << "PL[" << (toPlay == SG_BLACK ? "B" : "W") << "]\n";
-    SaveNode(out, tree, tree.Root(), toPlay, boardSize);
+    SaveNode(out, tree, tree.Root(), toPlay, boardSize, maxDepth, 0);
     out << ")\n";
 }
 

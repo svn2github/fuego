@@ -579,17 +579,23 @@ void GoUctCommands::CmdRootFilter(GtpCommand& cmd)
 }
 
 /** Save the UCT tree in SGF format.
-    Arguments: filename
+    Arguments: filename [max_depth] <br>
+    max_depth is an optional argument to cut the tree at a certain depth
+    (the root node has depth 0). If it is not used, the fill tree will be
+    saved.
     @see GoUctSearch::SaveTree()
 */
 void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
+    cmd.CheckNuArgLessEqual(2);
     string fileName = cmd.Arg(0);
+    int maxDepth = -1;
+    if (cmd.NuArg() == 2)
+        maxDepth = cmd.IntArg(1, 0);
     ofstream out(fileName.c_str());
     if (! out)
         throw GtpFailure() << "Could not open " << fileName;
-    Search().SaveTree(out);
+    Search().SaveTree(out, maxDepth);
 }
 
 /** Save all random games.

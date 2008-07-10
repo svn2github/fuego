@@ -133,9 +133,10 @@ namespace GoUctUtil
         tree
         @param toPlay The color toPlay at the root node of the tree
         @param out The stream to save to tree to
+        @param maxDepth Only save tree to a certain depth. -1 means no limit.
     */
     void SaveTree(const SgUctTree& tree, int boardSize, const SgBWSet& stones,
-                  SgBlackWhite toPlay, std::ostream& out);
+                  SgBlackWhite toPlay, std::ostream& out, int maxDepth = -1);
 
     /** Select a random move from a list of empty points.
         The check if GeneratePoint() returns true for the point is done after

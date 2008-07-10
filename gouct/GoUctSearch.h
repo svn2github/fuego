@@ -191,7 +191,7 @@ public:
     void SaveGames(const std::string& fileName) const;
 
     /** See GoUctUtil::SaveTree() */
-    void SaveTree(std::ostream& out) const;
+    void SaveTree(std::ostream& out, int maxDepth = -1) const;
 
     /** Set initial color to play. */
     void SetToPlay(SgBlackWhite toPlay);
