@@ -19,8 +19,6 @@ class SgNode;
 //----------------------------------------------------------------------------
 
 /** Thread state for GoUctSearch.
-    @todo Needs to have its own copy of the board which is synchronized
-    to the main board at the start of the search.
 */
 class GoUctState
     : public SgUctThreadState
