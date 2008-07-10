@@ -334,7 +334,7 @@ namespace GoUctSearchUtil
         if the UCT search uses RAVE, because the pass move by the opponent
         will not be explored for a while, because a pass move will get a low
         RAVE value. Fortunately, this can be fixed after the search: if the
-        Tromp-Taylor score of the current position is worse that the value
+        Tromp-Taylor score of the current position is worse than the value
         of the root node of the search, then we extract the second best move
         from the search tree.
         @param move The move returned by the search
