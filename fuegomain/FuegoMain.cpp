@@ -32,6 +32,8 @@ string g_config;
 
 const char* g_programPath;
 
+int g_srand;
+
 // @} // @name
 
 void MainLoop()
@@ -69,11 +71,8 @@ void ParseOptions(int argc, char** argv)
     }
     g_config = opt.GetString("config", "");
     g_quiet = opt.Contains("quiet");
-    if (opt.Contains("srand"))
-        SgRandom::SetSeed(opt.GetInteger("srand"));
-    else
-        // Don't be deterministic by default (0 means non-deterministic seed)
-        SgRandom::SetSeed(0);
+    // Don't be deterministic by default (0 means non-deterministic seed)
+    g_srand = opt.GetInteger("srand", 0);
     g_initialBoardSize = opt.GetInteger("size", 19);
 }
 
@@ -117,6 +116,7 @@ int main(int argc, char** argv)
         SgInit();
         GoInit();
         PrintStartupMessage();
+        SgRandom::SetSeed(g_srand);
         MainLoop();
         GoFini();
         SgFini();
