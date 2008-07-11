@@ -59,32 +59,6 @@ void GoUctGlobalSearchPlayer::Statistics::Clear()
     m_reuse.Clear();
 }
 
-void GoUctGlobalSearchPlayer::Statistics::Load(std::istream& in)
-{
-    string label;
-    in >> label;
-    if (label != "NU_COMPUTE_MOVE")
-    {
-        in.setstate(ios_base::failbit);
-        return;
-    }
-    in >> m_nuGenMove;
-    in >> label;
-    if (label != "GAMES_PER_SEC")
-    {
-        in.setstate(ios_base::failbit);
-        return;
-    }
-    m_gamesPerSecond.LoadFromText(in);
-    in >> label;
-    if (label != "REUSE")
-    {
-        in.setstate(ios_base::failbit);
-        return;
-    }
-    m_reuse.LoadFromText(in);
-}
-
 void GoUctGlobalSearchPlayer::Statistics::Write(ostream& out) const
 {
     out << SgWriteLabel("NuGenMove") << m_nuGenMove << '\n'
@@ -93,17 +67,6 @@ void GoUctGlobalSearchPlayer::Statistics::Write(ostream& out) const
     out << '\n'
         << SgWriteLabel("Reuse");
     m_reuse.Write(out);
-    out << '\n';
-}
-
-void GoUctGlobalSearchPlayer::Statistics::Save(std::ostream& out) const
-{
-    out << "NU_GEN_MOVE " << m_nuGenMove << '\n'
-        << "GAMES_PER_SEC ";
-    m_gamesPerSecond.SaveAsText(out);
-    out << '\n'
-        << "REUSE ";
-    m_reuse.SaveAsText(out);
     out << '\n';
 }
 
@@ -191,7 +154,6 @@ SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
         else if (value < m_resignThreshold)
             move = SG_RESIGN;
     }
-    SaveMonitorStatFile();
     return move;
 }
 
@@ -386,17 +348,6 @@ void GoUctGlobalSearchPlayer::Ponder()
     SgDebug() << "GoUctGlobalSearchPlayer::Ponder End\n";
 }
 
-void GoUctGlobalSearchPlayer::SaveMonitorStatFile() const
-{
-    if (m_monitorStatFile == "")
-        return;
-    ofstream out(m_monitorStatFile.c_str());
-    m_statistics.Save(out);
-    if (! out)
-        SgDebug() << "GoUctGlobalSearchPlayer::SetMonitorStatFile: "
-            "failed to save '" << m_monitorStatFile << "'\n";
-}
-
 GoUctSearch& GoUctGlobalSearchPlayer::Search()
 {
     return m_search;
@@ -412,24 +363,6 @@ void GoUctGlobalSearchPlayer::SetMaxNodes(std::size_t maxNodes)
     m_search.SetMaxNodes(maxNodes);
     if (m_reuseSubtree)
         m_initTree.SetMaxNodes(maxNodes);
-}
-
-void GoUctGlobalSearchPlayer::SetMonitorStatFile(const std::string& fileName)
-{
-    if (fileName == m_monitorStatFile)
-        return;
-    m_monitorStatFile = fileName;
-    if (fileName == "")
-        return;
-    ifstream in(fileName.c_str());
-    if (! in.is_open())
-        return;
-    SgDebug() << "GoUctGlobalSearchPlayer::SetMonitorStatFile: Reading '"
-              << fileName << "'\n";
-    m_statistics.Load(in);
-    if (! in)
-        SgDebug() << "GoUctGlobalSearchPlayer::SetMonitorStatFile: "
-            "failed to read file\n";
 }
 
 void GoUctGlobalSearchPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)

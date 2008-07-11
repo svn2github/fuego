@@ -300,7 +300,6 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c max_games See GoUctGlobalSearchPlayer::MaxGames
     @arg @c max_nodes See GoUctGlobalSearchPlayer::MaxNodes
     @arg @c max_time See GoUctGlobalSearchPlayer::MaxTime
-    @arg @c monitor_stat_file See GoUctGlobalSearchPlayer::MonitorStatFile
     @arg @c prior_knowledge @c none|even|policy See
       GoUctGlobalSearchPlayer::PriorKnowledge
     @arg @c resign_threshold See GoUctGlobalSearchPlayer::ResignThreshold
@@ -323,7 +322,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[string] max_games " << p.MaxGames() << '\n'
             << "[string] max_nodes " << p.MaxNodes() << '\n'
             << "[string] max_time " << p.MaxTime() << '\n'
-            << "[string] monitor_stat_file " << p.MonitorStatFile() << '\n'
             << "[list/none/even/default] prior_knowledge "
             << PriorKnowledgeToString(p.PriorKnowledge()) << '\n'
             << "[string] resign_threshold " << p.ResignThreshold() << '\n'
@@ -349,8 +347,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetMaxNodes(cmd.SizeTypeArg(1, 1));
         else if (name == "max_time")
             p.SetMaxTime(cmd.FloatArg(1));
-        else if (name == "monitor_stat_file")
-            p.SetMonitorStatFile(cmd.RemainingLine(0));
         else if (name == "prior_knowledge")
             p.SetPriorKnowledge(PriorKnowledgeArg(cmd, 1));
         else if (name == "resign_threshold")

@@ -71,15 +71,8 @@ public:
 
         void Clear();
 
-        void Load(std::istream& in);
-
-        /** Save in a text format that can be read again with Load() */
-        void Save(std::ostream& out) const;
-
         /** Write in human readable format. */
         void Write(std::ostream& out) const;
-
-
     };
 
     GoUctDefaultPlayoutPolicyParam m_playoutPolicyParam;
@@ -177,18 +170,6 @@ public:
     double MaxTime() const;
 
     void SetMaxTime(double maxTime);
-
-    /** Monitor statistics to a file.
-        The file is read when SetMonitorStatFile() is called (if it exists)
-        and saved after each GenMove(). This allows to collect
-        statistics, even if the executable is run multiple times (e.g. during
-        a gogui-twogtp run with restarts). An empty file name means no
-        monitoring is done.
-    */
-    const std::string& MonitorStatFile() const;
-
-    /** See MonitorStatFile() */
-    void SetMonitorStatFile(const std::string& fileName);
 
     /** Think during the opponents time.
         For enabling pondering, ReuseSubtree() also has to be true.
@@ -302,8 +283,6 @@ private:
 
     Statistics m_statistics;
 
-    std::string m_monitorStatFile;
-
     GoUctRootFilter m_rootFilter;
 
     /** Initial tree if subtree of last search is reused.
@@ -317,8 +296,6 @@ private:
     SgPoint DoSearch(SgBlackWhite toPlay, double maxTime);
 
     void FindInitTree(SgBlackWhite toPlay);
-
-    void SaveMonitorStatFile() const;
 };
 
 inline bool GoUctGlobalSearchPlayer::AutoParam() const
@@ -361,11 +338,6 @@ inline std::size_t GoUctGlobalSearchPlayer::MaxNodes() const
 inline double GoUctGlobalSearchPlayer::MaxTime() const
 {
     return m_maxTime;
-}
-
-inline const std::string& GoUctGlobalSearchPlayer::MonitorStatFile() const
-{
-    return m_monitorStatFile;
 }
 
 inline bool GoUctGlobalSearchPlayer::EnablePonder() const
