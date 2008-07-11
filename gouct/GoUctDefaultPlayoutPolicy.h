@@ -449,52 +449,6 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
 }
 
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
-{
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    SG_ASSERT(! IsSpecialMove(lastMove));
-    SG_ASSERT(! bd.IsEmpty(lastMove));
-    const SgBlackWhite toPlay = bd.ToPlay();
-
-    // take liberty of last move
-    if (bd.NumLiberties(lastMove) <= LIB_LIMIT)
-    {
-        for (typename BOARD::LibertyIterator it(bd, lastMove); it; ++it)
-        {
-            if (   GainsLiberties(bd.Anchor(lastMove), *it)
-                && ! GoBoardUtil::SelfAtari(bd, *it)
-               )
-                m_moves.Append(*it);
-        }
-    }
-
-    // play liberties of neighbor blocks
-    SgSList<SgPoint,4> anchorList;
-    for (SgNb4Iterator it(lastMove); it; ++it)
-    {
-        if (   bd.GetColor(*it) == toPlay
-            && ! GOUCT_ISSAFE(*it)
-            && bd.NumLiberties(*it) <= LIB_LIMIT
-           )
-        {
-            const SgPoint anchor = bd.Anchor(*it);
-            if (! anchorList.Contains(anchor))
-            {
-                anchorList.Append(anchor);
-                for (typename BOARD::LibertyIterator it(bd, anchor); it; ++it)
-                    if (   GainsLiberties(anchor, *it)
-                        && ! GoBoardUtil::SelfAtari(bd, *it)
-                       )
-                    {
-                        m_moves.Append(*it);
-                    }
-            }
-        }
-    }
-    return ! m_moves.IsEmpty();
-}
-
-template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 {
     SG_ASSERT(! IsSpecialMove(m_lastMove));
@@ -543,6 +497,52 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
             // atari
             if (oppLiberty != theLiberty)
                 m_moves.Append(oppLiberty);
+        }
+    }
+    return ! m_moves.IsEmpty();
+}
+
+template<class BOARD>
+bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
+{
+    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
+    SG_ASSERT(! IsSpecialMove(lastMove));
+    SG_ASSERT(! bd.IsEmpty(lastMove));
+    const SgBlackWhite toPlay = bd.ToPlay();
+
+    // take liberty of last move
+    if (bd.NumLiberties(lastMove) <= LIB_LIMIT)
+    {
+        for (typename BOARD::LibertyIterator it(bd, lastMove); it; ++it)
+        {
+            if (   GainsLiberties(bd.Anchor(lastMove), *it)
+                && ! GoBoardUtil::SelfAtari(bd, *it)
+               )
+                m_moves.Append(*it);
+        }
+    }
+
+    // play liberties of neighbor blocks
+    SgSList<SgPoint,4> anchorList;
+    for (SgNb4Iterator it(lastMove); it; ++it)
+    {
+        if (   bd.GetColor(*it) == toPlay
+            && ! GOUCT_ISSAFE(*it)
+            && bd.NumLiberties(*it) <= LIB_LIMIT
+           )
+        {
+            const SgPoint anchor = bd.Anchor(*it);
+            if (! anchorList.Contains(anchor))
+            {
+                anchorList.Append(anchor);
+                for (typename BOARD::LibertyIterator it(bd, anchor); it; ++it)
+                    if (   GainsLiberties(anchor, *it)
+                        && ! GoBoardUtil::SelfAtari(bd, *it)
+                       )
+                    {
+                        m_moves.Append(*it);
+                    }
+            }
         }
     }
     return ! m_moves.IsEmpty();
