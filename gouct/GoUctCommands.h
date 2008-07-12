@@ -15,6 +15,7 @@ class GoUctGlobalSearchPlayer;
 class GoUctBoard;
 class GoUctSearch;
 class GoUctGlobalSearch;
+class GoUctGlobalSearchState;
 template<class BOARD> class GoUctDefaultPlayoutPolicy;
 
 //----------------------------------------------------------------------------
@@ -62,6 +63,7 @@ public:
         - @link CmdStatPolicy() @c uct_stat_policy @endlink
         - @link CmdStatPolicyClear() @c uct_stat_policy_clear @endlink
         - @link CmdStatSearch() @c uct_stat_search @endlink
+        - @link CmdStatTerritory() @c uct_stat_territory @endlink
         - @link CmdValue() @c uct_value @endlink
     */
     /** @name Command Callbacks */
@@ -91,6 +93,7 @@ public:
     void CmdStatPolicy(GtpCommand& cmd);
     void CmdStatPolicyClear(GtpCommand& cmd);
     void CmdStatSearch(GtpCommand& cmd);
+    void CmdStatTerritory(GtpCommand& cmd);
     void CmdValue(GtpCommand& cmd);
     // @} // @name
 
@@ -111,6 +114,8 @@ private:
                   GtpCallback<GoUctCommands>::Method method);
 
     GoUctSearch& Search();
+
+    GoUctGlobalSearchState& ThreadState(std::size_t threadId);
 };
 
 //----------------------------------------------------------------------------

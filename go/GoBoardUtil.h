@@ -8,8 +8,10 @@
 #define GO_BOARDUTIL_H
 
 #include "GoBoard.h"
+#include "SgBoardColor.h"
 #include "SgDebug.h"
 #include "SgPoint.h"
+#include "SgPointArray.h"
 #include "SgStack.h"
 
 //----------------------------------------------------------------------------
@@ -291,7 +293,8 @@ namespace GoBoardUtil
 
     /** Helper function used in ScoreEndPosition */
     template<class BOARD>
-    int ScorePoint(const BOARD& bd, float komi, SgPoint p, bool noCheck);
+    SgEmptyBlackWhite ScorePoint(const BOARD& bd, float komi, SgPoint p,
+                                 bool noCheck);
 
     /** Score position. Uses the static safety solver first,
         then the same method as ScoreSimpleEndPosition
@@ -300,10 +303,18 @@ namespace GoBoardUtil
     float ScoreEndPosition(const GoBoard& bd, float komi,
                            bool noCheck = false);
 
-    /** Score position. Same as above, but safe have been precomputed */
+    /** Score position with safe points precomputed
+        @param bd
+        @param komi
+        @param safe
+        @param noCheck
+        @param scoreBoard Optional board to fill in the status of each
+        point (SG_EMPTY means dame)
+    */
     template<class BOARD>
     float ScoreEndPosition(const BOARD& bd, float komi, const SgBWSet& safe,
-                           bool noCheck = false);
+                           bool noCheck = false,
+                           SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
 
     /** Score position with all stones safe and only simple eyes.
         This is a fast scoring function (e.g. suitable for Monte-Carlo),
@@ -345,10 +356,13 @@ namespace GoBoardUtil
         all stones on the board are alive.
         @param bd The board with the position to score.
         @param komi The komi
+        @param scoreBoard Optional board to fill in the status of each
+        point (SG_EMPTY means dame)
         @return The score, black counting positive, komi included.
     */
     template<class BOARD>
-    float TrompTaylorScore(const BOARD& bd, float komi);
+    float TrompTaylorScore(const BOARD& bd, float komi,
+                           SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
 
     /** Check if the last two moves were two passes in a row, the first pass
         by the current color to play, the second by the opponent.
@@ -432,43 +446,57 @@ inline bool GoBoardUtil::PlayIfLegal(GoBoard& bd, SgPoint p)
 }
 
 template<class BOARD>
-int GoBoardUtil::ScorePoint(const BOARD& bd, SgPoint p, bool noCheck)
+SgEmptyBlackWhite GoBoardUtil::ScorePoint(const BOARD& bd, SgPoint p,
+                                          bool noCheck)
 {
     SG_DEBUG_ONLY(noCheck);
-    SgEmptyBlackWhite color = bd.GetColor(p);
-    if (color == SG_BLACK)
-        return 1;
-    else if (color == SG_WHITE)
-        return -1;
-    SG_ASSERT(color == SG_EMPTY);
+    SgEmptyBlackWhite c = bd.GetColor(p);
+    if (c != SG_EMPTY)
+        return c;
     // Position must have only completely surrounded empty points
     SG_ASSERT(noCheck || bd.NumEmptyNeighbors(p) == 0
               || GoBoardUtil::SelfAtari(bd, p));
     if (bd.NumNeighbors(p, SG_BLACK) > 0
         && bd.NumNeighbors(p, SG_WHITE) == 0)
-        return 1;
+        return SG_BLACK;
     else if (bd.NumNeighbors(p, SG_WHITE) > 0
              && bd.NumNeighbors(p, SG_BLACK) == 0)
     {
         SG_ASSERT(bd.NumNeighbors(p, SG_WHITE) > 0);
-        return -1;
+        return SG_WHITE;
     }
     else
     {
         // Position must have no dame points
         SG_ASSERT(noCheck || GoBoardUtil::SelfAtari(bd, p));
-        return 0;
+        return SG_EMPTY;
     }
 }
 
 template<class BOARD>
 float GoBoardUtil::ScoreEndPosition(const BOARD& bd, float komi,
-                                    const SgBWSet& safe, bool noCheck)
+                                    const SgBWSet& safe, bool noCheck,
+                                  SgPointArray<SgEmptyBlackWhite>* scoreBoard)
 {
     int score = safe[SG_BLACK].Size() - safe[SG_WHITE].Size();
     for (typename BOARD::Iterator it(bd); it; ++it)
         if (! safe.OneContains(*it))
-            score += ScorePoint(bd, *it, noCheck);
+        {
+            SgEmptyBlackWhite c = ScorePoint(bd, *it, noCheck);
+            switch (c)
+            {
+            case SG_BLACK:
+                ++score;
+                break;
+            case SG_WHITE:
+                --score;
+                break;
+            default:
+                break;
+            }
+            if (scoreBoard != 0)
+                (*scoreBoard)[*it] = c;
+        }
     return (score - komi);
 }
 
@@ -640,7 +668,8 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones,
 }
 
 template<class BOARD>
-float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi)
+float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi,
+                                  SgPointArray<SgEmptyBlackWhite>* scoreBoard)
 {
     float score = -komi;
     // Mark empty points visited in one of the (non-overlapping) flood-fills
@@ -653,17 +682,23 @@ float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi)
         if (c == SG_BLACK)
         {
             ++score;
+            if (scoreBoard != 0)
+                (*scoreBoard)[*it] = SG_BLACK;
             continue;
         }
         if (c == SG_WHITE)
         {
             --score;
+            if (scoreBoard != 0)
+                (*scoreBoard)[*it] = SG_WHITE;
             continue;
         }
         SgStack<SgPoint,SG_MAXPOINT> stack;
+        GoPointList list;
         SG_ASSERT(c == SG_EMPTY);
         stack.Push(*it);
         mark.Include(*it);
+        list.Append(*it);
         SgBWArray<bool> adjacent(false);
         int size = 0;
         while (! stack.IsEmpty())
@@ -681,12 +716,24 @@ float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi)
                 {
                     stack.Push(*it2);
                     mark.Include(*it2);
+                    list.Append(*it2);
                 }
         }
         if (adjacent[SG_BLACK] && ! adjacent[SG_WHITE])
+        {
             score += size;
+            c = SG_BLACK;
+        }
         else if (! adjacent[SG_BLACK] && adjacent[SG_WHITE])
+        {
             score -= size;
+            c = SG_WHITE;
+        }
+        else
+            c = SG_EMPTY;
+        if (scoreBoard != 0)
+            for (GoPointList::Iterator it2(list); it2; ++it2)
+                (*scoreBoard)[*it2] = c;
     }
     return score;
 }

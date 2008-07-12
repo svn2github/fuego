@@ -171,6 +171,9 @@ struct GoUctGlobalSearchStateParam
     */
     bool m_mercyRule;
 
+    /** Compute probabilities of territory in terminal positions. */
+    bool m_territoryStatistics;
+
     /** Modify game result by score.
         This modifies the win/loss result (1/0) by the score of the end
         position. The modification is added for losses and subtracted for
@@ -227,6 +230,11 @@ public:
     const SgBWSet& m_safe;
 
     const SgPointArray<bool>& m_allSafe;
+
+    /** Probabilities that a point belongs to Black in a terminal position.
+        Only computed if GoUctGlobalSearchStateParam::m_territoryStatistics.
+    */
+    SgPointArray<SgUctStatistics> m_territoryStatistics;
 
     /** Constructor.
         @param threadId The number of the thread. Needed for passing to
@@ -314,7 +322,7 @@ private:
     bool CheckMercyRule();
 
     template<class BOARD>
-    float EvaluateBoard(const BOARD& bd, float komi) const;
+    float EvaluateBoard(const BOARD& bd, float komi);
 };
 
 inline GoUctPlayoutPolicy<GoUctBoard>* GoUctGlobalSearchState::Policy()

@@ -18,6 +18,7 @@ using namespace std;
 
 GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
     : m_mercyRule(true),
+      m_territoryStatistics(false),
       m_scoreModification(0.02)
 {
 }
@@ -71,19 +72,39 @@ float GoUctGlobalSearchState::Evaluate()
 }
 
 template<class BOARD>
-float GoUctGlobalSearchState::EvaluateBoard(const BOARD& bd,
-                                            float komi) const
+float GoUctGlobalSearchState::EvaluateBoard(const BOARD& bd, float komi)
 {
     float score;
+    SgPointArray<SgEmptyBlackWhite> scoreBoard;
+    SgPointArray<SgEmptyBlackWhite>* scoreBoardPtr;
+    if (m_param.m_territoryStatistics)
+        scoreBoardPtr = &scoreBoard;
+    else
+        scoreBoardPtr = 0;
     if (m_passMovesPlayoutPhase < 2)
         // Two passes not in playout phase, see comment in GenerateAllMoves()
-        score = GoBoardUtil::TrompTaylorScore(bd, komi);
+        score = GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
     else
     {
         if (m_param.m_mercyRule && m_mercyRuleTriggered)
             return m_mercyRuleResult;
-        score = GoBoardUtil::ScoreEndPosition(bd, komi, m_safe);
+        score = GoBoardUtil::ScoreEndPosition(bd, komi, m_safe,
+                                              scoreBoardPtr);
     }
+    if (m_param.m_territoryStatistics)
+        for (typename BOARD::Iterator it(bd); it; ++it)
+            switch (scoreBoard[*it])
+            {
+            case SG_BLACK:
+                m_territoryStatistics[*it].Add(1);
+                break;
+            case SG_WHITE:
+                m_territoryStatistics[*it].Add(0);
+                break;
+            case SG_EMPTY:
+                m_territoryStatistics[*it].Add(0.5);
+                break;
+            }
     if (ToPlay() != SG_BLACK)
         score *= -1;
     if (score > 0)
@@ -216,6 +237,9 @@ void GoUctGlobalSearchState::StartSearch()
     int size = bd.Size();
     float maxScore = size * size + bd.Rules().Komi().ToFloat();
     m_invMaxScore = 1 / maxScore;
+    for (SgPointArray<SgUctStatistics>::NonConstIterator
+             it(m_territoryStatistics); it; ++it)
+        (*it).Clear();
 }
 
 //----------------------------------------------------------------------------

@@ -181,7 +181,8 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/Uct Stat Player Clear/uct_stat_player_clear\n"
         "hstring/Uct Stat Policy/uct_stat_policy\n"
         "none/Uct Stat Policy Clear/uct_stat_policy_clear\n"
-        "hstring/Uct Stat Search/uct_stat_search\n";
+        "hstring/Uct Stat Search/uct_stat_search\n"
+        "dboard/Uct Stat Territory/uct_stat_territory\n";
 }
 
 /** Show UCT bounds of moves in root node.
@@ -260,9 +261,11 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
+    @arg @c mercy_rule See GoUctGlobalSearchStateParam::m_mercyRule
+    @arg @c territory_statistics See
+        GoUctGlobalSearchStateParam::m_territoryStatistics
     @arg @c score_modification See
         GoUctGlobalSearchStateParam::m_scoreModification
-    @arg @c mercy_rule See GoUctGlobalSearchStateParam::m_mercyRule
 */
 void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
 {
@@ -273,6 +276,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
         cmd << "[bool] mercy_rule " << p.m_mercyRule << '\n'
+            << "[bool] territory_statistics " << p.m_territoryStatistics
+            << '\n'
             << "[string] score_modification " << p.m_scoreModification
             << '\n';
     }
@@ -281,6 +286,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         string name = cmd.Arg(0);
         if (name == "mercy_rule")
             p.m_mercyRule = cmd.BoolArg(1);
+        else if (name == "territory_statistics")
+            p.m_territoryStatistics = cmd.BoolArg(1);
         else if (name == "score_modification")
             p.m_scoreModification = cmd.FloatArg(1);
         else
@@ -793,6 +800,25 @@ void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
         << treeStatistics;
 }
 
+/** Write average point status.
+    This command is compatible with the GoGui analyze type @c dboard. <br>
+    Statistics are only collected, if enabled with
+    <code>uct_param_global_search territory_statistics 1</code>. <br>
+    Arguments: none
+    @see GoUctGlobalSearchState::m_territoryStatistics
+*/
+void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    SgPointArray<SgUctStatistics> territoryStatistics
+        = ThreadState(0).m_territoryStatistics;
+    SgPointArray<float> array;
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+        array[*it] = territoryStatistics[*it].Mean() * 2 - 1;
+    cmd << '\n'
+        << SgWritePointArrayFloat<float>(array, m_bd.Size(), true, 3);
+}
+
 /** Return value of root node from last search.
     Arguments: none
 */
@@ -824,25 +850,12 @@ GoUctGlobalSearchPlayer& GoUctCommands::Player()
 GoUctDefaultPlayoutPolicy<GoUctBoard>&
 GoUctCommands::Policy(std::size_t threadId)
 {
-    GoUctSearch& search = Search();
-    if (! search.ThreadsCreated())
-        throw GtpFailure("threads not yet created");
-    try
-    {
-        GoUctGlobalSearchState& state =
-            dynamic_cast<GoUctGlobalSearchState&>(
-                                                search.ThreadState(threadId));
-        GoUctDefaultPlayoutPolicy<GoUctBoard>* policy =
-            dynamic_cast<GoUctDefaultPlayoutPolicy<GoUctBoard>*>(
-                                                              state.Policy());
-        if (policy == 0)
-            throw GtpFailure("player has no GoUctDefaultPlayoutPolicy");
-        return *policy;
-    }
-    catch (const bad_cast& e)
-    {
-        throw GtpFailure("player has no GoUctGlobalSearchState");
-    }
+    GoUctDefaultPlayoutPolicy<GoUctBoard>* policy =
+        dynamic_cast<GoUctDefaultPlayoutPolicy<GoUctBoard>*>(
+                                              ThreadState(threadId).Policy());
+    if (policy == 0)
+        throw GtpFailure("player has no GoUctDefaultPlayoutPolicy");
+    return *policy;
 }
 
 void GoUctCommands::Register(GtpEngine& e)
@@ -872,6 +885,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_stat_policy", &GoUctCommands::CmdStatPolicy);
     Register(e, "uct_stat_policy_clear", &GoUctCommands::CmdStatPolicyClear);
     Register(e, "uct_stat_search", &GoUctCommands::CmdStatSearch);
+    Register(e, "uct_stat_territory", &GoUctCommands::CmdStatTerritory);
     Register(e, "uct_value", &GoUctCommands::CmdValue);
 }
 
@@ -894,4 +908,25 @@ GoUctSearch& GoUctCommands::Search()
         throw GtpFailure("player is not a GoUctObjectWithSearch");
     }
 }
+
+/** Return state of first thread, if search is of type GoUctGlobalSearch.
+    @throws GtpFailure, if search is a different subclass or threads are not
+    yet created.
+*/
+GoUctGlobalSearchState& GoUctCommands::ThreadState(std::size_t threadId)
+{
+    GoUctSearch& search = Search();
+    if (! search.ThreadsCreated())
+        throw GtpFailure("threads not yet created");
+    try
+    {
+        return dynamic_cast<GoUctGlobalSearchState&>(
+                                                search.ThreadState(threadId));
+    }
+    catch (const bad_cast& e)
+    {
+        throw GtpFailure("player has no GoUctGlobalSearchState");
+    }
+}
+
 //----------------------------------------------------------------------------
