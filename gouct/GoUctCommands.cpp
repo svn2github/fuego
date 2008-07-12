@@ -814,7 +814,11 @@ void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
         = ThreadState(0).m_territoryStatistics;
     SgPointArray<float> array;
     for (GoBoard::Iterator it(m_bd); it; ++it)
+    {
+        if (territoryStatistics[*it].Count() == 0)
+            throw GtpFailure("no statistics available");
         array[*it] = territoryStatistics[*it].Mean() * 2 - 1;
+    }
     cmd << '\n'
         << SgWritePointArrayFloat<float>(array, m_bd.Size(), true, 3);
 }

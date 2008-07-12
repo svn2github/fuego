@@ -281,6 +281,8 @@ public:
     */
     void SetPolicy(GoUctPlayoutPolicy<GoUctBoard>* policy);
 
+    void ClearTerritoryStatistics();
+
 private:
     const GoUctGlobalSearchStateParam& m_param;
 

@@ -302,12 +302,12 @@ namespace GoBoardUtil
         @param safe
         @param noCheck
         @param scoreBoard Optional board to fill in the status of each
-        point (SG_EMPTY means dame)
+        point (SG_EMPTY means dame); null if not needed
     */
     template<class BOARD>
     float ScoreEndPosition(const BOARD& bd, float komi, const SgBWSet& safe,
-                           bool noCheck = false,
-                           SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
+                           bool noCheck,
+                           SgPointArray<SgEmptyBlackWhite>* scoreBoard);
 
     /** Score position with all stones safe and only simple eyes.
         This is a fast scoring function (e.g. suitable for Monte-Carlo),
@@ -471,26 +471,32 @@ float GoBoardUtil::ScoreEndPosition(const BOARD& bd, float komi,
                                     const SgBWSet& safe, bool noCheck,
                                   SgPointArray<SgEmptyBlackWhite>* scoreBoard)
 {
-    int score = safe[SG_BLACK].Size() - safe[SG_WHITE].Size();
+    int score = -komi;
     for (typename BOARD::Iterator it(bd); it; ++it)
-        if (! safe.OneContains(*it))
+    {
+        SgPoint p = *it;
+        SgEmptyBlackWhite c;
+        if (safe[SG_BLACK].Contains(p))
+            c = SG_BLACK;
+        else if (safe[SG_WHITE].Contains(p))
+            c = SG_WHITE;
+        else
+            c = ScorePoint(bd, p, noCheck);
+        switch (c)
         {
-            SgEmptyBlackWhite c = ScorePoint(bd, *it, noCheck);
-            switch (c)
-            {
-            case SG_BLACK:
-                ++score;
-                break;
-            case SG_WHITE:
-                --score;
-                break;
-            default:
-                break;
-            }
-            if (scoreBoard != 0)
-                (*scoreBoard)[*it] = c;
+        case SG_BLACK:
+            ++score;
+            break;
+        case SG_WHITE:
+            --score;
+            break;
+        default:
+            break;
         }
-    return (score - komi);
+        if (scoreBoard != 0)
+            (*scoreBoard)[p] = c;
+    }
+    return score;
 }
 
 template<class BOARD>

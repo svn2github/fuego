@@ -35,6 +35,7 @@ GoUctGlobalSearchState::GoUctGlobalSearchState(std::size_t threadId,
       m_param(param),
       m_policy(policy)
 {
+    ClearTerritoryStatistics();
 }
 
 GoUctGlobalSearchState::~GoUctGlobalSearchState()
@@ -60,6 +61,13 @@ bool GoUctGlobalSearchState::CheckMercyRule()
     else
         SG_ASSERT(! m_mercyRuleTriggered);
     return m_mercyRuleTriggered;
+}
+
+void GoUctGlobalSearchState::ClearTerritoryStatistics()
+{
+    for (SgPointArray<SgUctStatistics>::NonConstIterator
+             it(m_territoryStatistics); it; ++it)
+        (*it).Clear();
 }
 
 float GoUctGlobalSearchState::Evaluate()
@@ -89,7 +97,7 @@ float GoUctGlobalSearchState::EvaluateBoard(const BOARD& bd, float komi)
         if (m_param.m_mercyRule && m_mercyRuleTriggered)
             return m_mercyRuleResult;
         score = GoBoardUtil::ScoreEndPosition(bd, komi, m_safe,
-                                              scoreBoardPtr);
+                                              false, scoreBoardPtr);
     }
     if (m_param.m_territoryStatistics)
         for (typename BOARD::Iterator it(bd); it; ++it)
@@ -237,9 +245,7 @@ void GoUctGlobalSearchState::StartSearch()
     int size = bd.Size();
     float maxScore = size * size + bd.Rules().Komi().ToFloat();
     m_invMaxScore = 1 / maxScore;
-    for (SgPointArray<SgUctStatistics>::NonConstIterator
-             it(m_territoryStatistics); it; ++it)
-        (*it).Clear();
+    ClearTerritoryStatistics();
 }
 
 //----------------------------------------------------------------------------
