@@ -39,6 +39,7 @@ public:
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
     /** @page gouctgtpcommands GoUctCommands Commands
+        - @link CmdFinalStatusList() @c final_status_list @endlink
         - @link CmdBounds() @c uct_bounds @endlink
         - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
@@ -71,6 +72,7 @@ public:
     // The callback functions are documented in the cpp file
     void CmdBounds(GtpCommand& cmd);
     void CmdEstimatorStat(GtpCommand& cmd);
+    void CmdFinalStatusList(GtpCommand&);
     void CmdGfx(GtpCommand& cmd);
     void CmdMoves(GtpCommand& cmd);
     void CmdParamGlobalSearch(GtpCommand& cmd);

@@ -19,6 +19,7 @@
 #include "GoUctUtil.h"
 #include "SgException.h"
 #include "SgUctTreeUtil.h"
+#include "SgRestorer.h"
 #include "SgWrite.h"
 
 using namespace std;
@@ -232,6 +233,53 @@ void GoUctCommands::CmdEstimatorStat(GtpCommand& cmd)
     string fileName = cmd.Arg(3);
     GoUctEstimatorStat::Compute(Search(), trueValueMaxGames, maxGames,
                                 stepSize, fileName);
+}
+
+/** Return final status of stones.
+    Only the argument @c dead (see GTP standard) is supported. Does a
+    small search and uses the territory statistics to determine
+    the status of blocks.
+*/
+void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
+{
+    cmd.CheckNuArg(1);
+    if (cmd.Arg(0) != "dead")
+        throw GtpFailure("unsupported final status argument");
+    if (GoBoardUtil::TwoPasses(m_bd) && m_bd.Rules().CaptureDead())
+        // Everything is alive if end position and Tromp-Taylor rules
+        return;
+    GoUctGlobalSearch& search = GlobalSearch();
+    SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
+    search.m_param.m_territoryStatistics = true;
+    const size_t MAX_GAMES = 5000;
+    SgDebug() << "GoUctCommands::CmdFinalStatusList: doing a search with "
+              << MAX_GAMES << " games to determine final status\n";
+    vector<SgMove> sequence;
+    search.Search(MAX_GAMES, numeric_limits<double>::max(), sequence);
+    Player().ClearTreeValidForNode();
+    SgPointArray<SgUctStatistics> territoryStatistics =
+        ThreadState(0).m_territoryStatistics;
+    for (GoBlockIterator it(m_bd); it; ++it)
+    {
+        SgBlackWhite c = m_bd.GetStone(*it);
+        SgStatistics<float,int> averageStatus;
+        for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+        {
+            if (territoryStatistics[*it2].Count() == 0)
+                // No statistics, maybe all simulations aborted due to
+                // max length or mercy rule.
+                return;
+            averageStatus.Add(territoryStatistics[*it2].Mean());
+        }
+        const float THRESHOLD = 0.1;
+        if ((c == SG_BLACK && averageStatus.Mean() < THRESHOLD)
+            || (c == SG_WHITE && averageStatus.Mean() > 1 - THRESHOLD))
+        {
+            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+                cmd << SgWritePoint(*it2) << ' ';
+                cmd << '\n';
+        }
+    }
 }
 
 /** Show move values and sample numbers of last search.
@@ -864,6 +912,7 @@ GoUctCommands::Policy(std::size_t threadId)
 
 void GoUctCommands::Register(GtpEngine& e)
 {
+    Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);
     Register(e, "uct_estimator_stat", &GoUctCommands::CmdEstimatorStat);
     Register(e, "uct_gfx", &GoUctCommands::CmdGfx);
