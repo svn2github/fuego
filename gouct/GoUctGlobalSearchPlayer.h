@@ -271,6 +271,9 @@ private:
     /** See ResignThreshold() */
     double m_resignThreshold;
 
+    /** Used in OnBoardChange() */
+    int m_lastBoardSize;
+
     GoUctGlobalSearchPrior m_priorKnowledge;
 
     std::size_t m_maxGames;

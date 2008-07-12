@@ -82,6 +82,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_reuseSubtree(false),
       m_maxTime(1e10),
       m_resignThreshold(0.03),
+      m_lastBoardSize(-1),
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(100000),
       m_search(Board(),
@@ -319,13 +320,14 @@ string GoUctGlobalSearchPlayer::Name() const
 
 void GoUctGlobalSearchPlayer::OnBoardChange()
 {
-    if (m_autoParam)
+    int size = Board().Size();
+    if (m_autoParam && size != m_lastBoardSize)
     {
-        int size = Board().Size();
         SgDebug() <<
             "GoUctGlobalSearchPlayer: "
             "Setting default parameters for size " << size << '\n';
         m_search.SetDefaultParameters(size);
+        m_lastBoardSize = size;
     }
 }
 
