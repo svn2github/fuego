@@ -20,9 +20,9 @@ template<class BOARD> class GoUctDefaultPlayoutPolicy;
 
 //----------------------------------------------------------------------------
 
-/** GTP commands for GoUctGlobalSearchPlayer and players implementing
-    GoUctObjectWithSearch.
-    Basic set of GTP commands for class GoUctGlobalSearchPlayer.
+/** GTP commands for GoUctGlobalSearchPlayer.
+    Some of the commands are also usable for other players, as long as they
+    use a subclass of GoUctSearch (and implement GoUctObjectWithSearch).
 */
 class GoUctCommands
 {
