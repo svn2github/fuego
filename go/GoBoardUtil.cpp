@@ -583,16 +583,6 @@ bool GoBoardUtil::RemainingChineseHandicap(const GoBoard& bd)
             && rules.Handicap() > bd.TotalNumStones(SG_BLACK));
 }
 
-float GoBoardUtil::ScoreEndPosition(const GoBoard& bd, float komi,
-                                    bool noCheck)
-{
-    GoModBoard mbd(bd);
-    GoSafetySolver solver(mbd); // todo: safety solver should take const board
-    SgBWSet safe;
-    solver.FindSafePoints(&safe);
-    return ScoreEndPosition(bd, komi, safe, noCheck);
-}
-
 float GoBoardUtil::ScoreSimpleEndPosition(const GoBoard& bd, float komi,
                                           bool noCheck)
 {

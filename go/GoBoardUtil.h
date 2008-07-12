@@ -296,13 +296,6 @@ namespace GoBoardUtil
     SgEmptyBlackWhite ScorePoint(const BOARD& bd, float komi, SgPoint p,
                                  bool noCheck);
 
-    /** Score position. Uses the static safety solver first,
-        then the same method as ScoreSimpleEndPosition
-        for the rest of the board.
-    */
-    float ScoreEndPosition(const GoBoard& bd, float komi,
-                           bool noCheck = false);
-
     /** Score position with safe points precomputed
         @param bd
         @param komi
