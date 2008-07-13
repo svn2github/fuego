@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
-/** @file GoUctRootFilter.cpp
-    See GoUctRootFilter.h
+/** @file GoUctDefaultRootFilter.cpp
+    See GoUctDefaultRootFilter.h
 */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "GoUctRootFilter.h"
+#include "GoUctDefaultRootFilter.h"
 
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
@@ -14,12 +14,12 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-GoUctRootFilter::GoUctRootFilter(const GoBoard& bd)
+GoUctDefaultRootFilter::GoUctDefaultRootFilter(const GoBoard& bd)
     : m_bd(bd)
 {
 }
 
-bool GoUctRootFilter::FilterMove(SgMove p) const
+bool GoUctDefaultRootFilter::FilterMove(SgPoint p) const
 {
     return     GoBoardUtil::SelfAtari(m_bd, p)
             //&& ! PossiblyGoodThrowInMove(m_bd, p)
@@ -27,14 +27,12 @@ bool GoUctRootFilter::FilterMove(SgMove p) const
             ;
 }
 
-vector<SgPoint> GoUctRootFilter::Get()
+vector<SgPoint> GoUctDefaultRootFilter::Get()
 {
     vector<SgPoint> rootFilter;
-
     for (GoBoard::Iterator it(m_bd); it; ++it)
         if (m_bd.IsLegal(*it) && FilterMove(*it))
             rootFilter.push_back(*it);
-
     return rootFilter;
 }
 

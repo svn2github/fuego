@@ -1,30 +1,36 @@
 //----------------------------------------------------------------------------
-/** @file GoUctRootFilter.h */
+/** @file GoUctDefaultRootFilter.h */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCT_ROOTFILTER_H
-#define GOUCT_ROOTFILTER_H
+#ifndef GOUCT_DEFAULTROOTFILTER_H
+#define GOUCT_DEFAULTROOTFILTER_H
 
-#include <vector>
-#include "SgPoint.h"
+#include "GoUctRootFilter.h"
 
 class GoBoard;
 
 //----------------------------------------------------------------------------
 
-/** Interface for using external knowledge to prune moves at the root node of
-    a search.
-*/
-class GoUctRootFilter
+/** Default root filter used by GoUctGlobalSearchPlayer. */
+class GoUctDefaultRootFilter
+    : public GoUctRootFilter
 {
 public:
+    GoUctDefaultRootFilter(const GoBoard& bd);
+
     /** Get moves to filter in the current position.
         This function is invoked by the player before the search, it does not
         need to be thread-safe.
     */
-    virtual std::vector<SgPoint> Get() = 0;
+    std::vector<SgPoint> Get();
+
+private:
+    const GoBoard& m_bd;
+
+    /** Should move be filtered? */
+    bool FilterMove(SgPoint move) const;
 };
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCT_ROOTFILTER_H
+#endif // GOUCT_DEFAULTROOTFILTER_H

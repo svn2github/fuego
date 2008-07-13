@@ -13,6 +13,7 @@
 #include "GoBoardUtil.h"
 #include "GoUctDefaultPlayoutPolicy.h"
 #include "GoUctDefaultPriorKnowledge.h"
+#include "GoUctDefaultRootFilter.h"
 #include "GoUctUtil.h"
 #include "SgDebug.h"
 #include "SgNbIterator.h"
@@ -90,7 +91,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
                                                       m_playoutPolicyParam)),
       m_treeValidForNode(0),
       m_timeControl(Board()),
-      m_rootFilter(Board())
+      m_rootFilter(new GoUctDefaultRootFilter(Board()))
 {
     m_timeControl.SetFastOpenMoves(0);
     m_timeControl.SetFinalSpace(1);
@@ -200,7 +201,7 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     vector<SgPoint> sequence;
     vector<SgMove> rootFilter;
     if (PruneRootMoves())
-        rootFilter = m_rootFilter.Get();
+        rootFilter = m_rootFilter->Get();
     double value =
         m_search.Search(m_maxGames, maxTime, sequence, rootFilter, initTree);
     m_search.WriteStatistics(SgDebug());

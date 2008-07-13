@@ -24,12 +24,12 @@ SRC_CPP= \
   gouct/GoUctCommands.cpp \
   gouct/GoUctDefaultPlayoutPolicy.cpp \
   gouct/GoUctDefaultPriorKnowledge.cpp \
+  gouct/GoUctDefaultRootFilter.cpp \
   gouct/GoUctEstimatorStat.cpp \
   gouct/GoUctGlobalSearch.cpp \
   gouct/GoUctGlobalSearchPlayer.cpp \
   gouct/GoUctObjectWithSearch.cpp \
   gouct/GoUctPatterns.cpp \
-  gouct/GoUctRootFilter.cpp \
   gouct/GoUctSearch.cpp \
   gouct/GoUctUtil.cpp
 

@@ -7,6 +7,7 @@
 #ifndef GOUCT_GLOBALSEARCHPLAYER_H
 #define GOUCT_GLOBALSEARCHPLAYER_H
 
+#include <boost/scoped_ptr.hpp>
 #include <vector>
 #include "GoBoard.h"
 #include "GoPlayer.h"
@@ -244,7 +245,13 @@ public:
 
     const GoUctGlobalSearch& GlobalSearch() const;
 
+    /** Return the current root filter. */
     GoUctRootFilter& RootFilter();
+
+    /** Set a new root filter.
+        Deletes the old root filter and takes ownership of the new filter.
+    */
+    void SetRootFilter(GoUctRootFilter* filter);
 
 private:
     /** See GoUctGlobalSearchMode */
@@ -286,7 +293,7 @@ private:
 
     Statistics m_statistics;
 
-    GoUctRootFilter m_rootFilter;
+    boost::scoped_ptr<GoUctRootFilter> m_rootFilter;
 
     /** Initial tree if subtree of last search is reused.
         This variable is used only locally and only a member to avoid frequent
@@ -370,7 +377,7 @@ inline bool GoUctGlobalSearchPlayer::ReuseSubtree() const
 
 inline GoUctRootFilter& GoUctGlobalSearchPlayer::RootFilter()
 {
-    return m_rootFilter;
+    return *m_rootFilter;
 }
 
 inline GoUctGlobalSearchMode GoUctGlobalSearchPlayer::SearchMode() const
@@ -411,6 +418,11 @@ inline void GoUctGlobalSearchPlayer::SetPruneRootMoves(bool enable)
 inline void GoUctGlobalSearchPlayer::SetResignThreshold(double threshold)
 {
     m_resignThreshold = threshold;
+}
+
+inline void GoUctGlobalSearchPlayer::SetRootFilter(GoUctRootFilter* filter)
+{
+    m_rootFilter.reset(filter);
 }
 
 inline void GoUctGlobalSearchPlayer::SetSearchMode(GoUctGlobalSearchMode mode)
