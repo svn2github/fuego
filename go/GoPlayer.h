@@ -24,6 +24,11 @@ class GoPlayer
     : public GoBoardSynchronizer
 {
 public:
+    /** Constructor.
+        @todo Why does it need a non-const reference to the game board? The
+        player modifies only his own board which is synchronized to the game
+        board.
+    */
     GoPlayer(GoBoard& board);
 
     virtual ~GoPlayer();
