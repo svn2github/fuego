@@ -189,19 +189,19 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
 SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
 {
     SgUctTree* initTree = 0;
+    // FindInitTree and root filter can take measurable time
+    SgTimer timer;
     if (m_reuseSubtree)
     {
-        // FindInitTree can take measurable time for large trees
-        SgTimer timer;
         FindInitTree(toPlay);
         initTree = &m_initTree;
-        maxTime -= timer.GetTime();
     }
-    m_search.SetToPlay(toPlay);
-    vector<SgPoint> sequence;
     vector<SgMove> rootFilter;
     if (m_useRootFilter)
         rootFilter = m_rootFilter->Get();
+    maxTime -= timer.GetTime();
+    m_search.SetToPlay(toPlay);
+    vector<SgPoint> sequence;
     double value =
         m_search.Search(m_maxGames, maxTime, sequence, rootFilter, initTree);
     m_search.WriteStatistics(SgDebug());
