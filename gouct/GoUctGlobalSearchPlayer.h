@@ -181,11 +181,11 @@ public:
     /** See EnablePonder() */
     void SetEnablePonder(bool enable);
 
-    /** Prune moves using static knowledge at the root of the UCT tree */
-    bool PruneRootMoves() const;
+    /** Use the root filter. */
+    bool UseRootFilter() const;
 
-    /** See PruneRootMoves() */
-    void SetPruneRootMoves(bool enable);
+    /** See UseRootFilter() */
+    void SetUseRootFilter(bool enable);
 
     /** Reuse subtree from last search.
         Reuses the subtree from the last search, if the current position is
@@ -266,8 +266,8 @@ private:
     /** See EnablePonder() */
     bool m_enablePonder;
 
-    /** See PruneRootMoves() */
-    bool m_pruneRootMoves;
+    /** See UseRootFilter() */
+    bool m_useRootFilter;
 
     /** See ReuseSubtree() */
     bool m_reuseSubtree;
@@ -360,9 +360,9 @@ inline GoUctGlobalSearchPrior GoUctGlobalSearchPlayer::PriorKnowledge() const
     return m_priorKnowledge;
 }
 
-inline bool GoUctGlobalSearchPlayer::PruneRootMoves() const
+inline bool GoUctGlobalSearchPlayer::UseRootFilter() const
 {
-    return m_pruneRootMoves;
+    return m_useRootFilter;
 }
 
 inline double GoUctGlobalSearchPlayer::ResignThreshold() const
@@ -410,9 +410,9 @@ inline void GoUctGlobalSearchPlayer::SetEnablePonder(bool enable)
     m_enablePonder = enable;
 }
 
-inline void GoUctGlobalSearchPlayer::SetPruneRootMoves(bool enable)
+inline void GoUctGlobalSearchPlayer::SetUseRootFilter(bool enable)
 {
-    m_pruneRootMoves = enable;
+    m_useRootFilter = enable;
 }
 
 inline void GoUctGlobalSearchPlayer::SetResignThreshold(double threshold)

@@ -352,6 +352,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c auto_param See GoUctGlobalSearchPlayer::AutoParam
     @arg @c ignore_clock See GoUctGlobalSearchPlayer::IgnoreClock
     @arg @c reuse_subtree See GoUctGlobalSearchPlayer::ReuseSubtree
+    @arg @c use_root_filter See GoUctGlobalSearchPlayer::UseRootFilter
     @arg @c max_games See GoUctGlobalSearchPlayer::MaxGames
     @arg @c max_nodes See GoUctGlobalSearchPlayer::MaxNodes
     @arg @c max_time See GoUctGlobalSearchPlayer::MaxTime
@@ -372,8 +373,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         cmd << "[bool] auto_param " << p.AutoParam() << '\n'
             << "[bool] ignore_clock " << p.IgnoreClock() << '\n'
             << "[bool] ponder " << p.EnablePonder() << '\n'
-            << "[bool] prune_root_moves " << p.PruneRootMoves() << '\n'
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
+            << "[bool] use_root_filter " << p.UseRootFilter() << '\n'
             << "[string] max_games " << p.MaxGames() << '\n'
             << "[string] max_nodes " << p.MaxNodes() << '\n'
             << "[string] max_time " << p.MaxTime() << '\n'
@@ -392,10 +393,10 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetIgnoreClock(cmd.BoolArg(1));
         else if (name == "ponder")
             p.SetEnablePonder(cmd.BoolArg(1));
-        else if (name == "prune_root_moves")
-            p.SetPruneRootMoves(cmd.BoolArg(1));
         else if (name == "reuse_subtree")
             p.SetReuseSubtree(cmd.BoolArg(1));
+        else if (name == "use_root_filter")
+            p.SetUseRootFilter(cmd.BoolArg(1));
         else if (name == "max_games")
             p.SetMaxGames(cmd.SizeTypeArg(1, 1));
         else if (name == "max_nodes")

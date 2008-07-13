@@ -79,7 +79,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_autoParam(true),
       m_ignoreClock(true),
       m_enablePonder(false),
-      m_pruneRootMoves(false),
+      m_useRootFilter(false),
       m_reuseSubtree(false),
       m_maxTime(1e10),
       m_resignThreshold(0.03),
@@ -200,7 +200,7 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     m_search.SetToPlay(toPlay);
     vector<SgPoint> sequence;
     vector<SgMove> rootFilter;
-    if (PruneRootMoves())
+    if (m_useRootFilter)
         rootFilter = m_rootFilter->Get();
     double value =
         m_search.Search(m_maxGames, maxTime, sequence, rootFilter, initTree);
