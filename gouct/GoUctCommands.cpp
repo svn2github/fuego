@@ -590,6 +590,11 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
     policy.GenerateMove();
     cmd << GoUctDefaultPlayoutPolicyTypeStr(policy.MoveType());
     GoPointList moves = policy.GetEquivalentBestMoves();
+    // Sort for deterministic response
+    // (GoUctDefaultPlayoutPolicy::GetEquivalentBestMoves() does not return
+    // a deterministic list, because GoUctUtil::SelectRandom() may modify
+    // the list in a non-deterministic way)
+    moves.Sort();
     for (int i = 0; i < moves.Length(); ++i)
         cmd << ' ' << SgWritePoint(moves[i]);
 }
