@@ -50,8 +50,9 @@ void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
     m_counts[p] = count;
 }
 
-void GoUctDefaultPriorKnowledge::ProcessPosition()
+void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 {
+    SG_UNUSED(deepenTree);
     m_policy.StartPlayout();
     m_policy.GenerateMove();
     GoUctDefaultPlayoutPolicyType moveType = m_policy.MoveType();

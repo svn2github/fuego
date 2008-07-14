@@ -201,9 +201,11 @@ public:
     virtual ~SgUctPriorKnowledge();
 
     /** Called in each position before any calls to InitializeMove().
-        Default implementation does nothing.
+        @param[out] deepenTree Used for selective deepening of the tree.
+        Initialized with @false by the caller. Set to @c true, if the in-tree
+        phase should continue for another move.
     */
-    virtual void ProcessPosition();
+    virtual void ProcessPosition(bool& deepenTree) = 0;
 
     /** Initialize the value for a move in the current state.
         @param move The move to initialize.
@@ -1033,9 +1035,10 @@ private:
     void DeleteThreads();
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node,
-                    bool& isTreeOutOfMem);
+                    bool& isTreeOutOfMem, bool& deepenTree);
 
-    void InitPriorKnowledge(SgUctThreadState& state, const SgUctNode& node);
+    void InitPriorKnowledge(SgUctThreadState& state, const SgUctNode& node,
+                            bool& deepenTree);
 
     float GetBound(std::size_t posCount, float logPosCount,
                    const SgUctNode& child) const;

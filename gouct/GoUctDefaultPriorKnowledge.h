@@ -31,7 +31,7 @@ public:
                                const SgBWSet& safe,
                                const SgPointArray<bool>& allSafe);
 
-    void ProcessPosition();
+    void ProcessPosition(bool& deepenTree);
 
     void InitializeMove(SgMove move, float& value, std::size_t& count);
 

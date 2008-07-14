@@ -75,11 +75,6 @@ SgUctPriorKnowledge::~SgUctPriorKnowledge()
 {
 }
 
-void SgUctPriorKnowledge::ProcessPosition()
-{
-    // Default implementation does nothing
-}
-
 //----------------------------------------------------------------------------
 
 SgUctPriorKnowledgeFactory::~SgUctPriorKnowledgeFactory()
@@ -373,10 +368,12 @@ void SgUctSearch::DeleteThreads()
     @param node The node to expand.
     @param[out] isTreeOutOfMem Will be set to true, if node was not expanded
     because maximum tree size was reached.
+    @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
 */
 void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
-                             bool& isTreeOutOfMem)
+                             bool& isTreeOutOfMem, bool& deepenTree)
 {
+    SG_ASSERT(deepenTree == false); // Should be initialized by caller
     size_t threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
@@ -395,7 +392,7 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
             m_tree.SetSignature(child, state.GetSignature(child.Move()));
         }
     if (state.m_priorKnowledge.get() != 0)
-        InitPriorKnowledge(state, node);
+        InitPriorKnowledge(state, node, deepenTree);
 }
 
 const SgUctNode*
@@ -611,12 +608,16 @@ float SgUctSearch::GetValueEstimateRaveNoSig(const SgUctNode& child) const
     return value;
 }
 
+/** Initialize new nodes with prior knowledge.
+    @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
+*/
 void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
-                                     const SgUctNode& node)
+                                     const SgUctNode& node, bool& deepenTree)
 {
     SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
     SG_ASSERT(priorKnowledge != 0);
-    priorKnowledge->ProcessPosition();
+    SG_ASSERT(deepenTree == false); // Should be initialized by caller
+    priorKnowledge->ProcessPosition(deepenTree);
     size_t posCount = 0;
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
@@ -738,6 +739,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state,
     bool breakAfterSelect = false;
     isTerminal = false;
     isTreeOutOfMem = false;
+    bool deepenTree = false;
     while (true)
     {
         if (sequence.size() == m_maxGameLength)
@@ -753,12 +755,14 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state,
                 isTerminal = true;
                 break;
             }
-            if (current->MoveCount() >= m_expandThreshold)
+            if (deepenTree || current->MoveCount() >= m_expandThreshold)
             {
-                ExpandNode(state, *current, isTreeOutOfMem);
+                deepenTree = false;
+                ExpandNode(state, *current, isTreeOutOfMem, deepenTree);
                 if (isTreeOutOfMem)
                     return false;
-                breakAfterSelect = true;
+                if (! deepenTree)
+                    breakAfterSelect = true;
             }
             else
                 break;

@@ -16,6 +16,11 @@ SgUctPriorKnowledgeEven::SgUctPriorKnowledgeEven(std::size_t count)
 {
 }
 
+void SgUctPriorKnowledgeEven::ProcessPosition(bool& deepenTree)
+{
+    SG_UNUSED(deepenTree);
+}
+
 void SgUctPriorKnowledgeEven::InitializeMove(SgMove move, float& value,
                                              std::size_t& count)
 {
