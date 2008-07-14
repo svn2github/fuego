@@ -200,9 +200,6 @@ private:
         std::vector<SgPoint> m_candidates;
     };
 
-    /** Maximum number of liberties in low-lib policy */
-    static const int LIB_LIMIT = 2;
-
     /** Use patterns around last own move, too */
     static const bool SECOND_LAST_MOVE_PATTERNS = true;
 
@@ -511,7 +508,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     const SgBlackWhite toPlay = bd.ToPlay();
 
     // take liberty of last move
-    if (bd.NumLiberties(lastMove) <= LIB_LIMIT)
+    if (bd.NumLiberties(lastMove) == 2)
     {
         for (typename BOARD::LibertyIterator it(bd, lastMove); it; ++it)
         {
@@ -528,7 +525,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     {
         if (   bd.GetColor(*it) == toPlay
             && ! GOUCT_ISSAFE(*it)
-            && bd.NumLiberties(*it) <= LIB_LIMIT
+            && bd.NumLiberties(*it) == 2
            )
         {
             const SgPoint anchor = bd.Anchor(*it);
