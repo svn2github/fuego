@@ -515,8 +515,8 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     {
         for (typename BOARD::LibertyIterator it(bd, lastMove); it; ++it)
         {
-            if (   GainsLiberties(bd.Anchor(lastMove), *it)
-                && ! GoBoardUtil::SelfAtari(bd, *it)
+            if (/* XXX GainsLiberties(bd.Anchor(lastMove), *it)
+                   && */ ! GoBoardUtil::SelfAtari(bd, *it)
                )
                 m_moves.Append(*it);
         }

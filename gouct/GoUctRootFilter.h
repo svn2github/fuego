@@ -18,6 +18,8 @@ class GoBoard;
 class GoUctRootFilter
 {
 public:
+    virtual ~GoUctRootFilter();
+
     /** Get moves to filter in the current position.
         This function is invoked by the player before the search, it does not
         need to be thread-safe.

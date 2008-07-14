@@ -30,6 +30,7 @@ SRC_CPP= \
   gouct/GoUctGlobalSearchPlayer.cpp \
   gouct/GoUctObjectWithSearch.cpp \
   gouct/GoUctPatterns.cpp \
+  gouct/GoUctRootFilter.cpp \
   gouct/GoUctSearch.cpp \
   gouct/GoUctUtil.cpp
 
