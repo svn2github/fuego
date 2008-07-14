@@ -136,6 +136,8 @@ public:
 
     void SetTo(const T& val);
 
+    void Sort();
+
 private:
     friend class Iterator;
     friend class NonConstIterator;
@@ -409,6 +411,12 @@ inline void SgSList<T,SIZE>::SetTo(const T& val)
 {
     m_len = 1;
     m_array[0] = val;
+}
+
+template<typename T, int SIZE>
+inline void SgSList<T,SIZE>::Sort()
+{
+    std::sort(m_array, m_array + m_len);
 }
 
 //----------------------------------------------------------------------------
