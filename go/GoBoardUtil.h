@@ -471,7 +471,7 @@ float GoBoardUtil::ScoreEndPosition(const BOARD& bd, float komi,
                                     const SgBWSet& safe, bool noCheck,
                                   SgPointArray<SgEmptyBlackWhite>* scoreBoard)
 {
-    int score = -komi;
+    float score = -komi;
     for (typename BOARD::Iterator it(bd); it; ++it)
     {
         SgPoint p = *it;
