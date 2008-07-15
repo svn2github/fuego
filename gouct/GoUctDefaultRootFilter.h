@@ -26,9 +26,6 @@ public:
 
 private:
     const GoBoard& m_bd;
-
-    /** Should move be filtered? */
-    bool FilterMove(SgPoint move) const;
 };
 
 //----------------------------------------------------------------------------

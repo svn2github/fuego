@@ -79,7 +79,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_autoParam(true),
       m_ignoreClock(true),
       m_enablePonder(false),
-      m_useRootFilter(false),
+      m_useRootFilter(true),
       m_reuseSubtree(false),
       m_maxTime(1e10),
       m_resignThreshold(0.03),
