@@ -65,7 +65,7 @@ loadsgf sgf/games/2007/CGOS/200109-variation.sgf 31
 # It loves G2 but that is wrong.
 
 120 sg_compare_float 0.5 uct_value
-#? [1]
+#? [1]*
 # B can win.
 # 20080126 run: new FAIL.
 
@@ -147,7 +147,7 @@ reg_genmove w
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 39
 310 reg_genmove b
-#? [E7|G7|J6]
+#? [E7|G7|J6]*
 
 320 sg_compare_float 0.6 uct_value
 #? [1]*
@@ -187,4 +187,34 @@ reg_genmove w
 #? [-1]
 # W lost.
 
+loadsgf sgf/semeai/semeai-eval.1.sgf 1
+400 reg_genmove b
+#? [A4]
 
+410 sg_compare_float 0.6 uct_value
+#? [1]*
+# B won, but current program is unsure about bottom right - score around 0.5.
+
+loadsgf sgf/semeai/semeai-eval.1.sgf 3
+420 reg_genmove b
+#? [H2]
+
+430 sg_compare_float 0.6 uct_value
+#? [1]*
+# B won, but current program is unsure about bottom right - score around 0.5.
+
+loadsgf sgf/semeai/semeai-eval.1.sgf 5
+440 reg_genmove b
+#? [E3]
+
+450 sg_compare_float 0.6 uct_value
+#? [1]*
+# B won, but current program is unsure about bottom right - score around 0.5.
+
+loadsgf sgf/semeai/semeai-eval.1.sgf 7
+460 reg_genmove b
+#? [J2]
+
+470 sg_compare_float 0.6 uct_value
+#? [1]*
+# B won, but current program is unsure about bottom right - score around 0.5.
