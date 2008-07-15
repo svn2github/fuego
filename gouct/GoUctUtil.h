@@ -36,7 +36,8 @@ namespace GoUctUtil
     const int SELF_ATARI_LIMIT = 8;
 
     /** Conservative clump correction.
-        Only "very clumpy" moves are replaced
+        Only "very clumpy" moves are replaced.
+        If false, more "clumps" are replaced.
     */
     const bool CONSERVATIVE_CLUMP = true;
 
@@ -169,6 +170,24 @@ namespace GoUctUtil
     bool SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[], SgPoint nb);
 }
 
+//----------------------------------------------------------------------------
+// Local utility functions
+
+template<class BOARD>
+void SetEdgeCorrection(const BOARD& bd, SgPoint p, int& edgeCorrection)
+{
+    if (bd.Line(p) == 1)
+    {
+        edgeCorrection += 3;
+        if (bd.Pos(p) == 1)
+        {
+            edgeCorrection += 2;
+        }
+    }
+}
+
+//----------------------------------------------------------------------------
+
 template<class BOARD>
 bool GoUctUtil::DoClumpCorrection(const BOARD& bd, SgPoint& p)
 {
@@ -188,9 +207,14 @@ bool GoUctUtil::DoClumpCorrection(const BOARD& bd, SgPoint& p)
             )
             return false;
 
-    // only swap if nb is not worse than p
+    // only swap if nb is better than p
     const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, p);
-    if (   bd.Num8Neighbors(nb, toPlay) <= bd.Num8Neighbors(p, toPlay)
+    int edgeCorrection_p = 0;
+    int edgeCorrection_nb = 0;
+    SetEdgeCorrection(bd, p, edgeCorrection_p);
+    SetEdgeCorrection(bd, nb, edgeCorrection_nb);
+    if (   bd.Num8Neighbors(nb, toPlay) + edgeCorrection_nb < 
+           bd.Num8Neighbors(p, toPlay) + edgeCorrection_p
         && bd.NumNeighbors(nb, toPlay) <= bd.NumNeighbors(p, toPlay)
         &&
            (   bd.NumEmptyNeighbors(nb) >= 2
@@ -234,7 +258,7 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
             return false;
         SgBlackWhite opp = SgOppBW(toPlay);
         SgPoint replaceMove = SG_NULLMOVE;
-        // Replace move is the liberty we would have after playing at p
+        // ReplaceMove is the liberty we would have after playing at p
         for (SgNb4Iterator it(p); it; ++it)
         {
             SgBoardColor c = bd.GetColor(*it);
@@ -303,9 +327,6 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
         return false;
     if (REMOVE_SELF_ATARI)
     {
-        SG_ASSERT(false);
-        // The following code uses SgRandom, which is not thread-safe
-
         int nuStones = 0;
         if (   GoBoardUtil::SelfAtari(bd, p, nuStones, true)
             && nuStones > SELF_ATARI_LIMIT
@@ -343,7 +364,7 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
 }
 
 template<class BOARD>
-bool SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[], SgPoint nb)
+bool GoUctUtil::SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[], SgPoint nb)
 {
     SgPoint nbanchor[4 + 1];
     bd.NeighborBlocks(nb, bd.ToPlay(), nbanchor);
