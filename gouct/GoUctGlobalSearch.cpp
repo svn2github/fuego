@@ -171,20 +171,20 @@ SgMove GoUctGlobalSearchState::GeneratePlayoutMove(bool& skipRaveUpdate)
     SG_ASSERT(IsInPlayout());
     if (m_param.m_mercyRule && CheckMercyRule())
         return SG_NULLMOVE;
-    const GoUctBoard& bd = UctBoard();
-    SG_DEBUG_ONLY(bd);
     SgPoint move = m_policy->GenerateMove();
     SG_ASSERT(move != SG_NULLMOVE);
 #ifndef NDEBUG
     // Check that policy generates pass only if no points are left for which
     // GeneratePoint() returns true. See GoUctPlayoutPolicy::GenerateMove()
     if (move == SG_PASS)
+    {
+        const GoUctBoard& bd = UctBoard();
         for (GoUctBoard::Iterator it(bd); it; ++it)
             SG_ASSERT(   bd.Occupied(*it)
                      || m_safe.OneContains(*it)
                      || GoBoardUtil::SelfAtari(bd, *it)
-                     // with probabilistic self atari removal.
                      || ! GoUctUtil::GeneratePoint(bd, *it, ToPlay()));
+    }
     else
         SG_ASSERT(! m_safe.OneContains(move) || m_policy->WasCleanupMove());
 #endif
