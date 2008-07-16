@@ -609,6 +609,8 @@ float SgUctSearch::GetValueEstimateRaveNoSig(const SgUctNode& child) const
 }
 
 /** Initialize new nodes with prior knowledge.
+    @param state
+    @param node
     @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
 */
 void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,

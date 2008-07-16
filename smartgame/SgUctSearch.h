@@ -202,8 +202,8 @@ public:
 
     /** Called in each position before any calls to InitializeMove().
         @param[out] deepenTree Used for selective deepening of the tree.
-        Initialized with @false by the caller. Set to @c true, if the in-tree
-        phase should continue for another move.
+        Initialized with @c false by the caller. Set to @c true, if the
+        in-tree phase should continue for another move.
     */
     virtual void ProcessPosition(bool& deepenTree) = 0;
 
