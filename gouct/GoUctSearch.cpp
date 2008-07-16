@@ -286,12 +286,11 @@ SgBlackWhite GoUctState::ToPlay() const
 GoUctSearch::GoUctSearch(GoBoard& bd, SgUctThreadStateFactory* factory)
     : SgUctSearch(factory, MOVERANGE),
       m_keepGames(false),
-      m_liveGfx(false),
       m_liveGfxInterval(5000),
       m_toPlay(SG_BLACK),
       m_bd(bd),
       m_root(0),
-      m_liveGfxMode(GOUCT_LIVEGFXMODE_NONE)
+      m_liveGfx(GOUCT_LIVEGFX_NONE)
 {
     SetRaveCheckSame(true);
 }
@@ -316,19 +315,23 @@ std::string GoUctSearch::MoveString(SgMove move) const
 void GoUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
                                     const SgUctGameInfo& info)
 {
-    if (m_liveGfxMode != GOUCT_LIVEGFXMODE_NONE && threadId == 0
+    if (m_liveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
         && gameNumber % m_liveGfxInterval == 0)
     {
         SgDebug() << "gogui-gfx:\n";
-        switch (m_liveGfxMode)
+        switch (m_liveGfx)
         {
-        case GOUCT_LIVEGFXMODE_COUNTS:
-            GoUctUtil::GoGuiGfx(*this, m_toPlay, SgDebug());
+        case GOUCT_LIVEGFX_COUNTS:
+            GoUctUtil::GfxBestMove(*this, m_toPlay, SgDebug());
+            GoUctUtil::GfxMoveValues(*this, m_toPlay, SgDebug());
+            GoUctUtil::GfxCounts(*this, SgDebug());
+            GoUctUtil::GfxStatus(*this, SgDebug());
             break;
-        case GOUCT_LIVEGFXMODE_SEQUENCE:
-            GoUctUtil::GoGuiGfx2(*this, m_toPlay, SgDebug());
+        case GOUCT_LIVEGFX_SEQUENCE:
+            GoUctUtil::GfxSequence(*this, m_toPlay, SgDebug());
+            GoUctUtil::GfxStatus(*this, SgDebug());
             break;
-        case GOUCT_LIVEGFXMODE_NONE:
+        case GOUCT_LIVEGFX_NONE:
             SG_ASSERT(false); // Already checked above
             break;
         }

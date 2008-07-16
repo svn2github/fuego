@@ -32,27 +32,27 @@ using GoGtpCommandUtil::PointArg;
 
 namespace {
 
-GoUctLiveGfxMode LiveGfxArg(const GtpCommand& cmd, size_t number)
+GoUctLiveGfx LiveGfxArg(const GtpCommand& cmd, size_t number)
 {
     string arg = cmd.ArgToLower(number);
     if (arg == "none")
-        return GOUCT_LIVEGFXMODE_NONE;
+        return GOUCT_LIVEGFX_NONE;
     if (arg == "counts")
-        return GOUCT_LIVEGFXMODE_COUNTS;
+        return GOUCT_LIVEGFX_COUNTS;
     if (arg == "sequence")
-        return GOUCT_LIVEGFXMODE_SEQUENCE;
+        return GOUCT_LIVEGFX_SEQUENCE;
     throw GtpFailure() << "unknown live-gfx argument \"" << arg << '"';
 }
 
-string LiveGfxToString(GoUctLiveGfxMode mode)
+string LiveGfxToString(GoUctLiveGfx mode)
 {
     switch (mode)
     {
-    case GOUCT_LIVEGFXMODE_NONE:
+    case GOUCT_LIVEGFX_NONE:
         return "none";
-    case GOUCT_LIVEGFXMODE_COUNTS:
+    case GOUCT_LIVEGFX_COUNTS:
         return "counts";
-    case GOUCT_LIVEGFXMODE_SEQUENCE:
+    case GOUCT_LIVEGFX_SEQUENCE:
         return "sequence";
     default:
         SG_ASSERT(false);
@@ -289,7 +289,12 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
 void GoUctCommands::CmdGfx(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    GoUctUtil::GoGuiGfx(Search(), Search().ToPlay(), cmd);
+    const GoUctSearch& s = Search();
+    SgBlackWhite toPlay = s.ToPlay();
+    GoUctUtil::GfxBestMove(s, toPlay, cmd);
+    GoUctUtil::GfxMoveValues(s, toPlay, cmd);
+    GoUctUtil::GfxCounts(s, cmd);
+    GoUctUtil::GfxStatus(s, cmd);
 }
 
 /** Return a list of all moves that the search would generate in the current
@@ -309,6 +314,7 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
+    @arg @c live_gfx See GoUctGlobalSearch::GlobalSearchLiveGfx
     @arg @c mercy_rule See GoUctGlobalSearchStateParam::m_mercyRule
     @arg @c territory_statistics See
         GoUctGlobalSearchStateParam::m_territoryStatistics
@@ -318,12 +324,14 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
 void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctGlobalSearchStateParam& p = GlobalSearch().m_param;
+    GoUctGlobalSearch& s = GlobalSearch();
+    GoUctGlobalSearchStateParam& p = s.m_param;
     if (cmd.NuArg() == 0)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] mercy_rule " << p.m_mercyRule << '\n'
+        cmd << "[bool] live_gfx " << s.GlobalSearchLiveGfx() << '\n'
+            << "[bool] mercy_rule " << p.m_mercyRule << '\n'
             << "[bool] territory_statistics " << p.m_territoryStatistics
             << '\n'
             << "[string] score_modification " << p.m_scoreModification
@@ -332,7 +340,9 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "mercy_rule")
+        if (name == "live_gfx")
+            s.SetGlobalSearchLiveGfx(cmd.BoolArg(1));
+        else if (name == "mercy_rule")
             p.m_mercyRule = cmd.BoolArg(1);
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.BoolArg(1);
@@ -694,7 +704,7 @@ void GoUctCommands::CmdScore(GtpCommand& cmd)
 
 /** Show the best sequence from last search.
     This command is compatible with the GoGui analyze command type "gfx"
-    (There is no "var" command type supported in GoGui 1.1pre1, which allows
+    (There is no "var" command type supported in GoGui 1.1, which allows
     to specify the first color to move within the response, and this command
     returns the sequence of the last search, which is unrelated to the current
     color to play on the board.) <br>
@@ -703,7 +713,7 @@ void GoUctCommands::CmdScore(GtpCommand& cmd)
 void GoUctCommands::CmdSequence(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    GoUctUtil::PrintBestSequence(Search(), Search().ToPlay(), cmd);
+    GoUctUtil::GfxSequence(Search(), Search().ToPlay(), cmd);
 }
 
 /** Show signature codes.

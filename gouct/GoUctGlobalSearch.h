@@ -396,10 +396,26 @@ public:
 
     void OnStartSearch();
 
+    void OnSearchIteration(std::size_t gameNumber, int threadId,
+                           const SgUctGameInfo& info);
+
     // @} // @name
+
 
     /** Set default search parameters optimized for a board size. */
     void SetDefaultParameters(int boardSize);
+
+    /** Output live graphics commands for GoGui.
+        Similar to the GOUCT_LIVEGFX_COUNTS mode in GoUctSearch, but the
+        influence data shows the terriroy statistics (which must be enabled)
+        instead of the move values. The live graphics interval from
+        GoUctSearch will be used.
+        @see GoUctLiveGfxMode, GoUctSearch::LiveGfxInterval()
+    */
+    bool GlobalSearchLiveGfx() const;
+
+    /** See GlobalSearchLiveGfx() */
+    void SetGlobalSearchLiveGfx(bool enable);
 
 private:
     SgBWSet m_safe;
@@ -410,7 +426,20 @@ private:
     m_playoutPolicyFactory;
 
     GoRegionBoard m_regions;
+
+    /** See GlobalSearchLiveGfx() */
+    bool m_globalSearchLiveGfx;
 };
+
+inline bool GoUctGlobalSearch::GlobalSearchLiveGfx() const
+{
+    return m_globalSearchLiveGfx;
+}
+
+inline void GoUctGlobalSearch::SetGlobalSearchLiveGfx(bool enable)
+{
+    m_globalSearchLiveGfx = enable;
+}
 
 //----------------------------------------------------------------------------
 

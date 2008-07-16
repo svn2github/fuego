@@ -11,6 +11,7 @@
 #include "SgBWSet.h"
 #include "SgPointSet.h"
 #include "SgProp.h"
+#include "SgStreamFmtRestorer.h"
 #include "SgUctSearch.h"
 
 using namespace std;
@@ -19,21 +20,6 @@ using SgPropUtil::PointToSgfString;
 //----------------------------------------------------------------------------
 
 namespace {
-
-/** Output info in GoGui live-gfx format on status line. */
-void GoGuiGfxStatus(const SgUctSearch& search, ostream& out)
-{
-    const SgUctTree& tree = search.Tree();
-    const SgUctNode& root = tree.Root();
-    int abortPercent = static_cast<int>(search.AbortedStat().Mean() * 100);
-    out << "TEXT N=" << root.MoveCount()
-        << " V=" << setprecision(2) << root.Mean()
-        << " Len=" << static_cast<int>(search.GameLengthStat().Mean())
-        << " Tree=" << setprecision(1) << search.MovesInTreeStat().Mean()
-        << "/" << static_cast<int>(search.MovesInTreeStat().Max())
-        << " Abrt=" << abortPercent << '%'
-        << " Gm/s=" << static_cast<int>(search.GamesPerSecond()) << '\n';
-}
 
 /** Recursive function to save the UCT tree in SGF format. */
 void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
@@ -91,7 +77,7 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
 
 //----------------------------------------------------------------------------
 
-void GoUctUtil::GoGuiGfx(const SgUctSearch& search, SgBlackWhite toPlay,
+void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
                          ostream& out)
 {
     const SgUctTree& tree = search.Tree();
@@ -113,6 +99,29 @@ void GoUctUtil::GoGuiGfx(const SgUctSearch& search, SgBlackWhite toPlay,
         }
     }
     out << '\n';
+}
+
+void GoUctUtil::GfxCounts(const SgUctSearch& search, ostream& out)
+{
+    const SgUctTree& tree = search.Tree();
+    const SgUctNode& root = tree.Root();
+    out << "LABEL";
+    if (root.HasChildren())
+        for (SgUctChildIterator it(tree, root); it; ++it)
+        {
+            const SgUctNode& child = *it;
+            size_t count = child.MoveCount();
+            if (count > 0)
+                out << ' ' << SgWritePoint(child.Move()) << ' ' << count;
+        }
+    out << '\n';
+}
+
+void GoUctUtil::GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,
+                              ostream& out)
+{
+    const SgUctTree& tree = search.Tree();
+    const SgUctNode& root = tree.Root();
     out << "INFLUENCE";
     if (root.HasChildren())
         for (SgUctChildIterator it(tree, root); it; ++it)
@@ -129,29 +138,11 @@ void GoUctUtil::GoGuiGfx(const SgUctSearch& search, SgBlackWhite toPlay,
             out << ' ' << SgWritePoint(move) << ' ' << fixed
                 << setprecision(2) << influence;
         }
-    out << '\n'
-        << "LABEL";
-    if (root.HasChildren())
-        for (SgUctChildIterator it(tree, root); it; ++it)
-        {
-            const SgUctNode& child = *it;
-            size_t count = child.MoveCount();
-            if (count > 0)
-                out << ' ' << SgWritePoint(child.Move()) << ' ' << count;
-        }
     out << '\n';
-    GoGuiGfxStatus(search, out);
 }
-
-void GoUctUtil::GoGuiGfx2(const SgUctSearch& search, SgBlackWhite toPlay,
-                          ostream& out)
-{
-    PrintBestSequence(search, toPlay, out);
-    GoGuiGfxStatus(search, out);
-}
-
-void GoUctUtil::PrintBestSequence(const SgUctSearch& search,
-                                  SgBlackWhite toPlay, ostream& out)
+\
+void GoUctUtil::GfxSequence(const SgUctSearch& search, SgBlackWhite toPlay,
+                            ostream& out)
 {
     vector<SgMove> sequence;
     search.FindBestSequence(sequence);
@@ -162,6 +153,35 @@ void GoUctUtil::PrintBestSequence(const SgUctSearch& search,
             << SgWritePoint(sequence[i]);
         toPlay = SgOppBW(toPlay);
     }
+    out << '\n';
+}
+
+void GoUctUtil::GfxStatus(const SgUctSearch& search, ostream& out)
+{
+    const SgUctTree& tree = search.Tree();
+    const SgUctNode& root = tree.Root();
+    int abortPercent = static_cast<int>(search.AbortedStat().Mean() * 100);
+    out << "TEXT N=" << root.MoveCount()
+        << " V=" << setprecision(2) << root.Mean()
+        << " Len=" << static_cast<int>(search.GameLengthStat().Mean())
+        << " Tree=" << setprecision(1) << search.MovesInTreeStat().Mean()
+        << "/" << static_cast<int>(search.MovesInTreeStat().Max())
+        << " Abrt=" << abortPercent << '%'
+        << " Gm/s=" << static_cast<int>(search.GamesPerSecond()) << '\n';
+}
+
+void GoUctUtil::GfxTerritoryStatistics(
+                     const SgPointArray<SgUctStatistics>& territoryStatistics,
+                     const GoBoard& bd, std::ostream& out)
+{
+    SgStreamFmtRestorer restorer(out);
+    out << fixed << setprecision(3) << "INFLUENCE";
+    for (GoBoard::Iterator it(bd); it; ++it)
+        if (territoryStatistics[*it].Count() > 0)
+            // Scale to [-1,+1], black positive
+            out << ' ' << SgWritePoint(*it) << ' '
+                << territoryStatistics[*it].Mean() * 2 - 1;
+    out << '\n';
 }
 
 void GoUctUtil::SaveTree(const SgUctTree& tree, int boardSize,

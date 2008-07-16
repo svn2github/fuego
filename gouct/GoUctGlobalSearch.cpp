@@ -281,7 +281,8 @@ SgUctThreadState* GoUctGlobalSearchStateFactory::Create(
 GoUctGlobalSearch::GoUctGlobalSearch(GoBoard& bd,
                         GoUctPlayoutPolicyFactory<GoUctBoard>* playoutFactory)
     : GoUctSearch(bd, 0),
-      m_regions(bd)
+      m_regions(bd),
+      m_globalSearchLiveGfx(GOUCT_LIVEGFX_NONE)
 {
     playoutFactory->SetSafe(&m_safe);
     playoutFactory->SetAllSafe(&m_allSafe);
@@ -297,6 +298,38 @@ float GoUctGlobalSearch::InverseEval(float eval) const
     return (1 - eval);
 }
 
+void GoUctGlobalSearch::OnSearchIteration(std::size_t gameNumber,
+                                          int threadId,
+                                          const SgUctGameInfo& info)
+{
+    GoUctSearch::OnSearchIteration(gameNumber, threadId, info);
+    if (m_globalSearchLiveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
+        && gameNumber % LiveGfxInterval() == 0)
+    {
+        const GoUctGlobalSearchState& state =
+            dynamic_cast<GoUctGlobalSearchState&>(ThreadState(0));
+        SgDebug() << "gogui-gfx:\n";
+        switch (m_globalSearchLiveGfx)
+        {
+        case GOUCT_LIVEGFX_COUNTS:
+            GoUctUtil::GfxBestMove(*this, ToPlay(), SgDebug());
+            GoUctUtil::GfxTerritoryStatistics(state.m_territoryStatistics,
+                                              Board(), SgDebug());
+            GoUctUtil::GfxCounts(*this, SgDebug());
+            GoUctUtil::GfxStatus(*this, SgDebug());
+            break;
+        case GOUCT_LIVEGFX_SEQUENCE:
+            GoUctUtil::GfxSequence(*this, ToPlay(), SgDebug());
+            GoUctUtil::GfxStatus(*this, SgDebug());
+            break;
+        case GOUCT_LIVEGFX_NONE:
+            SG_ASSERT(false); // Already checked above
+            break;
+        }
+        SgDebug() << '\n';
+    }
+}
+
 void GoUctGlobalSearch::OnStartSearch()
 {
     GoUctSearch::OnStartSearch();
@@ -310,6 +343,10 @@ void GoUctGlobalSearch::OnStartSearch()
         for (GoBoard::Iterator it(bd); it; ++it)
             m_allSafe[*it] = m_safe.OneContains(*it);
     }
+    if (m_globalSearchLiveGfx && ! m_param.m_territoryStatistics)
+        SgWarning() <<
+            "GoUctGlobalSearch: "
+            "live graphics need territory statistics enabled\n";
 }
 
 void GoUctGlobalSearch::SetDefaultParameters(int boardSize)

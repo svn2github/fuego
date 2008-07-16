@@ -123,16 +123,21 @@ inline const GoUctBoard& GoUctState::UctBoard() const
 /** Live-gfx mode used in GoUctSearch.
     @see GoUctSearch::LiveGfx.
 */
-enum GoUctLiveGfxMode
+enum GoUctLiveGfx
 {
     /** Don't print live-gfx information. */
-    GOUCT_LIVEGFXMODE_NONE,
+    GOUCT_LIVEGFX_NONE,
 
     /** Print values and counts as in GoUctUtil::GoGuiGfx() */
-    GOUCT_LIVEGFXMODE_COUNTS,
+    GOUCT_LIVEGFX_COUNTS,
 
-    /** Print sequence as in GoUctUtil::GoGuiGfx2() */
-    GOUCT_LIVEGFXMODE_SEQUENCE
+    /** Show GoGui live graphics with the main variation.
+        Shows the main variation on the board instead of the counts and values
+        (main variation and counts cannot be shown at the same time, because
+        the sequence numbers conflict with the counts).
+        The status line shows the same information as in GoGuiGfx()
+    */
+    GOUCT_LIVEGFX_SEQUENCE
 };
 
 //----------------------------------------------------------------------------
@@ -216,10 +221,10 @@ public:
         as influence data and assumes values in [0:1].
         @see GoUctLiveGfxMode, LiveGfxInterval()
     */
-    GoUctLiveGfxMode LiveGfx() const;
+    GoUctLiveGfx LiveGfx() const;
 
     /** See LiveGfx() */
-    void SetLiveGfx(GoUctLiveGfxMode mode);
+    void SetLiveGfx(GoUctLiveGfx mode);
 
     /** Interval for outputting of live graphics commands for GoGui.
         Default is every 5000 games.
@@ -235,9 +240,6 @@ public:
 private:
     /** See SetKeepGames() */
     bool m_keepGames;
-
-    /** See SetLiveGfx() */
-    bool m_liveGfx;
 
     /** See SetLiveGfxInterval() */
     int m_liveGfxInterval;
@@ -264,7 +266,7 @@ private:
     /** See SetKeepGames() */
     SgNode* m_root;
 
-    GoUctLiveGfxMode m_liveGfxMode;
+    GoUctLiveGfx m_liveGfx;
 
     /** Not implemented */
     GoUctSearch(const GoUctSearch& search);
@@ -288,9 +290,9 @@ inline bool GoUctSearch::KeepGames() const
     return m_keepGames;
 }
 
-inline GoUctLiveGfxMode GoUctSearch::LiveGfx() const
+inline GoUctLiveGfx GoUctSearch::LiveGfx() const
 {
-    return m_liveGfxMode;
+    return m_liveGfx;
 }
 
 inline int GoUctSearch::LiveGfxInterval() const
@@ -303,9 +305,9 @@ inline void GoUctSearch::SetKeepGames(bool enable)
     m_keepGames = enable;
 }
 
-inline void GoUctSearch::SetLiveGfx(GoUctLiveGfxMode mode)
+inline void GoUctSearch::SetLiveGfx(GoUctLiveGfx mode)
 {
-    m_liveGfxMode = mode;
+    m_liveGfx = mode;
 }
 
 inline void GoUctSearch::SetLiveGfxInterval(int interval)

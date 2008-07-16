@@ -15,11 +15,11 @@
 #include "SgBlackWhite.h"
 #include "SgPoint.h"
 #include "SgRandom.h"
+#include "SgUctSearch.h"
 
 class SgBWSet;
 template<typename T,int N> class SgSList;
 class SgUctNode;
-class SgUctSearch;
 class SgUctTree;
 
 //----------------------------------------------------------------------------
@@ -92,38 +92,63 @@ namespace GoUctUtil
     /** Print information about search as Gfx commands for GoGui.
         Can be used for GoGui live graphics during the search or GoGui
         analyze command type "gfx" after the search (see http://gogui.sf.net).
-        The following information is output:
-        - Best move and best response move as variation (shown as
-          shadow stones in GoGui, however the move number labels in the
-          variation are overwritten by the move counts, see below)
-        - Move values as influence
-        - Move counts as labels
-        - Status line text:
-          - N = Number games
-          - V = Value of root node
-          - Len = Average simulation sequence length
-          - Tree = Average/maximum moves of simulation sequence in tree
-          - Abrt = Percentage of games aborted (due to maximum game length)
-          - Gm/s = Simulations per second
+        Best move and best response move as variation (shown as
+        shadow stones in GoGui).
         @param search The search containing the tree and statistics
         @param toPlay The color toPlay at the root node of the tree
         @param out The stream to write the gfx commands to
     */
-    void GoGuiGfx(const SgUctSearch& search, SgBlackWhite toPlay,
-                  std::ostream& out);
+    void GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
+                     std::ostream& out);
 
-    /** Alternative for GoGuiGfx that shows the main variation.
-        Shows the main variation on the board instead of the counts and values
-        (main variation and counts cannot be shown at the same time, because
-        the sequence numbers conflict with the counts).
-        The status line shows the same information as in GoGuiGfx()
+    /** Print move counts as Gfx commands for GoGui.
+        Can be used for GoGui live graphics during the search or GoGui
+        analyze command type "gfx" after the search (see http://gogui.sf.net).
+        Prints a LABEL command to display the move counts.
+        @param search The search containing the tree and statistics
+        @param out The stream to write the gfx commands to
     */
-    void GoGuiGfx2(const SgUctSearch& search, SgBlackWhite toPlay,
-                   std::ostream& out);
+    void GfxCounts(const SgUctSearch& search, std::ostream& out);
+
+    /** Print the move values as Gfx commands for GoGui.
+        Can be used for GoGui live graphics during the search or GoGui
+        analyze command type "gfx" after the search (see http://gogui.sf.net).
+        The values of the moves in the root node are shown using an
+        INFLUENCE gfx command.
+        @param search The search containing the tree and statistics
+        @param out The stream to write the gfx commands to
+    */
+    void GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,
+                       std::ostream& out);
 
     /** Print best sequence of search in GoGui live-gfx format. */
-    void PrintBestSequence(const SgUctSearch& search, SgBlackWhite toPlay,
-                           std::ostream& out);
+    void GfxSequence(const SgUctSearch& search, SgBlackWhite toPlay,
+                     std::ostream& out);
+
+    /** Print information about search as GoGui Gfx commands for text
+        in the status line.
+        Can be used for GoGui live graphics during the search or GoGui
+        analyze command type "gfx" after the search (see http://gogui.sf.net).
+        The following information is in the status line:
+        - N = Number games
+        - V = Value of root node
+        - Len = Average simulation sequence length
+        - Tree = Average/maximum moves of simulation sequence in tree
+        - Abrt = Percentage of games aborted (due to maximum game length)
+        - Gm/s = Simulations per second
+        @param search The search containing the tree and statistics
+        @param out The stream to write the gfx commands to
+    */
+    void GfxStatus(const SgUctSearch& search, std::ostream& out);
+
+    /** Print territory statistics as GoGui gfx commands.
+        Can be used for GoGui live graphics during the search or GoGui
+        analyze command type "gfx" after the search (see http://gogui.sf.net).
+        Uses INFLUENCE gfx command.
+    */
+    void GfxTerritoryStatistics(
+            const SgPointArray<SgUctStatistics>& territoryStatistics,
+            const GoBoard& bd, std::ostream& out);
 
     /** Save tree contained in a search as a Go SGF file.
         The SGF file is written directly without using SgGameWriter to avoid
