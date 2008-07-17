@@ -105,10 +105,10 @@ namespace GoUctUtil
         Can be used for GoGui live graphics during the search or GoGui
         analyze command type "gfx" after the search (see http://gogui.sf.net).
         Prints a LABEL command to display the move counts.
-        @param search The search containing the tree and statistics
+        @param tree
         @param out The stream to write the gfx commands to
     */
-    void GfxCounts(const SgUctSearch& search, std::ostream& out);
+    void GfxCounts(const SgUctTree& tree, std::ostream& out);
 
     /** Print the move values as Gfx commands for GoGui.
         Can be used for GoGui live graphics during the search or GoGui
@@ -116,6 +116,7 @@ namespace GoUctUtil
         The values of the moves in the root node are shown using an
         INFLUENCE gfx command.
         @param search The search containing the tree and statistics
+        @param toPlay The color to play in the root node of the UCT tree
         @param out The stream to write the gfx commands to
     */
     void GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,

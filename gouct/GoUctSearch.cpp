@@ -324,7 +324,7 @@ void GoUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
         case GOUCT_LIVEGFX_COUNTS:
             GoUctUtil::GfxBestMove(*this, m_toPlay, SgDebug());
             GoUctUtil::GfxMoveValues(*this, m_toPlay, SgDebug());
-            GoUctUtil::GfxCounts(*this, SgDebug());
+            GoUctUtil::GfxCounts(Tree(), SgDebug());
             GoUctUtil::GfxStatus(*this, SgDebug());
             break;
         case GOUCT_LIVEGFX_SEQUENCE:

@@ -313,7 +313,7 @@ void GoUctGlobalSearch::OnSearchIteration(std::size_t gameNumber,
             GoUctUtil::GfxBestMove(*this, ToPlay(), SgDebug());
             GoUctUtil::GfxTerritoryStatistics(state.m_territoryStatistics,
                                               Board(), SgDebug());
-            GoUctUtil::GfxCounts(*this, SgDebug());
+            GoUctUtil::GfxCounts(Tree(), SgDebug());
             GoUctUtil::GfxStatus(*this, SgDebug());
             break;
         case GOUCT_LIVEGFX_SEQUENCE:

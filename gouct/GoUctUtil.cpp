@@ -101,9 +101,8 @@ void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
     out << '\n';
 }
 
-void GoUctUtil::GfxCounts(const SgUctSearch& search, ostream& out)
+void GoUctUtil::GfxCounts(const SgUctTree& tree, ostream& out)
 {
-    const SgUctTree& tree = search.Tree();
     const SgUctNode& root = tree.Root();
     out << "LABEL";
     if (root.HasChildren())

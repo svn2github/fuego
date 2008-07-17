@@ -293,7 +293,7 @@ void GoUctCommands::CmdGfx(GtpCommand& cmd)
     SgBlackWhite toPlay = s.ToPlay();
     GoUctUtil::GfxBestMove(s, toPlay, cmd);
     GoUctUtil::GfxMoveValues(s, toPlay, cmd);
-    GoUctUtil::GfxCounts(s, cmd);
+    GoUctUtil::GfxCounts(s.Tree(), cmd);
     GoUctUtil::GfxStatus(s, cmd);
 }
 
