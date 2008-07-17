@@ -108,15 +108,9 @@ public:
         to allow changing the parameters of a group of playout policies later.
         Therefore the lifetime of @c param must exceed the lifetime of the
         policy.
-        @param safe Safety information. Stores a reference. Lifetime of
-        argument must exceed lifetime of this object.
-        @param allSafe Safety information. Stores a reference. Lifetime of
-        argument must exceed lifetime of this object.
     */
     GoUctDefaultPlayoutPolicy(const BOARD& bd,
-                              const GoUctDefaultPlayoutPolicyParam& param,
-                              const SgBWSet& safe,
-                              const SgPointArray<bool>& allSafe);
+                              const GoUctDefaultPlayoutPolicyParam& param);
 
 
     /** @name Pure virtual functions of GoUctPlayoutPolicy */
@@ -235,16 +229,6 @@ private:
     */
     GoPointList m_moves;
 
-    /** The area for which moves should not be generated.
-        Set by search.
-    */
-    const SgBWSet& m_safe;
-
-    /** Safe points of either color. Stored for efficiency.
-        m_allSafe == m_safe.Both().
-    */
-    const SgPointArray<bool>& m_allSafe;
-
     SgRandom m_random;
 
     CaptureGenerator m_captureGenerator;
@@ -284,13 +268,6 @@ private:
 
     void UpdateStatistics();
 };
-
-// Macro to keep compile-time option to experiment with safety code without
-// impact on runtime. Remove, if no longer used
-// Note that for the safety code, GoUctUtil::SelectRandom also needs to
-// be passed m_allSafe to not generate moves in safe areas.
-#define GOUCT_ISSAFE(p) false
-//define GOUCT_ISSAFE(p) m_allSafe(p)
 
 template<class BOARD>
 GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator
@@ -359,16 +336,12 @@ void GoUctDefaultPlayoutPolicy<BOARD>
 template<class BOARD>
 GoUctDefaultPlayoutPolicy<BOARD>::GoUctDefaultPlayoutPolicy(
                                  const BOARD& bd,
-                                 const GoUctDefaultPlayoutPolicyParam& param,
-                                 const SgBWSet& safe,
-                                 const SgPointArray<bool>& allSafe)
+                                 const GoUctDefaultPlayoutPolicyParam& param)
     : GoUctPlayoutPolicy<BOARD>(bd),
       m_param(param),
       m_patterns(bd),
       m_checked(false),
       m_wasCleanupMove(false),
-      m_safe(safe),
-      m_allSafe(allSafe),
       m_captureGenerator(bd),
       m_pureRandomGenerator(bd, m_random)
 {
@@ -453,7 +426,6 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
     if (bd.InAtari(m_lastMove))
     {
         SgMove mv = bd.TheLiberty(m_lastMove);
-        SG_ASSERT (! m_allSafe[mv]);
         m_moves.Append(mv);
         return true;
     }
@@ -524,7 +496,6 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     for (SgNb4Iterator it(lastMove); it; ++it)
     {
         if (   bd.GetColor(*it) == toPlay
-            && ! GOUCT_ISSAFE(*it)
             && bd.NumLiberties(*it) == 2
            )
         {
@@ -612,12 +583,10 @@ SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
         SG_ASSERT(bd.IsLegal(mv));
         m_checked = CorrectMove(GoUctUtil::DoSelfAtariCorrection, mv,
                                 GOUCT_SELFATARI_CORRECTION);
-        SG_ASSERT(m_wasCleanupMove || ! m_allSafe[mv]);
         if (m_param.m_useClumpCorrection && ! m_checked)
             CorrectMove(GoUctUtil::DoClumpCorrection, mv,
                         GOUCT_CLUMP_CORRECTION);
     }
-    SG_ASSERT(mv == SG_PASS || m_wasCleanupMove || ! m_allSafe[mv]);
     SG_ASSERT(bd.IsLegal(mv));
     SG_ASSERT(mv == SG_PASS || ! bd.IsSuicide(mv));
 
@@ -637,19 +606,16 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! IsSpecialMove(m_lastMove));
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    if (! GOUCT_ISSAFE(m_lastMove]))
-    {
-        for (SgNb8Iterator it(m_lastMove); it; ++it)
-            if (   bd.IsEmpty(*it)
-                && m_patterns.MatchAny(*it)
-                && ! GoBoardUtil::SelfAtari(bd, *it)
-                )
-                m_moves.Append(*it);
-    }
+    for (SgNb8Iterator it(m_lastMove); it; ++it)
+        if (   bd.IsEmpty(*it)
+            && m_patterns.MatchAny(*it)
+            && ! GoBoardUtil::SelfAtari(bd, *it)
+            )
+            m_moves.Append(*it);
     if (SECOND_LAST_MOVE_PATTERNS)
     {
         const SgPoint lastMove2 = bd.Get2ndLastMove();
-        if (! IsSpecialMove(lastMove2) && ! GOUCT_ISSAFE(lastMove2))
+        if (! IsSpecialMove(lastMove2))
         {
             for (SgNb8Iterator it(lastMove2); it; ++it)
                 if (   bd.IsEmpty(*it)
@@ -783,11 +749,7 @@ template<class BOARD>
 GoUctPlayoutPolicy<BOARD>*
 GoUctDefaultPlayoutPolicyFactory<BOARD>::Create(const BOARD& bd)
 {
-    SG_ASSERT(GoUctPlayoutPolicyFactory<BOARD>::m_safe != 0);
-    SG_ASSERT(GoUctPlayoutPolicyFactory<BOARD>::m_allSafe != 0);
-    return new GoUctDefaultPlayoutPolicy<BOARD>(bd, m_param,
-                                *GoUctPlayoutPolicyFactory<BOARD>::m_safe,
-                                *GoUctPlayoutPolicyFactory<BOARD>::m_allSafe);
+    return new GoUctDefaultPlayoutPolicy<BOARD>(bd, m_param);
 }
 
 //----------------------------------------------------------------------------

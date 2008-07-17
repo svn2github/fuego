@@ -284,8 +284,6 @@ GoUctGlobalSearch::GoUctGlobalSearch(GoBoard& bd,
       m_regions(bd),
       m_globalSearchLiveGfx(GOUCT_LIVEGFX_NONE)
 {
-    playoutFactory->SetSafe(&m_safe);
-    playoutFactory->SetAllSafe(&m_allSafe);
     SgUctThreadStateFactory* stateFactory =
         new GoUctGlobalSearchStateFactory(bd, *playoutFactory, m_safe,
                                           m_allSafe);

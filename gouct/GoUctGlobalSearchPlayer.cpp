@@ -164,10 +164,7 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     GoBoard& bd = Board();
     GoBoardRestorer restorer(bd);
     bd.SetToPlay(toPlay);
-    SgBWSet safe; // Not used
-    SgPointArray<bool> allSafe(false); // Not used
-    GoUctDefaultPlayoutPolicy<GoBoard> policy(bd, m_playoutPolicyParam, safe,
-                                              allSafe);
+    GoUctDefaultPlayoutPolicy<GoBoard> policy(bd, m_playoutPolicyParam);
     policy.StartPlayout();
     SgPoint move = policy.GenerateMove();
     policy.EndPlayout();

@@ -27,9 +27,7 @@ class GoUctDefaultPriorKnowledge
 {
 public:
     GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                               const GoUctDefaultPlayoutPolicyParam& param,
-                               const SgBWSet& safe,
-                               const SgPointArray<bool>& allSafe);
+                               const GoUctDefaultPlayoutPolicyParam& param);
 
     void ProcessPosition(bool& deepenTree);
 

@@ -124,34 +124,11 @@ public:
     virtual ~GoUctPlayoutPolicyFactory();
 
     virtual GoUctPlayoutPolicy<BOARD>* Create(const BOARD& bd) = 0;
-
-    void SetSafe(const SgBWSet* safe);
-
-    void SetAllSafe(const SgPointArray<bool>* allSafe);
-
-protected:
-    const SgBWSet* m_safe;
-
-    const SgPointArray<bool>* m_allSafe;
 };
 
-template<class BOARD>
-inline void GoUctPlayoutPolicyFactory<BOARD>::SetSafe(const SgBWSet* safe)
-{
-    m_safe = safe;
-}
-
-template<class BOARD>
-inline void GoUctPlayoutPolicyFactory<BOARD>::SetAllSafe(
-                                           const SgPointArray<bool>* allSafe)
-{
-    m_allSafe = allSafe;
-}
 
 template<class BOARD>
 GoUctPlayoutPolicyFactory<BOARD>::GoUctPlayoutPolicyFactory()
-    : m_safe(0),
-      m_allSafe(0)
 {
 }
 

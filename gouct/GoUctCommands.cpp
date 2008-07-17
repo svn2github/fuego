@@ -591,11 +591,8 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
 void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    SgBWSet safe; // Not used
-    SgPointArray<bool> allSafe(false); // Not used
     GoUctDefaultPlayoutPolicy<GoBoard> policy(m_bd,
-                                              Player().m_playoutPolicyParam,
-                                              safe, allSafe);
+                                              Player().m_playoutPolicyParam);
     policy.StartPlayout();
     policy.GenerateMove();
     cmd << GoUctDefaultPlayoutPolicyTypeStr(policy.MoveType());

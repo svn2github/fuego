@@ -12,11 +12,9 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                              const GoUctDefaultPlayoutPolicyParam& param,
-                              const SgBWSet& safe,
-                              const SgPointArray<bool>& allSafe)
+                              const GoUctDefaultPlayoutPolicyParam& param)
     : m_bd(bd),
-      m_policy(bd, param, safe, allSafe)
+      m_policy(bd, param)
 {
 }
 
@@ -113,9 +111,7 @@ GoUctDefaultPriorKnowledgeFactory::Create(SgUctThreadState& state)
     GoUctGlobalSearchState& globalSearchState
         = dynamic_cast<GoUctGlobalSearchState&>(state);
     return new GoUctDefaultPriorKnowledge(globalSearchState.Board(),
-                                          m_param,
-                                          globalSearchState.m_safe,
-                                          globalSearchState.m_allSafe);
+                                          m_param);
 }
 
 //----------------------------------------------------------------------------
