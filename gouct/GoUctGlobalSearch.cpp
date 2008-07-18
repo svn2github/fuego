@@ -301,29 +301,16 @@ void GoUctGlobalSearch::OnSearchIteration(std::size_t gameNumber,
                                           const SgUctGameInfo& info)
 {
     GoUctSearch::OnSearchIteration(gameNumber, threadId, info);
-    if (m_globalSearchLiveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
+    if (m_globalSearchLiveGfx && threadId == 0
         && gameNumber % LiveGfxInterval() == 0)
     {
         const GoUctGlobalSearchState& state =
             dynamic_cast<GoUctGlobalSearchState&>(ThreadState(0));
         SgDebug() << "gogui-gfx:\n";
-        switch (m_globalSearchLiveGfx)
-        {
-        case GOUCT_LIVEGFX_COUNTS:
-            GoUctUtil::GfxBestMove(*this, ToPlay(), SgDebug());
-            GoUctUtil::GfxTerritoryStatistics(state.m_territoryStatistics,
-                                              Board(), SgDebug());
-            GoUctUtil::GfxCounts(Tree(), SgDebug());
-            GoUctUtil::GfxStatus(*this, SgDebug());
-            break;
-        case GOUCT_LIVEGFX_SEQUENCE:
-            GoUctUtil::GfxSequence(*this, ToPlay(), SgDebug());
-            GoUctUtil::GfxStatus(*this, SgDebug());
-            break;
-        case GOUCT_LIVEGFX_NONE:
-            SG_ASSERT(false); // Already checked above
-            break;
-        }
+        GoUctUtil::GfxBestMove(*this, ToPlay(), SgDebug());
+        GoUctUtil::GfxTerritoryStatistics(state.m_territoryStatistics,
+                                          Board(), SgDebug());
+        GoUctUtil::GfxStatus(*this, SgDebug());
         SgDebug() << '\n';
     }
 }
