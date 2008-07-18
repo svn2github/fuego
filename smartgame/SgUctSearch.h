@@ -446,6 +446,20 @@ public:
 
 //----------------------------------------------------------------------------
 
+/** Statistics of the last search performed by SgUctSearch. */
+struct SgUctSearchStat
+{
+    SgUctStatisticsExt m_gameLength;
+
+    SgUctStatisticsExt m_movesInTree;
+
+    SgUctStatistics m_aborted;
+
+    void Clear();
+};
+
+//----------------------------------------------------------------------------
+
 /** Monte Carlo tree search using UCT.
     @ingroup sguctgroup
 */
@@ -806,11 +820,7 @@ public:
     */
     double GamesPerSecond() const;
 
-    const SgUctStatistics& AbortedStat() const;
-
-    const SgUctStatisticsExt& GameLengthStat() const;
-
-    const SgUctStatisticsExt& MovesInTreeStat() const;
+    const SgUctSearchStat& Statistics() const;
 
     void WriteStatistics(std::ostream& out) const;
 
@@ -1002,13 +1012,9 @@ private:
     */
     boost::recursive_mutex m_globalMutex;
 
-    SgUctStatisticsExt m_gameLengthStat;
-
-    SgUctStatisticsExt m_movesInTreeStat;
-
-    SgUctStatistics m_abortedStat;
-
     SgUctBiasTermPrecomp m_biasTermPrecomp;
+
+    SgUctSearchStat m_statistics;
 
     /** List of threads.
         The elements are owned by the vector (shared_ptr is only used because
@@ -1082,11 +1088,6 @@ private:
     void UpdateTree(const SgUctGameInfo& info);
 };
 
-inline const SgUctStatistics& SgUctSearch::AbortedStat() const
-{
-    return m_abortedStat;
-}
-
 inline float SgUctSearch::BiasTermConstant() const
 {
     return m_biasTermConstant;
@@ -1105,11 +1106,6 @@ inline float SgUctSearch::FirstPlayUrgency() const
 inline bool SgUctSearch::LockFree() const
 {
     return m_lockFree;
-}
-
-inline const SgUctStatisticsExt& SgUctSearch::GameLengthStat() const
-{
-    return m_gameLengthStat;
 }
 
 inline double SgUctSearch::GamesPerSecond() const
@@ -1140,11 +1136,6 @@ inline std::size_t SgUctSearch::MaxNodes() const
 inline SgUctMoveSelect SgUctSearch::MoveSelect() const
 {
     return m_moveSelect;
-}
-
-inline const SgUctStatisticsExt& SgUctSearch::MovesInTreeStat() const
-{
-    return m_movesInTreeStat;
 }
 
 inline bool SgUctSearch::NoBiasTerm() const
@@ -1279,6 +1270,11 @@ inline float SgUctSearch::SignatureWeightInitial() const
 inline float SgUctSearch::SignatureWeightFinal() const
 {
     return m_signatureWeightFinal;
+}
+
+inline const SgUctSearchStat& SgUctSearch::Statistics() const
+{
+    return m_statistics;
 }
 
 inline bool SgUctSearch::ThreadsCreated() const

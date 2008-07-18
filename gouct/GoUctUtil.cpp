@@ -159,12 +159,13 @@ void GoUctUtil::GfxStatus(const SgUctSearch& search, ostream& out)
 {
     const SgUctTree& tree = search.Tree();
     const SgUctNode& root = tree.Root();
-    int abortPercent = static_cast<int>(search.AbortedStat().Mean() * 100);
+    const SgUctSearchStat& stat = search.Statistics();
+    int abortPercent = static_cast<int>(stat.m_aborted.Mean() * 100);
     out << "TEXT N=" << root.MoveCount()
         << " V=" << setprecision(2) << root.Mean()
-        << " Len=" << static_cast<int>(search.GameLengthStat().Mean())
-        << " Tree=" << setprecision(1) << search.MovesInTreeStat().Mean()
-        << "/" << static_cast<int>(search.MovesInTreeStat().Max())
+        << " Len=" << static_cast<int>(stat.m_gameLength.Mean())
+        << " Tree=" << setprecision(1) << stat.m_movesInTree.Mean()
+        << "/" << static_cast<int>(stat.m_movesInTree.Max())
         << " Abrt=" << abortPercent << '%'
         << " Gm/s=" << static_cast<int>(search.GamesPerSecond()) << '\n';
 }

@@ -203,6 +203,15 @@ void SgUctSearch::Thread::WaitPlayFinished()
 
 //----------------------------------------------------------------------------
 
+void SgUctSearchStat::Clear()
+{
+    m_gameLength.Clear();
+    m_movesInTree.Clear();
+    m_aborted.Clear();
+}
+
+//----------------------------------------------------------------------------
+
 SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
                          int moveRange, std::size_t precompMaxPos,
                          std::size_t precompMaxMove)
@@ -1031,9 +1040,7 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
                 "SgUctSearch::StartSearch: "
                 "root filter not applied (tree reached maximum size)\n";
     }
-    m_gameLengthStat.Clear();
-    m_movesInTreeStat.Clear();
-    m_abortedStat.Clear();
+    m_statistics.Clear();
     OnStartSearch();
     for (size_t i = 0; i < m_threads.size(); ++i)
         ThreadState(i).StartSearch();
@@ -1193,11 +1200,13 @@ void SgUctSearch::UpdateSignatures(const SgUctGameInfo& info)
 
 void SgUctSearch::UpdateStatistics(const SgUctGameInfo& info)
 {
-    m_movesInTreeStat.Add(static_cast<float>(info.m_inTreeSequence.size()));
+    m_statistics.m_movesInTree.Add(
+                            static_cast<float>(info.m_inTreeSequence.size()));
     for (size_t i = 0; i < m_numberPlayouts; ++i)
     {
-        m_gameLengthStat.Add(static_cast<float>(info.m_sequence[i].size()));
-        m_abortedStat.Add(info.m_aborted[i] ? 1.f : 0.f);
+        m_statistics.m_gameLength.Add(
+                               static_cast<float>(info.m_sequence[i].size()));
+        m_statistics.m_aborted.Add(info.m_aborted[i] ? 1.f : 0.f);
     }
 }
 
@@ -1224,13 +1233,13 @@ void SgUctSearch::WriteStatistics(ostream& out) const
         << SgWriteLabel("Nodes") << m_tree.NuNodes() << '\n'
         << fixed << setprecision(1)
         << SgWriteLabel("GameLength");
-    m_gameLengthStat.Write(out);
+    m_statistics.m_gameLength.Write(out);
     out << '\n'
         << SgWriteLabel("MovesInTree");
-    m_movesInTreeStat.Write(out);
+    m_statistics.m_movesInTree.Write(out);
     out << '\n'
         << SgWriteLabel("Aborted")
-        << static_cast<int>(100 * m_abortedStat.Mean()) << "%\n";
+        << static_cast<int>(100 * m_statistics.m_aborted.Mean()) << "%\n";
 }
 
 //----------------------------------------------------------------------------
