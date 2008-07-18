@@ -385,9 +385,9 @@ public:
     /** Output live graphics commands for GoGui.
         Similar to the GOUCT_LIVEGFX_COUNTS mode in GoUctSearch, but the
         influence data shows the terriroy statistics (which must be enabled)
-        instead of the move values. The live graphics interval from
-        GoUctSearch will be used.
-        @see GoUctLiveGfxMode, GoUctSearch::LiveGfxInterval()
+        instead of the move values. No move counts are shown.
+        The live graphics interval from GoUctSearch will be used.
+        @see GoUctSearch::LiveGfxInterval()
     */
     bool GlobalSearchLiveGfx() const;
 
