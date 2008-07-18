@@ -167,7 +167,7 @@ void GoUctUtil::GfxStatus(const SgUctSearch& search, ostream& out)
         << " Tree=" << setprecision(1) << stat.m_movesInTree.Mean()
         << "/" << static_cast<int>(stat.m_movesInTree.Max())
         << " Abrt=" << abortPercent << '%'
-        << " Gm/s=" << static_cast<int>(search.GamesPerSecond()) << '\n';
+        << " Gm/s=" << static_cast<int>(stat.m_gamesPerSecond) << '\n';
 }
 
 void GoUctUtil::GfxTerritoryStatistics(

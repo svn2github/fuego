@@ -13,6 +13,7 @@
 #include <boost/version.hpp>
 #include "SgDebug.h"
 #include "SgHashTable.h"
+#include "SgStreamFmtRestorer.h"
 #include "SgMath.h"
 #include "SgWrite.h"
 
@@ -205,9 +206,27 @@ void SgUctSearch::Thread::WaitPlayFinished()
 
 void SgUctSearchStat::Clear()
 {
+    m_time = 0;
+    m_gamesPerSecond = 0;
     m_gameLength.Clear();
     m_movesInTree.Clear();
     m_aborted.Clear();
+}
+
+void SgUctSearchStat::Write(std::ostream& out) const
+{
+    SgStreamFmtRestorer restorer(out);
+    out << SgWriteLabel("Time") << setprecision(2) << m_time << '\n'
+        << SgWriteLabel("GameLen") << fixed << setprecision(1);
+    m_gameLength.Write(out);
+    out << '\n'
+        << SgWriteLabel("InTree");
+    m_movesInTree.Write(out);
+    out << '\n'
+        << SgWriteLabel("Aborted")
+        << static_cast<int>(100 * m_aborted.Mean()) << "%\n"
+        << SgWriteLabel("Games/s") << fixed << setprecision(1)
+        << m_gamesPerSecond << '\n';
 }
 
 //----------------------------------------------------------------------------
@@ -235,7 +254,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_raveWeightFinal(20000),
       m_signatureWeightInitial(0.2),
       m_signatureWeightFinal(4000),
-      m_gamesPerSecond(0),
       m_logFileName("uctsearch.log"),
       m_biasTermPrecomp(precompMaxPos, precompMaxMove),
       m_fastLog(10)
@@ -291,7 +309,8 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
             double remainingGamesDouble = m_maxGames - m_numberGames - 1;
             double remainingTime = m_maxTime - time;
             remainingGamesDouble =
-                min(remainingGamesDouble, remainingTime * m_gamesPerSecond);
+                min(remainingGamesDouble,
+                    remainingTime * m_statistics.m_gamesPerSecond);
             size_t sizeTypeMax = numeric_limits<size_t>::max();
             size_t remainingGames;
             if (remainingGamesDouble > static_cast<double>(sizeTypeMax - 1))
@@ -835,15 +854,14 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     m_maxGames = maxGames;
     m_maxTime = maxTime;
     m_checkTimeInterval = 1;
-    m_gamesPerSecond = 0;
     m_numberGames = 0;
     for (size_t i = 0; i < m_threads.size(); ++i)
         m_threads[i]->StartPlay();
     for (size_t i = 0; i < m_threads.size(); ++i)
         m_threads[i]->WaitPlayFinished();
-    double time = m_timer.GetTime();
-    if (time > numeric_limits<double>::epsilon())
-        m_gamesPerSecond = m_numberGames / time;
+    m_statistics.m_time = m_timer.GetTime();
+    if (m_statistics.m_time > numeric_limits<double>::epsilon())
+        m_statistics.m_gamesPerSecond = m_numberGames / m_statistics.m_time;
     if (m_logGames)
         m_log.close();
     FindBestSequence(sequence);
@@ -1073,8 +1091,9 @@ void SgUctSearch::UpdateCheckTimeInterval(double time)
         m_checkTimeInterval *= 2;
         return;
     }
-    m_gamesPerSecond = m_numberGames / time;
-    double gamesPerSecondPerThread = m_gamesPerSecond / m_numberThreads;
+    m_statistics.m_gamesPerSecond = m_numberGames / time;
+    double gamesPerSecondPerThread =
+        m_statistics.m_gamesPerSecond / m_numberThreads;
     if (m_maxTime < 0.1)
         m_checkTimeInterval =
             static_cast<size_t>(m_maxTime * gamesPerSecondPerThread / 10);
@@ -1230,16 +1249,8 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
 void SgUctSearch::WriteStatistics(ostream& out) const
 {
     out << SgWriteLabel("Count") << m_tree.Root().MoveCount() << '\n'
-        << SgWriteLabel("Nodes") << m_tree.NuNodes() << '\n'
-        << fixed << setprecision(1)
-        << SgWriteLabel("GameLength");
-    m_statistics.m_gameLength.Write(out);
-    out << '\n'
-        << SgWriteLabel("MovesInTree");
-    m_statistics.m_movesInTree.Write(out);
-    out << '\n'
-        << SgWriteLabel("Aborted")
-        << static_cast<int>(100 * m_statistics.m_aborted.Mean()) << "%\n";
+        << SgWriteLabel("Nodes") << m_tree.NuNodes() << '\n';
+    m_statistics.Write(out);
 }
 
 //----------------------------------------------------------------------------

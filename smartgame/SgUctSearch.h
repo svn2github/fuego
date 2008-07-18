@@ -449,6 +449,14 @@ public:
 /** Statistics of the last search performed by SgUctSearch. */
 struct SgUctSearchStat
 {
+    double m_time;
+
+    /** Games per second.
+        Useful values only if search time is higher than resolution of
+        SgTime::Get().
+    */
+    double m_gamesPerSecond;
+
     SgUctStatisticsExt m_gameLength;
 
     SgUctStatisticsExt m_movesInTree;
@@ -456,6 +464,8 @@ struct SgUctSearchStat
     SgUctStatistics m_aborted;
 
     void Clear();
+
+    void Write(std::ostream& out) const;
 };
 
 //----------------------------------------------------------------------------
@@ -814,12 +824,6 @@ public:
     /** @name Statistics */
     // @{
 
-    /** Games per second.
-        Useful values only if search time is higher than resolution of
-        SgTime::Get().
-    */
-    double GamesPerSecond() const;
-
     const SgUctSearchStat& Statistics() const;
 
     void WriteStatistics(std::ostream& out) const;
@@ -986,9 +990,6 @@ private:
     /** m_sigWeightInitial / m_sigWeightFinal precomputed for efficiency */
     float m_sigWeightParam2;
 
-    /** See GamesPerSecond() */
-    double m_gamesPerSecond;
-
     /** Time limit for current search. */
     double m_maxTime;
 
@@ -1106,11 +1107,6 @@ inline float SgUctSearch::FirstPlayUrgency() const
 inline bool SgUctSearch::LockFree() const
 {
     return m_lockFree;
-}
-
-inline double SgUctSearch::GamesPerSecond() const
-{
-    return m_gamesPerSecond;
 }
 
 inline const SgUctGameInfo& SgUctSearch::LastGameInfo() const

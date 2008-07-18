@@ -142,7 +142,8 @@ SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
             SG_ASSERT(m_searchMode == GOUCT_SEARCHMODE_UCT);
             move = DoSearch(toPlay, maxTime);
             value = m_search.Tree().Root().Mean();
-            m_statistics.m_gamesPerSecond.Add(m_search.GamesPerSecond());
+            m_statistics.m_gamesPerSecond.Add(
+                                      m_search.Statistics().m_gamesPerSecond);
             move = GoUctSearchUtil::TrompTaylorPassCheck(move, m_search);
         }
         if (move == SG_NULLMOVE)
@@ -186,29 +187,40 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
 SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
 {
     SgUctTree* initTree = 0;
-    // FindInitTree and root filter can take measurable time
     SgTimer timer;
+    double timeInitTree = 0;
     if (m_reuseSubtree)
     {
         FindInitTree(toPlay);
+        timeInitTree = timer.GetTime();
         initTree = &m_initTree;
     }
     vector<SgMove> rootFilter;
+    double timeRootFilter = 0;
     if (m_useRootFilter)
+    {
         rootFilter = m_rootFilter->Get();
+        timeRootFilter = timer.GetTime();
+    }
     maxTime -= timer.GetTime();
     m_search.SetToPlay(toPlay);
     vector<SgPoint> sequence;
     double value =
         m_search.Search(m_maxGames, maxTime, sequence, rootFilter, initTree);
-    m_search.WriteStatistics(SgDebug());
-    SgDebug() << fixed << setprecision(1) << "Games/s: "
-              << m_search.GamesPerSecond() << '\n'
-              << "Value: " << setprecision(2) << value << '\n'
-              << "Sequence: " << SgWritePointList(sequence, "", false);
 
-    //SgDebug() << "Move values: " << '\n';
-    //GoUctUtil::WriteChildrenStatistics(*m_search, 0, SgDebug());
+    // Write debug output to a string stream first to avoid intermingling
+    // of debug output with response in GoGui GTP shell
+    ostringstream out;
+    m_search.WriteStatistics(out);
+    out << SgWriteLabel("Value") << setprecision(2) << value << '\n'
+        << SgWriteLabel("Sequence") << SgWritePointList(sequence, "", false);
+    if (m_reuseSubtree)
+        out << SgWriteLabel("TimeInitTree") << setprecision(2)
+            << timeInitTree << '\n';
+    if (m_useRootFilter)
+        out << SgWriteLabel("TimeRootFilter") << setprecision(2)
+            << timeRootFilter << '\n';
+    SgDebug() << out.str();
 
     m_treeValidForNode = CurrentNode();
     if (sequence.empty())
