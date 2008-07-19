@@ -349,6 +349,7 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
         cmd <<
             "pspairs/All Move Values/all_move_values\n"
             "string/Final Score/final_score\n"
+            "param/Go Param TimeControl/go_param_timecontrol\n"
             "varc/Reg GenMove/reg_genmove %c\n";
     }
 }
