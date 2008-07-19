@@ -191,16 +191,18 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     double timeInitTree = 0;
     if (m_reuseSubtree)
     {
+        timeInitTree = -timer.GetTime();
         FindInitTree(toPlay);
-        timeInitTree = timer.GetTime();
+        timeInitTree += timer.GetTime();
         initTree = &m_initTree;
     }
     vector<SgMove> rootFilter;
     double timeRootFilter = 0;
     if (m_useRootFilter)
     {
+        timeRootFilter = -timer.GetTime();
         rootFilter = m_rootFilter->Get();
-        timeRootFilter = timer.GetTime();
+        timeRootFilter += timer.GetTime();
     }
     maxTime -= timer.GetTime();
     m_search.SetToPlay(toPlay);
