@@ -214,13 +214,13 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     // of debug output with response in GoGui GTP shell
     ostringstream out;
     m_search.WriteStatistics(out);
-    out << SgWriteLabel("Value") << setprecision(2) << value << '\n'
+    out << SgWriteLabel("Value") << fixed << setprecision(2) << value << '\n'
         << SgWriteLabel("Sequence") << SgWritePointList(sequence, "", false);
     if (m_reuseSubtree)
-        out << SgWriteLabel("TimeInitTree") << setprecision(2)
+        out << SgWriteLabel("TimeInitTree") << fixed << setprecision(2)
             << timeInitTree << '\n';
     if (m_useRootFilter)
-        out << SgWriteLabel("TimeRootFilter") << setprecision(2)
+        out << SgWriteLabel("TimeRootFilter") << fixed << setprecision(2)
             << timeRootFilter << '\n';
     SgDebug() << out.str();
 
