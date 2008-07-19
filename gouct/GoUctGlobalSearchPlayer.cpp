@@ -192,7 +192,7 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     if (m_reuseSubtree)
     {
         timeInitTree = -timer.GetTime();
-        FindInitTree(toPlay);
+        FindInitTree(toPlay, maxTime / 2);
         timeInitTree += timer.GetTime();
         initTree = &m_initTree;
     }
@@ -236,7 +236,7 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     sequence of moves starting with the color to play of the search tree.
     @see SetReuseSubtree
 */
-void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay)
+void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay, double maxTime)
 {
     m_initTree.Clear();
     // Make sure that tree has same number of allocators and max nodes
@@ -298,7 +298,7 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay)
         return;
     }
     SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence,
-                                  true);
+                                  true, maxTime);
     size_t initTreeNodes = m_initTree.NuNodes();
     size_t oldTreeNodes = m_search.Tree().NuNodes();
     if (oldTreeNodes > 1 && initTreeNodes > 1)

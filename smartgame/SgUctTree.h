@@ -12,6 +12,8 @@
 #include "SgMove.h"
 #include "SgStatistics.h"
 
+class SgTimer;
+
 //----------------------------------------------------------------------------
 
 typedef SgStatisticsBase<float,std::size_t> SgUctStatisticsBase;
@@ -402,10 +404,11 @@ public:
         number of nodes. Will be cleared before using.
         @param node The start node of the subtree.
         @param warnTruncate Print warning to SgDebug() if tree was truncated
-        due to reassigning nodes to different allocators
+        due to reassigning nodes to different allocators or max time exceeded
     */
     void ExtractSubtree(SgUctTree& target, const SgUctNode& node,
-                        bool warnTruncate) const;
+                    bool warnTruncate,
+                    double maxTime = std::numeric_limits<double>::max()) const;
 
     const SgUctNode& Root() const;
 
@@ -494,7 +497,7 @@ private:
     void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                      const SgUctNode& node,
                      std::size_t& currentAllocatorId,
-                     bool warnTruncate) const;
+                     bool warnTruncate, SgTimer& timer, double maxTime) const;
 
     void ThrowConsistencyError(const std::string& message) const;
 };

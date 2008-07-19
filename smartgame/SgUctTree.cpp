@@ -9,6 +9,7 @@
 
 #include <boost/format.hpp>
 #include "SgDebug.h"
+#include "SgTimer.h"
 
 using namespace std;
 using boost::format;
@@ -111,7 +112,8 @@ bool SgUctTree::Contains(const SgUctNode& node) const
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
                             std::size_t& currentAllocatorId,
-                            bool warnTruncate) const
+                            bool warnTruncate, SgTimer& timer,
+                            double maxTime) const
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(target.Contains(targetNode));
@@ -132,6 +134,16 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
             SgDebug() <<
                 "SgUctTree::CopySubtree: "
                 "Tree truncated (low allocator capacity)\n";
+        targetNode.SetPosCount(0);
+        return;
+    }
+
+    if (timer.IsTimeOut(maxTime, 10000))
+    {
+        if (warnTruncate)
+            SgDebug() <<
+                "SgUctTree::CopySubtree: "
+                "Tree truncated (max time exceeded)\n";
         targetNode.SetPosCount(0);
         return;
     }
@@ -160,7 +172,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
         CopySubtree(target, targetNodes[firstTargetChild + i], child,
-                    currentAllocatorId, warnTruncate);
+                    currentAllocatorId, warnTruncate, timer, maxTime);
     }
 }
 
@@ -219,7 +231,7 @@ void SgUctTree::DumpDebugInfo(std::ostream& out) const
 }
 
 void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
-                               bool warnTruncate) const
+                               bool warnTruncate, double maxTime) const
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(&target != this);
@@ -227,7 +239,9 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
     SG_ASSERT(Contains(node));
     target.Clear();
     size_t allocatorId = 0;
-    CopySubtree(target, target.m_root, node, allocatorId, warnTruncate);
+    SgTimer timer;
+    CopySubtree(target, target.m_root, node, allocatorId, warnTruncate,
+                timer, maxTime);
 }
 
 std::size_t SgUctTree::NuNodes() const

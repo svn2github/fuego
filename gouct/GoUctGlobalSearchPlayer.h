@@ -305,7 +305,7 @@ private:
 
     SgPoint DoSearch(SgBlackWhite toPlay, double maxTime);
 
-    void FindInitTree(SgBlackWhite toPlay);
+    void FindInitTree(SgBlackWhite toPlay, double maxTime);
 };
 
 inline bool GoUctGlobalSearchPlayer::AutoParam() const
