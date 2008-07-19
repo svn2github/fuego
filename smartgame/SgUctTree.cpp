@@ -124,26 +124,32 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
 
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
     int nuChildren = node.NuChildren();
+    bool truncate = false;
     if (! targetAllocator.HasCapacity(nuChildren))
     {
         // This can happen even if target tree has same maximum number of
-        // nodes, because allocators are used differently. We don't copy
-        // the children and set the pos count to zero (should reflect the sum
-        // of children move counts)
+        // nodes, because allocators are used differently.
         if (warnTruncate)
-            SgDebug() <<
-                "SgUctTree::CopySubtree: "
-                "Tree truncated (low allocator capacity)\n";
-        targetNode.SetPosCount(0);
-        return;
+            SgDebug()
+                << "SgUctTree::CopySubtree: Truncated (allocator capacity)\n";
+        truncate = true;
     }
-
     if (timer.IsTimeOut(maxTime, 10000))
     {
         if (warnTruncate)
-            SgDebug() <<
-                "SgUctTree::CopySubtree: "
-                "Tree truncated (max time exceeded)\n";
+            SgDebug() << "SgUctTree::CopySubtree: Truncated (max time)\n";
+        truncate = true;
+    }
+    if (SgUserAbort())
+    {
+        if (warnTruncate)
+            SgDebug() << "SgUctTree::CopySubtree: Truncated (aborted)\n";
+        truncate = true;
+    }
+    if (truncate)
+    {
+        // Don't copy the children and set the pos count to zero (should
+        // reflect the sum of children move counts)
         targetNode.SetPosCount(0);
         return;
     }

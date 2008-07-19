@@ -400,15 +400,19 @@ public:
                         const std::vector<SgMove>& moves);
 
     /** Extract subtree to a different tree.
+        The tree will be truncated if one of the allocators overflows (can
+        happen due to reassigning nodes to different allocators), the given
+        max time is exceeded or on SgUserAbort().
         @param[out] target The resulting subtree. Must have the same maximum
         number of nodes. Will be cleared before using.
         @param node The start node of the subtree.
         @param warnTruncate Print warning to SgDebug() if tree was truncated
-        due to reassigning nodes to different allocators or max time exceeded
+        @param maxTime Truncate the tree, if the extraction takes longer than
+        the given time
     */
     void ExtractSubtree(SgUctTree& target, const SgUctNode& node,
-                    bool warnTruncate,
-                    double maxTime = std::numeric_limits<double>::max()) const;
+                   bool warnTruncate,
+                   double maxTime = std::numeric_limits<double>::max()) const;
 
     const SgUctNode& Root() const;
 
