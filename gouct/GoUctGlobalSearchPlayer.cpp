@@ -192,7 +192,7 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     if (m_reuseSubtree)
     {
         timeInitTree = -timer.GetTime();
-        FindInitTree(toPlay, maxTime / 2);
+        FindInitTree(toPlay, maxTime);
         timeInitTree += timer.GetTime();
         initTree = &m_initTree;
         if (SgUserAbort())
