@@ -31,10 +31,12 @@ public:
     bool IsStopped() const;
 
     /** Check for timeout.
-        Compares elapsed time with maxTime, but the comparison is done
-        only every 16 calls for efficiency.
+        This function can only be used with fixed parameters per instance
+        of SgTimer.
+        @param maxTime
+        @param checkFreq Do the comparison only every n calls for efficiency.
     */
-    bool IsTimeOut(double maxTime);
+    bool IsTimeOut(double maxTime, std::size_t checkFreq = 16);
 
     /** Reset timer. */
     void Start();
@@ -45,8 +47,10 @@ public:
 private:
     bool m_isStopped;
 
-    /* For managing the frequency of calling SgTime::Get(). */
-    unsigned int m_counter;
+    bool m_isTimeOut;
+
+    /* For managing the frequency of calling SgTime::Get() in IsTimeOut(). */
+    std::size_t m_counter;
 
     /* Time when we start searching. */
     double m_timeStart;
@@ -54,12 +58,13 @@ private:
     /* Elapsed time when timer was stopped. */
     double m_timeStop;
 
-    /* Frequency to call SgTime::Get(). */
-    static const int GET_TIME_FREQUENCY = 16;
+    /** Not implemented */
+    SgTimer(const SgTimer& timer);
 };
 
 inline SgTimer::SgTimer()
     : m_isStopped(false),
+      m_isTimeOut(false),
       m_counter(0)
 {
     Start();
@@ -77,22 +82,24 @@ inline bool SgTimer::IsStopped() const
     return m_isStopped;
 }
 
-inline bool SgTimer::IsTimeOut(double maxTime)
+inline bool SgTimer::IsTimeOut(double maxTime, std::size_t checkFreq)
 {
-    ++m_counter;
-    if (m_counter % GET_TIME_FREQUENCY == 0)
+    if (m_isTimeOut)
+        return true;
+    if (m_counter == 0)
     {
         double timeNow = SgTime::Get();
         if (timeNow - m_timeStart > maxTime)
         {
-            --m_counter;
+            m_isTimeOut = true;
             return true;
         }
         else
-            return false;
+            m_counter = checkFreq;
     }
     else
-        return false;
+        --m_counter;
+    return false;
 }
 
 inline void SgTimer::Start()
