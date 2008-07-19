@@ -195,6 +195,15 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
         FindInitTree(toPlay, maxTime / 2);
         timeInitTree += timer.GetTime();
         initTree = &m_initTree;
+        if (SgUserAbort())
+            // User aborts can occur for example during pondering if the
+            // opponent plays (or some other GTP command is sent) right after
+            // we started pondering. In this case, better don't start a search
+            // with a truncated init tree. The search would be aborted after
+            // one game anyway, because it also checks SgUserAbort(). There is
+            // a higher chance to reuse a larger part of the current tree in
+            // the next search.
+            return SG_NULLMOVE;
     }
     vector<SgMove> rootFilter;
     double timeRootFilter = 0;
@@ -236,7 +245,8 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
     sequence of moves starting with the color to play of the search tree.
     @see SetReuseSubtree
 */
-void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay, double maxTime)
+void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
+                                           double maxTime)
 {
     m_initTree.Clear();
     // Make sure that tree has same number of allocators and max nodes
