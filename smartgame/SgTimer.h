@@ -35,6 +35,8 @@ public:
         of SgTimer.
         @param maxTime
         @param checkFreq Do the comparison only every n calls for efficiency.
+        @todo The timeout functionality should be extracted to a separate
+        class SgTimeout, which takes maxTime as constructor arguments.
     */
     bool IsTimeOut(double maxTime, std::size_t checkFreq = 16);
 
