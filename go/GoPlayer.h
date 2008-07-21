@@ -29,7 +29,7 @@ public:
         player modifies only his own board which is synchronized to the game
         board.
     */
-    GoPlayer(GoBoard& board);
+    GoPlayer(GoBoard& bd);
 
     virtual ~GoPlayer();
 
@@ -38,9 +38,6 @@ public:
 
     /** See m_board */
     const GoBoard& Board() const;
-
-    /** Player is assumed to be initialized if its board exists */
-    bool IsInitialized() const;
 
     /** Generate a move. */
     virtual SgPoint GenMove(const SgTimeRecord& time,
@@ -115,7 +112,7 @@ protected:
 
 private:
     /** The player's own Go board */
-    GoBoard* m_board;
+    GoBoard m_bd;
 
     /** Player variant. Used for short-term testing of small modifications.
         The default variant is 0.
@@ -133,19 +130,12 @@ private:
 
 inline GoBoard& GoPlayer::Board()
 {
-    SG_ASSERT(m_board);
-    return *m_board;
+    return m_bd;
 }
 
 inline const GoBoard& GoPlayer::Board() const
 {
-    SG_ASSERT(m_board);
-    return *m_board;
-}
-
-inline bool GoPlayer::IsInitialized() const
-{
-    return m_board != 0;
+    return m_bd;
 }
 
 inline SgNode* GoPlayer::CurrentNode() const

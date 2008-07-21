@@ -14,21 +14,17 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-GoPlayer::GoPlayer(GoBoard& board)
-    : GoBoardSynchronizer(board),
+GoPlayer::GoPlayer(GoBoard& bd)
+    : GoBoardSynchronizer(bd),
       m_currentNode(0),
-      m_board(0),
+      m_bd(bd.Size(), GoSetup(), bd.Rules()),
       m_variant(0)
 {
-    m_board = new GoBoard(board.Size(), GoSetup(), board.Rules());
-    SetSubscriber(*m_board);
+    SetSubscriber(m_bd);
 }
 
 GoPlayer::~GoPlayer()
 {
-    SG_ASSERT(m_board);
-    delete m_board;
-    m_board = 0;
 }
 
 int GoPlayer::MoveValue(SgPoint p)
