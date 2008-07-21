@@ -29,7 +29,7 @@ public:
         player modifies only his own board which is synchronized to the game
         board.
     */
-    GoPlayer(GoBoard& bd);
+    GoPlayer(const GoBoard& bd);
 
     virtual ~GoPlayer();
 

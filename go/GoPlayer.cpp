@@ -14,7 +14,7 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-GoPlayer::GoPlayer(GoBoard& bd)
+GoPlayer::GoPlayer(const GoBoard& bd)
     : GoBoardSynchronizer(bd),
       m_currentNode(0),
       m_bd(bd.Size(), GoSetup(), bd.Rules()),
