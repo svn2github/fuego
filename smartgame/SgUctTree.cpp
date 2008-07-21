@@ -108,6 +108,8 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     in each call to CopySubtree to use node allocators of target tree evenly.
     @param warnTruncate Print warning to SgDebug() if tree was truncated due
     to reassigning nodes to different allocators
+    @param timer
+    @param maxTime See ExtractSubtree()
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
