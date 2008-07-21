@@ -139,9 +139,13 @@ public:
     {
         if (! m_healthy.Contains(r))
             m_healthy.Append(r);
-        else // @todo debug me! see case 1540-1550 in uct_move.tst
-        // seems to happen after same position recomputed with second color.
-            SgDebug() << "DOUBLE ADD" << r;
+#if _DEBUG
+        else
+            // @todo debug me! see case 1540-1550 in uct_move.tst
+            // seems to happen after same position recomputed with second
+            // color.
+            SgDebug() << "DOUBLE ADD " << r << '\n';
+#endif
     }
 
     /** For incremental computation: r is no longer a neighbor region */
