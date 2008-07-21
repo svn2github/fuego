@@ -70,7 +70,6 @@ SgNode::~SgNode()
 #ifdef _DEBUG
     ++s_free;
 #endif
-    // AR: need to return SgNode to free list, if allocated that way
 }
 
 void SgNode::CopySubtree(const SgNode* node, SgNode* copy)
