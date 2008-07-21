@@ -140,7 +140,7 @@ SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
         else
         {
             SG_ASSERT(m_searchMode == GOUCT_SEARCHMODE_UCT);
-            move = DoSearch(toPlay, maxTime);
+            move = DoSearch(toPlay, maxTime, false);
             value = m_search.Tree().Root().Mean();
             m_statistics.m_gamesPerSecond.Add(
                                       m_search.Statistics().m_gamesPerSecond);
@@ -184,7 +184,8 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     @param maxTime
     @return The best move or SG_NULLMOVE if terminal position
 */
-SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
+SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
+                                          bool isDuringPondering)
 {
     SgUctTree* initTree = 0;
     SgTimer timer;
@@ -195,14 +196,12 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime)
         FindInitTree(toPlay, maxTime);
         timeInitTree += timer.GetTime();
         initTree = &m_initTree;
-        if (SgUserAbort())
-            // User aborts can occur for example during pondering if the
-            // opponent plays (or some other GTP command is sent) right after
-            // we started pondering. In this case, better don't start a search
+        if (SgUserAbort() && isDuringPondering)
+            // If abort occurs during pondering, better don't start a search
             // with a truncated init tree. The search would be aborted after
             // one game anyway, because it also checks SgUserAbort(). There is
             // a higher chance to reuse a larger part of the current tree in
-            // the next search.
+            // the next regular move search.
             return SG_NULLMOVE;
     }
     vector<SgMove> rootFilter;
@@ -368,7 +367,7 @@ void GoUctGlobalSearchPlayer::Ponder()
     SgDebug() << "GoUctGlobalSearchPlayer::Ponder Start\n";
     // Don't ponder forever to avoid hogging the machine
     double maxTime = 3600; // 60 min
-    DoSearch(Board().ToPlay(), maxTime);
+    DoSearch(Board().ToPlay(), maxTime, true);
     SgDebug() << "GoUctGlobalSearchPlayer::Ponder End\n";
 }
 

@@ -303,7 +303,8 @@ private:
 
     SgMove GenMovePlayoutPolicy(SgBlackWhite toPlay);
 
-    SgPoint DoSearch(SgBlackWhite toPlay, double maxTime);
+    SgPoint DoSearch(SgBlackWhite toPlay, double maxTime,
+                     bool isDuringPondering);
 
     void FindInitTree(SgBlackWhite toPlay, double maxTime);
 };
