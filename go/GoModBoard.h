@@ -37,64 +37,68 @@
         // automatically called in the destructor of modBoard
     }
     @endcode
+
+    There are also functions that allow to lock and unlock the board
+    explicitly, for cases in which the period of temporary modifications
+    cannot be mapped to the lifetime of a GoModBoard instance (e.g. because
+    the period starts end ends in different functions).
 */
 class GoModBoard
 {
 public:
-    /** Constructor for later explicit call of Init() */
-    GoModBoard();
-
     /** Constructor.
         Remembers the current board state.
+        @param bd The board
+        @param locked Whether to start in locked mode (for explicit usage
+        of Lock() and Unlock())
     */
-    GoModBoard(const GoBoard& bd);
+    GoModBoard(const GoBoard& bd, bool locked = false);
 
     /** Destructor.
         Checks with assertions that the board state is restored.
     */
     ~GoModBoard();
 
+    /** Explicit conversion to non-const reference.
+        This function triggers an assertion, if the board is currently in
+        locked mode.
+    */
+    GoBoard& Board() const;
+
     /** Automatic conversion to non-const reference.
         Allows to pass GoModBoard to functions that expect a non-const GoBoard
         reference without explicitely calling GoModBoard.Board().
+        @see Board()
     */
     operator GoBoard&() const;
 
-    /** Explicit conversion to non-const reference. */
-    GoBoard& Board() const;
+    /** Explicitely unlock the board. */
+    void Unlock();
 
-    /** Explicitely remember current board state.
-        Can be used together with AssertRestored() in cases where the
-        beginning and end of the temporary changes on the board are in
-        different function calls and therefore cannot easily by coupled to
-        the lifetime of a GoModBoard instance.
+    /** Explicitely lock the board.
+        Checks with assertions that the board state is restored.
+        See Lock()
     */
-    void Init(GoBoard& bd);
-
-    /** Explicitely check with assertions that the board state is restored.
-        See Init()
-    */
-    void AssertRestored();
+    void Lock();
 
 private:
-    GoBoard* m_bd;
+    bool m_locked;
+
+    GoBoard& m_bd;
 
     GoAssertBoardRestored m_assertRestored;
 };
 
-inline GoModBoard::GoModBoard()
-    : m_bd(0)
-{
-}
-
-inline GoModBoard::GoModBoard(const GoBoard& bd)
-    : m_bd(const_cast<GoBoard*>(&bd)),
+inline GoModBoard::GoModBoard(const GoBoard& bd, bool locked)
+    : m_locked(locked),
+      m_bd(const_cast<GoBoard&>(bd)),
       m_assertRestored(bd)
 {
 }
 
 inline GoModBoard::~GoModBoard()
 {
+    // Destructor of m_assertRestored calls AssertRestored()
 }
 
 inline GoModBoard::operator GoBoard&() const
@@ -102,21 +106,23 @@ inline GoModBoard::operator GoBoard&() const
     return Board();
 }
 
-inline void GoModBoard::AssertRestored()
-{
-    m_assertRestored.AssertRestored();
-}
-
 inline GoBoard& GoModBoard::Board() const
 {
-    SG_ASSERT(m_bd != 0);
-    return *m_bd;
+    SG_ASSERT(! m_locked);
+    return m_bd;
 }
 
-inline void GoModBoard::Init(GoBoard& bd)
+inline void GoModBoard::Unlock()
 {
-    m_bd = &bd;
-    m_assertRestored.Init(bd);
+    m_assertRestored.Init(m_bd);
+    m_locked = false;
+}
+
+inline void GoModBoard::Lock()
+{
+    m_assertRestored.AssertRestored();
+    m_assertRestored.Clear();
+    m_locked = true;
 }
 
 //----------------------------------------------------------------------------

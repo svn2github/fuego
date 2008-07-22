@@ -29,6 +29,11 @@ public:
 
     void Init(const GoBoard& bd);
 
+    /** Set to a state, in which the destructor does not call
+        AssertRestored() anymore.
+    */
+    void Clear();
+
 private:
 #ifdef _DEBUG
     const GoBoard* m_bd;
@@ -107,6 +112,13 @@ inline void GoAssertBoardRestored::AssertRestored()
     SG_ASSERT(m_bd->KoColor() == m_koColor);
     SG_ASSERT(m_bd->KoLevel() == m_koLevel);
     SG_ASSERT(m_bd->KoLoser() == m_koLoser);
+#endif
+}
+
+inline void GoAssertBoardRestored::Clear()
+{
+#ifdef _DEBUG
+    m_bd = 0;
 #endif
 }
 
