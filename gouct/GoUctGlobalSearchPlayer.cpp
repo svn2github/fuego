@@ -182,7 +182,11 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
 /** Run the search for a given color.
     @param toPlay
     @param maxTime
-    @return The best move or SG_NULLMOVE if terminal position
+    @param isDuringPondering Hint that search is done during pondering (this
+    handles the decision to discard an aborted FindInitTree differently)
+    @return The best move or SG_NULLMOVE if terminal position (can also
+    happen, if @c isDuringPondering, no search was performed, because
+    DoSearch() was aborted during FindInitTree()).
 */
 SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
                                           bool isDuringPondering)
