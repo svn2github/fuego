@@ -47,6 +47,7 @@ public:
         - @link CmdParamGlobalSearch() @c uct_param_globalsearch @endlink
         - @link CmdParamPolicy() @c uct_param_policy @endlink
         - @link CmdParamPlayer() @c uct_param_player @endlink
+        - @link CmdParamRootFilter() @c uct_param_rootfilter @endlink
         - @link CmdParamSearch() @c uct_param_search @endlink
         - @link CmdPatterns() @c uct_patterns @endlink
         - @link CmdPolicyMoves() @c uct_policy_moves @endlink
@@ -78,6 +79,7 @@ public:
     void CmdParamGlobalSearch(GtpCommand& cmd);
     void CmdParamPolicy(GtpCommand& cmd);
     void CmdParamPlayer(GtpCommand& cmd);
+    void CmdParamRootFilter(GtpCommand& cmd);
     void CmdParamSearch(GtpCommand& cmd);
     void CmdPatterns(GtpCommand& cmd);
     void CmdPolicyMoves(GtpCommand& cmd);

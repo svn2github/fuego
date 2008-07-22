@@ -12,6 +12,7 @@
 #include "GoGtpCommandUtil.h"
 #include "GoBoardUtil.h"
 #include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctDefaultRootFilter.h"
 #include "GoUctEstimatorStat.h"
 #include "GoUctGlobalSearchPlayer.h"
 #include "GoUctGlobalSearch.h"
@@ -167,6 +168,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "param/Uct Param GlobalSearch/uct_param_globalsearch\n"
         "param/Uct Param Policy/uct_param_policy\n"
         "param/Uct Param Player/uct_param_player\n"
+        "param/Uct Param RootFilter/uct_param_rootfilter\n"
         "param/Uct Param Search/uct_param_search\n"
         "plist/Uct Patterns/uct_patterns\n"
         "pstring/Uct Policy Moves/uct_policy_moves\n"
@@ -457,6 +459,37 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             p.m_useClumpCorrection = cmd.BoolArg(1);
         else if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.BoolArg(1);
+        else
+            throw GtpFailure() << "unknown parameter: " << name;
+    }
+    else
+        throw GtpFailure() << "need 0 or 2 arguments";
+}
+
+/** Get and set GoUctDefaultRootFilter parameters.
+    This command is compatible with the GoGui analyze command type "param".
+
+    Parameters:
+    @arg @c check_ladders See GoUctDefaultRootFilter::CheckLadders()
+*/
+void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
+{
+    cmd.CheckNuArgLessEqual(2);
+    GoUctDefaultRootFilter* f =
+        dynamic_cast<GoUctDefaultRootFilter*>(&Player().RootFilter());
+    if (f == 0)
+        throw GtpFailure("root filter is not GoUctDefaultRootFilter");
+    if (cmd.NuArg() == 0)
+    {
+        // Boolean parameters first for better layout of GoGui parameter
+        // dialog, alphabetically otherwise
+        cmd << "[bool] check_ladders " << f->CheckLadders() << '\n';
+    }
+    else if (cmd.NuArg() == 2)
+    {
+        string name = cmd.Arg(0);
+        if (name == "check_ladders")
+            f->SetCheckLadders(cmd.BoolArg(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -934,6 +967,7 @@ void GoUctCommands::Register(GtpEngine& e)
              &GoUctCommands::CmdParamGlobalSearch);
     Register(e, "uct_param_policy", &GoUctCommands::CmdParamPolicy);
     Register(e, "uct_param_player", &GoUctCommands::CmdParamPlayer);
+    Register(e, "uct_param_rootfilter", &GoUctCommands::CmdParamRootFilter);
     Register(e, "uct_param_search", &GoUctCommands::CmdParamSearch);
     Register(e, "uct_patterns", &GoUctCommands::CmdPatterns);
     Register(e, "uct_policy_moves", &GoUctCommands::CmdPolicyMoves);
