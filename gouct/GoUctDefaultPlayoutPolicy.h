@@ -421,7 +421,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
 template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 {
-    SG_ASSERT(! IsSpecialMove(m_lastMove));
+    SG_ASSERT(! SgIsSpecialMove(m_lastMove));
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     if (bd.InAtari(m_lastMove))
     {
@@ -436,7 +436,7 @@ template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
-    SG_ASSERT(! IsSpecialMove(m_lastMove));
+    SG_ASSERT(! SgIsSpecialMove(m_lastMove));
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     SgBlackWhite toPlay = bd.ToPlay();
     SgSList<SgPoint,4> anchorList;
@@ -475,7 +475,7 @@ template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 {
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    SG_ASSERT(! IsSpecialMove(lastMove));
+    SG_ASSERT(! SgIsSpecialMove(lastMove));
     SG_ASSERT(! bd.IsEmpty(lastMove));
     const SgBlackWhite toPlay = bd.ToPlay();
 
@@ -536,7 +536,7 @@ SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
         return mv;
     }
     m_lastMove = bd.GetLastMove();
-    if (   ! IsSpecialMove(m_lastMove) // skip if Pass or Null
+    if (   ! SgIsSpecialMove(m_lastMove) // skip if Pass or Null
         && ! bd.IsEmpty(m_lastMove) // skip if move was suicide
        )
     {
@@ -604,7 +604,7 @@ template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
-    SG_ASSERT(! IsSpecialMove(m_lastMove));
+    SG_ASSERT(! SgIsSpecialMove(m_lastMove));
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     for (SgNb8Iterator it(m_lastMove); it; ++it)
         if (   bd.IsEmpty(*it)
@@ -615,7 +615,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
     if (SECOND_LAST_MOVE_PATTERNS)
     {
         const SgPoint lastMove2 = bd.Get2ndLastMove();
-        if (! IsSpecialMove(lastMove2))
+        if (! SgIsSpecialMove(lastMove2))
         {
             for (SgNb8Iterator it(lastMove2); it; ++it)
                 if (   bd.IsEmpty(*it)

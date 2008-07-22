@@ -121,10 +121,13 @@ const SgPoint SG_NULLPOINT = SG_NULLMOVE;
 */
 const SgMove SG_PASS = SG_MAXPOINT + 1;
 
-/** Test if move is not a point. */
-inline bool IsSpecialMove(SgMove m)
+/** Test if move is not a point.
+    Returns true for special moves with negative values as defined in SgMove.h
+    (e.g. SG_NULLMOVE) and for SG_PASS.
+*/
+inline bool SgIsSpecialMove(SgMove m)
 {
-    return m == SG_NULLMOVE || m == SG_PASS;
+    return m < 0 || m == SG_PASS;
 }
 
 /** Coordinate in range 0 to SG_MAX_SIZE. */

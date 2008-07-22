@@ -957,7 +957,7 @@ bool SgPropPointList::ToString(std::vector<std::string>& values,
     values.clear();
     for (SgListIterator<SgPoint> it(Value()); it; ++it)
     {
-        if (! IsSpecialMove(*it))
+        if (! SgIsSpecialMove(*it))
             values.push_back(PointToSgfString(*it, boardSize, fmt,
                                               fileFormat));
     }
