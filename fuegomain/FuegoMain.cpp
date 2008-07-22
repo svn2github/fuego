@@ -28,6 +28,8 @@ bool g_quiet;
 
 int g_initialBoardSize;
 
+int g_maxGames;
+
 string g_config;
 
 const char* g_programPath;
@@ -40,6 +42,8 @@ void MainLoop()
 {
     FuegoMainEngine engine(cin, cout, g_initialBoardSize, g_programPath);
     GoGtpAssertionHandler assertionHandler(engine);
+    if (g_maxGames >= 0)
+        engine.SetMaxClearBoard(g_maxGames);
     if (g_config != "")
         engine.ExecuteFile(g_config);
     engine.MainLoop();
@@ -51,6 +55,7 @@ void ParseOptions(int argc, char** argv)
     vector<string> specs;
     specs.push_back("config:");
     specs.push_back("help");
+    specs.push_back("maxgames:");
     specs.push_back("quiet");
     specs.push_back("srand:");
     specs.push_back("size:");
@@ -64,12 +69,14 @@ void ParseOptions(int argc, char** argv)
             "  -config file execute GTP commands from file before\n"
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
+            "  -maxgames n  make clear_board fail after n invocations\n"
             "  -quiet       don't print debug messages\n"
             "  -size        initial board size\n"
             "  -srand       set random seed (-1:none, 0:time(0))\n";
         exit(0);
     }
     g_config = opt.GetString("config", "");
+    g_maxGames = opt.GetInteger("maxgames", -1);
     g_quiet = opt.Contains("quiet");
     // Don't be deterministic by default (0 means non-deterministic seed)
     g_srand = opt.GetInteger("srand", 0);
