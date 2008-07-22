@@ -52,6 +52,7 @@ public:
         - @link CmdSetup() @c gogui-setup @endlink
         - @link CmdSetupPlayer() @c gogui-setup_player @endlink
         - @link CmdIsLegal() @c is_legal @endlink
+        - @link CmdGenMoveCleanup() @c kgs-genmove_cleanup @endlink
         - @link CmdKomi() @c komi @endlink
         - @link CmdListStones() @c list_stones @endlink
         - @link CmdLoadSgf() @c loadsgf @endlink
@@ -81,6 +82,7 @@ public:
     virtual void CmdFinalScore(GtpCommand&);
     virtual void CmdFixedHandicap(GtpCommand&);
     virtual void CmdGenMove(GtpCommand&);
+    virtual void CmdGenMoveCleanup(GtpCommand&);
     virtual void CmdGetKomi(GtpCommand&);
     virtual void CmdGGUndo(GtpCommand&);
     virtual void CmdInterrupt(GtpCommand&);

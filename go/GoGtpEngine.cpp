@@ -109,6 +109,7 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int initialBoardSize,
     RegisterCmd("gogui-setup", &GoGtpEngine::CmdSetup);
     RegisterCmd("gogui-setup_player", &GoGtpEngine::CmdSetupPlayer);
     RegisterCmd("is_legal", &GoGtpEngine::CmdIsLegal);
+    RegisterCmd("kgs-genmove_cleanup", &GoGtpEngine::CmdGenMoveCleanup);
     RegisterCmd("komi", &GoGtpEngine::CmdKomi);
     RegisterCmd("list_stones", &GoGtpEngine::CmdListStones);
     RegisterCmd("loadsgf", &GoGtpEngine::CmdLoadSgf);
@@ -448,6 +449,31 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
         cmd << SgWritePoint(move);
     }
     AddPlayerProp(color, Player().Name(), false);
+}
+
+/** Generate cleanup move.
+    As defined in the kgsGtp interface to the KGS Go server.
+    Should not return pass, before all enemy dead stones are captured.<br>
+    Arguments: color
+*/
+void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
+{
+    GoRules& rules = Board().Rules();
+    bool oldCaptureDead = rules.CaptureDead();
+    rules.SetCaptureDead(true);
+    RulesChanged();
+    try
+    {
+        CmdGenMove(cmd);
+    }
+    catch (const GtpFailure& failure)
+    {
+        rules.SetCaptureDead(oldCaptureDead);
+        RulesChanged();
+        throw failure;
+    }
+    rules.SetCaptureDead(oldCaptureDead);
+    RulesChanged();
 }
 
 /** Get the komi.
