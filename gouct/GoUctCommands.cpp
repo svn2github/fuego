@@ -273,7 +273,7 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
                 return;
             averageStatus.Add(territoryStatistics[*it2].Mean());
         }
-        const float THRESHOLD = 0.1;
+        const float THRESHOLD = 0.2;
         if ((c == SG_BLACK && averageStatus.Mean() < THRESHOLD)
             || (c == SG_WHITE && averageStatus.Mean() > 1 - THRESHOLD))
         {
