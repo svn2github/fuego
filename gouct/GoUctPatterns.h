@@ -16,6 +16,46 @@
 /** Some hard-coded pattern matching routines to match patterns used by MoGo.
     See <a href="http://hal.inria.fr/docs/00/11/72/66/PDF/MoGoReport.pdf">
     Modification of UCT with Patterns in Monte-Carlo Go</a>.
+
+    The move is always in the center of the pattern or at the middle edge
+    point (lower line) for edge patterns. The patterns are matched for both
+    colors, unless specified otherwise. Notation:
+    @verbatim
+    O  White            x = Black or Empty
+    X = Black           o = White or Empty
+    . = Empty           B = Black to Play
+    ? = Don't care      W = White to Play
+    @endverbatim
+
+    Patterns for Hane. <br>
+    True is returned if any pattern is matched.
+    @verbatim
+    X O X   X O .   X O ?   X O O
+    . . .   . . .   X . .   . . .
+    ? ? ?   ? . ?   ? . ?   ? . ? B
+    @endverbatim
+
+    Patterns for Cut1. <br>
+    True is returned if the first pattern is matched, but not the next two.
+    @verbatim
+    X O ?   X O ?   X O ?
+    O . ?   O . O   O . .
+    ? ? ?   ? . ?   ? O ?
+    @endverbatim
+
+    Pattern for Cut2.
+    @verbatim
+    ? X ?
+    O . O
+    x x x
+    @endverbatim
+
+    Pattern for Edge. <br>
+    True is returned if any pattern is matched.
+    @verbatim
+    X . ?   ? X ?   ? X O    ? X O    ? X O
+    O . ?   o . O   ? . ? B  ? . o W  O . X W
+    @endverbatim
 */
 template<class BOARD>
 class GoUctPatterns
