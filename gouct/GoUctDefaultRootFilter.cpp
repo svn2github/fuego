@@ -18,7 +18,7 @@ using namespace std;
 
 GoUctDefaultRootFilter::GoUctDefaultRootFilter(const GoBoard& bd)
     : m_bd(bd),
-      m_checkLadders(false),
+      m_checkLadders(true),
       m_minLadderLength(6)
 {
 }
