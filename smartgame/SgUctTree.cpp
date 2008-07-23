@@ -106,15 +106,17 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     @param node The node in the source tree to be copied.
     @param currentAllocatorId The current node allocator. Will be incremented
     in each call to CopySubtree to use node allocators of target tree evenly.
-    @param warnTruncate Print warning to SgDebug() if tree was truncated due
-    to reassigning nodes to different allocators
+    @param warnTruncate[in,out] Print warning to SgDebug() if tree was
+    truncated due to reassigning nodes to different allocators (will be set to
+    false after first warning to avoid multiple warnungs on truncate)
     @param timer
     @param maxTime See ExtractSubtree()
+    @param warningShown Flag to avoid printing multiple warnings on truncate
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
                             std::size_t& currentAllocatorId,
-                            bool warnTruncate, SgTimer& timer,
+                            bool& warnTruncate, SgTimer& timer,
                             double maxTime) const
 {
     SG_ASSERT(Contains(node));
@@ -153,6 +155,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         // Don't copy the children and set the pos count to zero (should
         // reflect the sum of children move counts)
         targetNode.SetPosCount(0);
+        warnTruncate = false;
         return;
     }
 

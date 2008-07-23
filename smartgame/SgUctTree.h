@@ -501,7 +501,7 @@ private:
     void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                      const SgUctNode& node,
                      std::size_t& currentAllocatorId,
-                     bool warnTruncate, SgTimer& timer, double maxTime) const;
+                     bool& warnTruncate, SgTimer& timer, double maxTime) const;
 
     void ThrowConsistencyError(const std::string& message) const;
 };
