@@ -11,6 +11,7 @@
 #include "GoEyeUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoBoardUtil.h"
+#include "GoSafetySolver.h"
 #include "GoUctDefaultPlayoutPolicy.h"
 #include "GoUctDefaultRootFilter.h"
 #include "GoUctEstimatorStat.h"
@@ -261,21 +262,30 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
     Player().ClearTreeValidForNode();
     SgPointArray<SgUctStatistics> territoryStatistics =
         ThreadState(0).m_territoryStatistics;
+    GoSafetySolver safetySolver(m_bd);
+    SgBWSet safe;
+    safetySolver.FindSafePoints(&safe);
     for (GoBlockIterator it(m_bd); it; ++it)
     {
         SgBlackWhite c = m_bd.GetStone(*it);
-        SgStatistics<float,int> averageStatus;
-        for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+        bool isDead = safe[SgOppBW(c)].Contains(*it);
+        if (! isDead && ! safe[c].Contains(*it))
         {
-            if (territoryStatistics[*it2].Count() == 0)
-                // No statistics, maybe all simulations aborted due to
-                // max length or mercy rule.
-                return;
-            averageStatus.Add(territoryStatistics[*it2].Mean());
+            SgStatistics<float,int> averageStatus;
+            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+            {
+                if (territoryStatistics[*it2].Count() == 0)
+                    // No statistics, maybe all simulations aborted due to
+                    // max length or mercy rule.
+                    return;
+                averageStatus.Add(territoryStatistics[*it2].Mean());
+            }
+            const float THRESHOLD = 0.2;
+            isDead =
+                ((c == SG_BLACK && averageStatus.Mean() < THRESHOLD)
+                 || (c == SG_WHITE && averageStatus.Mean() > 1 - THRESHOLD));
         }
-        const float THRESHOLD = 0.2;
-        if ((c == SG_BLACK && averageStatus.Mean() < THRESHOLD)
-            || (c == SG_WHITE && averageStatus.Mean() > 1 - THRESHOLD))
+        if (isDead)
         {
             for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
                 cmd << SgWritePoint(*it2) << ' ';
