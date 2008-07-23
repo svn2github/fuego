@@ -195,24 +195,33 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCodeInclToPlay)
     BOOST_CHECK_EQUAL(bd.GetHashCodeInclToPlay(), h1);
 }
 
+/** Test GoBoard::GetLastMove() and GoBoard::Get2ndLastMove() */
 BOOST_AUTO_TEST_CASE(GoBoardTest_GetLastMove)
 {
     GoBoard bd(19);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
     bd.Play(Pt(1, 1), SG_BLACK);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(1, 1));
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
     bd.Play(Pt(2, 2), SG_WHITE);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(2, 2));
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(1, 1));
     bd.Play(SG_PASS, SG_BLACK);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_PASS);
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(2, 2));
     bd.SetToPlay(SG_BLACK);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
     bd.Undo();
     BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(2, 2));
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(1, 1));
     bd.Undo();
     BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(1, 1));
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
     bd.Undo();
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_InAtari)
