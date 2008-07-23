@@ -103,6 +103,8 @@ public:
 
     void Ponder();
 
+    void OnNewGame();
+
     // @} // @name
 
 
@@ -287,6 +289,21 @@ private:
 
     GoUctGlobalSearch m_search;
 
+    /** Remember what position the current tree is valid for for extraction
+        of a reusable subtree in a follow-up position.
+        @bug The node address is not a unique ID for a position, since a node
+        address can be reused after freeing a node and allocating a new node.
+        Right now, this works under the assumption that
+        - GoUctGlobalSearchPlayer is used in GoGtpEngine, which never frees
+          nodes while in the same game
+        - GoPlayer::OnNewGame() will be called whenever a new game tree is
+          created (GoUctGlobalSearchPlayer::OnNewNewGame() clears
+          m_treeValidForNode). Note that GoPlayer says that the player should
+          not rely on OnNewGame() to be called, but GoGtpEngine calls it in
+          the clear_board command.
+        A new implementation should not make these assumptions (maybe store
+        the whole position as an ID instead)
+    */
     SgNode* m_treeValidForNode;
 
     GoTimeControl m_timeControl;

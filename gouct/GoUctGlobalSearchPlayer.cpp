@@ -356,6 +356,12 @@ void GoUctGlobalSearchPlayer::OnBoardChange()
     }
 }
 
+void GoUctGlobalSearchPlayer::OnNewGame()
+{
+    // See comment at m_treeValidForNode
+    ClearTreeValidForNode();
+}
+
 void GoUctGlobalSearchPlayer::Ponder()
 {
     if (! m_enablePonder || GoBoardUtil::EndOfGame(Board())
