@@ -16,7 +16,25 @@ using SgPointUtil::Pt;
 
 namespace {
 
-//----------------------------------------------------------------------------
+/** Copied and adapted from GoBoardTest_GetLastMove.
+    Parts removed that use Undo()
+*/
+BOOST_AUTO_TEST_CASE(GoUctBoardTest_GetLastMove)
+{
+    GoBoard board(19);
+    GoUctBoard bd(board);
+    BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
+    bd.Play(Pt(1, 1), SG_BLACK);
+    BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(1, 1));
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
+    bd.Play(Pt(2, 2), SG_WHITE);
+    BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(2, 2));
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(1, 1));
+    bd.Play(SG_PASS, SG_BLACK);
+    BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_PASS);
+    BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(2, 2));
+}
 
 /** Copied from GoBoardTest_IsLibertyOfBlock */
 BOOST_AUTO_TEST_CASE(GoUctBoardTest_IsLibertyOfBlock)
@@ -35,7 +53,7 @@ BOOST_AUTO_TEST_CASE(GoUctBoardTest_IsLibertyOfBlock)
     BOOST_CHECK(! bd.IsLibertyOfBlock(Pt(2, 3), bd.Anchor(Pt(1, 2))));
 }
 
-//----------------------------------------------------------------------------
-
 } // namespace
+
+//----------------------------------------------------------------------------
 
