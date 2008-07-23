@@ -85,9 +85,6 @@ public:
     /** Opponent of player whose turn it is to play. */
     SgBlackWhite Opponent() const;
 
-    /** Set the current player. */
-    void SetToPlay(SgBlackWhite player);
-
     /** See SgBoardConst::Line */
     SgGrid Line(SgPoint p) const;
 
@@ -896,12 +893,6 @@ inline SgGrid GoUctBoard::Pos(SgPoint p) const
 inline int GoUctBoard::Right(SgPoint p) const
 {
     return m_const.Right(p);
-}
-
-inline void GoUctBoard::SetToPlay(SgBlackWhite player)
-{
-    SG_ASSERT_BW(player);
-    m_toPlay = player;
 }
 
 inline int GoUctBoard::Side(SgPoint p, int index) const
