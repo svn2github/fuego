@@ -251,15 +251,38 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
     if (GoBoardUtil::TwoPasses(m_bd) && m_bd.Rules().CaptureDead())
         // Everything is alive if end position and Tromp-Taylor rules
         return;
-    GoUctGlobalSearch& search = GlobalSearch();
-    SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
-    search.m_param.m_territoryStatistics = true;
+
     const size_t MAX_GAMES = 5000;
     SgDebug() << "GoUctCommands::CmdFinalStatusList: doing a search with "
               << MAX_GAMES << " games to determine final status\n";
+    GoUctGlobalSearch& search = GlobalSearch();
+    SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
+    search.m_param.m_territoryStatistics = true;
+    // Undo passes, because UCT search always scores with Tromp-Taylor after
+    // two passes in-tree
+    int nuUndoPass = 0;
+    SgBlackWhite toPlay = m_bd.ToPlay();
+    while (m_bd.GetLastMove() == SG_PASS)
+    {
+        m_bd.Undo();
+        toPlay = SgOppBW(toPlay);
+        ++nuUndoPass;
+    }
+    m_player->UpdateSubscriber();
+    if (nuUndoPass > 0)
+        SgDebug() << "Undoing " << nuUndoPass << " passes\n";
     vector<SgMove> sequence;
     search.Search(MAX_GAMES, numeric_limits<double>::max(), sequence);
+    SgDebug() << SgWriteLabel("Sequence")
+              << SgWritePointList(sequence, "", false);
     Player().ClearTreeValidForNode();
+    for (int i = 0; i < nuUndoPass; ++i)
+    {
+        m_bd.Play(SG_PASS, toPlay);
+        toPlay = SgOppBW(toPlay);
+    }
+    m_player->UpdateSubscriber();
+
     SgPointArray<SgUctStatistics> territoryStatistics =
         ThreadState(0).m_territoryStatistics;
     GoSafetySolver safetySolver(m_bd);
