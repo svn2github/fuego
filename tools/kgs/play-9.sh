@@ -38,7 +38,7 @@ fi
 echo "Enter KGS description (default=$DEFAULT_DESCRIPTION):"
 read DESCRIPTION
 if [[ "$DESCRIPTION" == "" ]]; then
-    NAME="$DEFAULT_DESCRIPTION"
+    DESCRIPTION="$DEFAULT_DESCRIPTION"
 fi
 echo "Enter KGS password for $NAME:"
 read PASSWORD
