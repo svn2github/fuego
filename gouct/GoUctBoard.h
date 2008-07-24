@@ -30,9 +30,10 @@
 /** Go board optimized for Monte-Carlo.
     In contrast to class GoBoard, this board makes certain assumptions
     that are usually true for Monte-Carlo simulations for better efficiency:
-    - No undo (not yet done, some client code still uses undo)
+    - No undo
+    - Alternating play
     - Simple-Ko rule
-    - suicide not allowed
+    - Suicide not allowed
 
     Otherwise, the member functions are named like in class GoBoard to allow
     writing utility functions that use the board class as a template parameter
@@ -152,23 +153,10 @@ public:
     /** See SgBoardConst::FirstBoardPoint */
     int LastBoardPoint() const;
 
-    /** Play a move.
-        Move needs to be SG_PASS or on-board empty point.
-        If move is not legal, the move flag isIllegal will be set.
-        After playing the color to play ys the opposite color of the color
-        of the move.
-    */
-    void Play(SgPoint p, SgBlackWhite player);
-
     /** Play a move for the current player.
         @see Play(SgPoint,SgBlackWhite);
     */
     void Play(SgPoint p);
-
-    /** Play a move.
-        @see Play(SgPoint,SgBlackWhite);
-    */
-    void Play(GoPlayerMove move);
 
     /** Check whether the move at 'p' is legal.
         Since it's not clear how 'p' was arrived at, any value of 'p' is
@@ -873,16 +861,6 @@ inline bool GoUctBoard::OccupiedInAtari(SgPoint p) const
 inline SgBlackWhite GoUctBoard::Opponent() const
 {
     return SgOppBW(m_toPlay);
-}
-
-inline void GoUctBoard::Play(GoPlayerMove move)
-{
-    Play(move.Point(), move.Color());
-}
-
-inline void GoUctBoard::Play(SgPoint p)
-{
-    Play(p, ToPlay());
 }
 
 inline SgGrid GoUctBoard::Pos(SgPoint p) const

@@ -501,37 +501,28 @@ void GoUctBoard::KillBlock(const Block* block)
         m_koPoint = block->Anchor();
 }
 
-void GoUctBoard::Play(SgPoint p, SgBlackWhite player)
+void GoUctBoard::Play(SgPoint p)
 {
     SG_ASSERT(p >= 0); // No special move, see SgMove
-    SG_ASSERT_BW(player);
     SG_ASSERT(p == SG_PASS || (IsValidPoint(p) && IsEmpty(p)));
     CheckConsistency();
     m_koPoint = SG_NULLPOINT;
     m_capturedStones.Clear();
-    SgBlackWhite opp = SgOppBW(player);
+    SgBlackWhite opp = SgOppBW(m_toPlay);
     if (p != SG_PASS)
     {
-        AddStone(p, player);
+        AddStone(p, m_toPlay);
         SgSList<Block*,4> adjBlocks;
         if (NumNeighbors(p, SG_BLACK) > 0 || NumNeighbors(p, SG_WHITE) > 0)
             RemoveLibAndKill(p, opp, adjBlocks);
-        UpdateBlocksAfterAddStone(p, player, adjBlocks);
+        UpdateBlocksAfterAddStone(p, m_toPlay, adjBlocks);
         if (m_koPoint != SG_NULLPOINT)
             if (NumStones(p) > 1 || NumLiberties(p) > 1)
                 m_koPoint = SG_NULLPOINT;
         SG_ASSERT(HasLiberties(p)); // Suicide not supported by GoUctBoard
     }
-    if (player == m_toPlay)
-    {
-        m_secondLastMove = m_lastMove;
-        m_lastMove = p;
-    }
-    else
-    {
-        m_secondLastMove = SG_NULLPOINT;
-        m_lastMove = SG_NULLPOINT;
-    }
+    m_secondLastMove = m_lastMove;
+    m_lastMove = p;
     m_toPlay = opp;
     CheckConsistency();
 }

@@ -25,13 +25,13 @@ BOOST_AUTO_TEST_CASE(GoUctBoardTest_GetLastMove)
     GoUctBoard bd(board);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
     BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
-    bd.Play(Pt(1, 1), SG_BLACK);
+    bd.Play(Pt(1, 1));
     BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(1, 1));
     BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
-    bd.Play(Pt(2, 2), SG_WHITE);
+    bd.Play(Pt(2, 2));
     BOOST_CHECK_EQUAL(bd.GetLastMove(), Pt(2, 2));
     BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(1, 1));
-    bd.Play(SG_PASS, SG_BLACK);
+    bd.Play(SG_PASS);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_PASS);
     BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), Pt(2, 2));
 }
