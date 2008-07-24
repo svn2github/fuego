@@ -2,7 +2,7 @@
 # Script for playing Fuego on 9x9 KGS on a machine with 2 cores / 2 GB
 
 FUEGO="../../build/gmake/build/release/fuego"
-DEFAULT_NAME=Fuego
+DEFAULT_NAME=Fuego9
 
 usage() {
   cat >&2 <<EOF
