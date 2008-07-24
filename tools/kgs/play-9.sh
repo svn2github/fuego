@@ -3,6 +3,7 @@
 
 FUEGO="../../build/gmake/build/release/fuego"
 DEFAULT_NAME=Fuego9
+DEFAULT_DESCRIPTION="Computer Player [1d?] (http://fuego.sf.net)"
 
 usage() {
   cat >&2 <<EOF
@@ -33,6 +34,11 @@ echo "Enter KGS name (default=$DEFAULT_NAME):"
 read NAME
 if [[ "$NAME" == "" ]]; then
     NAME="$DEFAULT_NAME"
+fi
+echo "Enter KGS description (default=$DEFAULT_DESCRIPTION):"
+read DESCRIPTION
+if [[ "$DESCRIPTION" == "" ]]; then
+    NAME="$DEFAULT_DESCRIPTION"
 fi
 echo "Enter KGS password for $NAME:"
 read PASSWORD
@@ -71,7 +77,7 @@ name=$NAME
 password=$PASSWORD
 room=Computer Go
 mode=custom
-gameNotes=Computer Player (http://fuego.sf.net)
+gameNotes=$DESCRIPTION
 rules=chinese
 rules.boardSize=9
 rules.time=10:00
