@@ -106,7 +106,7 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     @param node The node in the source tree to be copied.
     @param currentAllocatorId The current node allocator. Will be incremented
     in each call to CopySubtree to use node allocators of target tree evenly.
-    @param warnTruncate[in,out] Print warning to SgDebug() if tree was
+    @param[in,out] warnTruncate Print warning to SgDebug() if tree was
     truncated due to reassigning nodes to different allocators (will be set to
     false after first warning to avoid multiple warnungs on truncate)
     @param timer
