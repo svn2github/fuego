@@ -7,10 +7,10 @@
 #include "SgSystem.h"
 #include "GoUctDefaultRootFilter.h"
 
-#include "GoBensonSolver.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoModBoard.h"
+#include "GoSafetySolver.h"
 
 using namespace std;
 
@@ -33,11 +33,15 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
 
     GoModBoard modBoard(m_bd);
     GoBoard& bd = modBoard.Board();
-    // Use Benson solver to ensure that all moves that capture dead stones
-    // are liberties of dead blocks
-    GoBensonSolver bensonSolver(bd);
+    // Note that only capturing moves will be generated that are liberties
+    // of dead stones. GoBensonSolver would guarantee that this covers all
+    // cases. GoSafetySolver does not guarantee it. But the cases, in which
+    // other moves are necessary to capture dead stones are rare, and if
+    // Benson solver is used, the player playes to many annoying moves
+    // in safe territory in the endgame.
+    GoSafetySolver safetySolver(bd);
     SgBWSet safe;
-    bensonSolver.FindSafePoints(&safe);
+    safetySolver.FindSafePoints(&safe);
     for (GoBoard::Iterator it(bd); it; ++it)
     {
         SgPoint p = *it;
