@@ -374,6 +374,16 @@ void GoUctGlobalSearchPlayer::Ponder()
         SgWarning() << "Pondering needs reuse_subtree enabled.\n";
         return;
     }
+
+    // Don't ponder in root node. FindInitTree() does not work and can cause
+    // crashes, if the node is not a unique identifier for a position. Not
+    // pondering in the root node fixes the most common occurrences of this
+    // bug (position changes due to setup in the root node or handicap), but
+    // is not a real solution to the bug (e.g. doing setup in non-root nodes).
+    // Remove when bug is fixed. See also the comment at m_treeValidForNode
+    if (CurrentNode() == 0 || ! CurrentNode()->HasFather())
+        return;
+
     SgDebug() << "GoUctGlobalSearchPlayer::Ponder Start\n";
     // Don't ponder forever to avoid hogging the machine
     double maxTime = 3600; // 60 min
