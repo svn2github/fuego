@@ -301,8 +301,10 @@ private:
           m_treeValidForNode). Note that GoPlayer says that the player should
           not rely on OnNewGame() to be called, but GoGtpEngine calls it in
           the clear_board command.
+        It currently also fails, if GTP commands are used that change the
+        position in the current node (e.g. set_free_handicap or gogui-setup).
         A new implementation should not make these assumptions (maybe store
-        the whole position as an ID instead)
+        and compare the whole root position that the tree is valid for).
     */
     SgNode* m_treeValidForNode;
 
