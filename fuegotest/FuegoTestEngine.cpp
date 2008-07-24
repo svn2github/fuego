@@ -29,10 +29,10 @@ using boost::trim_copy;
 //----------------------------------------------------------------------------
 
 FuegoTestEngine::FuegoTestEngine(istream& in, ostream& out,
-                                 int initialBoardSize,
+                                 int fixedBoardSize,
                                  const char* programPath,
                                  const string& player)
-    : GoGtpEngine(in, out, initialBoardSize, programPath),
+    : GoGtpEngine(in, out, fixedBoardSize, programPath),
       m_extraCommands(Board()),
       m_safetyCommands(Board())
 {

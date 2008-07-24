@@ -119,7 +119,8 @@ public:
     /** Constructor.
         @param in See parameter @c in in GtpEngine::GtpEngine
         @param out See parameter @c out in GtpEngine::GtpEngine
-        @param initialBoardSize Initial size of the board
+        @param fixedBoardSize Initial and only allowed size of the board.
+        0 means startup with GO_DEFAULT_SIZE and allow to change board size
         @param programPath File path to the executable. Needed for
         SgGtpCommands::CmdDebugger
         @param noPlayer Indicate that the subclass will not set a player
@@ -127,7 +128,7 @@ public:
         (e.g. TsumeGo solvers) This causes player-specific GTP commands,
         like @c reg_genmove) not to be registered.
     */
-    GoGtpEngine(std::istream& in, std::ostream& out, int initialBoardSize,
+    GoGtpEngine(std::istream& in, std::ostream& out, int fixedBoardSize,
                 const char* programPath = 0, bool noPlayer = false);
 
     ~GoGtpEngine();
@@ -347,6 +348,8 @@ private:
 
     /** See SetDebugToComment() */
     bool m_debugToComment;
+
+    int m_fixedBoardSize;
 
     /** Maximum number of clear_board commands.
         -1, if no limit.

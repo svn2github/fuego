@@ -23,12 +23,12 @@ public:
     /** Constructor.
         @param in
         @param out
-        @param initialBoardSize
+        @param fixedBoardSize
         @param programPath
         @param player Player ID as in CreatePlayer()
     */
     FuegoTestEngine(std::istream& in, std::ostream& out,
-                    int initialBoardSize, const char* programPath = 0,
+                    int fixedBoardSize, const char* programPath = 0,
                     const std::string& player = "");
 
     ~FuegoTestEngine();

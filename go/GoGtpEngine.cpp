@@ -70,7 +70,7 @@ string KoRuleToString(GoRules::KoRule rule)
 
 //----------------------------------------------------------------------------
 
-GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int initialBoardSize,
+GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
                          const char* programPath, bool noPlayer)
     : GtpEngine(in, out),
       m_player(0),
@@ -79,12 +79,13 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int initialBoardSize,
       m_autoSave(false),
       m_autoShowBoard(false),
       m_debugToComment(false),
+      m_fixedBoardSize(fixedBoardSize),
       m_maxClearBoard(-1),
       m_numberClearBoard(0),
       m_timeLastMove(0),
       m_timeLimit(10),
       m_overhead(0),
-      m_board(initialBoardSize),
+      m_board(fixedBoardSize > 0 ? fixedBoardSize : GO_DEFAULT_SIZE),
       m_game(m_board),
       m_sgCommands(*this, programPath),
       m_bookCommands(m_board, m_book)
@@ -367,9 +368,12 @@ void GoGtpEngine::CmdBoard(GtpCommand& cmd)
 void GoGtpEngine::CmdBoardSize(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
+    int size = cmd.IntArg(0, SG_MIN_SIZE, SG_MAX_SIZE);
+    if (m_fixedBoardSize > 0 && size != m_fixedBoardSize)
+        throw GtpFailure() << "Boardsize " << m_fixedBoardSize << " fixed";
     if (Board().MoveNumber() > 0)
         GameFinished();
-    Init(cmd.IntArg(0, SG_MIN_SIZE, SG_MAX_SIZE));
+    Init(size);
 }
 
 /** Init new game.

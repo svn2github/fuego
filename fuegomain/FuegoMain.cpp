@@ -26,7 +26,7 @@ namespace {
 
 bool g_quiet;
 
-int g_initialBoardSize;
+int g_fixedBoardSize;
 
 int g_maxGames;
 
@@ -40,7 +40,7 @@ int g_srand;
 
 void MainLoop()
 {
-    FuegoMainEngine engine(cin, cout, g_initialBoardSize, g_programPath);
+    FuegoMainEngine engine(cin, cout, g_fixedBoardSize, g_programPath);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_maxGames >= 0)
         engine.SetMaxClearBoard(g_maxGames);
@@ -71,7 +71,7 @@ void ParseOptions(int argc, char** argv)
             "  -help        display this help and exit\n"
             "  -maxgames n  make clear_board fail after n invocations\n"
             "  -quiet       don't print debug messages\n"
-            "  -size        initial board size\n"
+            "  -size        initial (and fixed) board size\n"
             "  -srand       set random seed (-1:none, 0:time(0))\n";
         exit(0);
     }
@@ -80,7 +80,7 @@ void ParseOptions(int argc, char** argv)
     g_quiet = opt.Contains("quiet");
     // Don't be deterministic by default (0 means non-deterministic seed)
     g_srand = opt.GetInteger("srand", 0);
-    g_initialBoardSize = opt.GetInteger("size", 19);
+    g_fixedBoardSize = opt.GetInteger("size", 0);
 }
 
 void PrintStartupMessage()
