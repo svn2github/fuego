@@ -277,6 +277,9 @@ private:
     */
     int m_stoneDiff;
 
+    /** Board move number at root node of search. */
+    int m_initialMoveNumber;
+
     /** The area in which moves should be generated. */
     GoPointList m_area;
 

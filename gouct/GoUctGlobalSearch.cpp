@@ -141,10 +141,18 @@ void GoUctGlobalSearchState::GenerateAllMoves(vector<SgMove>& moves)
     SG_ASSERT(! bd.Rules().AllowSuicide());
 
     if (GoBoardUtil::TwoPasses(bd))
-        // This will be evaluated with TrompTaylorScore in Evaluate
-        // It is not clear how to handle other rules, because we do not
-        // have an evaluation function for other terminal positions
-        return;
+        // Evaluate with Tromp-Taylor (we have no other evaluation that can
+        // score arbitrary positions). However, if the rules don't require
+        // CaptureDead(), the two passes need to be played in the search
+        // sequence. This avoids cases, in which playing a pass (after the
+        // opponent's last move in the real game was a pass) is only good
+        // under Tromp-Taylor scoring (see
+        // regression/sgf/pass/tromp-taylor-pass.sgf).
+        // Both won't work in Japanese rules, but it is not easy to define
+        // what a terminal position is in Japanese rules.
+        if (bd.Rules().CaptureDead()
+            || bd.MoveNumber() - m_initialMoveNumber >= 2)
+            return;
 
     SgBlackWhite toPlay = ToPlay();
     for (GoBoard::Iterator it(bd); it; ++it)
@@ -245,6 +253,7 @@ void GoUctGlobalSearchState::StartSearch()
     int size = bd.Size();
     float maxScore = size * size + bd.Rules().Komi().ToFloat();
     m_invMaxScore = 1 / maxScore;
+    m_initialMoveNumber = bd.MoveNumber();
     ClearTerritoryStatistics();
 }
 
