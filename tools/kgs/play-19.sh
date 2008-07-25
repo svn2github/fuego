@@ -3,7 +3,7 @@
 
 FUEGO="../../build/gmake/build/release/fuego"
 DEFAULT_NAME=Fuego
-DEFAULT_DESCRIPTION="Computer Player [5k?] (http://fuego.sf.net)"
+DEFAULT_DESCRIPTION="Computer player [5k?] (http://fuego.sf.net)"
 
 usage() {
   cat >&2 <<EOF
