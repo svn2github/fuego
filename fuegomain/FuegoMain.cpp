@@ -24,6 +24,8 @@ namespace {
 /** @name Settings from command line options */
 // @{
 
+bool g_noHandicap;
+
 bool g_quiet;
 
 int g_fixedBoardSize;
@@ -40,7 +42,8 @@ int g_srand;
 
 void MainLoop()
 {
-    FuegoMainEngine engine(cin, cout, g_fixedBoardSize, g_programPath);
+    FuegoMainEngine engine(cin, cout, g_fixedBoardSize, g_programPath,
+                           g_noHandicap);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_maxGames >= 0)
         engine.SetMaxClearBoard(g_maxGames);
@@ -56,6 +59,7 @@ void ParseOptions(int argc, char** argv)
     specs.push_back("config:");
     specs.push_back("help");
     specs.push_back("maxgames:");
+    specs.push_back("nohandicap");
     specs.push_back("quiet");
     specs.push_back("srand:");
     specs.push_back("size:");
@@ -70,6 +74,7 @@ void ParseOptions(int argc, char** argv)
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
             "  -maxgames n  make clear_board fail after n invocations\n"
+            "  -nohandicap  don't support handicap commands\n"
             "  -quiet       don't print debug messages\n"
             "  -size        initial (and fixed) board size\n"
             "  -srand       set random seed (-1:none, 0:time(0))\n";
@@ -78,6 +83,7 @@ void ParseOptions(int argc, char** argv)
     g_config = opt.GetString("config", "");
     g_maxGames = opt.GetInteger("maxgames", -1);
     g_quiet = opt.Contains("quiet");
+    g_noHandicap = opt.Contains("nohandicap");
     // Don't be deterministic by default (0 means non-deterministic seed)
     g_srand = opt.GetInteger("srand", 0);
     g_fixedBoardSize = opt.GetInteger("size", 0);

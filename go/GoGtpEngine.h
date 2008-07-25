@@ -127,9 +127,12 @@ public:
         with SetPlayer(). Useful for GTP engines that cannot play moves
         (e.g. TsumeGo solvers) This causes player-specific GTP commands,
         like @c reg_genmove) not to be registered.
+        @param noHandicap Don't register handicap commands (useful, to
+        avoid accepting handicap games on KGS)
     */
     GoGtpEngine(std::istream& in, std::ostream& out, int fixedBoardSize,
-                const char* programPath = 0, bool noPlayer = false);
+                const char* programPath = 0, bool noPlayer = false,
+                bool noHandicap = false);
 
     ~GoGtpEngine();
 

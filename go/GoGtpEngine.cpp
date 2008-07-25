@@ -71,7 +71,8 @@ string KoRuleToString(GoRules::KoRule rule)
 //----------------------------------------------------------------------------
 
 GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
-                         const char* programPath, bool noPlayer)
+                         const char* programPath, bool noPlayer,
+                         bool noHandicap)
     : GtpEngine(in, out),
       m_player(0),
       m_noPlayer(noPlayer),
@@ -93,7 +94,6 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
     RegisterCmd("all_legal", &GoGtpEngine::CmdAllLegal);
     RegisterCmd("boardsize", &GoGtpEngine::CmdBoardSize);
     RegisterCmd("clear_board", &GoGtpEngine::CmdClearBoard);
-    RegisterCmd("fixed_handicap", &GoGtpEngine::CmdFixedHandicap);
     RegisterCmd("get_komi", &GoGtpEngine::CmdGetKomi);
     RegisterCmd("gg-undo", &GoGtpEngine::CmdGGUndo);
     RegisterCmd("go_board", &GoGtpEngine::CmdBoard);
@@ -114,11 +114,9 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
     RegisterCmd("komi", &GoGtpEngine::CmdKomi);
     RegisterCmd("list_stones", &GoGtpEngine::CmdListStones);
     RegisterCmd("loadsgf", &GoGtpEngine::CmdLoadSgf);
-    RegisterCmd("place_free_handicap", &GoGtpEngine::CmdPlaceFreeHandicap);
     RegisterCmd("play", &GoGtpEngine::CmdPlay);
     RegisterCmd("savesgf", &GoGtpEngine::CmdSaveSgf);
     RegisterCmd("showboard", &GoGtpEngine::CmdShowBoard);
-    RegisterCmd("set_free_handicap", &GoGtpEngine::CmdSetFreeHandicap);
     RegisterCmd("time_left", &GoGtpEngine::CmdTimeLeft);
     RegisterCmd("time_settings", &GoGtpEngine::CmdTimeSettings);
     RegisterCmd("undo", &GoGtpEngine::CmdUndo);
@@ -135,6 +133,13 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
         RegisterCmd("reg_genmove_toplay", &GoGtpEngine::CmdRegGenMoveToPlay);
         RegisterCmd("time_lastmove", &GoGtpEngine::CmdTimeLastMove);
         m_bookCommands.Register(*this);
+    }
+    if (! noHandicap)
+    {
+        RegisterCmd("fixed_handicap", &GoGtpEngine::CmdFixedHandicap);
+        RegisterCmd("place_free_handicap",
+                    &GoGtpEngine::CmdPlaceFreeHandicap);
+        RegisterCmd("set_free_handicap", &GoGtpEngine::CmdSetFreeHandicap);
     }
 }
 
