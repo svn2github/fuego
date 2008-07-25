@@ -244,9 +244,6 @@ private:
     /** See SetLiveGfxInterval() */
     int m_liveGfxInterval;
 
-    /** Board move number at root node of search. */
-    int m_initialMoveNumber;
-
     /** Color to play.
         Does not use GoBoard::ToPlay(), because the color to play at the
         root node of the search could be needed after the board has
