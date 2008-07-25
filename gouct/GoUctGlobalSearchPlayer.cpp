@@ -236,7 +236,20 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
             << timeRootFilter << '\n';
     SgDebug() << out.str();
 
-    m_treeValidForNode = CurrentNode();
+    // Don't set m_treeValidForNode to CurrentNode() if in root node.
+    // FindInitTree() does not work and can cause
+    // crashes, if the node is not a unique identifier for a position. Not
+    // reusing the tree from a search in the root node fixes
+    // the most common occurrences of this
+    // bug (position changes due to setup in the root node or handicap), but
+    // is not a real solution to the bug (e.g. doing setup in non-root nodes).
+    // Remove when bug is fixed. See also the comment at m_treeValidForNode
+    // and in the function body of Ponder()
+    if (CurrentNode() != 0 && ! CurrentNode()->HasFather())
+        m_treeValidForNode = 0;
+    else
+        m_treeValidForNode = CurrentNode();
+
     if (sequence.empty())
         return SG_NULLMOVE;
     return *(sequence.begin());
@@ -381,6 +394,7 @@ void GoUctGlobalSearchPlayer::Ponder()
     // bug (position changes due to setup in the root node or handicap), but
     // is not a real solution to the bug (e.g. doing setup in non-root nodes).
     // Remove when bug is fixed. See also the comment at m_treeValidForNode
+    // and in the function body of DoSearch()
     if (CurrentNode() == 0 || ! CurrentNode()->HasFather())
         return;
 
