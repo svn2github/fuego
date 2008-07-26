@@ -25,9 +25,6 @@ class GoPlayer
 {
 public:
     /** Constructor.
-        @todo Why does it need a non-const reference to the game board? The
-        player modifies only his own board which is synchronized to the game
-        board.
     */
     GoPlayer(const GoBoard& bd);
 
@@ -68,7 +65,8 @@ public:
         This function gives the player the opportunity to do some work at
         the end of a game, for example perform some learning.
         However it is not guaranteed that this function will be called at
-        all, the player should not rely on it.
+        all, the player should not rely on it. The reason is that a game
+        start and end is not always well-defined (setup, undo, etc.)
         For example, it will be called in the GTP interface if after a change
         on the board GoBoardUtil::EndOfGame() is true.
         The default implementation does nothing.
@@ -79,7 +77,8 @@ public:
         This function gives the player the opportunity to clear some cached
         data, that is useful only within the same game.
         However it is not guaranteed that this function will be called at
-        all, the player should not rely on it.
+        all, the player should not rely on it. The reason is that a game
+        start and end is not always well-defined (setup, undo, etc.)
         For example, it will be called in the GTP interface in
         GoGtpEngine::Init(), or on the clear_board and loadsgf commands.
         The default implementation does nothing.
