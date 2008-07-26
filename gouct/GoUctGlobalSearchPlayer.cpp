@@ -82,7 +82,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_useRootFilter(true),
       m_reuseSubtree(false),
       m_maxTime(1e10),
-      m_resignThreshold(0.03),
+      m_resignThreshold(0.04),
       m_lastBoardSize(-1),
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(100000),
