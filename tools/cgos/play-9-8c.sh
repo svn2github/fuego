@@ -35,6 +35,7 @@ uct_param_player max_games 999999999
 uct_param_player ignore_clock 0
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
+uct_param_player resign_threshold 0
 
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos
