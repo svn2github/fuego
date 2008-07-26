@@ -36,7 +36,7 @@ const char* g_programPath;
 
 void MainLoop()
 {
-    FuegoTestEngine engine(cin, cout, 19, g_programPath, g_player);
+    FuegoTestEngine engine(cin, cout, 0, g_programPath, g_player);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_config != "")
         engine.ExecuteFile(g_config);
