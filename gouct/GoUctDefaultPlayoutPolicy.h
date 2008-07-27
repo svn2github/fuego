@@ -166,6 +166,11 @@ public:
         The played move was randomly selected from this list.
     */
     GoPointList GetEquivalentBestMoves() const;
+    
+    /** Set random seed for random number generator.
+        Only implemented for BOARD == GoBoard
+    */
+    void Randomize();
 
 private:
     /** A function that possibly corrects a given point */
@@ -667,6 +672,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::OnPlay()
     m_captureGenerator.OnPlay();
     m_pureRandomGenerator.OnPlay();
 }
+
 
 template<class BOARD>
 SgPoint GoUctDefaultPlayoutPolicy<BOARD>::SelectRandom()

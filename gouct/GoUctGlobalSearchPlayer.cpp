@@ -166,6 +166,7 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     GoBoardRestorer restorer(bd);
     bd.SetToPlay(toPlay);
     GoUctDefaultPlayoutPolicy<GoBoard> policy(bd, m_playoutPolicyParam);
+    policy.Randomize(); // prevent from playing same game over and over
     policy.StartPlayout();
     SgPoint move = policy.GenerateMove();
     policy.EndPlayout();
