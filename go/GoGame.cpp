@@ -90,12 +90,15 @@ SgNode* GoGameRecord::AddMove(SgMove move, SgBlackWhite player,
 
     // If no such node exists, create a new node with the given move.
     if (! node)
-    {   if (m_current->HasSon() && 0 < m_numMovesToInsert)
-        {   node = m_current->LeftMostSon()->NewFather();
+    {
+        if (m_current->HasSon() && 0 < m_numMovesToInsert)
+        {
+            node = m_current->LeftMostSon()->NewFather();
             --m_numMovesToInsert;
         }
         else
-        {   node = m_current->NewRightMostSon();
+        {
+            node = m_current->NewRightMostSon();
             m_numMovesToInsert = 0;
         }
         node->AddMoveProp(move, player);
@@ -341,7 +344,8 @@ void GoGameRecord::OnInitHandicap(const GoRules& rules, SgNode* root)
             }
         }
         else
-        {   // Chinese handicap.
+        {
+            // Chinese handicap.
             SgPropInt* chinese =
                 new SgPropInt(SG_PROP_CHINESE, rules.Handicap());
             root->Add(chinese);
@@ -357,8 +361,8 @@ void GoGameRecord::PromoteCurrentToMain()
 void GoGameRecord::SetToPlay(SgBlackWhite player)
 {
     if (player != m_board.ToPlay())
-    {   m_board.SetToPlay(player);
-
+    {
+        m_board.SetToPlay(player);
         if (m_current)
         {
             // Also record this change of player in the move tree.
