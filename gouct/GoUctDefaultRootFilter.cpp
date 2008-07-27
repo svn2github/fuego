@@ -44,8 +44,8 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
         safetySolver.FindSafePoints(&safe);
         pruneAll = (safe.Both() == bd.AllPoints());
     }
-    // Benson solver guarantees that capturing moves of dead stones are
-    // liberties of the dead stones and that no move in safe territory
+    // Benson solver guarantees that capturing moves of dead blocks are
+    // liberties of the dead blocks and that no move in safe territory
     // is a Ko threat
     GoBensonSolver bensonSolver(bd);
     safe.Clear();
