@@ -332,8 +332,9 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
         float reuse = static_cast<float>(initTreeNodes) / oldTreeNodes;
         int reusePercent = static_cast<int>(100 * reuse);
         SgDebug() << "GoUctGlobalSearchPlayer::FindInitTree: Reusing "
-                  << initTreeNodes << " nodes (" << reusePercent << "%)\n"
-                  << SgWritePointList(sequence, "Sequence", false);
+                  << initTreeNodes << " nodes (" << reusePercent << "%)\n";
+
+        //SgDebug() << SgWritePointList(sequence, "Sequence", false);
         m_statistics.m_reuse.Add(reuse);
     }
     else
