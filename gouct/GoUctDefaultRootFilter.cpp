@@ -65,7 +65,7 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
             if (m_bd.GetStone(p) == toPlay && m_bd.InAtari(p))
             {
                 if (m_ladder.Ladder(m_bd, p, toPlay, &m_ladderSequence,
-                                    false/*twoLibIsEscape*/))
+                                    false/*twoLibIsEscape*/) < 0)
                 {
                     if (m_ladderSequence.Length() >= m_minLadderLength)
                         rootFilter.push_back(m_bd.TheLiberty(p));
