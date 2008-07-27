@@ -35,23 +35,26 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
 
     GoModBoard modBoard(m_bd);
     GoBoard& bd = modBoard.Board();
+
     SgBWSet alternateSafe;
     bool isAllAlternateSafe = false;
-    if (! bd.Rules().CaptureDead())
-    {
-        // Alternate safety is only used to prune moves in opponent territory
-        // if everything is alive under alternate play and rules do not
-        // require to capture dead
-        GoSafetySolver safetySolver(bd);
-        safetySolver.FindSafePoints(&alternateSafe);
-        isAllAlternateSafe = (alternateSafe.Both() == bd.AllPoints());
-    }
+    // Alternate safety is used to prune moves only in opponent territory
+    // and only if everything is alive under alternate play. This ensures that
+    // capturing moves that are not liberties of dead blocks and ko threats
+    // will not be pruned. This alternate safety pruning is not going to
+    // improve or worsen playing strength, but may cause earlier passes,
+    // which is nice in games against humans
+    GoSafetySolver safetySolver(bd);
+    safetySolver.FindSafePoints(&alternateSafe);
+    isAllAlternateSafe = (alternateSafe.Both() == bd.AllPoints());
+
     // Benson solver guarantees that capturing moves of dead blocks are
-    // liberties of the dead blocks and that no move in safe territory
-    // is a Ko threat
+    // liberties of the dead blocks and that no move in Benson safe territory
+    // is a ko threat
     GoBensonSolver bensonSolver(bd);
     SgBWSet unconditionalSafe;
     bensonSolver.FindSafePoints(&unconditionalSafe);
+
     for (GoBoard::Iterator it(bd); it; ++it)
     {
         SgPoint p = *it;
