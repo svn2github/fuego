@@ -35,34 +35,39 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
 
     GoModBoard modBoard(m_bd);
     GoBoard& bd = modBoard.Board();
-    SgBWSet safe;
-    bool pruneAll = false;
+    SgBWSet alternateSafe;
+    bool isAllAlternateSafe = false;
     if (! bd.Rules().CaptureDead())
     {
-        // Safety solver is only used to determine if everything is alive.
+        // Alternate safety is only used to prune moves in opponent territory
+        // if everything is alive under alternate play and rules do not
+        // require to capture dead
         GoSafetySolver safetySolver(bd);
-        safetySolver.FindSafePoints(&safe);
-        pruneAll = (safe.Both() == bd.AllPoints());
+        safetySolver.FindSafePoints(&alternateSafe);
+        isAllAlternateSafe = (alternateSafe.Both() == bd.AllPoints());
     }
     // Benson solver guarantees that capturing moves of dead blocks are
     // liberties of the dead blocks and that no move in safe territory
     // is a Ko threat
     GoBensonSolver bensonSolver(bd);
-    safe.Clear();
-    bensonSolver.FindSafePoints(&safe);
+    SgBWSet unconditionalSafe;
+    bensonSolver.FindSafePoints(&unconditionalSafe);
     for (GoBoard::Iterator it(bd); it; ++it)
     {
         SgPoint p = *it;
         if (m_bd.IsLegal(p))
         {
-            bool isSafe = safe[toPlay].Contains(p);
-            bool isSafeOpp = safe[opp].Contains(p);
+            bool isUnconditionalSafe = unconditionalSafe[toPlay].Contains(p);
+            bool isUnconditionalSafeOpp = unconditionalSafe[opp].Contains(p);
+            bool isAlternateSafeOpp = alternateSafe[opp].Contains(p);
             bool hasOppNeighbors = bd.HasNeighbors(p, opp);
             // Always generate capturing moves in own safe territory, even
             // if current rules do no use CaptureDead(), because the UCT
             // player always scores with Tromp-Taylor after two passes in the
             // in-tree phase
-            if (pruneAll || isSafeOpp || (isSafe && ! hasOppNeighbors))
+            if ((isAllAlternateSafe && isAlternateSafeOpp)
+                || isUnconditionalSafeOpp
+                || (isUnconditionalSafe && ! hasOppNeighbors))
                 rootFilter.push_back(p);
         }
     }
