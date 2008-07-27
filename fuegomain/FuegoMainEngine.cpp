@@ -19,9 +19,11 @@ FuegoMainEngine::FuegoMainEngine(istream& in, ostream& out,
                                  int fixedBoardSize, const char* programPath,
                                  bool noHandicap)
     : GoGtpEngine(in, out, fixedBoardSize, programPath, false, noHandicap),
-      m_uctCommands(Board(), m_player)
+      m_uctCommands(Board(), m_player),
+      m_safetyCommands(Board())
 {
     m_uctCommands.Register(*this);
+    m_safetyCommands.Register(*this);
     SetPlayer(new GoUctGlobalSearchPlayer(Board()));
 }
 
@@ -32,9 +34,8 @@ FuegoMainEngine::~FuegoMainEngine()
 void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
     GoGtpEngine::CmdAnalyzeCommands(cmd);
-    //ASSERT(ResponseEmptyOrEndsWithNewLine(cmd));
     m_uctCommands.AddGoGuiAnalyzeCommands(cmd);
-    //ASSERT(ResponseEmptyOrEndsWithNewLine(cmd));
+    m_safetyCommands.AddGoGuiAnalyzeCommands(cmd);
     string response = cmd.Response();
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));
 }

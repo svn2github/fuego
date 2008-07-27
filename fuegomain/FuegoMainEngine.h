@@ -7,6 +7,7 @@
 #define FUEGOMAIN_ENGINE_H
 
 #include "GoGtpEngine.h"
+#include "GoSafetyCommands.h"
 #include "GoUctCommands.h"
 
 class GoUctGlobalSearchPlayer;
@@ -30,6 +31,8 @@ public:
 
 private:
     GoUctCommands m_uctCommands;
+
+    GoSafetyCommands m_safetyCommands;
 };
 
 //----------------------------------------------------------------------------
