@@ -67,8 +67,6 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
                 if (m_ladder.Ladder(m_bd, p, toPlay, &m_ladderSequence,
                                     false/*twoLibIsEscape*/))
                 {
-                    SgDebug() << "XXX " << SgWritePointList(m_ladderSequence)
-                              << '\n';
                     if (m_ladderSequence.Length() >= m_minLadderLength)
                         rootFilter.push_back(m_bd.TheLiberty(p));
                 }
