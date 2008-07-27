@@ -46,6 +46,8 @@ public:
     /** Main ladder routine.
         twoLibIsEscape: if prey is to play and has two libs, does it count as
         an immediate escape, or shall we keep trying to capture?
+        @return Positive value if ladder is good for prey, negative, if good
+        for hunter.
     */
     int Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                SgList<SgPoint>* sequence, bool twoLibIsEscape = false);
