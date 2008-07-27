@@ -959,6 +959,18 @@ void GoUctCommands::CmdValue(GtpCommand& cmd)
     cmd << Search().Tree().Root().Mean();
 }
 
+/** Return value of root node from last search, from Black's point of view.
+    Arguments: none
+*/
+void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    float value = Search().Tree().Root().Mean();
+    if (Search().ToPlay() == SG_WHITE)
+        value = Search().InverseEval(value);
+    cmd << value;
+}
+
 GoUctGlobalSearch& GoUctCommands::GlobalSearch()
 {
     return Player().GlobalSearch();
@@ -1020,6 +1032,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_stat_search", &GoUctCommands::CmdStatSearch);
     Register(e, "uct_stat_territory", &GoUctCommands::CmdStatTerritory);
     Register(e, "uct_value", &GoUctCommands::CmdValue);
+    Register(e, "uct_value_black", &GoUctCommands::CmdValueBlack);
 }
 
 void GoUctCommands::Register(GtpEngine& engine, const std::string& command,

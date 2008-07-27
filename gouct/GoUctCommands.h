@@ -67,6 +67,7 @@ public:
         - @link CmdStatSearch() @c uct_stat_search @endlink
         - @link CmdStatTerritory() @c uct_stat_territory @endlink
         - @link CmdValue() @c uct_value @endlink
+        - @link CmdValueBlack() @c uct_value_black @endlink
     */
     /** @name Command Callbacks */
     // @{
@@ -99,6 +100,7 @@ public:
     void CmdStatSearch(GtpCommand& cmd);
     void CmdStatTerritory(GtpCommand& cmd);
     void CmdValue(GtpCommand& cmd);
+    void CmdValueBlack(GtpCommand& cmd);
     // @} // @name
 
     void Register(GtpEngine& engine);
