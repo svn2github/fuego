@@ -4,3 +4,4 @@
 uct_basics.tst
 uct_playout.tst
 uct_pass.tst
+uct_rootfilter.tst
