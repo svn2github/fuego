@@ -35,11 +35,15 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
 
     GoModBoard modBoard(m_bd);
     GoBoard& bd = modBoard.Board();
-    // Safety solver is only used to determine if everything is alive
     SgBWSet safe;
-    GoSafetySolver safetySolver(bd);
-    safetySolver.FindSafePoints(&safe);
-    bool allSafe = (safe.Both() == bd.AllPoints());
+    bool pruneAll = false;
+    if (! bd.Rules().CaptureDead())
+    {
+        // Safety solver is only used to determine if everything is alive.
+        GoSafetySolver safetySolver(bd);
+        safetySolver.FindSafePoints(&safe);
+        pruneAll = (safe.Both() == bd.AllPoints());
+    }
     // Benson solver guarantees that capturing moves of dead stones are
     // liberties of the dead stones and that no move in safe territory
     // is a Ko threat
@@ -58,7 +62,7 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
             // if current rules do no use CaptureDead(), because the UCT
             // player always scores with Tromp-Taylor after two passes in the
             // in-tree phase
-            if (allSafe || isSafeOpp || (isSafe && ! hasOppNeighbors))
+            if (pruneAll || isSafeOpp || (isSafe && ! hasOppNeighbors))
                 rootFilter.push_back(p);
         }
     }
