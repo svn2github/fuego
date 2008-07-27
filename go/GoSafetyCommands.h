@@ -20,7 +20,7 @@ public:
     /** Constructor.
         @param bd The game board.
     */
-    GoSafetyCommands(GoBoard& bd);
+    GoSafetyCommands(const GoBoard& bd);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -40,7 +40,7 @@ public:
     void Register(GtpEngine& engine);
 
 private:
-    GoBoard& m_bd;
+    const GoBoard& m_bd;
 
     SgBWSet GetSafe(int& totalRegions, const std::string& type);
 

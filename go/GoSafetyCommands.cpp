@@ -10,6 +10,7 @@
 #include "GoBensonSolver.h"
 #include "GoBoard.h"
 #include "GoGtpCommandUtil.h"
+#include "GoModBoard.h"
 #include "GoSafetyUtil.h"
 #include "GoSafetySolver.h"
 #include "SgPointSet.h"
@@ -19,7 +20,7 @@ using GoGtpCommandUtil::BlackWhiteArg;
 
 //----------------------------------------------------------------------------
 
-GoSafetyCommands::GoSafetyCommands(GoBoard& bd)
+GoSafetyCommands::GoSafetyCommands(const GoBoard& bd)
     : m_bd(bd)
 {
 }
@@ -36,12 +37,13 @@ void GoSafetyCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 void GoSafetyCommands::CmdDameStatic(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    GoRegionBoard regionAttachment(m_bd);
-    GoSafetySolver solver(m_bd, &regionAttachment);
+    GoModBoard modBoard(m_bd);
+    GoBoard& bd = modBoard.Board();
+    GoRegionBoard regionAttachment(bd);
+    GoSafetySolver solver(bd, &regionAttachment);
     SgBWSet safe;
     solver.FindSafePoints(&safe);
-    SgPointSet dame =
-        GoSafetyUtil::FindDamePoints(m_bd, m_bd.AllEmpty(), safe);
+    SgPointSet dame = GoSafetyUtil::FindDamePoints(bd, m_bd.AllEmpty(), safe);
     cmd << SgWritePointSet(dame, "", false);
 }
 
@@ -122,16 +124,18 @@ void GoSafetyCommands::CmdSafe(GtpCommand& cmd)
 
 SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const string& type)
 {
-    GoRegionBoard regionAttachment(m_bd);
+    GoModBoard modBoard(m_bd);
+    GoBoard& bd = modBoard.Board();
+    GoRegionBoard regionAttachment(bd);
     SgBWSet safe;
     if (type == "benson")
     {
-        GoBensonSolver solver(m_bd, &regionAttachment);
+        GoBensonSolver solver(bd, &regionAttachment);
         solver.FindSafePoints(&safe);
     }
     else if (type == "static")
     {
-        GoSafetySolver solver(m_bd, &regionAttachment);
+        GoSafetySolver solver(bd, &regionAttachment);
         solver.FindSafePoints(&safe);
     }
     else
