@@ -110,6 +110,15 @@ SgNode* GoGameRecord::AddMove(SgMove move, SgBlackWhite player,
     return node;
 }
 
+SgNode* GoGameRecord::AddResignNode(SgBlackWhite player)
+{
+    SgNode* node = m_current->NewRightMostSon();
+    ostringstream comment;
+    comment << (player == SG_BLACK ? "Black" : "White") << " resigned";
+    node->AddComment(comment.str());
+    return node;
+}
+
 bool GoGameRecord::CanDeleteCurrentNode() const
 {
     return CurrentNode() && CurrentNode()->HasFather();

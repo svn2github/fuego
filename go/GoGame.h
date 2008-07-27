@@ -90,15 +90,19 @@ public:
     SgNode* AddMove(SgMove move, SgBlackWhite player,
                     const SgSearchStatistics* stat = 0);
 
-    /**
-       Set the number of moves to be inserted into the current line of
-       play instead of creating a new line of play.
+    /** Add a node with a comment that a player resigned.
+        For informational purposes only, the resign node will not be made
+        the current node.
+    */
+    SgNode* AddResignNode(SgBlackWhite player);
+
+    /** Set the number of moves to be inserted into the current line of
+        play instead of creating a new line of play.
     */
     void SetNumMovesToInsert(int numMoves);
 
-    /**
-       Get the number of moves to be inserted into the current line of
-       play instead of creating a new line of play.
+    /** Get the number of moves to be inserted into the current line of
+        play instead of creating a new line of play.
     */
     int NumMovesToInsert() const;
 

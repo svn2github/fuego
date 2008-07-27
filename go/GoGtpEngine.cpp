@@ -447,7 +447,16 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
         debugStrToString.reset(new SgDebugToString(true));
     SgPoint move = GenMove(color);
     if (move == SG_RESIGN)
+    {
         cmd << "resign";
+        SgNode* node = game.AddResignNode(color);
+        if (debugStrToString.get() != 0)
+        {
+            node->AddComment("\n\n");
+            node->AddComment(debugStrToString->GetString());
+        }
+        AutoSave();
+    }
     else
     {
         SgNode* node = game.AddMove(move, color);
