@@ -166,7 +166,14 @@ public:
         The played move was randomly selected from this list.
     */
     GoPointList GetEquivalentBestMoves() const;
-    
+
+    /** Make pattern matcher available for other uses.
+        Avoids that a user of the playout policy who also wants to use the
+        pattern matcher for other purposes needs to allocate a second
+        matcher (Use case: prior knowledge)
+    */
+    const GoUctPatterns<BOARD>& Patterns() const;
+
     /** Set random seed for random number generator.
         Only implemented for BOARD == GoBoard
     */
@@ -673,6 +680,13 @@ void GoUctDefaultPlayoutPolicy<BOARD>::OnPlay()
     m_pureRandomGenerator.OnPlay();
 }
 
+
+template<class BOARD>
+const GoUctPatterns<BOARD>& GoUctDefaultPlayoutPolicy<BOARD>::Patterns()
+    const
+{
+    return m_patterns;
+}
 
 template<class BOARD>
 SgPoint GoUctDefaultPlayoutPolicy<BOARD>::SelectRandom()
