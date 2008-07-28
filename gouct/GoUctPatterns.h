@@ -64,7 +64,7 @@ public:
     GoUctPatterns(const BOARD& bd);
 
     /** Match any of the patterns. */
-    bool MatchAny(SgPoint p);
+    bool MatchAny(SgPoint p) const;
 
 private:
     static const int POWER3_5 = 3 * 3 * 3 * 3 * 3;
@@ -124,10 +124,10 @@ private:
     static int SetupCodedPosition(GoBoard& bd, int code);
 
     /** Match any of the center patterns. */
-    bool MatchAnyCenter(SgPoint p);
+    bool MatchAnyCenter(SgPoint p) const;
 
     /** Match any of the edge patterns. */
-    bool MatchAnyEdge(SgPoint p);
+    bool MatchAnyEdge(SgPoint p) const;
 };
 
 template<class BOARD>
@@ -496,19 +496,19 @@ bool GoUctPatterns<BOARD>::MatchHane(const GoBoard& bd, SgPoint p,
 }
 
 template<class BOARD>
-inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p)
+inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p) const
 {
     return m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)];
 }
 
 template<class BOARD>
-inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p)
+inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p) const
 {
     return m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
 }
 
 template<class BOARD>
-inline bool GoUctPatterns<BOARD>::MatchAny(SgPoint p)
+inline bool GoUctPatterns<BOARD>::MatchAny(SgPoint p) const
 {
     // Quick refutation using the incremental neighbor counts of the board:
     // all patterns have at least one adjacent stone
