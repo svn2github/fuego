@@ -119,3 +119,42 @@ reg_genmove b
 230 sg_compare_float 0.5 uct_value
 #? [-1]
 # finally!
+
+loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 31
+240 reg_genmove b
+#? [F4]*
+# kill, avoid seki.
+
+loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 35
+250 reg_genmove b
+#? [D4]*
+# already is seki, F4 is bad attack and loses the game.
+
+loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 41
+reg_genmove b
+260 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 53
+reg_genmove b
+270 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/KGS/7/25/PaperTiger-Fuego.sgf 163
+280 reg_genmove b
+#? [Q13]*
+# Q13 is the only way to attack. O12 leads to seki.
+
+loadsgf sgf/games/2008/KGS/7/25/PaperTiger-Fuego.sgf 235
+reg_genmove b
+290 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/KGS/7/25/PaperTiger-Fuego.sgf 345
+reg_genmove b
+300 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
