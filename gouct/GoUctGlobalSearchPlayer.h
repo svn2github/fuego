@@ -314,6 +314,10 @@ private:
 
     boost::scoped_ptr<GoUctRootFilter> m_rootFilter;
 
+    /** Playout policy used if search mode is GOUCT_SEARCHMODE_PLAYOUTPOLICY.
+    */
+    boost::scoped_ptr<GoUctDefaultPlayoutPolicy<GoBoard> > m_playoutPolicy;
+
     /** Initial tree if subtree of last search is reused.
         This variable is used only locally and only a member to avoid frequent
         allocation and deallocation.
