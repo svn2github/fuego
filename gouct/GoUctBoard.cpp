@@ -270,12 +270,12 @@ void GoUctBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
 {
     // Stone already placed
     SG_ASSERT(IsColor(p, c));
-    int nuNeighbors = NumNeighbors(p, c);
-    if (nuNeighbors == 0)
+    int n = adjBlocks.Length();
+    if (n == 0)
         CreateSingleStoneBlock(p, c);
     else
     {
-        if (nuNeighbors == 1)
+        if (n == 1)
             AddStoneToBlock(p, adjBlocks[0]);
         else
             MergeBlocks(p, adjBlocks);
