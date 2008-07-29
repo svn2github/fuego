@@ -111,7 +111,6 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     false after first warning to avoid multiple warnungs on truncate)
     @param timer
     @param maxTime See ExtractSubtree()
-    @param warningShown Flag to avoid printing multiple warnings on truncate
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
