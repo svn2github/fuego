@@ -218,3 +218,8 @@ loadsgf sgf/semeai/semeai-eval.1.sgf 7
 470 sg_compare_float 0.6 uct_value
 #? [1]*
 # B won, but current program is unsure about bottom right - score around 0.5.
+
+loadsgf sgf/games/2008/KGS/7/27/Yuusen-Fuego9-3.sgf 33
+480 reg_genmove b
+#? [C1]
+# currently unstable - sometimes the program converges on F2, sometimes C1.

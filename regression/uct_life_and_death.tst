@@ -97,3 +97,22 @@ loadsgf sgf/games/2008/gnu-uct3K-28.sgf 40
 210 reg_genmove w
 #? [G8|H9]
 
+loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 36
+220 reg_genmove w
+#? [D2|E2]
+
+loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 37
+230 reg_genmove b
+#? [D2]
+
+loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 39
+240 reg_genmove b
+#? [A1]
+# play ko for kill
+
+loadsgf sgf/games/2008/KGS/7/26/MatroidX-5.sgf 43
+250 reg_genmove b
+#? [C8]
+# defend territory, don't try to kill
+
+
