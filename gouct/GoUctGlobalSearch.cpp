@@ -353,6 +353,7 @@ void GoUctGlobalSearch::SetDefaultParameters(int boardSize)
     SetUseSignatures(false);
     SetSignatureWeightInitial(0.2);
     SetSignatureWeightFinal(500);
+    SetExpandThreshold(2);
     if (boardSize <= 13)
     {
         // These parameters were mainly tested on 9x9
