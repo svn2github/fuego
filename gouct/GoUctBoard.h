@@ -461,7 +461,7 @@ public:
         void operator++();
 
         /** Return the current liberty. */
-        int operator*() const;
+        SgPoint operator*() const;
 
         /** Return true if iteration is valid, otherwise false. */
         operator bool() const;
@@ -487,11 +487,11 @@ public:
     public:
         StoneIterator(const GoUctBoard& bd, SgPoint p);
 
-        /** Advance the state of the iteration to the next liberty. */
+        /** Advance the state of the iteration to the next stone. */
         void operator++();
 
-        /** Return the current liberty. */
-        int operator*() const;
+        /** Return the current stone. */
+        SgPoint operator*() const;
 
         /** Return true if iteration is valid, otherwise false. */
         operator bool() const;
@@ -532,7 +532,7 @@ inline void GoUctBoard::LibertyIterator::operator++()
     ++m_it;
 }
 
-inline int GoUctBoard::LibertyIterator::operator*() const
+inline SgPoint GoUctBoard::LibertyIterator::operator*() const
 {
     return *m_it;
 }
@@ -555,7 +555,7 @@ inline void GoUctBoard::StoneIterator::operator++()
     ++m_it;
 }
 
-inline int GoUctBoard::StoneIterator::operator*() const
+inline SgPoint GoUctBoard::StoneIterator::operator*() const
 {
     return *m_it;
 }
