@@ -11,10 +11,6 @@
 
 using namespace std;
 
-template<> void GoUctDefaultPlayoutPolicy<GoBoard>::Randomize()
-{
-    m_random.SetSeed(0);
-}
 //----------------------------------------------------------------------------
 
 GoUctDefaultPlayoutPolicyParam::GoUctDefaultPlayoutPolicyParam()

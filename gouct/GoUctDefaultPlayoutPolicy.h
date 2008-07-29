@@ -174,11 +174,6 @@ public:
     */
     const GoUctPatterns<BOARD>& Patterns() const;
 
-    /** Set random seed for random number generator.
-        Only implemented for BOARD == GoBoard
-    */
-    void Randomize();
-
 private:
     /** A function that possibly corrects a given point */
     typedef bool Corrector(const BOARD&, SgPoint&);
