@@ -33,9 +33,10 @@ SgFastLog::SgFastLog(int mantissaBits)
     x.m_int = 0x3F800000;
     int incr = (1 << m_mantissaBitsDiff);
     int p = static_cast<int>(pow(2.0f, mantissaBits));
-    for(int i = 0; i < p; ++i)
+    float invLogTwo = 1.f / log(2.f);
+    for (int i = 0; i < p; ++i)
     {
-        m_lookupTable[i] = log2(x.m_float);
+        m_lookupTable[i] = log(x.m_float) * invLogTwo;
         x.m_int += incr;
     }
 }
