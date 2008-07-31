@@ -842,6 +842,14 @@ public:
     */
     bool ThreadsCreated() const;
 
+    /** Create threads.
+        The threads are created at the beginning of the first search
+        (to allow multi-step construction with setting the policy after
+        the constructor call). This function needs to be called explicitely
+        only, if a thread state is going to be used before the first search.
+    */
+    void CreateThreads();
+
 private:
     typedef boost::recursive_mutex::scoped_lock GlobalLock;
 
@@ -1034,8 +1042,6 @@ private:
     bool CheckAbortSearch(const SgUctThreadState& state);
 
     bool CheckCountAbort(std::size_t remainingGames) const;
-
-    void CreateThreads();
 
     void Debug(const SgUctThreadState& state, const std::string& textLine);
 
