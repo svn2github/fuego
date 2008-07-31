@@ -51,6 +51,7 @@ public:
         - @link CmdParamSearch() @c uct_param_search @endlink
         - @link CmdPatterns() @c uct_patterns @endlink
         - @link CmdPolicyMoves() @c uct_policy_moves @endlink
+        - @link CmdPriorKnowledge() @c uct_prior_knowledge @endlink
         - @link CmdRaveValues() @c uct_rave_values @endlink
         - @link CmdRootFilter() @c uct_root_filter @endlink
         - @link CmdSaveGames() @c uct_savegames @endlink
@@ -84,6 +85,7 @@ public:
     void CmdParamSearch(GtpCommand& cmd);
     void CmdPatterns(GtpCommand& cmd);
     void CmdPolicyMoves(GtpCommand& cmd);
+    void CmdPriorKnowledge(GtpCommand& cmd);
     void CmdRaveValues(GtpCommand& cmd);
     void CmdRootFilter(GtpCommand& cmd);
     void CmdSaveGames(GtpCommand& cmd);

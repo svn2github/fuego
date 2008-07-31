@@ -173,6 +173,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "param/Uct Param Search/uct_param_search\n"
         "plist/Uct Patterns/uct_patterns\n"
         "pstring/Uct Policy Moves/uct_policy_moves\n"
+        "gfx/Uct Prior Knowledge/uct_prior_knowledge\n"
         "sboard/Uct Rave Values/uct_rave_values\n"
         "plist/Uct Root Filter/uct_root_filter\n"
         "none/Uct SaveGames/uct_savegames %w\n"
@@ -672,6 +673,63 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
         cmd << ' ' << SgWritePoint(moves[i]);
 }
 
+/** Show prior knowledge.
+    If no argument is given, the the response is compatible to the GoGui
+    analyze command type @c gfx and shows the prior knowledge values as
+    influence and the counts as labels. If a point argument is given,
+    the reponse is the count and value for this move or empty, if this
+    move is not initialized by prior knowledge.
+*/
+void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
+{
+    cmd.CheckNuArgLessEqual(1);
+    GoUctGlobalSearchState& state = ThreadState(0);
+    SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
+    if (priorKnowledge == 0)
+        throw GtpFailure("no prior knowledge set at search");
+    state.StartSearch(); // Updates thread state board
+    bool deepenTree = false;
+    priorKnowledge->ProcessPosition(deepenTree);
+    if (cmd.NuArg() == 1)
+    {
+        SgPoint p = EmptyPointArg(cmd, 0, m_bd);
+        float value;
+        size_t count;
+        priorKnowledge->InitializeMove(p, value, count);
+        if (count > 0)
+            cmd << count << ' ' << value;
+    }
+    else
+    {
+        cmd << "INFLUENCE ";
+        for (GoBoard::Iterator it(m_bd); it; ++it)
+            if (m_bd.IsEmpty(*it))
+            {
+                float value;
+                size_t count;
+                priorKnowledge->InitializeMove(*it, value, count);
+                if (count > 0)
+                {
+                    float scaledValue = (value * 2 - 1);
+                    if (m_bd.ToPlay() != SG_BLACK)
+                        scaledValue *= -1;
+                    cmd << ' ' << SgWritePoint(*it) << ' ' << scaledValue;
+                }
+            }
+        cmd << "\nLABEL ";
+        for (GoBoard::Iterator it(m_bd); it; ++it)
+            if (m_bd.IsEmpty(*it))
+            {
+                float value;
+                size_t count;
+                priorKnowledge->InitializeMove(*it, value, count);
+                if (count > 0)
+                    cmd << ' ' << SgWritePoint(*it) << ' ' << count;
+            }
+        cmd << '\n';
+    }
+}
+
 /** Show RAVE values of last search at root position.
     This command is compatible to the GoGui analyze command type @c dboard.
     The values are scaled to [-1,+1] from Black's point of view.
@@ -1016,6 +1074,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_param_search", &GoUctCommands::CmdParamSearch);
     Register(e, "uct_patterns", &GoUctCommands::CmdPatterns);
     Register(e, "uct_policy_moves", &GoUctCommands::CmdPolicyMoves);
+    Register(e, "uct_prior_knowledge", &GoUctCommands::CmdPriorKnowledge);
     Register(e, "uct_rave_values", &GoUctCommands::CmdRaveValues);
     Register(e, "uct_root_filter", &GoUctCommands::CmdRootFilter);
     Register(e, "uct_savegames", &GoUctCommands::CmdSaveGames);
@@ -1063,7 +1122,7 @@ GoUctGlobalSearchState& GoUctCommands::ThreadState(std::size_t threadId)
 {
     GoUctSearch& search = Search();
     if (! search.ThreadsCreated())
-        throw GtpFailure("threads not yet created");
+        search.CreateThreads();
     try
     {
         return dynamic_cast<GoUctGlobalSearchState&>(
