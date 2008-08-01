@@ -53,12 +53,10 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
 {
     m_nodes.clear();
     m_inTreeSequence.clear();
-    m_inTreeSignatures.clear();
     if (numberPlayouts != m_sequence.size())
     {
         m_sequence.resize(numberPlayouts);
         m_skipRaveUpdate.resize(numberPlayouts);
-        m_signatures.resize(numberPlayouts);
         m_eval.resize(numberPlayouts);
         m_aborted.resize(numberPlayouts);
     }
@@ -66,7 +64,6 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
     {
         m_sequence[i].clear();
         m_skipRaveUpdate[i].clear();
-        m_signatures[i].clear();
     }
 }
 
@@ -112,12 +109,6 @@ void SgUctThreadState::EndPlayout()
 void SgUctThreadState::GameStart()
 {
     // Default implementation does nothing
-}
-
-std::size_t SgUctThreadState::GetSignature(SgMove mv) const
-{
-    SG_UNUSED(mv);
-    return numeric_limits<size_t>::max();
 }
 
 void SgUctThreadState::StartPlayout()
@@ -241,7 +232,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
       m_lockFree(false),
-      m_useSignatures(false),
       m_numberThreads(1),
       m_numberPlayouts(1),
       m_maxNodes(5000000),
@@ -252,8 +242,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_firstPlayUrgency(10000),
       m_raveWeightInitial(1.f),
       m_raveWeightFinal(20000),
-      m_signatureWeightInitial(0.2),
-      m_signatureWeightFinal(4000),
       m_logFileName("uctsearch.log"),
       m_biasTermPrecomp(precompMaxPos, precompMaxMove),
       m_fastLog(10)
@@ -413,12 +401,6 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
         return;
     }
     m_tree.CreateChildren(threadId, node, state.m_moves);
-    if (m_useSignatures)
-        for (SgUctChildIterator it(m_tree, node); it; ++it)
-        {
-            const SgUctNode& child = *it;
-            m_tree.SetSignature(child, state.GetSignature(child.Move()));
-        }
     if (state.m_priorKnowledge.get() != 0)
         InitPriorKnowledge(state, node, deepenTree);
 }
@@ -514,8 +496,8 @@ float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
                             const SgUctNode& child) const
 {
     float value;
-    if (m_rave && ! m_useSignatures)
-        value = GetValueEstimateRaveNoSig(child);
+    if (m_rave)
+        value = GetValueEstimateRave(child);
     else
         value = GetValueEstimate(child);
     if (m_noBiasTerm)
@@ -527,19 +509,6 @@ float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
             * m_biasTermPrecomp.Get(posCount, logPosCount, moveCount + 1);
         return bound;
     }
-}
-
-const SgUctStatisticsBaseVolatile& SgUctSearch::GetSignatureStat(SgMove mv)
-    const
-{
-    if (m_threads.size() == 0)
-        throw SgException("SgUctSearch::GetSignatureStat: "
-                          "statistics unavailable");
-    size_t sig = ThreadState(0).GetSignature(mv);
-    if (sig == numeric_limits<size_t>::max())
-        throw SgException("SgUctSearch::GetSignatureStat: "
-                          "invalid move or statistics unavailable");
-    return m_signatureStat[mv];
 }
 
 float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
@@ -569,38 +538,21 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
             hasValue = true;
         }
     }
-    if (m_useSignatures)
-    {
-        size_t sig = child.Signature();
-        if (sig != numeric_limits<size_t>::max())
-        {
-            SG_ASSERT(sig < m_signatureStat.size());
-            const SgUctStatisticsBaseVolatile& stat = m_signatureStat[sig];
-            size_t sigCount = stat.Count();
-            if (sigCount > 0)
-            {
-                float weight =
-                    sigCount
-                    / (m_sigWeightParam1 + m_sigWeightParam2 * sigCount);
-                value += weight * stat.Mean();
-                weightSum += weight;
-                hasValue = true;
-            }
-        }
-    }
     if (hasValue)
         return (value / weightSum);
     else
         return m_firstPlayUrgency;
 }
 
-/** Optimized version of GetValueEstimate() if RAVE and no signatures are
-    used.
+/** Optimized version of GetValueEstimate() if RAVE and not other
+    estimators are used.
+    Previously there were more estimators than move value and RAVE value,
+    and in the future there may be again. GetValueEstimate() is easier to
+    extend, this function is more optimized for the special case.
 */
-float SgUctSearch::GetValueEstimateRaveNoSig(const SgUctNode& child) const
+float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
 {
     SG_ASSERT(m_rave);
-    SG_ASSERT(! m_useSignatures);
     size_t moveCount = child.MoveCount();
     size_t raveCount = child.RaveCount();
     float value;
@@ -717,8 +669,6 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock,
         info.m_sequence[i] = info.m_inTreeSequence;
         // skipRaveUpdate only used in playout phase
         info.m_skipRaveUpdate[i].assign(nuMovesInTree, false);
-        if (m_useSignatures)
-            info.m_signatures[i] = info.m_inTreeSignatures;
         bool abort = abortInTree;
         if (! isTreeOutOfMem && ! abort && ! isTerminal)
             abort = ! PlayoutGame(state, i);
@@ -744,8 +694,6 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock,
     UpdateTree(info);
     if (m_rave)
         UpdateRaveValues(state);
-    if (m_useSignatures)
-        UpdateSignatures(info);
     UpdateStatistics(info);
 }
 
@@ -761,7 +709,6 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state,
                              bool& isTerminal, bool& isTreeOutOfMem)
 {
     vector<SgMove>& sequence = state.m_gameInfo.m_inTreeSequence;
-    vector<size_t>& signatures = state.m_gameInfo.m_inTreeSignatures;
     vector<const SgUctNode*>& nodes = state.m_gameInfo.m_nodes;
     const SgUctNode* root = &m_tree.Root();
     const SgUctNode* current = root;
@@ -800,8 +747,6 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state,
         current = &SelectChild(*current);
         nodes.push_back(current);
         SgMove move = current->Move();
-        if (m_useSignatures)
-            signatures.push_back(current->Signature());
         state.Execute(move);
         sequence.push_back(move);
         if (breakAfterSelect)
@@ -819,7 +764,6 @@ bool SgUctSearch::PlayoutGame(SgUctThreadState& state, std::size_t playout)
 {
     SgUctGameInfo& info = state.m_gameInfo;
     vector<SgMove>& sequence = info.m_sequence[playout];
-    vector<size_t>& signatures = info.m_signatures[playout];
     vector<bool>& skipRaveUpdate = info.m_skipRaveUpdate[playout];
     while (true)
     {
@@ -829,8 +773,6 @@ bool SgUctSearch::PlayoutGame(SgUctThreadState& state, std::size_t playout)
         SgMove move = state.GeneratePlayoutMove(skipRave);
         if (move == SG_NULLMOVE)
             break;
-        if (m_useSignatures)
-            signatures.push_back(state.GetSignature(move));
         state.ExecutePlayout(move);
         sequence.push_back(move);
         skipRaveUpdate.push_back(skipRave);
@@ -1016,11 +958,6 @@ void SgUctSearch::SetThreadStateFactory(SgUctThreadStateFactory* factory)
     // is not fully constructed) as an argument to the Create() function
 }
 
-std::size_t SgUctSearch::SignatureRange() const
-{
-    return 0;
-}
-
 void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
                               SgUctTree* initTree)
 {
@@ -1033,19 +970,8 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
         // machine, because the time, while threads are waiting for a lock
         // does not contribute to the cputime.
         SgWarning() << "SgUctSearch: using cpu time with multiple threads\n";
-    if (m_useSignatures)
-    {
-        size_t range = SignatureRange();
-        if (range == 0)
-            SgWarning() << "SgUctSearch: signatures enabled but range is 0\n";
-        m_signatureStat.resize(range);
-        for (size_t i = 0; i < range; ++i)
-            m_signatureStat[i].Clear();
-    }
     m_raveWeightParam1 = 1.f / m_raveWeightInitial;
     m_raveWeightParam2 = m_raveWeightInitial / m_raveWeightFinal;
-    m_sigWeightParam1 = 1.f / m_signatureWeightInitial;
-    m_sigWeightParam2 = m_signatureWeightInitial / m_signatureWeightFinal;
     if (initTree == 0)
         m_tree.Clear();
     else
@@ -1193,27 +1119,6 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state, float eval,
         if  (m_raveCheckSame && SgUtil::InRange(firstPlayOpp[mv], i, first))
             continue;
         m_tree.AddRaveValue(child, eval);
-    }
-}
-
-void SgUctSearch::UpdateSignatures(const SgUctGameInfo& info)
-{
-    for (size_t playout = 0; playout < m_numberPlayouts; ++playout)
-    {
-        float eval = info.m_eval[playout];
-        float invEval = InverseEval(eval);
-        const vector<size_t>& signatures = info.m_signatures[playout];
-        SG_ASSERT(signatures.size() == info.m_sequence[playout].size());
-        for (size_t i = 0; i < signatures.size(); ++i)
-        {
-            size_t sig = signatures[i];
-            if (sig != numeric_limits<size_t>::max())
-            {
-                SG_ASSERT(sig < m_signatureStat.size());
-                m_signatureStat[sig].Add(eval);
-            }
-            swap(eval, invEval);
-        }
     }
 }
 

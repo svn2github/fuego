@@ -350,9 +350,6 @@ void GoUctGlobalSearch::SetDefaultParameters(int boardSize)
     SetRave(true);
     SetRaveWeightInitial(1.0);
     SetRaveWeightFinal(5000);
-    SetUseSignatures(false);
-    SetSignatureWeightInitial(0.2);
-    SetSignatureWeightFinal(500);
     SetExpandThreshold(2);
     if (boardSize <= 13)
     {

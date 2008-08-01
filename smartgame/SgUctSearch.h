@@ -94,12 +94,11 @@
 */
 
 /** @page sguctsearchweights Estimator weights in SgUctSearch
-    The weights of the estimators (move value, RAVE value, and signature
-    value) are chosen by assuming that the estimators are uncorrelated
-    and modeling the mean squared error of estimator @f$ i @f$ by a function
-    that depends on the number of samples and parameter constants, which
-    represent the variance and bias of the estimator and need to be
-    determined experimentally:
+    The weights of the estimators (move value, RAVE value) are chosen by
+    assuming that the estimators are uncorrelated and modeling the mean
+    squared error of estimator @f$ i @f$ by a function that depends on the
+    number of samples and parameter constants, which represent the variance
+    and bias of the estimator and need to be determined experimentally:
 
     @f[
     w_i = \frac{1}{Z} \frac{1}{{\rm MSE}_i}
@@ -158,11 +157,6 @@ struct SgUctGameInfo
     /** The sequence of the in-tree phase. */
     std::vector<SgMove> m_inTreeSequence;
 
-    /** The signature of the moves of the in-tree phase, if signatures are
-        used.
-    */
-    std::vector<std::size_t> m_inTreeSignatures;
-
     /** The sequence of the playout(s).
         For convenient usage, they also include the moves from
         m_inTreeSequence, even if they are the same for each playout.
@@ -184,8 +178,6 @@ struct SgUctGameInfo
         in-tree phase.
     */
     std::vector<std::vector<bool> > m_skipRaveUpdate;
-
-    std::vector<std::vector<size_t> > m_signatures;
 
     void Clear(std::size_t numberPlayouts);
 };
@@ -414,16 +406,6 @@ public:
     */
     virtual void EndPlayout();
 
-    /** Get signature of a move in the current position.
-        This function is only used, if UseSignatures() was called.
-        Default implementation returns numeric_limits<size_t>::max().
-        This function needs to be reimplemented in the subclass, if signatures
-        are used.
-        @return The signature, or numeric_limits<size_t>::max(), if move has
-        no signature.
-    */
-    virtual std::size_t GetSignature(SgMove mv) const;
-
     // @} // name
 };
 
@@ -547,15 +529,6 @@ public:
     */
     virtual void OnStartSearch();
 
-    /** Get the value range used for move signatures.
-        This function is only used, if UseSignatures() was called.
-        Default implementation returns 0.
-        This function needs to be reimplemented in the subclass, if signatures
-        are used.
-        @see UseSignatures
-    */
-    virtual std::size_t SignatureRange() const;
-
     // @} // name
 
 
@@ -630,8 +603,6 @@ public:
         @param child The node corresponding to the move
     */
     float GetBound(const SgUctNode& node, const SgUctNode& child) const;
-
-    const SgUctStatisticsBaseVolatile& GetSignatureStat(SgMove mv) const;
 
     // @} // name
 
@@ -781,19 +752,6 @@ public:
     /** See SgUctMoveSelect */
     void SetMoveSelect(SgUctMoveSelect moveSelect);
 
-    /** Use move signatures.
-        Move signatures are numbers computed by the subclass that represent a
-        class of moves during the in-tree phase (e.g. a code encoding the
-        four neighbors in Go). A table with statistics of the game result,
-        indexed by these numbers, is kept for each color, and these values
-        are used as an additional move value estimator.
-        @see GetSignature(), SignatureRange()
-    */
-    bool UseSignatures() const;
-
-    /** See UseSignatures() */
-    void SetUseSignatures(bool enable);
-
     /** See @ref sguctsearchweights. */
     float RaveWeightInitial() const;
 
@@ -805,18 +763,6 @@ public:
 
     /** See @ref sguctsearchweights. */
     void SetRaveWeightFinal(float value);
-
-    /** See @ref sguctsearchweights. */
-    float SignatureWeightInitial() const;
-
-    /** See @ref sguctsearchweights. */
-    void SetSignatureWeightInitial(float value);
-
-    /** See @ref sguctsearchweights. */
-    float SignatureWeightFinal() const;
-
-    /** See @ref sguctsearchweights. */
-    void SetSignatureWeightFinal(float value);
 
     // @} // name
 
@@ -935,9 +881,6 @@ private:
     /** See LockFree() */
     bool m_lockFree;
 
-    /** See UseSignatures() */
-    bool m_useSignatures;
-
     std::size_t m_numberThreads;
 
     std::size_t m_numberPlayouts;
@@ -980,23 +923,11 @@ private:
     /** See @ref sguctsearchweights. */
     float m_raveWeightFinal;
 
-    /** See @ref sguctsearchweights. */
-    float m_signatureWeightInitial;
-
-    /** See @ref sguctsearchweights. */
-    float m_signatureWeightFinal;
-
     /** 1 / m_raveWeightInitial precomputed for efficiency */
     float m_raveWeightParam1;
 
     /** m_raveWeightInitial / m_raveWeightFinal precomputed for efficiency */
     float m_raveWeightParam2;
-
-    /** 1 / m_sigWeightInitial precomputed for efficiency */
-    float m_sigWeightParam1;
-
-    /** m_sigWeightInitial / m_sigWeightFinal precomputed for efficiency */
-    float m_sigWeightParam2;
 
     /** Time limit for current search. */
     double m_maxTime;
@@ -1035,8 +966,6 @@ private:
     SgFastLog m_fastLog;
 #endif
 
-    std::vector<SgUctStatisticsBaseVolatile> m_signatureStat;
-
     void ApplyRootFilter(std::vector<SgMove>& moves);
 
     bool CheckAbortSearch(const SgUctThreadState& state);
@@ -1058,7 +987,7 @@ private:
 
     float GetValueEstimate(const SgUctNode& child) const;
 
-    float GetValueEstimateRaveNoSig(const SgUctNode& child) const;
+    float GetValueEstimateRave(const SgUctNode& child) const;
 
     float Log(std::size_t x) const;
 
@@ -1087,8 +1016,6 @@ private:
     void UpdateRaveValues(SgUctThreadState& state, float eval, std::size_t i,
                           const std::size_t firstPlay[],
                           const std::size_t firstPlayOpp[]);
-
-    void UpdateSignatures(const SgUctGameInfo& info);
 
     void UpdateStatistics(const SgUctGameInfo& info);
 
@@ -1249,31 +1176,6 @@ inline void SgUctSearch::SetRaveWeightInitial(float value)
     m_raveWeightInitial = value;
 }
 
-inline void SgUctSearch::SetSignatureWeightFinal(float value)
-{
-    m_signatureWeightFinal = value;
-}
-
-inline void SgUctSearch::SetSignatureWeightInitial(float value)
-{
-    m_signatureWeightInitial = value;
-}
-
-inline void SgUctSearch::SetUseSignatures(bool enable)
-{
-    m_useSignatures = enable;
-}
-
-inline float SgUctSearch::SignatureWeightInitial() const
-{
-    return m_signatureWeightInitial;
-}
-
-inline float SgUctSearch::SignatureWeightFinal() const
-{
-    return m_signatureWeightFinal;
-}
-
 inline const SgUctSearchStat& SgUctSearch::Statistics() const
 {
     return m_statistics;
@@ -1293,11 +1195,6 @@ inline SgUctThreadState& SgUctSearch::ThreadState(int i) const
 inline const SgUctTree& SgUctSearch::Tree() const
 {
     return m_tree;
-}
-
-inline bool SgUctSearch::UseSignatures() const
-{
-    return m_useSignatures;
 }
 
 //----------------------------------------------------------------------------

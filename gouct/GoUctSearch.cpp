@@ -24,107 +24,7 @@ namespace {
 
 //----------------------------------------------------------------------------
 
-/** Computation of move signatures. */
-class Signature
-{
-public:
-    static const size_t RANGE = 2 * SG_MAX_SIZE * SG_MAX_SIZE * 3 * 3 * 3 * 3;
-
-    Signature();
-
-    template<class BOARD>
-    size_t Get(const BOARD& bd, SgPoint p);
-
-private:
-    SgPointArray<size_t> m_locationBlack;
-
-    SgPointArray<size_t> m_locationWhite;
-
-    size_t m_westBlack;
-
-    size_t m_westWhite;
-
-    size_t m_eastBlack;
-
-    size_t m_eastWhite;
-
-    size_t m_northBlack;
-
-    size_t m_northWhite;
-
-    size_t m_southBlack;
-
-    size_t m_southWhite;
-};
-
-Signature::Signature()
-{
-    m_westBlack = 1 * 3 * 3 * 3 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_westWhite = 2 * 3 * 3 * 3 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_eastBlack = 1 * 3 * 3 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_eastWhite = 2 * 3 * 3 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_northBlack = 1 * 3 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_northWhite = 2 * 3 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_southBlack = 1 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    m_southWhite = 2 * SG_MAX_SIZE * SG_MAX_SIZE * 2;
-    for (int col = 1; col <= SG_MAX_SIZE; ++col)
-        for (int row = 1; row <= SG_MAX_SIZE; ++row)
-        {
-            SgPoint p = SgPointUtil::Pt(col, row);
-            m_locationBlack[p] = (row - 1) * SG_MAX_SIZE + (col - 1);
-            m_locationWhite[p] =
-                m_locationBlack[p] + SG_MAX_SIZE * SG_MAX_SIZE;
-        }
-}
-
-template<class BOARD>
-size_t Signature::Get(const BOARD& bd, SgPoint p)
-{
-    if (p == SG_PASS)
-        return numeric_limits<size_t>::max();
-    SG_ASSERT(bd.IsEmpty(p));
-    size_t signature;
-
-    if (bd.ToPlay() == SG_BLACK)
-        signature = m_locationBlack[p];
-    else
-        signature = m_locationWhite[p];
-
-    SgBoardColor c;
-
-    c = bd.GetColor(p - SG_WE);
-    if (c == SG_BLACK)
-        signature += m_westBlack;
-    else if (c == SG_WHITE)
-        signature += m_westWhite;
-
-    c = bd.GetColor(p + SG_WE);
-    if (c == SG_BLACK)
-        signature += m_eastBlack;
-    else if (c == SG_WHITE)
-        signature += m_eastWhite;
-
-    c = bd.GetColor(p + SG_NS);
-    if (c == SG_BLACK)
-        signature += m_northBlack;
-    else if (c == SG_WHITE)
-        signature += m_northWhite;
-
-    c = bd.GetColor(p - SG_NS);
-    if (c == SG_BLACK)
-        signature += m_southBlack;
-    else if (c == SG_WHITE)
-        signature += m_southWhite;
-
-    SG_ASSERT(signature < RANGE);
-    return signature;
-}
-
-//----------------------------------------------------------------------------
-
 const int MOVERANGE = SG_PASS + 1;
-
-Signature g_signature;
 
 SgNode* AppendChild(SgNode* node, const string& comment)
 {
@@ -239,14 +139,6 @@ void GoUctState::GameStart()
     m_isInPlayout = false;
 }
 
-std::size_t GoUctState::GetSignature(SgMove mv) const
-{
-    if (m_isInPlayout)
-        return g_signature.Get(m_uctBd, mv);
-    else
-        return g_signature.Get(m_bd, mv);
-}
-
 void GoUctState::StartPlayout()
 {
     m_uctBd.Init(m_bd);
@@ -300,11 +192,6 @@ GoUctSearch::~GoUctSearch()
     if (m_root != 0)
         m_root->DeleteTree();
     m_root = 0;
-}
-
-std::size_t GoUctSearch::GetSignature(SgMove mv) const
-{
-    return g_signature.Get(m_bd, mv);
 }
 
 std::string GoUctSearch::MoveString(SgMove move) const
@@ -379,11 +266,6 @@ void GoUctSearch::SaveTree(std::ostream& out, int maxDepth) const
 {
     GoUctUtil::SaveTree(Tree(), m_bd.Size(), m_stones, m_toPlay, out,
                         maxDepth);
-}
-
-std::size_t GoUctSearch::SignatureRange() const
-{
-    return Signature::RANGE;
 }
 
 SgBlackWhite GoUctSearch::ToPlay() const

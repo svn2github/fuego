@@ -118,12 +118,6 @@ public:
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(float value, std::size_t count);
 
-    /** See SgUctSearch::UseSignatures() */
-    std::size_t Signature() const;
-
-    /** See SgUctSearch::UseSignatures() */
-    void SetSignature(std::size_t sig);
-
 private:
     SgUctStatisticsBaseVolatile m_statistics;
 
@@ -136,15 +130,12 @@ private:
     SgUctStatisticsBaseVolatile m_raveValue;
 
     volatile std::size_t m_posCount;
-
-    volatile std::size_t m_signature;
 };
 
 inline SgUctNode::SgUctNode(SgMove move)
     : m_nuChildren(0),
       m_move(move),
-      m_posCount(0),
-      m_signature(std::numeric_limits<size_t>::max())
+      m_posCount(0)
 {
     // m_firstChild is not initialized, only defined if m_nuChildren > 0
 }
@@ -246,16 +237,6 @@ inline void SgUctNode::SetNuChildren(int nuChildren)
 inline void SgUctNode::SetPosCount(std::size_t value)
 {
     m_posCount = value;
-}
-
-inline void SgUctNode::SetSignature(std::size_t sig)
-{
-    m_signature = sig;
-}
-
-inline std::size_t SgUctNode::Signature() const
-{
-    return m_signature;
 }
 
 //----------------------------------------------------------------------------
@@ -445,8 +426,6 @@ public:
     void InitializeRaveValue(const SgUctNode& node, float value,
                              std::size_t count);
 
-    void SetSignature(const SgUctNode& node, std::size_t sig);
-
     /** Remove some children of a node according to a list of filtered moves.
         Requires: Allocator(allocatorId).HasCapacity(node.NuChildren()) <br>
         For efficiency, no reorganization of the tree is done to remove
@@ -587,14 +566,6 @@ inline void SgUctTree::SetPosCount(const SgUctNode& node, size_t posCount)
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     const_cast<SgUctNode&>(node).SetPosCount(posCount);
-}
-
-inline void SgUctTree::SetSignature(const SgUctNode& node, std::size_t sig)
-{
-    SG_ASSERT(Contains(node));
-    // Parameters are const-references, because only the tree is allowed
-    // to modify nodes
-    const_cast<SgUctNode&>(node).SetSignature(sig);
 }
 
 //----------------------------------------------------------------------------

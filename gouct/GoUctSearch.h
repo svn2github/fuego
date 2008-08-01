@@ -62,8 +62,6 @@ public:
 
     void StartPlayouts();
 
-    std::size_t GetSignature(SgMove mv) const;
-
     // @} // @name
 
     /** Board used during in-tree phase. */
@@ -175,8 +173,6 @@ public:
 
     void OnStartSearch();
 
-    std::size_t SignatureRange() const;
-
     // @} // @name
 
 
@@ -198,8 +194,6 @@ public:
 
     /** Set initial color to play. */
     void SetToPlay(SgBlackWhite toPlay);
-
-    std::size_t GetSignature(SgPoint mv) const;
 
     // @} // @name
 

@@ -179,9 +179,6 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/Uct SaveGames/uct_savegames %w\n"
         "none/Uct SaveTree/uct_savetree %w\n"
         "gfx/Uct Sequence/uct_sequence\n"
-        "sboard/Uct Signature Code/uct_signature_code\n"
-        "sboard/Uct Signature Value/uct_signature_value\n"
-        "sboard/Uct Signature Count/uct_signature_count\n"
         "hstring/Uct Stat Player/uct_stat_player\n"
         "none/Uct Stat Player Clear/uct_stat_player_clear\n"
         "hstring/Uct Stat Policy/uct_stat_policy\n"
@@ -541,7 +538,6 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c no_bias_term See SgUctSearch::NoBiasTerm
     @arg @c rave See SgUctSearch::Rave
     @arg @c rave_check_same SgUctSearch::RaveCheckSame
-    @arg @c use_signatures SgUctSearch::UseSignatures
     @arg @c bias_term_constant See SgUctSearch::BiasTermConstant
     @arg @c expand_threshold See SgUctSearch::ExpandThreshold
     @arg @c first_play_urgency See SgUctSearch::FirstPlayUrgency
@@ -552,8 +548,6 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c number_playouts See SgUctSearch::NumberPlayouts
     @arg @c rave_weight_final See SgUctSearch::RaveWeightFinal
     @arg @c rave_weight_initial See SgUctSearch::RaveWeightInitial
-    @arg @c signature_weight_final See SgUctSearch::SignatureWeightFinal
-    @arg @c signature_weight_initial See SgUctSearch::SignatureWeightInitial
 */
 void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
 {
@@ -569,7 +563,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
             << "[bool] rave " << s.Rave() << '\n'
             << "[bool] rave_check_same " << s.RaveCheckSame() << '\n'
-            << "[bool] use_signatures " << s.UseSignatures() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
@@ -582,11 +575,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] number_playouts " << s.NumberPlayouts() << '\n'
             << "[string] rave_weight_final " << s.RaveWeightFinal() << '\n'
             << "[string] rave_weight_initial "
-            << s.RaveWeightInitial() << '\n'
-            << "[string] signature_weight_final "
-            << s.SignatureWeightFinal() << '\n'
-            << "[string] signature_weight_initial "
-            << s.SignatureWeightInitial() << '\n';
+            << s.RaveWeightInitial() << '\n';
 
     }
     else if (cmd.NuArg() == 2)
@@ -604,8 +593,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetRave(cmd.BoolArg(1));
         else if (name == "rave_check_same")
             s.SetRaveCheckSame(cmd.BoolArg(1));
-        else if (name == "use_signatures")
-            s.SetUseSignatures(cmd.BoolArg(1));
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.FloatArg(1));
         else if (name == "expand_threshold")
@@ -626,10 +613,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetRaveWeightFinal(cmd.FloatArg(1));
         else if (name == "rave_weight_initial")
             s.SetRaveWeightInitial(cmd.FloatArg(1));
-        else if (name == "signature_weight_final")
-            s.SetSignatureWeightFinal(cmd.FloatArg(1));
-        else if (name == "signature_weight_initial")
-            s.SetSignatureWeightInitial(cmd.FloatArg(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -837,92 +820,6 @@ void GoUctCommands::CmdSequence(GtpCommand& cmd)
     GoUctUtil::GfxSequence(Search(), Search().ToPlay(), cmd);
 }
 
-/** Show signature codes.
-    This command is compatible with the GoGui analyze command type "sboard"
-*/
-void GoUctCommands::CmdSignatureCode(GtpCommand& cmd)
-{
-    cmd.CheckArgNone();
-    const GoUctSearch& search = Search();
-    SgPointArray<string> array("\"\"");
-    for (GoBoard::Iterator it(m_bd); it; ++it)
-    {
-        SgPoint p = *it;
-        if (m_bd.Occupied(p))
-            continue;
-        size_t sig = search.GetSignature(p);
-        if (sig != numeric_limits<size_t>::max())
-            array[p] = str(format("%d") % sig);
-    }
-    cmd << '\n' << SgWritePointArray<string>(array, m_bd.Size());
-
-}
-
-/** Show signature counts.
-    This command is compatible with the GoGui analyze command type "sboard"
-*/
-void GoUctCommands::CmdSignatureCount(GtpCommand& cmd)
-{
-    cmd.CheckArgNone();
-    const GoUctSearch& search = Search();
-    SgPointArray<string> array("\"\"");
-    for (GoBoard::Iterator it(m_bd); it; ++it)
-    {
-        SgPoint p = *it;
-        if (m_bd.Occupied(p))
-            continue;
-        size_t sig = search.GetSignature(p);
-        if (sig != numeric_limits<size_t>::max())
-        {
-            try
-            {
-                size_t count = search.GetSignatureStat(sig).Count();
-                array[p] = str(format("%d") % count);
-            }
-            catch (const SgException& e)
-            {
-                throw GtpFailure(e.what());
-            }
-        }
-    }
-    cmd << '\n' << SgWritePointArray<string>(array, m_bd.Size());
-
-}
-
-/** Show signature values.
-    This command is compatible with the GoGui analyze command type "sboard"
-*/
-void GoUctCommands::CmdSignatureValue(GtpCommand& cmd)
-{
-    cmd.CheckArgNone();
-    const GoUctSearch& search = Search();
-    SgPointArray<string> array("\"\"");
-    for (GoBoard::Iterator it(m_bd); it; ++it)
-    {
-        SgPoint p = *it;
-        if (m_bd.Occupied(p))
-            continue;
-        size_t sig = search.GetSignature(p);
-        if (sig != numeric_limits<size_t>::max())
-        {
-            try
-            {
-                if (search.GetSignatureStat(sig).Count() > 0)
-                {
-                    float mean = search.GetSignatureStat(sig).Mean();
-                    array[p] = str(format("%.2f") % mean);
-                }
-            }
-            catch (const SgException& e)
-            {
-                throw GtpFailure(e.what());
-            }
-        }
-    }
-    cmd << '\n' << SgWritePointArray<string>(array, m_bd.Size());
-
-}
-
 /** Write statistics of GoUctGlobalSearchPlayer.
     Arguments: none
     @see GoUctGlobalSearchPlayer::Statistics
@@ -1081,9 +978,6 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_savetree", &GoUctCommands::CmdSaveTree);
     Register(e, "uct_sequence", &GoUctCommands::CmdSequence);
     Register(e, "uct_score", &GoUctCommands::CmdScore);
-    Register(e, "uct_signature_code", &GoUctCommands::CmdSignatureCode);
-    Register(e, "uct_signature_count", &GoUctCommands::CmdSignatureCount);
-    Register(e, "uct_signature_value", &GoUctCommands::CmdSignatureValue);
     Register(e, "uct_stat_player", &GoUctCommands::CmdStatPlayer);
     Register(e, "uct_stat_player_clear", &GoUctCommands::CmdStatPlayerClear);
     Register(e, "uct_stat_policy", &GoUctCommands::CmdStatPolicy);

@@ -57,9 +57,6 @@ public:
         - @link CmdSaveGames() @c uct_savegames @endlink
         - @link CmdSaveTree() @c uct_savetree @endlink
         - @link CmdSequence() @c uct_sequence @endlink
-        - @link CmdSignatureCode() @c uct_signature_code @endlink
-        - @link CmdSignatureCount() @c uct_signature_count @endlink
-        - @link CmdSignatureValue() @c uct_signature_value @endlink
         - @link CmdScore() @c uct_score @endlink
         - @link CmdStatPlayer() @c uct_stat_player @endlink
         - @link CmdStatPlayerClear() @c uct_stat_player_clear @endlink
@@ -92,9 +89,6 @@ public:
     void CmdSaveTree(GtpCommand& cmd);
     void CmdScore(GtpCommand& cmd);
     void CmdSequence(GtpCommand& cmd);
-    void CmdSignatureCode(GtpCommand& cmd);
-    void CmdSignatureCount(GtpCommand& cmd);
-    void CmdSignatureValue(GtpCommand& cmd);
     void CmdStatPlayer(GtpCommand& cmd);
     void CmdStatPlayerClear(GtpCommand& cmd);
     void CmdStatPolicy(GtpCommand& cmd);
