@@ -296,6 +296,8 @@ void GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator::OnPlay()
         return;
     if (m_bd.OccupiedInAtari(lastMove))
         m_candidates.push_back(m_bd.Anchor(lastMove));
+    if (m_bd.NumNeighbors(lastMove, m_bd.ToPlay()) == 0)
+        return;
     if (m_bd.OccupiedInAtari(lastMove + SG_NS))
         m_candidates.push_back(m_bd.Anchor(lastMove + SG_NS));
     if (m_bd.OccupiedInAtari(lastMove - SG_NS))
@@ -437,6 +439,8 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     SgBlackWhite toPlay = bd.ToPlay();
+    if (bd.NumNeighbors(m_lastMove, toPlay) == 0)
+        return false;
     SgSList<SgPoint,4> anchorList;
     for (SgNb4Iterator it(m_lastMove); it; ++it)
     {
@@ -489,28 +493,31 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
         }
     }
 
-    // play liberties of neighbor blocks
-    SgSList<SgPoint,4> anchorList;
-    for (SgNb4Iterator it(lastMove); it; ++it)
+    if (bd.NumNeighbors(lastMove, toPlay) != 0)
     {
-        if (   bd.GetColor(*it) == toPlay
-            && bd.NumLiberties(*it) == 2
-           )
+        // play liberties of neighbor blocks
+        SgSList<SgPoint,4> anchorList;
+        for (SgNb4Iterator it(lastMove); it; ++it)
         {
-            const SgPoint anchor = bd.Anchor(*it);
-            if (! anchorList.Contains(anchor))
+            if (bd.GetColor(*it) == toPlay
+                && bd.NumLiberties(*it) == 2)
             {
-                anchorList.Append(anchor);
-                for (typename BOARD::LibertyIterator it(bd, anchor); it; ++it)
-                    if (   GainsLiberties(anchor, *it)
-                        && ! GoBoardUtil::SelfAtari(bd, *it)
-                       )
-                    {
-                        m_moves.Append(*it);
-                    }
+                const SgPoint anchor = bd.Anchor(*it);
+                if (! anchorList.Contains(anchor))
+                {
+                    anchorList.Append(anchor);
+                    for (typename BOARD::LibertyIterator it(bd, anchor); it;
+                         ++it)
+                        if (GainsLiberties(anchor, *it)
+                            && ! GoBoardUtil::SelfAtari(bd, *it))
+                        {
+                            m_moves.Append(*it);
+                        }
+                }
             }
         }
     }
+
     return ! m_moves.IsEmpty();
 }
 
