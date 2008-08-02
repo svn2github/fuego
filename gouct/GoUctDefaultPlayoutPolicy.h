@@ -417,7 +417,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
 }
 
 template<class BOARD>
-inline bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
+bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 {
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
@@ -431,7 +431,7 @@ inline bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 }
 
 template<class BOARD>
-inline bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
+bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
@@ -470,8 +470,7 @@ inline bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 }
 
 template<class BOARD>
-inline bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(
-                                                               SgPoint lastMove)
+bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 {
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     SG_ASSERT(! SgIsSpecialMove(lastMove));
@@ -599,7 +598,7 @@ SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
     @see GoUctPatterns
 */
 template<class BOARD>
-inline bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
+bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
