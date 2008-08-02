@@ -295,7 +295,7 @@ public:
 
 private:
     /** Data related to a block of stones on the board. */
-    class Block
+    struct Block
     {
     public:
         /** Upper limit for liberties.
@@ -309,15 +309,13 @@ private:
 
         typedef GoPointList::Iterator StoneIterator;
 
-        SgPoint Anchor() const { return m_anchor; }
+        SgPoint m_anchor;
 
-        void AppendLiberty(SgPoint p) { m_liberties.Append(p); }
+        SgBlackWhite m_color;
 
-        void AppendStone(SgPoint p) { m_stones.Append(p); }
+        LibertyList m_liberties;
 
-        SgBlackWhite Color() const { return m_color; }
-
-        void ExcludeLiberty(SgPoint p) { m_liberties.Exclude(p); }
+        GoPointList m_stones;
 
         void InitSingleStoneBlock(SgBlackWhite c, SgPoint anchor)
         {
@@ -336,23 +334,6 @@ private:
             m_stones.Clear();
             m_liberties.Clear();
         }
-
-        const LibertyList& Liberties() const { return m_liberties; }
-
-        int NumLiberties() const { return m_liberties.Length(); }
-
-        int NumStones() const { return m_stones.Length(); }
-
-        const GoPointList& Stones() const { return m_stones; }
-
-    private:
-        SgPoint m_anchor;
-
-        SgBlackWhite m_color;
-
-        LibertyList m_liberties;
-
-        GoPointList m_stones;
     };
 
     SgPoint m_lastMove;
@@ -521,7 +502,7 @@ inline GoUctBoard::Iterator::Iterator(const GoUctBoard& board)
 
 inline GoUctBoard::LibertyIterator::LibertyIterator(const GoUctBoard& bd,
                                                     SgPoint p)
-    : m_it(bd.m_block[p]->Liberties()),
+    : m_it(bd.m_block[p]->m_liberties),
       m_board(bd)
 {
     SG_ASSERT(m_board.Occupied(p));
@@ -544,7 +525,7 @@ inline GoUctBoard::LibertyIterator::operator bool() const
 
 inline GoUctBoard::StoneIterator::StoneIterator(const GoUctBoard& bd,
                                                 SgPoint p)
-    : m_it(bd.m_block[p]->Stones()),
+    : m_it(bd.m_block[p]->m_stones),
       m_board(bd)
 {
     SG_ASSERT(m_board.Occupied(p));
@@ -568,7 +549,7 @@ inline GoUctBoard::StoneIterator::operator bool() const
 inline SgPoint GoUctBoard::Anchor(SgPoint p) const
 {
     SG_ASSERT(Occupied(p));
-    return m_block[p]->Anchor();
+    return m_block[p]->m_anchor;
 }
 
 inline bool GoUctBoard::AreInSameBlock(SgPoint p1, SgPoint p2) const
@@ -670,7 +651,7 @@ inline bool GoUctBoard::IsInBlock(SgPoint p, SgPoint anchor) const
 {
     SG_ASSERT(Occupied(anchor));
     const Block* b = m_block[p];
-    return (b != 0 && b->Anchor() == anchor);
+    return (b != 0 && b->m_anchor == anchor);
 }
 
 inline bool GoUctBoard::IsLibertyOfBlock(SgPoint p, SgPoint anchor) const
@@ -679,7 +660,7 @@ inline bool GoUctBoard::IsLibertyOfBlock(SgPoint p, SgPoint anchor) const
     SG_ASSERT(Occupied(anchor));
     SG_ASSERT(Anchor(anchor) == anchor);
     const Block* b = m_block[anchor];
-    if (m_nuNeighbors[b->Color()][p] == 0)
+    if (m_nuNeighbors[b->m_color][p] == 0)
         return false;
     return (   m_block[p - SG_NS] == b
             || m_block[p - SG_WE] == b
@@ -828,7 +809,7 @@ inline int GoUctBoard::NumLiberties(SgPoint p) const
 {
     SG_ASSERT(IsValidPoint(p));
     SG_ASSERT(Occupied(p));
-    return m_block[p]->NumLiberties();
+    return m_block[p]->m_liberties.Length();
 }
 
 inline int GoUctBoard::NumNeighbors(SgPoint p, int c) const
@@ -844,7 +825,7 @@ inline int GoUctBoard::NumPrisoners(SgBlackWhite color) const
 inline int GoUctBoard::NumStones(SgPoint block) const
 {
     SG_ASSERT(Occupied(block));
-    return m_block[block]->NumStones();
+    return m_block[block]->m_stones.Length();
 }
 
 inline bool GoUctBoard::Occupied(SgPoint p) const
@@ -855,7 +836,7 @@ inline bool GoUctBoard::Occupied(SgPoint p) const
 inline bool GoUctBoard::OccupiedInAtari(SgPoint p) const
 {
     const Block* b = m_block[p];
-    return (b != 0 && b->NumLiberties() <= 1);
+    return (b != 0 && b->m_liberties.Length() <= 1);
 }
 
 inline SgBlackWhite GoUctBoard::Opponent() const
@@ -887,7 +868,7 @@ inline SgPoint GoUctBoard::TheLiberty(SgPoint p) const
 {
     SG_ASSERT(Occupied(p));
     SG_ASSERT(NumLiberties(p) == 1);
-    return m_block[p]->Liberties()[0];
+    return m_block[p]->m_liberties[0];
 }
 
 inline SgBlackWhite GoUctBoard::ToPlay() const
