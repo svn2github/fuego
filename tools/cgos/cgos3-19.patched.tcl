@@ -5,8 +5,8 @@
 # and game result using the command go_set_info used by fuego/go/GoGtpEngine.
 # Patched lines are marked with the comment PATCHED
 
-set server cgos.lri.fr
-set port   6919
+set server cgos.boardspace.net
+set port   6819
 
 
 

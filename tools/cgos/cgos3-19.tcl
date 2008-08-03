@@ -1,7 +1,7 @@
 #!/usr/bin/env tclsh
 
-set server cgos.lri.fr
-set port   6919
+set server cgos.boardspace.net
+set port   6819
 
 
 
