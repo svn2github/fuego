@@ -256,15 +256,6 @@ void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
         largestBlock->m_liberties.Append(p + SG_NS);
 }
 
-void GoUctBoard::RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c)
-{
-    if (NumNeighbors(p, c) == 0)
-        return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p, c);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
-        (*it)->m_liberties.Exclude(p);
-}
-
 void GoUctBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
                                            const SgSList<Block*,4>& adjBlocks)
 {

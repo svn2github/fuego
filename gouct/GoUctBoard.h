@@ -399,8 +399,6 @@ private:
     void RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                           SgSList<Block*,4>& adjBlocks);
 
-    void RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c);
-
     void UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
                                    const SgSList<Block*,4>& adjBlocks);
 
