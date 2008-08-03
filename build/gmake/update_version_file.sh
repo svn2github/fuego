@@ -8,7 +8,7 @@
 
 cd "$(dirname $0)"
 FILENAME="$PWD/build/version"
-SVNVERSION=$(svnversion -n ../..)
+SVNVERSION=$(svnversion -n ../.. || echo "unknown")
 if [ ! -e "$FILENAME" ] || [ $(cat "$FILENAME") != "$SVNVERSION" ]; then
     echo -n "$SVNVERSION" > "$FILENAME"
 fi
