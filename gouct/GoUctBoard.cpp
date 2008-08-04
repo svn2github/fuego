@@ -439,20 +439,57 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
     decond call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone().
 */
 void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
-                                  SgSList<Block*,4>& adjBlocks)
+                                  SgSList<Block*,4>& ownAdjBlocks)
 {
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    SgSList<Block*,4> adjBlocks;
+    Block* block;
+    if ((block = m_block[p - SG_NS]) != 0)
     {
-        Block* b = *it;
-        b->m_liberties.Exclude(p);
-        if (b->m_color == opp)
+        block->m_liberties.Exclude(p);
+        if (block->m_color == opp)
         {
-            if (b->m_liberties.Length() == 0)
-                KillBlock(b);
+            if (block->m_liberties.Length() == 0)
+                KillBlock(block);
         }
         else
-            adjBlocks.Append(b);
+            ownAdjBlocks.Append(block);
+        adjBlocks.Append(block);
+    }
+    if ((block = m_block[p - SG_WE]) != 0 && ! adjBlocks.Contains(block))
+    {
+        block->m_liberties.Exclude(p);
+        if (block->m_color == opp)
+        {
+            if (block->m_liberties.Length() == 0)
+                KillBlock(block);
+        }
+        else
+            ownAdjBlocks.Append(block);
+        adjBlocks.Append(block);
+    }
+    if ((block = m_block[p + SG_WE]) != 0 && ! adjBlocks.Contains(block))
+    {
+        block->m_liberties.Exclude(p);
+        if (block->m_color == opp)
+        {
+            if (block->m_liberties.Length() == 0)
+                KillBlock(block);
+        }
+        else
+            ownAdjBlocks.Append(block);
+        adjBlocks.Append(block);
+    }
+    if ((block = m_block[p + SG_NS]) != 0 && ! adjBlocks.Contains(block))
+    {
+        block->m_liberties.Exclude(p);
+        if (block->m_color == opp)
+        {
+            if (block->m_liberties.Length() == 0)
+                KillBlock(block);
+        }
+        else
+            ownAdjBlocks.Append(block);
+        adjBlocks.Append(block);
     }
 }
 
