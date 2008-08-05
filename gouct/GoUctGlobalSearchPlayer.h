@@ -193,7 +193,9 @@ public:
         Reuses the subtree from the last search, if the current position is
         a number of regular game moves later than the position that the
         previous search corresponds to.
-        @bug Does not work yet
+        @bug Does not work and causes crashes if the position of a node
+        changes due to setup or handicap stones. See also the bug entry at
+        m_treeValidForNode
     */
     bool ReuseSubtree() const;
 
