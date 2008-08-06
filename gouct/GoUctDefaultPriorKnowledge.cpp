@@ -30,26 +30,68 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     SG_UNUSED(deepenTree);
     m_policy.StartPlayout();
     m_policy.GenerateMove();
-    GoUctDefaultPlayoutPolicyType moveType = m_policy.MoveType();
-    if (moveType == GOUCT_RANDOM)
-        m_counts.Fill(0);
+    GoUctDefaultPlayoutPolicyType type = m_policy.MoveType();
+    const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
+    SgPointSet patternMatch;
+    bool anyPatternMatch = false;
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+        if (m_bd.IsEmpty(*it) && patterns.MatchAny(*it))
+        {
+            patternMatch.Include(*it);
+            anyPatternMatch = true;
+        }
+
+
+    if (type == GOUCT_RANDOM && ! anyPatternMatch)
+    {
+        Initialize(SG_PASS, 0.0, 9);
+        for (GoBoard::Iterator it(m_bd); it; ++it)
+        {
+            SgPoint p = *it;
+            if (! m_bd.IsEmpty(p))
+                continue;
+            if (GoBoardUtil::SelfAtari(m_bd, *it))
+                Initialize(*it, 0.0, 3);
+            else
+                m_counts[*it] = 0; // Don't initialize
+        }
+    }
+    else if (type == GOUCT_RANDOM && anyPatternMatch)
+    {
+        Initialize(SG_PASS, 0.0, 9);
+        for (GoBoard::Iterator it(m_bd); it; ++it)
+        {
+            SgPoint p = *it;
+            if (! m_bd.IsEmpty(p))
+                continue;
+            if (GoBoardUtil::SelfAtari(m_bd, *it))
+                Initialize(*it, 0.0, 3);
+            else if (patternMatch[*it])
+                Initialize(*it, 1.0, 3);
+            else
+                Initialize(*it, 0.5, 3);
+        }
+    }
     else
     {
-        Initialize(SG_PASS, 0, 9);
-
-        // Initialize all moves with 9 * 0.5, self-atari moves with 9 * 0
+        Initialize(SG_PASS, 0.0, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
-            if (m_bd.IsEmpty(*it) && GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0, 9);
+        {
+            SgPoint p = *it;
+            if (! m_bd.IsEmpty(p))
+                continue;
+            if (GoBoardUtil::SelfAtari(m_bd, *it))
+                Initialize(*it, 0.0, 9);
+            else if (patterns.MatchAny(*it))
+                Initialize(*it, 0.6, 9);
             else
-                Initialize(*it, 0.5, 9);
-
-        // Initialize moves that would have been played by playout policy
-        // with 9 * 1
+                Initialize(*it, 0.4, 9);
+        }
         GoPointList moves = m_policy.GetEquivalentBestMoves();
         for (GoPointList::Iterator it(moves); it; ++it)
-            Initialize(*it, 1, 9);
+            Initialize(*it, 1.0, 9);
     }
+
     m_policy.EndPlayout();
 }
 
