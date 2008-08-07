@@ -259,6 +259,10 @@ private:
     /** Generate pattern move around last two moves */
     bool GeneratePatternMove();
 
+    void GeneratePatternMove(SgPoint p);
+
+    void GeneratePatternMove2(SgPoint p, SgPoint lastMove);
+
     void GeneratePureRandom();
 
     bool GeneratePoint(SgPoint p) const;
@@ -609,28 +613,53 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    for (SgNb8Iterator it(m_lastMove); it; ++it)
-        if (   bd.IsEmpty(*it)
-            && m_patterns.MatchAny(*it)
-            && ! GoBoardUtil::SelfAtari(bd, *it)
-            )
-            m_moves.Append(*it);
+    GeneratePatternMove(m_lastMove + SG_NS - SG_WE);
+    GeneratePatternMove(m_lastMove + SG_NS);
+    GeneratePatternMove(m_lastMove + SG_NS + SG_WE);
+    GeneratePatternMove(m_lastMove - SG_WE);
+    GeneratePatternMove(m_lastMove + SG_WE);
+    GeneratePatternMove(m_lastMove - SG_NS - SG_WE);
+    GeneratePatternMove(m_lastMove - SG_NS);
+    GeneratePatternMove(m_lastMove - SG_NS + SG_WE);
     if (SECOND_LAST_MOVE_PATTERNS)
     {
+        const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
         const SgPoint lastMove2 = bd.Get2ndLastMove();
         if (! SgIsSpecialMove(lastMove2))
         {
-            for (SgNb8Iterator it(lastMove2); it; ++it)
-                if (   bd.IsEmpty(*it)
-                    && ! SgPointUtil::In8Neighborhood(m_lastMove, *it)
-                    && m_patterns.MatchAny(*it)
-                    && ! GoBoardUtil::SelfAtari(bd, *it)
-                    )
-                    m_moves.Append(*it);
+            GeneratePatternMove2(lastMove2 + SG_NS - SG_WE, m_lastMove);
+            GeneratePatternMove2(lastMove2 + SG_NS,         m_lastMove);
+            GeneratePatternMove2(lastMove2 + SG_NS + SG_WE, m_lastMove);
+            GeneratePatternMove2(lastMove2 - SG_WE,         m_lastMove);
+            GeneratePatternMove2(lastMove2 + SG_WE,         m_lastMove);
+            GeneratePatternMove2(lastMove2 - SG_NS - SG_WE, m_lastMove);
+            GeneratePatternMove2(lastMove2 - SG_NS,         m_lastMove);
+            GeneratePatternMove2(lastMove2 - SG_NS + SG_WE, m_lastMove);
         }
     }
     return ! m_moves.IsEmpty();
+}
+
+template<class BOARD>
+inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove(SgPoint p)
+{
+    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
+    if (bd.IsEmpty(p)
+        && m_patterns.MatchAny(p)
+        && ! GoBoardUtil::SelfAtari(bd, p))
+        m_moves.Append(p);
+}
+
+template<class BOARD>
+inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove2(
+                                                  SgPoint p, SgPoint lastMove)
+{
+    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
+    if (bd.IsEmpty(p)
+        && ! SgPointUtil::In8Neighborhood(lastMove, p)
+        && m_patterns.MatchAny(p)
+        && ! GoBoardUtil::SelfAtari(bd, p))
+        m_moves.Append(p);
 }
 
 template<class BOARD>
