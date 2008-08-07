@@ -313,7 +313,10 @@ inline int Distance(SgPoint p1, SgPoint p2)
 /** p2 is in 3x3 area around p1. */
 inline bool In8Neighborhood(SgPoint p1, SgPoint p2)
 {
-    return (p1 == p2 || AreAdjacent(p1, p2) || AreDiagonal(p1, p2));
+    int d = p2 - p1;
+    return (d == 0 || d == SG_NS || d == SG_WE || d == -SG_NS || d == -SG_WE
+            || d == SG_NS - SG_WE || d == SG_NS + SG_WE
+            || d == -SG_NS - SG_WE || d == -SG_NS + SG_WE);
 }
 
 /** Rotate/mirror point.
