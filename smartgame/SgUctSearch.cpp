@@ -81,12 +81,6 @@ SgUctPriorKnowledgeFactory::~SgUctPriorKnowledgeFactory()
 
 //----------------------------------------------------------------------------
 
-SgUctInverseEvalFunc::~SgUctInverseEvalFunc()
-{
-}
-
-//----------------------------------------------------------------------------
-
 SgUctThreadState::SgUctThreadState(size_t threadId, int moveRange)
     : m_threadId(threadId)
 {

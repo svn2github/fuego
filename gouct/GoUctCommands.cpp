@@ -875,7 +875,7 @@ void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
     cmd.CheckArgNone();
     const GoUctSearch& search = Search();
     SgUctTreeStatistics treeStatistics;
-    treeStatistics.Compute(search.Tree(), search);
+    treeStatistics.Compute(search.Tree());
     cmd << "SearchStatistics:\n";
     search.WriteStatistics(cmd);
     cmd << "TreeStatistics:\n"
@@ -922,7 +922,7 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     cmd.CheckArgNone();
     float value = Search().Tree().Root().Mean();
     if (Search().ToPlay() == SG_WHITE)
-        value = Search().InverseEval(value);
+        value = SgUctSearch::InverseEval(value);
     cmd << value;
 }
 

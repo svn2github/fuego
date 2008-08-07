@@ -286,8 +286,6 @@ public:
     /** @name Virtual functions of SgUctSearch */
     // @{
 
-    float InverseEval(float eval) const;
-
     string MoveString(SgMove move) const;
 
     float UnknownEval() const;
@@ -348,11 +346,6 @@ void TestUctSearch::AddNode(size_t father, SgMove move, bool isLeaf,
     node.m_eval = eval;
     node.m_isLeaf = isLeaf;
     m_nodes.push_back(node);
-}
-
-float TestUctSearch::InverseEval(float eval) const
-{
-    return (1 - eval);
 }
 
 string TestUctSearch::MoveString(SgMove move) const

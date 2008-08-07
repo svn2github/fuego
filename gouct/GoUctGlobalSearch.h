@@ -364,8 +364,6 @@ public:
     /** @name Pure virtual functions of SgUctSearch */
     // @{
 
-    float InverseEval(float eval) const;
-
     float UnknownEval() const;
 
     // @} // @name

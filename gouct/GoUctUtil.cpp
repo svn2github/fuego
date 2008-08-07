@@ -128,7 +128,7 @@ void GoUctUtil::GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,
             const SgUctNode& child = *it;
             if (child.MoveCount() == 0)
                 continue;
-            float value = search.InverseEval(child.Mean());
+            float value = SgUctSearch::InverseEval(child.Mean());
             // Scale to [-1,+1], black positive
             double influence = value * 2 - 1;
             if (toPlay == SG_WHITE)

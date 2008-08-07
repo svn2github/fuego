@@ -27,8 +27,7 @@ void SgUctTreeStatistics::Clear()
     m_biasRave.Clear();
 }
 
-void SgUctTreeStatistics::Compute(const SgUctTree& tree,
-                                  const SgUctInverseEvalFunc& inverseEval)
+void SgUctTreeStatistics::Compute(const SgUctTree& tree)
 {
     Clear();
     for (SgUctTreeIterator it(tree); it; ++it)
@@ -45,7 +44,7 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree,
             const SgUctNode& child = *it;
             if (child.RaveCount() > 0 && child.MoveCount() > 0)
             {
-                float childValue = inverseEval.InverseEval(child.Mean());
+                float childValue = SgUctSearch::InverseEval(child.Mean());
                 float biasRave = child.RaveValue() - childValue;
                 m_biasRave.Add(biasRave);
             }

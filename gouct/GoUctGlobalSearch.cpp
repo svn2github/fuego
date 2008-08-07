@@ -300,11 +300,6 @@ GoUctGlobalSearch::GoUctGlobalSearch(GoBoard& bd,
     SetDefaultParameters(bd.Size());
 }
 
-float GoUctGlobalSearch::InverseEval(float eval) const
-{
-    return (1 - eval);
-}
-
 void GoUctGlobalSearch::OnSearchIteration(std::size_t gameNumber,
                                           int threadId,
                                           const SgUctGameInfo& info)

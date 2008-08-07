@@ -13,7 +13,6 @@
 
 class SgUctNode;
 class SgUctTree;
-class SgUctInverseEvalFunc;
 
 //----------------------------------------------------------------------------
 
@@ -39,8 +38,7 @@ public:
     void Clear();
 
     /** Clear statistics and traverse tree to compute statistics. */
-    void Compute(const SgUctTree& tree,
-                 const SgUctInverseEvalFunc& inverseEval);
+    void Compute(const SgUctTree& tree);
 
     void Write(std::ostream& out) const;
 };

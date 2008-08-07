@@ -226,29 +226,6 @@ public:
 
 //----------------------------------------------------------------------------
 
-/** Interface for function objects to compute the inverse evaluation.
-    The inverse evaluation is the evaluation from the other player's
-    perspective. Typically, this function will return 1 - eval, if 0/1
-    (loss/win) evaluations are used, and -eval, if a evaluation function
-    symmetrical to 0 is used.
-    @ingroup sguctgroup
-*/
-class SgUctInverseEvalFunc
-{
-public:
-    virtual ~SgUctInverseEvalFunc();
-
-    /** Return evaluation from other player's perspective.
-        Typically, this function will return 1 - eval, if 0/1 (loss/win)
-        evaluations are used, and -eval, if a evaluation function symmetrical
-        to 0 is used.
-        This function needs to be thread-safe.
-    */
-    virtual float InverseEval(float eval) const = 0;
-};
-
-//----------------------------------------------------------------------------
-
 /** Move selection strategy after search is finished.
     @ingroup sguctgroup
 */
@@ -453,12 +430,15 @@ struct SgUctSearchStat
 //----------------------------------------------------------------------------
 
 /** Monte Carlo tree search using UCT.
+    The evaluation function is assumed to be in <code>[0..1]</code> and
+    inverted with <code>1 - eval</code>.
     @ingroup sguctgroup
 */
 class SgUctSearch
-    : public SgUctInverseEvalFunc
 {
 public:
+    static float InverseEval(float eval);
+
     /** Constructor.
         @param threadStateFactory The tread state factory (takes ownership).
         Can be null and set later (before using the search) with
@@ -1035,6 +1015,11 @@ inline std::size_t SgUctSearch::ExpandThreshold() const
 inline float SgUctSearch::FirstPlayUrgency() const
 {
     return m_firstPlayUrgency;
+}
+
+inline float SgUctSearch::InverseEval(float eval)
+{
+    return (1 - eval);
 }
 
 inline bool SgUctSearch::LockFree() const

@@ -35,7 +35,7 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
         modBoard.Board().Play(p);
         vector<SgMove> sequence;
         float value = search.Search(trueValueMaxGames, maxTime, sequence);
-        trueValues[p] = search.InverseEval(value);
+        trueValues[p] = SgUctSearch::InverseEval(value);
         modBoard.Board().Undo();
     }
     search.StartSearch();
@@ -65,7 +65,7 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
                     % trueValues[p] // 2
                     % child->MoveCount() // 3
                     % (child->MoveCount() > 0 ?
-                       search.InverseEval(child->Mean()) : 0) // 4
+                       SgUctSearch::InverseEval(child->Mean()) : 0) // 4
                     % child->RaveCount() // 5
                     % (child->RaveCount() > 0 ? child->RaveValue() : 0) // 6
                     );
