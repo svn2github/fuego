@@ -283,22 +283,22 @@ public:
     /** Includes diagonals. */
     int Num8EmptyNeighbors(SgPoint p) const;
 
-    bool HasNeighbors(SgPoint p, int c) const;
+    bool HasNeighbors(SgPoint p, SgBlackWhite c) const;
 
-    int NumNeighbors(SgPoint p, int c) const;
+    int NumNeighbors(SgPoint p, SgBlackWhite c) const;
 
     /** Includes diagonals. */
-    int Num8Neighbors(SgPoint p, int c) const;
+    int Num8Neighbors(SgPoint p, SgBlackWhite c) const;
 
     bool HasDiagonals(SgPoint p, SgBoardColor c) const;
 
-    int NumDiagonals(SgPoint p, int c) const;
+    int NumDiagonals(SgPoint p, SgBoardColor c) const;
 
     bool HasEmptyDiagonals(SgPoint p) const;
 
     int NumEmptyDiagonals(SgPoint p) const;
 
-    bool HasNeighborsOrDiags(SgPoint p, SgBoardColor c) const;
+    bool HasNeighborsOrDiags(SgPoint p, SgBlackWhite c) const;
 
     /** @name Point sets */
     //@{
@@ -1422,12 +1422,12 @@ inline bool GoBoard::HasLiberties(SgPoint p) const
     return NumLiberties(p) > 0;
 }
 
-inline bool GoBoard::HasNeighbors(SgPoint p, int c) const
+inline bool GoBoard::HasNeighbors(SgPoint p, SgBlackWhite c) const
 {
     return (m_state.m_nuNeighbors[c][p] > 0);
 }
 
-inline bool GoBoard::HasNeighborsOrDiags(SgPoint p, SgBoardColor c) const
+inline bool GoBoard::HasNeighborsOrDiags(SgPoint p, SgBlackWhite c) const
 {
     return HasNeighbors(p, c) || HasDiagonals(p, c);
 }
@@ -1670,7 +1670,7 @@ inline int GoBoard::NuCapturedStones() const
     return m_capturedStones.Length();
 }
 
-inline int GoBoard::NumDiagonals(SgPoint p, int c) const
+inline int GoBoard::NumDiagonals(SgPoint p, SgBoardColor c) const
 {
     int n = 0;
     if (IsColor(p - SG_NS - SG_WE, c))
@@ -1701,7 +1701,7 @@ inline int GoBoard::NumLiberties(SgPoint p) const
     return m_state.m_block[p]->NumLiberties();
 }
 
-inline int GoBoard::NumNeighbors(SgPoint p, int c) const
+inline int GoBoard::NumNeighbors(SgPoint p, SgBlackWhite c) const
 {
     return m_state.m_nuNeighbors[c][p];
 }

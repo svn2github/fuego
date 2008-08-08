@@ -124,22 +124,22 @@ public:
     /** Includes diagonals. */
     int Num8EmptyNeighbors(SgPoint p) const;
 
-    bool HasNeighbors(SgPoint p, int c) const;
+    bool HasNeighbors(SgPoint p, SgBlackWhite c) const;
 
-    int NumNeighbors(SgPoint p, int c) const;
+    int NumNeighbors(SgPoint p, SgBlackWhite c) const;
 
     /** Includes diagonals. */
-    int Num8Neighbors(SgPoint p, int c) const;
+    int Num8Neighbors(SgPoint p, SgBlackWhite c) const;
 
     bool HasDiagonals(SgPoint p, SgBoardColor c) const;
 
-    int NumDiagonals(SgPoint p, int c) const;
+    int NumDiagonals(SgPoint p, SgBoardColor c) const;
 
     bool HasEmptyDiagonals(SgPoint p) const;
 
     int NumEmptyDiagonals(SgPoint p) const;
 
-    bool HasNeighborsOrDiags(SgPoint p, SgBoardColor c) const;
+    bool HasNeighborsOrDiags(SgPoint p, SgBlackWhite c) const;
 
     bool InCorner(SgPoint p) const;
 
@@ -629,12 +629,12 @@ inline bool GoUctBoard::HasLiberties(SgPoint p) const
     return NumLiberties(p) > 0;
 }
 
-inline bool GoUctBoard::HasNeighbors(SgPoint p, int c) const
+inline bool GoUctBoard::HasNeighbors(SgPoint p, SgBlackWhite c) const
 {
     return (m_nuNeighbors[c][p] > 0);
 }
 
-inline bool GoUctBoard::HasNeighborsOrDiags(SgPoint p, SgBoardColor c) const
+inline bool GoUctBoard::HasNeighborsOrDiags(SgPoint p, SgBlackWhite c) const
 {
     return HasNeighbors(p, c) || HasDiagonals(p, c);
 }
@@ -764,7 +764,7 @@ inline SgGrid GoUctBoard::Line(SgPoint p) const
     return m_const.Line(p);
 }
 
-inline int GoUctBoard::Num8Neighbors(SgPoint p, int c) const
+inline int GoUctBoard::Num8Neighbors(SgPoint p, SgBlackWhite c) const
 {
     return NumNeighbors(p, c) + NumDiagonals(p, c);
 }
@@ -779,7 +779,7 @@ inline int GoUctBoard::NuCapturedStones() const
     return m_capturedStones.Length();
 }
 
-inline int GoUctBoard::NumDiagonals(SgPoint p, int c) const
+inline int GoUctBoard::NumDiagonals(SgPoint p, SgBoardColor c) const
 {
     int n = 0;
     if (IsColor(p - SG_NS - SG_WE, c))
@@ -810,7 +810,7 @@ inline int GoUctBoard::NumLiberties(SgPoint p) const
     return m_block[p]->m_liberties.Length();
 }
 
-inline int GoUctBoard::NumNeighbors(SgPoint p, int c) const
+inline int GoUctBoard::NumNeighbors(SgPoint p, SgBlackWhite c) const
 {
     return m_nuNeighbors[c][p];
 }
