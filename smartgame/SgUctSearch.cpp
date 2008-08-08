@@ -840,6 +840,7 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
     SgUctThreadState& state = ThreadState(0);
     state.StartSearch();
     vector<SgMove> moves;
+    state.GameStart();
     state.GenerateAllMoves(moves);
     vector<SgUctStatisticsBase> statistics(moves.size());
     size_t games = 0;
