@@ -24,9 +24,9 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Constructor_Setup)
 {
     GoSetup setup;
     setup.m_player = SG_WHITE;
-    setup.m_stones[SG_WHITE].Append(Pt(1, 2));
-    setup.m_stones[SG_WHITE].Append(Pt(2, 1));
-    setup.m_stones[SG_WHITE].Append(Pt(2, 2));
+    setup.AddWhite(Pt(1, 2));
+    setup.AddWhite(Pt(2, 1));
+    setup.AddWhite(Pt(2, 2));
     GoBoard bd(9, setup);
     BOOST_CHECK_EQUAL(bd.ToPlay(), SG_WHITE);
     BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 3);

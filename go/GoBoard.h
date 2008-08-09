@@ -81,7 +81,7 @@ typedef SgSList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
 class GoSetup
 {
 public:
-    SgBWArray<GoPointList> m_stones;
+    SgBWSet m_stones;
 
     SgBlackWhite m_player;
 
@@ -95,12 +95,12 @@ public:
     bool operator!=(const GoSetup& setup) const;
 
     /** Add a black stone.
-        Convenience function. Equivalent to @c m_stones[SG_BLACK].Append(p)
+        Convenience function. Equivalent to @c m_stones[SG_BLACK].Include(p)
     */
     void AddBlack(SgPoint p);
 
     /** Add a black stone.
-        Convenience function. Equivalent to @c m_stones[SG_WHITE].Append(p)
+        Convenience function. Equivalent to @c m_stones[SG_WHITE].Include(p)
     */
     void AddWhite(SgPoint p);
 
@@ -125,12 +125,17 @@ inline bool GoSetup::operator!=(const GoSetup& setup) const
 
 inline void GoSetup::AddBlack(SgPoint p)
 {
-    m_stones[SG_BLACK].Append(p);
+    m_stones[SG_BLACK].Include(p);
 }
 
 inline void GoSetup::AddWhite(SgPoint p)
 {
-    m_stones[SG_WHITE].Append(p);
+    m_stones[SG_WHITE].Include(p);
+}
+
+inline bool GoSetup::IsEmpty() const
+{
+    return (m_stones.BothEmpty() && m_player == SG_BLACK);
 }
 
 //----------------------------------------------------------------------------

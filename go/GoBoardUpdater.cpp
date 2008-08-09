@@ -71,7 +71,7 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
                     SgPoint p = *it2;
                     setup.m_stones[SG_WHITE].Exclude(p);
                     if (! setup.m_stones[SG_BLACK].Contains(p))
-                        setup.m_stones[SG_BLACK].Append(p);
+                        setup.AddBlack(p);
                 }
             }
             if (node->HasProp(SG_PROP_ADD_WHITE))
@@ -84,7 +84,7 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
                     SgPoint p = *it2;
                     setup.m_stones[SG_BLACK].Exclude(p);
                     if (! setup.m_stones[SG_WHITE].Contains(p))
-                        setup.m_stones[SG_WHITE].Append(p);
+                        setup.AddWhite(p);
                 }
             }
             if (node->HasProp(SG_PROP_ADD_EMPTY))

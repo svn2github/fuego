@@ -219,7 +219,7 @@ GoSetup GoBoardUtil::CurrentPosSetup(const GoBoard& bd)
     {
         SgPoint p = *it2;
         if (bd.Occupied(p))
-            setup.m_stones[bd.GetColor(p)].Append(p);
+            setup.m_stones[bd.GetColor(p)].Include(p);
     }
     return setup;
 }
@@ -239,7 +239,7 @@ void GoBoardUtil::DumpBoard(const GoBoard& bd, std::ostream& out)
             SgBlackWhite c = *it;
             int stoneNumber = 0;
             out << (c == SG_BLACK ? "AB" : "AW");
-            for (GoPointList::Iterator it2(setup.m_stones[c]); it2; ++it2)
+            for (SgSetIterator it2(setup.m_stones[c]); it2; ++it2)
             {
                 SgPoint p = *it2;
                 ++stoneNumber;

@@ -39,14 +39,6 @@ void UpdateChanges(SgPoint p, SgSList<SgPoint,SG_MAXPOINT>& changes,
 
 //----------------------------------------------------------------------------
 
-bool GoSetup::IsEmpty() const
-{
-    return (m_stones[SG_BLACK].IsEmpty() && m_stones[SG_WHITE].IsEmpty()
-            && m_player == SG_BLACK);
-}
-
-//----------------------------------------------------------------------------
-
 GoBoard::GoBoard(int size, const GoSetup& setup, const GoRules& rules)
     : m_snapshot(new Snapshot()),
       m_const(size),
@@ -482,7 +474,7 @@ void GoBoard::Init(int size, const GoRules& rules, const GoSetup& setup)
     }
     m_setup = setup;
     for (SgBWIterator c; c; ++c)
-        for (GoPointList::Iterator it(setup.m_stones[*c]); it; ++it)
+        for (SgSetIterator it(setup.m_stones[*c]); it; ++it)
         {
             SgPoint p = *it;
             SG_ASSERT(IsValidPoint(p));
