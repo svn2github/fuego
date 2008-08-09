@@ -36,6 +36,10 @@ public:
         return m_set[c];
     }
 
+    bool operator==(const SgBWSet& other) const;
+
+    bool operator!=(const SgBWSet& other) const;
+
     SgBWSet& operator|=(const SgBWSet& other);
 
     void Clear()
@@ -81,6 +85,17 @@ public:
 private:
     SgBWArray<SgPointSet> m_set;
 };
+
+inline bool SgBWSet::operator==(const SgBWSet& other) const
+{
+    return (m_set[SG_BLACK] == other.m_set[SG_BLACK]
+            && m_set[SG_WHITE] == other.m_set[SG_WHITE]);
+}
+
+inline bool SgBWSet::operator!=(const SgBWSet& other) const
+{
+    return ! operator==(other);
+}
 
 inline SgBWSet& SgBWSet::operator|=(const SgBWSet& other)
 {
