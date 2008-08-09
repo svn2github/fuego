@@ -51,12 +51,12 @@ bool GoUctGlobalSearchState::CheckMercyRule()
     if (m_stoneDiff >= m_mercyRuleThreshold)
     {
         m_mercyRuleTriggered = true;
-        m_mercyRuleResult = (ToPlay() == SG_BLACK ? 1 : 0);
+        m_mercyRuleResult = (UctBoard().ToPlay() == SG_BLACK ? 1 : 0);
     }
     else if (m_stoneDiff <= -m_mercyRuleThreshold)
     {
         m_mercyRuleTriggered = true;
-        m_mercyRuleResult = (ToPlay() == SG_WHITE ? 1 : 0);
+        m_mercyRuleResult = (UctBoard().ToPlay() == SG_WHITE ? 1 : 0);
     }
     else
         SG_ASSERT(! m_mercyRuleTriggered);
@@ -113,7 +113,7 @@ float GoUctGlobalSearchState::EvaluateBoard(const BOARD& bd, float komi)
                 m_territoryStatistics[*it].Add(0.5);
                 break;
             }
-    if (ToPlay() != SG_BLACK)
+    if (bd.ToPlay() != SG_BLACK)
         score *= -1;
     if (score > 0)
         return ((1 - m_param.m_scoreModification)
@@ -127,7 +127,7 @@ void GoUctGlobalSearchState::ExecutePlayout(SgMove move)
 {
     GoUctState::ExecutePlayout(move);
     const GoUctBoard& bd = UctBoard();
-    if (ToPlay() == SG_BLACK)
+    if (bd.ToPlay() == SG_BLACK)
         m_stoneDiff -= bd.NuCapturedStones();
     else
         m_stoneDiff += bd.NuCapturedStones();
@@ -154,7 +154,7 @@ void GoUctGlobalSearchState::GenerateAllMoves(vector<SgMove>& moves)
             || bd.MoveNumber() - m_initialMoveNumber >= 2)
             return;
 
-    SgBlackWhite toPlay = ToPlay();
+    SgBlackWhite toPlay = bd.ToPlay();
     for (GoBoard::Iterator it(bd); it; ++it)
     {
         SgPoint p = *it;
@@ -191,7 +191,7 @@ SgMove GoUctGlobalSearchState::GeneratePlayoutMove(bool& skipRaveUpdate)
             SG_ASSERT(   bd.Occupied(*it)
                      || m_safe.OneContains(*it)
                      || GoBoardUtil::SelfAtari(bd, *it)
-                     || ! GoUctUtil::GeneratePoint(bd, *it, ToPlay()));
+                     || ! GoUctUtil::GeneratePoint(bd, *it, bd.ToPlay()));
     }
     else
         SG_ASSERT(! m_safe.OneContains(move) || m_policy->WasCleanupMove());

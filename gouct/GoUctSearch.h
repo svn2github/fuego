@@ -48,8 +48,6 @@ public:
 
     void TakeBackPlayout(std::size_t nuMoves);
 
-    SgBlackWhite ToPlay() const;
-
     // @} // @name
 
 

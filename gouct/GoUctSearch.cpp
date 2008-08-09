@@ -165,14 +165,6 @@ void GoUctState::TakeBackPlayout(std::size_t nuMoves)
     SG_UNUSED(nuMoves);
 }
 
-SgBlackWhite GoUctState::ToPlay() const
-{
-    if (m_isInPlayout)
-        return m_uctBd.ToPlay();
-    else
-        return m_bd.ToPlay();
-}
-
 //----------------------------------------------------------------------------
 
 GoUctSearch::GoUctSearch(GoBoard& bd, SgUctThreadStateFactory* factory)

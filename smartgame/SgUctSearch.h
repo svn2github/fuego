@@ -348,12 +348,6 @@ public:
     */
     virtual void TakeBackPlayout(std::size_t nuMoves) = 0;
 
-    /** Color to play in the current position.
-        If called after a search is completed, it still has to return
-        the color to play in the root position of the last search performed.
-    */
-    virtual SgBlackWhite ToPlay() const = 0;
-
     // @} // name
 
 
