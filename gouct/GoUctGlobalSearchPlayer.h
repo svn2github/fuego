@@ -103,8 +103,6 @@ public:
 
     void Ponder();
 
-    void OnNewGame();
-
     // @} // @name
 
 
@@ -193,9 +191,6 @@ public:
         Reuses the subtree from the last search, if the current position is
         a number of regular game moves later than the position that the
         previous search corresponds to.
-        @bug Does not work and causes crashes if the position of a node
-        changes due to setup or handicap stones. See also the bug entry at
-        m_treeValidForNode
     */
     bool ReuseSubtree() const;
 
@@ -233,17 +228,6 @@ public:
     void ClearStatistics();
 
     // @} // @name
-
-    void StartSearch();
-
-    /** Is the root position of the tree the position of the current node. */
-    bool TreeValidForCurrentNode() const;
-
-    /** Indicate that search was used outside the scope of the player.
-        Informs the player that the search tree is no longer valid for the
-        game position the player did the last search in.
-    */
-    void ClearTreeValidForNode();
 
     GoUctGlobalSearch& GlobalSearch();
 
@@ -291,25 +275,6 @@ private:
 
     GoUctGlobalSearch m_search;
 
-    /** Remember what position the current tree is valid for for extraction
-        of a reusable subtree in a follow-up position.
-        @bug The node address is not a unique ID for a position, since a node
-        address can be reused after freeing a node and allocating a new node.
-        Right now, this works under the assumption that
-        - GoUctGlobalSearchPlayer is used in GoGtpEngine, which never frees
-          nodes while in the same game
-        - GoPlayer::OnNewGame() will be called whenever a new game tree is
-          created (GoUctGlobalSearchPlayer::OnNewNewGame() clears
-          m_treeValidForNode). Note that GoPlayer says that the player should
-          not rely on OnNewGame() to be called, but GoGtpEngine calls it in
-          the clear_board command.
-        It currently also fails, if GTP commands are used that change the
-        position in the current node (e.g. set_free_handicap or gogui-setup).
-        A new implementation should not make these assumptions (maybe store
-        and compare the whole root position that the tree is valid for).
-    */
-    SgNode* m_treeValidForNode;
-
     GoTimeControl m_timeControl;
 
     Statistics m_statistics;
@@ -337,11 +302,6 @@ private:
 inline bool GoUctGlobalSearchPlayer::AutoParam() const
 {
     return m_autoParam;
-}
-
-inline void GoUctGlobalSearchPlayer::ClearTreeValidForNode()
-{
-    m_treeValidForNode = 0;
 }
 
 inline GoUctGlobalSearch& GoUctGlobalSearchPlayer::GlobalSearch()
@@ -454,17 +414,6 @@ inline void GoUctGlobalSearchPlayer::SetRootFilter(GoUctRootFilter* filter)
 inline void GoUctGlobalSearchPlayer::SetSearchMode(GoUctGlobalSearchMode mode)
 {
     m_searchMode = mode;
-}
-
-inline void GoUctGlobalSearchPlayer::StartSearch()
-{
-    m_search.StartSearch();
-    m_treeValidForNode = CurrentNode();
-}
-
-inline bool GoUctGlobalSearchPlayer::TreeValidForCurrentNode() const
-{
-    return (m_treeValidForNode == CurrentNode());
 }
 
 //----------------------------------------------------------------------------

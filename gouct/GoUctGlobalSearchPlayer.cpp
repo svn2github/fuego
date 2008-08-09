@@ -89,7 +89,6 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_search(Board(),
                new GoUctDefaultPlayoutPolicyFactory<GoUctBoard>(
                                                       m_playoutPolicyParam)),
-      m_treeValidForNode(0),
       m_timeControl(Board()),
       m_rootFilter(new GoUctDefaultRootFilter(Board()))
 {
@@ -238,20 +237,6 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
             << timeRootFilter << '\n';
     SgDebug() << out.str();
 
-    // Don't set m_treeValidForNode to CurrentNode() if in root node.
-    // FindInitTree() does not work and can cause
-    // crashes, if the node is not a unique identifier for a position. Not
-    // reusing the tree from a search in the root node fixes
-    // the most common occurrences of this
-    // bug (position changes due to setup in the root node or handicap), but
-    // is not a real solution to the bug (e.g. doing setup in non-root nodes).
-    // Remove when bug is fixed. See also the comment at m_treeValidForNode
-    // and in the function body of Ponder()
-    if (CurrentNode() != 0 && ! CurrentNode()->HasFather())
-        m_treeValidForNode = 0;
-    else
-        m_treeValidForNode = CurrentNode();
-
     if (sequence.empty())
         return SG_NULLMOVE;
     return *(sequence.begin());
@@ -277,52 +262,15 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
     if (m_initTree.MaxNodes() != m_search.MaxNodes())
         m_initTree.SetMaxNodes(m_search.MaxNodes());
 
-    if (m_treeValidForNode == 0)
+    Board().SetToPlay(toPlay);
+    GoBoardHistory currentPosition;
+    currentPosition.SetFromBoard(Board());
+    vector<SgPoint> sequence;
+    if (! currentPosition.IsAlternatePlayFollowUpOf(m_search.BoardHistory(),
+                                                    sequence))
     {
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::FindInitTree: "
-            "No tree to reuse exists\n";
-        return;
-    }
-    vector<SgMove> sequence;
-    const SgNode* node = CurrentNode();
-    while (node != m_treeValidForNode)
-    {
-        if (HasSetup(node))
-        {
-            SgDebug() <<
-                "GoUctGlobalSearchPlayer::FindInitTree: "
-                "Cannot reuse tree (setup stones in path to node)\n";
-            return;
-        }
-        if (node->HasProp(SG_PROP_MOVE))
-        {
-            if (! HasMove(node, SgOppBW(toPlay)))
-            {
-                SgDebug() <<
-                    "GoUctGlobalSearchPlayer::FindInitTree: "
-                    "Cannot reuse tree (non-alternating moves in path)\n";
-                return;
-            }
-            SgPoint p = node->NodeMove();
-            SG_ASSERT(p != SG_NULLMOVE);
-            sequence.insert(sequence.begin(), p);
-            toPlay = SgOppBW(toPlay);
-        }
-        node = node->Father();
-        if (node == 0)
-        {
-            SgDebug() <<
-                "GoUctGlobalSearchPlayer::FindInitTree: "
-                "No tree to reuse found\n";
-            return;
-        }
-    }
-    if (m_search.ToPlay() != toPlay)
-    {
-        SgDebug() <<
-            "GoUctGlobalSearchPlayer::FindInitTree: "
-            "Cannot reuse tree (search had different color)\n";
+            "GoUctGlobalSearchPlayer::FindInitTree: No tree to reuse found\n";
         return;
     }
     SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence,
@@ -372,12 +320,6 @@ void GoUctGlobalSearchPlayer::OnBoardChange()
     }
 }
 
-void GoUctGlobalSearchPlayer::OnNewGame()
-{
-    // See comment at m_treeValidForNode
-    ClearTreeValidForNode();
-}
-
 void GoUctGlobalSearchPlayer::Ponder()
 {
     if (! m_enablePonder || GoBoardUtil::EndOfGame(Board())
@@ -390,17 +332,6 @@ void GoUctGlobalSearchPlayer::Ponder()
         SgWarning() << "Pondering needs reuse_subtree enabled.\n";
         return;
     }
-
-    // Don't ponder in root node. FindInitTree() does not work and can cause
-    // crashes, if the node is not a unique identifier for a position. Not
-    // pondering in the root node fixes the most common occurrences of this
-    // bug (position changes due to setup in the root node or handicap), but
-    // is not a real solution to the bug (e.g. doing setup in non-root nodes).
-    // Remove when bug is fixed. See also the comment at m_treeValidForNode
-    // and in the function body of DoSearch()
-    if (CurrentNode() == 0 || ! CurrentNode()->HasFather())
-        return;
-
     SgDebug() << "GoUctGlobalSearchPlayer::Ponder Start\n";
     // Don't ponder forever to avoid hogging the machine
     double maxTime = 3600; // 60 min

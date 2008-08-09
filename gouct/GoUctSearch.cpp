@@ -243,6 +243,7 @@ void GoUctSearch::OnStartSearch()
     int maxGameLength = min(3 * size * size,
                             GO_MAX_NUM_MOVES - m_bd.MoveNumber());
     SetMaxGameLength(maxGameLength);
+    m_boardHistory.SetFromBoard(m_bd);
 }
 
 void GoUctSearch::SaveGames(const string& fileName) const

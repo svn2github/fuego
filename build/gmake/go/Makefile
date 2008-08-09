@@ -24,6 +24,7 @@ SRC_CPP= \
   go/GoBlock.cpp \
   go/GoBoard.cpp \
   go/GoBoardCheckPerformance.cpp \
+  go/GoBoardHistory.cpp \
   go/GoBoardRestorer.cpp \
   go/GoBoardSynchronizer.cpp \
   go/GoBoardUpdater.cpp \

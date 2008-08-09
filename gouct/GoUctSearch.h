@@ -8,6 +8,7 @@
 
 #include <iosfwd>
 #include "GoBoard.h"
+#include "GoBoardHistory.h"
 #include "GoBoardSynchronizer.h"
 #include "GoUctBoard.h"
 #include "SgUctSearch.h"
@@ -193,6 +194,9 @@ public:
     /** Set initial color to play. */
     void SetToPlay(SgBlackWhite toPlay);
 
+    /** Identifier for the position the last search was performed on. */
+    const GoBoardHistory& BoardHistory() const;
+
     // @} // @name
 
 
@@ -257,6 +261,8 @@ private:
 
     GoUctLiveGfx m_liveGfx;
 
+    GoBoardHistory m_boardHistory;
+
     /** Not implemented */
     GoUctSearch(const GoUctSearch& search);
 
@@ -272,6 +278,11 @@ inline GoBoard& GoUctSearch::Board()
 inline const GoBoard& GoUctSearch::Board() const
 {
     return m_bd;
+}
+
+inline const GoBoardHistory& GoUctSearch::BoardHistory() const
+{
+    return m_boardHistory;
 }
 
 inline bool GoUctSearch::KeepGames() const

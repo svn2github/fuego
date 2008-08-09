@@ -273,7 +273,6 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
     search.Search(MAX_GAMES, numeric_limits<double>::max(), sequence);
     SgDebug() << SgWriteLabel("Sequence")
               << SgWritePointList(sequence, "", false);
-    Player().ClearTreeValidForNode();
     for (int i = 0; i < nuUndoPass; ++i)
     {
         m_bd.Play(SG_PASS, toPlay);
