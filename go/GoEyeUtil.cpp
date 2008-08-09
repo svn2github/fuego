@@ -113,14 +113,9 @@ bool IsAlwaysAliveBlock(const SgPointSet& block)
 bool IsNakadeBlock(const GoBoard& bd, 
                    const SgPointSet& block)
 {
-    // By the implementation of PointOf, first point of block must be 
-    // the anchor
-    const SgPoint anchor = block.PointOf();
-    SG_ASSERT(bd.Anchor(anchor) == anchor);
     const int blockSize = block.Size();
-
     // More than one block?
-    if (bd.NumStones(anchor) != blockSize)
+    if (bd.NumStones(block.PointOf()) != blockSize)
         return false;
 
     if (blockSize <= 3)
