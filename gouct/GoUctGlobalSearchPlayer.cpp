@@ -11,7 +11,7 @@
 #include <iomanip>
 #include "GoBoardRestorer.h"
 #include "GoBoardUtil.h"
-#include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctPlayoutPolicy.h"
 #include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctDefaultRootFilter.h"
 #include "GoUctUtil.h"
@@ -87,7 +87,7 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(100000),
       m_search(Board(),
-               new GoUctDefaultPlayoutPolicyFactory<GoUctBoard>(
+               new GoUctPlayoutPolicyFactory<GoUctBoard>(
                                                       m_playoutPolicyParam)),
       m_timeControl(Board()),
       m_rootFilter(new GoUctDefaultRootFilter(Board()))
@@ -166,7 +166,7 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     bd.SetToPlay(toPlay);
     if (m_playoutPolicy.get() == 0)
         m_playoutPolicy.reset(
-            new GoUctDefaultPlayoutPolicy<GoBoard>(bd, m_playoutPolicyParam));
+            new GoUctPlayoutPolicy<GoBoard>(bd, m_playoutPolicyParam));
     m_playoutPolicy->StartPlayout();
     SgPoint move = m_playoutPolicy->GenerateMove();
     m_playoutPolicy->EndPlayout();

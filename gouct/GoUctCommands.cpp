@@ -12,7 +12,7 @@
 #include "GoGtpCommandUtil.h"
 #include "GoBoardUtil.h"
 #include "GoSafetySolver.h"
-#include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctPlayoutPolicy.h"
 #include "GoUctDefaultRootFilter.h"
 #include "GoUctEstimatorStat.h"
 #include "GoUctGlobalSearchPlayer.h"
@@ -253,8 +253,8 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
     const size_t MAX_GAMES = 5000;
     SgDebug() << "GoUctCommands::CmdFinalStatusList: doing a search with "
               << MAX_GAMES << " games to determine final status\n";
-    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
         search = GlobalSearch();
     SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
     search.m_param.m_territoryStatistics = true;
@@ -358,8 +358,8 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
 void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
            s = GlobalSearch();
     GoUctGlobalSearchStateParam& p = s.m_param;
     if (cmd.NuArg() == 0)
@@ -462,19 +462,19 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         throw GtpFailure() << "need 0 or 2 arguments";
 }
 
-/** Get and set GoUctDefaultPlayoutPolicy parameters.
+/** Get and set GoUctPlayoutPolicy parameters.
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
     @arg @c clump_correction
-      See GoUctDefaultPlayoutPolicyParam::m_useClumpCorrection
+      See GoUctPlayoutPolicyParam::m_useClumpCorrection
     @arg @c statistics_enables
-      See GoUctDefaultPlayoutPolicyParam::m_statisticsEnabled
+      See GoUctPlayoutPolicyParam::m_statisticsEnabled
 */
 void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctDefaultPlayoutPolicyParam& p = Player().m_playoutPolicyParam;
+    GoUctPlayoutPolicyParam& p = Player().m_playoutPolicyParam;
     if (cmd.NuArg() == 0)
     {
         // Boolean parameters first for better layout of GoGui parameter
@@ -633,21 +633,21 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
 }
 
 /** Return equivalent best moves in playout policy.
-    See GoUctDefaultPlayoutPolicy::GetEquivalentBestMoves() <br>
+    See GoUctPlayoutPolicy::GetEquivalentBestMoves() <br>
     Arguments: none <br>
     Returns: Move type string followed by move list on a single line.
 */
 void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    GoUctDefaultPlayoutPolicy<GoBoard> policy(m_bd,
+    GoUctPlayoutPolicy<GoBoard> policy(m_bd,
                                               Player().m_playoutPolicyParam);
     policy.StartPlayout();
     policy.GenerateMove();
-    cmd << GoUctDefaultPlayoutPolicyTypeStr(policy.MoveType());
+    cmd << GoUctPlayoutPolicyTypeStr(policy.MoveType());
     GoPointList moves = policy.GetEquivalentBestMoves();
     // Sort for deterministic response
-    // (GoUctDefaultPlayoutPolicy::GetEquivalentBestMoves() does not return
+    // (GoUctPlayoutPolicy::GetEquivalentBestMoves() does not return
     // a deterministic list, because GoUctUtil::SelectRandom() may modify
     // the list in a non-deterministic way)
     moves.Sort();
@@ -665,7 +665,7 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
-    GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >& state
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
     SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
     if (priorKnowledge == 0)
@@ -845,7 +845,7 @@ void GoUctCommands::CmdStatPlayerClear(GtpCommand& cmd)
     Needs enabling the statistics with
     <code>uct_param_policy statistics_enabled</code>
     Only the statistics of the first thread's policy used.
-    @see GoUctDefaultPlayoutPolicyStat
+    @see GoUctPlayoutPolicyStat
 */
 void GoUctCommands::CmdStatPolicy(GtpCommand& cmd)
 {
@@ -855,10 +855,10 @@ void GoUctCommands::CmdStatPolicy(GtpCommand& cmd)
     Policy(0).Statistics().Write(cmd);
 }
 
-/** Clear statistics of GoUctDefaultPlayoutPolicy
+/** Clear statistics of GoUctPlayoutPolicy
     Arguments: none <br>
     Only the statistics of the first thread's policy used.
-    @see GoUctDefaultPlayoutPolicyStat
+    @see GoUctPlayoutPolicyStat
 */
 void GoUctCommands::CmdStatPolicyClear(GtpCommand& cmd)
 {
@@ -926,8 +926,8 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     cmd << value;
 }
 
-GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
 GoUctCommands::GlobalSearch()
 {
     return Player().GlobalSearch();
@@ -947,14 +947,14 @@ GoUctGlobalSearchPlayer& GoUctCommands::Player()
     }
 }
 
-GoUctDefaultPlayoutPolicy<GoUctBoard>&
+GoUctPlayoutPolicy<GoUctBoard>&
 GoUctCommands::Policy(std::size_t threadId)
 {
-    GoUctDefaultPlayoutPolicy<GoUctBoard>* policy =
-        dynamic_cast<GoUctDefaultPlayoutPolicy<GoUctBoard>*>(
+    GoUctPlayoutPolicy<GoUctBoard>* policy =
+        dynamic_cast<GoUctPlayoutPolicy<GoUctBoard>*>(
                                               ThreadState(threadId).Policy());
     if (policy == 0)
-        throw GtpFailure("player has no GoUctDefaultPlayoutPolicy");
+        throw GtpFailure("player has no GoUctPlayoutPolicy");
     return *policy;
 }
 
@@ -1014,7 +1014,7 @@ GoUctSearch& GoUctCommands::Search()
     @throws GtpFailure, if search is a different subclass or threads are not
     yet created.
 */
-GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&
+GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
 GoUctCommands::ThreadState(std::size_t threadId)
 {
     GoUctSearch& search = Search();
@@ -1023,7 +1023,7 @@ GoUctCommands::ThreadState(std::size_t threadId)
     try
     {
         return dynamic_cast<
-             GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&>(
+             GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>(
                                                 search.ThreadState(threadId));
     }
     catch (const bad_cast& e)

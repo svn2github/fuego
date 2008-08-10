@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
-/** @file GoUctDefaultPlayoutPolicy.h
+/** @file GoUctPlayoutPolicy.h
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCT_DEFAULTPLAYOUTPOLICY_H
-#define GOUCT_DEFAULTPLAYOUTPOLICY_H
+#ifndef GOUCT_PLAYOUTPOLICY_H
+#define GOUCT_PLAYOUTPOLICY_H
 
 #include <iostream>
 #include <boost/array.hpp>
@@ -14,8 +14,8 @@
 
 //----------------------------------------------------------------------------
 
-/** Parameters for GoUctDefaultPlayoutPolicy. */
-class GoUctDefaultPlayoutPolicyParam
+/** Parameters for GoUctPlayoutPolicy. */
+class GoUctPlayoutPolicyParam
 {
 public:
     /** Shift move to neighbor if it would make an ugly clump.
@@ -28,13 +28,13 @@ public:
     */
     bool m_statisticsEnabled;
 
-    GoUctDefaultPlayoutPolicyParam();
+    GoUctPlayoutPolicyParam();
 };
 
 //----------------------------------------------------------------------------
 
-/** Move types used in GoUctDefaultPlayoutPolicy. */
-enum GoUctDefaultPlayoutPolicyType
+/** Move types used in GoUctPlayoutPolicy. */
+enum GoUctPlayoutPolicyType
 {
     GOUCT_ATARI_CAPTURE,
 
@@ -57,13 +57,12 @@ enum GoUctDefaultPlayoutPolicyType
     _GOUCT_NU_DEFAULT_PLAYOUT_TYPE
 };
 
-const char* GoUctDefaultPlayoutPolicyTypeStr(
-                                          GoUctDefaultPlayoutPolicyType type);
+const char* GoUctPlayoutPolicyTypeStr(GoUctPlayoutPolicyType type);
 
 //----------------------------------------------------------------------------
 
-/** Statistics collected by GoUctDefaultPlayoutPolicy */
-struct GoUctDefaultPlayoutPolicyStat
+/** Statistics collected by GoUctPlayoutPolicy */
+struct GoUctPlayoutPolicyStat
 {
     /** Number of moves generated. */
     std::size_t m_nuMoves;
@@ -86,7 +85,7 @@ struct GoUctDefaultPlayoutPolicyStat
 
 //----------------------------------------------------------------------------
 
-/** Random playout policy for global UCT search.
+/** Default playout policy for usage in GoUctGlobalSearch.
     Parametrized by the board class to make it usable with both GoBoard
     and GoUctBoard.
     If all heuristics are disabled, the policy plays purely random moves.
@@ -95,7 +94,7 @@ struct GoUctDefaultPlayoutPolicyStat
     Instances of this class must be thread-safe during a search.
 */
 template<class BOARD>
-class GoUctDefaultPlayoutPolicy
+class GoUctPlayoutPolicy
 {
 public:
     /** Constructor.
@@ -105,8 +104,7 @@ public:
         Therefore the lifetime of @c param must exceed the lifetime of the
         policy.
     */
-    GoUctDefaultPlayoutPolicy(const BOARD& bd,
-                              const GoUctDefaultPlayoutPolicyParam& param);
+    GoUctPlayoutPolicy(const BOARD& bd, const GoUctPlayoutPolicyParam& param);
 
 
     /** @name Functions needed by all playout policies. */
@@ -128,7 +126,7 @@ public:
     void OnPlay();
 
     /** Return the type of the last move generated. */
-    GoUctDefaultPlayoutPolicyType MoveType() const;
+    GoUctPlayoutPolicyType MoveType() const;
 
     // @} // @name
 
@@ -140,7 +138,7 @@ public:
         The statistics are only collected, if enabled with
         EnableStatistics().
     */
-    const GoUctDefaultPlayoutPolicyStat& Statistics() const;
+    const GoUctPlayoutPolicyStat& Statistics() const;
 
     void ClearStatistics();
 
@@ -193,7 +191,7 @@ private:
 
     const BOARD& m_bd;
 
-    const GoUctDefaultPlayoutPolicyParam& m_param;
+    const GoUctPlayoutPolicyParam& m_param;
 
     GoUctPatterns<BOARD> m_patterns;
 
@@ -201,9 +199,9 @@ private:
     bool m_checked;
 
     /** Type of the last generated move. */
-    GoUctDefaultPlayoutPolicyType m_moveType;
+    GoUctPlayoutPolicyType m_moveType;
 
-    /** See GoUctDefaultPlayoutPolicyStat::m_nonRandLen. */
+    /** See GoUctPlayoutPolicyStat::m_nonRandLen. */
     std::size_t m_nonRandLen;
 
     /** Last move.
@@ -226,15 +224,14 @@ private:
 
     GoUctPureRandomGenerator<BOARD> m_pureRandomGenerator;
 
-    GoUctDefaultPlayoutPolicyStat m_statistics;
+    GoUctPlayoutPolicyStat m_statistics;
 
     /** Try to correct the proposed move, typically by moving it to a
         'better' point such as other liberty or neighbor.
         Examples implemented: self-ataries, clumps.
     */
-    bool CorrectMove(
-                    GoUctDefaultPlayoutPolicy<BOARD>::Corrector& corrFunction,
-                    SgPoint& mv, GoUctDefaultPlayoutPolicyType moveType);
+    bool CorrectMove(GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
+                     SgPoint& mv, GoUctPlayoutPolicyType moveType);
 
     /** Test whether playing on lib increases the liberties of anchor block */
     bool GainsLiberties(SgPoint anchor, SgPoint lib) const;
@@ -265,15 +262,14 @@ private:
 };
 
 template<class BOARD>
-GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator
-::CaptureGenerator(const BOARD& bd)
+GoUctPlayoutPolicy<BOARD>::CaptureGenerator::CaptureGenerator(const BOARD& bd)
     : m_bd(bd)
 {
     m_candidates.reserve(GO_MAX_NUM_MOVES);
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator::StartPlayout()
+void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::StartPlayout()
 {
     m_candidates.clear();
     for (typename BOARD::Iterator it(m_bd); it; ++it)
@@ -285,7 +281,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator::StartPlayout()
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator::OnPlay()
+void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::OnPlay()
 {
     SgPoint lastMove = m_bd.GetLastMove();
     if (lastMove == SG_NULLMOVE || lastMove == SG_PASS)
@@ -305,8 +301,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::CaptureGenerator::OnPlay()
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>
-::CaptureGenerator::Generate(GoPointList& moves)
+void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::Generate(GoPointList& moves)
 {
     SG_ASSERT(moves.IsEmpty());
     const SgBlackWhite opp = m_bd.Opponent();
@@ -331,9 +326,8 @@ void GoUctDefaultPlayoutPolicy<BOARD>
 }
 
 template<class BOARD>
-GoUctDefaultPlayoutPolicy<BOARD>::GoUctDefaultPlayoutPolicy(
-                                 const BOARD& bd,
-                                 const GoUctDefaultPlayoutPolicyParam& param)
+GoUctPlayoutPolicy<BOARD>::GoUctPlayoutPolicy(const BOARD& bd,
+                                           const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_param(param),
       m_patterns(bd),
@@ -344,15 +338,15 @@ GoUctDefaultPlayoutPolicy<BOARD>::GoUctDefaultPlayoutPolicy(
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::ClearStatistics()
+void GoUctPlayoutPolicy<BOARD>::ClearStatistics()
 {
     m_statistics.Clear();
 }
 
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::CorrectMove(
-                    GoUctDefaultPlayoutPolicy<BOARD>::Corrector& corrFunction,
-                    SgPoint& mv, GoUctDefaultPlayoutPolicyType moveType)
+bool GoUctPlayoutPolicy<BOARD>::CorrectMove(
+                    GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
+                    SgPoint& mv, GoUctPlayoutPolicyType moveType)
 {
 #if DEBUG
     const SgPoint oldMv = mv;
@@ -374,13 +368,13 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::CorrectMove(
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::EndPlayout()
+void GoUctPlayoutPolicy<BOARD>::EndPlayout()
 {
 }
 
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
-                                                      SgPoint lib) const
+bool GoUctPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
+                                               SgPoint lib) const
 {
     const SgBlackWhite color = m_bd.GetStone(anchor);
     SG_ASSERT(m_bd.IsEmpty(lib));
@@ -413,7 +407,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
 }
 
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
+bool GoUctPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 {
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
     if (m_bd.InAtari(m_lastMove))
@@ -426,7 +420,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 }
 
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
+bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
@@ -466,7 +460,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 }
 
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
+bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 {
     SG_ASSERT(! SgIsSpecialMove(lastMove));
     SG_ASSERT(! m_bd.IsEmpty(lastMove));
@@ -513,7 +507,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 }
 
 template<class BOARD>
-SG_ATTR_FLATTEN SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
+SG_ATTR_FLATTEN SgPoint GoUctPlayoutPolicy<BOARD>::GenerateMove()
 {
     m_moves.Clear();
     m_checked = false;
@@ -584,7 +578,7 @@ SG_ATTR_FLATTEN SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
     @see GoUctPatterns
 */
 template<class BOARD>
-bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
+bool GoUctPlayoutPolicy<BOARD>::GeneratePatternMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
@@ -615,7 +609,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
 }
 
 template<class BOARD>
-inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove(SgPoint p)
+inline void GoUctPlayoutPolicy<BOARD>::GeneratePatternMove(SgPoint p)
 {
     if (m_bd.IsEmpty(p)
         && m_patterns.MatchAny(p)
@@ -624,8 +618,8 @@ inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove(SgPoint p)
 }
 
 template<class BOARD>
-inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove2(
-                                                  SgPoint p, SgPoint lastMove)
+inline void GoUctPlayoutPolicy<BOARD>::GeneratePatternMove2(SgPoint p,
+                                                            SgPoint lastMove)
 {
     if (m_bd.IsEmpty(p)
         && ! SgPointUtil::In8Neighborhood(lastMove, p)
@@ -635,13 +629,13 @@ inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove2(
 }
 
 template<class BOARD>
-inline bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePoint(SgPoint p) const
+inline bool GoUctPlayoutPolicy<BOARD>::GeneratePoint(SgPoint p) const
 {
     return GoUctUtil::GeneratePoint(m_bd, p, m_bd.ToPlay());
 }
 
 template<class BOARD>
-GoPointList GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
+GoPointList GoUctPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
 {
     GoPointList result;
     if (m_moveType == GOUCT_RANDOM)
@@ -658,14 +652,14 @@ GoPointList GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
 }
 
 template<class BOARD>
-GoUctDefaultPlayoutPolicyType GoUctDefaultPlayoutPolicy<BOARD>::MoveType()
+GoUctPlayoutPolicyType GoUctPlayoutPolicy<BOARD>::MoveType()
     const
 {
     return m_moveType;
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::OnPlay()
+void GoUctPlayoutPolicy<BOARD>::OnPlay()
 {
     m_captureGenerator.OnPlay();
     m_pureRandomGenerator.OnPlay();
@@ -673,27 +667,27 @@ void GoUctDefaultPlayoutPolicy<BOARD>::OnPlay()
 
 
 template<class BOARD>
-const GoUctPatterns<BOARD>& GoUctDefaultPlayoutPolicy<BOARD>::Patterns()
+const GoUctPatterns<BOARD>& GoUctPlayoutPolicy<BOARD>::Patterns()
     const
 {
     return m_patterns;
 }
 
 template<class BOARD>
-inline SgPoint GoUctDefaultPlayoutPolicy<BOARD>::SelectRandom()
+inline SgPoint GoUctPlayoutPolicy<BOARD>::SelectRandom()
 {
     return GoUctUtil::SelectRandom(m_bd, m_bd.ToPlay(), m_moves, m_random);
 }
 
 template<class BOARD>
-const GoUctDefaultPlayoutPolicyStat&
-GoUctDefaultPlayoutPolicy<BOARD>::Statistics() const
+const GoUctPlayoutPolicyStat&
+GoUctPlayoutPolicy<BOARD>::Statistics() const
 {
     return m_statistics;
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::StartPlayout()
+void GoUctPlayoutPolicy<BOARD>::StartPlayout()
 {
     m_captureGenerator.StartPlayout();
     m_pureRandomGenerator.Start();
@@ -701,7 +695,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::StartPlayout()
 }
 
 template<class BOARD>
-void GoUctDefaultPlayoutPolicy<BOARD>::UpdateStatistics()
+void GoUctPlayoutPolicy<BOARD>::UpdateStatistics()
 {
     ++m_statistics.m_nuMoves;
     ++m_statistics.m_nuMoveType[m_moveType];
@@ -723,7 +717,7 @@ void GoUctDefaultPlayoutPolicy<BOARD>::UpdateStatistics()
 //----------------------------------------------------------------------------
 
 template<class BOARD>
-class GoUctDefaultPlayoutPolicyFactory
+class GoUctPlayoutPolicyFactory
 {
 public:
     /** Constructor.
@@ -731,30 +725,28 @@ public:
         of the argument must exceed the lifetime of this factory and created
         objects.
     */
-    GoUctDefaultPlayoutPolicyFactory(const GoUctDefaultPlayoutPolicyParam&
-                                     param);
+    GoUctPlayoutPolicyFactory(const GoUctPlayoutPolicyParam& param);
 
-    GoUctDefaultPlayoutPolicy<BOARD>* Create(const BOARD& bd);
+    GoUctPlayoutPolicy<BOARD>* Create(const BOARD& bd);
 
 private:
-    const GoUctDefaultPlayoutPolicyParam& m_param;
+    const GoUctPlayoutPolicyParam& m_param;
 };
 
 template<class BOARD>
-GoUctDefaultPlayoutPolicyFactory<BOARD>
-::GoUctDefaultPlayoutPolicyFactory(const GoUctDefaultPlayoutPolicyParam&
-                                   param)
+GoUctPlayoutPolicyFactory<BOARD>
+::GoUctPlayoutPolicyFactory(const GoUctPlayoutPolicyParam& param)
     : m_param(param)
 {
 }
 
 template<class BOARD>
-GoUctDefaultPlayoutPolicy<BOARD>*
-GoUctDefaultPlayoutPolicyFactory<BOARD>::Create(const BOARD& bd)
+GoUctPlayoutPolicy<BOARD>*
+GoUctPlayoutPolicyFactory<BOARD>::Create(const BOARD& bd)
 {
-    return new GoUctDefaultPlayoutPolicy<BOARD>(bd, m_param);
+    return new GoUctPlayoutPolicy<BOARD>(bd, m_param);
 }
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCT_DEFAULTPLAYOUTPOLICY_H
+#endif // GOUCT_PLAYOUTPOLICY_H

@@ -8,7 +8,7 @@
 
 #include <string>
 #include "GtpEngine.h"
-#include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctPlayoutPolicy.h"
 #include "GoUctGlobalSearch.h"
 
 class GoBoard;
@@ -105,20 +105,20 @@ private:
 
     GoPlayer*& m_player;
 
-    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
         GlobalSearch();
 
     GoUctGlobalSearchPlayer& Player();
 
-    GoUctDefaultPlayoutPolicy<GoUctBoard>& Policy(std::size_t threadId);
+    GoUctPlayoutPolicy<GoUctBoard>& Policy(std::size_t threadId);
 
     void Register(GtpEngine& e, const std::string& command,
                   GtpCallback<GoUctCommands>::Method method);
 
     GoUctSearch& Search();
 
-    GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
     ThreadState(std::size_t threadId);
 };
 

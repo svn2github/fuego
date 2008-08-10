@@ -5,20 +5,20 @@
 #ifndef GOUCT_DEFAULTPRIORKNOWLEDGE_H
 #define GOUCT_DEFAULTPRIORKNOWLEDGE_H
 
-#include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctPlayoutPolicy.h"
 #include "SgUctSearch.h"
 
 //----------------------------------------------------------------------------
 
 /** Default prior knowledge heuristic.
-    Mainly uses GoUctDefaultPlayoutPolicy to generate prior knowledge.
+    Mainly uses GoUctPlayoutPolicy to generate prior knowledge.
 */
 class GoUctDefaultPriorKnowledge
     : public SgUctPriorKnowledge
 {
 public:
     GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                               const GoUctDefaultPlayoutPolicyParam& param);
+                               const GoUctPlayoutPolicyParam& param);
 
     void ProcessPosition(bool& deepenTree);
 
@@ -27,7 +27,7 @@ public:
 private:
     const GoBoard& m_bd;
 
-    GoUctDefaultPlayoutPolicy<GoBoard> m_policy;
+    GoUctPlayoutPolicy<GoBoard> m_policy;
 
     SgArray<float,SG_PASS+1> m_values;
 
@@ -43,13 +43,12 @@ class GoUctDefaultPriorKnowledgeFactory
 {
 public:
     /** Stores a reference to param */
-    GoUctDefaultPriorKnowledgeFactory(const GoUctDefaultPlayoutPolicyParam&
-                                      param);
+    GoUctDefaultPriorKnowledgeFactory(const GoUctPlayoutPolicyParam& param);
 
     SgUctPriorKnowledge* Create(SgUctThreadState& state);
 
 private:
-    const GoUctDefaultPlayoutPolicyParam& m_param;
+    const GoUctPlayoutPolicyParam& m_param;
 };
 
 //----------------------------------------------------------------------------

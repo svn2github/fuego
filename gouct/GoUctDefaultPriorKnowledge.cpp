@@ -12,7 +12,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                              const GoUctDefaultPlayoutPolicyParam& param)
+                              const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_policy(bd, param)
 {
@@ -30,7 +30,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     SG_UNUSED(deepenTree);
     m_policy.StartPlayout();
     m_policy.GenerateMove();
-    GoUctDefaultPlayoutPolicyType type = m_policy.MoveType();
+    GoUctPlayoutPolicyType type = m_policy.MoveType();
     const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
     SgPointSet patternMatch;
     bool anyPatternMatch = false;
@@ -105,8 +105,7 @@ void GoUctDefaultPriorKnowledge::InitializeMove(SgMove move, float& value,
 //----------------------------------------------------------------------------
 
 GoUctDefaultPriorKnowledgeFactory
-::GoUctDefaultPriorKnowledgeFactory(const GoUctDefaultPlayoutPolicyParam&
-                                    param)
+::GoUctDefaultPriorKnowledgeFactory(const GoUctPlayoutPolicyParam& param)
     : m_param(param)
 {
 }
@@ -114,9 +113,9 @@ GoUctDefaultPriorKnowledgeFactory
 SgUctPriorKnowledge*
 GoUctDefaultPriorKnowledgeFactory::Create(SgUctThreadState& state)
 {
-    GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
         globalSearchState = dynamic_cast<
-      GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&>(state);
+      GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>(state);
     return new GoUctDefaultPriorKnowledge(globalSearchState.Board(), m_param);
 }
 

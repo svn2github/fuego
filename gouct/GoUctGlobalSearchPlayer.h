@@ -11,7 +11,7 @@
 #include <vector>
 #include "GoBoard.h"
 #include "GoPlayer.h"
-#include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctPlayoutPolicy.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctObjectWithSearch.h"
 #include "GoUctRootFilter.h"
@@ -76,7 +76,7 @@ public:
         void Write(std::ostream& out) const;
     };
 
-    GoUctDefaultPlayoutPolicyParam m_playoutPolicyParam;
+    GoUctPlayoutPolicyParam m_playoutPolicyParam;
 
     /** Constructor.
         @param bd The board.
@@ -229,12 +229,12 @@ public:
 
     // @} // @name
 
-    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
         GlobalSearch();
 
-    const GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+    const GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
         GlobalSearch() const;
 
     /** Return the current root filter. */
@@ -277,8 +277,8 @@ private:
 
     std::size_t m_maxGames;
 
-    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> > m_search;
+    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> > m_search;
 
     GoTimeControl m_timeControl;
 
@@ -288,7 +288,7 @@ private:
 
     /** Playout policy used if search mode is GOUCT_SEARCHMODE_PLAYOUTPOLICY.
     */
-    boost::scoped_ptr<GoUctDefaultPlayoutPolicy<GoBoard> > m_playoutPolicy;
+    boost::scoped_ptr<GoUctPlayoutPolicy<GoBoard> > m_playoutPolicy;
 
     /** Initial tree if subtree of last search is reused.
         This variable is used only locally and only a member to avoid frequent
@@ -309,15 +309,15 @@ inline bool GoUctGlobalSearchPlayer::AutoParam() const
     return m_autoParam;
 }
 
-inline GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                         GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+inline GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                         GoUctPlayoutPolicyFactory<GoUctBoard> >&
 GoUctGlobalSearchPlayer::GlobalSearch()
 {
     return m_search;
 }
 
-inline const GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
-                               GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+inline const GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                               GoUctPlayoutPolicyFactory<GoUctBoard> >&
 GoUctGlobalSearchPlayer::GlobalSearch() const
 {
     return m_search;

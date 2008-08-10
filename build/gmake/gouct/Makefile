@@ -22,7 +22,6 @@ PROJ_REL_LIB =
 SRC_CPP= \
   gouct/GoUctBoard.cpp \
   gouct/GoUctCommands.cpp \
-  gouct/GoUctDefaultPlayoutPolicy.cpp \
   gouct/GoUctDefaultPriorKnowledge.cpp \
   gouct/GoUctDefaultRootFilter.cpp \
   gouct/GoUctEstimatorStat.cpp \
@@ -30,6 +29,7 @@ SRC_CPP= \
   gouct/GoUctGlobalSearchPlayer.cpp \
   gouct/GoUctObjectWithSearch.cpp \
   gouct/GoUctPatterns.cpp \
+  gouct/GoUctPlayoutPolicy.cpp \
   gouct/GoUctRootFilter.cpp \
   gouct/GoUctSearch.cpp \
   gouct/GoUctUtil.cpp

@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
-/** @file GoUctDefaultPlayoutPolicy.cpp
+/** @file GoUctPlayoutPolicy.cpp
 */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "GoUctDefaultPlayoutPolicy.h"
+#include "GoUctPlayoutPolicy.h"
 
 #include <algorithm>
 #include "SgStreamFmtRestorer.h"
@@ -13,7 +13,7 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-GoUctDefaultPlayoutPolicyParam::GoUctDefaultPlayoutPolicyParam()
+GoUctPlayoutPolicyParam::GoUctPlayoutPolicyParam()
     : m_useClumpCorrection(false),
       m_statisticsEnabled(false)
 {
@@ -21,8 +21,7 @@ GoUctDefaultPlayoutPolicyParam::GoUctDefaultPlayoutPolicyParam()
 
 //----------------------------------------------------------------------------
 
-const char* GoUctDefaultPlayoutPolicyTypeStr(
-                                          GoUctDefaultPlayoutPolicyType type)
+const char* GoUctPlayoutPolicyTypeStr(GoUctPlayoutPolicyType type)
 {
     BOOST_STATIC_ASSERT(_GOUCT_NU_DEFAULT_PLAYOUT_TYPE == 9);
     switch (type)
@@ -52,7 +51,7 @@ const char* GoUctDefaultPlayoutPolicyTypeStr(
 
 //----------------------------------------------------------------------------
 
-void GoUctDefaultPlayoutPolicyStat::Clear()
+void GoUctPlayoutPolicyStat::Clear()
 {
     m_nuMoves = 0;
     m_nonRandLen.Clear();
@@ -60,17 +59,16 @@ void GoUctDefaultPlayoutPolicyStat::Clear()
     fill(m_nuMoveType.begin(), m_nuMoveType.end(), 0);
 }
 
-void GoUctDefaultPlayoutPolicyStat::Write(std::ostream& out) const
+void GoUctPlayoutPolicyStat::Write(std::ostream& out) const
 {
     SgStreamFmtRestorer restorer(out);
     out << fixed << setprecision(2)
         << SgWriteLabel("NuMoves") << m_nuMoves << '\n';
     for (int i = 0; i < _GOUCT_NU_DEFAULT_PLAYOUT_TYPE; ++i)
     {
-        GoUctDefaultPlayoutPolicyType type =
-            static_cast<GoUctDefaultPlayoutPolicyType>(i);
+        GoUctPlayoutPolicyType type = static_cast<GoUctPlayoutPolicyType>(i);
         size_t n = m_nuMoveType[type];
-        out << SgWriteLabel(GoUctDefaultPlayoutPolicyTypeStr(type))
+        out << SgWriteLabel(GoUctPlayoutPolicyTypeStr(type))
             << (m_nuMoves > 0 ? n * 100 / m_nuMoves : 0) << "%\n";
     }
     out << SgWriteLabel("NonRandLen");

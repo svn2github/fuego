@@ -15,7 +15,7 @@ class GoUctGlobalSearchPlayer;
 class GoUctBoard;
 class GoUctSearch;
 class GoUctGlobalSearch;
-template<class BOARD> class GoUctDefaultPlayoutPolicy;
+template<class BOARD> class GoUctPlayoutPolicy;
 
 //----------------------------------------------------------------------------
 
