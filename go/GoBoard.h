@@ -1227,6 +1227,8 @@ inline SgHashCode GoBoard::HashCode::GetInclToPlay(SgBlackWhite toPlay) const
 {
     SgHashCode hash = m_hash;
     int index = toPlay;
+    BOOST_STATIC_ASSERT(SG_BLACK == 1);
+    BOOST_STATIC_ASSERT(SG_WHITE == 2);
     SG_ASSERTRANGE(index, START_INDEX_TOPLAY, END_INDEX_TOPLAY);
     SgHashUtil::XorZobrist(hash, index);
     return hash;
