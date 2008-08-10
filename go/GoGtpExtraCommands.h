@@ -11,11 +11,6 @@
 
 class GoBoard;
 class GoPlayer;
-class GoUctPlayer;
-class GoUctBoard;
-class GoUctSearch;
-class GoUctGlobalSearch;
-template<class BOARD> class GoUctPlayoutPolicy;
 
 //----------------------------------------------------------------------------
 
