@@ -175,11 +175,11 @@ void SgPropList::Add(const SgProp* prop)
     // Can have multiple unknown properties per node.
     if (prop->ID() != SG_PROP_UNKNOWN)
     {
-        if (prop->Flag(fMoveAnno))
+        if (prop->Flag(SG_PROPCLASS_ANNO_MOVE))
             Remove(SG_PROP_MOVE_ANNO, prop);
-        else if (prop->Flag(fPosAnno))
+        else if (prop->Flag(SG_PROPCLASS_ANNO_POS))
             Remove(SG_PROP_POS_ANNO, prop);
-        else if (prop->Flag(fMoveProp))
+        else if (prop->Flag(SG_PROPCLASS_MOVE))
             Remove(SG_PROP_MOVE, prop);
         else
             Remove(prop->ID(), prop);
@@ -378,11 +378,11 @@ bool SgProp::s_initialized = false;
 
 int SgProp::s_numPropClasses = 0;
 
-SgPropFlags SgProp::s_flags[MAX_PROP_CLASS];
+SgPropFlags SgProp::s_flags[SG_MAX_PROPCLASS];
 
-string SgProp::s_label[MAX_PROP_CLASS];
+string SgProp::s_label[SG_MAX_PROPCLASS];
 
-SgProp* SgProp::s_prop[MAX_PROP_CLASS];
+SgProp* SgProp::s_prop[SG_MAX_PROPCLASS];
 
 SgProp::~SgProp()
 {
@@ -417,8 +417,8 @@ string SgProp::Label() const
 SgPropID SgProp::Register(SgProp* prop, const char* label, SgPropFlags flags)
 {
     ++s_numPropClasses;
-    SG_ASSERT(s_numPropClasses < MAX_PROP_CLASS);
-    if (s_numPropClasses < MAX_PROP_CLASS)
+    SG_ASSERT(s_numPropClasses < SG_MAX_PROPCLASS);
+    if (s_numPropClasses < SG_MAX_PROPCLASS)
     {
         s_flags[s_numPropClasses] = flags;
         s_label[s_numPropClasses] = label;
@@ -428,8 +428,8 @@ SgPropID SgProp::Register(SgProp* prop, const char* label, SgPropFlags flags)
             SG_ASSERT(prop->m_id == 0); // can't know the ID yet
         }
         // Black and white properties must be created in pairs, black first.
-        if (flags & fWhiteProp)
-            SG_ASSERT(s_flags[s_numPropClasses-1] & fBlackProp);
+        if (flags & SG_PROPCLASS_WHITE)
+            SG_ASSERT(s_flags[s_numPropClasses-1] & SG_PROPCLASS_BLACK);
 
         return s_numPropClasses;
     }
@@ -464,15 +464,15 @@ SgPropID SgProp::OpponentProp(SgPropID id)
     // AR: ---> Flags cannot really be overridden
     SgPropFlags flags = s_flags[id];
 
-    if (flags & fBlackProp)
+    if (flags & SG_PROPCLASS_BLACK)
     {
         ++id;
-        SG_ASSERT(s_flags[id] & fWhiteProp);
+        SG_ASSERT(s_flags[id] & SG_PROPCLASS_WHITE);
     }
-    else if (flags & fWhiteProp)
+    else if (flags & SG_PROPCLASS_WHITE)
     {
         --id;
-        SG_ASSERT(s_flags[id] & fBlackProp);
+        SG_ASSERT(s_flags[id] & SG_PROPCLASS_BLACK);
     }
     return id;
 }
@@ -481,8 +481,8 @@ SgPropID SgProp::PlayerProp(SgPropID id, SgBlackWhite player)
 {
     // AR: ---> Flags cannot really be overridden
     SgPropFlags flags = s_flags[id];
-    SG_ASSERT(flags & (fBlackProp | fWhiteProp));
-    int mask = (player == SG_WHITE ? fWhiteProp : fBlackProp);
+    SG_ASSERT(flags & (SG_PROPCLASS_BLACK | SG_PROPCLASS_WHITE));
+    int mask = (player == SG_WHITE ? SG_PROPCLASS_WHITE : SG_PROPCLASS_BLACK);
     if (flags & mask)
         return id;
     else
@@ -491,10 +491,10 @@ SgPropID SgProp::PlayerProp(SgPropID id, SgBlackWhite player)
 
 SgBlackWhite SgProp::Player() const
 {
-    SG_ASSERT(Flag(fBlackProp | fWhiteProp));
-    if (Flags() & fBlackProp)
+    SG_ASSERT(Flag(SG_PROPCLASS_BLACK | SG_PROPCLASS_WHITE));
+    if (Flags() & SG_PROPCLASS_BLACK)
         return SG_BLACK;
-    else if (Flags() & fWhiteProp)
+    else if (Flags() & SG_PROPCLASS_WHITE)
         return SG_WHITE;
     SG_ASSERT(false);
     return -1;
@@ -513,9 +513,9 @@ bool SgProp::MatchesID(SgPropID id) const
         return true;
 
     // Matches if looking for abstract property and matches that category.
-    if (s_flags[id] & fAbstract)
+    if (s_flags[id] & SG_PROPCLASS_ABSTRACT)
     {
-        SgPropFlags fCategories = s_flags[id] & (~fAbstract);
+        SgPropFlags fCategories = s_flags[id] & (~SG_PROPCLASS_ABSTRACT);
         if ((Flags() & fCategories) == fCategories)
             return true;
     }
@@ -596,144 +596,208 @@ void SgProp::Init()
     // Create the standard properties.
 
     //--- moves and board edits
-    SG_PROP_MOVE = Register(0, "", fMoveProp+fAbstract);
+    SG_PROP_MOVE = Register(0, "", SG_PROPCLASS_MOVE + SG_PROPCLASS_ABSTRACT);
     SG_PROP_PLAYER = Register(playerProp, "PL");
-    SG_PROP_ADD_BLACK = Register(addStoneProp, "AB", fBlackProp + fNewLine);
-    SG_PROP_ADD_WHITE = Register(addStoneProp, "AW", fWhiteProp + fNewLine);
-    SG_PROP_ADD_EMPTY = Register(addStoneProp, "AE", fNewLine);
+    SG_PROP_ADD_BLACK = Register(addStoneProp, "AB",
+                                 SG_PROPCLASS_BLACK + SG_PROPCLASS_NEWLINE);
+    SG_PROP_ADD_WHITE = Register(addStoneProp, "AW",
+                                 SG_PROPCLASS_WHITE + SG_PROPCLASS_NEWLINE);
+    SG_PROP_ADD_EMPTY = Register(addStoneProp, "AE", SG_PROPCLASS_NEWLINE);
 
     //--- value and territory
     SG_PROP_VALUE = Register(valueProp, "V" );
-    SG_PROP_TERR_BLACK = Register(listProp, "TB", fBlackProp + fNewLine);
-    SG_PROP_TERR_WHITE = Register(listProp, "TW", fWhiteProp + fNewLine);
+    SG_PROP_TERR_BLACK = Register(listProp, "TB",
+                                  SG_PROPCLASS_BLACK + SG_PROPCLASS_NEWLINE);
+    SG_PROP_TERR_WHITE = Register(listProp, "TW",
+                                  SG_PROPCLASS_WHITE + SG_PROPCLASS_NEWLINE);
 
     //--- marks drawn on the board
-    SG_PROP_MARKS = Register(0, "", fMarkProp + fAbstract);
-    SG_PROP_SELECT = Register(listProp, "SL", fMarkProp);
-    SG_PROP_MARKED = Register(listProp, "MA", fMarkProp);
-    SG_PROP_TRIANGLE = Register(listProp, "TR", fMarkProp);
-    SG_PROP_SQUARE = Register(listProp, "SQ", fMarkProp);
-    SG_PROP_DIAMOND = Register(listProp, "RG", fMarkProp);
-    SG_PROP_CIRCLE = Register(listProp, "CR", fMarkProp);
-    SG_PROP_DIMMED = Register(listProp, "DD", fMarkProp);
-    SG_PROP_LABEL = Register(textListProp, "LB", fMarkProp);
+    SG_PROP_MARKS = Register(0, "", SG_PROPCLASS_MARK + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_SELECT = Register(listProp, "SL", SG_PROPCLASS_MARK);
+    SG_PROP_MARKED = Register(listProp, "MA", SG_PROPCLASS_MARK);
+    SG_PROP_TRIANGLE = Register(listProp, "TR", SG_PROPCLASS_MARK);
+    SG_PROP_SQUARE = Register(listProp, "SQ", SG_PROPCLASS_MARK);
+    SG_PROP_DIAMOND = Register(listProp, "RG", SG_PROPCLASS_MARK);
+    SG_PROP_CIRCLE = Register(listProp, "CR", SG_PROPCLASS_MARK);
+    SG_PROP_DIMMED = Register(listProp, "DD", SG_PROPCLASS_MARK);
+    SG_PROP_LABEL = Register(textListProp, "LB", SG_PROPCLASS_MARK);
 
     //--- time control
-    SG_PROP_TIMES = Register(0, "", fTimeProp+fAbstract);
-    SG_PROP_TIME_BLACK = Register(timeProp, "BL", fTimeProp + fBlackProp);
-    SG_PROP_TIME_WHITE = Register(timeProp, "WL", fTimeProp + fWhiteProp);
-    SG_PROP_OT_BLACK =
-        Register(intProp, "OB", fTimeProp + fBlackProp + fNotClean);
-    SG_PROP_OT_WHITE =
-        Register(intProp, "OW", fTimeProp + fWhiteProp + fNotClean);
-    SG_PROP_OT_NU_MOVES =
-        Register(intProp, "OM", fTimeProp + fRootProp + fCustom + fNotClean);
-    SG_PROP_OT_PERIOD =
-        Register(timeProp, "OP", fTimeProp + fRootProp + fCustom + fNotClean);
-    SG_PROP_OVERHEAD =
-        Register(timeProp, "OV", fTimeProp + fRootProp + fCustom + fNotClean);
-    SG_PROP_LOSE_TIME =
-        Register(simpleProp, "LT",
-                 fTimeProp + fRootProp + fCustom + fNotClean);
+    SG_PROP_TIMES = Register(0, "", SG_PROPCLASS_TIME + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_TIME_BLACK = Register(timeProp, "BL",
+                                  SG_PROPCLASS_TIME + SG_PROPCLASS_BLACK);
+    SG_PROP_TIME_WHITE = Register(timeProp, "WL",
+                                  SG_PROPCLASS_TIME + SG_PROPCLASS_WHITE);
+    SG_PROP_OT_BLACK = Register(intProp, "OB",
+                                SG_PROPCLASS_TIME + SG_PROPCLASS_BLACK
+                                + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_OT_WHITE = Register(intProp, "OW",
+                                SG_PROPCLASS_TIME + SG_PROPCLASS_WHITE
+                                + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_OT_NU_MOVES = Register(intProp, "OM",
+                                   SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
+                                   + SG_PROPCLASS_CUSTOM
+                                   + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_OT_PERIOD = Register(timeProp, "OP",
+                                 SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
+                                 + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_OVERHEAD = Register(timeProp, "OV",
+                                SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
+                                + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_LOSE_TIME = Register(simpleProp, "LT",
+                                 SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
+                                 + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
 
     //--- statistics
     // AR: is official property?
-    SG_PROP_COUNT = Register(0, "CN", fStatProp + fAbstract);
-    SG_PROP_TIME_USED =
-        Register(mSecProp, "TU", fStatProp + fCustom + fNotClean);
-    SG_PROP_NUM_NODES =
-        Register(intProp, "NN", fStatProp + fCustom + fNotClean);
-    SG_PROP_NUM_LEAFS =
-        Register(intProp, "NL", fStatProp + fCustom + fNotClean);
-    SG_PROP_MAX_DEPTH =
-        Register(intProp, "MD", fStatProp + fCustom + fNotClean);
-    SG_PROP_DEPTH = Register(intProp, "DE", fStatProp + fCustom + fNotClean);
-    SG_PROP_PART_DEPTH =
-        Register(intProp, "PD", fStatProp + fCustom + fNotClean);
-    SG_PROP_EVAL =
-        Register(valueProp, "EL", fStatProp + fCustom + fNotClean);
-    SG_PROP_EXPECTED =
-        Register(moveProp, "EX", fStatProp + fCustom + fNotClean);
+    SG_PROP_COUNT = Register(0, "CN",
+                             SG_PROPCLASS_STAT + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_TIME_USED = Register(mSecProp, "TU",
+                                 SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_NUM_NODES = Register(intProp, "NN",
+                                 SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_NUM_LEAFS = Register(intProp, "NL",
+                                 SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_MAX_DEPTH = Register(intProp, "MD",
+                                 SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_DEPTH = Register(intProp, "DE",
+                             SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                             + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_PART_DEPTH = Register(intProp, "PD",
+                                  SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                  + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_EVAL = Register(valueProp, "EL",
+                            SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                            + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_EXPECTED = Register(moveProp, "EX",
+                                SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                + SG_PROPCLASS_NOTCLEAN);
 
     //--- root props
-    SG_PROP_FORMAT = Register(intProp, "FF", fRootProp);
-    SG_PROP_SIZE = Register(intProp, "SZ", fRootProp);
-    SG_PROP_GAME = Register(intProp, "GM", fRootProp);
+    SG_PROP_FORMAT = Register(intProp, "FF", SG_PROPCLASS_ROOT);
+    SG_PROP_SIZE = Register(intProp, "SZ", SG_PROPCLASS_ROOT);
+    SG_PROP_GAME = Register(intProp, "GM", SG_PROPCLASS_ROOT);
     // AR: not root props?
-    SG_PROP_SPEC_BLACK = Register(intProp, "BS", fCustom);
-    SG_PROP_SPEC_WHITE = Register(intProp, "WS", fCustom);
-    SG_PROP_CHINESE = Register(intProp, "CI", fRootProp + fCustom);
-    SG_PROP_APPLIC = Register(textProp, "AP", fRootProp + fNotFF3);
+    SG_PROP_SPEC_BLACK = Register(intProp, "BS", SG_PROPCLASS_CUSTOM);
+    SG_PROP_SPEC_WHITE = Register(intProp, "WS", SG_PROPCLASS_CUSTOM);
+    SG_PROP_CHINESE = Register(intProp, "CI",
+                               SG_PROPCLASS_ROOT + SG_PROPCLASS_CUSTOM);
+    SG_PROP_APPLIC = Register(textProp, "AP",
+                              SG_PROPCLASS_ROOT + SG_PROPCLASS_NOT_FF3);
 
     //--- annotations
-    SG_PROP_ANNOTATE = Register(0, "", fAnnoProp + fAbstract);
-    SG_PROP_COMMENT = Register(textProp, "C", fAnnoProp + fNewLine);
-    SG_PROP_NAME = Register(textProp, "N", fAnnoProp + fNewLine);
-    SG_PROP_CHECK = Register(multipleProp, "CH", fAnnoProp + fCustom);
-    SG_PROP_SIGMA = Register(multipleProp, "SI", fAnnoProp + fCustom);
-    SG_PROP_HOTSPOT = Register(multipleProp, "HO", fAnnoProp + fCustom);
-    SG_PROP_FIGURE = Register(simpleProp, "FG", fAnnoProp + fNewLine);
+    SG_PROP_ANNOTATE = Register(0, "",
+                                SG_PROPCLASS_ANNO + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_COMMENT = Register(textProp, "C",
+                               SG_PROPCLASS_ANNO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_NAME = Register(textProp, "N",
+                            SG_PROPCLASS_ANNO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_CHECK = Register(multipleProp, "CH",
+                             SG_PROPCLASS_ANNO + SG_PROPCLASS_CUSTOM);
+    SG_PROP_SIGMA = Register(multipleProp, "SI",
+                             SG_PROPCLASS_ANNO + SG_PROPCLASS_CUSTOM);
+    SG_PROP_HOTSPOT = Register(multipleProp, "HO",
+                               SG_PROPCLASS_ANNO + SG_PROPCLASS_CUSTOM);
+    SG_PROP_FIGURE = Register(simpleProp, "FG",
+                              SG_PROPCLASS_ANNO + SG_PROPCLASS_NEWLINE);
 
     //--- position annotations
-    SG_PROP_POS_ANNO = Register(0, "", fAnnoProp + fPosAnno + fAbstract);
-    SG_PROP_GOOD_BLACK =
-        Register(multipleProp, "GB", fAnnoProp + fPosAnno + fBlackProp);
-    SG_PROP_GOOD_WHITE =
-        Register(multipleProp, "GW", fAnnoProp + fPosAnno + fWhiteProp);
-    SG_PROP_EVEN_POS = Register(multipleProp, "DM", fAnnoProp + fPosAnno);
-    SG_PROP_UNCLEAR = Register(multipleProp, "UC", fAnnoProp + fPosAnno);
+    SG_PROP_POS_ANNO = Register(0, "",
+                                SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_POS
+                                + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_GOOD_BLACK = Register(multipleProp, "GB",
+                                  SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_POS
+                                  + SG_PROPCLASS_BLACK);
+    SG_PROP_GOOD_WHITE = Register(multipleProp, "GW",
+                                  SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_POS
+                                  + SG_PROPCLASS_WHITE);
+    SG_PROP_EVEN_POS = Register(multipleProp, "DM",
+                                SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_POS);
+    SG_PROP_UNCLEAR = Register(multipleProp, "UC",
+                               SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_POS);
 
     //--- move annotations
-    SG_PROP_MOVE_ANNO = Register(0, "", fAnnoProp + fMoveAnno + fAbstract);
-    SG_PROP_GOOD_MOVE = Register(multipleProp, "TE", fAnnoProp + fMoveAnno);
-    SG_PROP_BAD_MOVE = Register(multipleProp, "BM", fAnnoProp + fMoveAnno);
-    SG_PROP_INTERESTING = Register(simpleProp, "IT", fAnnoProp + fMoveAnno);
-    SG_PROP_DOUBTFUL = Register(simpleProp, "DO", fAnnoProp + fMoveAnno);
+    SG_PROP_MOVE_ANNO = Register(0, "",
+                                 SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_MOVE
+                                 + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_GOOD_MOVE = Register(multipleProp, "TE",
+                                 SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_MOVE);
+    SG_PROP_BAD_MOVE = Register(multipleProp, "BM",
+                                SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_MOVE);
+    SG_PROP_INTERESTING = Register(simpleProp, "IT",
+                                   SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_MOVE);
+    SG_PROP_DOUBTFUL = Register(simpleProp, "DO",
+                                SG_PROPCLASS_ANNO + SG_PROPCLASS_ANNO_MOVE);
 
     //--- game info
-    SG_PROP_INFO = Register(0, "", fInfoProp + fAbstract);
-    SG_PROP_GAME_NAME = Register(textProp, "GN", fInfoProp + fNewLine);
-    SG_PROP_GAME_COMMENT = Register(textProp, "GC", fInfoProp + fNewLine);
-    SG_PROP_EVENT = Register(textProp, "EV", fInfoProp + fNewLine);
-    SG_PROP_ROUND = Register(textProp, "RO", fInfoProp);
-    SG_PROP_DATE = Register(textProp, "DT", fInfoProp + fNewLine);
-    SG_PROP_PLACE = Register(textProp, "PC", fInfoProp + fNewLine);
-    SG_PROP_PLAYER_BLACK =
-        Register(textProp, "PB", fInfoProp + fBlackProp + fNewLine);
-    SG_PROP_PLAYER_WHITE =
-        Register(textProp, "PW", fInfoProp + fWhiteProp + fNewLine);
-    SG_PROP_RESULT = Register(textProp, "RE", fInfoProp + fNewLine);
-    SG_PROP_USER = Register(textProp, "US", fInfoProp + fNewLine);
-    SG_PROP_TIME = Register(textProp, "TM", fInfoProp);
-    SG_PROP_SOURCE = Register(textProp, "SO", fInfoProp + fNewLine);
-    SG_PROP_COPYRIGHT = Register(textProp, "CP", fInfoProp);
-    SG_PROP_ANALYSIS = Register(textProp, "AN", fInfoProp);
-    SG_PROP_RANK_BLACK = Register(textProp, "BR", fInfoProp + fBlackProp);
-    SG_PROP_RANK_WHITE = Register(textProp, "WR", fInfoProp + fWhiteProp);
-    SG_PROP_TEAM_BLACK = Register(textProp, "BT", fInfoProp + fBlackProp);
-    SG_PROP_TEAM_WHITE = Register(textProp, "WT", fInfoProp + fWhiteProp);
-    SG_PROP_OPENING = Register(textProp, "ON", fInfoProp + fNewLine);
-    SG_PROP_RULES = Register(textProp, "RU", fInfoProp + fNewLine);
-    SG_PROP_HANDICAP = Register(intProp, "HA", fInfoProp);
-    SG_PROP_KOMI = Register(realProp, "KM", fInfoProp);
+    SG_PROP_INFO = Register(0, "", SG_PROPCLASS_INFO + SG_PROPCLASS_ABSTRACT);
+    SG_PROP_GAME_NAME = Register(textProp, "GN",
+                                 SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_GAME_COMMENT = Register(textProp, "GC",
+                                    SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_EVENT = Register(textProp, "EV",
+                             SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_ROUND = Register(textProp, "RO", SG_PROPCLASS_INFO);
+    SG_PROP_DATE = Register(textProp, "DT",
+                            SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_PLACE = Register(textProp, "PC",
+                             SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_PLAYER_BLACK = Register(textProp, "PB",
+                                    SG_PROPCLASS_INFO + SG_PROPCLASS_BLACK
+                                    + SG_PROPCLASS_NEWLINE);
+    SG_PROP_PLAYER_WHITE = Register(textProp, "PW",
+                                    SG_PROPCLASS_INFO + SG_PROPCLASS_WHITE
+                                    + SG_PROPCLASS_NEWLINE);
+    SG_PROP_RESULT = Register(textProp, "RE",
+                              SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_USER = Register(textProp, "US",
+                            SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_TIME = Register(textProp, "TM", SG_PROPCLASS_INFO);
+    SG_PROP_SOURCE = Register(textProp, "SO",
+                              SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_COPYRIGHT = Register(textProp, "CP", SG_PROPCLASS_INFO);
+    SG_PROP_ANALYSIS = Register(textProp, "AN", SG_PROPCLASS_INFO);
+    SG_PROP_RANK_BLACK = Register(textProp, "BR",
+                                  SG_PROPCLASS_INFO + SG_PROPCLASS_BLACK);
+    SG_PROP_RANK_WHITE = Register(textProp, "WR",
+                                  SG_PROPCLASS_INFO + SG_PROPCLASS_WHITE);
+    SG_PROP_TEAM_BLACK = Register(textProp, "BT",
+                                  SG_PROPCLASS_INFO + SG_PROPCLASS_BLACK);
+    SG_PROP_TEAM_WHITE = Register(textProp, "WT"
+                                  , SG_PROPCLASS_INFO + SG_PROPCLASS_WHITE);
+    SG_PROP_OPENING = Register(textProp, "ON",
+                               SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_RULES = Register(textProp, "RU",
+                             SG_PROPCLASS_INFO + SG_PROPCLASS_NEWLINE);
+    SG_PROP_HANDICAP = Register(intProp, "HA", SG_PROPCLASS_INFO);
+    SG_PROP_KOMI = Register(realProp, "KM", SG_PROPCLASS_INFO);
 
     //--- abstract properties
-    SG_PROP_FIND_MOVE = Register(0, "", fAbstract);
-    SG_PROP_FIND_TEXT = Register(0, "", fAbstract);
-    SG_PROP_BRANCH = Register(0, "", fAbstract);
-    SG_PROP_TERMINAL = Register(0, "", fAbstract);
+    SG_PROP_FIND_MOVE = Register(0, "", SG_PROPCLASS_ABSTRACT);
+    SG_PROP_FIND_TEXT = Register(0, "", SG_PROPCLASS_ABSTRACT);
+    SG_PROP_BRANCH = Register(0, "", SG_PROPCLASS_ABSTRACT);
+    SG_PROP_TERMINAL = Register(0, "", SG_PROPCLASS_ABSTRACT);
 
     //--- Smart Go specific properties
-    SG_PROP_MOTIVE =
-        Register(textListProp, "MM", fStatProp + fCustom + fNotClean);
-    SG_PROP_SEQUENCE =
-        Register(listProp, "MS", fStatProp + fCustom + fNotClean);
-    SG_PROP_NOT_EMPTY =
-        Register(listProp, "NE", fMarkProp + fCustom + fNotClean);
-    SG_PROP_NOT_BLACK =
-        Register(listProp, "NB", fMarkProp + fCustom + fNotClean);
-    SG_PROP_NOT_WHITE =
-        Register(listProp, "NW", fMarkProp + fCustom + fNotClean);
+    SG_PROP_MOTIVE = Register(textListProp, "MM",
+                              SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                              + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_SEQUENCE = Register(listProp, "MS",
+                                SG_PROPCLASS_STAT + SG_PROPCLASS_CUSTOM
+                                + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_NOT_EMPTY = Register(listProp, "NE",
+                                 SG_PROPCLASS_MARK + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_NOT_BLACK = Register(listProp, "NB",
+                                 SG_PROPCLASS_MARK + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
+    SG_PROP_NOT_WHITE = Register(listProp, "NW",
+                                 SG_PROPCLASS_MARK + SG_PROPCLASS_CUSTOM
+                                 + SG_PROPCLASS_NOTCLEAN);
 
     s_initialized = true;
 }

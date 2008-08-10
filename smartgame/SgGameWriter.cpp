@@ -129,7 +129,7 @@ void SgGameWriter::WriteNode(const SgNode& node, bool allProps, int boardSize,
         {
             // Start specific properties on a new line to make file easier
             // to read.
-            if (prop->Flag(fNewLine))
+            if (prop->Flag(SG_PROPCLASS_NEWLINE))
                 StartNewLine();
             m_out << prop->Label();
             for (vector<string>::const_iterator it2 = values.begin();
@@ -159,7 +159,7 @@ bool SgGameWriter::ShouldWriteProperty(const SgProp& prop)
 {
     // Only write out clean properties with FF[3].
     // FUTURE: Could make standard adherence a separate option.
-    if (m_fileFormat == 3 && prop.Flag(fNotClean))
+    if (m_fileFormat == 3 && prop.Flag(SG_PROPCLASS_NOTCLEAN))
         return false;
 
     if (prop.Label() == "")

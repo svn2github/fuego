@@ -237,7 +237,7 @@ public:
     {
         // Check for root properties in root or one below root (linked nodes
         // in game collection).
-        SG_ASSERT(! prop->Flag(fRootProp) || ! HasFather()
+        SG_ASSERT(! prop->Flag(SG_PROPCLASS_ROOT) || ! HasFather()
                   || ! Father()->HasFather());
         m_props.Add(prop);
     }

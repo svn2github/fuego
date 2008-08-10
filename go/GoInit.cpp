@@ -21,10 +21,12 @@ bool s_isGoInitialized = false;
 void RegisterGoProps()
 {
     SgProp* moveProp = new SgPropMove(0);
-    SG_PROP_MOVE_BLACK
-        = SgProp::Register(moveProp, "B", fMoveProp + fBlackProp);
+    SG_PROP_MOVE_BLACK =
+        SgProp::Register(moveProp, "B",
+                         SG_PROPCLASS_MOVE + SG_PROPCLASS_BLACK);
     SG_PROP_MOVE_WHITE
-        = SgProp::Register(moveProp, "W", fMoveProp + fWhiteProp);
+        = SgProp::Register(moveProp, "W",
+                           SG_PROPCLASS_MOVE + SG_PROPCLASS_WHITE);
 }
 
 } // namespace
