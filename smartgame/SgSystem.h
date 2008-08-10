@@ -26,17 +26,6 @@
     #endif
 #endif
 
-// Select the compiler we use. Needed to work around compiler bugs,
-// language and library incompatibilities and to control pragmas
-// for optimizations.
-#if UNIX
-    #define MW_COMPILER 0 // Metrowerks CodeWarrior
-    #define GCC_COMPILER 1 // GNU GCC
-#else
-    #define MW_COMPILER 1 // Metrowerks CodeWarrior
-    #define GCC_COMPILER 0 // GNU GCC
-#endif
-
 //----------------------------------------------------------------------------
 
 /** Avoid compiler warnings for unused variables.
@@ -54,6 +43,22 @@ inline void SG_UNUSED(const T&)
 #define SG_DEBUG_ONLY(x)
 #else
 #define SG_DEBUG_ONLY(x) SG_UNUSED(x)
+#endif
+
+//----------------------------------------------------------------------------
+
+#ifdef __GNUC__
+
+#define SG_ATTR_FLATTEN __attribute__((flatten))
+#define SG_ATTR_NOINLINE __attribute__((noinline))
+#define SG_ATTR_ALWAYS_INLINE __attribute__((always_inline))
+
+#else
+
+#define SG_ATTR_FLATTEN
+#define SG_ATTR_NOINLINE
+#define SG_ATTR_ALWAYS_INLINE
+
 #endif
 
 //----------------------------------------------------------------------------

@@ -30,7 +30,6 @@ BOOST_AUTO_TEST_CASE(SgSystemTestByteOrder)
 BOOST_AUTO_TEST_CASE(SgSystemTestDefines)
 {
     BOOST_CHECK_EQUAL(MAC + UNIX, 1);
-    BOOST_CHECK_EQUAL(MW_COMPILER + GCC_COMPILER, 1);
 }
 
 /** Check for a bug in std::bitset.

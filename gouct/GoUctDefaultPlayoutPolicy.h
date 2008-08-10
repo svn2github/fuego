@@ -523,7 +523,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 }
 
 template<class BOARD>
-SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
+SG_ATTR_FLATTEN SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
 {
     m_moves.Clear();
     m_checked = false;
