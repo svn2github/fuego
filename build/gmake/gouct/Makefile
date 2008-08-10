@@ -26,9 +26,9 @@ SRC_CPP= \
   gouct/GoUctDefaultRootFilter.cpp \
   gouct/GoUctEstimatorStat.cpp \
   gouct/GoUctGlobalSearch.cpp \
-  gouct/GoUctGlobalSearchPlayer.cpp \
   gouct/GoUctObjectWithSearch.cpp \
   gouct/GoUctPatterns.cpp \
+  gouct/GoUctPlayer.cpp \
   gouct/GoUctPlayoutPolicy.cpp \
   gouct/GoUctRootFilter.cpp \
   gouct/GoUctSearch.cpp \

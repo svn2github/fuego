@@ -15,7 +15,7 @@
 #include "GoUctPlayoutPolicy.h"
 #include "GoUctDefaultRootFilter.h"
 #include "GoUctEstimatorStat.h"
-#include "GoUctGlobalSearchPlayer.h"
+#include "GoUctPlayer.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctPatterns.h"
 #include "GoUctUtil.h"
@@ -391,27 +391,25 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         throw GtpFailure() << "need 0 or 2 arguments";
 }
 
-/** Get and set GoUctGlobalSearchPlayer parameters.
+/** Get and set GoUctPlayer parameters.
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c auto_param See GoUctGlobalSearchPlayer::AutoParam
-    @arg @c ignore_clock See GoUctGlobalSearchPlayer::IgnoreClock
-    @arg @c reuse_subtree See GoUctGlobalSearchPlayer::ReuseSubtree
-    @arg @c use_root_filter See GoUctGlobalSearchPlayer::UseRootFilter
-    @arg @c max_games See GoUctGlobalSearchPlayer::MaxGames
-    @arg @c max_nodes See GoUctGlobalSearchPlayer::MaxNodes
-    @arg @c max_time See GoUctGlobalSearchPlayer::MaxTime
-    @arg @c prior_knowledge @c none|even|policy See
-      GoUctGlobalSearchPlayer::PriorKnowledge
-    @arg @c resign_threshold See GoUctGlobalSearchPlayer::ResignThreshold
-    @arg @c search_mode @c playout|uct|one_ply See
-      GoUctGlobalSearchPlayer::SearchMode
+    @arg @c auto_param See GoUctPlayer::AutoParam
+    @arg @c ignore_clock See GoUctPlayer::IgnoreClock
+    @arg @c reuse_subtree See GoUctPlayer::ReuseSubtree
+    @arg @c use_root_filter See GoUctPlayer::UseRootFilter
+    @arg @c max_games See GoUctPlayer::MaxGames
+    @arg @c max_nodes See GoUctPlayer::MaxNodes
+    @arg @c max_time See GoUctPlayer::MaxTime
+    @arg @c prior_knowledge @c none|even|policy See GoUctPlayer::PriorKnowledge
+    @arg @c resign_threshold See GoUctPlayer::ResignThreshold
+    @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode
 */
 void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctGlobalSearchPlayer& p = Player();
+    GoUctPlayer& p = Player();
     if (cmd.NuArg() == 0)
     {
         // Boolean parameters first for better layout of GoGui parameter
@@ -820,9 +818,9 @@ void GoUctCommands::CmdSequence(GtpCommand& cmd)
     GoUctUtil::GfxSequence(Search(), Search().ToPlay(), cmd);
 }
 
-/** Write statistics of GoUctGlobalSearchPlayer.
+/** Write statistics of GoUctPlayer.
     Arguments: none
-    @see GoUctGlobalSearchPlayer::Statistics
+    @see GoUctPlayer::Statistics
 */
 void GoUctCommands::CmdStatPlayer(GtpCommand& cmd)
 {
@@ -830,9 +828,9 @@ void GoUctCommands::CmdStatPlayer(GtpCommand& cmd)
     Player().GetStatistics().Write(cmd);
 }
 
-/** Clear statistics of GoUctGlobalSearchPlayer.
+/** Clear statistics of GoUctPlayer.
     Arguments: none
-    @see GoUctGlobalSearchPlayer::Statistics
+    @see GoUctPlayer::Statistics
 */
 void GoUctCommands::CmdStatPlayerClear(GtpCommand& cmd)
 {
@@ -933,17 +931,17 @@ GoUctCommands::GlobalSearch()
     return Player().GlobalSearch();
 }
 
-GoUctGlobalSearchPlayer& GoUctCommands::Player()
+GoUctPlayer& GoUctCommands::Player()
 {
     if (m_player == 0)
-        throw GtpFailure("player not GoUctGlobalSearchPlayer");
+        throw GtpFailure("player not GoUctPlayer");
     try
     {
-        return dynamic_cast<GoUctGlobalSearchPlayer&>(*m_player);
+        return dynamic_cast<GoUctPlayer&>(*m_player);
     }
     catch (const bad_cast& e)
     {
-        throw GtpFailure("player not GoUctGlobalSearchPlayer");
+        throw GtpFailure("player not GoUctPlayer");
     }
 }
 

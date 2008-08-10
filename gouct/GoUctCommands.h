@@ -13,13 +13,13 @@
 
 class GoBoard;
 class GoPlayer;
-class GoUctGlobalSearchPlayer;
+class GoUctPlayer;
 class GoUctBoard;
 class GoUctSearch;
 
 //----------------------------------------------------------------------------
 
-/** GTP commands for GoUctGlobalSearchPlayer.
+/** GTP commands for GoUctPlayer.
     Some of the commands are also usable for other players, as long as they
     use a subclass of GoUctSearch (and implement GoUctObjectWithSearch).
 */
@@ -30,8 +30,8 @@ public:
         @param bd The game board.
         @param player Reference to pointer to current player, this player can
         be null or a different player, but those commands of this class that
-        need a GoUctGlobalSearchPlayer will fail, if the current player is not
-        GoUctGlobalSearchPlayer.
+        need a GoUctPlayer will fail, if the current player is not
+        GoUctPlayer.
     */
     GoUctCommands(GoBoard& bd, GoPlayer*& player);
 
@@ -109,7 +109,7 @@ private:
                       GoUctPlayoutPolicyFactory<GoUctBoard> >&
         GlobalSearch();
 
-    GoUctGlobalSearchPlayer& Player();
+    GoUctPlayer& Player();
 
     GoUctPlayoutPolicy<GoUctBoard>& Policy(std::size_t threadId);
 

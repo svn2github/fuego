@@ -12,7 +12,7 @@ class GoBoard;
 
 //----------------------------------------------------------------------------
 
-/** Default root filter used by GoUctGlobalSearchPlayer. */
+/** Default root filter used by GoUctPlayer. */
 class GoUctDefaultRootFilter
     : public GoUctRootFilter
 {

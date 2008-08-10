@@ -10,11 +10,11 @@
 #include "GoSafetyCommands.h"
 #include "GoUctCommands.h"
 
-class GoUctGlobalSearchPlayer;
+class GoUctPlayer;
 
 //----------------------------------------------------------------------------
 
-/** GTP engine for GoUctGlobalSearchPlayer. */
+/** GTP engine for GoUctPlayer. */
 class FuegoMainEngine
     : public GoGtpEngine
 {

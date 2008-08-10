@@ -2,7 +2,7 @@
 
     @section fuegomainoverview Overview
 
-    GTP interface to GoUctGlobalSearchPlayer.
+    GTP interface to GoUctPlayer.
 
     @section fuegomaindependencies Dependencies
 

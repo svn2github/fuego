@@ -9,7 +9,7 @@
 
 #include "FuegoMainUtil.h"
 #include "GoGtpCommandUtil.h"
-#include "GoUctGlobalSearchPlayer.h"
+#include "GoUctPlayer.h"
 
 using namespace std;
 
@@ -24,7 +24,7 @@ FuegoMainEngine::FuegoMainEngine(istream& in, ostream& out,
 {
     m_uctCommands.Register(*this);
     m_safetyCommands.Register(*this);
-    SetPlayer(new GoUctGlobalSearchPlayer(Board()));
+    SetPlayer(new GoUctPlayer(Board()));
 }
 
 FuegoMainEngine::~FuegoMainEngine()

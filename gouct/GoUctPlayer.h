@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
-/** @file GoUctGlobalSearchPlayer.h
-    Class GoUctGlobalSearchPlayer.
+/** @file GoUctPlayer.h
+    Class GoUctPlayer.
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCT_GLOBALSEARCHPLAYER_H
-#define GOUCT_GLOBALSEARCHPLAYER_H
+#ifndef GOUCT_PLAYER_H
+#define GOUCT_PLAYER_H
 
 #include <boost/scoped_ptr.hpp>
 #include <vector>
@@ -22,7 +22,7 @@ template<typename T,int SIZE> class SgSList;
 
 //----------------------------------------------------------------------------
 
-/** What kind of SgPriorKnowledge to use in GoUctGlobalSearchPlayer */
+/** What kind of SgPriorKnowledge to use in GoUctPlayer */
 enum GoUctGlobalSearchPrior
 {
     /** Don't use any prior knowledge. */
@@ -37,7 +37,7 @@ enum GoUctGlobalSearchPrior
 
 //----------------------------------------------------------------------------
 
-/** What search mode to use in GoUctGlobalSearchPlayer to select a move. */
+/** What search mode to use in GoUctPlayer to select a move. */
 enum GoUctGlobalSearchMode
 {
     /** No search, use playout policy to select a move. */
@@ -53,13 +53,13 @@ enum GoUctGlobalSearchMode
 //----------------------------------------------------------------------------
 
 /** Player using GoUctGlobalSearch. */
-class GoUctGlobalSearchPlayer
+class GoUctPlayer
     : public GoPlayer,
       public GoUctObjectWithSearch,
       public SgObjectWithDefaultTimeControl
 {
 public:
-    /** Statistics collected by GoUctGlobalSearchPlayer. */
+    /** Statistics collected by GoUctPlayer. */
     struct Statistics
     {
         std::size_t m_nuGenMove;
@@ -81,9 +81,9 @@ public:
     /** Constructor.
         @param bd The board.
     */
-    GoUctGlobalSearchPlayer(GoBoard& bd);
+    GoUctPlayer(GoBoard& bd);
 
-    ~GoUctGlobalSearchPlayer();
+    ~GoUctPlayer();
 
 
     /** @name Virtual functions of GoBoardSynchronizer */
@@ -304,127 +304,127 @@ private:
     void FindInitTree(SgBlackWhite toPlay, double maxTime);
 };
 
-inline bool GoUctGlobalSearchPlayer::AutoParam() const
+inline bool GoUctPlayer::AutoParam() const
 {
     return m_autoParam;
 }
 
 inline GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                          GoUctPlayoutPolicyFactory<GoUctBoard> >&
-GoUctGlobalSearchPlayer::GlobalSearch()
+GoUctPlayer::GlobalSearch()
 {
     return m_search;
 }
 
 inline const GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                                GoUctPlayoutPolicyFactory<GoUctBoard> >&
-GoUctGlobalSearchPlayer::GlobalSearch() const
+GoUctPlayer::GlobalSearch() const
 {
     return m_search;
 }
 
-inline bool GoUctGlobalSearchPlayer::IgnoreClock() const
+inline bool GoUctPlayer::IgnoreClock() const
 {
     return m_ignoreClock;
 }
 
-inline std::size_t GoUctGlobalSearchPlayer::MaxGames() const
+inline std::size_t GoUctPlayer::MaxGames() const
 {
     return m_maxGames;
 }
 
-inline std::size_t GoUctGlobalSearchPlayer::MaxNodes() const
+inline std::size_t GoUctPlayer::MaxNodes() const
 {
     size_t maxNodes = m_search.MaxNodes();
     SG_ASSERT(! m_reuseSubtree || m_initTree.MaxNodes() == maxNodes);
     return maxNodes;
 }
 
-inline double GoUctGlobalSearchPlayer::MaxTime() const
+inline double GoUctPlayer::MaxTime() const
 {
     return m_maxTime;
 }
 
-inline bool GoUctGlobalSearchPlayer::EnablePonder() const
+inline bool GoUctPlayer::EnablePonder() const
 {
     return m_enablePonder;
 }
 
-inline GoUctGlobalSearchPrior GoUctGlobalSearchPlayer::PriorKnowledge() const
+inline GoUctGlobalSearchPrior GoUctPlayer::PriorKnowledge() const
 {
     return m_priorKnowledge;
 }
 
-inline bool GoUctGlobalSearchPlayer::UseRootFilter() const
+inline bool GoUctPlayer::UseRootFilter() const
 {
     return m_useRootFilter;
 }
 
-inline double GoUctGlobalSearchPlayer::ResignThreshold() const
+inline double GoUctPlayer::ResignThreshold() const
 {
     return m_resignThreshold;
 }
 
-inline bool GoUctGlobalSearchPlayer::ReuseSubtree() const
+inline bool GoUctPlayer::ReuseSubtree() const
 {
     return m_reuseSubtree;
 }
 
-inline GoUctRootFilter& GoUctGlobalSearchPlayer::RootFilter()
+inline GoUctRootFilter& GoUctPlayer::RootFilter()
 {
     return *m_rootFilter;
 }
 
-inline GoUctGlobalSearchMode GoUctGlobalSearchPlayer::SearchMode() const
+inline GoUctGlobalSearchMode GoUctPlayer::SearchMode() const
 {
     return m_searchMode;
 }
 
-inline void GoUctGlobalSearchPlayer::SetAutoParam(bool enable)
+inline void GoUctPlayer::SetAutoParam(bool enable)
 {
     m_autoParam = enable;
 }
 
-inline void GoUctGlobalSearchPlayer::SetIgnoreClock(bool enable)
+inline void GoUctPlayer::SetIgnoreClock(bool enable)
 {
     m_ignoreClock = enable;
 }
 
-inline void GoUctGlobalSearchPlayer::SetMaxGames(std::size_t maxGames)
+inline void GoUctPlayer::SetMaxGames(std::size_t maxGames)
 {
     m_maxGames = maxGames;
 }
 
-inline void GoUctGlobalSearchPlayer::SetMaxTime(double maxTime)
+inline void GoUctPlayer::SetMaxTime(double maxTime)
 {
     m_maxTime = maxTime;
 }
 
-inline void GoUctGlobalSearchPlayer::SetEnablePonder(bool enable)
+inline void GoUctPlayer::SetEnablePonder(bool enable)
 {
     m_enablePonder = enable;
 }
 
-inline void GoUctGlobalSearchPlayer::SetUseRootFilter(bool enable)
+inline void GoUctPlayer::SetUseRootFilter(bool enable)
 {
     m_useRootFilter = enable;
 }
 
-inline void GoUctGlobalSearchPlayer::SetResignThreshold(double threshold)
+inline void GoUctPlayer::SetResignThreshold(double threshold)
 {
     m_resignThreshold = threshold;
 }
 
-inline void GoUctGlobalSearchPlayer::SetRootFilter(GoUctRootFilter* filter)
+inline void GoUctPlayer::SetRootFilter(GoUctRootFilter* filter)
 {
     m_rootFilter.reset(filter);
 }
 
-inline void GoUctGlobalSearchPlayer::SetSearchMode(GoUctGlobalSearchMode mode)
+inline void GoUctPlayer::SetSearchMode(GoUctGlobalSearchMode mode)
 {
     m_searchMode = mode;
 }
 
 //----------------------------------------------------------------------------
 
-#endif // GOUCT_GLOBALSEARCHPLAYER_H
+#endif // GOUCT_PLAYER_H

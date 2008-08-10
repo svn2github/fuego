@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
-/** @file GoUctGlobalSearchPlayer.cpp
+/** @file GoUctPlayer.cpp
 */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "GoUctGlobalSearchPlayer.h"
+#include "GoUctPlayer.h"
 
 #include <cmath>
 #include <fstream>
@@ -48,19 +48,19 @@ bool HasSetup(const SgNode* node)
 
 //----------------------------------------------------------------------------
 
-GoUctGlobalSearchPlayer::Statistics::Statistics()
+GoUctPlayer::Statistics::Statistics()
 {
     Clear();
 }
 
-void GoUctGlobalSearchPlayer::Statistics::Clear()
+void GoUctPlayer::Statistics::Clear()
 {
     m_nuGenMove = 0;
     m_gamesPerSecond.Clear();
     m_reuse.Clear();
 }
 
-void GoUctGlobalSearchPlayer::Statistics::Write(ostream& out) const
+void GoUctPlayer::Statistics::Write(ostream& out) const
 {
     out << SgWriteLabel("NuGenMove") << m_nuGenMove << '\n'
         << SgWriteLabel("GamesPerSec");
@@ -73,7 +73,7 @@ void GoUctGlobalSearchPlayer::Statistics::Write(ostream& out) const
 
 //----------------------------------------------------------------------------
 
-GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
+GoUctPlayer::GoUctPlayer(GoBoard& bd)
     : GoPlayer(bd),
       m_searchMode(GOUCT_SEARCHMODE_UCT),
       m_autoParam(true),
@@ -100,16 +100,16 @@ GoUctGlobalSearchPlayer::GoUctGlobalSearchPlayer(GoBoard& bd)
     SetPriorKnowledge(m_priorKnowledge);
 }
 
-GoUctGlobalSearchPlayer::~GoUctGlobalSearchPlayer()
+GoUctPlayer::~GoUctPlayer()
 {
 }
 
-void GoUctGlobalSearchPlayer::ClearStatistics()
+void GoUctPlayer::ClearStatistics()
 {
     m_statistics.Clear();
 }
 
-SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
+SgPoint GoUctPlayer::GenMove(const SgTimeRecord& time,
                                          SgBlackWhite toPlay)
 {
     ++m_statistics.m_nuGenMove;
@@ -120,7 +120,7 @@ SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
     {
         move = SG_PASS;
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::GenMove: "
+            "GoUctPlayer::GenMove: "
             "Pass wins (Tromp-Taylor rules)\n";
     }
     else
@@ -149,7 +149,7 @@ SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
         {
             // Shouldn't happen ?
             SgWarning() <<
-                "GoUctGlobalSearchPlayer::GenMove: "
+                "GoUctPlayer::GenMove: "
                 "Search generated SG_NULLMOVE\n";
             move = SG_PASS;
         }
@@ -159,7 +159,7 @@ SgPoint GoUctGlobalSearchPlayer::GenMove(const SgTimeRecord& time,
     return move;
 }
 
-SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
+SgMove GoUctPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
 {
     GoBoard& bd = Board();
     GoBoardRestorer restorer(bd);
@@ -173,7 +173,7 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     if (move == SG_NULLMOVE)
     {
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::GenMove: "
+            "GoUctPlayer::GenMove: "
             "GoUctPlayoutPolicy generated SG_NULLMOVE\n";
         return SG_PASS;
     }
@@ -189,7 +189,7 @@ SgMove GoUctGlobalSearchPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     happen, if @c isDuringPondering, no search was performed, because
     DoSearch() was aborted during FindInitTree()).
 */
-SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
+SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
                                           bool isDuringPondering)
 {
     SgUctTree* initTree = 0;
@@ -248,7 +248,7 @@ SgPoint GoUctGlobalSearchPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     sequence of moves starting with the color to play of the search tree.
     @see SetReuseSubtree
 */
-void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
+void GoUctPlayer::FindInitTree(SgBlackWhite toPlay,
                                            double maxTime)
 {
     m_initTree.Clear();
@@ -270,7 +270,7 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
                                                     sequence))
     {
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::FindInitTree: No tree to reuse found\n";
+            "GoUctPlayer::FindInitTree: No tree to reuse found\n";
         return;
     }
     SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence,
@@ -281,7 +281,7 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
     {
         float reuse = static_cast<float>(initTreeNodes) / oldTreeNodes;
         int reusePercent = static_cast<int>(100 * reuse);
-        SgDebug() << "GoUctGlobalSearchPlayer::FindInitTree: Reusing "
+        SgDebug() << "GoUctPlayer::FindInitTree: Reusing "
                   << initTreeNodes << " nodes (" << reusePercent << "%)\n";
 
         //SgDebug() << SgWritePointList(sequence, "Sequence", false);
@@ -290,37 +290,35 @@ void GoUctGlobalSearchPlayer::FindInitTree(SgBlackWhite toPlay,
     else
     {
         SgDebug() <<
-            "GoUctGlobalSearchPlayer::FindInitTree: "
-            "Subtree to reuse has 0 nodes\n";
+            "GoUctPlayer::FindInitTree: Subtree to reuse has 0 nodes\n";
         m_statistics.m_reuse.Add(0.f);
     }
 }
 
-const GoUctGlobalSearchPlayer::Statistics&
-GoUctGlobalSearchPlayer::GetStatistics() const
+const GoUctPlayer::Statistics&
+GoUctPlayer::GetStatistics() const
 {
     return m_statistics;
 }
 
-string GoUctGlobalSearchPlayer::Name() const
+string GoUctPlayer::Name() const
 {
-    return "GoUctGlobalSearchPlayer";
+    return "GoUctPlayer";
 }
 
-void GoUctGlobalSearchPlayer::OnBoardChange()
+void GoUctPlayer::OnBoardChange()
 {
     int size = Board().Size();
     if (m_autoParam && size != m_lastBoardSize)
     {
-        SgDebug() <<
-            "GoUctGlobalSearchPlayer: "
-            "Setting default parameters for size " << size << '\n';
+        SgDebug() << "GoUctPlayer: Setting default parameters for size "
+                  << size << '\n';
         m_search.SetDefaultParameters(size);
         m_lastBoardSize = size;
     }
 }
 
-void GoUctGlobalSearchPlayer::Ponder()
+void GoUctPlayer::Ponder()
 {
     if (! m_enablePonder || GoBoardUtil::EndOfGame(Board())
         || m_searchMode != GOUCT_SEARCHMODE_UCT)
@@ -332,31 +330,31 @@ void GoUctGlobalSearchPlayer::Ponder()
         SgWarning() << "Pondering needs reuse_subtree enabled.\n";
         return;
     }
-    SgDebug() << "GoUctGlobalSearchPlayer::Ponder Start\n";
+    SgDebug() << "GoUctPlayer::Ponder Start\n";
     // Don't ponder forever to avoid hogging the machine
     double maxTime = 3600; // 60 min
     DoSearch(Board().ToPlay(), maxTime, true);
-    SgDebug() << "GoUctGlobalSearchPlayer::Ponder End\n";
+    SgDebug() << "GoUctPlayer::Ponder End\n";
 }
 
-GoUctSearch& GoUctGlobalSearchPlayer::Search()
+GoUctSearch& GoUctPlayer::Search()
 {
     return m_search;
 }
 
-const GoUctSearch& GoUctGlobalSearchPlayer::Search() const
+const GoUctSearch& GoUctPlayer::Search() const
 {
     return m_search;
 }
 
-void GoUctGlobalSearchPlayer::SetMaxNodes(std::size_t maxNodes)
+void GoUctPlayer::SetMaxNodes(std::size_t maxNodes)
 {
     m_search.SetMaxNodes(maxNodes);
     if (m_reuseSubtree)
         m_initTree.SetMaxNodes(maxNodes);
 }
 
-void GoUctGlobalSearchPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
+void GoUctPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
 {
     SgUctPriorKnowledgeFactory* factory;
     switch (prior)
@@ -378,7 +376,7 @@ void GoUctGlobalSearchPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
     m_priorKnowledge = prior;
 }
 
-void GoUctGlobalSearchPlayer::SetReuseSubtree(bool enable)
+void GoUctPlayer::SetReuseSubtree(bool enable)
 {
     if (m_reuseSubtree && ! enable)
         // Free some memory, if initTree is no longer used
@@ -386,12 +384,12 @@ void GoUctGlobalSearchPlayer::SetReuseSubtree(bool enable)
     m_reuseSubtree = enable;
 }
 
-SgDefaultTimeControl& GoUctGlobalSearchPlayer::TimeControl()
+SgDefaultTimeControl& GoUctPlayer::TimeControl()
 {
     return m_timeControl;
 }
 
-const SgDefaultTimeControl& GoUctGlobalSearchPlayer::TimeControl() const
+const SgDefaultTimeControl& GoUctPlayer::TimeControl() const
 {
     return m_timeControl;
 }

@@ -11,7 +11,7 @@
 
 class GoBoard;
 class GoPlayer;
-class GoUctGlobalSearchPlayer;
+class GoUctPlayer;
 class GoUctBoard;
 class GoUctSearch;
 class GoUctGlobalSearch;
