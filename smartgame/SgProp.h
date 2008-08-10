@@ -75,10 +75,10 @@ namespace SgPropUtil
 const int MAX_PROP_CLASS = 150;
 
 /** Contains information related to Black player */
-const int fBlackProp = SG_BLACK;
+const int fBlackProp = 1 << 0;
 
 /** Contains information related to White player */
-const int fWhiteProp = SG_WHITE;
+const int fWhiteProp = 1 << 1;
 
 /** Game info */
 const int fInfoProp = 1 << 2;
@@ -117,7 +117,7 @@ const int fNotFF3 = 1 << 12;
 const int fNotFF4 = 1 << 13;
 
 /** Custom Smart Go property */
-const int fCustom = 1 <<14;
+const int fCustom = 1 << 14;
 
 /** Don't write prop when publishing clean file */
 const int fNotClean = 1 << 15;
@@ -339,10 +339,9 @@ public:
 
     /** If this property is marked as either fBlackProp or fWhiteProp,
         return that property.
-        (defined to be the same as SG_BLACK or SG_WHITE). Otherwise assert
-        and return 0.
+        Otherwise the return value is undefined (checked with assertion).
     */
-    int Player() const;
+    SgBlackWhite Player() const;
 
     bool IsPlayer(SgBlackWhite player) const;
 

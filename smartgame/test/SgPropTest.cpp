@@ -138,6 +138,18 @@ BOOST_AUTO_TEST_CASE(SgPropMoveTest_FromString_HexAll)
     SgPropMoveTest_FromString_Hex("i9", 9, Pt(9, 1));
 }
 
+/** Test SgProp::Player() and SgProp::IsPlayer() */
+BOOST_AUTO_TEST_CASE(SgPropMoveTest_Player)
+{
+    auto_ptr<SgProp> prop;
+    prop.reset(SgProp::CreateProperty(SgProp::GetIDOfLabel("PB")));
+    BOOST_CHECK_EQUAL(SG_BLACK, prop->Player());
+    BOOST_CHECK(prop->IsPlayer(SG_BLACK));
+    prop.reset(SgProp::CreateProperty(SgProp::GetIDOfLabel("PW")));
+    BOOST_CHECK_EQUAL(SG_WHITE, prop->Player());
+    BOOST_CHECK(prop->IsPlayer(SG_WHITE));
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------

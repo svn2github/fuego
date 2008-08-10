@@ -482,27 +482,28 @@ SgPropID SgProp::PlayerProp(SgPropID id, SgBlackWhite player)
     // AR: ---> Flags cannot really be overridden
     SgPropFlags flags = s_flags[id];
     SG_ASSERT(flags & (fBlackProp | fWhiteProp));
-    SG_ASSERT(fBlackProp == SG_BLACK && fWhiteProp == SG_WHITE);
-    if (flags & player)
+    int mask = (player == SG_WHITE ? fWhiteProp : fBlackProp);
+    if (flags & mask)
         return id;
     else
         return OpponentProp(id);
 }
 
-int SgProp::Player() const
+SgBlackWhite SgProp::Player() const
 {
     SG_ASSERT(Flag(fBlackProp | fWhiteProp));
-    return Flags() & (fBlackProp | fWhiteProp);
+    if (Flags() & fBlackProp)
+        return SG_BLACK;
+    else if (Flags() & fWhiteProp)
+        return SG_WHITE;
+    SG_ASSERT(false);
+    return -1;
 }
 
 bool SgProp::IsPlayer(SgBlackWhite player) const
 {
     SG_ASSERT_BW(player);
-    SG_ASSERT(SG_BLACK == fBlackProp); // warn if implementation changes
-    SG_ASSERT(SG_WHITE == fWhiteProp); // warn if implementation changes
-    SG_ASSERT(Flag(fBlackProp | fWhiteProp));
-    SG_ASSERT((Flags() & fBlackProp) != (Flags() & fWhiteProp));
-    return ((Flags() & player) != 0);
+    return (Player() == player);
 }
 
 bool SgProp::MatchesID(SgPropID id) const
