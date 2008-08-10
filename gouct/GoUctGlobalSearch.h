@@ -7,8 +7,12 @@
 #define GOUCT_GLOBALSEARCH_H
 
 #include "GoBoard.h"
+#include "GoBoardUtil.h"
+#include "GoEyeUtil.h"
 #include "GoRegionBoard.h"
+#include "GoSafetySolver.h"
 #include "GoUctSearch.h"
+#include "GoUctUtil.h"
 
 //----------------------------------------------------------------------------
 
@@ -21,6 +25,13 @@
 const bool GOUCT_USE_SAFETY_SOLVER = false;
 
 //----------------------------------------------------------------------------
+
+#if 0
+
+// TODO: GoUctPlayoutPolicy was previously a base class, not it is a
+// template parameter if GouctGlobalSearch. GoUctPlayoutPolicy should become
+// a concept (Boost.Concept) that checks for the reuqired functions in the
+// template parameter
 
 /** Policy for the random play-out phase of GoUctGlobalSearch. */
 template<class BOARD>
@@ -54,11 +65,6 @@ public:
         two consecutive passes.
     */
     virtual SgPoint GenerateMove() = 0;
-
-    /** true if most recently genenerated move was cleanup
-        Default implementation returns false
-    */
-    virtual bool WasCleanupMove();
 
 protected:
     const BOARD& Board() const;
@@ -102,13 +108,16 @@ void GoUctPlayoutPolicy<BOARD>::StartPlayout()
     // Default implementation does nothing
 }
 
-template<class BOARD>
-inline bool GoUctPlayoutPolicy<BOARD>::WasCleanupMove()
-{
-    return false;
-}
+#endif // 0
 
 //----------------------------------------------------------------------------
+
+#if 0
+
+// TODO: GoUctPlayoutPolicyFactory was previously a base class, not it is a
+// template parameter if GouctGlobalSearch. GoUctPlayoutPolicy should become
+// a concept (Boost.Concept) that checks for the reuqired functions in the
+// template parameter
 
 /** Create instances of the playout policies.
     Safety information will be set later (before using) with SetSafe() and
@@ -136,6 +145,8 @@ template<class BOARD>
 GoUctPlayoutPolicyFactory<BOARD>::~GoUctPlayoutPolicyFactory()
 {
 }
+
+#endif // 0
 
 //----------------------------------------------------------------------------
 
@@ -199,7 +210,9 @@ struct GoUctGlobalSearchStateParam
 
 /** Global UCT-Search for Go.
     - @ref gouctpassmoves
+    @tparam POLICY The playout policy
 */
+template<class POLICY>
 class GoUctGlobalSearchState
     : public GoUctState
 {
@@ -226,7 +239,7 @@ public:
         @param allSafe Safety information. Stores a reference to the argument.
     */
     GoUctGlobalSearchState(std::size_t threadId, const GoBoard& bd,
-                           GoUctPlayoutPolicy<GoUctBoard>* policy,
+                           POLICY* policy,
                            const GoUctGlobalSearchStateParam& param,
                            const SgBWSet& safe,
                            const SgPointArray<bool>& allSafe);
@@ -251,12 +264,12 @@ public:
 
     void StartSearch();
 
-    GoUctPlayoutPolicy<GoUctBoard>* Policy();
+    POLICY* Policy();
 
     /** Set random policy.
         Sets a new random policy and deletes the old one, if it existed.
     */
-    void SetPolicy(GoUctPlayoutPolicy<GoUctBoard>* policy);
+    void SetPolicy(POLICY* policy);
 
     void ClearTerritoryStatistics();
 
@@ -293,7 +306,7 @@ private:
 
     SgRandom m_random;
 
-    std::auto_ptr<GoUctPlayoutPolicy<GoUctBoard> > m_policy;
+    std::auto_ptr<POLICY> m_policy;
 
     /** Not implemented */
     GoUctGlobalSearchState(const GoUctGlobalSearchState& search);
@@ -307,13 +320,269 @@ private:
     float EvaluateBoard(const BOARD& bd, float komi);
 };
 
-inline GoUctPlayoutPolicy<GoUctBoard>* GoUctGlobalSearchState::Policy()
+template<class POLICY>
+GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(std::size_t threadId,
+         const GoBoard& bd, POLICY* policy,
+         const GoUctGlobalSearchStateParam& param,
+         const SgBWSet& safe, const SgPointArray<bool>& allSafe)
+    : GoUctState(threadId, bd),
+      m_safe(safe),
+      m_allSafe(allSafe),
+      m_param(param),
+      m_policy(policy)
+{
+    ClearTerritoryStatistics();
+}
+
+template<class POLICY>
+GoUctGlobalSearchState<POLICY>::~GoUctGlobalSearchState()
+{
+}
+
+/** See SetMercyRule() */
+template<class POLICY>
+bool GoUctGlobalSearchState<POLICY>::CheckMercyRule()
+{
+    SG_ASSERT(m_param.m_mercyRule);
+    // Only used in playout; m_stoneDiff only defined in playout
+    SG_ASSERT(IsInPlayout());
+    if (m_stoneDiff >= m_mercyRuleThreshold)
+    {
+        m_mercyRuleTriggered = true;
+        m_mercyRuleResult = (UctBoard().ToPlay() == SG_BLACK ? 1 : 0);
+    }
+    else if (m_stoneDiff <= -m_mercyRuleThreshold)
+    {
+        m_mercyRuleTriggered = true;
+        m_mercyRuleResult = (UctBoard().ToPlay() == SG_WHITE ? 1 : 0);
+    }
+    else
+        SG_ASSERT(! m_mercyRuleTriggered);
+    return m_mercyRuleTriggered;
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::ClearTerritoryStatistics()
+{
+    for (SgPointArray<SgUctStatistics>::NonConstIterator
+             it(m_territoryStatistics); it; ++it)
+        (*it).Clear();
+}
+
+template<class POLICY>
+float GoUctGlobalSearchState<POLICY>::Evaluate()
+{
+    float komi = Board().Rules().Komi().ToFloat();
+    if (IsInPlayout())
+        return EvaluateBoard(UctBoard(), komi);
+    else
+        return EvaluateBoard(Board(), komi);
+}
+
+template<class POLICY>
+template<class BOARD>
+float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
+                                                    float komi)
+{
+    float score;
+    SgPointArray<SgEmptyBlackWhite> scoreBoard;
+    SgPointArray<SgEmptyBlackWhite>* scoreBoardPtr;
+    if (m_param.m_territoryStatistics)
+        scoreBoardPtr = &scoreBoard;
+    else
+        scoreBoardPtr = 0;
+    if (m_passMovesPlayoutPhase < 2)
+        // Two passes not in playout phase, see comment in GenerateAllMoves()
+        score = GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
+    else
+    {
+        if (m_param.m_mercyRule && m_mercyRuleTriggered)
+            return m_mercyRuleResult;
+        score = GoBoardUtil::ScoreEndPosition(bd, komi, m_safe,
+                                              false, scoreBoardPtr);
+    }
+    if (m_param.m_territoryStatistics)
+        for (typename BOARD::Iterator it(bd); it; ++it)
+            switch (scoreBoard[*it])
+            {
+            case SG_BLACK:
+                m_territoryStatistics[*it].Add(1);
+                break;
+            case SG_WHITE:
+                m_territoryStatistics[*it].Add(0);
+                break;
+            case SG_EMPTY:
+                m_territoryStatistics[*it].Add(0.5);
+                break;
+            }
+    if (bd.ToPlay() != SG_BLACK)
+        score *= -1;
+    if (score > 0)
+        return ((1 - m_param.m_scoreModification)
+                + m_param.m_scoreModification * score * m_invMaxScore);
+    else
+        return (m_param.m_scoreModification
+                + m_param.m_scoreModification * score * m_invMaxScore);
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::ExecutePlayout(SgMove move)
+{
+    GoUctState::ExecutePlayout(move);
+    const GoUctBoard& bd = UctBoard();
+    if (bd.ToPlay() == SG_BLACK)
+        m_stoneDiff -= bd.NuCapturedStones();
+    else
+        m_stoneDiff += bd.NuCapturedStones();
+    m_policy->OnPlay();
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::GenerateAllMoves(
+                                                   std::vector<SgMove>& moves)
+{
+    SG_ASSERT(! IsInPlayout());
+    const GoBoard& bd = Board();
+    SG_ASSERT(! bd.Rules().AllowSuicide());
+
+    if (GoBoardUtil::TwoPasses(bd))
+        // Evaluate with Tromp-Taylor (we have no other evaluation that can
+        // score arbitrary positions). However, if the rules don't require
+        // CaptureDead(), the two passes need to be played in the search
+        // sequence. This avoids cases, in which playing a pass (after the
+        // opponent's last move in the real game was a pass) is only good
+        // under Tromp-Taylor scoring (see
+        // regression/sgf/pass/tromp-taylor-pass.sgf).
+        // Both won't work in Japanese rules, but it is not easy to define
+        // what a terminal position is in Japanese rules.
+        if (bd.Rules().CaptureDead()
+            || bd.MoveNumber() - m_initialMoveNumber >= 2)
+            return;
+
+    SgBlackWhite toPlay = bd.ToPlay();
+    for (GoBoard::Iterator it(bd); it; ++it)
+    {
+        SgPoint p = *it;
+        if (bd.IsEmpty(p)
+            && ! GoEyeUtil::IsSimpleEye(bd, p, toPlay)
+            && ! m_allSafe[p]
+            && bd.IsLegal(p, toPlay))
+            moves.push_back(p);
+    }
+    // Full randomization is too expensive and in most cases not necessary,
+    // if prior knowledge is available for initialization or RAVE values are
+    // available after playing the first move. However we put a random move
+    // to the front, because the first move in a Go board iteration is often
+    // a bad corner move
+    if (moves.size() > 1)
+        std::swap(moves[0], moves[m_random.Int(moves.size())]);
+    moves.push_back(SG_PASS);
+}
+
+template<class POLICY>
+SgMove GoUctGlobalSearchState<POLICY>::GeneratePlayoutMove(
+                                                         bool& skipRaveUpdate)
+{
+    SG_ASSERT(IsInPlayout());
+    if (m_param.m_mercyRule && CheckMercyRule())
+        return SG_NULLMOVE;
+    SgPoint move = m_policy->GenerateMove();
+    SG_ASSERT(move != SG_NULLMOVE);
+#ifndef NDEBUG
+    // Check that policy generates pass only if no points are left for which
+    // GeneratePoint() returns true. See GoUctPlayoutPolicy::GenerateMove()
+    if (move == SG_PASS)
+    {
+        const GoUctBoard& bd = UctBoard();
+        for (GoUctBoard::Iterator it(bd); it; ++it)
+            SG_ASSERT(   bd.Occupied(*it)
+                     || m_safe.OneContains(*it)
+                     || GoBoardUtil::SelfAtari(bd, *it)
+                     || ! GoUctUtil::GeneratePoint(bd, *it, bd.ToPlay()));
+    }
+    else
+        SG_ASSERT(! m_safe.OneContains(move));
+#endif
+    // The position guaranteed to be a terminal position, which can be
+    // evaluated with GoBoardUtil::ScoreSimpleEndPosition(), only after two
+    // passes in a row, both of them generated by GeneratePlayoutMove() in
+    // the playout phase
+    if (move == SG_PASS)
+    {
+        skipRaveUpdate = true; // Don't update RAVE values for pass moves
+        if (m_passMovesPlayoutPhase < 2)
+            ++m_passMovesPlayoutPhase;
+        else
+            return SG_NULLMOVE;
+    }
+    else
+        m_passMovesPlayoutPhase = 0;
+    return move;
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::GameStart()
+{
+    GoUctState::GameStart();
+    int size = Board().Size();
+    m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::EndPlayout()
+{
+    GoUctState::EndPlayout();
+    m_policy->EndPlayout();
+}
+
+template<class POLICY>
+inline POLICY* GoUctGlobalSearchState<POLICY>::Policy()
 {
     return m_policy.get();
 }
 
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::SetPolicy(POLICY* policy)
+{
+    m_policy.reset(policy);
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::StartPlayout()
+{
+    GoUctState::StartPlayout();
+    m_passMovesPlayoutPhase = 0;
+    m_mercyRuleTriggered = false;
+    const GoBoard& bd = Board();
+    m_stoneDiff = bd.All(SG_BLACK).Size() - bd.All(SG_WHITE).Size();
+    m_policy->StartPlayout();
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::StartPlayouts()
+{
+    GoUctState::StartPlayouts();
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::StartSearch()
+{
+    GoUctState::StartSearch();
+    const GoBoard& bd = Board();
+    int size = bd.Size();
+    float maxScore = size * size + bd.Rules().Komi().ToFloat();
+    m_invMaxScore = 1 / maxScore;
+    m_initialMoveNumber = bd.MoveNumber();
+    ClearTerritoryStatistics();
+}
+
 //----------------------------------------------------------------------------
 
+/** Factory for creating a GoUctGlobalSearchState.
+    @tparam POLICY The playout policy
+    @tparam FACTORY The factory for the playout policy
+*/
+template<class POLICY, class FACTORY>
 class GoUctGlobalSearchStateFactory
     : public SgUctThreadStateFactory
 {
@@ -327,24 +596,42 @@ public:
         @param allSafe
     */
     GoUctGlobalSearchStateFactory(GoBoard& bd,
-                GoUctPlayoutPolicyFactory<GoUctBoard>& playoutPolicyFactory,
-                const SgBWSet& safe,
-                const SgPointArray<bool>& allSafe);
+                                  FACTORY& playoutPolicyFactory,
+                                  const SgBWSet& safe,
+                                  const SgPointArray<bool>& allSafe);
 
     SgUctThreadState* Create(std::size_t threadId, const SgUctSearch& search);
 
 private:
     GoBoard& m_bd;
 
-    GoUctPlayoutPolicyFactory<GoUctBoard>& m_playoutPolicyFactory;
+    FACTORY& m_playoutPolicyFactory;
 
     const SgBWSet& m_safe;
 
     const SgPointArray<bool>& m_allSafe;
 };
 
+template<class POLICY, class FACTORY>
+GoUctGlobalSearchStateFactory<POLICY,FACTORY>
+::GoUctGlobalSearchStateFactory(GoBoard& bd,
+                  FACTORY& playoutPolicyFactory,
+                  const SgBWSet& safe,
+                  const SgPointArray<bool>& allSafe)
+    : m_bd(bd),
+      m_playoutPolicyFactory(playoutPolicyFactory),
+      m_safe(safe),
+      m_allSafe(allSafe)
+{
+}
+
 //----------------------------------------------------------------------------
 
+/** Full board Monte-Carlo tree search.
+    @tparam POLICY The playout policy
+    @tparam FACTORY The factory for the playout policy
+*/
+template<class POLICY, class FACTORY>
 class GoUctGlobalSearch
     : public GoUctSearch
 {
@@ -359,7 +646,7 @@ public:
         these functions using its own safety information.
     */
     GoUctGlobalSearch(GoBoard& bd,
-                GoUctPlayoutPolicyFactory<GoUctBoard>* playoutPolicyFactory);
+                      FACTORY* playoutPolicyFactory);
 
     /** @name Pure virtual functions of SgUctSearch */
     // @{
@@ -400,8 +687,7 @@ private:
 
     SgPointArray<bool> m_allSafe;
 
-    std::auto_ptr<GoUctPlayoutPolicyFactory<GoUctBoard> >
-    m_playoutPolicyFactory;
+    std::auto_ptr<FACTORY> m_playoutPolicyFactory;
 
     GoRegionBoard m_regions;
 
@@ -409,14 +695,119 @@ private:
     bool m_globalSearchLiveGfx;
 };
 
-inline bool GoUctGlobalSearch::GlobalSearchLiveGfx() const
+template<class POLICY, class FACTORY>
+GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
+                                                     FACTORY* playoutFactory)
+    : GoUctSearch(bd, 0),
+      m_regions(bd),
+      m_globalSearchLiveGfx(GOUCT_LIVEGFX_NONE)
+{
+    SgUctThreadStateFactory* stateFactory =
+        new GoUctGlobalSearchStateFactory<POLICY,FACTORY>(bd,
+                                                          *playoutFactory,
+                                                          m_safe, m_allSafe);
+    SetThreadStateFactory(stateFactory);
+    SetDefaultParameters(bd.Size());
+}
+
+template<class POLICY, class FACTORY>
+inline bool GoUctGlobalSearch<POLICY,FACTORY>::GlobalSearchLiveGfx() const
 {
     return m_globalSearchLiveGfx;
 }
 
-inline void GoUctGlobalSearch::SetGlobalSearchLiveGfx(bool enable)
+template<class POLICY, class FACTORY>
+void GoUctGlobalSearch<POLICY,FACTORY>::OnSearchIteration(
+                                          std::size_t gameNumber,
+                                          int threadId,
+                                          const SgUctGameInfo& info)
+{
+    GoUctSearch::OnSearchIteration(gameNumber, threadId, info);
+    if (m_globalSearchLiveGfx && threadId == 0
+        && gameNumber % LiveGfxInterval() == 0)
+    {
+        const GoUctGlobalSearchState<POLICY>& state =
+            dynamic_cast<GoUctGlobalSearchState<POLICY>&>(ThreadState(0));
+        SgDebug() << "gogui-gfx:\n";
+        GoUctUtil::GfxBestMove(*this, ToPlay(), SgDebug());
+        GoUctUtil::GfxTerritoryStatistics(state.m_territoryStatistics,
+                                          Board(), SgDebug());
+        GoUctUtil::GfxStatus(*this, SgDebug());
+        SgDebug() << '\n';
+    }
+}
+
+template<class POLICY, class FACTORY>
+void GoUctGlobalSearch<POLICY,FACTORY>::OnStartSearch()
+{
+    GoUctSearch::OnStartSearch();
+    m_safe.Clear();
+    m_allSafe.Fill(false);
+    if (GOUCT_USE_SAFETY_SOLVER)
+    {
+        GoBoard& bd = Board();
+        GoSafetySolver solver(bd, &m_regions);
+        solver.FindSafePoints(&m_safe);
+        for (GoBoard::Iterator it(bd); it; ++it)
+            m_allSafe[*it] = m_safe.OneContains(*it);
+    }
+    if (m_globalSearchLiveGfx && ! m_param.m_territoryStatistics)
+        SgWarning() <<
+            "GoUctGlobalSearch: "
+            "live graphics need territory statistics enabled\n";
+}
+
+template<class POLICY, class FACTORY>
+void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
+{
+    SetFirstPlayUrgency(1);
+    SetMoveSelect(SG_UCTMOVESELECT_COUNT);
+    SetRave(true);
+    SetRaveWeightInitial(1.0);
+    SetRaveWeightFinal(5000);
+    SetExpandThreshold(2);
+    if (boardSize <= 13)
+    {
+        // These parameters were mainly tested on 9x9
+        SetNoBiasTerm(false);
+        SetBiasTermConstant(0.02);
+    }
+    else
+    {
+        // These parameters were mainly tested on 19x19
+        SetNoBiasTerm(true);
+    }
+}
+
+template<class POLICY, class FACTORY>
+inline void GoUctGlobalSearch<POLICY,FACTORY>::SetGlobalSearchLiveGfx(
+                                                                  bool enable)
 {
     m_globalSearchLiveGfx = enable;
+}
+
+template<class POLICY, class FACTORY>
+float GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
+{
+    // Note: 0.5 is not a possible value for a Bernoulli variable, better
+    // use 0?
+    return 0.5;
+}
+
+//----------------------------------------------------------------------------
+
+template<class POLICY, class FACTORY>
+SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
+                              std::size_t threadId, const SgUctSearch& search)
+{
+    const GoUctGlobalSearch<POLICY,FACTORY>& globalSearch =
+        dynamic_cast<const GoUctGlobalSearch<POLICY,FACTORY>&>(search);
+    GoUctGlobalSearchState<POLICY>* state =
+        new GoUctGlobalSearchState<POLICY>(threadId, globalSearch.Board(), 0,
+                                   globalSearch.m_param, m_safe, m_allSafe);
+    POLICY* policy = m_playoutPolicyFactory.Create(state->UctBoard());
+    state->SetPolicy(policy);
+    return state;
 }
 
 //----------------------------------------------------------------------------

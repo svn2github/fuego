@@ -96,7 +96,6 @@ struct GoUctDefaultPlayoutPolicyStat
 */
 template<class BOARD>
 class GoUctDefaultPlayoutPolicy
-    : public GoUctPlayoutPolicy<BOARD>
 {
 public:
     /** Constructor.
@@ -110,10 +109,10 @@ public:
                               const GoUctDefaultPlayoutPolicyParam& param);
 
 
-    /** @name Pure virtual functions of GoUctPlayoutPolicy */
+    /** @name Functions needed by all playout policies. */
     // @{
 
-    /** Implementation of GoUctPlayoutPolicy::GenerateMove().
+    /** Generate a move
         Generates a random move in the following order:
         -# Atari heuristic (if enabled)
         -# Proximity heuristic (if enabled) (using patterns if enabled)
@@ -121,12 +120,6 @@ public:
         -# Purely random
     */
     SgPoint GenerateMove();
-
-    // @} // @name
-
-
-    /** @name Virtual functions of GoUctPlayoutPolicy */
-    // @{
 
     void EndPlayout();
 
@@ -197,6 +190,8 @@ private:
     static const bool SECOND_LAST_MOVE_PATTERNS = true;
 
     static const bool DEBUG_CORRECT_MOVE = false;
+
+    const BOARD& m_bd;
 
     const GoUctDefaultPlayoutPolicyParam& m_param;
 
@@ -339,7 +334,7 @@ template<class BOARD>
 GoUctDefaultPlayoutPolicy<BOARD>::GoUctDefaultPlayoutPolicy(
                                  const BOARD& bd,
                                  const GoUctDefaultPlayoutPolicyParam& param)
-    : GoUctPlayoutPolicy<BOARD>(bd),
+    : m_bd(bd),
       m_param(param),
       m_patterns(bd),
       m_checked(false),
@@ -362,8 +357,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::CorrectMove(
 #if DEBUG
     const SgPoint oldMv = mv;
 #endif
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    if (! corrFunction(bd, mv))
+    if (! corrFunction(m_bd, mv))
         return false;
 
     m_moves.Clear();
@@ -372,9 +366,9 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::CorrectMove(
 
 #if DEBUG
     if (DEBUG_CORRECT_MOVE)
-        SgDebug() << bd
-                  << "Replace " << SgWriteMove(oldMv, bd.ToPlay())
-                  << " by " << SgWriteMove(mv, bd.ToPlay()) << '\n';
+        SgDebug() << m_bd
+                  << "Replace " << SgWriteMove(oldMv, m_bd.ToPlay())
+                  << " by " << SgWriteMove(mv, m_bd.ToPlay()) << '\n';
 #endif
     return true;
 }
@@ -388,27 +382,26 @@ template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
                                                       SgPoint lib) const
 {
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    const SgBlackWhite color = bd.GetStone(anchor);
-    SG_ASSERT(bd.IsEmpty(lib));
+    const SgBlackWhite color = m_bd.GetStone(anchor);
+    SG_ASSERT(m_bd.IsEmpty(lib));
     int nu = -1; // lose 1 lib by playing on lib itself.
     for (SgNb4Iterator it(lib); it; ++it)
     {
-        if (bd.IsEmpty(*it))
+        if (m_bd.IsEmpty(*it))
         {
-            if (! bd.IsLibertyOfBlock(*it, anchor))
+            if (! m_bd.IsLibertyOfBlock(*it, anchor))
             {
                 if (++nu > 0)
                     return true;
             }
         }
-        else if (bd.IsColor(*it, color)) // merge with block
+        else if (m_bd.IsColor(*it, color)) // merge with block
         {
-            const SgPoint anchor2 = bd.Anchor(*it);
+            const SgPoint anchor2 = m_bd.Anchor(*it);
             if (anchor != anchor2)
-                for (typename BOARD::LibertyIterator it(bd, anchor2); it;
+                for (typename BOARD::LibertyIterator it(m_bd, anchor2); it;
                      ++it)
-                    if (! bd.IsLibertyOfBlock(*it, anchor))
+                    if (! m_bd.IsLibertyOfBlock(*it, anchor))
                     {
                         if (++nu > 0)
                             return true;
@@ -423,10 +416,9 @@ template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 {
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    if (bd.InAtari(m_lastMove))
+    if (m_bd.InAtari(m_lastMove))
     {
-        SgMove mv = bd.TheLiberty(m_lastMove);
+        SgMove mv = m_bd.TheLiberty(m_lastMove);
         m_moves.Append(mv);
         return true;
     }
@@ -438,29 +430,28 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 {
     SG_ASSERT(m_moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    SgBlackWhite toPlay = bd.ToPlay();
-    if (bd.NumNeighbors(m_lastMove, toPlay) == 0)
+    SgBlackWhite toPlay = m_bd.ToPlay();
+    if (m_bd.NumNeighbors(m_lastMove, toPlay) == 0)
         return false;
     SgSList<SgPoint,4> anchorList;
     for (SgNb4Iterator it(m_lastMove); it; ++it)
     {
-        if (bd.GetColor(*it) != toPlay || ! bd.InAtari(*it))
+        if (m_bd.GetColor(*it) != toPlay || ! m_bd.InAtari(*it))
             continue;
-        SgPoint anchor = bd.Anchor(*it);
+        SgPoint anchor = m_bd.Anchor(*it);
         if (anchorList.Contains(anchor))
             continue;
         anchorList.Append(anchor);
 
         // Check if move on last liberty would escape the atari
-        SgPoint theLiberty = bd.TheLiberty(anchor);
-        if (! GoBoardUtil::SelfAtari(bd, theLiberty))
+        SgPoint theLiberty = m_bd.TheLiberty(anchor);
+        if (! GoBoardUtil::SelfAtari(m_bd, theLiberty))
             m_moves.Append(theLiberty);
 
         // Capture adjacent blocks
-        for (GoAdjBlockIterator<BOARD> it2(bd, anchor, 1); it2; ++it2)
+        for (GoAdjBlockIterator<BOARD> it2(m_bd, anchor, 1); it2; ++it2)
         {
-            SgPoint oppLiberty = bd.TheLiberty(*it2);
+            SgPoint oppLiberty = m_bd.TheLiberty(*it2);
             // If opponent's last liberty is not my last liberty, we know
             // that we will have two liberties after capturing (my last
             // liberty + at least one stone captured). If both last liberties
@@ -477,40 +468,39 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 template<class BOARD>
 bool GoUctDefaultPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 {
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     SG_ASSERT(! SgIsSpecialMove(lastMove));
-    SG_ASSERT(! bd.IsEmpty(lastMove));
-    const SgBlackWhite toPlay = bd.ToPlay();
+    SG_ASSERT(! m_bd.IsEmpty(lastMove));
+    const SgBlackWhite toPlay = m_bd.ToPlay();
 
     // take liberty of last move
-    if (bd.NumLiberties(lastMove) == 2)
+    if (m_bd.NumLiberties(lastMove) == 2)
     {
-        for (typename BOARD::LibertyIterator it(bd, lastMove); it; ++it)
+        for (typename BOARD::LibertyIterator it(m_bd, lastMove); it; ++it)
         {
-            if (GainsLiberties(bd.Anchor(lastMove), *it)
-                && ! GoBoardUtil::SelfAtari(bd, *it)
+            if (GainsLiberties(m_bd.Anchor(lastMove), *it)
+                && ! GoBoardUtil::SelfAtari(m_bd, *it)
                )
                 m_moves.Append(*it);
         }
     }
 
-    if (bd.NumNeighbors(lastMove, toPlay) != 0)
+    if (m_bd.NumNeighbors(lastMove, toPlay) != 0)
     {
         // play liberties of neighbor blocks
         SgSList<SgPoint,4> anchorList;
         for (SgNb4Iterator it(lastMove); it; ++it)
         {
-            if (bd.GetColor(*it) == toPlay
-                && bd.NumLiberties(*it) == 2)
+            if (m_bd.GetColor(*it) == toPlay
+                && m_bd.NumLiberties(*it) == 2)
             {
-                const SgPoint anchor = bd.Anchor(*it);
+                const SgPoint anchor = m_bd.Anchor(*it);
                 if (! anchorList.Contains(anchor))
                 {
                     anchorList.Append(anchor);
-                    for (typename BOARD::LibertyIterator it(bd, anchor); it;
+                    for (typename BOARD::LibertyIterator it(m_bd, anchor); it;
                          ++it)
                         if (GainsLiberties(anchor, *it)
-                            && ! GoBoardUtil::SelfAtari(bd, *it))
+                            && ! GoBoardUtil::SelfAtari(m_bd, *it))
                         {
                             m_moves.Append(*it);
                         }
@@ -527,11 +517,10 @@ SG_ATTR_FLATTEN SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
 {
     m_moves.Clear();
     m_checked = false;
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     SgPoint mv = SG_NULLMOVE;
-    m_lastMove = bd.GetLastMove();
+    m_lastMove = m_bd.GetLastMove();
     if (   ! SgIsSpecialMove(m_lastMove) // skip if Pass or Null
-        && ! bd.IsEmpty(m_lastMove) // skip if move was suicide
+        && ! m_bd.IsEmpty(m_lastMove) // skip if move was suicide
        )
     {
         if (GenerateAtariCaptureMove())
@@ -574,15 +563,15 @@ SG_ATTR_FLATTEN SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
     }
     else
     {
-        SG_ASSERT(bd.IsLegal(mv));
+        SG_ASSERT(m_bd.IsLegal(mv));
         m_checked = CorrectMove(GoUctUtil::DoSelfAtariCorrection, mv,
                                 GOUCT_SELFATARI_CORRECTION);
         if (m_param.m_useClumpCorrection && ! m_checked)
             CorrectMove(GoUctUtil::DoClumpCorrection, mv,
                         GOUCT_CLUMP_CORRECTION);
     }
-    SG_ASSERT(bd.IsLegal(mv));
-    SG_ASSERT(mv == SG_PASS || ! bd.IsSuicide(mv));
+    SG_ASSERT(m_bd.IsLegal(mv));
+    SG_ASSERT(mv == SG_PASS || ! m_bd.IsSuicide(mv));
 
     if (m_param.m_statisticsEnabled)
         UpdateStatistics();
@@ -609,8 +598,7 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
     GeneratePatternMove(m_lastMove - SG_NS + SG_WE);
     if (SECOND_LAST_MOVE_PATTERNS)
     {
-        const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-        const SgPoint lastMove2 = bd.Get2ndLastMove();
+        const SgPoint lastMove2 = m_bd.Get2ndLastMove();
         if (! SgIsSpecialMove(lastMove2))
         {
             GeneratePatternMove2(lastMove2 + SG_NS - SG_WE, m_lastMove);
@@ -629,10 +617,9 @@ bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove()
 template<class BOARD>
 inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove(SgPoint p)
 {
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    if (bd.IsEmpty(p)
+    if (m_bd.IsEmpty(p)
         && m_patterns.MatchAny(p)
-        && ! GoBoardUtil::SelfAtari(bd, p))
+        && ! GoBoardUtil::SelfAtari(m_bd, p))
         m_moves.Append(p);
 }
 
@@ -640,30 +627,27 @@ template<class BOARD>
 inline void GoUctDefaultPlayoutPolicy<BOARD>::GeneratePatternMove2(
                                                   SgPoint p, SgPoint lastMove)
 {
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    if (bd.IsEmpty(p)
+    if (m_bd.IsEmpty(p)
         && ! SgPointUtil::In8Neighborhood(lastMove, p)
         && m_patterns.MatchAny(p)
-        && ! GoBoardUtil::SelfAtari(bd, p))
+        && ! GoBoardUtil::SelfAtari(m_bd, p))
         m_moves.Append(p);
 }
 
 template<class BOARD>
 inline bool GoUctDefaultPlayoutPolicy<BOARD>::GeneratePoint(SgPoint p) const
 {
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    return GoUctUtil::GeneratePoint(bd, p, bd.ToPlay());
+    return GoUctUtil::GeneratePoint(m_bd, p, m_bd.ToPlay());
 }
 
 template<class BOARD>
 GoPointList GoUctDefaultPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
 {
     GoPointList result;
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     if (m_moveType == GOUCT_RANDOM)
     {
-        for (typename BOARD::Iterator it(bd); it; ++it)
-            if (bd.IsEmpty(*it) && GeneratePoint(*it))
+        for (typename BOARD::Iterator it(m_bd); it; ++it)
+            if (m_bd.IsEmpty(*it) && GeneratePoint(*it))
                 result.Append(*it);
     }
     // Move in m_moves are not checked yet, if legal etc.
@@ -698,8 +682,7 @@ const GoUctPatterns<BOARD>& GoUctDefaultPlayoutPolicy<BOARD>::Patterns()
 template<class BOARD>
 inline SgPoint GoUctDefaultPlayoutPolicy<BOARD>::SelectRandom()
 {
-    const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
-    return GoUctUtil::SelectRandom(bd, bd.ToPlay(), m_moves, m_random);
+    return GoUctUtil::SelectRandom(m_bd, m_bd.ToPlay(), m_moves, m_random);
 }
 
 template<class BOARD>
@@ -741,7 +724,6 @@ void GoUctDefaultPlayoutPolicy<BOARD>::UpdateStatistics()
 
 template<class BOARD>
 class GoUctDefaultPlayoutPolicyFactory
-    : public GoUctPlayoutPolicyFactory<BOARD>
 {
 public:
     /** Constructor.
@@ -752,7 +734,7 @@ public:
     GoUctDefaultPlayoutPolicyFactory(const GoUctDefaultPlayoutPolicyParam&
                                      param);
 
-    GoUctPlayoutPolicy<BOARD>* Create(const BOARD& bd);
+    GoUctDefaultPlayoutPolicy<BOARD>* Create(const BOARD& bd);
 
 private:
     const GoUctDefaultPlayoutPolicyParam& m_param;
@@ -767,7 +749,7 @@ GoUctDefaultPlayoutPolicyFactory<BOARD>
 }
 
 template<class BOARD>
-GoUctPlayoutPolicy<BOARD>*
+GoUctDefaultPlayoutPolicy<BOARD>*
 GoUctDefaultPlayoutPolicyFactory<BOARD>::Create(const BOARD& bd)
 {
     return new GoUctDefaultPlayoutPolicy<BOARD>(bd, m_param);

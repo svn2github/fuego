@@ -114,10 +114,10 @@ GoUctDefaultPriorKnowledgeFactory
 SgUctPriorKnowledge*
 GoUctDefaultPriorKnowledgeFactory::Create(SgUctThreadState& state)
 {
-    GoUctGlobalSearchState& globalSearchState
-        = dynamic_cast<GoUctGlobalSearchState&>(state);
-    return new GoUctDefaultPriorKnowledge(globalSearchState.Board(),
-                                          m_param);
+    GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&
+        globalSearchState = dynamic_cast<
+      GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&>(state);
+    return new GoUctDefaultPriorKnowledge(globalSearchState.Board(), m_param);
 }
 
 //----------------------------------------------------------------------------

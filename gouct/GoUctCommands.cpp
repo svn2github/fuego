@@ -253,7 +253,9 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
     const size_t MAX_GAMES = 5000;
     SgDebug() << "GoUctCommands::CmdFinalStatusList: doing a search with "
               << MAX_GAMES << " games to determine final status\n";
-    GoUctGlobalSearch& search = GlobalSearch();
+    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+        search = GlobalSearch();
     SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
     search.m_param.m_territoryStatistics = true;
     // Undo passes, because UCT search always scores with Tromp-Taylor after
@@ -356,7 +358,9 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
 void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctGlobalSearch& s = GlobalSearch();
+    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+           s = GlobalSearch();
     GoUctGlobalSearchStateParam& p = s.m_param;
     if (cmd.NuArg() == 0)
     {
@@ -661,7 +665,8 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
-    GoUctGlobalSearchState& state = ThreadState(0);
+    GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >& state
+        = ThreadState(0);
     SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
     if (priorKnowledge == 0)
         throw GtpFailure("no prior knowledge set at search");
@@ -921,7 +926,9 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     cmd << value;
 }
 
-GoUctGlobalSearch& GoUctCommands::GlobalSearch()
+GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+GoUctCommands::GlobalSearch()
 {
     return Player().GlobalSearch();
 }
@@ -1007,14 +1014,16 @@ GoUctSearch& GoUctCommands::Search()
     @throws GtpFailure, if search is a different subclass or threads are not
     yet created.
 */
-GoUctGlobalSearchState& GoUctCommands::ThreadState(std::size_t threadId)
+GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&
+GoUctCommands::ThreadState(std::size_t threadId)
 {
     GoUctSearch& search = Search();
     if (! search.ThreadsCreated())
         search.CreateThreads();
     try
     {
-        return dynamic_cast<GoUctGlobalSearchState&>(
+        return dynamic_cast<
+             GoUctGlobalSearchState<GoUctDefaultPlayoutPolicy<GoUctBoard> >&>(
                                                 search.ThreadState(threadId));
     }
     catch (const bad_cast& e)

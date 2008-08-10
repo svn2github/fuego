@@ -229,9 +229,13 @@ public:
 
     // @} // @name
 
-    GoUctGlobalSearch& GlobalSearch();
+    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+        GlobalSearch();
 
-    const GoUctGlobalSearch& GlobalSearch() const;
+    const GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+        GlobalSearch() const;
 
     /** Return the current root filter. */
     GoUctRootFilter& RootFilter();
@@ -273,7 +277,8 @@ private:
 
     std::size_t m_maxGames;
 
-    GoUctGlobalSearch m_search;
+    GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                      GoUctDefaultPlayoutPolicyFactory<GoUctBoard> > m_search;
 
     GoTimeControl m_timeControl;
 
@@ -304,12 +309,16 @@ inline bool GoUctGlobalSearchPlayer::AutoParam() const
     return m_autoParam;
 }
 
-inline GoUctGlobalSearch& GoUctGlobalSearchPlayer::GlobalSearch()
+inline GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                         GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+GoUctGlobalSearchPlayer::GlobalSearch()
 {
     return m_search;
 }
 
-inline const GoUctGlobalSearch& GoUctGlobalSearchPlayer::GlobalSearch() const
+inline const GoUctGlobalSearch<GoUctDefaultPlayoutPolicy<GoUctBoard>,
+                               GoUctDefaultPlayoutPolicyFactory<GoUctBoard> >&
+GoUctGlobalSearchPlayer::GlobalSearch() const
 {
     return m_search;
 }
