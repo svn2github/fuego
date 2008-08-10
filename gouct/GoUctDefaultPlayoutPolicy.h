@@ -18,9 +18,6 @@
 class GoUctDefaultPlayoutPolicyParam
 {
 public:
-    /** Don't use any move generating heuristics. */
-    bool m_pureRandom;
-
     /** Shift move to neighbor if it would make an ugly clump.
         See GoUctUtil::DoClumpCorrection
     */
@@ -532,17 +529,6 @@ SgPoint GoUctDefaultPlayoutPolicy<BOARD>::GenerateMove()
     m_checked = false;
     const BOARD& bd = GoUctPlayoutPolicy<BOARD>::Board();
     SgPoint mv = SG_NULLMOVE;
-    if (m_param.m_pureRandom)
-    {
-        m_moveType = GOUCT_RANDOM;
-        mv = m_pureRandomGenerator.Generate();
-        if (mv == SG_NULLMOVE)
-        {
-            m_moveType = GOUCT_PASS;
-            mv = SG_PASS;
-        }
-        return mv;
-    }
     m_lastMove = bd.GetLastMove();
     if (   ! SgIsSpecialMove(m_lastMove) // skip if Pass or Null
         && ! bd.IsEmpty(m_lastMove) // skip if move was suicide

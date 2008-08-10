@@ -462,7 +462,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c pure_random See GoUctDefaultPlayoutPolicyParam::m_pureRandom
     @arg @c clump_correction
       See GoUctDefaultPlayoutPolicyParam::m_useClumpCorrection
     @arg @c statistics_enables
@@ -476,16 +475,13 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] pure_random " << p.m_pureRandom << '\n'
-            << "[bool] clump_correction " << p.m_useClumpCorrection << '\n'
+        cmd << "[bool] clump_correction " << p.m_useClumpCorrection << '\n'
             << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "pure_random")
-            p.m_pureRandom = cmd.BoolArg(1);
-        else if (name == "clump_correction")
+        if (name == "clump_correction")
             p.m_useClumpCorrection = cmd.BoolArg(1);
         else if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.BoolArg(1);
