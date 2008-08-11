@@ -14,8 +14,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 GoUctPlayoutPolicyParam::GoUctPlayoutPolicyParam()
-    : m_useClumpCorrection(false),
-      m_statisticsEnabled(false)
+    : m_statisticsEnabled(false)
 {
 }
 

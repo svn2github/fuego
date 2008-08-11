@@ -18,11 +18,6 @@
 class GoUctPlayoutPolicyParam
 {
 public:
-    /** Shift move to neighbor if it would make an ugly clump.
-        See GoUctUtil::DoClumpCorrection
-    */
-    bool m_useClumpCorrection;
-
     /** Enable collection of statistics.
         Has a negative impact on performance. Default is false.
     */
@@ -186,6 +181,11 @@ private:
 
     /** Use patterns around last own move, too */
     static const bool SECOND_LAST_MOVE_PATTERNS = true;
+
+    /** Shift move to neighbor if it would make an ugly clump.
+        See GoUctUtil::DoClumpCorrection
+    */
+    static const bool USE_CLUMP_CORRECTION = false;
 
     static const bool DEBUG_CORRECT_MOVE = false;
 
@@ -559,7 +559,7 @@ SG_ATTR_FLATTEN SgPoint GoUctPlayoutPolicy<BOARD>::GenerateMove()
         SG_ASSERT(m_bd.IsLegal(mv));
         m_checked = CorrectMove(GoUctUtil::DoSelfAtariCorrection, mv,
                                 GOUCT_SELFATARI_CORRECTION);
-        if (m_param.m_useClumpCorrection && ! m_checked)
+        if (USE_CLUMP_CORRECTION && ! m_checked)
             CorrectMove(GoUctUtil::DoClumpCorrection, mv,
                         GOUCT_CLUMP_CORRECTION);
     }

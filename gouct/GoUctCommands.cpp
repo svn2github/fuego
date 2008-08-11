@@ -464,8 +464,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c clump_correction
-      See GoUctPlayoutPolicyParam::m_useClumpCorrection
     @arg @c statistics_enables
       See GoUctPlayoutPolicyParam::m_statisticsEnabled
 */
@@ -477,15 +475,12 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] clump_correction " << p.m_useClumpCorrection << '\n'
-            << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n';
+        cmd << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "clump_correction")
-            p.m_useClumpCorrection = cmd.BoolArg(1);
-        else if (name == "statistics_enabled")
+        if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.BoolArg(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
