@@ -803,6 +803,32 @@ inline SgGrid GoUctBoard::Line(SgPoint p) const
     return m_const.Line(p);
 }
 
+inline void GoUctBoard::NeighborBlocks(SgPoint p, SgBlackWhite c, int maxLib,
+                                       SgPoint anchors[]) const
+{
+    SG_ASSERT(IsEmpty(p));
+    SgReserveMarker reserve(m_marker);
+    SG_UNUSED(reserve);
+    m_marker.Clear();
+    int i = 0;
+    if (NumNeighbors(p, c) > 0)
+    {
+        if (IsColor(p - SG_NS, c) && m_marker.NewMark(Anchor(p - SG_NS))
+            && AtMostNumLibs(p - SG_NS, maxLib))
+            anchors[i++] = Anchor(p - SG_NS);
+        if (IsColor(p - SG_WE, c) && m_marker.NewMark(Anchor(p - SG_WE))
+            && AtMostNumLibs(p - SG_WE, maxLib))
+            anchors[i++] = Anchor(p - SG_WE);
+        if (IsColor(p + SG_WE, c) && m_marker.NewMark(Anchor(p + SG_WE))
+            && AtMostNumLibs(p + SG_WE, maxLib))
+            anchors[i++] = Anchor(p + SG_WE);
+        if (IsColor(p + SG_NS, c) && m_marker.NewMark(Anchor(p + SG_NS))
+            && AtMostNumLibs(p + SG_NS, maxLib))
+            anchors[i++] = Anchor(p + SG_NS);
+    }
+    anchors[i] = SG_ENDPOINT;
+}
+
 inline int GoUctBoard::Num8Neighbors(SgPoint p, SgBlackWhite c) const
 {
     return NumNeighbors(p, c) + NumDiagonals(p, c);

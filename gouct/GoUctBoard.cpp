@@ -352,32 +352,6 @@ void GoUctBoard::NeighborBlocks(SgPoint p, SgBlackWhite c,
     anchors[i] = SG_ENDPOINT;
 }
 
-void GoUctBoard::NeighborBlocks(SgPoint p, SgBlackWhite c, int maxLib,
-                                SgPoint anchors[]) const
-{
-    SG_ASSERT(IsEmpty(p));
-    SgReserveMarker reserve(m_marker);
-    SG_UNUSED(reserve);
-    m_marker.Clear();
-    int i = 0;
-    if (NumNeighbors(p, c) > 0)
-    {
-        if (IsColor(p - SG_NS, c) && m_marker.NewMark(Anchor(p - SG_NS))
-            && AtMostNumLibs(p - SG_NS, maxLib))
-            anchors[i++] = Anchor(p - SG_NS);
-        if (IsColor(p - SG_WE, c) && m_marker.NewMark(Anchor(p - SG_WE))
-            && AtMostNumLibs(p - SG_WE, maxLib))
-            anchors[i++] = Anchor(p - SG_WE);
-        if (IsColor(p + SG_WE, c) && m_marker.NewMark(Anchor(p + SG_WE))
-            && AtMostNumLibs(p + SG_WE, maxLib))
-            anchors[i++] = Anchor(p + SG_WE);
-        if (IsColor(p + SG_NS, c) && m_marker.NewMark(Anchor(p + SG_NS))
-            && AtMostNumLibs(p + SG_NS, maxLib))
-            anchors[i++] = Anchor(p + SG_NS);
-    }
-    anchors[i] = SG_ENDPOINT;
-}
-
 void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
 {
     SG_ASSERT(IsEmpty(p));
