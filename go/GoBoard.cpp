@@ -110,7 +110,6 @@ void GoBoard::CheckConsistencyBlock(SgPoint point) const
     SgMarker mark;
     SgStack<SgPoint,SG_MAXPOINT> stack;
     stack.Push(point);
-    SgPoint anchor = -1;
     while (! stack.IsEmpty())
     {
         SgPoint p = stack.Pop();
@@ -119,8 +118,6 @@ void GoBoard::CheckConsistencyBlock(SgPoint point) const
         if (GetColor(p) == color)
         {
             stones.Append(p);
-            if (anchor == -1 || p < anchor)
-                anchor = p;
             stack.Push(p - SG_NS);
             stack.Push(p - SG_WE);
             stack.Push(p + SG_WE);
@@ -131,7 +128,7 @@ void GoBoard::CheckConsistencyBlock(SgPoint point) const
     }
     const Block* block = m_state.m_block[point];
     SG_DEBUG_ONLY(block);
-    SG_ASSERT(anchor == block->Anchor());
+    SG_ASSERT(stones.Contains(block->Anchor()));
     SG_ASSERT(color == block->Color());
     SG_ASSERT(stones.SameElements(block->Stones()));
     SG_ASSERT(liberties.SameElements(block->Liberties()));
@@ -443,7 +440,7 @@ void GoBoard::Init(int size, const GoRules& rules, const GoSetup& setup)
     m_const.ChangeSize(m_size);
     for (SgPoint p = 0; p < SG_MAXPOINT; ++p)
     {
-        m_state.m_color[p] = 0;
+        m_state.m_color[p] = SG_BORDER;
         m_isBorder[p] = true;
     }
     m_state.m_isFirst.Fill(true);
