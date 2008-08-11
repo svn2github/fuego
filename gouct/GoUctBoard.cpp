@@ -321,7 +321,7 @@ void GoUctBoard::InitSize(const GoBoard& bd)
     {
         if (bd.IsBorder(p))
         {
-            m_color[p] = 0;
+            m_color[p] = SG_BORDER;
             m_isBorder[p] = true;
         }
         else
