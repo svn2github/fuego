@@ -41,9 +41,12 @@
 
     - No <tt>using namespace::std</tt> in header files
     - Don't include SgSystem.h in header files
-    - All cpp-files include SgSystem.h first, then the header file with the
-      same name, then system includes, then other includes, alphabetically
-      sorted
+    - All cpp-files include SgSystem.h first (to ensure that macros are
+      defined consistently everywhere), then the header file with the same
+      name (to ensure self-consistency of the header file), then system
+      includes, then other includes, alphabetically sorted (in order to not
+      pretend that the header files are not self-consistent and depend on
+      an inclusion order)
     - Classes should be in their own file, apart from helper and friend
       classes
 
