@@ -158,3 +158,14 @@ reg_genmove b
 300 sg_compare_float 0.5 uct_value
 #? [-1]*
 # B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/KGS/7/28/dege-Fuego9.sgf 31
+310 reg_genmove b
+#? [F1]*
+# F1 kills, prevents seki.
+
+loadsgf sgf/games/2008/KGS/7/28/dege-Fuego9.sgf 37
+reg_genmove b
+320 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.

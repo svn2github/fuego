@@ -115,4 +115,80 @@ loadsgf sgf/games/2008/KGS/7/26/MatroidX-5.sgf 43
 #? [C8]
 # defend territory, don't try to kill
 
+loadsgf sgf/games/2008/CGOS/428168.sgf 36
+260 reg_genmove w
+#? [B9|D9]
+
+loadsgf sgf/games/2008/CGOS/428168.sgf 37
+270 reg_genmove b
+#? [B9]
+
+loadsgf sgf/games/2008/CGOS/428168.sgf 41
+280 reg_genmove b
+#? [A6]
+
+loadsgf sgf/games/2008/CGOS/428168.sgf 42
+290 reg_genmove w
+#? [A6]
+
+loadsgf sgf/games/2008/CGOS/428168.sgf 73
+300 reg_genmove b
+#? [B1]
+# making 2 eyes is safest way, even though B wins the semeai
+
+loadsgf sgf/games/2008/CGOS/397919.sgf 44
+310 reg_genmove w
+#? [A1]
+
+loadsgf sgf/games/2008/CGOS/397919-variation.sgf 1
+320 reg_genmove b
+#? [A4]
+
+loadsgf sgf/games/2008/CGOS/397739.sgf 44
+330 reg_genmove w
+#? [B2]*
+# B2 seems 0.5 pt win. C4 leads to damezumari
+
+loadsgf sgf/games/2008/CGOS/397651.sgf 60
+340 reg_genmove w
+#? [B2|C2|C1]
+# must defend bottom or lose at least 4 stones and game.
+# interesting case for Niu?
+
+loadsgf sgf/games/2008/CGOS/397651.sgf 61
+350 reg_genmove b
+#? [B3]*
+
+loadsgf sgf/games/2008/CGOS/397651.sgf 63
+360 reg_genmove b
+#? [C2]*
+
+loadsgf sgf/games/2008/CGOS/397651.sgf 65
+370 reg_genmove b
+#? [B2]*
+
+loadsgf sgf/games/2008/CGOS/397651.sgf 67
+380 reg_genmove b
+#? [A1]
+
+loadsgf sgf/games/2008/CGOS/365007.sgf 39
+390 reg_genmove b
+#? [J7]
+# nakade
+
+loadsgf sgf/games/2008/CGOS/365007.sgf 52
+400 reg_genmove w
+#? [H8]
+
+410 sg_compare_float 0.7 uct_value
+#? [1]*
+# cannot solve the Life&Death problem - value too low.
+
+loadsgf sgf/games/2008/CGOS/543088.sgf 22
+420 reg_genmove w
+#? [B1]
+
+loadsgf sgf/games/2008/CGOS/543088.sgf 23
+430 reg_genmove b
+#? [B1]*
 

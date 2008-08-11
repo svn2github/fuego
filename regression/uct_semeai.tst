@@ -223,3 +223,9 @@ loadsgf sgf/games/2008/KGS/7/27/Yuusen-Fuego9-3.sgf 33
 480 reg_genmove b
 #? [C1]
 # currently unstable - sometimes the program converges on F2, sometimes C1.
+
+loadsgf sgf/games/2008/CGOS/365007-variation.sgf 1
+490 reg_genmove w
+#? [H2|J1]*
+# W can make big seki. Unstable search - why does fuego often not see this???
+

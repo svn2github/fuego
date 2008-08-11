@@ -85,3 +85,8 @@ loadsgf sgf/games/2008/CGOS/386193-mogo-mannenko-bug.sgf 88
 #? [1]*
 # Fuego thinks it's about even...
 
+loadsgf sgf/games/2008/CGOS/397892.sgf 48
+180 reg_genmove w
+#? [C8]*
+# C8 wins the ko and the game. It looks like fuego does not generate E9
+# for black in the search.
