@@ -544,6 +544,45 @@ inline GoUctBoard::StoneIterator::operator bool() const
     return m_it;
 }
 
+inline int GoUctBoard::AdjacentBlocks(SgPoint point, int maxLib,
+                                      SgPoint anchors[], int maxAnchors) const
+{
+    SG_DEBUG_ONLY(maxAnchors);
+    SG_ASSERT(Occupied(point));
+    const SgBlackWhite other = SgOppBW(GetStone(point));
+    int n = 0;
+    SgReserveMarker reserve(m_marker);
+    SG_UNUSED(reserve);
+    m_marker.Clear();
+    for (StoneIterator it(*this, point); it; ++it)
+    {
+        if (NumNeighbors(*it, other) > 0)
+        {
+            SgPoint p = *it;
+            if (IsColor(p - SG_NS, other)
+                && m_marker.NewMark(Anchor(p - SG_NS))
+                && AtMostNumLibs(p - SG_NS, maxLib))
+                anchors[n++] = Anchor(p - SG_NS);
+            if (IsColor(p - SG_WE, other)
+                && m_marker.NewMark(Anchor(p - SG_WE))
+                && AtMostNumLibs(p - SG_WE, maxLib))
+                anchors[n++] = Anchor(p - SG_WE);
+            if (IsColor(p + SG_WE, other)
+                && m_marker.NewMark(Anchor(p + SG_WE))
+                && AtMostNumLibs(p + SG_WE, maxLib))
+                anchors[n++] = Anchor(p + SG_WE);
+            if (IsColor(p + SG_NS, other)
+                && m_marker.NewMark(Anchor(p + SG_NS))
+                && AtMostNumLibs(p + SG_NS, maxLib))
+                anchors[n++] = Anchor(p + SG_NS);
+        }
+    };
+    // Detect array overflow.
+    SG_ASSERT(n < maxAnchors);
+    anchors[n] = SG_ENDPOINT;
+    return n;
+}
+
 inline SgPoint GoUctBoard::Anchor(SgPoint p) const
 {
     SG_ASSERT(Occupied(p));
