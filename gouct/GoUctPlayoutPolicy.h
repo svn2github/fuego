@@ -354,8 +354,7 @@ bool GoUctPlayoutPolicy<BOARD>::CorrectMove(
     if (! corrFunction(m_bd, mv))
         return false;
 
-    m_moves.Clear();
-    m_moves.Append(mv);
+    m_moves.SetTo(mv);
     m_moveType = moveType;
 
 #if DEBUG
