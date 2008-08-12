@@ -55,7 +55,7 @@ inline void SG_UNUSED(const T&)
 #define SG_ATTR_ALWAYS_INLINE
 #endif
 
-#if __GCC__ > 4 || (__GCC__ == 4 && __GNUC_MINOR__ >= 1)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)
 #define SG_ATTR_FLATTEN __attribute__((flatten))
 #else
 #define SG_ATTR_FLATTEN
