@@ -48,17 +48,17 @@ inline void SG_UNUSED(const T&)
 //----------------------------------------------------------------------------
 
 #ifdef __GNUC__
-
-#define SG_ATTR_FLATTEN __attribute__((flatten))
-#define SG_ATTR_NOINLINE __attribute__((noinline))
 #define SG_ATTR_ALWAYS_INLINE __attribute__((always_inline))
-
+#define SG_ATTR_NOINLINE __attribute__((noinline))
 #else
-
-#define SG_ATTR_FLATTEN
 #define SG_ATTR_NOINLINE
 #define SG_ATTR_ALWAYS_INLINE
+#endif
 
+#if __GCC__ > 4 || (__GCC__ == 4 && __GNUC_MINOR__ >= 1)
+#define SG_ATTR_FLATTEN __attribute__((flatten))
+#else
+#define SG_ATTR_FLATTEN
 #endif
 
 //----------------------------------------------------------------------------
