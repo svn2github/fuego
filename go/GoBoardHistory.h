@@ -33,7 +33,8 @@ public:
 
     /** Check if this position is a alternate-play follow-up to another one.
         @param other The other position
-        @param[out] The sequence leading from the other position to this one
+        @param[out] sequence The sequence leading from the other position to
+        this one
         @return @c true If the position is a follow-up
     */
     bool IsAlternatePlayFollowUpOf(const GoBoardHistory& other,
