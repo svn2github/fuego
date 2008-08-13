@@ -147,8 +147,8 @@ void SgGtpCommands::CmdCpuTimeReset(GtpCommand& cmd)
 /** Run a debugger and attach it to the current program.
     Arguments: debugger-type <br>
     Currently implemented debugger types:
-    - gdb-kde GDB in KDE terminal
-    - gdb-gnome GDB in GNOME terminal
+    - gdb_kde GDB in KDE terminal
+    - gdb_gnome GDB in GNOME terminal
 */
 void SgGtpCommands::CmdDebugger(GtpCommand& cmd)
 {
