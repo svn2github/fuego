@@ -566,13 +566,15 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
 void GoBoardUtil::RegionCode(const GoBoard& bd, const SgList<SgPoint>& region,
                              SgHashCode* c)
 {
+    BOOST_STATIC_ASSERT(SG_BLACK < 2);
+    BOOST_STATIC_ASSERT(SG_WHITE < 2);
+
     c->Clear();
     for (SgListIterator<SgPoint> it(region); it; ++it)
     {
         SgPoint p = *it;
         if (bd.Occupied(p))
-            SgHashUtil::XorZobrist(*c,
-                                   p + (bd.GetStone(p) - 1) * SG_MAXPOINT);
+            SgHashUtil::XorZobrist(*c, p + bd.GetStone(p) * SG_MAXPOINT);
     }
 }
 

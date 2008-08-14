@@ -36,28 +36,28 @@ public:
 
     SgEBWArray(const T& val)
     {
-        m_array[0] = val;
-        m_array[1] = val;
-        m_array[2] = val;
+        m_array[SG_BLACK] = val;
+        m_array[SG_WHITE] = val;
+        m_array[SG_EMPTY] = val;
     }
 
     SgEBWArray(const T& empty, const T& black, const T& white)
     {
-        m_array[0] = empty;
-        m_array[1] = black;
-        m_array[2] = white;
+        m_array[SG_BLACK] = black;
+        m_array[SG_WHITE] = white;
+        m_array[SG_EMPTY] = empty;
     }
 
-    const T& operator[](int i) const
+    const T& operator[](SgEmptyBlackWhite c) const
     {
-        SG_ASSERT_EBW(i);
-        return i == SG_EMPTY ? m_array[0] : m_array[i];
+        SG_ASSERT_EBW(c);
+        return m_array[c];
     }
 
-    T& operator[](int i)
+    T& operator[](SgEmptyBlackWhite c)
     {
-        SG_ASSERT_EBW(i);
-        return i == SG_EMPTY? m_array[0] : m_array[i];
+        SG_ASSERT_EBW(c);
+        return m_array[c];
     }
 
 private:

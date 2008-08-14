@@ -43,9 +43,10 @@ public:
     const T& operator[](SgBlackWhite color) const;
 
 private:
-    T m_black;
+    BOOST_STATIC_ASSERT(SG_BLACK == 0);
+    BOOST_STATIC_ASSERT(SG_WHITE == 1);
 
-    T m_white;
+    T m_array[2];
 };
 
 template <class T>
@@ -55,22 +56,23 @@ inline SgBWArray<T>::SgBWArray()
 
 template <class T>
 inline SgBWArray<T>::SgBWArray(const T& val)
-    : m_black(val),
-      m_white(val)
 {
+    m_array[SG_BLACK] = val;
+    m_array[SG_WHITE] = val;
 }
 
 template <class T>
 inline SgBWArray<T>::SgBWArray(const T& black, const T& white)
-    : m_black(black),
-      m_white(white)
 {
+    m_array[SG_BLACK] = black;
+    m_array[SG_WHITE] = white;
 }
 
 template <class T>
 inline bool SgBWArray<T>::operator==(const SgBWArray& bwArray) const
 {
-    return (m_black == bwArray.m_black && m_white == bwArray.m_white);
+    return (m_array[SG_BLACK] == bwArray.m_array[SG_BLACK]
+            && m_array[SG_WHITE] == bwArray.m_array[SG_WHITE]);
 }
 
 template <class T>
@@ -82,19 +84,15 @@ inline bool SgBWArray<T>::operator!=(const SgBWArray& bwArray) const
 template <class T>
 inline T& SgBWArray<T>::operator[](SgBlackWhite color)
 {
-    if (color == SG_BLACK)
-        return m_black;
-    SG_ASSERT(color == SG_WHITE);
-    return m_white;
+    SG_ASSERT_BW(color);
+    return m_array[color];
 }
 
 template <class T>
 inline const T& SgBWArray<T>::operator[](SgBlackWhite color) const
 {
-    if (color == SG_BLACK)
-        return m_black;
-    SG_ASSERT(color == SG_WHITE);
-    return m_white;
+    SG_ASSERT_BW(color);
+    return m_array[color];
 }
 
 //----------------------------------------------------------------------------

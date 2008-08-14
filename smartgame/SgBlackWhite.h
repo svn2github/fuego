@@ -12,10 +12,10 @@
 //----------------------------------------------------------------------------
 
 /** Black stone, black player. */
-const int SG_BLACK = 1 << 0;
+const int SG_BLACK = 0;
 
 /** White stone, white player. */
-const int SG_WHITE = 1 << 1;
+const int SG_WHITE = 1;
 
 // must be consecutive for color for-loops
 BOOST_STATIC_ASSERT(SG_BLACK + 1 == SG_WHITE);

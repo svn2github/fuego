@@ -1226,9 +1226,9 @@ inline const SgHashCode& GoBoard::HashCode::Get() const
 inline SgHashCode GoBoard::HashCode::GetInclToPlay(SgBlackWhite toPlay) const
 {
     SgHashCode hash = m_hash;
-    int index = toPlay;
-    BOOST_STATIC_ASSERT(SG_BLACK == 1);
-    BOOST_STATIC_ASSERT(SG_WHITE == 2);
+    BOOST_STATIC_ASSERT(SG_BLACK == 0);
+    BOOST_STATIC_ASSERT(SG_WHITE == 1);
+    int index = toPlay + 1;
     SG_ASSERTRANGE(index, START_INDEX_TOPLAY, END_INDEX_TOPLAY);
     SgHashUtil::XorZobrist(hash, index);
     return hash;
@@ -1246,7 +1246,9 @@ inline void GoBoard::HashCode::XorStone(SgPoint p, SgBlackWhite c)
 {
     SG_ASSERT_BOARDRANGE(p);
     SG_ASSERT_BW(c);
-    int index = p + (c - 1) * SG_MAXPOINT;
+    BOOST_STATIC_ASSERT(SG_BLACK == 0);
+    BOOST_STATIC_ASSERT(SG_WHITE == 1);
+    int index = p + c * SG_MAXPOINT;
     SG_ASSERTRANGE(index, START_INDEX_STONES, END_INDEX_STONES);
     SgHashUtil::XorZobrist(m_hash, index);
 }
@@ -1255,6 +1257,8 @@ inline void GoBoard::HashCode::XorWinKo(int level, SgBlackWhite c)
 {
     SG_ASSERT(level > 0 && level <= MAX_KOLEVEL);
     SG_ASSERT_BW(c);
+    BOOST_STATIC_ASSERT(SG_BLACK == 0);
+    BOOST_STATIC_ASSERT(SG_WHITE == 1);
     int index = level + MAX_KOLEVEL * c + 2 * SG_MAXPOINT;
     SG_ASSERTRANGE(index, START_INDEX_WINKO, END_INDEX_WINKO);
     SgHashUtil::XorZobrist(m_hash, index);

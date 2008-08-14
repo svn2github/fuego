@@ -7,6 +7,7 @@
 #define GOUCT_PATTERNS_H
 
 #include "GoBoard.h"
+#include "GoBoardUtil.h"
 #include "SgBoardColor.h"
 #include "SgBWArray.h"
 #include "SgPoint.h"
@@ -95,8 +96,6 @@ private:
     static int CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p);
 
     static int EdgeDirection(GoBoard& bd, SgPoint p, int index);
-
-    static int EBWCode(SgEmptyBlackWhite c);
 
     static int EBWCodeOfPoint(const BOARD& bd, SgPoint p);
 
@@ -217,21 +216,14 @@ inline int GoUctPatterns<BOARD>::CodeOfEdgeNeighbors(const BOARD& bd,
     return code;
 }
 
-/** recode colors: SG_EMPTY -> 0, SG_BLACK -> 1, SG_WHITE -> 2 */
-template<class BOARD>
-inline int GoUctPatterns<BOARD>::EBWCode(SgEmptyBlackWhite c)
-{
-    SG_ASSERT_EBW(c);
-    int code = c & (SG_BLACK | SG_WHITE);
-    SG_ASSERT(code >= 0 && code <= 2);
-    return code;
-}
-
 template<class BOARD>
 inline int GoUctPatterns<BOARD>::EBWCodeOfPoint(const BOARD& bd, SgPoint p)
 {
     SG_ASSERT(bd.IsValidPoint(p));
-    return EBWCode(bd.GetColor(p));
+    BOOST_STATIC_ASSERT(SG_BLACK == 0);
+    BOOST_STATIC_ASSERT(SG_WHITE == 1);
+    BOOST_STATIC_ASSERT(SG_EMPTY == 2);
+    return bd.GetColor(p);
 }
 
 template<class BOARD>
@@ -566,12 +558,12 @@ int GoUctPatterns<BOARD>::SetupCodedEdgePosition(GoBoard& bd, int code)
 {
     const SgPoint p = SgPointUtil::Pt(1, 3);
     int count = 0;
-    for(int i = 4; i >=0; --i) // decoding gives points in reverse order
+    for(int i = 4; i >= 0; --i) // decoding gives points in reverse order
     {
         const SgPoint nb = p + EdgeDirection(bd, p, i);
         int c = code % 3;
         code /= 3;
-        if (c != 0)
+        if (c != SG_EMPTY)
         {
             ++count;
             bd.Play(nb, c);
@@ -585,12 +577,12 @@ int GoUctPatterns<BOARD>::SetupCodedPosition(GoBoard& bd, int code)
 {
     const SgPoint p = SgPointUtil::Pt(3, 3);
     int count = 0;
-    for(int i = 7; i >=0; --i) // decoding gives points in reverse order
+    for(int i = 7; i >= 0; --i) // decoding gives points in reverse order
     {
         const SgPoint nb = p + SgNb8Iterator::Direction(i);
         int c = code % 3;
         code /= 3;
-        if (c != 0)
+        if (c != SG_EMPTY)
         {
             ++count;
             bd.Play(nb, c);

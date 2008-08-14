@@ -14,17 +14,17 @@
 //----------------------------------------------------------------------------
 
 /** Empty point. */
-const int SG_EMPTY = 1 << 2;
+const int SG_EMPTY = 2;
 
 /** Border point (outside of playing area) */
-const int SG_BORDER = 1 << 3;
+const int SG_BORDER = 3;
 
 //----------------------------------------------------------------------------
 
 // SgEBWIterator and maybe other code relies on that
-BOOST_STATIC_ASSERT(SG_BLACK == 1);
-BOOST_STATIC_ASSERT(SG_WHITE == 2);
-BOOST_STATIC_ASSERT(SG_EMPTY > 3);
+BOOST_STATIC_ASSERT(SG_BLACK == 0);
+BOOST_STATIC_ASSERT(SG_WHITE == 1);
+BOOST_STATIC_ASSERT(SG_EMPTY == 2);
 
 //----------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ class SgEBWIterator
 {
 public:
     SgEBWIterator()
-        : m_color(SG_EMPTY)
+        : m_color(SG_BLACK)
     { }
 
     /** Advance the state of the iteration to the next element.
@@ -75,11 +75,7 @@ public:
     */
     void operator++()
     {
-        SG_ASSERT_EBW(m_color);
-        if (m_color == SG_EMPTY)
-            m_color = SG_BLACK;
-        else
-            ++m_color;
+        ++m_color;
     }
 
     /** Return the value of the current element. */
@@ -91,7 +87,7 @@ public:
     /** Return true if iteration is valid, otherwise false. */
     operator bool() const
     {
-        return SgIsEmptyBlackWhite(m_color);
+        return m_color <= SG_EMPTY;
     }
 
 private:
