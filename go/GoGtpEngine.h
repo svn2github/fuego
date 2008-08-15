@@ -421,9 +421,6 @@ private:
 
     void PlaceHandicap(const SgList<SgPoint>& stones);
 
-    void RegisterCmd(const std::string& name,
-                     GtpCallback<GoGtpEngine>::Method method);
-
     void SaveGame(const std::string& fileName) const;
 
     void SaveStatistics();

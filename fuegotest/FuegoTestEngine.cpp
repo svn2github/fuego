@@ -36,7 +36,7 @@ FuegoTestEngine::FuegoTestEngine(istream& in, ostream& out,
       m_extraCommands(Board()),
       m_safetyCommands(Board())
 {
-    RegisterCmd("fuegotest_param", &FuegoTestEngine::CmdParam);
+    Register("fuegotest_param", &FuegoTestEngine::CmdParam, this);
     m_extraCommands.Register(*this);
     m_safetyCommands.Register(*this);
     SetPlayer(player);
@@ -145,12 +145,6 @@ GoPlayer* FuegoTestEngine::CreatePlayer(const string& playerId)
     if (playerId == "safe")
         return new SpSafePlayer(bd);
     throw SgException("unknown player " + playerId);
-}
-
-void FuegoTestEngine::RegisterCmd(const string& name,
-                                  GtpCallback<FuegoTestEngine>::Method method)
-{
-    Register(name, new GtpCallback<FuegoTestEngine>(this, method));
 }
 
 void FuegoTestEngine::SetPlayer(const string& playerId)

@@ -51,9 +51,6 @@ private:
 
     GoPlayer* CreatePlayer(const std::string& name);
 
-    void RegisterCmd(const std::string& name,
-                     GtpCallback<FuegoTestEngine>::Method method);
-
     void SetPlayer(const std::string& playerId);
 };
 

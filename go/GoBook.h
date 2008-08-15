@@ -201,9 +201,6 @@ private:
     std::string m_fileName;
 
     void PositionInfo(GtpCommand& cmd);
-
-    void RegisterCmd(GtpEngine& e, const std::string& command,
-                     GtpCallback<GoBookCommands>::Method method);
 };
 
 //----------------------------------------------------------------------------

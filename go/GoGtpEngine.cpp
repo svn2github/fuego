@@ -91,55 +91,56 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
       m_sgCommands(*this, programPath),
       m_bookCommands(m_board, m_book)
 {
-    RegisterCmd("all_legal", &GoGtpEngine::CmdAllLegal);
-    RegisterCmd("boardsize", &GoGtpEngine::CmdBoardSize);
-    RegisterCmd("clear_board", &GoGtpEngine::CmdClearBoard);
-    RegisterCmd("get_komi", &GoGtpEngine::CmdGetKomi);
-    RegisterCmd("gg-undo", &GoGtpEngine::CmdGGUndo);
-    RegisterCmd("go_board", &GoGtpEngine::CmdBoard);
-    RegisterCmd("go_param", &GoGtpEngine::CmdParam);
-    RegisterCmd("go_param_rules", &GoGtpEngine::CmdParamRules);
-    RegisterCmd("go_player_board", &GoGtpEngine::CmdPlayerBoard);
-    RegisterCmd("go_point_info", &GoGtpEngine::CmdPointInfo);
-    RegisterCmd("go_point_numbers", &GoGtpEngine::CmdPointNumbers);
-    RegisterCmd("go_rules", &GoGtpEngine::CmdRules);
-    RegisterCmd("go_set_info", &GoGtpEngine::CmdSetInfo);
-    RegisterCmd("gogui-analyze_commands", &GoGtpEngine::CmdAnalyzeCommands);
-    RegisterCmd("gogui-interrupt", &GoGtpEngine::CmdInterrupt);
-    RegisterCmd("gogui-play_sequence", &GoGtpEngine::CmdPlaySequence);
-    RegisterCmd("gogui-setup", &GoGtpEngine::CmdSetup);
-    RegisterCmd("gogui-setup_player", &GoGtpEngine::CmdSetupPlayer);
-    RegisterCmd("is_legal", &GoGtpEngine::CmdIsLegal);
-    RegisterCmd("kgs-genmove_cleanup", &GoGtpEngine::CmdGenMoveCleanup);
-    RegisterCmd("komi", &GoGtpEngine::CmdKomi);
-    RegisterCmd("list_stones", &GoGtpEngine::CmdListStones);
-    RegisterCmd("loadsgf", &GoGtpEngine::CmdLoadSgf);
-    RegisterCmd("play", &GoGtpEngine::CmdPlay);
-    RegisterCmd("savesgf", &GoGtpEngine::CmdSaveSgf);
-    RegisterCmd("showboard", &GoGtpEngine::CmdShowBoard);
-    RegisterCmd("time_left", &GoGtpEngine::CmdTimeLeft);
-    RegisterCmd("time_settings", &GoGtpEngine::CmdTimeSettings);
-    RegisterCmd("undo", &GoGtpEngine::CmdUndo);
+    Register("all_legal", &GoGtpEngine::CmdAllLegal, this);
+    Register("boardsize", &GoGtpEngine::CmdBoardSize, this);
+    Register("clear_board", &GoGtpEngine::CmdClearBoard, this);
+    Register("get_komi", &GoGtpEngine::CmdGetKomi, this);
+    Register("gg-undo", &GoGtpEngine::CmdGGUndo, this);
+    Register("go_board", &GoGtpEngine::CmdBoard, this);
+    Register("go_param", &GoGtpEngine::CmdParam, this);
+    Register("go_param_rules", &GoGtpEngine::CmdParamRules, this);
+    Register("go_player_board", &GoGtpEngine::CmdPlayerBoard, this);
+    Register("go_point_info", &GoGtpEngine::CmdPointInfo, this);
+    Register("go_point_numbers", &GoGtpEngine::CmdPointNumbers, this);
+    Register("go_rules", &GoGtpEngine::CmdRules, this);
+    Register("go_set_info", &GoGtpEngine::CmdSetInfo, this);
+    Register("gogui-analyze_commands", &GoGtpEngine::CmdAnalyzeCommands, this);
+    Register("gogui-interrupt", &GoGtpEngine::CmdInterrupt, this);
+    Register("gogui-play_sequence", &GoGtpEngine::CmdPlaySequence, this);
+    Register("gogui-setup", &GoGtpEngine::CmdSetup, this);
+    Register("gogui-setup_player", &GoGtpEngine::CmdSetupPlayer, this);
+    Register("is_legal", &GoGtpEngine::CmdIsLegal, this);
+    Register("kgs-genmove_cleanup", &GoGtpEngine::CmdGenMoveCleanup, this);
+    Register("komi", &GoGtpEngine::CmdKomi, this);
+    Register("list_stones", &GoGtpEngine::CmdListStones, this);
+    Register("loadsgf", &GoGtpEngine::CmdLoadSgf, this);
+    Register("play", &GoGtpEngine::CmdPlay, this);
+    Register("savesgf", &GoGtpEngine::CmdSaveSgf, this);
+    Register("showboard", &GoGtpEngine::CmdShowBoard, this);
+    Register("time_left", &GoGtpEngine::CmdTimeLeft, this);
+    Register("time_settings", &GoGtpEngine::CmdTimeSettings, this);
+    Register("undo", &GoGtpEngine::CmdUndo, this);
     m_sgCommands.Register(*this);
     if (! noPlayer)
     {
-        RegisterCmd("all_move_values", &GoGtpEngine::CmdAllMoveValues);
-        RegisterCmd("final_score", &GoGtpEngine::CmdFinalScore);
-        RegisterCmd("genmove", &GoGtpEngine::CmdGenMove);
-        RegisterCmd("go_clock", &GoGtpEngine::CmdClock);
-        RegisterCmd("go_param_timecontrol",
-                    &GoGtpEngine::CmdParamTimecontrol);
-        RegisterCmd("reg_genmove", &GoGtpEngine::CmdRegGenMove);
-        RegisterCmd("reg_genmove_toplay", &GoGtpEngine::CmdRegGenMoveToPlay);
-        RegisterCmd("time_lastmove", &GoGtpEngine::CmdTimeLastMove);
+        Register("all_move_values", &GoGtpEngine::CmdAllMoveValues, this);
+        Register("final_score", &GoGtpEngine::CmdFinalScore, this);
+        Register("genmove", &GoGtpEngine::CmdGenMove, this);
+        Register("go_clock", &GoGtpEngine::CmdClock, this);
+        Register("go_param_timecontrol", &GoGtpEngine::CmdParamTimecontrol,
+                 this);
+        Register("reg_genmove", &GoGtpEngine::CmdRegGenMove, this);
+        Register("reg_genmove_toplay", &GoGtpEngine::CmdRegGenMoveToPlay,
+                 this);
+        Register("time_lastmove", &GoGtpEngine::CmdTimeLastMove, this);
         m_bookCommands.Register(*this);
     }
     if (! noHandicap)
     {
-        RegisterCmd("fixed_handicap", &GoGtpEngine::CmdFixedHandicap);
-        RegisterCmd("place_free_handicap",
-                    &GoGtpEngine::CmdPlaceFreeHandicap);
-        RegisterCmd("set_free_handicap", &GoGtpEngine::CmdSetFreeHandicap);
+        Register("fixed_handicap", &GoGtpEngine::CmdFixedHandicap, this);
+        Register("place_free_handicap", &GoGtpEngine::CmdPlaceFreeHandicap,
+                 this);
+        Register("set_free_handicap", &GoGtpEngine::CmdSetFreeHandicap, this);
     }
 }
 
@@ -1382,12 +1383,6 @@ SgList<SgPoint> GoGtpEngine::PointListArg(const GtpCommand& cmd,
 SgList<SgPoint> GoGtpEngine::PointListArg(const GtpCommand& cmd) const
 {
     return GoGtpCommandUtil::PointListArg(cmd, Board());
-}
-
-void GoGtpEngine::RegisterCmd(const string& name,
-                                  GtpCallback<GoGtpEngine>::Method method)
-{
-    Register(name, new GtpCallback<GoGtpEngine>(this, method));
 }
 
 void GoGtpEngine::RespondNumberArray(GtpCommand& cmd,

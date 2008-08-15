@@ -647,12 +647,12 @@ GtpEngine::GtpEngine(istream& in, ostream& out)
     // (see GTPENGINE_PONDER) and the standard library implementation does not
     // support simultaneous writes to output stream by multiple threads
     m_in.tie(0);
-    Register("known_command", &GtpEngine::CmdKnownCommand);
-    Register("list_commands", &GtpEngine::CmdListCommands);
-    Register("name", &GtpEngine::CmdName);
-    Register("protocol_version", &GtpEngine::CmdProtocolVersion);
-    Register("quit", &GtpEngine::CmdQuit);
-    Register("version", &GtpEngine::CmdVersion);
+    Register("known_command", &GtpEngine::CmdKnownCommand, this);
+    Register("list_commands", &GtpEngine::CmdListCommands, this);
+    Register("name", &GtpEngine::CmdName, this);
+    Register("protocol_version", &GtpEngine::CmdProtocolVersion, this);
+    Register("quit", &GtpEngine::CmdQuit, this);
+    Register("version", &GtpEngine::CmdVersion, this);
 }
 
 GtpEngine::~GtpEngine()
@@ -848,12 +848,6 @@ void GtpEngine::Register(const string& command, GtpCallbackBase* callback)
         m_callbacks.erase(pos);
     }
     m_callbacks.insert(make_pair(command, callback));
-}
-
-void GtpEngine::Register(const string& command,
-                         GtpCallback<GtpEngine>::Method method)
-{
-    Register(command, new GtpCallback<GtpEngine>(this, method));
 }
 
 void GtpEngine::SetQuit()

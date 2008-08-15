@@ -81,9 +81,6 @@ private:
 
     /** Cputimes for cputime and cputime_reset commands. */
     std::map<std::string,double> m_cpuTimes;
-
-    void RegisterCmd(GtpEngine& engine, const std::string& command,
-                     GtpCallback<SgGtpCommands>::Method method);
 };
 
 //----------------------------------------------------------------------------

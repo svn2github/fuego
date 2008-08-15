@@ -579,6 +579,14 @@ public:
     */
     void Register(const std::string& name, GtpCallbackBase* callback);
 
+    /** Register a member function as a command handler.
+        If a command was already registered with the same name,
+        it will be replaced by the new command.
+    */
+    template<class T>
+    void Register(const std::string& command,
+                  typename GtpCallback<T>::Method method, T* instance);
+
     /** Returns if command registered. */
     bool IsRegistered(const std::string& command) const;
 
@@ -669,10 +677,14 @@ private:
     GtpEngine& operator=(const GtpEngine& engine) const;
 
     bool HandleCommand(GtpCommand& cmd, std::ostream& out);
-
-    void Register(const std::string& command,
-                  GtpCallback<GtpEngine>::Method method);
 };
+
+template<class T>
+void GtpEngine::Register(const std::string& command,
+                         typename GtpCallback<T>::Method method, T* instance)
+{
+    Register(command, new GtpCallback<T>(instance, method));
+}
 
 //----------------------------------------------------------------------------
 

@@ -266,25 +266,19 @@ void SgGtpCommands::CmdQuiet(GtpCommand& cmd)
 
 void SgGtpCommands::Register(GtpEngine& engine)
 {
-    RegisterCmd(engine, "cputime", &SgGtpCommands::CmdCpuTime);
-    RegisterCmd(engine, "cputime_reset", &SgGtpCommands::CmdCpuTimeReset);
-    RegisterCmd(engine, "echo", &SgGtpCommands::CmdEcho);
-    RegisterCmd(engine, "echo_err", &SgGtpCommands::CmdEchoErr);
-    RegisterCmd(engine, "get_random_seed", &SgGtpCommands::CmdGetRandomSeed);
-    RegisterCmd(engine, "pid", &SgGtpCommands::CmdPid);
-    RegisterCmd(engine, "set_random_seed", &SgGtpCommands::CmdSetRandomSeed);
-    RegisterCmd(engine, "sg_debugger", &SgGtpCommands::CmdDebugger);
-    RegisterCmd(engine, "sg_compare_float", &SgGtpCommands::CmdCompareFloat);
-    RegisterCmd(engine, "sg_compare_int", &SgGtpCommands::CmdCompareInt);
-    RegisterCmd(engine, "sg_exec", &SgGtpCommands::CmdExec);
-    RegisterCmd(engine, "sg_param", &SgGtpCommands::CmdParam);
-    RegisterCmd(engine, "quiet", &SgGtpCommands::CmdQuiet);
-}
-
-void SgGtpCommands::RegisterCmd(GtpEngine& engine, const string& command,
-                                  GtpCallback<SgGtpCommands>::Method method)
-{
-    engine.Register(command, new GtpCallback<SgGtpCommands>(this, method));
+    engine.Register("cputime", &SgGtpCommands::CmdCpuTime, this);
+    engine.Register("cputime_reset", &SgGtpCommands::CmdCpuTimeReset, this);
+    engine.Register("echo", &SgGtpCommands::CmdEcho, this);
+    engine.Register("echo_err", &SgGtpCommands::CmdEchoErr, this);
+    engine.Register("get_random_seed", &SgGtpCommands::CmdGetRandomSeed, this);
+    engine.Register("pid", &SgGtpCommands::CmdPid, this);
+    engine.Register("set_random_seed", &SgGtpCommands::CmdSetRandomSeed, this);
+    engine.Register("sg_debugger", &SgGtpCommands::CmdDebugger, this);
+    engine.Register("sg_compare_float", &SgGtpCommands::CmdCompareFloat, this);
+    engine.Register("sg_compare_int", &SgGtpCommands::CmdCompareInt, this);
+    engine.Register("sg_exec", &SgGtpCommands::CmdExec, this);
+    engine.Register("sg_param", &SgGtpCommands::CmdParam, this);
+    engine.Register("quiet", &SgGtpCommands::CmdQuiet, this);
 }
 
 //----------------------------------------------------------------------------

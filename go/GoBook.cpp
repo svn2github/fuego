@@ -505,20 +505,14 @@ void GoBookCommands::PositionInfo(GtpCommand& cmd)
 
 void GoBookCommands::Register(GtpEngine& e)
 {
-    RegisterCmd(e, "book_add", &GoBookCommands::CmdAdd);
-    RegisterCmd(e, "book_clear", &GoBookCommands::CmdClear);
-    RegisterCmd(e, "book_delete", &GoBookCommands::CmdDelete);
-    RegisterCmd(e, "book_info", &GoBookCommands::CmdInfo);
-    RegisterCmd(e, "book_load", &GoBookCommands::CmdLoad);
-    RegisterCmd(e, "book_position", &GoBookCommands::CmdPosition);
-    RegisterCmd(e, "book_save", &GoBookCommands::CmdSave);
-    RegisterCmd(e, "book_save_as", &GoBookCommands::CmdSaveAs);
-}
-
-void GoBookCommands::RegisterCmd(GtpEngine& e, const string& command,
-                                 GtpCallback<GoBookCommands>::Method method)
-{
-    e.Register(command, new GtpCallback<GoBookCommands>(this, method));
+    e.Register("book_add", &GoBookCommands::CmdAdd, this);
+    e.Register("book_clear", &GoBookCommands::CmdClear, this);
+    e.Register("book_delete", &GoBookCommands::CmdDelete, this);
+    e.Register("book_info", &GoBookCommands::CmdInfo, this);
+    e.Register("book_load", &GoBookCommands::CmdLoad, this);
+    e.Register("book_position", &GoBookCommands::CmdPosition, this);
+    e.Register("book_save", &GoBookCommands::CmdSave, this);
+    e.Register("book_save_as", &GoBookCommands::CmdSaveAs, this);
 }
 
 //----------------------------------------------------------------------------
