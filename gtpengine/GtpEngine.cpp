@@ -805,7 +805,6 @@ void GtpEngine::MainLoop()
 #if GTPENGINE_INTERRUPT
     ReadThread readThread(m_in, *this);
 #endif
-    vector<string> arguments;
     GtpCommand cmd;
     while (true)
     {
