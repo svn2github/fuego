@@ -641,7 +641,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetRave(true);
     SetRaveWeightInitial(1.0);
     SetRaveWeightFinal(5000);
-    SetExpandThreshold(2);
+    SetExpandThreshold(1);
     if (boardSize <= 13)
     {
         // These parameters were mainly tested on 9x9
