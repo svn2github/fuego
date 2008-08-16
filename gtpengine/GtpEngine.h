@@ -591,13 +591,24 @@ public:
     bool IsRegistered(const std::string& command) const;
 
     /** Set flag for quitting the main command loop.
-        This function should only used by the quit command. The reason for
-        this is that if the engine is compiled with interrupt functionality
-        (GTENGINE_INTERRUPT), the command  stream is read from a different
+        Currently, this function works only for the "quit" command, if the
+        engine is compiled with interrupt functionality (GTENGINE_INTERRUPT).
+        Therefore, it is not possible for other commands to decide to quit
+        (which would be necessary for instance to implement a maximal game
+        number if playing on KGS and deciding to quit on the kgs-game_over
+        command, if the maximum number is reached).
+
+        The reason is that the command  stream is then read from a different
         thread using a blocking, non-interruptible read function, which is
-        entered before the command handler is invoked in the main thread. The
-        implementation of GtpEngine needs to know what commands will quit to
-        avoid entering this read function after a quit.
+        entered before the command handler is invoked in the main thread.
+        Because of the non-interruptible read function, the implementation of
+        GtpEngine needs to know what commands will quit to avoid entering this
+        read function after a quit.
+
+        If a way is found to interrupt the read thread during the execution
+        of the blocking std::getline (maybe in a future version of
+        Boost.Thread), this function could also be called in other GTP
+        commands.
         @see MainLoop()
     */
     void SetQuit();

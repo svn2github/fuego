@@ -330,6 +330,7 @@ void ReadThread::Function::operator()()
                m_readThread.m_commandReceived);
         if (in.fail())
             return;
+        // See comment at GtpEngine::SetQuit
         GtpCommand cmd(line);
         if (cmd.Name() == "quit")
             return;
