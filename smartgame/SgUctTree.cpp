@@ -106,16 +106,17 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     @param node The node in the source tree to be copied.
     @param currentAllocatorId The current node allocator. Will be incremented
     in each call to CopySubtree to use node allocators of target tree evenly.
-    @param[in,out] warnTruncate Print warning to SgDebug() if tree was
-    truncated due to reassigning nodes to different allocators (will be set to
-    false after first warning to avoid multiple warnungs on truncate)
+    @param warnTruncate Print warning to SgDebug() if tree was
+    truncated (e.g due to reassigning nodes to different allocators)
+    @param[in,out] truncate Flag that tree was truncated. Must be initialized
+    to false by top-level caller
     @param timer
     @param maxTime See ExtractSubtree()
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node,
                             std::size_t& currentAllocatorId,
-                            bool& warnTruncate, SgTimer& timer,
+                            bool warnTruncate, bool& truncate, SgTimer& timer,
                             double maxTime) const
 {
     SG_ASSERT(Contains(node));
@@ -127,34 +128,36 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
 
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
     int nuChildren = node.NuChildren();
-    bool truncate = false;
-    if (! targetAllocator.HasCapacity(nuChildren))
+    if (! truncate)
     {
-        // This can happen even if target tree has same maximum number of
-        // nodes, because allocators are used differently.
-        if (warnTruncate)
-            SgDebug()
-                << "SgUctTree::CopySubtree: Truncated (allocator capacity)\n";
-        truncate = true;
-    }
-    if (timer.IsTimeOut(maxTime, 10000))
-    {
-        if (warnTruncate)
-            SgDebug() << "SgUctTree::CopySubtree: Truncated (max time)\n";
-        truncate = true;
-    }
-    if (SgUserAbort())
-    {
-        if (warnTruncate)
-            SgDebug() << "SgUctTree::CopySubtree: Truncated (aborted)\n";
-        truncate = true;
+        if (! targetAllocator.HasCapacity(nuChildren))
+        {
+            // This can happen even if target tree has same maximum number of
+            // nodes, because allocators are used differently.
+            if (warnTruncate)
+                SgDebug() <<
+                    "SgUctTree::CopySubtree: "
+                    "Truncated (allocator capacity)\n";
+            truncate = true;
+        }
+        if (timer.IsTimeOut(maxTime, 10000))
+        {
+            if (warnTruncate)
+                SgDebug() << "SgUctTree::CopySubtree: Truncated (max time)\n";
+            truncate = true;
+        }
+        if (SgUserAbort())
+        {
+            if (warnTruncate)
+                SgDebug() << "SgUctTree::CopySubtree: Truncated (aborted)\n";
+            truncate = true;
+        }
     }
     if (truncate)
     {
         // Don't copy the children and set the pos count to zero (should
         // reflect the sum of children move counts)
         targetNode.SetPosCount(0);
-        warnTruncate = false;
         return;
     }
 
@@ -182,7 +185,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
         CopySubtree(target, targetNodes[firstTargetChild + i], child,
-                    currentAllocatorId, warnTruncate, timer, maxTime);
+                    currentAllocatorId, truncate, warnTruncate, timer, maxTime);
     }
 }
 
@@ -250,8 +253,9 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
     target.Clear();
     size_t allocatorId = 0;
     SgTimer timer;
+    bool truncate = false;
     CopySubtree(target, target.m_root, node, allocatorId, warnTruncate,
-                timer, maxTime);
+                truncate, timer, maxTime);
 }
 
 std::size_t SgUctTree::NuNodes() const
