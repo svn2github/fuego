@@ -831,9 +831,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
         else if (n >= 4 && size % 2 == 0 && (size >= 8 || size == 7)
                  && size <= 25)
             stones = GoGtpCommandUtil::GetHandicapStones(size, 4);
-        SgDebug() <<
-            "GoGtpEngine::CmdPlaceFreeHandicap: "
-            "Generating missing handicap\n";
+        SgDebug() << "GoGtpEngine: Generating missing handicap\n";
         GoSetup setup;
         for (SgListIterator<SgPoint> it(stones); it; ++it)
             setup.AddBlack(*it);
@@ -842,8 +840,8 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
         for (int i = stones.Length(); i < n; ++i)
         {
             SgPoint p = GenMove(SG_BLACK);
-            SgDebug() << "GoGtpEngine::CmdPlaceFreeHandicap: " << i << ' '
-                      << SgWritePoint(p) << '\n';
+            SgDebug() << "GoGtpEngine: " << i << ' ' << SgWritePoint(p)
+                      << '\n';
             if (p == SG_PASS)
                 break;
             playerBd.Play(p, SG_BLACK);
@@ -1232,9 +1230,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color)
     move = m_book.LookupMove(bd);
     if (move != SG_NULLMOVE)
     {
-        SgDebug() <<
-            "GoGtpEngine::GenMove: "
-            "Using move from opening book\n";
+        SgDebug() << "GoGtpEngine: Using move from opening book\n";
         AddStatistics("BOOK", 1);
     }
     else
@@ -1277,12 +1273,12 @@ void GoGtpEngine::InitStatistics()
          ++i)
     {
         if (i->find('\t') != string::npos)
-            throw SgException("GoGtpEngine::SetPlayer: statistics slot"
+            throw SgException("GoGtpEngine::InitStatistics: statistics slot"
                               " contains tab: '" + (*i) + "'");
         if (find(m_statisticsSlots.begin(), m_statisticsSlots.end(), *i)
             != m_statisticsSlots.end())
-            throw SgException("GoGtpEngine::SetPlayer: duplicate statistics"
-                              " slot '" + (*i) + "'");
+            throw SgException("GoGtpEngine::InitStatistics: duplicate"
+                              " statistics slot '" + (*i) + "'");
         m_statisticsSlots.push_back(*i);
     }
     ofstream out(m_statisticsFile.c_str(), ios::app);
