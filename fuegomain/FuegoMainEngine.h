@@ -26,6 +26,7 @@ public:
     ~FuegoMainEngine();
 
     void CmdAnalyzeCommands(GtpCommand& cmd);
+    void CmdLicense(GtpCommand& cmd);
     void CmdName(GtpCommand& cmd);
     void CmdVersion(GtpCommand& cmd);
 

@@ -24,6 +24,7 @@ FuegoMainEngine::FuegoMainEngine(istream& in, ostream& out,
 {
     m_uctCommands.Register(*this);
     m_safetyCommands.Register(*this);
+    Register("fuego-license", &FuegoMainEngine::CmdLicense, this);
     SetPlayer(new GoUctPlayer(Board()));
 }
 
@@ -36,8 +37,22 @@ void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     GoGtpEngine::CmdAnalyzeCommands(cmd);
     m_uctCommands.AddGoGuiAnalyzeCommands(cmd);
     m_safetyCommands.AddGoGuiAnalyzeCommands(cmd);
+    cmd << "string/Fuego License/fuego-license\n";
     string response = cmd.Response();
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));
+}
+
+void FuegoMainEngine::CmdLicense(GtpCommand& cmd)
+{
+    cmd << "\n" <<
+        "Fuego " << FuegoMainUtil::Version() << "\n" <<
+        "Copyright (C) 2008 by the authors of the Fuego project.\n"
+        "See http://fuego.sf.net for information about Fuego. Fuego comes\n"
+        "with NO WARRANTY to the extent permitted by law. This program is\n"
+        "free software; you can redistribute it and/or modify it under the\n"
+        "terms of the GNU Lesser General Public License as published by the\n"
+        "Free Software Foundation - version 3. For more information about\n"
+        "these matters, see the files named COPYING and COPYING.LESSER\n";
 }
 
 void FuegoMainEngine::CmdName(GtpCommand& cmd)

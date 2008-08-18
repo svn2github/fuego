@@ -91,16 +91,12 @@ void ParseOptions(int argc, char** argv)
 
 void PrintStartupMessage()
 {
-    SgDebug()
-        << "Fuego " << FuegoMainUtil::Version() << '\n' <<
-        "Copyright by the authors of the Fuego project.\n"
-        "See http://fuego.sf.net for information about Fuego. Fuego comes\n"
-        "with NO WARRANTY to the extent permitted by law. This program is\n"
-        "free software; you can redistribute it and/or modify it under the\n"
-        "terms of the GNU Lesser General Public License as published by the\n"
-        "Free Software Foundation - version 3. For more information about\n"
-        "these matters, see the files named COPYING and COPYING.LESSER\n"
-        "\n";
+    SgDebug() <<
+        "Fuego " << FuegoMainUtil::Version() << "\n"
+        "Copyright (C) 2008 by the authors of the Fuego project.\n"
+        "This program comes with ABSOLUTELY NO WARRANTY. This is\n"
+        "free software and you are welcome to redistribute it under\n"
+        "certain conditions. Type `fuego-license' for details.\n\n";
 }
 
 } // namespace
