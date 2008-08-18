@@ -44,28 +44,28 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 
     if (type == GOUCT_RANDOM && ! anyPatternMatch)
     {
-        Initialize(SG_PASS, 0.0, 9);
+        Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.0, 3);
+                Initialize(*it, 0.1, 9);
             else
                 m_counts[*it] = 0; // Don't initialize
         }
     }
     else if (type == GOUCT_RANDOM && anyPatternMatch)
     {
-        Initialize(SG_PASS, 0.0, 9);
+        Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.0, 3);
+                Initialize(*it, 0.1, 9);
             else if (patternMatch[*it])
                 Initialize(*it, 1.0, 3);
             else
@@ -74,14 +74,14 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     }
     else
     {
-        Initialize(SG_PASS, 0.0, 9);
+        Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.0, 9);
+                Initialize(*it, 0.1, 9);
             else if (patterns.MatchAny(*it))
                 Initialize(*it, 0.6, 9);
             else
