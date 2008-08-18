@@ -109,8 +109,7 @@ void GoUctPlayer::ClearStatistics()
     m_statistics.Clear();
 }
 
-SgPoint GoUctPlayer::GenMove(const SgTimeRecord& time,
-                                         SgBlackWhite toPlay)
+SgPoint GoUctPlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
 {
     ++m_statistics.m_nuGenMove;
     if (m_searchMode == GOUCT_SEARCHMODE_PLAYOUTPOLICY)
@@ -190,7 +189,7 @@ SgMove GoUctPlayer::GenMovePlayoutPolicy(SgBlackWhite toPlay)
     DoSearch() was aborted during FindInitTree()).
 */
 SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
-                                          bool isDuringPondering)
+                              bool isDuringPondering)
 {
     SgUctTree* initTree = 0;
     SgTimer timer;
@@ -248,8 +247,7 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     sequence of moves starting with the color to play of the search tree.
     @see SetReuseSubtree
 */
-void GoUctPlayer::FindInitTree(SgBlackWhite toPlay,
-                                           double maxTime)
+void GoUctPlayer::FindInitTree(SgBlackWhite toPlay, double maxTime)
 {
     m_initTree.Clear();
     // Make sure that tree has same number of allocators and max nodes
@@ -269,8 +267,7 @@ void GoUctPlayer::FindInitTree(SgBlackWhite toPlay,
     if (! currentPosition.IsAlternatePlayFollowUpOf(m_search.BoardHistory(),
                                                     sequence))
     {
-        SgDebug() <<
-            "GoUctPlayer::FindInitTree: No tree to reuse found\n";
+        SgDebug() << "GoUctPlayer::FindInitTree: No tree to reuse found\n";
         return;
     }
     SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence,
@@ -293,10 +290,20 @@ void GoUctPlayer::FindInitTree(SgBlackWhite toPlay,
             "GoUctPlayer::FindInitTree: Subtree to reuse has 0 nodes\n";
         m_statistics.m_reuse.Add(0.f);
     }
+
+    // Check consistency
+    for (SgUctChildIterator it(m_initTree, m_initTree.Root()); it; ++it)
+        if (! Board().IsLegal((*it).Move()))
+        {
+            SgWarning() <<
+                "GoUctPlayer::FindInitTree: illegal move in root child\n";
+            m_initTree.Clear();
+            // Should not happen, if no bugs
+            assert(false);
+        }
 }
 
-const GoUctPlayer::Statistics&
-GoUctPlayer::GetStatistics() const
+const GoUctPlayer::Statistics& GoUctPlayer::GetStatistics() const
 {
     return m_statistics;
 }
