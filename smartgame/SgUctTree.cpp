@@ -55,12 +55,12 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
             == rootFilter.end())
         {
             SgUctNode child(move);
-            nodes.push_back(child);
             child.CopyDataFrom(*it);
             int childNuChildren = (*it).NuChildren();
             child.SetNuChildren(childNuChildren);
             if (childNuChildren > 0)
                 child.SetFirstChild((*it).FirstChild());
+            nodes.push_back(child);
             ++nuChildren;
         }
     }

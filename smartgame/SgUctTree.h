@@ -430,7 +430,7 @@ public:
         Requires: Allocator(allocatorId).HasCapacity(node.NuChildren()) <br>
         For efficiency, no reorganization of the tree is done to remove
         the dead subtrees (and NuNodes() will not report the real number of
-        nodes in the tree).
+        nodes in the tree). This function can be used in lock-free mode.
     */
     void ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                      const std::vector<SgMove>& rootFilter);

@@ -77,6 +77,39 @@ BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_OnlyRoot)
     BOOST_CHECK(! it);
 }
 
+/** Test SgUctTree::ApplyFilter() */
+BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_ApplyFilter)
+{
+    SgUctTree tree;
+    tree.CreateAllocators(1);
+    tree.SetMaxNodes(100);
+    vector<SgMove> moves;
+    moves.push_back(10);
+    moves.push_back(20);
+    moves.push_back(30);
+    const SgUctNode& root = tree.Root();
+    tree.CreateChildren(0, root, moves);
+    const SgUctNode& node1 = *FindChildWithMove(tree, root, 10);
+    const SgUctNode& node2 = *FindChildWithMove(tree, root, 20);
+    const SgUctNode& node3 = *FindChildWithMove(tree, root, 30);
+    tree.AddGameResult(node1, &root, 1.f);
+    tree.AddGameResult(node2, &root, 1.f);
+    tree.AddGameResult(node3, &root, 0.f);
+    tree.AddGameResult(node3, &root, 1.f);
+    vector<SgMove> rootFilter;
+    rootFilter.push_back(20);
+    tree.ApplyFilter(0, root, rootFilter);
+    BOOST_CHECK_EQUAL(root.NuChildren(), 2);
+    SgUctChildIterator it(tree, root);
+    BOOST_CHECK_EQUAL((*it).Move(), 10);
+    BOOST_CHECK_EQUAL((*it).MoveCount(), 1u);
+    BOOST_CHECK_CLOSE((*it).Mean(), 1.f, 1e-4);
+    ++it;
+    BOOST_CHECK_EQUAL((*it).Move(), 30);
+    BOOST_CHECK_EQUAL((*it).MoveCount(), 2u);
+    BOOST_CHECK_CLOSE((*it).Mean(), 0.5f, 1e-4);
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
