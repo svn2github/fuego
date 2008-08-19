@@ -39,7 +39,7 @@ const int GO_DEFAULT_SIZE = (SG_MAX_SIZE >= 19 ? 19 : SG_MAX_SIZE);
 /** Maximum number of moves in game.
     HEURISTIC: Longest possible game.
 */
-const int GO_MAX_NUM_MOVES = (2 * SG_MAX_SIZE * SG_MAX_SIZE);
+const int GO_MAX_NUM_MOVES = (3 * SG_MAX_SIZE * SG_MAX_SIZE);
 
 //----------------------------------------------------------------------------
 
