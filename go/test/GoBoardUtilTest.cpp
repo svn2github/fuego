@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AddWall)
     BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 9);
 }
 
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AjacentBlocks_1)
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_1)
 {
     // . . . . .
     // @ O O @ .
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AjacentBlocks_1)
     BOOST_CHECK(blocks.Contains(Pt(1, 2)));
 }
 
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AjacentBlocks_2)
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_2)
 {
     GoSetup setup;
     // . . . . .
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AjacentBlocks_2)
     BOOST_CHECK(blocks.Contains(Pt(1, 2)));
 }
 
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiaogonalsOfColor)
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiagonalsOfColor)
 {
     GoSetup setup;
     setup.AddBlack(Pt(1, 1));
@@ -339,6 +339,241 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_PassWins)
     BOOST_CHECK(PassWins(bd, SG_BLACK));
     rules.SetJapaneseScoring(true);
     BOOST_CHECK(! PassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+}
+
+void CheckSelfAtari(const GoBoard& bd, SgPoint p, int nuExpectedStones)
+{
+    // check both versions of SelfAtari
+    BOOST_CHECK(GoBoardUtil::SelfAtari(bd, p));
+    int nuStones = 0;
+    BOOST_CHECK(GoBoardUtil::SelfAtari(bd, p, nuStones));
+    BOOST_CHECK_EQUAL(nuStones, nuExpectedStones);
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_1)
+{
+    // . @ . O O . O O . 9
+    // @ @ @ @ @ . @ @ @ 8
+    // O . O . @ . @ @ @ 7
+    // @ @ @ @ . @ O . O 6
+    // O O . @ . @ O . O 5
+    // O O . @ . . @ @ @ 4
+    // @ @ . . . . + . . 3
+    // . . O O . . @ . . 2
+    // . O . @ . . . @ . 1
+    // 1 2 3 4 5 6 7 8 9
+    GoSetup setup;
+    setup.AddBlack(Pt(4, 1));
+    setup.AddBlack(Pt(8, 1));
+    setup.AddBlack(Pt(7, 2));
+    setup.AddBlack(Pt(1, 3));
+    setup.AddBlack(Pt(2, 3));
+    setup.AddBlack(Pt(4, 4));
+    setup.AddBlack(Pt(7, 4));
+    setup.AddBlack(Pt(8, 4));
+    setup.AddBlack(Pt(9, 4));
+    setup.AddBlack(Pt(4, 5));
+    setup.AddBlack(Pt(6, 5));
+    setup.AddBlack(Pt(1, 6));
+    setup.AddBlack(Pt(2, 6));
+    setup.AddBlack(Pt(3, 6));
+    setup.AddBlack(Pt(4, 6));
+    setup.AddBlack(Pt(6, 6));
+    setup.AddBlack(Pt(5, 7));
+    setup.AddBlack(Pt(7, 7));
+    setup.AddBlack(Pt(8, 7));
+    setup.AddBlack(Pt(9, 7));
+    setup.AddBlack(Pt(1, 8));
+    setup.AddBlack(Pt(2, 8));
+    setup.AddBlack(Pt(3, 8));
+    setup.AddBlack(Pt(4, 8));
+    setup.AddBlack(Pt(5, 8));
+    setup.AddBlack(Pt(7, 8));
+    setup.AddBlack(Pt(8, 8));
+    setup.AddBlack(Pt(9, 8));
+    setup.AddBlack(Pt(2, 9));
+
+    setup.AddWhite(Pt(2, 1));
+    setup.AddWhite(Pt(3, 2));
+    setup.AddWhite(Pt(4, 2));
+    setup.AddWhite(Pt(1, 4));
+    setup.AddWhite(Pt(2, 4));
+    setup.AddWhite(Pt(1, 5));
+    setup.AddWhite(Pt(2, 5));
+    setup.AddWhite(Pt(7, 5));
+    setup.AddWhite(Pt(9, 5));
+    setup.AddWhite(Pt(7, 6));
+    setup.AddWhite(Pt(9, 6));
+    setup.AddWhite(Pt(1, 7));
+    setup.AddWhite(Pt(3, 7));
+    setup.AddWhite(Pt(4, 9));
+    setup.AddWhite(Pt(5, 9));
+    setup.AddWhite(Pt(7, 9));
+    setup.AddWhite(Pt(8, 9));
+    
+    GoBoard bd(9, setup);
+
+    bd.SetToPlay(SG_BLACK);
+    CheckSelfAtari(bd, Pt(1, 1), 1);
+    CheckSelfAtari(bd, Pt(3, 1), 2);
+    CheckSelfAtari(bd, Pt(6, 9), 1);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(2, 2)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(5, 1)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 1)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(1, 9)));
+
+    bd.SetToPlay(SG_WHITE);
+    CheckSelfAtari(bd, Pt(7, 1), 1);
+    CheckSelfAtari(bd, Pt(9, 1), 1);
+    CheckSelfAtari(bd, Pt(3, 5), 5);
+    CheckSelfAtari(bd, Pt(8, 5), 5);
+    CheckSelfAtari(bd, Pt(8, 6), 5);
+    CheckSelfAtari(bd, Pt(2, 7), 3);
+    CheckSelfAtari(bd, Pt(4, 7), 2);
+    CheckSelfAtari(bd, Pt(3, 9), 3);
+    CheckSelfAtari(bd, Pt(9, 9), 3);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(5, 1)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(3, 1)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(1, 1)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(3, 4)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(6, 9)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(6, 8)));
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_2)
+{
+    // ko and capture - recapture cases
+    // . O @ . . . . . . 9
+    // O @ . . . @ @ O . 8
+    // @ . . . @ O . . O 7
+    // . . O @ . @ @ O . 6
+    // . O @ . @ O . . . 5
+    // . . O @ . @ @ O . 4
+    // . . . . . . . . . 3
+    // @ O . . . . . O @ 2
+    // . @ O . . . O . O 1
+    // 1 2 3 4 5 6 7 8 9
+
+    GoSetup setup;
+    setup.AddBlack(Pt(2, 1));
+    setup.AddBlack(Pt(1, 2));
+    setup.AddBlack(Pt(9, 2));
+    setup.AddBlack(Pt(4, 4));
+    setup.AddBlack(Pt(6, 4));
+    setup.AddBlack(Pt(7, 4));
+    setup.AddBlack(Pt(3, 5));
+    setup.AddBlack(Pt(5, 5));
+    setup.AddBlack(Pt(4, 6));
+    setup.AddBlack(Pt(6, 6));
+    setup.AddBlack(Pt(7, 6));
+    setup.AddBlack(Pt(1, 7));
+    setup.AddBlack(Pt(5, 7));
+    setup.AddBlack(Pt(2, 8));
+    setup.AddBlack(Pt(6, 8));
+    setup.AddBlack(Pt(7, 8));
+    setup.AddBlack(Pt(3, 9));
+    
+    setup.AddWhite(Pt(3, 1));
+    setup.AddWhite(Pt(7, 1));
+    setup.AddWhite(Pt(9, 1));
+    setup.AddWhite(Pt(2, 2));
+    setup.AddWhite(Pt(8, 2));
+    setup.AddWhite(Pt(3, 4));
+    setup.AddWhite(Pt(8, 4));
+    setup.AddWhite(Pt(2, 5));
+    setup.AddWhite(Pt(6, 5));
+    setup.AddWhite(Pt(3, 6));
+    setup.AddWhite(Pt(8, 6));
+    setup.AddWhite(Pt(6, 7));
+    setup.AddWhite(Pt(9, 7));
+    setup.AddWhite(Pt(1, 8));
+    setup.AddWhite(Pt(8, 8));
+    setup.AddWhite(Pt(2, 9));
+    
+    GoBoard bd(9, setup);
+
+    bd.SetToPlay(SG_BLACK);
+    CheckSelfAtari(bd, Pt(1, 1), 3);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(8, 1))); // ko
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(1, 9))); // capture 2
+
+    bd.SetToPlay(SG_WHITE);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(1, 1))); // ko
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(4, 5))); // ko
+    CheckSelfAtari(bd, Pt(7, 5), 2);
+    CheckSelfAtari(bd, Pt(7, 7), 2); // recapture situation
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_3)
+{
+    // sacrifice moves
+    // O . @ O . O @ . . 9
+    // @ @ @ O . O @ @ @ 8
+    // O O O . . O O O O 7
+    // @ O . . . . @ @ @ 6
+    // @ O . . . . @ O O 5
+    // . @ . . . . @ O O 4
+    // @ . . . . . @ @ O 3
+    // . . . . . . . O . 2
+    // . . . . . . . . O 1
+    // 1 2 3 4 5 6 7 8 9
+
+    GoSetup setup;
+    setup.AddBlack(Pt(1, 3));
+    setup.AddBlack(Pt(7, 3));
+    setup.AddBlack(Pt(8, 3));
+    setup.AddBlack(Pt(2, 4));
+    setup.AddBlack(Pt(7, 4));
+    setup.AddBlack(Pt(1, 5));
+    setup.AddBlack(Pt(7, 5));
+    setup.AddBlack(Pt(1, 6));
+    setup.AddBlack(Pt(7, 6));
+    setup.AddBlack(Pt(8, 6));
+    setup.AddBlack(Pt(9, 6));
+    setup.AddBlack(Pt(1, 8));
+    setup.AddBlack(Pt(2, 8));
+    setup.AddBlack(Pt(3, 8));
+    setup.AddBlack(Pt(7, 8));
+    setup.AddBlack(Pt(8, 8));
+    setup.AddBlack(Pt(9, 8));
+    setup.AddBlack(Pt(3, 9));
+    setup.AddBlack(Pt(7, 9));
+    
+    setup.AddWhite(Pt(9, 1));
+    setup.AddWhite(Pt(8, 2));
+    setup.AddWhite(Pt(9, 3));
+    setup.AddWhite(Pt(8, 4));
+    setup.AddWhite(Pt(9, 4));
+    setup.AddWhite(Pt(2, 5));
+    setup.AddWhite(Pt(8, 5));
+    setup.AddWhite(Pt(9, 5));
+    setup.AddWhite(Pt(2, 6));
+    setup.AddWhite(Pt(1, 7));
+    setup.AddWhite(Pt(2, 7));
+    setup.AddWhite(Pt(3, 7));
+    setup.AddWhite(Pt(6, 7));
+    setup.AddWhite(Pt(7, 7));
+    setup.AddWhite(Pt(8, 7));
+    setup.AddWhite(Pt(9, 7));
+    setup.AddWhite(Pt(4, 8));
+    setup.AddWhite(Pt(6, 8));
+    setup.AddWhite(Pt(1, 9));
+    setup.AddWhite(Pt(4, 9));
+    setup.AddWhite(Pt(6, 9));
+    
+    GoBoard bd(9, setup);
+
+    bd.SetToPlay(SG_BLACK);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 2))); // allow capture
+    CheckSelfAtari(bd, Pt(2, 9), 5); // capture 1 within eye, still in atari
+    CheckSelfAtari(bd, Pt(8, 9), 5);
+    CheckSelfAtari(bd, Pt(9, 9), 5);
+    bd.SetToPlay(SG_WHITE);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(1, 4))); // allow capture
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 2)));
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(2, 9)));
+    //BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(8, 9))); // atari on opp.
+    //BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 9))); // atari on opp.
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore)
