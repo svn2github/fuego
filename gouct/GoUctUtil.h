@@ -354,7 +354,7 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
     if (REMOVE_SELF_ATARI)
     {
         int nuStones = 0;
-        if (   GoBoardUtil::SelfAtari(bd, p, nuStones, true)
+        if (   GoBoardUtil::SelfAtari(bd, p, nuStones)
             && nuStones > SELF_ATARI_LIMIT
             // todo: check for nakade shapes here.
            )
