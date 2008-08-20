@@ -3,7 +3,7 @@
 
 FUEGO="../../build/gmake/build/release/fuego"
 DEFAULT_NAME=Fuego9
-DEFAULT_DESCRIPTION="Computer player [1d?] (http://fuego.sf.net)"
+DEFAULT_DESCRIPTION=""
 # Don't allow handicap
 NOHANDICAP_OPTION=-nohandicap
 

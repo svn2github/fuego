@@ -3,7 +3,7 @@
 
 FUEGO="../../build/gmake/build/release/fuego"
 DEFAULT_NAME=Fuego
-DEFAULT_DESCRIPTION="Computer player [6k?] (http://fuego.sf.net)"
+DEFAULT_DESCRIPTION=""
 # Don't allow handicap
 # (pondering does not work yet, if setup or handicap during a game)
 NOHANDICAP_OPTION=-nohandicap
