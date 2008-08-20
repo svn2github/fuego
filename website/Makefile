@@ -1,6 +1,8 @@
 FILES= \
 favicon.ico \
-go.jpg \
+fuego-screenshot.html \
+fuego-screenshot.jpg \
+fuego-screenshot-thumb.jpg \
 index.html
 
 copy:
