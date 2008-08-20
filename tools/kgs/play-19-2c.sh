@@ -2,8 +2,8 @@
 # Script for playing Fuego on 19x19 KGS on a machine with 2 cores / 2 GB
 
 FUEGO="../../build/gmake/build/release/fuego"
-DEFAULT_NAME=Fuego
-DEFAULT_DESCRIPTION=""
+NAME=Fuego
+DESCRIPTION=""
 # Don't allow handicap
 # (pondering does not work yet, if setup or handicap during a game)
 NOHANDICAP_OPTION=-nohandicap
@@ -33,16 +33,6 @@ if [ $# -gt 0 ]; then
 fi
 
 
-echo "Enter KGS name (default=$DEFAULT_NAME):"
-read NAME
-if [[ "$NAME" == "" ]]; then
-    NAME="$DEFAULT_NAME"
-fi
-echo "Enter KGS description (default=$DEFAULT_DESCRIPTION):"
-read DESCRIPTION
-if [[ "$DESCRIPTION" == "" ]]; then
-    DESCRIPTION="$DEFAULT_DESCRIPTION"
-fi
 echo "Enter KGS password for $NAME:"
 read PASSWORD
 
