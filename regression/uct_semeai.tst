@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Semeai tests for GoUctGlobalSearchPlayer.
+# Semeai tests.
 #-----------------------------------------------------------------------------
 
 uct_param_player max_games 50000
@@ -36,12 +36,12 @@ loadsgf sgf/games/2007/CGOS/196322-variation.1.sgf 33
 
 loadsgf sgf/games/2007/CGOS/196322-variation.1.sgf 35
 60 reg_genmove b
-#? [J4|F3|G1|G4]
+#? [J4|F3|G1|G4]*
 # maybe even more moves work.
 
 loadsgf sgf/games/2007/CGOS/194557.sgf 43
 70 reg_genmove b
-#? [G5|G1]
+#? [G5|G1]*
 # H3 loses quickly. G5 is much more complicated, and probably good for B.
 # G1 probably works but did not research in detail.
 
@@ -119,7 +119,7 @@ loadsgf sgf/games/2008/CGOS/249009.sgf 59
 
 loadsgf sgf/games/2008/CGOS/248559.sgf 47
 250 reg_genmove b
-#? [G1]
+#? [G1]*
 # win semeai - good ko for us
 
 260 sg_compare_float 0.5 uct_value
@@ -128,7 +128,7 @@ loadsgf sgf/games/2008/CGOS/248559.sgf 47
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 36
 270 reg_genmove w
-#? [A7|A8|A9|G9]*
+#? [A7|A8|A9|G9]
 # win semeai - 3 vs 3 liberties
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 37
@@ -189,7 +189,7 @@ reg_genmove w
 
 loadsgf sgf/semeai/semeai-eval.1.sgf 1
 400 reg_genmove b
-#? [A4]
+#? [A4]*
 
 410 sg_compare_float 0.6 uct_value
 #? [1]*
@@ -200,7 +200,7 @@ loadsgf sgf/semeai/semeai-eval.1.sgf 3
 #? [H2]
 
 430 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B won, but current program is unsure about bottom right - score around 0.5.
 
 loadsgf sgf/semeai/semeai-eval.1.sgf 5
@@ -210,6 +210,7 @@ loadsgf sgf/semeai/semeai-eval.1.sgf 5
 450 sg_compare_float 0.6 uct_value
 #? [1]*
 # B won, but current program is unsure about bottom right - score around 0.5.
+# unstable value, sometimes solved
 
 loadsgf sgf/semeai/semeai-eval.1.sgf 7
 460 reg_genmove b
@@ -218,6 +219,7 @@ loadsgf sgf/semeai/semeai-eval.1.sgf 7
 470 sg_compare_float 0.6 uct_value
 #? [1]*
 # B won, but current program is unsure about bottom right - score around 0.5.
+# unstable value, sometimes solved
 
 loadsgf sgf/games/2008/KGS/7/27/Yuusen-Fuego9-3.sgf 33
 480 reg_genmove b
@@ -226,6 +228,262 @@ loadsgf sgf/games/2008/KGS/7/27/Yuusen-Fuego9-3.sgf 33
 
 loadsgf sgf/games/2008/CGOS/365007-variation.sgf 1
 490 reg_genmove w
-#? [H2|J1]*
+#? [H2|J1]
 # W can make big seki. Unstable search - why does fuego often not see this???
+
+#-----------------------------------------------------------------------------
+# Systematic tests with simple semeai. In each case, the right semeai move
+# is 1 point better than the obvious capture/escape move, and wins the game.
+
+loadsgf sgf/semeai-exact/semeai-plain-2L.sgf 1
+1000 reg_genmove b
+#? [C8|C9]
+
+1010 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-2L.sgf 3
+1020 reg_genmove b
+#? [C9]
+
+1030 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-2L.sgf 5
+1040 reg_genmove b
+#? [F9]
+
+1050 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-3L.sgf 1
+1060 reg_genmove b
+#? [C7|C8|C9]
+
+1070 sg_compare_float 0.8 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-3L.sgf 3
+1080 reg_genmove b
+#? [C8|C9]
+
+1090 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-3L.sgf 5
+1100 reg_genmove b
+#? [C9]
+
+1110 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-3L.sgf 7
+1120 reg_genmove b
+#? [F9]
+
+1130 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 1
+1140 reg_genmove b
+#? [C6|C7|C8|C9]
+
+1150 sg_compare_float 0.8 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 3
+1160 reg_genmove b
+#? [C7|C8|C9]
+
+1170 sg_compare_float 0.8 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 5
+1180 reg_genmove b
+#? [C8|C9]
+
+1190 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 7
+1200 reg_genmove b
+#? [C9]
+
+1210 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 9
+1220 reg_genmove b
+#? [F9]
+
+1230 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-5L.sgf 1
+1240 reg_genmove b
+#? [C5|C6|C7|C8|C9]
+
+1250 sg_compare_float 0.5 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-5L.sgf 3
+1260 reg_genmove b
+#? [C6|C7|C8|C9]
+
+1270 sg_compare_float 0.6 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-5L.sgf 5
+1280 reg_genmove b
+#? [C7|C8|C9]
+
+1290 sg_compare_float 0.8 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-5L.sgf 7
+1300 reg_genmove b
+#? [C8|C9]
+
+1310 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-5L.sgf 9
+1320 reg_genmove b
+#? [C9]
+
+1330 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-5L.sgf 11
+1340 reg_genmove b
+#? [F9]
+
+1350 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 1
+1360 reg_genmove b
+#? [C4|C5|C6|C7|C8|C9]
+
+1370 sg_compare_float 0.6 uct_value
+#? [1]*
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 3
+1380 reg_genmove b
+#? [C5|C6|C7|C8|C9]
+
+1390 sg_compare_float 0.5 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 5
+1400 reg_genmove b
+#? [C6|C7|C8|C9]
+
+1410 sg_compare_float 0.6 uct_value
+#? [1]*
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 7
+1420 reg_genmove b
+#? [C7|C8|C9]
+
+1430 sg_compare_float 0.7 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 9
+1440 reg_genmove b
+#? [C8|C9]
+
+1450 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 11
+1460 reg_genmove b
+#? [C9]
+
+1470 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 13
+1480 reg_genmove b
+#? [F9]
+
+1490 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-0ext.sgf 1
+1500 reg_genmove b
+#? [E9]
+
+1510 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-0ext.sgf 3
+1520 reg_genmove b
+#? [C9]
+
+1530 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-0ext.sgf 5
+1540 reg_genmove b
+#? [G9]
+
+1550 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-1+3ext.sgf 1
+1560 reg_genmove b
+#? [A9|E9]*
+
+1570 sg_compare_float 0.5 uct_value
+#? [1]*
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-1+3ext.sgf 3
+1580 reg_genmove b
+#? [E9]
+
+1590 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-1+3ext.sgf 5
+1600 reg_genmove b
+#? [C9]
+
+1610 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-1eye-1shared-1+3ext.sgf 7
+1620 reg_genmove b
+#? [J9]
+
+1630 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-2pteye-1shared-0+3ext.sgf 1
+1640 reg_genmove b
+#? [B9|C9|E9]
+
+1650 sg_compare_float 0.8 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-2pteye-1shared-0+3ext.sgf 3
+1660 reg_genmove b
+#? [E9]
+
+1670 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-2pteye-1shared-0+3ext.sgf 5
+1680 reg_genmove b
+#? [C9]
+
+1690 sg_compare_float 0.9 uct_value
+#? [1]
+
+loadsgf sgf/semeai-exact/semeai-2pteye-1shared-0+3ext.sgf 7
+1700 reg_genmove b
+#? [J9]
+
+1710 sg_compare_float 0.9 uct_value
+#? [1]
 
