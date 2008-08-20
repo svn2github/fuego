@@ -406,8 +406,7 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
         Debug(state,
-              str(format("SgUctSearch::PlayInTree: "
-                         "Maximum tree size %1% reached")
+              str(format("SgUctSearch: maximum tree size %1% reached")
                   % m_tree.MaxNodes()));
         isTreeOutOfMem = true;
         return;
@@ -995,7 +994,7 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
             m_tree.ApplyFilter(0, m_tree.Root(), rootFilter);
         else
             SgWarning() <<
-                "SgUctSearch::StartSearch: "
+                "SgUctSearch: "
                 "root filter not applied (tree reached maximum size)\n";
     }
     m_statistics.Clear();
