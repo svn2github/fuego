@@ -540,13 +540,17 @@ public:
         @param rootFilter Moves to filter at the root node
         @param initTree The tree to initialize the search with. 0 for no
         initialization. The trees are actually swapped, not copied.
+        @param earlyAbort Abort search after half of the resources (max time,
+        max nodes) are spent, if the value is above a threshold.
+        @param earlyAbortThreshold See parameter earlyAbort
         @return The value of the root position.
     */
     float Search(std::size_t maxGames, double maxTime,
                  std::vector<SgMove>& sequence,
                  const std::vector<SgMove>& rootFilter
                  = std::vector<SgMove>(),
-                 SgUctTree* initTree = 0);
+                 SgUctTree* initTree = 0, bool earlyAbort = false,
+                 float earlyAbortThreshold = 0.9);
 
     /** Do a one-ply Monte-Carlo search instead of the UCT search.
         @param maxGames
@@ -596,6 +600,9 @@ public:
         This function is not thread-safe.
     */
     std::string LastGameSummaryLine() const;
+
+    /** See parameter earlyAbort in Search() */
+    bool WasEarlyAbort() const;
 
     const SgUctTree& Tree() const;
 
@@ -846,6 +853,12 @@ private:
     /** See NoBiasTerm() */
     bool m_noBiasTerm;
 
+    /** See parameter earlyAbort in Search() */
+    bool m_earlyAbort;
+
+    /** See parameter earlyAbort in Search() */
+    bool m_wasEarlyAbort;
+
     /** See SgUctMoveSelect */
     SgUctMoveSelect m_moveSelect;
 
@@ -903,6 +916,9 @@ private:
     /** m_raveWeightInitial / m_raveWeightFinal precomputed for efficiency */
     float m_raveWeightParam2;
 
+    /** See parameter earlyAbortThreshold in Search() */
+    float m_earlyAbortThreshold;
+
     /** Time limit for current search. */
     double m_maxTime;
 
@@ -949,6 +965,8 @@ private:
     void Debug(const SgUctThreadState& state, const std::string& textLine);
 
     void DeleteThreads();
+
+    bool EarlyAbort() const;
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node,
                     bool& isTreeOutOfMem, bool& deepenTree);
@@ -1174,6 +1192,11 @@ inline SgUctThreadState& SgUctSearch::ThreadState(int i) const
 inline const SgUctTree& SgUctSearch::Tree() const
 {
     return m_tree;
+}
+
+inline bool SgUctSearch::WasEarlyAbort() const
+{
+    return m_wasEarlyAbort;
 }
 
 //----------------------------------------------------------------------------

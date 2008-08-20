@@ -139,6 +139,17 @@ public:
     /** See AutoParam() */
     void SetAutoParam(bool enable);
 
+    /** Pass early.
+        Aborts search early, if value is above 1 - ResignThreshold(), and
+        performs a second search to see, if it is still a win and all points
+        are safe (using territory statistics) after playing a pass. If this
+        is true, it plays a pass.
+    */
+    bool EarlyPass() const;
+
+    /** See EarlyPass() */
+    void SetEarlyPass(bool enable);
+
     /** Ignore time settings of the game.
         Ignore time record given to GenMove() and only obeys maximum
         number of games and maximum time. Default is true.
@@ -264,6 +275,9 @@ private:
     /** See ReuseSubtree() */
     bool m_reuseSubtree;
 
+    /** See EarlyPass() */
+    bool m_earlyPass;
+
     /** See MaxTime() */
     double m_maxTime;
 
@@ -298,6 +312,8 @@ private:
 
     SgMove GenMovePlayoutPolicy(SgBlackWhite toPlay);
 
+    bool DoEarlyPassSearch(size_t maxGames, double maxTime, SgPoint& move);
+
     SgPoint DoSearch(SgBlackWhite toPlay, double maxTime,
                      bool isDuringPondering);
 
@@ -323,6 +339,16 @@ GoUctPlayer::GlobalSearch() const
     return m_search;
 }
 
+inline bool GoUctPlayer::EarlyPass() const
+{
+    return m_earlyPass;
+}
+
+inline bool GoUctPlayer::EnablePonder() const
+{
+    return m_enablePonder;
+}
+
 inline bool GoUctPlayer::IgnoreClock() const
 {
     return m_ignoreClock;
@@ -343,11 +369,6 @@ inline std::size_t GoUctPlayer::MaxNodes() const
 inline double GoUctPlayer::MaxTime() const
 {
     return m_maxTime;
-}
-
-inline bool GoUctPlayer::EnablePonder() const
-{
-    return m_enablePonder;
 }
 
 inline GoUctGlobalSearchPrior GoUctPlayer::PriorKnowledge() const
@@ -385,6 +406,16 @@ inline void GoUctPlayer::SetAutoParam(bool enable)
     m_autoParam = enable;
 }
 
+inline void GoUctPlayer::SetEarlyPass(bool enable)
+{
+    m_earlyPass = enable;
+}
+
+inline void GoUctPlayer::SetEnablePonder(bool enable)
+{
+    m_enablePonder = enable;
+}
+
 inline void GoUctPlayer::SetIgnoreClock(bool enable)
 {
     m_ignoreClock = enable;
@@ -398,11 +429,6 @@ inline void GoUctPlayer::SetMaxGames(std::size_t maxGames)
 inline void GoUctPlayer::SetMaxTime(double maxTime)
 {
     m_maxTime = maxTime;
-}
-
-inline void GoUctPlayer::SetEnablePonder(bool enable)
-{
-    m_enablePonder = enable;
 }
 
 inline void GoUctPlayer::SetUseRootFilter(bool enable)
