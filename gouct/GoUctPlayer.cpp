@@ -162,6 +162,7 @@ bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
             for (SgNb4Iterator it2(*it); it2; ++it2)
                 if (! bd.IsBorder(*it2))
                 {
+                    float mean = territory[*it2].Mean();
                     if (mean < threshold)
                         isSafeToPlayAdj = true;
                     if (mean > 1 - threshold)
