@@ -8,7 +8,7 @@ uct_fight_on.tst
 uct_ko.tst
 uct_life_and_death.tst
 uct_move.tst
-uct_pass.tst
+uct_pass_basics.tst
 uct_playout.tst
 uct_rootfilter.tst
 uct_seki.tst
