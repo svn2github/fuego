@@ -11,6 +11,33 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
+namespace {
+
+bool SetsAtari(const GoBoard& bd, SgPoint p)
+{
+    SG_ASSERT(bd.IsEmpty(p)); // Already checked
+    SgBlackWhite opp = SgOppBW(bd.ToPlay());
+    if (bd.NumNeighbors(p, opp) == 0)
+        return false;
+    if (! bd.IsBorder(p + SG_NS) && bd.GetColor(p + SG_NS) == opp
+        && bd.NumLiberties(p + SG_NS) == 2)
+        return true;
+    if (! bd.IsBorder(p - SG_NS) && bd.GetColor(p - SG_NS) == opp
+        && bd.NumLiberties(p - SG_NS) == 2)
+        return true;
+    if (! bd.IsBorder(p + SG_WE) && bd.GetColor(p + SG_WE) == opp
+        && bd.NumLiberties(p + SG_WE) == 2)
+        return true;
+    if (! bd.IsBorder(p - SG_WE) && bd.GetColor(p - SG_WE) == opp
+        && bd.NumLiberties(p - SG_WE) == 2)
+        return true;
+    return false;
+}
+
+} // namespace
+
+//----------------------------------------------------------------------------
+
 GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
                               const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
@@ -33,16 +60,24 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     GoUctPlayoutPolicyType type = m_policy.MoveType();
     const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
     SgPointSet patternMatch;
-    bool anyPatternMatch = false;
+    SgPointSet setsAtari;
+    bool anyHeuristic = false;
     for (GoBoard::Iterator it(m_bd); it; ++it)
-        if (m_bd.IsEmpty(*it) && patterns.MatchAny(*it))
+        if (m_bd.IsEmpty(*it))
         {
-            patternMatch.Include(*it);
-            anyPatternMatch = true;
+            if (patterns.MatchAny(*it))
+            {
+                patternMatch.Include(*it);
+                anyHeuristic = true;
+            }
+            if (SetsAtari(m_bd, *it))
+            {
+                setsAtari.Include(*it);
+                anyHeuristic = true;
+            }
         }
 
-
-    if (type == GOUCT_RANDOM && ! anyPatternMatch)
+    if (type == GOUCT_RANDOM && ! anyHeuristic)
     {
         Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -50,13 +85,13 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it))
+            if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
                 Initialize(*it, 0.1, 9);
             else
                 m_counts[*it] = 0; // Don't initialize
         }
     }
-    else if (type == GOUCT_RANDOM && anyPatternMatch)
+    else if (type == GOUCT_RANDOM && anyHeuristic)
     {
         Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -64,10 +99,12 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it))
+            if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
                 Initialize(*it, 0.1, 9);
-            else if (patternMatch[*it])
+            else if (setsAtari[*it])
                 Initialize(*it, 1.0, 3);
+            else if (patternMatch[*it])
+                Initialize(*it, 0.9, 3);
             else
                 Initialize(*it, 0.5, 3);
         }
@@ -80,9 +117,11 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it))
+            if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
                 Initialize(*it, 0.1, 9);
-            else if (patterns.MatchAny(*it))
+            else if (setsAtari[*it])
+                Initialize(*it, 0.8, 9);
+            else if (patternMatch[*it])
                 Initialize(*it, 0.6, 9);
             else
                 Initialize(*it, 0.4, 9);
