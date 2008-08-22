@@ -169,7 +169,17 @@ bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
                         isSafeOppAdj = true;
                 }
             if (isSafeToPlayAdj && isSafeOppAdj)
-                move = *it;
+            {
+                if (bd.IsLegal(*it))
+                    move = *it;
+                else
+                {
+                    SgDebug() <<
+                        "GoUctPlayer: no early pass possible"
+                        " (neutral illegal)\n";
+                    return false;
+                }
+            }
             else
             {
                 SgDebug()
