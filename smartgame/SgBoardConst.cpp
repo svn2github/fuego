@@ -28,7 +28,7 @@ SgBoardConst::BoardConstImpl::BoardConstImpl(SgGrid size)
         m_line[line].Clear();
 
     // Set up values for points on the board.
-    int iterCount = -1;
+    m_boardIterEnd = m_boardIter;
     SgGrid halfSize = (m_size + 1) / 2;
     for (SgGrid row = 1; row <= m_size; ++row)
     {
@@ -62,7 +62,7 @@ SgBoardConst::BoardConstImpl::BoardConstImpl(SgGrid size)
             if (row < m_size)
                 m_neighbors[p][nuNb++] = Pt(col, row + 1);
             m_neighbors[p][nuNb] = SG_ENDPOINT;
-            m_boardIter[++iterCount] = p;
+            *(m_boardIterEnd++) = p;
         }
     }
 
@@ -127,7 +127,7 @@ SgBoardConst::BoardConstImpl::BoardConstImpl(SgGrid size)
     }
 
     // Terminate board iterator.
-    m_boardIter[++iterCount] = SG_ENDPOINT;
+    *m_boardIterEnd = SG_ENDPOINT;
 
     // Set up line iterators.
     {

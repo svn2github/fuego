@@ -420,10 +420,10 @@ public:
 
     /** Iterate through all points on the given board. */
     class Iterator
-        : public SgPointIterator
+        : public SgPointRangeIterator
     {
     public:
-        Iterator(const GoUctBoard& board);
+        Iterator(const GoUctBoard& bd);
     };
 
     /** Iterate through all the liberties of a block.
@@ -493,8 +493,9 @@ inline std::ostream& operator<<(std::ostream& out, const GoUctBoard& bd)
     return GoWriteBoard(out, bd);
 }
 
-inline GoUctBoard::Iterator::Iterator(const GoUctBoard& board)
-    : SgPointIterator(board.BoardConst().BoardIterAddress())
+inline GoUctBoard::Iterator::Iterator(const GoUctBoard& bd)
+    : SgPointRangeIterator(bd.BoardConst().BoardIterAddress(),
+                           bd.BoardConst().BoardIterEnd())
 {
 }
 

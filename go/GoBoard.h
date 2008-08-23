@@ -1042,10 +1042,10 @@ public:
 
     /** Iterate through all points. */
     class Iterator
-        : public SgPointIterator
+        : public SgPointRangeIterator
     {
     public:
-        Iterator(const GoBoard& board);
+        Iterator(const GoBoard& bd);
     };
 
     /** Iterate through all the liberties of a block.
@@ -1154,8 +1154,9 @@ inline GoBoard::StoneIterator::operator bool() const
     return m_it;
 }
 
-inline GoBoard::Iterator::Iterator(const GoBoard& board)
-    : SgPointIterator(board.BoardConst().BoardIterAddress())
+inline GoBoard::Iterator::Iterator(const GoBoard& bd)
+    : SgPointRangeIterator(bd.BoardConst().BoardIterAddress(),
+                           bd.BoardConst().BoardIterEnd())
 {
 }
 

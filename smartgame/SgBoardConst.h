@@ -101,13 +101,12 @@ public:
     */
     const SgPoint* NeighborIterAddress(SgPoint p) const;
 
-    /**  */
     const SgPoint* BoardIterAddress() const;
 
-    /**  */
+    const SgPoint* BoardIterEnd() const;
+
     const SgPoint* LineIterAddress(SgGrid line) const;
 
-    /**  */
     const SgPoint* CornerIterAddress() const;
 
 private:
@@ -146,6 +145,8 @@ private:
         SgPoint* m_lineIterAddress[(SG_MAX_SIZE / 2) + 1];
 
         SgPoint m_boardIter[SG_MAX_ONBOARD + 1];
+
+        SgPoint* m_boardIterEnd;
 
         SgPoint m_lineIter[SG_MAX_SIZE * SG_MAX_SIZE + (SG_MAX_SIZE / 2) + 1];
 
@@ -239,7 +240,12 @@ inline int SgBoardConst::LastBoardPoint() const
 
 inline const SgPoint* SgBoardConst::BoardIterAddress() const
 {
-    return &m_const->m_boardIter[0];
+    return m_const->m_boardIter;
+}
+
+inline const SgPoint* SgBoardConst::BoardIterEnd() const
+{
+    return m_const->m_boardIterEnd;
 }
 
 inline const SgPoint* SgBoardConst::LineIterAddress(SgGrid line) const
@@ -249,7 +255,7 @@ inline const SgPoint* SgBoardConst::LineIterAddress(SgGrid line) const
 
 inline const SgPoint* SgBoardConst::CornerIterAddress() const
 {
-    return &m_const->m_cornerIter[0];
+    return m_const->m_cornerIter;
 }
 
 //----------------------------------------------------------------------------
