@@ -193,10 +193,10 @@ void GoRegionBoard::OnExecutedUncodedMove(int move, SgBlackWhite moveColor)
         m_stack.StartMoveInfo();
         if (move != SG_PASS)
         {
-            SG_ASSERT(! Board().LastMoveInfo(isSuicide));
+            SG_ASSERT(! Board().LastMoveInfo(GO_MOVEFLAG_SUICIDE));
             // can't handle yet,
             // should be forbidden anyway. AR: allowed in Chinese rules.
-            bool fWasCapture = Board().LastMoveInfo(isCapturing);
+            bool fWasCapture = Board().LastMoveInfo(GO_MOVEFLAG_CAPTURING);
 
             UpdateBlock(move, moveColor);
 

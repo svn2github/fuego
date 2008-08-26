@@ -270,12 +270,12 @@ void GoGtpEngine::CheckLegal(string message, SgBlackWhite color, SgPoint move,
             bd.Play(move, color);
             GoMoveInfo moveInfo = bd.GetLastMoveInfo();
             bd.Undo();
-            if (moveInfo.test(isIllegal))
+            if (moveInfo.test(GO_MOVEFLAG_ILLEGAL))
             {
                 illegal = true;
-                if (moveInfo.test(isSuicide))
+                if (moveInfo.test(GO_MOVEFLAG_SUICIDE))
                     reason = " (suicide)";
-                else if (moveInfo.test(isRepetition))
+                else if (moveInfo.test(GO_MOVEFLAG_REPETITION))
                 {
                     reason =
                         " (" + KoRuleToString(bd.Rules().GetKoRule()) + ")";

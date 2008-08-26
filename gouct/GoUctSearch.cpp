@@ -124,7 +124,7 @@ void GoUctState::Execute(SgMove move)
     GoRestoreKoRule restoreKoRule(m_bd);
     m_bd.Rules().SetKoRule(GoRules::SIMPLEKO);
     m_bd.Play(move);
-    SG_ASSERT(! m_bd.LastMoveInfo(isIllegal));
+    SG_ASSERT(! m_bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
 }
 
 void GoUctState::ExecutePlayout(SgMove move)

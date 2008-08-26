@@ -516,16 +516,16 @@ void GoBoardTest_Ko(bool allowKoRepetition, bool koModifiesHash)
         bd.Play(Pt(2, 1), SG_BLACK);
         if (i > 1)
         {
-            BOOST_CHECK(bd.LastMoveInfo(isRepetition));
-            BOOST_CHECK(bd.LastMoveInfo(isIllegal));
+            BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
+            BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
         }
         bd.Play(Pt(1, 1), SG_WHITE);
-        BOOST_CHECK(bd.LastMoveInfo(isRepetition));
+        BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
         if (! allowKoRepetition
             || (koModifiesHash && i > maxKoLevel))
-            BOOST_CHECK(bd.LastMoveInfo(isIllegal));
+            BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
         else
-            BOOST_CHECK(! bd.LastMoveInfo(isIllegal));
+            BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
         if (! allowKoRepetition)
             BOOST_CHECK_EQUAL(bd.KoLevel(), 0);
         else if (koModifiesHash && i >  maxKoLevel)
@@ -586,7 +586,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsCapturing_1)
     setup.AddWhite(Pt(1, 2));
     GoBoard bd(19, setup);
     bd.Play(Pt(2, 1), SG_WHITE);
-    BOOST_CHECK(bd.LastMoveInfo(isCapturing));
+    BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_CAPTURING));
 }
 
 /** Test that isCapturing flag is not set after suicide. */
@@ -597,16 +597,16 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsCapturing_2)
     setup.AddBlack(Pt(2, 1));
     GoBoard bd(19, setup);
     bd.Play(Pt(1, 1), SG_WHITE);
-    BOOST_CHECK(! bd.LastMoveInfo(isCapturing));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_CAPTURING));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal)
 {
     GoBoard bd;
     bd.Play(Pt(1, 1), SG_BLACK);
-    BOOST_CHECK(! bd.LastMoveInfo(isIllegal));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
     bd.Play(Pt(2, 2), SG_WHITE);
-    BOOST_CHECK(! bd.LastMoveInfo(isIllegal));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal_KoRepetition)
@@ -621,18 +621,18 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal_KoRepetition)
     bd.Play(Pt(1, 1), SG_BLACK);
     bd.Play(Pt(2, 1), SG_WHITE);
     // Check if move is illegal
-    BOOST_CHECK(bd.LastMoveInfo(isIllegal));
+    BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
     bd.Undo();
     // Check if move is still illegal after playing/undoing a different move
     bd.Play(Pt(5, 5), SG_WHITE);
     bd.Undo();
     bd.Play(Pt(2, 1), SG_WHITE);
-    BOOST_CHECK(bd.LastMoveInfo(isIllegal));
+    BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
     bd.Undo();
     // Check that move is legal if ko repetition allowed
     bd.AllowKoRepetition(true);
     bd.Play(Pt(2, 1), SG_WHITE);
-    BOOST_CHECK(! bd.LastMoveInfo(isIllegal));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal_Suicide)
@@ -643,31 +643,31 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal_Suicide)
     GoBoard bd(19, setup);
     bd.Rules().SetAllowSuicide(false);
     bd.Play(Pt(1, 1), SG_BLACK);
-    BOOST_CHECK(bd.LastMoveInfo(isIllegal));
+    BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsRepetition)
 {
     GoBoard bd;
     bd.Play(Pt(1, 1), SG_BLACK);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(Pt(1, 2), SG_WHITE);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(Pt(2, 2), SG_BLACK);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(Pt(2, 1), SG_WHITE);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(Pt(3, 1), SG_BLACK);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(SG_PASS, SG_WHITE);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(Pt(1, 1), SG_BLACK);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(SG_PASS, SG_BLACK);
     bd.Play(Pt(2, 1), SG_WHITE);
-    BOOST_CHECK(bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
     bd.Play(Pt(3, 2), SG_BLACK);
-    BOOST_CHECK(! bd.LastMoveInfo(isRepetition));
+    BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_REPETITION));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_Line_9)

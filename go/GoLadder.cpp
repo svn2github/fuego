@@ -639,11 +639,11 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
     bd.SetToPlay(SgOppBW(col));
     bool isProtected;
     if (! PlayIfLegal(bd, liberty))
-        isProtected = bd.LastMoveInfo(isSuicide);
+        isProtected = bd.LastMoveInfo(GO_MOVEFLAG_SUICIDE);
         // opponent cannot play there
     else
     {
-        if (bd.LastMoveInfo(isSuicide))
+        if (bd.LastMoveInfo(GO_MOVEFLAG_SUICIDE))
            isProtected = true;
         else
         {

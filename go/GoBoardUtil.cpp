@@ -534,7 +534,7 @@ bool GoBoardUtil::PlayIfLegal(GoBoard& bd, SgPoint p, SgBlackWhite player)
             return false;
     }
     bd.Play(p, player);
-    if (bd.LastMoveInfo(isIllegal))
+    if (bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL))
     {
         bd.Undo();
         return false;

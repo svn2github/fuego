@@ -47,23 +47,23 @@ const int GO_MAX_NUM_MOVES = (3 * SG_MAX_SIZE * SG_MAX_SIZE);
 enum GoMoveInfoFlag
 {
     /** The move was a repetition move. */
-    isRepetition,
+    GO_MOVEFLAG_REPETITION,
 
     /** The move caused self-removal of stones. */
-    isSuicide,
+    GO_MOVEFLAG_SUICIDE,
 
     /** The move captured one or more enemy stones. */
-    isCapturing,
+    GO_MOVEFLAG_CAPTURING,
 
     /** The move was illegal according to the current rules and allow ko
         settings.
     */
-    isIllegal,
+    GO_MOVEFLAG_ILLEGAL,
 
-    nuMoveInfoFlag
+    _GO_NU_MOVEFLAG
 };
 
-typedef std::bitset<nuMoveInfoFlag> GoMoveInfo;
+typedef std::bitset<_GO_NU_MOVEFLAG> GoMoveInfo;
 
 //----------------------------------------------------------------------------
 
@@ -1564,7 +1564,7 @@ inline bool GoBoard::IsLegal(int p, SgBlackWhite player) const
     // appears const to the client.
     GoBoard* bd = const_cast<GoBoard*>(this);
     bd->Play(p, player);
-    bool isLegal = ! LastMoveInfo(isIllegal);
+    bool isLegal = ! LastMoveInfo(GO_MOVEFLAG_ILLEGAL);
     bd->Undo();
     return isLegal;
 }
@@ -1597,7 +1597,7 @@ inline bool GoBoard::IsSuicide(SgPoint p) const
     SG_ASSERT(IsEmpty(p));
     GoBoard* bd = const_cast<GoBoard*>(this);
     bd->Play(p);
-    bool result = LastMoveInfo(isSuicide);
+    bool result = LastMoveInfo(GO_MOVEFLAG_SUICIDE);
     bd->Undo();
     return result;
 }

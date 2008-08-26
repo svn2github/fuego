@@ -327,7 +327,7 @@ void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::Generate(GoPointList& moves)
 
 template<class BOARD>
 GoUctPlayoutPolicy<BOARD>::GoUctPlayoutPolicy(const BOARD& bd,
-                                           const GoUctPlayoutPolicyParam& param)
+                                          const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_param(param),
       m_patterns(bd),

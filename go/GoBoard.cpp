@@ -139,7 +139,7 @@ bool GoBoard::CheckKo(SgBlackWhite player)
 {
     if (! FullBoardRepetition())
         return true;
-    m_moveInfo.set(isRepetition);
+    m_moveInfo.set(GO_MOVEFLAG_REPETITION);
     if (AnyRepetitionAllowed())
     {
         if (m_koLoser != SG_EMPTY && m_koLoser != player)
@@ -760,7 +760,7 @@ bool GoBoard::CheckSuicide(SgPoint p, StackEntry& entry)
     {
         entry.m_suicide = m_state.m_block[p];
         KillBlock(entry.m_suicide);
-        m_moveInfo.set(isSuicide);
+        m_moveInfo.set(GO_MOVEFLAG_SUICIDE);
         return m_rules.AllowSuicide();
     }
     return true;
@@ -798,7 +798,7 @@ void GoBoard::Play(SgPoint p, SgBlackWhite player)
     RemoveLibAndKill(p, opp, entry);
     if (! entry.m_killed.IsEmpty())
     {
-        m_moveInfo.set(isCapturing);
+        m_moveInfo.set(GO_MOVEFLAG_CAPTURING);
         // Repetition now possible, unless its the first play here
         m_state.m_isNewPosition = m_state.m_isNewPosition && wasFirstStone;
     }
@@ -812,7 +812,7 @@ void GoBoard::Play(SgPoint p, SgBlackWhite player)
     if (! wasFirstStone && ! IsNewPosition() && ! CheckKo(player))
         isLegal = false;
     if (! isLegal)
-        m_moveInfo.set(isIllegal);
+        m_moveInfo.set(GO_MOVEFLAG_ILLEGAL);
     // @see @ref sgboardhashhistory
     if (! m_capturedStones.IsEmpty() && m_koModifiesHash)
     {
