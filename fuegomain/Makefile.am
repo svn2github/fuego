@@ -5,6 +5,10 @@ FuegoMain.cpp \
 FuegoMainEngine.cpp \
 FuegoMainUtil.cpp
 
+noinst_HEADERS = \
+FuegoMainEngine.h \
+FuegoMainUtil.h
+
 fuego_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
 fuego_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB)
 

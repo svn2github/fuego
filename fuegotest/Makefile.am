@@ -4,6 +4,9 @@ fuego_test_SOURCES = \
 FuegoTestEngine.cpp \
 FuegoTestMain.cpp
 
+noinst_HEADERS = \
+FuegoTestEngine.h
+
 fuego_test_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
 fuego_test_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB)
 
