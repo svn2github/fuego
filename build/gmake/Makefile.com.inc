@@ -16,7 +16,7 @@ ifneq ($(shell echo __GNUC__ | $(CXX) -E -xc - | tail -n 1), 3)
 COMMON_CXXFLAGS += -Wextra
 endif
 DBG_CXXFLAGS += $(PROJ_DBG_CXXFLAGS) $(COMMON_CXXFLAGS) -g -D_DEBUG=1
-REL_CXXFLAGS += $(PROJ_REL_CXXFLAGS) $(COMMON_CXXFLAGS) -g -O3 -fno-math-errno -funroll-loops -DNDEBUG
+REL_CXXFLAGS += $(PROJ_REL_CXXFLAGS) $(COMMON_CXXFLAGS) -g -O3 -DNDEBUG
 
 # C compiler and flags.
 
