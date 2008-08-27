@@ -12,6 +12,13 @@
 
 //----------------------------------------------------------------------------
 
+// Used by GNU Autotools
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+//----------------------------------------------------------------------------
+
 // Check which OS we use. Some stuff such as I/O, UI or profiling depends
 // on this if one of the symbols is already predefined by a compile switch
 // or by a previous header file, then leave it as it is.
