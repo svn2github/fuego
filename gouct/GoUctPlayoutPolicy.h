@@ -23,6 +23,11 @@ public:
     */
     bool m_statisticsEnabled;
 
+    /** See GoUctPureRandomGenerator::GenerateFillboardMove.
+        Default is 0
+    */
+    int m_fillboardTries;
+
     GoUctPlayoutPolicyParam();
 };
 
@@ -31,6 +36,8 @@ public:
 /** Move types used in GoUctPlayoutPolicy. */
 enum GoUctPlayoutPolicyType
 {
+    GOUCT_FILLBOARD,
+
     GOUCT_ATARI_CAPTURE,
 
     GOUCT_ATARI_DEFEND,
@@ -510,9 +517,19 @@ SG_ATTR_FLATTEN SgPoint GoUctPlayoutPolicy<BOARD>::GenerateMove()
 {
     m_moves.Clear();
     m_checked = false;
+
     SgPoint mv = SG_NULLMOVE;
+
+    if (m_param.m_fillboardTries > 0)
+    {
+        m_moveType = GOUCT_FILLBOARD;
+        mv = m_pureRandomGenerator.GenerateFillboardMove(
+                                                     m_param.m_fillboardTries);
+    }
+
     m_lastMove = m_bd.GetLastMove();
-    if (   ! SgIsSpecialMove(m_lastMove) // skip if Pass or Null
+    if (mv == SG_NULLMOVE
+        && ! SgIsSpecialMove(m_lastMove) // skip if Pass or Null
         && ! m_bd.IsEmpty(m_lastMove) // skip if move was suicide
        )
     {

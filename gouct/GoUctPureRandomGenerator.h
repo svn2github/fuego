@@ -47,13 +47,32 @@ public:
     */
     SgPoint Generate();
 
+    /** Generate a move using the fillboard heuristic.
+        Tries @c numberTries times to select a point on the board and
+        returns it, if it is empty and all adjacent and diagonal neighbors are
+        empty. Otherwise it returns SG_NULLMOVE. Using this heuristic before
+        any other heuristics is helpful to increase playout diversity on large
+        boards. See section 6.1 of:
+        Chatriot, Gelly, Hoock, Perez, Rimmel, Teytaud:
+        <a href="http://www.lri.fr/~teytaud/eg.pdf">
+        Combining expert, offline, transient and online learning in
+        Monte-Carlo exploration</a>
+     */
+    SgPoint GenerateFillboardMove(int numberTries);
+
 private:
     const BOARD& m_bd;
+
+    float m_invNuPoints;
+
+    float m_nuEmptyFloat;
 
     SgRandom& m_random;
 
     /** Points that are potentially empty. */
     std::vector<SgPoint> m_candidates;
+
+    bool Empty3x3(SgPoint p) const;
 
     void CheckConsistency() const;
 
@@ -103,6 +122,14 @@ inline void GoUctPureRandomGenerator<BOARD>::CheckConsistency() const
 }
 
 template<class BOARD>
+inline bool GoUctPureRandomGenerator<BOARD>::Empty3x3(SgPoint p)
+    const
+{
+    return (m_bd.NumEmptyNeighbors(p) == 4
+            && m_bd.NumEmptyDiagonals(p) == 4);
+}
+
+template<class BOARD>
 inline SgPoint GoUctPureRandomGenerator<BOARD>::Generate()
 {
     CheckConsistency();
@@ -131,8 +158,56 @@ inline SgPoint GoUctPureRandomGenerator<BOARD>::Generate()
 }
 
 template<class BOARD>
+inline SgPoint GoUctPureRandomGenerator<BOARD>::GenerateFillboardMove(
+                                                              int numberTries)
+{
+    float effectiveTries = numberTries * m_nuEmptyFloat * m_invNuPoints;
+    size_t i = m_candidates.size();
+    while (effectiveTries > 1.f)
+    {
+        if (i == 0)
+            return SG_NULLMOVE;
+        --i;
+        SgPoint p = m_candidates[i];
+        if (! m_bd.IsEmpty(p))
+        {
+            m_candidates[i] = m_candidates[m_candidates.size() - 1];
+            m_candidates.pop_back();
+            continue;
+        }
+        if (Empty3x3(p))
+            return p;
+        effectiveTries -= 1.f;
+    }
+    // Remaning fractional number of tries
+    if (m_random.Int(100) > 100 * effectiveTries)
+        return SG_NULLMOVE;
+    while (true)
+    {
+        if (i == 0)
+            break;
+        --i;
+        SgPoint p = m_candidates[i];
+        if (! m_bd.IsEmpty(p))
+        {
+            m_candidates[i] = m_candidates[m_candidates.size() - 1];
+            m_candidates.pop_back();
+            continue;
+        }
+        if (Empty3x3(p))
+            return p;
+        break;
+    }
+    return SG_NULLMOVE;
+}
+
+template<class BOARD>
 inline void GoUctPureRandomGenerator<BOARD>::OnPlay()
 {
+    SgPoint lastMove = m_bd.GetLastMove();
+    if (lastMove != SG_NULLMOVE && lastMove != SG_PASS
+        && ! m_bd.IsEmpty(lastMove))
+        m_nuEmptyFloat -= 1.f;
     const GoPointList& capturedStones = m_bd.CapturedStones();
     if (! capturedStones.IsEmpty())
     {
@@ -140,6 +215,7 @@ inline void GoUctPureRandomGenerator<BOARD>::OnPlay()
         // that generated point is still empty
         for (GoPointList::Iterator it(capturedStones); it; ++it)
             Insert(*it);
+        m_nuEmptyFloat += capturedStones.Length();
     }
     CheckConsistency();
 }
@@ -162,10 +238,15 @@ inline void GoUctPureRandomGenerator<BOARD>::Insert(SgPoint p)
 template<class BOARD>
 inline void GoUctPureRandomGenerator<BOARD>::Start()
 {
+    m_nuEmptyFloat = 0;
     m_candidates.clear();
     for (typename BOARD::Iterator it(m_bd); it; ++it)
         if (m_bd.IsEmpty(*it))
+        {
             Insert(*it);
+            m_nuEmptyFloat += 1.f;
+        }
+    m_invNuPoints = 1.f / (m_bd.Size() * m_bd.Size());
     CheckConsistency();
 }
 

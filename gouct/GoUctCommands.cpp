@@ -468,8 +468,10 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c statistics_enables
-      See GoUctPlayoutPolicyParam::m_statisticsEnabled
+    @arg @c statistics_enabled
+        See GoUctPlayoutPolicyParam::m_statisticsEnabled
+    @arg @c fillboard_tries
+        See GoUctPlayoutPolicyParam::m_fillboardTries
 */
 void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
 {
@@ -479,13 +481,16 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n';
+        cmd << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n'
+            << "fillboard_tries " << p.m_fillboardTries << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
         if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.BoolArg(1);
+        else if (name == "fillboard_tries")
+            p.m_fillboardTries = cmd.IntArg(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }

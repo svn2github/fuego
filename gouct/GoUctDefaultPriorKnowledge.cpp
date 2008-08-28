@@ -58,6 +58,8 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     m_policy.StartPlayout();
     m_policy.GenerateMove();
     GoUctPlayoutPolicyType type = m_policy.MoveType();
+    bool isFullBoardRandom =
+        (type == GOUCT_RANDOM || type == GOUCT_FILLBOARD);
     const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
     SgPointSet patternMatch;
     SgPointSet setsAtari;
@@ -77,7 +79,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             }
         }
 
-    if (type == GOUCT_RANDOM && ! anyHeuristic)
+    if (isFullBoardRandom && ! anyHeuristic)
     {
         Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -91,7 +93,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
                 m_counts[*it] = 0; // Don't initialize
         }
     }
-    else if (type == GOUCT_RANDOM && anyHeuristic)
+    else if (isFullBoardRandom && anyHeuristic)
     {
         Initialize(SG_PASS, 0.1, 9);
         for (GoBoard::Iterator it(m_bd); it; ++it)
