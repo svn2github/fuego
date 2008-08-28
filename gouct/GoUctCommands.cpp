@@ -470,6 +470,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     Parameters:
     @arg @c statistics_enabled
         See GoUctPlayoutPolicyParam::m_statisticsEnabled
+    @arg @c nakade_heuristic
+        See GoUctPlayoutPolicyParam::m_useNakadeHeuristic
     @arg @c fillboard_tries
         See GoUctPlayoutPolicyParam::m_fillboardTries
 */
@@ -481,13 +483,16 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n'
+        cmd << "[bool] nakade_heuristic " << p.m_useNakadeHeuristic << '\n'
+            << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n'
             << "fillboard_tries " << p.m_fillboardTries << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "statistics_enabled")
+        if (name == "nakade_heuristic")
+            p.m_useNakadeHeuristic = cmd.BoolArg(1);
+        else if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.BoolArg(1);
         else if (name == "fillboard_tries")
             p.m_fillboardTries = cmd.IntArg(1);
