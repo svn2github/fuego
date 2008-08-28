@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS = -Im4
+
 SUBDIRS = \
 book \
 gtpengine \

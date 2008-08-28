@@ -8,9 +8,17 @@ history.
 Current development version
 ===========================
 
+* 
+
+
+Version 0.2 - 2008 Aug 28
+=========================
+
 * Declare data members of UCT nodes and signature statistis as volatile.
   This avoids that the compiler reorders writes, which could cause crashes
   if the UCT search is used in lock-free mode.
+* Fix bug that caused reusing the subtree not to work (if options reuse_subtree
+  or ponder were used)
 
 
 Version 0.1 - 2008 May 30
