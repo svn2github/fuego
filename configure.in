@@ -23,4 +23,7 @@ then
 	CXXFLAGS="-DNDEBUG -O3 -g"
 fi
 
+AX_CXXFLAGS_WARN_ALL
+AX_CXXFLAGS_GCC_OPTION(-Wextra)
+
 AC_OUTPUT([Makefile fuegomain/Makefile fuegotest/Makefile go/Makefile gouct/Makefile gtpengine/Makefile simpleplayers/Makefile smartgame/Makefile unittestmain/Makefile])
