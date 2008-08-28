@@ -23,6 +23,10 @@ uct_rootfilter.tst \
 uct_seki.tst \
 uct_selfatari.tst \
 uct_semeai.tst \
+basics_fuegotest.list \
+basics_uct.list \
+static_safety.list \
+uct.list \
 sgf/pass/tromp-taylor-pass.sgf \
 sgf/lifeanddeath/good-selfatari.1.sgf \
 sgf/lifeanddeath/4x4nakade.sgf \
