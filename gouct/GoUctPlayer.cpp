@@ -116,7 +116,7 @@ void GoUctPlayer::ClearStatistics()
     @param maxGames Maximum simulations for the search
     @param maxTime Maximum time for the search
     @param[out] move The move to play (pass or a neutral point to fill)
-    @return @true, if it is still a win and everything is safe after a pass
+    @return @c true, if it is still a win and everything is safe after a pass
 */
 bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
                                     SgPoint& move)
