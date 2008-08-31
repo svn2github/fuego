@@ -19,7 +19,7 @@ loadsgf sgf/games/2007/CGOS/191282.sgf 32
 
 loadsgf sgf/games/2007/CGOS/147759.sgf 51
 30 reg_genmove b
-#? [E9|J3|D4]
+#? [E9|J3|D4|G9]
 # B needs to make 1 point to win. In the game it played a dame and lost.
 
 loadsgf sgf/games/2007/CGOS/71459.sgf 54
@@ -92,4 +92,5 @@ loadsgf sgf/games/2008/gnu-uct3K-17.sgf 58
 
 loadsgf sgf/games/2008/CGOS/386221.sgf 63
 170 reg_genmove b
-#? [G9]
+#? [G9|F5]
+# F5 is a bit odd but also a safe win so it is acceptable.
