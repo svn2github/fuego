@@ -94,3 +94,8 @@ loadsgf sgf/games/2008/CGOS/386221.sgf 63
 170 reg_genmove b
 #? [G9|F5]
 # F5 is a bit odd but also a safe win so it is acceptable.
+
+loadsgf sgf/games/2008/CGOS/595097.sgf 68
+180 reg_genmove b
+#? [H9]*
+# bug with playing "neutral point" to wrap up game when winning.
