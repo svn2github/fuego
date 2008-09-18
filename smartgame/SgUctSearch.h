@@ -543,6 +543,8 @@ public:
         @param earlyAbort Abort search after half of the resources (max time,
         max nodes) are spent, if the value is above a threshold.
         @param earlyAbortThreshold See parameter earlyAbort
+        @param earlyAbortMinGames Minimum number of simulations before to
+        check for early abort. See parameter earlyAbort
         @return The value of the root position.
     */
     float Search(std::size_t maxGames, double maxTime,
@@ -550,7 +552,8 @@ public:
                  const std::vector<SgMove>& rootFilter
                  = std::vector<SgMove>(),
                  SgUctTree* initTree = 0, bool earlyAbort = false,
-                 float earlyAbortThreshold = 0.9);
+                 float earlyAbortThreshold = 0.9,
+                 std::size_t earlyAbortMinGames = 0);
 
     /** Do a one-ply Monte-Carlo search instead of the UCT search.
         @param maxGames
@@ -611,6 +614,15 @@ public:
 
     /** @name Parameters */
     // @{
+
+    /** Abort search if tree is out of memory.
+        If false, the search will continue without creating new nodes.
+        The default is @c true.
+    */
+    bool AbortOutOfMem() const;
+
+    /** See AbortOutOfMem() */
+    void SetAbortOutOfMem(bool enable);
 
     /** Constant c in the bias term.
         This constant corresponds to 2 C_p in the original UCT paper.
@@ -844,6 +856,9 @@ private:
 
     std::auto_ptr<SgUctThreadStateFactory> m_threadStateFactory;
 
+    /** See AbortOutOfMem() */
+    bool m_abortOutOfMem;
+
     /** See LogGames() */
     bool m_logGames;
 
@@ -873,6 +888,9 @@ private:
     std::size_t m_numberPlayouts;
 
     std::size_t m_maxNodes;
+
+    /** See parameter earlyAbortMinGames in Search() */
+    std::size_t m_earlyAbortMinGames;
 
     /** See parameter moveRange in constructor */
     const int m_moveRange;
@@ -1014,6 +1032,11 @@ private:
     void UpdateTree(const SgUctGameInfo& info);
 };
 
+inline bool SgUctSearch::AbortOutOfMem() const
+{
+    return m_abortOutOfMem;
+}
+
 inline float SgUctSearch::BiasTermConstant() const
 {
     return m_biasTermConstant;
@@ -1102,6 +1125,11 @@ inline float SgUctSearch::RaveWeightInitial() const
 inline float SgUctSearch::RaveWeightFinal() const
 {
     return m_raveWeightFinal;
+}
+
+inline void SgUctSearch::SetAbortOutOfMem(bool enable)
+{
+    m_abortOutOfMem = enable;
 }
 
 inline void SgUctSearch::SetBiasTermConstant(float biasTermConstant)

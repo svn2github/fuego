@@ -160,7 +160,7 @@ public:
     void SetIgnoreClock(bool enable);
 
     /** Maximum number of nodes in search tree.
-        Nore: If ReuseSubtree() is enabled, then the player keeps a second
+        @note If ReuseSubtree() is enabled, then the player keeps a second
         tree of the same size to be used during extracting the subtree.
     */
     std::size_t MaxNodes() const;
@@ -191,6 +191,16 @@ public:
 
     /** See EnablePonder() */
     void SetEnablePonder(bool enable);
+
+    /** Minimum number of simulations to check for resign.
+        This minimum number of simulations is also required to apply the
+        early pass check (see EarlyPass()).
+        Default is 3000.
+    */
+    std::size_t ResignMinGames() const;
+
+    /** See ResignMinGames()     */
+    void SetResignMinGames(std::size_t n);
 
     /** Use the root filter. */
     bool UseRootFilter() const;
@@ -291,6 +301,8 @@ private:
 
     std::size_t m_maxGames;
 
+    std::size_t m_resignMinGames;
+
     GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                       GoUctPlayoutPolicyFactory<GoUctBoard> > m_search;
 
@@ -381,6 +393,11 @@ inline bool GoUctPlayer::UseRootFilter() const
     return m_useRootFilter;
 }
 
+inline std::size_t GoUctPlayer::ResignMinGames() const
+{
+    return m_resignMinGames;
+}
+
 inline double GoUctPlayer::ResignThreshold() const
 {
     return m_resignThreshold;
@@ -434,6 +451,11 @@ inline void GoUctPlayer::SetMaxTime(double maxTime)
 inline void GoUctPlayer::SetUseRootFilter(bool enable)
 {
     m_useRootFilter = enable;
+}
+
+inline void GoUctPlayer::SetResignMinGames(std::size_t n)
+{
+    m_resignMinGames = n;
 }
 
 inline void GoUctPlayer::SetResignThreshold(double threshold)

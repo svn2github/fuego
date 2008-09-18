@@ -88,6 +88,7 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_lastBoardSize(-1),
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(100000),
+      m_resignMinGames(3000),
       m_search(Board(),
                new GoUctPlayoutPolicyFactory<GoUctBoard>(
                                                       m_playoutPolicyParam)),
@@ -238,7 +239,8 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     const bool earlyAbort = true;
     const float earlyAbortThreshold = 1 - m_resignThreshold;
     float value = m_search.Search(m_maxGames, maxTime, sequence, rootFilter,
-                                  initTree, earlyAbort, earlyAbortThreshold);
+                                  initTree, earlyAbort, earlyAbortThreshold,
+                                  m_resignMinGames);
 
     // Write debug output to a string stream first to avoid intermingling
     // of debug output with response in GoGui GTP shell
@@ -254,7 +256,8 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
             << timeRootFilter << '\n';
     SgDebug() << out.str();
 
-    if (value < m_resignThreshold)
+    if (value < m_resignThreshold
+        && m_search.Tree().Root().MoveCount() >= m_resignMinGames)
         return SG_RESIGN;
 
     SgPoint move;

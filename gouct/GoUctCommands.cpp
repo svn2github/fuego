@@ -404,6 +404,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c max_nodes See GoUctPlayer::MaxNodes
     @arg @c max_time See GoUctPlayer::MaxTime
     @arg @c prior_knowledge @c none|even|policy See GoUctPlayer::PriorKnowledge
+    @arg @c resign_min_games See GoUctPlayer::ResignMinGames
     @arg @c resign_threshold See GoUctPlayer::ResignThreshold
     @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode
 */
@@ -426,6 +427,7 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[string] max_time " << p.MaxTime() << '\n'
             << "[list/none/even/default] prior_knowledge "
             << PriorKnowledgeToString(p.PriorKnowledge()) << '\n'
+            << "[string] resign_min_games " << p.ResignMinGames() << '\n'
             << "[string] resign_threshold " << p.ResignThreshold() << '\n'
             << "[list/playout_policy/uct/one_ply] search_mode "
             << SearchModeToString(p.SearchMode()) << '\n';
@@ -453,6 +455,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetMaxTime(cmd.FloatArg(1));
         else if (name == "prior_knowledge")
             p.SetPriorKnowledge(PriorKnowledgeArg(cmd, 1));
+        else if (name == "resign_min_games")
+            p.SetResignMinGames(cmd.SizeTypeArg(1));
         else if (name == "resign_threshold")
             p.SetResignThreshold(cmd.FloatArg(1));
         else if (name == "search_mode")
@@ -538,6 +542,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
+    @arg @c abort_out_of_mem See SgUctSearch::AbortOutOfMem
     @arg @c keep_games See GoUctSearch::KeepGames
     @arg @c lock_free See SgUctSearch::LockFree
     @arg @c log_games See SgUctSearch::LogGames
@@ -563,7 +568,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] keep_games " << s.KeepGames() << '\n'
+        cmd << "[bool] abort_out_of_mem " << s.AbortOutOfMem() << '\n'
+            << "[bool] keep_games " << s.KeepGames() << '\n'
             << "[bool] lock_free " << s.LockFree() << '\n'
             << "[bool] log_games " << s.LogGames() << '\n'
             << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
@@ -587,7 +593,9 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "keep_games")
+        if (name == "abort_out_of_mem")
+            s.SetAbortOutOfMem(cmd.BoolArg(1));
+        else if (name == "keep_games")
             s.SetKeepGames(cmd.BoolArg(1));
         else if (name == "lock_free")
             s.SetLockFree(cmd.BoolArg(1));
