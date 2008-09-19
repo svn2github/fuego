@@ -98,4 +98,10 @@ loadsgf sgf/games/2008/CGOS/386221.sgf 63
 loadsgf sgf/games/2008/CGOS/595097.sgf 68
 180 reg_genmove b
 #? [H9]*
-# bug with playing "neutral point" to wrap up game when winning.
+# Bug with playing "neutral point" to wrap up game when winning.
+
+loadsgf sgf/games/2008/CGOS/595022.sgf 49
+190 reg_genmove b
+#? [J3|A7|A8|E7|C8]*
+# Anything but A4.
+# Bug with playing "neutral point" to wrap up game when winning.

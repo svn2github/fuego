@@ -231,6 +231,16 @@ loadsgf sgf/games/2008/CGOS/365007-variation.sgf 1
 #? [H2|J1]
 # W can make big seki. Unstable search - why does fuego often not see this???
 
+loadsgf sgf/games/2008/CGOS/595027.sgf 48
+500 reg_genmove w
+#? [B3]
+# wins semeai and game. Current search is unstable between A7 (loses) and B3.
+
+loadsgf sgf/games/2008/CGOS/595267.sgf 57
+510 reg_genmove w
+#? [A6|A9|C9]*
+# wins semeai and game.
+
 #-----------------------------------------------------------------------------
 # Systematic tests with simple semeai. In each case, the right semeai move
 # is 1 point better than the obvious capture/escape move, and wins the game.

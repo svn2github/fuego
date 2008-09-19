@@ -192,3 +192,26 @@ loadsgf sgf/games/2008/CGOS/543088.sgf 23
 430 reg_genmove b
 #? [B1]*
 
+loadsgf sgf/games/2008/CGOS/594998.sgf 33
+440 reg_genmove b
+#? [D8]*
+# better aji to capture, leaves group small and obviously dead. 
+# Also leaves us strong on outside.
+
+loadsgf sgf/games/2008/CGOS/594998.sgf 39
+450 reg_genmove b
+#? [A9]*
+# must kill. Current search apparently does not consider A9 for White.
+
+loadsgf sgf/games/2008/CGOS/595383.sgf 40
+460 reg_genmove w
+#? [H9]*
+
+loadsgf sgf/games/2008/CGOS/595383.sgf 41
+470 reg_genmove b
+#? [H9]*
+
+loadsgf sgf/games/2008/CGOS/595383.sgf 52
+480 reg_genmove w
+#? [J9]*
+# ko, we can win.
