@@ -242,7 +242,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_fastLog(10)
 {
     // Don't create thread states here, because the factory passes the search
-    // (which is no fully constructed here, because the subclass constructors
+    // (which is not fully constructed here, because the subclass constructors
     // are not called yet) as an argument to the Create() function
 }
 
@@ -276,7 +276,9 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
         Debug(state, "SgUctSearch: max games reached");
         return true;
     }
-    if (earlyAbort && 2 * m_numberGames >= m_maxGames)
+    if (   earlyAbort 
+        && m_earlyAbortReductionFactor * m_numberGames >= m_maxGames
+       )
     {
         Debug(state, "SgUctSearch: max games reached (early abort)");
         m_wasEarlyAbort = true;
@@ -290,7 +292,7 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
             Debug(state, "SgUctSearch: max time reached");
             return true;
         }
-        if (earlyAbort && 2 * time > m_maxTime)
+        if (earlyAbort && m_earlyAbortReductionFactor * time > m_maxTime)
         {
             Debug(state, "SgUctSearch: max time reached (early abort)");
             m_wasEarlyAbort = true;
@@ -799,7 +801,8 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
                           const vector<SgMove>& rootFilter,
                           SgUctTree* initTree, bool earlyAbort,
                           float earlyAbortThreshold,
-                          std::size_t earlyAbortMinGames)
+                          std::size_t earlyAbortMinGames,
+                          int earlyAbortReductionFactor)
 {
     m_timer.Start();
     m_rootFilter = rootFilter;
@@ -813,6 +816,7 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     m_earlyAbort = earlyAbort;
     m_earlyAbortThreshold = earlyAbortThreshold;
     m_earlyAbortMinGames = earlyAbortMinGames;
+    m_earlyAbortReductionFactor = earlyAbortReductionFactor;
     StartSearch(rootFilter, initTree);
     for (size_t i = 0; i < m_threads.size(); ++i)
         m_threads[i]->StartPlay();

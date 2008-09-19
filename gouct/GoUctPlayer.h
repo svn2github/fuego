@@ -330,6 +330,8 @@ private:
                      bool isDuringPondering);
 
     void FindInitTree(SgBlackWhite toPlay, double maxTime);
+
+    bool VerifyNeutralMove(size_t maxGames, double maxTime, SgPoint move);
 };
 
 inline bool GoUctPlayer::AutoParam() const

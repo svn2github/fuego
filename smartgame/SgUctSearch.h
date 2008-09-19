@@ -545,6 +545,8 @@ public:
         @param earlyAbortThreshold See parameter earlyAbort
         @param earlyAbortMinGames Minimum number of simulations before to
         check for early abort. See parameter earlyAbort
+        @param earlyAbortReductionFactor Fraction of total search time to use 
+               for early abort check
         @return The value of the root position.
     */
     float Search(std::size_t maxGames, double maxTime,
@@ -553,7 +555,8 @@ public:
                  = std::vector<SgMove>(),
                  SgUctTree* initTree = 0, bool earlyAbort = false,
                  float earlyAbortThreshold = 0.9,
-                 std::size_t earlyAbortMinGames = 0);
+                 std::size_t earlyAbortMinGames = 0,
+                 int earlyAbortReductionFactor = 3);
 
     /** Do a one-ply Monte-Carlo search instead of the UCT search.
         @param maxGames
@@ -873,6 +876,9 @@ private:
 
     /** See parameter earlyAbort in Search() */
     bool m_wasEarlyAbort;
+    
+    /** See parameter earlyAbortReductionFactor in Search() */
+    int m_earlyAbortReductionFactor;
 
     /** See SgUctMoveSelect */
     SgUctMoveSelect m_moveSelect;

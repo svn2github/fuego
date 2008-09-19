@@ -34,13 +34,13 @@ namespace {
 
 bool HasMove(const SgNode* node, SgBlackWhite color)
 {
-    return ((color == SG_BLACK && node->HasProp(SG_PROP_MOVE_BLACK))
+    return (   (color == SG_BLACK && node->HasProp(SG_PROP_MOVE_BLACK))
             || (color == SG_WHITE && node->HasProp(SG_PROP_MOVE_WHITE)));
 }
 
 bool HasSetup(const SgNode* node)
 {
-    return (node->HasProp(SG_PROP_ADD_BLACK)
+    return (   node->HasProp(SG_PROP_ADD_BLACK)
             || node->HasProp(SG_PROP_ADD_WHITE)
             || node->HasProp(SG_PROP_ADD_EMPTY));
 }
@@ -112,6 +112,21 @@ void GoUctPlayer::ClearStatistics()
     m_statistics.Clear();
 }
 
+/** Verify that the move selected by DoEarlyPassSearch is viable.
+    Prevent blunders from so-called neutral moves that are not.
+*/
+bool GoUctPlayer::VerifyNeutralMove(size_t maxGames, double maxTime,
+                                    SgPoint move)
+{
+    GoBoard& bd = Board();
+    bd.Play(move);
+    vector<SgPoint> sequence;
+    double value = m_search.Search(maxGames, maxTime, sequence);
+    value = m_search.InverseEval(value);
+    bd.Undo();
+    return value >= 1 - m_resignThreshold;
+}
+
 /** Perform a search after playing a pass and see if it is still a win and
     all points are safe as determined by territory statistics.
     @param maxGames Maximum simulations for the search
@@ -171,13 +186,13 @@ bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
                 }
             if (isSafeToPlayAdj && isSafeOppAdj)
             {
-                if (bd.IsLegal(*it))
+                if (bd.IsLegal(*it) && ! GoBoardUtil::SelfAtari(bd, *it))
                     move = *it;
                 else
                 {
                     SgDebug() <<
                         "GoUctPlayer: no early pass possible"
-                        " (neutral illegal)\n";
+                        " (neutral illegal or self-atari)\n";
                     return false;
                 }
             }
@@ -191,8 +206,14 @@ bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
     }
     if (move == SG_PASS)
         SgDebug() << "GoUctPlayer: early pass is possible\n";
-    else
+    else if (VerifyNeutralMove(maxGames, maxTime, move))
         SgDebug() << "GoUctPlayer: generate play on neutral point\n";
+    else
+    {
+        SgDebug() << "GoUctPlayer: neutral move failed to verify\n";
+        return false;
+    }
+    
     return true;
 }
 
@@ -238,9 +259,10 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     vector<SgPoint> sequence;
     const bool earlyAbort = true;
     const float earlyAbortThreshold = 1 - m_resignThreshold;
+    const int earlyAbortReductionFactor = 3;
     float value = m_search.Search(m_maxGames, maxTime, sequence, rootFilter,
                                   initTree, earlyAbort, earlyAbortThreshold,
-                                  m_resignMinGames);
+                                  m_resignMinGames, earlyAbortReductionFactor);
 
     // Write debug output to a string stream first to avoid intermingling
     // of debug output with response in GoGui GTP shell
@@ -269,14 +291,15 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
         move = GoUctSearchUtil::TrompTaylorPassCheck(move, m_search);
     }
 
-    // If SgUctSearch aborted after half the time/nodes, because of early
-    // abort, we use the remaining time/nodes for doing a search, if an early
+    // If SgUctSearch aborted early, 
+    // use the remaining time/nodes for doing a search, if an early
     // pass is possible
     if (m_search.WasEarlyAbort())
     {
         maxTime -= timer.GetTime();
         SgPoint earlyPassMove;
-        if (DoEarlyPassSearch(m_maxGames / 2, maxTime, earlyPassMove))
+        if (DoEarlyPassSearch(m_maxGames / earlyAbortReductionFactor, 
+                              maxTime, earlyPassMove))
             return earlyPassMove;
     }
 
