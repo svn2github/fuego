@@ -302,7 +302,7 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
                     return;
                 averageStatus.Add(territoryStatistics[*it2].Mean());
             }
-            const float threshold = 0.2;
+            const float threshold = 0.3;
             isDead =
                 ((c == SG_BLACK && averageStatus.Mean() < threshold)
                  || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold));
