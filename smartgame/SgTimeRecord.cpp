@@ -76,11 +76,11 @@ SgBWArray<int> SgTimeRecord::GetOTMovesFromTree(SgNode& node)
 SgClockState SgTimeRecord::GetClockState() const
 {
     if (m_clockIsOn)
-        return CLOCK_RUNNING;
+        return SG_CLOCK_RUNNING;
     else if (m_suspended)
-        return CLOCK_SUSPENDED;
+        return SG_CLOCK_SUSPENDED;
     else
-        return CLOCK_OFF;
+        return SG_CLOCK_OFF;
 }
 
 double SgTimeRecord::TimeLeft(SgBlackWhite player) const
@@ -212,13 +212,13 @@ ostream& operator<<(ostream& out, SgClockState clockState)
 {
     switch (clockState)
     {
-    case CLOCK_OFF:
+    case SG_CLOCK_OFF:
         out << "CLOCK_OFF";
         break;
-    case CLOCK_RUNNING:
+    case SG_CLOCK_RUNNING:
         out << "CLOCK_RUNNING";
         break;
-    case CLOCK_SUSPENDED:
+    case SG_CLOCK_SUSPENDED:
         out << "CLOCK_SUSPENDED";
         break;
     default:

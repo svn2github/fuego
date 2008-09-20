@@ -17,14 +17,14 @@ class SgNode;
 /** Clock states. */
 enum SgClockState {
     /** The clock is turned off; no time is counted for either player. */
-    CLOCK_OFF,
+    SG_CLOCK_OFF,
 
     /** The time is running for one of the players. */
-    CLOCK_RUNNING,
+    SG_CLOCK_RUNNING,
 
     /** The running clock was turned off by the computer; some
         actions may automatically cause it to turn back on. */
-    CLOCK_SUSPENDED
+    SG_CLOCK_SUSPENDED
 };
 
 //----------------------------------------------------------------------------
