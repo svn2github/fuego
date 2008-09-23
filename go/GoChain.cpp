@@ -15,13 +15,6 @@
 
 //----------------------------------------------------------------------------
 
-const bool CHECK = SG_CHECK && true,
-           HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
-
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-
 GoChain::GoChain(const GoChain* c1, const GoChain* c2,
                        GoChainCondition* cond) :
     GoBlock(c1, c1->Stones() | c2->Stones(),
