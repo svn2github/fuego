@@ -291,8 +291,7 @@ namespace GoBoardUtil
 
     /** Helper function used in ScoreEndPosition */
     template<class BOARD>
-    SgEmptyBlackWhite ScorePoint(const BOARD& bd, float komi, SgPoint p,
-                                 bool noCheck);
+    SgEmptyBlackWhite ScorePoint(const BOARD& bd, SgPoint p, bool noCheck);
 
     /** Score position with safe points precomputed
         @param bd
