@@ -33,12 +33,6 @@ namespace {
 
 const bool DEBUG_THREADS = false;
 
-/** Check that an integer is greater zero, after it was converted to float. */
-bool IsGreaterZero(float x)
-{
-    return (x > 0.9f);
-}
-
 void Notify(mutex& aMutex, condition& aCondition)
 {
     mutex::scoped_lock lock(aMutex);
