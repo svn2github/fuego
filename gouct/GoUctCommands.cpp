@@ -956,7 +956,7 @@ GoUctPlayer& GoUctCommands::Player()
     {
         return dynamic_cast<GoUctPlayer&>(*m_player);
     }
-    catch (const bad_cast& e)
+    catch (const bad_cast&)
     {
         throw GtpFailure("player not GoUctPlayer");
     }
@@ -1019,7 +1019,7 @@ GoUctSearch& GoUctCommands::Search()
             dynamic_cast<GoUctObjectWithSearch&>(*m_player);
         return object.Search();
     }
-    catch (const bad_cast& e)
+    catch (const bad_cast&)
     {
         throw GtpFailure("player is not a GoUctObjectWithSearch");
     }
@@ -1041,7 +1041,7 @@ GoUctCommands::ThreadState(std::size_t threadId)
              GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>(
                                                 search.ThreadState(threadId));
     }
-    catch (const bad_cast& e)
+    catch (const bad_cast&)
     {
         throw GtpFailure("player has no GoUctGlobalSearchState");
     }

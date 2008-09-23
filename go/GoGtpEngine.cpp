@@ -819,7 +819,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
     {
         stones = GoGtpCommandUtil::GetHandicapStones(size, n);
     }
-    catch (const GtpFailure& e)
+    catch (const GtpFailure&)
     {
     }
     if (stones.Length() < n && m_player != 0)
@@ -986,7 +986,7 @@ void GoGtpEngine::CmdRules(GtpCommand& cmd)
     {
         SetNamedRules(arg);
     }
-    catch (const SgException& e)
+    catch (const SgException&)
     {
         throw GtpFailure() << "unknown rules: " << arg;
     }
