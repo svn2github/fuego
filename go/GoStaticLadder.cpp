@@ -42,7 +42,7 @@ bool GoStaticLadder::IsEdgeLadder(const GoBoard& bd, SgPoint target,
                     attackPoint = *it;
                 else
                 {
-                    SG_ASSERT(defensePoint = SG_NULLMOVE);
+                    SG_ASSERT(defensePoint == SG_NULLMOVE);
                     defensePoint = *it;
                 }
             }
