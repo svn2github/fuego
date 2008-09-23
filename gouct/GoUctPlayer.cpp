@@ -30,25 +30,6 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-namespace {
-
-bool HasMove(const SgNode* node, SgBlackWhite color)
-{
-    return (   (color == SG_BLACK && node->HasProp(SG_PROP_MOVE_BLACK))
-            || (color == SG_WHITE && node->HasProp(SG_PROP_MOVE_WHITE)));
-}
-
-bool HasSetup(const SgNode* node)
-{
-    return (   node->HasProp(SG_PROP_ADD_BLACK)
-            || node->HasProp(SG_PROP_ADD_WHITE)
-            || node->HasProp(SG_PROP_ADD_EMPTY));
-}
-
-} // namespace
-
-//----------------------------------------------------------------------------
-
 GoUctPlayer::Statistics::Statistics()
 {
     Clear();
