@@ -5,9 +5,6 @@
 FUEGO="../../build/gmake/build/release/fuego"
 NAME=Fuego
 DESCRIPTION=""
-# Don't allow handicap
-# (pondering does not work yet, if setup or handicap during a game)
-NOHANDICAP_OPTION=-nohandicap
 
 usage() {
   cat >&2 <<EOF
@@ -76,7 +73,7 @@ rules=chinese
 rules.boardSize=19
 rules.time=30:00
 verbose=t
-engine=$FUEGO -size 19 -config config-19-8c.gtp $NOHANDICAP_OPTION $MAXGAMES_OPTION
+engine=$FUEGO -size 19 -config config-19-8c.gtp $MAXGAMES_OPTION
 reconnect=t
 EOF
 java -jar kgsGtp.jar tmp.cfg && rm -f tmp.cfg
