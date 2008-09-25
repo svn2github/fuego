@@ -34,11 +34,11 @@ using GoSafetyUtil::MightMakeLife;
 
 //----------------------------------------------------------------------------
 
-const bool CHECK = SG_CHECK && true;
+static const bool CHECK = SG_CHECK && true;
 
-const bool HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
+static const bool HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
 
-const bool WRITEDEBUG = false;
+static const bool WRITEDEBUG = false;
 
 //----------------------------------------------------------------------------
 

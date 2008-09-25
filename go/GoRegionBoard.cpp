@@ -18,9 +18,11 @@
 
 //----------------------------------------------------------------------------
 
-const bool CHECK = SG_CHECK && true;
-const bool HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
-const bool DEBUG_REGION_BOARD = false;
+static const bool CHECK = SG_CHECK && true;
+
+static const bool HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
+
+static const bool DEBUG_REGION_BOARD = false;
 
 const int   kRemoveRegion = 2000,
             kAddRegion = 2001,
