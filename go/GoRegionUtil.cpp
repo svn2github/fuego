@@ -143,10 +143,6 @@ void GoRegionUtil::FindCurrentAnchors(const GoBoard& board,
     }
 }
 
-/**  Has2IPorEyes is called after all interior points are 2conn proved.
-    It returns true if two intersection points are found or 
-    single boundary block forms two separate eyes.
-*/
 bool GoRegionUtil::Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
                                 SgBlackWhite color,
                                 const SgList<SgPoint>& boundaryAnchors)
@@ -157,7 +153,6 @@ bool GoRegionUtil::Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
                 && ! pts.IsConnected()
                 );
 }
-
 
 bool GoRegionUtil::Has2SureLiberties(const GoBoard& board,
                                      const SgPointSet& pts,
