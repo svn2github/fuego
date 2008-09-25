@@ -34,7 +34,9 @@ namespace GoRegionUtil
                       SgBlackWhite color,
                       const SgList<SgPoint>& boundaryAnchors);
 
-    /** Do pts belong to only one block? */
+    /** Do pts belong to only one block?
+        pts must be non-empty.
+    */
     bool IsSingleBlock(const GoBoard& board, const SgPointSet& pts,
                        SgBlackWhite color);
 

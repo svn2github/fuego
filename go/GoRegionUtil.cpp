@@ -143,26 +143,19 @@ void GoRegionUtil::FindCurrentAnchors(const GoBoard& board,
     }
 }
 
-//  using after all interior points are 2conn proved, return true if
-//  two intersection points are found or single boundary block forms 
-//  two separate eyes.
+/**  Has2IPorEyes is called after all interior points are 2conn proved.
+    It returns true if two intersection points are found or 
+    single boundary block forms two separate eyes.
+*/
 bool GoRegionUtil::Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
                                 SgBlackWhite color,
                                 const SgList<SgPoint>& boundaryAnchors)
 {
-    const int size = board.Size();
-    SgPointSet boundary(pts.Border(size));
-    
-    bool has2IP = Has2IntersectionPoints(board, pts, boundaryAnchors);
-    fprintf(stderr, "\nIn Has2IPorEyes, has2IPs = %i", has2IP);
-
-    if (Has2IntersectionPoints(board, pts, boundaryAnchors) 
-        || (boundaryAnchors.Length() == 1 
-            && pts.Disjoint(board.All(color)) 
-            && ! pts.IsConnected()))
-        return true;
-    else
-        return false;
+    return     Has2IntersectionPoints(board, pts, boundaryAnchors) 
+            || (   boundaryAnchors.Length() == 1 
+                && pts.Disjoint(board.All(color)) 
+                && ! pts.IsConnected()
+                );
 }
 
 
@@ -198,8 +191,6 @@ bool GoRegionUtil::Has2SureLiberties(const GoBoard& board,
 
 bool GoRegionUtil::IsSingleBlock(const GoBoard& board, const SgPointSet& pts,
                                  SgBlackWhite color)
-// do pts belong to only one block?
-// also returns true in case pts is empty set. ASSERTs non-empty now.
 {
     SG_DEBUG_ONLY(color);
     // exception for completely empty board. @todo catch this elsewhere???

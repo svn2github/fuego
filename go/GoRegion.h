@@ -79,7 +79,7 @@ typedef std::bitset<nuRegionFlag> GoRegionFlags;
     They can be "1-vital" or "2-vital". This is used by safety solvers.
     For details see [Mueller 1997]:
     Playing it safe: Recognizing secure territories in computer Go by using
-    static rules and search. In H.�Matsubara, editor, Game Programming
+    static rules and search. In H. Matsubara, editor, Game Programming
     Workshop in Japan '97, pages 80-86, Computer Shogi Association, Tokyo, 
     Japan, 1997.
 
@@ -294,13 +294,13 @@ public:
     bool HasLibsForAllBlocks(int n) const;
 
     /** Can we find two connection paths to each interior empty point? 
-        @todo implements only the simplest case for now, add Erik v.d.Werf's
-        recursive extension.
+        This implements only the simple, non-recursive case.
+        See Find2ConnForAllInterior() for a more general solution.
     */
     bool Find2ConnForAll() const;
 
     /** find 2-connection paths for all interior empty points, using recursive
-        extension. 
+        extension. Erik v.d.Werf's recursive extension to Find2ConnForAll.
     */
     bool Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                                  SgList<SgPoint>& usedLibs) const;
