@@ -1113,9 +1113,9 @@ private:
     const SgPointSet& m_points;
 };
 
-std::ostream& operator<<(std::ostream& stream, const WriteMap &w);
-
 } // namespace GoBoardWrite
+
+std::ostream& operator<<(std::ostream& out, const GoBoardWrite::WriteMap& w);
 
 //----------------------------------------------------------------------------
 
