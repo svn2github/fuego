@@ -9,10 +9,14 @@ BOOST_POSTFIX = $(shell $(MAKEFILE_DIR)boost_postfix.sh)
 
 # C++ compiler and flags.
 
-CXX = icc
-COMMON_CXXFLAGS += -Wall -ansi -wd 193,383,522,810,981,1418,1599
+CXX = g++
+COMMON_CXXFLAGS += -Wall -ansi -pedantic
+# Use -Wextra only for GCC version > 3
+ifneq ($(shell echo __GNUC__ | $(CXX) -E -xc - | tail -n 1), 3)
+COMMON_CXXFLAGS += -Wextra
+endif
 DBG_CXXFLAGS += $(PROJ_DBG_CXXFLAGS) $(COMMON_CXXFLAGS) -g -D_DEBUG=1
-REL_CXXFLAGS += $(PROJ_REL_CXXFLAGS) $(COMMON_CXXFLAGS) -g -O3 -march core2 -DNDEBUG
+REL_CXXFLAGS += $(PROJ_REL_CXXFLAGS) $(COMMON_CXXFLAGS) -g -O3 -DNDEBUG
 
 # C compiler and flags.
 
