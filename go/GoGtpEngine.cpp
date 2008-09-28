@@ -550,6 +550,7 @@ void GoGtpEngine::CmdKomi(GtpCommand& cmd)
     try
     {
         GoKomi komi(cmd.Arg(0));
+        GetGame().Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
         m_defaultRules.SetKomi(komi);
         Board().Rules().SetKomi(komi);
         RulesChanged();
