@@ -550,7 +550,7 @@ public:
 
     double Value() const;
 
-    void SetValue(double value);
+    void SetValue(double value, int precision = 0);
 
 protected:
     int m_precision;
@@ -577,9 +577,10 @@ inline double SgPropReal::Value() const
     return m_value;
 }
 
-inline void SgPropReal::SetValue(double value)
+inline void SgPropReal::SetValue(double value, int precision)
 {
     m_value = value;
+    m_precision = precision;
 }
 
 //----------------------------------------------------------------------------

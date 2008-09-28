@@ -651,7 +651,7 @@ void SgNode::SetIntProp(SgPropID id, int value)
     }
 }
 
-void SgNode::SetRealProp(SgPropID id, double value)
+void SgNode::SetRealProp(SgPropID id, double value, int precision)
 {
     SgPropReal* prop = dynamic_cast<SgPropReal*>(Get(id));
     if (prop)
@@ -659,7 +659,7 @@ void SgNode::SetRealProp(SgPropID id, double value)
     else
     {
         prop = static_cast<SgPropReal*>(SgProp::CreateProperty(id));
-        prop->SetValue(value);
+        prop->SetValue(value, precision);
         Add(prop);
     }
 }

@@ -293,8 +293,11 @@ public:
     /** Set the value of the given property at this node.
         Create  such a property if it doesn't exist yet.
         The property must be of class SgPropReal.
+        @param  id
+        @param value
+        @param precision Precision; 0 means default precision (6)
     */
-    void SetRealProp(SgPropID id, double value);
+    void SetRealProp(SgPropID id, double value, int precision = 0);
 
     /** Set the value of the given property at this node to 'value'.
         Create such a property if it doesn't exist yet. The property must be
