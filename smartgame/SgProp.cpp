@@ -917,7 +917,9 @@ bool SgPropReal::ToString(std::vector<std::string>& values, int boardSize,
     SG_UNUSED(fmt);
     SG_UNUSED(fileFormat);
     ostringstream buffer;
-    buffer << fixed << setprecision(m_precision) << m_value;
+    if (m_precision > 0)
+        buffer.precision(m_precision);
+    buffer << fixed << m_value;
     values.assign(1, buffer.str());
     return true;
 }

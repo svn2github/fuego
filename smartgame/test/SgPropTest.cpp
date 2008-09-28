@@ -17,6 +17,8 @@ using SgPointUtil::Pt;
 
 namespace {
 
+//----------------------------------------------------------------------------
+
 void SgPropMoveTest_ToString_Go(SgPoint p, int boardSize, int fileFormat,
                                 const char* targetValue)
 {
@@ -64,24 +66,6 @@ BOOST_AUTO_TEST_CASE(SgPropMoveTest_ToString_HexAll)
     SgPropMoveTest_ToString_Hex(Pt(9, 9), 9, "i1");
     SgPropMoveTest_ToString_Hex(Pt(1, 1), 9, "a9");
     SgPropMoveTest_ToString_Hex(Pt(9, 1), 9, "i9");
-}
-
-void SgPropTextTest_ToString(const char* text, const char* targetValue)
-{
-    vector<string> values;
-    SgPropText prop(SG_PROP_UNKNOWN, text);
-    const int boardSize = 19;
-    const int fileFormat = 3;
-    prop.ToString(values, boardSize, SG_PROPPOINTFMT_GO, fileFormat);
-    BOOST_REQUIRE_EQUAL(values.size(), 1u);
-    BOOST_CHECK_EQUAL(values[0], targetValue);
-}
-
-BOOST_AUTO_TEST_CASE(SgPropTextTest_ToString_All)
-{
-    SgPropTextTest_ToString("abc", "abc");
-    SgPropTextTest_ToString("ab]c", "ab\\]c");
-    SgPropTextTest_ToString("ab\\c", "ab\\\\c");
 }
 
 void SgPropMoveTest_FromString_Go(string s, int boardSize,
@@ -149,6 +133,49 @@ BOOST_AUTO_TEST_CASE(SgPropMoveTest_Player)
     BOOST_CHECK_EQUAL(SG_WHITE, prop->Player());
     BOOST_CHECK(prop->IsPlayer(SG_WHITE));
 }
+
+//----------------------------------------------------------------------------
+
+void SgPropTextTest_ToString(const char* text, const char* targetValue)
+{
+    vector<string> values;
+    SgPropText prop(SG_PROP_UNKNOWN, text);
+    const int boardSize = 19;
+    const int fileFormat = 3;
+    prop.ToString(values, boardSize, SG_PROPPOINTFMT_GO, fileFormat);
+    BOOST_REQUIRE_EQUAL(values.size(), 1u);
+    BOOST_CHECK_EQUAL(values[0], targetValue);
+}
+
+BOOST_AUTO_TEST_CASE(SgPropTextTest_ToString_All)
+{
+    SgPropTextTest_ToString("abc", "abc");
+    SgPropTextTest_ToString("ab]c", "ab\\]c");
+    SgPropTextTest_ToString("ab\\c", "ab\\\\c");
+}
+
+
+void SgPropRealTest_ToString(double value, const char* targetValue,
+                             int precision)
+{
+    vector<string> values;
+    SgPropReal prop(SG_PROP_UNKNOWN, value, precision);
+    const int boardSize = 19;
+    const int fileFormat = 3;
+    prop.ToString(values, boardSize, SG_PROPPOINTFMT_GO, fileFormat);
+    BOOST_REQUIRE_EQUAL(values.size(), 1u);
+    BOOST_CHECK_EQUAL(values[0], targetValue);
+}
+
+BOOST_AUTO_TEST_CASE(SgPropRealTest_ToString_All)
+{
+    // 0: default precision for C++ streams (=6)
+    SgPropRealTest_ToString(10.5, "10.500000", 0);
+    SgPropRealTest_ToString(10.123456, "10.1", 1);
+    SgPropRealTest_ToString(10.123456, "10.12346", 5);
+}
+
+//----------------------------------------------------------------------------
 
 } // namespace
 
