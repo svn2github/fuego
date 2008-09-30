@@ -435,8 +435,15 @@ void GoUctPlayer::OnBoardChange()
 
 void GoUctPlayer::Ponder()
 {
-    if (! m_enablePonder || GoBoardUtil::EndOfGame(Board())
+    const GoBoard& bd = Board();
+    if (! m_enablePonder || GoBoardUtil::EndOfGame(bd)
         || m_searchMode != GOUCT_SEARCHMODE_UCT)
+        return;
+    // Don't start pondering if board is empty. Avoids that the program starts
+    // hogging the machine immediately after startup (and before the game has
+    // even started). The first move will be from the opening book in
+    // tournaments anyway.
+    if (bd.TotalNumStones(SG_BLACK) == 0 && bd.TotalNumStones(SG_WHITE) == 0)
         return;
     if (! m_reuseSubtree)
     {
@@ -448,7 +455,7 @@ void GoUctPlayer::Ponder()
     SgDebug() << "GoUctPlayer::Ponder: start\n";
     // Don't ponder forever to avoid hogging the machine
     double maxTime = 3600; // 60 min
-    DoSearch(Board().ToPlay(), maxTime, true);
+    DoSearch(bd.ToPlay(), maxTime, true);
     SgDebug() << "GoUctPlayer::Ponder: end\n";
 }
 
