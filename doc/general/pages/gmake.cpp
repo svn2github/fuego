@@ -1,5 +1,11 @@
 /** @page generalgmake Building with GNU make
 
+    <b>
+    NOTE: The following information will become obsolete as soon as our old
+    GNU Make based makefiles are removed; Use and test the new build
+    system based on GNU Autotools instead.
+    </b>
+
     Currently, there exists a build system using GCC/GNU make that is tested
     on recent Linux distributions and Mac OS X.
 
