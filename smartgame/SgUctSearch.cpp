@@ -293,16 +293,18 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
             return true;
         }
         UpdateCheckTimeInterval(time);
-        // Check for time greater zero, otherwise m_gamesPerSecond is set to
-        // zero and the following will not work
-        if (time > numeric_limits<double>::epsilon()
-            && m_moveSelect == SG_UCTMOVESELECT_COUNT)
+        if (m_moveSelect == SG_UCTMOVESELECT_COUNT)
         {
             double remainingGamesDouble = m_maxGames - m_numberGames - 1;
-            double remainingTime = m_maxTime - time;
-            remainingGamesDouble =
-                min(remainingGamesDouble,
-                    remainingTime * m_statistics.m_gamesPerSecond);
+            // Use time based count abort, only if time > 1, otherwise
+            // m_gamesPerSecond is unreliable
+            if (time > 1.)
+            {
+                double remainingTime = m_maxTime - time;
+                remainingGamesDouble =
+                    min(remainingGamesDouble,
+                        remainingTime * m_statistics.m_gamesPerSecond);
+            }
             size_t sizeTypeMax = numeric_limits<size_t>::max();
             size_t remainingGames;
             if (remainingGamesDouble > static_cast<double>(sizeTypeMax - 1))
