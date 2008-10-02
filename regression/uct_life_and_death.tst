@@ -215,3 +215,9 @@ loadsgf sgf/games/2008/CGOS/595383.sgf 52
 480 reg_genmove w
 #? [J9]*
 # ko, we can win.
+
+loadsgf sgf/games/2008/CGOS/Fuego-519-2c-20080920080149.sgf 40
+490 reg_genmove w
+#? [F9|G9|H9]*
+# simple mistake. Worth looking into. Problem with selfatari/throwin?
+
