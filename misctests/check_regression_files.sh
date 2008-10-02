@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Check that all SGF files referenced by a test in regression/ exist and that
 # regression/Makefile.am contains all tests and SGF files
 
