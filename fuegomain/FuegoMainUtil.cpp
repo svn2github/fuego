@@ -8,7 +8,6 @@
 #include "FuegoMainUtil.h"
 
 #include <sstream>
-#include <boost/preprocessor/stringize.hpp>
 
 using namespace std;
 
@@ -18,7 +17,7 @@ std::string FuegoMainUtil::Version()
 {
     ostringstream s;
 #ifdef VERSION
-    s << BOOST_PP_STRINGIZE(VERSION);
+    s << VERSION;
 #else
     s << "(" __DATE__ ")";
 #endif
