@@ -33,7 +33,7 @@ void SgDebugToFile(const char* filename);
 void SgDebugToNull();
 
 /** Set logging stream to console window.
-    Uses std::cerr if UNIX is defined, std::cout otherwise.
+    @todo: Bad function name, uses std::cerr on Unix and std::cout on MAC
 */
 void SgDebugToWindow();
 

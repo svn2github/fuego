@@ -27,11 +27,6 @@ BOOST_AUTO_TEST_CASE(SgSystemTestByteOrder)
     BOOST_CHECK_EQUAL(byteOrderTestByte, byteOrderTestValue);
 }
 
-BOOST_AUTO_TEST_CASE(SgSystemTestDefines)
-{
-    BOOST_CHECK_EQUAL(MAC + UNIX, 1);
-}
-
 /** Check for a bug in std::bitset.
     This bug occurs on Mac OS X 10.3.8 (gcc version 3.3 20030304) in
     the debug version of bitset.h (used if _GLIBCXX_DEBUG is defined).

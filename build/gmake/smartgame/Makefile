@@ -9,7 +9,7 @@ REL_OBJDIR = ../build/obj/$(NAME)/release
 DBG_BINDIR = ../build/debug
 REL_BINDIR = ../build/release
 
-PROJ_CXXFLAGS = -DUNIX=1 -I../../../gtpengine
+PROJ_CXXFLAGS = -I../../../gtpengine
 PROJ_DBG_CXXFLAGS = $(PROJ_CXXFLAGS)
 PROJ_REL_CXXFLAGS = $(PROJ_CXXFLAGS)
 

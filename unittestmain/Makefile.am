@@ -73,7 +73,7 @@ fuego_unittest_DEPENDENCIES = \
 ../gtpengine/libfuego_gtpengine.a
 
 fuego_unittest_CPPFLAGS = \
--DUNIX=1 $(BOOST_CPPFLAGS) \
+$(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame \
 -I@top_srcdir@/go \

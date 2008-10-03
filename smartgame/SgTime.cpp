@@ -13,12 +13,10 @@
 #include <limits>
 #include <iostream>
 #include <sstream>
-#if UNIX
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/times.h>
 #include <unistd.h>
-#endif
 #include "SgException.h"
 
 using namespace std;
@@ -37,16 +35,12 @@ clock_t g_ticksPerMinute;
 
 void Init()
 {
-#if UNIX
     int ticksPerSecond = sysconf(_SC_CLK_TCK);
     if (ticksPerSecond < 0) // Shouldn't happen
     {
         throw SgException("Could not get _SC_CLK_TCK.");
     }
     g_ticksPerSecond = static_cast<clock_t>(ticksPerSecond);
-#else
-#error "Time functions not implemented"
-#endif
     g_ticksPerMinute = 60 * g_ticksPerSecond;
     g_isInitialized = true;
 }
@@ -79,7 +73,6 @@ double SgTime::Get(SgTimeMode mode)
 {
     if (! g_isInitialized)
         Init();
-#if UNIX
     switch (mode)
     {
     case SG_TIME_CPU:
@@ -107,9 +100,6 @@ double SgTime::Get(SgTimeMode mode)
         SG_ASSERT(false);
         return 0;
     }
-#else
-#error "Time functions not implemented"
-#endif
 }
 
 SgTimeMode SgTime::DefaultMode()

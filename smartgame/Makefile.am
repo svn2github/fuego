@@ -112,7 +112,7 @@ SgUtil.h \
 SgWrite.h
 
 libfuego_smartgame_a_CPPFLAGS = \
--DUNIX=1 $(BOOST_CPPFLAGS) \
+$(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine
 
 DISTCLEANFILES = *~

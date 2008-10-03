@@ -19,22 +19,6 @@
 
 //----------------------------------------------------------------------------
 
-// Check which OS we use. Some stuff such as I/O, UI or profiling depends
-// on this if one of the symbols is already predefined by a compile switch
-// or by a previous header file, then leave it as it is.
-
-#ifdef MAC
-    #define UNIX 0
-#else
-    #ifdef UNIX
-        #define MAC 0
-    #else
-        #error "no OS defined"
-    #endif
-#endif
-
-//----------------------------------------------------------------------------
-
 /** Avoid compiler warnings for unused variables.
     This function is more portable than using a \#pragma directive.
 */
@@ -75,16 +59,15 @@ inline void SG_UNUSED(const T&)
 
 //----------------------------------------------------------------------------
 
-#if UNIX
+#if MAC
+#define OTHER_BYTE_ORDER 0
+#else
 #include <sys/types.h>
 #if (BYTE_ORDER == BIG_ENDIAN)
 #define OTHER_BYTE_ORDER 0
 #else
 #define OTHER_BYTE_ORDER 1
 #endif
-#endif
-#if MAC
-#define OTHER_BYTE_ORDER 0
 #endif
 
 //----------------------------------------------------------------------------

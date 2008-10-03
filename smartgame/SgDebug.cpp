@@ -23,10 +23,10 @@ static ofstream s_nullStream;
 
 static auto_ptr<ofstream> s_fileStream;
 
-#if UNIX
-#define textoutputstream cerr
-#else
+#if MAC
 #define textoutputstream cout
+#else
+#define textoutputstream cerr
 #endif
 
 ostream* g_debugStrPtr(&textoutputstream);

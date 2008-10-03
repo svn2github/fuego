@@ -83,7 +83,7 @@ GoStaticSafetySolver.h \
 GoTimeControl.h
 
 libfuego_go_a_CPPFLAGS = \
--DUNIX=1 $(BOOST_CPPFLAGS) \
+$(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame
 

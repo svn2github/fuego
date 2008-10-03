@@ -32,7 +32,7 @@ GoUctSearch.h \
 GoUctUtil.h
 
 libfuego_gouct_a_CPPFLAGS = \
--DUNIX=1 $(BOOST_CPPFLAGS) \
+$(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame \
 -I@top_srcdir@/go

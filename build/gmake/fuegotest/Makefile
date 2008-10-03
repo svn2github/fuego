@@ -11,7 +11,7 @@ REL_OBJDIR = ../build/obj/$(NAME)/release
 DBG_BINDIR = ../build/debug
 REL_BINDIR = ../build/release
 
-PROJ_CXXFLAGS = -DUNIX=1 -DVERSION=\"$(FUEGO_VERSION)\" -I../../../go -I../../../gouct -I../../../gtpengine -I../../../smartgame -I../../../simpleplayers
+PROJ_CXXFLAGS = -DVERSION=\"$(FUEGO_VERSION)\" -I../../../go -I../../../gouct -I../../../gtpengine -I../../../smartgame -I../../../simpleplayers
 PROJ_DBG_CXXFLAGS = $(PROJ_CXXFLAGS)
 PROJ_REL_CXXFLAGS = $(PROJ_CXXFLAGS)
 
