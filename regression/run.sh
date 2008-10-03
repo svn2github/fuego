@@ -5,10 +5,8 @@
 
 RESULT_DIR="html"
 TESTSUITE_DEFAULT="basics.suite"
-FUEGO_REL="../build/gmake/build/release/fuego -srand 1"
-FUEGO_DBG="../build/gmake/build/debug/fuego -srand 1"
-FUEGOTEST_REL="../build/gmake/build/release/fuego_test -srand 1"
-FUEGOTEST_DBG="../build/gmake/build/debug/fuego_test -srand 1"
+FUEGO="../fuegomain/fuego -srand 1"
+FUEGOTEST="../fuegotest/fuego_test -srand 1"
 
 #-----------------------------------------------------------------------------
 # Functions
@@ -24,7 +22,6 @@ Options:
   -l Long output
   -p Program, using full command or a program abbreviation
      (fuego,fuego_test). Default is fuego.
-  -r Use release version of program (only for program abbreviations)
   -t Single test file to run (without extension .tst or .list)
 
 The test files are expected to have the file endings .tst or .list.
@@ -42,26 +39,15 @@ EOF
 }
 
 # Set variables PROGRAM_CMD and RESULT_EXT depending on PROGRAM
-# and RELEASE
 setprogram() {
     case "$PROGRAM" in
 	fuego)
-	    if (( $RELEASE != 0 )); then
-		PROGRAM_CMD="$FUEGO_REL"
-		RESULT_EXT="fuego"
-	    else
-		PROGRAM_CMD="$FUEGO_DBG"
-		RESULT_EXT="fuego_dbg"
-	    fi
+	    PROGRAM_CMD="$FUEGO"
+	    RESULT_EXT="fuego"
 	    ;;
 	fuego_test)
-	    if (( $RELEASE != 0 )); then
-		PROGRAM_CMD="$FUEGOTEST_REL"
-		RESULT_EXT="fuego_test"
-	    else
-		PROGRAM_CMD="$FUEGOTEST_DBG"
-		RESULT_EXT="fuego_test_dbg"
-	    fi
+	    PROGRAM_CMD="$FUEGOTEST"
+	    RESULT_EXT="fuego_test"
 	    ;;
 	*)
 	    PROGRAM_CMD="$PROGRAM"
@@ -136,18 +122,16 @@ EOF
 # Parse options and arguments
 #-----------------------------------------------------------------------------
 
-RELEASE=0
 LONG_OUTPUT=0
 APPEND_DATE=0
 PROGRAM=""
 TESTFILE=""
-while getopts "dhlp:rt:" OPT; do
+while getopts "dhlp:t:" OPT; do
 case "$OPT" in
     d)   APPEND_DATE=1;;
     h)   usage; exit 0;;
     l)   LONG_OUTPUT=1;;
     p)   PROGRAM="$OPTARG";;
-    r)   RELEASE=1;;
     t)   TESTFILE="$OPTARG";;
     [?]) usage; exit 1;;
 esac
