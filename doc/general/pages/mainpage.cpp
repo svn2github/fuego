@@ -6,4 +6,5 @@
 
     - @ref generalstyle
     - @ref generalgmake
+    - @ref generalautotools
 */
