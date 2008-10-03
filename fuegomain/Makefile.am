@@ -9,7 +9,6 @@ noinst_HEADERS = \
 FuegoMainEngine.h \
 FuegoMainUtil.h
 
-fuego_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
 fuego_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB)
 
 fuego_LDADD = \
@@ -24,6 +23,11 @@ fuego_DEPENDENCIES = \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a
 
-INCLUDES = -I@top_srcdir@/gtpengine -I@top_srcdir@/smartgame -I@top_srcdir@/go -I@top_srcdir@/gouct
+fuego_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine \
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/go \
+-I@top_srcdir@/gouct
 
 DISTCLEANFILES = *~

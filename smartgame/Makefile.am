@@ -111,8 +111,8 @@ SgUctTreeUtil.h \
 SgUtil.h \
 SgWrite.h
 
-libfuego_smartgame_a_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
-
-INCLUDES = -I@top_srcdir@/gtpengine
+libfuego_smartgame_a_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine
 
 DISTCLEANFILES = *~

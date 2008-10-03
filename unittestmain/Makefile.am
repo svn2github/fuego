@@ -56,7 +56,6 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgWriteTest.cpp \
 ../unittestmain/UnitTestMain.cpp
 
-fuego_unittest_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
 fuego_unittest_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(BOOST_THREAD_LIB)
 
 fuego_unittest_LDADD = \
@@ -73,6 +72,12 @@ fuego_unittest_DEPENDENCIES = \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a
 
-INCLUDES = -I@top_srcdir@/gtpengine -I@top_srcdir@/smartgame -I@top_srcdir@/go -I@top_srcdir@/simpleplayers -I@top_srcdir@/gouct
+fuego_unittest_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine \
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/go \
+-I@top_srcdir@/simpleplayers \
+-I@top_srcdir@/gouct
 
 DISTCLEANFILES = *~

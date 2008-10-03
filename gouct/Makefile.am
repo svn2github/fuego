@@ -31,8 +31,10 @@ GoUctRootFilter.h \
 GoUctSearch.h \
 GoUctUtil.h
 
-libfuego_gouct_a_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
-
-INCLUDES = -I@top_srcdir@/gtpengine -I@top_srcdir@/smartgame -I@top_srcdir@/go
+libfuego_gouct_a_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine \
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/go
 
 DISTCLEANFILES = *~

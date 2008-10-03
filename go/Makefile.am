@@ -82,8 +82,9 @@ GoStaticLadder.h \
 GoStaticSafetySolver.h \
 GoTimeControl.h
 
-libfuego_go_a_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
-
-INCLUDES = -I@top_srcdir@/gtpengine -I@top_srcdir@/smartgame
+libfuego_go_a_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine \
+-I@top_srcdir@/smartgame
 
 DISTCLEANFILES = *~

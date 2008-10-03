@@ -32,8 +32,10 @@ SpSafePlayer.h \
 SpSimplePlayer.h \
 SpUtil.h
 
-libfuego_simpleplayers_a_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
-
-INCLUDES = -I@top_srcdir@/gtpengine -I@top_srcdir@/smartgame -I@top_srcdir@/go
+libfuego_simpleplayers_a_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine \
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/go
 
 DISTCLEANFILES = *~

@@ -6,8 +6,6 @@ GtpEngine.cpp
 noinst_HEADERS = \
 GtpEngine.h
 
-libfuego_gtpengine_a_CXXFLAGS = $(BOOST_CPPFLAGS)
-
-INCLUDES = 
+libfuego_gtpengine_a_CPPFLAGS = $(BOOST_CPPFLAGS)
 
 DISTCLEANFILES = *~

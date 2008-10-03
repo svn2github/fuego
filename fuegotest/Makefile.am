@@ -7,7 +7,6 @@ FuegoTestMain.cpp
 noinst_HEADERS = \
 FuegoTestEngine.h
 
-fuego_test_CXXFLAGS = -DUNIX=1 $(BOOST_CPPFLAGS)
 fuego_test_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB)
 
 fuego_test_LDADD = \
@@ -24,6 +23,12 @@ fuego_test_DEPENDENCIES = \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a
 
-INCLUDES = -I@top_srcdir@/gtpengine -I@top_srcdir@/smartgame -I@top_srcdir@/go -I@top_srcdir@/simpleplayers -I@top_srcdir@/gouct
+fuego_test_CPPFLAGS = \
+-DUNIX=1 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/gtpengine \
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/go \
+-I@top_srcdir@/simpleplayers \
+-I@top_srcdir@/gouct
 
 DISTCLEANFILES = *~
