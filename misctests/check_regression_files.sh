@@ -14,7 +14,7 @@ for TSTFILE in `find . -name "*.tst" -o -name "*.list" | sed s,^./,,`; do
 done
 echo "ok"
 
-echo -n "Checking that regression/Makefile.am contains all SGF files... "
+echo -n "Checking that all SGF files referenced by a test exist and are in regression/Makefile.am... "
 for SGFFILE in `grep loadsgf *.tst|awk '{print $2}'`; do
    if ! test -f $SGFFILE; then
        echo "fail"
