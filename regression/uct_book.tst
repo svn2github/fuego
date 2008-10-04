@@ -15,41 +15,41 @@ loadsgf sgf/games/2007/CGOS/193991.sgf 2
 20 reg_genmove w
 #? [E4]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 5
+loadsgf sgf/games/2008/CGOS/595283.sgf 5
 30 reg_genmove b
 #? [D3]
 # book move was C4, but this seems refuted by this game.
 # See followup tests below.
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 6
+loadsgf sgf/games/2008/CGOS/595283.sgf 6
 40 reg_genmove w
 #? [D4]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 8
+loadsgf sgf/games/2008/CGOS/595283.sgf 8
 50 reg_genmove w
 #? [C3]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 10
+loadsgf sgf/games/2008/CGOS/595283.sgf 10
 60 reg_genmove w
 #? [C6]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 12
+loadsgf sgf/games/2008/CGOS/595283.sgf 12
 70 reg_genmove w
 #? [E4]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 14
+loadsgf sgf/games/2008/CGOS/595283.sgf 14
 80 reg_genmove w
 #? [E3]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 16
+loadsgf sgf/games/2008/CGOS/595283.sgf 16
 90 reg_genmove w
 #? [F5]
 
-loadsgf sgf/games/2007/CGOS/595283.sgf 18
+loadsgf sgf/games/2008/CGOS/595283.sgf 18
 100 reg_genmove w
 #? [G6]
 
-loadsgf sgf/games/2007/CGOS/595042.sgf 10
+loadsgf sgf/games/2008/CGOS/595042.sgf 10
 110 reg_genmove w
 #? [C4]
 # This whole line is a big headache. This game seems to refute D8.
