@@ -72,6 +72,7 @@ sgf/games/2007/seki-evaluation-problem.sgf \
 sgf/games/2007/simulation-bug-107407.2.sgf \
 sgf/games/2007/simulation-bug-107407.sgf \
 sgf/games/2007/uct160K-mogo10K-2.sgf \
+sgf/games/2008/CGOS/Fuego-519-2c-20080920080149.sgf \
 sgf/games/2008/CGOS/248520.sgf \
 sgf/games/2008/CGOS/248559.sgf \
 sgf/games/2008/CGOS/249009.sgf \
@@ -90,8 +91,11 @@ sgf/games/2008/CGOS/540532.sgf \
 sgf/games/2008/CGOS/543088.sgf \
 sgf/games/2008/CGOS/594998.sgf \
 sgf/games/2008/CGOS/595022.sgf \
+sgf/games/2008/CGOS/595027.sgf \
+sgf/games/2008/CGOS/595042.sgf \
 sgf/games/2008/CGOS/595097.sgf \
 sgf/games/2008/CGOS/595267.sgf \
+sgf/games/2008/CGOS/595283.sgf \
 sgf/games/2008/CGOS/595383.sgf \
 sgf/games/2008/CGOS/uct20080117031720-variation.sgf \
 sgf/games/2008/EGC2008/19/FirstGoBot-Fuego.sgf \
