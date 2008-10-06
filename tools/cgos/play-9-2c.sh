@@ -2,7 +2,7 @@
 
 # Script for playing Fuego on 9x9 CGOS on a machine with 2 cores / 2 GB
 
-FUEGO="../../build/gmake/build/release/fuego"
+FUEGO="../../fuegomain/fuego"
 VERSION=$(cd ../..; svnversion) || exit 1
 DEFAULT_NAME=Fuego-$VERSION-2c
 

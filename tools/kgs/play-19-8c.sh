@@ -2,7 +2,7 @@
 # Script for playing Fuego in a tournament on 19x19 KGS on a machine with
 # 8 cores / 8 GB
 
-FUEGO="../../build/gmake/build/release/fuego"
+FUEGO="../../fuegomain/fuego"
 NAME=Fuego
 DESCRIPTION=""
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script for playing Fuego on 9x9 KGS on a machine with 2 cores / 2 GB
 
-FUEGO="../../build/gmake/build/release/fuego"
+FUEGO="../../fuegomain/fuego"
 NAME=Fuego9
 DESCRIPTION=""
 
