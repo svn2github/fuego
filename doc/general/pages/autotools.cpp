@@ -38,6 +38,15 @@ recreate the makefiles bevor the compilation if necessary.
 sudo make install
 @endverbatim
 
+@section generalautotoolscheck Running tests
+
+The following command compiles and runs the unit tests (and also runs
+other tests):
+
+@verbatim
+make check
+@endverbatim
+
 @section generalautotoolvpath Building debug and release version
 
 Assuming that you want to build a debug and release version in different
