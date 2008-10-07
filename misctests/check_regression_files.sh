@@ -15,7 +15,7 @@ done
 echo "ok"
 
 echo -n "Checking that all SGF files referenced by a test exist and are in regression/Makefile.am... "
-for SGFFILE in `grep loadsgf *.tst|awk '{print $2}'`; do
+for SGFFILE in `cat *.tst|awk '{if ($1=="loadsgf") print $2}'`; do
    if ! test -f $SGFFILE; then
        echo "fail"
        echo "Non-existing file $SGFFILE is referenced by a regression test"
