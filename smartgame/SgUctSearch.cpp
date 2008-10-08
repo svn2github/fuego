@@ -395,8 +395,8 @@ bool SgUctSearch::EarlyAbort() const
 /** Expand a node.
     @param state The thread state with state.m_moves already computed.
     @param node The node to expand.
-    @param[out] isTreeOutOfMem Will be set to true, if node was not expanded
-    because maximum tree size was reached.
+    @param[in,out] isTreeOutOfMem Will be set to true, if node was not
+    expanded because maximum tree size was reached.
     @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
 */
 void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,

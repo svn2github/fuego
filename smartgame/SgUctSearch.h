@@ -518,8 +518,8 @@ public:
     /** Play a single game.
         Plays a single game using the thread state of the first thread.
         Call StartSearch() before calling this function.
-        @param isTreeOutOfMem Was the game aborted because the maximum tree
-        size was reached?
+        @param[in,out] isTreeOutOfMem Was the game aborted because the
+        maximum tree size was reached?
     */
     void PlayGame(bool& isTreeOutOfMem);
 
