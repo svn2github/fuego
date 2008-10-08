@@ -410,7 +410,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        Tree: [nodeIndex](count,value)
        0[0](0,0)
     */
-    bool isTreeOutOfMem;
+    bool isTreeOutOfMem = false;
     search.PlayGame(isTreeOutOfMem);
     BOOST_CHECK(! isTreeOutOfMem);
     {
