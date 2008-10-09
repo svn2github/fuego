@@ -293,12 +293,14 @@ float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
             }
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
-    if (score > 0)
+    if (score > std::numeric_limits<float>::epsilon())
         return ((1 - m_param.m_scoreModification)
                 + m_param.m_scoreModification * score * m_invMaxScore);
-    else
+    else if (score < -std::numeric_limits<float>::epsilon())
         return (m_param.m_scoreModification
                 + m_param.m_scoreModification * score * m_invMaxScore);
+    else
+        return 0.0; // Draw, can happen if komi is an integer
 }
 
 template<class POLICY>
