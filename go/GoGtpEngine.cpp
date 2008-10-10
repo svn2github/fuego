@@ -474,6 +474,12 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     As defined in the kgsGtp interface to the KGS Go server.
     Should not return pass, before all enemy dead stones are captured.<br>
     Arguments: color
+    @bug This does not work, if the opponent passes, before he captured all
+    of our dead stones, because then we could also pass without capturing all
+    of his dead stones (if it is a win accosing to Tromp-Taylor counting),
+    but KGS will not use Tromp-Taylor counting in the cleanup phase, but
+    send another <tt>final_status_list dead</tt> command. See also bug
+    2157832 int the bug tracker.
 */
 void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
 {
