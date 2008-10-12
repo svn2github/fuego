@@ -27,7 +27,28 @@ public:
 
 //----------------------------------------------------------------------------
 
-/** Client connection to an external GTP engine. */
+/** Client connection to an external GTP engine.
+    Usage example:
+@code
+    // Run GNU Go and send a GTP command
+    try
+    {
+        SgProcess process("gnugo --mode gtp");
+        SgGtpClient gtp(process.Input(), process.Output());
+        string result = gtp.Send("version");
+        SgDebug() << "Success response: " << result << '\n';
+    }
+    catch (const SgGtpFailure& e)
+    {
+        SgDebug() << "Error response: " << e.what() << '\n';
+    }
+    catch (const SgException& e)
+    {
+        SgDebug() << "Error running GNU Go: " << e.what() << '\n';
+    }
+
+@endcode
+*/
 class SgGtpClient
 {
 public:
