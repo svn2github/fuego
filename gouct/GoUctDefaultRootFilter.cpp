@@ -18,6 +18,34 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
+/** Return true, if point is on edge line and no stone is within a
+    Manhattan distance of 4.
+*/
+bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
+{
+    if (bd.Occupied(p))
+        return false;
+    int size = bd.Size();
+    int col = SgPointUtil::Col(p);
+    int row = SgPointUtil::Row(p);
+    if (! (col == 1 || col == size || row == 1 || row == size))
+        return false;
+    for (int deltaCol = -4; deltaCol <= 4; ++deltaCol)
+        for (int deltaRow = -4; deltaRow <= 4; ++deltaRow)
+        {
+            if (col + deltaCol < 1 || col + deltaCol > size
+                || row + deltaRow < 1 || row + deltaRow > size
+                || abs(deltaCol) + abs(deltaRow) > 4)
+                continue;
+            if (bd.Occupied(SgPointUtil::Pt(col + deltaCol,
+                                            row + deltaRow)))
+                return false;
+        }
+    return true;
+}
+
+//----------------------------------------------------------------------------
+
 GoUctDefaultRootFilter::GoUctDefaultRootFilter(const GoBoard& bd)
     : m_bd(bd),
       m_checkLadders(true),
@@ -91,6 +119,14 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
             }
 
         }
+
+    // Moves on edge line, if no stone is near
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+    {
+        SgPoint p = *it;
+        if (IsEmptyEdge(m_bd, p))
+            rootFilter.push_back(p);
+    }
 
     return rootFilter;
 }
