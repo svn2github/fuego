@@ -57,7 +57,7 @@ directories. This is called a VPATH-build. In this example, we choose
 cd fuego
 mkdir -p build/autotools/debug
 cd build/autotools/debug
-../../../configure --enable-assert --enable-optimize=no
+env CXXFLAGS=-g ../../../configure --enable-assert --enable-optimize=no
 
 cd ../../../
 mkdir -p build/autotools/release
