@@ -1,2 +1,0 @@
-This build system using GNU make is deprecated and will be removed in the
-future. Use the build system using GNU Autotools instead.
