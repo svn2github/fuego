@@ -5,6 +5,5 @@
     Documentation that does not belong to any of the modules:
 
     - @ref generalstyle
-    - @ref generalgmake
     - @ref generalautotools
 */
