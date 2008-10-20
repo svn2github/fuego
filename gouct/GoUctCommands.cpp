@@ -12,12 +12,13 @@
 #include "GoGtpCommandUtil.h"
 #include "GoBoardUtil.h"
 #include "GoSafetySolver.h"
-#include "GoUctPlayoutPolicy.h"
+#include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctDefaultRootFilter.h"
 #include "GoUctEstimatorStat.h"
-#include "GoUctPlayer.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctPatterns.h"
+#include "GoUctPlayer.h"
+#include "GoUctPlayoutPolicy.h"
 #include "GoUctUtil.h"
 #include "SgException.h"
 #include "SgUctTreeUtil.h"
@@ -174,6 +175,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "plist/Uct Patterns/uct_patterns\n"
         "pstring/Uct Policy Moves/uct_policy_moves\n"
         "gfx/Uct Prior Knowledge/uct_prior_knowledge\n"
+        "sboard/Uct Prior Knowledge Type/uct_prior_knowledge_type\n"
         "sboard/Uct Rave Values/uct_rave_values\n"
         "plist/Uct Root Filter/uct_root_filter\n"
         "none/Uct SaveGames/uct_savegames %w\n"
@@ -728,8 +730,39 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     }
 }
 
+/** Show prior knowledge move types.
+    This command is compatible to the GoGui analyze command type @c sboard.
+    @see GoUctDefaultPriorKnowledge::GetType()
+*/
+void GoUctCommands::CmdPriorKnowledgeType(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
+        = ThreadState(0);
+    SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
+    if (priorKnowledge == 0)
+        throw GtpFailure("no prior knowledge set at search");
+    GoUctDefaultPriorKnowledge* defaultPriorKnowledge =
+        dynamic_cast<GoUctDefaultPriorKnowledge*>(priorKnowledge);
+    if (defaultPriorKnowledge == 0)
+        throw GtpFailure("prior knowledge is not GoUctDefaultPriorKnowledge");
+    state.StartSearch(); // Updates thread state board
+    bool deepenTree = false;
+    defaultPriorKnowledge->ProcessPosition(deepenTree);
+    SgPointArray<string> array("\"\"");
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+        if (m_bd.IsEmpty(*it))
+        {
+            ostringstream out;
+            out << defaultPriorKnowledge->GetType(*it);
+            array[*it] = out.str();
+        }
+    cmd << '\n'
+        << SgWritePointArray<string>(array, m_bd.Size());
+}
+
 /** Show RAVE values of last search at root position.
-    This command is compatible to the GoGui analyze command type @c dboard.
+    This command is compatible to the GoGui analyze command type @c sboard.
     The values are scaled to [-1,+1] from Black's point of view.
     @see SgUctSearch::Rave
 */
@@ -989,6 +1022,8 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_patterns", &GoUctCommands::CmdPatterns);
     Register(e, "uct_policy_moves", &GoUctCommands::CmdPolicyMoves);
     Register(e, "uct_prior_knowledge", &GoUctCommands::CmdPriorKnowledge);
+    Register(e, "uct_prior_knowledge_type",
+             &GoUctCommands::CmdPriorKnowledgeType);
     Register(e, "uct_rave_values", &GoUctCommands::CmdRaveValues);
     Register(e, "uct_root_filter", &GoUctCommands::CmdRootFilter);
     Register(e, "uct_savegames", &GoUctCommands::CmdSaveGames);

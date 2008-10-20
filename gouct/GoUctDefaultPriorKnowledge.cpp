@@ -45,11 +45,24 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
 {
 }
 
-void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
-                                            std::size_t count)
+int GoUctDefaultPriorKnowledge::GetNuTypes() const
 {
+    return 10;
+}
+
+int GoUctDefaultPriorKnowledge::GetType(SgPoint p) const
+{
+    return m_types[p];
+}
+
+void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
+                                            std::size_t count, int type)
+{
+    SG_ASSERT(type >= 0);
+    SG_ASSERT(type < GetNuTypes());
     m_values[p] = value;
     m_counts[p] = count;
+    m_types[p] = type;
 }
 
 void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
@@ -81,56 +94,56 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 
     if (isFullBoardRandom && ! anyHeuristic)
     {
-        Initialize(SG_PASS, 0.1, 9);
+        Initialize(SG_PASS, 0.1, 9, 1);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
-                Initialize(*it, 0.1, 9);
+                Initialize(*it, 0.1, 9, 2);
             else
-                m_counts[*it] = 0; // Don't initialize
+                Initialize(*it, 0.5, 0, 0); // Don't initialize
         }
     }
     else if (isFullBoardRandom && anyHeuristic)
     {
-        Initialize(SG_PASS, 0.1, 9);
+        Initialize(SG_PASS, 0.1, 9, 1);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
-                Initialize(*it, 0.1, 9);
+                Initialize(*it, 0.1, 9, 2);
             else if (setsAtari[*it])
-                Initialize(*it, 1.0, 3);
+                Initialize(*it, 1.0, 3, 3);
             else if (patternMatch[*it])
-                Initialize(*it, 0.9, 3);
+                Initialize(*it, 0.9, 3, 4);
             else
-                Initialize(*it, 0.5, 3);
+                Initialize(*it, 0.5, 3, 5);
         }
     }
     else
     {
-        Initialize(SG_PASS, 0.1, 9);
+        Initialize(SG_PASS, 0.1, 9, 1);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
-                Initialize(*it, 0.1, 9);
+                Initialize(*it, 0.1, 9, 2);
             else if (setsAtari[*it])
-                Initialize(*it, 0.8, 9);
+                Initialize(*it, 0.8, 9, 6);
             else if (patternMatch[*it])
-                Initialize(*it, 0.6, 9);
+                Initialize(*it, 0.6, 9, 7);
             else
-                Initialize(*it, 0.4, 9);
+                Initialize(*it, 0.4, 9, 8);
         }
         GoPointList moves = m_policy.GetEquivalentBestMoves();
         for (GoPointList::Iterator it(moves); it; ++it)
-            Initialize(*it, 1.0, 9);
+            Initialize(*it, 1.0, 9, 9);
     }
 
     m_policy.EndPlayout();
