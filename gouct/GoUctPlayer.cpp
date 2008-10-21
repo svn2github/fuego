@@ -59,7 +59,7 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
     : GoPlayer(bd),
       m_searchMode(GOUCT_SEARCHMODE_UCT),
       m_autoParam(true),
-      m_ignoreClock(true),
+      m_ignoreClock(false),
       m_enablePonder(false),
       m_useRootFilter(true),
       m_reuseSubtree(false),
