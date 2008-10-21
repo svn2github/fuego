@@ -84,10 +84,11 @@ public:
         depends on the average game length and therefore probably the board
         size, the constant is not given in moves, but as a fraction between 0
         and 1, and the constant is computed by multiplication with the
-        expected number of total moves in the current game (moves played plus
-        expected remaining moves). The default value is 1.0, which does
-        not limit the number of expected remaining moves. The smaller the
-        value, the more time is spent in the early phase of the game.
+        expected number of total moves by the current player in the current
+        game (moves played plus expected remaining moves). The default value
+        is 1.0, which does not limit the number of expected remaining moves.
+        The smaller the value, the more time is spent in the early phase of
+        the game.
     */
     double RemainingConstant() const;
 
@@ -102,10 +103,10 @@ public:
         good value for this constant depends on the expected game length
         and therefore probably on the board size, the constant is given as
         a fraction between 0 and 1 and the number of reserve moves is computed
-        by multiplication with the expected number of total moves in the
-        current game (moves played plus expected remaining moves). If the
-        value would be smaller than 1, 1 is used. The default value is 0,
-        which means, that 1 reserve move is used.
+        by multiplication with the expected number of total moves by the
+        current player in the current game (moves played plus expected
+        remaining moves). If the value would be smaller than 1, 1 is used.
+        The default value is 0, which means, that 1 reserve move is used.
     */
     double ReserveMovesConstant() const;
 
