@@ -765,8 +765,9 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
     @arg @c fast_open_factor See SgDefaultTimeControl::FastOpenFactor()
     @arg @c fast_open_moves See SgDefaultTimeControl::FastOpenMoves()
     @arg @c final_space See GoTimeControl::FinalSpace()
-    @arg @c remaining_constant See SgTimeControl::RemainingConstant()
-    @arg @c reserve_moves_constant See SgTimeControl::ReserveMovesConstant()
+    @arg @c remaining_constant See SgDefaultTimeControl::RemainingConstant()
+    @arg @c reserve_moves_constant See
+        SgDefaultTimeControl::ReserveMovesConstant()
 */
 void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
 {
