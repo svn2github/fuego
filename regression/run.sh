@@ -5,8 +5,18 @@
 
 RESULT_DIR="html"
 TESTSUITE_DEFAULT="basics.suite"
-FUEGO="../fuegomain/fuego -srand 1"
-FUEGOTEST="../fuegotest/fuego_test -srand 1"
+# You can invoke this script with "env FUEGO_BUILD_ROOT=... run.sh" or it
+# will automatically detect the build root, if the build was done in the
+# Fuego root directory or in build/autotools/debug
+if [[ "$FUEGO_BUILD_ROOT" == "" ]]; then
+    if test -x ../fuegomain/fuego; then
+        FUEGO_BUILD_ROOT=".."
+    elif test -x ../build/autotools/debug/fuegomain/fuego; then
+        FUEGO_BUILD_ROOT="../build/autotools/debug"
+    fi
+fi
+FUEGO="$FUEGO_BUILD_ROOT/fuegomain/fuego -srand 1"
+FUEGOTEST="$FUEGO_BUILD_ROOT/fuegotest/fuego_test -srand 1"
 
 #-----------------------------------------------------------------------------
 # Functions
