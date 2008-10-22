@@ -79,8 +79,8 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
     m_timeControl.SetFastOpenMoves(0);
     m_timeControl.SetFinalSpace(1);
     m_timeControl.SetMinTime(0);
+    m_timeControl.SetRemainingConstant(0.15);
     m_timeControl.SetReserveMovesConstant(0.2);
-    m_timeControl.SetRemainingConstant(0.3);
     SetPriorKnowledge(m_priorKnowledge);
 }
 
