@@ -289,11 +289,20 @@ namespace GoBoardUtil
     void SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor, int maxLib,
                              SgList<SgPoint>* blocks);
 
-    /** Helper function used in ScoreEndPosition */
+    /** Helper function used in ScoreSimpleEndPosition */
     template<class BOARD>
     SgEmptyBlackWhite ScorePoint(const BOARD& bd, SgPoint p, bool noCheck);
 
-    /** Score position with safe points precomputed
+    /** Score position with given safe stones and only simple eyes.
+        This is a fast scoring function (e.g. suitable for Monte-Carlo),
+        that can be used if playing continues as long as there are legal moves
+        which do not fill the player's single point eyes.
+        Precomputed safety status of points is used, all other empty points
+        must be single empty points surrounded by one color.
+        The score is counted using 1 point for all black stones or empty
+        points with only black stones adjacent, and -1 point for white
+        stones or empty points with only white stones adjacent.
+        Komi of board is taken into account.
         @param bd
         @param komi
         @param safe
@@ -302,9 +311,9 @@ namespace GoBoardUtil
         point (SG_EMPTY means dame); null if not needed
     */
     template<class BOARD>
-    float ScoreEndPosition(const BOARD& bd, float komi, const SgBWSet& safe,
-                           bool noCheck,
-                           SgPointArray<SgEmptyBlackWhite>* scoreBoard);
+    float ScoreSimpleEndPosition(const BOARD& bd, float komi,
+                                 const SgBWSet& safe, bool noCheck,
+                                 SgPointArray<SgEmptyBlackWhite>* scoreBoard);
 
     /** Score position with all stones safe and only simple eyes.
         This is a fast scoring function (e.g. suitable for Monte-Carlo),
@@ -464,8 +473,8 @@ SgEmptyBlackWhite GoBoardUtil::ScorePoint(const BOARD& bd, SgPoint p,
 }
 
 template<class BOARD>
-float GoBoardUtil::ScoreEndPosition(const BOARD& bd, float komi,
-                                    const SgBWSet& safe, bool noCheck,
+float GoBoardUtil::ScoreSimpleEndPosition(const BOARD& bd, float komi,
+                                  const SgBWSet& safe, bool noCheck,
                                   SgPointArray<SgEmptyBlackWhite>* scoreBoard)
 {
     float score = -komi;

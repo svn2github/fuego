@@ -274,8 +274,8 @@ float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
     {
         if (m_param.m_mercyRule && m_mercyRuleTriggered)
             return m_mercyRuleResult;
-        score = GoBoardUtil::ScoreEndPosition(bd, komi, m_safe,
-                                              false, scoreBoardPtr);
+        score = GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
+                                                    false, scoreBoardPtr);
     }
     if (m_param.m_territoryStatistics)
         for (typename BOARD::Iterator it(bd); it; ++it)
