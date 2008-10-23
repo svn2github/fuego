@@ -67,9 +67,11 @@ bool ReadCommand(GtpCommand& cmd, istream& in)
     while (getline(in, line) && ! IsCommandLine(line))
     {
     }
+    if (in.fail())
+        return false;
     Trim(line);
     cmd.Init(line);
-    return ! in.fail();
+    return true;
 }
 #endif
 
