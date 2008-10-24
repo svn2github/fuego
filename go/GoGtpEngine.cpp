@@ -17,6 +17,7 @@
 #include "GoNodeUtil.h"
 #include "GoPlayer.h"
 #include "GoTimeControl.h"
+#include "GoUtil.h"
 #include "SgDebug.h"
 #include "SgEBWArray.h"
 #include "SgException.h"
@@ -415,17 +416,10 @@ void GoGtpEngine::CmdFinalScore(GtpCommand& cmd)
     cmd.CheckArgNone();
     const GoBoard& bd = Board();
     if (! bd.Rules().CaptureDead() || bd.Rules().JapaneseScoring())
-        throw GtpFailure("can only score if Tromp-Taylor-rules");
+        throw GtpFailure("can only score if Tromp-Taylor rules");
     float komi = bd.Rules().Komi().ToFloat();
     float score = GoBoardUtil::TrompTaylorScore(bd, komi);
-    if (score > 0)
-        cmd << "B+";
-    else
-    {
-        cmd << "W+";
-        score = -score;
-    }
-    cmd << fixed << setprecision(1) << score;
+    cmd << GoUtil::ScoreToString(score);
 }
 
 /** Standard GTP command fixed_handicap. */
