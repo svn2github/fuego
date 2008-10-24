@@ -24,6 +24,46 @@ using SgPropUtil::PointToSgfString;
 
 //----------------------------------------------------------------------------
 
+namespace {
+
+/** Function used in GoBoardUtil::ScorePosition() */
+void ScorePositionRecurse(const GoBoard& bd, SgPoint p,
+                          const SgPointSet& deadStones, SgMarker& marker,
+                          bool& isBlackAdjacent, bool& isWhiteAdjacent,
+                          int& nuPoints, int& nuDeadWhite, int& nuDeadBlack)
+{
+    if (bd.IsBorder(p))
+        return;
+    SgEmptyBlackWhite c = bd.GetColor(p);
+    if (c != SG_EMPTY && ! deadStones.Contains(p))
+    {
+        if (c == SG_BLACK)
+            ++isBlackAdjacent;
+        else
+            ++isWhiteAdjacent;
+        return;
+    }
+    if (! marker.NewMark(p))
+        return;
+    ++nuPoints;
+    if (c == SG_BLACK)
+        ++nuDeadBlack;
+    if (c == SG_WHITE)
+        ++nuDeadWhite;
+    ScorePositionRecurse(bd, p + SG_NS, deadStones, marker, isBlackAdjacent,
+                         isWhiteAdjacent, nuPoints, nuDeadWhite, nuDeadBlack);
+    ScorePositionRecurse(bd, p - SG_NS, deadStones, marker, isBlackAdjacent,
+                         isWhiteAdjacent, nuPoints, nuDeadWhite, nuDeadBlack);
+    ScorePositionRecurse(bd, p + SG_WE, deadStones, marker, isBlackAdjacent,
+                         isWhiteAdjacent, nuPoints, nuDeadWhite, nuDeadBlack);
+    ScorePositionRecurse(bd, p - SG_WE, deadStones, marker, isBlackAdjacent,
+                         isWhiteAdjacent, nuPoints, nuDeadWhite, nuDeadBlack);
+}
+
+} // namespace
+
+//----------------------------------------------------------------------------
+
 void GoBoardUtil::AddNeighborBlocksOfColor(const GoBoard& bd, SgPoint p,
                                            SgBlackWhite c,
                                            SgList<SgPoint>& neighbors)
@@ -726,6 +766,53 @@ bool GoBoardUtil::IsCapturingMove(const GoBoard& bd, SgPoint p)
     bd.NeighborBlocks(p, bd.Opponent(), 1, anchors);
     // check if at least one neighbor in atari exists
     return anchors[0] != SG_ENDPOINT;
+}
+
+bool GoBoardUtil::ScorePosition(const GoBoard& bd,
+                                const SgPointSet& deadStones, float& score)
+{
+    SgMarker marker;
+    int stones = 0;
+    int territory = 0;
+    int dead = 0;
+    for (GoBoard::Iterator it(bd); it; ++it)
+    {
+        SgPoint p = *it;
+        if (bd.Occupied(p) && ! deadStones.Contains(p))
+        {
+            if (bd.GetColor(p) == SG_BLACK)
+                ++stones;
+            else
+                --stones;
+            continue;
+        }
+        if (marker.Contains(p))
+            continue;
+        int nuPoints = 0;
+        int nuDeadWhite = 0;
+        int nuDeadBlack = 0;
+        bool isBlackAdjacent = false;
+        bool isWhiteAdjacent = false;
+        ScorePositionRecurse(bd, p, deadStones, marker, isBlackAdjacent,
+                             isWhiteAdjacent, nuPoints, nuDeadWhite,
+                             nuDeadBlack);
+        if ((nuDeadWhite > 0 && nuDeadBlack > 0)
+            || (isBlackAdjacent && nuDeadBlack > 0)
+            || (isWhiteAdjacent && nuDeadWhite > 0))
+            return false;
+        dead += nuDeadBlack;
+        dead -= nuDeadWhite;
+        if (isBlackAdjacent && ! isWhiteAdjacent)
+            territory += nuPoints;
+        else if (isWhiteAdjacent && ! isBlackAdjacent)
+            territory -= nuPoints;
+    }
+    int prisoners = bd.NumPrisoners(SG_BLACK) - bd.NumPrisoners(SG_WHITE);
+    if (bd.Rules().JapaneseScoring())
+        score = territory - dead - prisoners - bd.Rules().Komi().ToFloat();
+    else
+        score = territory + stones - bd.Rules().Komi().ToFloat();
+    return true;
 }
 
 int GoBoardUtil::Stones(const GoBoard& bd, SgPoint p, SgPoint stones[])

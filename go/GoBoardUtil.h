@@ -289,6 +289,23 @@ namespace GoBoardUtil
     void SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor, int maxLib,
                              SgList<SgPoint>* blocks);
 
+    /** Count score given the set of dead stones.
+        Checks all regions that are surrounded by stones that are not dead,
+        and counts the score according to the board rules
+        (Chinese/Japanese) and komi. Black points are counted positive.
+        Cannot handle neutral eye points that can occur in seki with Japanese
+        rules.
+        @param bd
+        @param deadStones
+        @param[out] score
+        @return @c false if position cannot be scored, because the dead
+        stones information is not consistent (a region with dead stones of
+        both colors exists or dead stones of a color in a region of that
+        color).
+    */
+    bool ScorePosition(const GoBoard& bd, const SgPointSet& deadStones,
+                       float& score);
+
     /** Helper function used in ScoreSimpleEndPosition */
     template<class BOARD>
     SgEmptyBlackWhite ScorePoint(const BOARD& bd, SgPoint p, bool noCheck);
@@ -304,7 +321,8 @@ namespace GoBoardUtil
         stones or empty points with only white stones adjacent.
         Komi of board is taken into account.
         @param bd
-        @param komi
+        @param komi Komi (bd.Rules().Komi() is not used to avoid multiple
+        conversions of komi to float)
         @param safe
         @param noCheck
         @param scoreBoard Optional board to fill in the status of each
@@ -326,7 +344,8 @@ namespace GoBoardUtil
         stones or empty points with only white stones adjacent.
         Komi of board is taken into account.
         @param bd The board with the position
-        @param komi
+        @param komi Komi (bd.Rules().Komi() is not used to avoid multiple
+        conversions of komi to float)
         @param noCheck Don't throw an exception if not all empty points are
         single empty points (there are cases, where this score function is
         useful even if it is sometimes wrong)
