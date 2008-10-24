@@ -20,6 +20,7 @@
 #include "GoUctPlayer.h"
 #include "GoUctPlayoutPolicy.h"
 #include "GoUctUtil.h"
+#include "GoUtil.h"
 #include "SgException.h"
 #include "SgUctTreeUtil.h"
 #include "SgRestorer.h"
@@ -238,78 +239,47 @@ void GoUctCommands::CmdEstimatorStat(GtpCommand& cmd)
                                 stepSize, fileName);
 }
 
+/** Return final score.
+    Does a small search and uses the territory statistics to determine the
+    status of blocks.
+*/
+void GoUctCommands::CmdFinalScore(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    SgPointSet deadStones = DoFinalStatusSearch();
+    float score;
+    if (! GoBoardUtil::ScorePosition(m_bd, deadStones, score))
+        throw GtpFailure("cannot score");
+    cmd << GoUtil::ScoreToString(score);
+}
+
 /** Return final status of stones.
-    Only the argument @c dead (see GTP standard) is supported. Does a
-    small search and uses the territory statistics to determine
-    the status of blocks.
+    Does a small search and uses the territory statistics to determine the
+    status of blocks. The engine cannot detect seki, so according to the
+    GTP standard, all stones that are not dead are reported as alive, the
+    response to seki is an empty list. <br>
+    Arguments: alive|seki|dead
 */
 void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
-    if (cmd.Arg(0) != "dead")
-        throw GtpFailure("unsupported final status argument");
-    if (GoBoardUtil::TwoPasses(m_bd) && m_bd.Rules().CaptureDead())
-        // Everything is alive if end position and Tromp-Taylor rules
+    string arg = cmd.Arg(0);
+    if (arg == "seki")
         return;
-
-    const size_t MAX_GAMES = 5000;
-    SgDebug() << "GoUctCommands::CmdFinalStatusList: doing a search with "
-              << MAX_GAMES << " games to determine final status\n";
-    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
-                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
-        search = GlobalSearch();
-    SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
-    search.m_param.m_territoryStatistics = true;
-    // Undo passes, because UCT search always scores with Tromp-Taylor after
-    // two passes in-tree
-    int nuUndoPass = 0;
-    SgBlackWhite toPlay = m_bd.ToPlay();
-    while (m_bd.GetLastMove() == SG_PASS)
-    {
-        m_bd.Undo();
-        toPlay = SgOppBW(toPlay);
-        ++nuUndoPass;
-    }
-    m_player->UpdateSubscriber();
-    if (nuUndoPass > 0)
-        SgDebug() << "Undoing " << nuUndoPass << " passes\n";
-    vector<SgMove> sequence;
-    search.Search(MAX_GAMES, numeric_limits<double>::max(), sequence);
-    SgDebug() << SgWriteLabel("Sequence")
-              << SgWritePointList(sequence, "", false);
-    for (int i = 0; i < nuUndoPass; ++i)
-    {
-        m_bd.Play(SG_PASS, toPlay);
-        toPlay = SgOppBW(toPlay);
-    }
-    m_player->UpdateSubscriber();
-
-    SgPointArray<SgUctStatistics> territoryStatistics =
-        ThreadState(0).m_territoryStatistics;
-    GoSafetySolver safetySolver(m_bd);
-    SgBWSet safe;
-    safetySolver.FindSafePoints(&safe);
+    bool getDead;
+    if (arg == "alive")
+        getDead = false;
+    else if (arg == "dead")
+        getDead = true;
+    else
+        throw GtpFailure("invalid final status argument");
+    SgPointSet deadPoints = DoFinalStatusSearch();
+    // According to GTP standard the response should be one string(=block)
+    // per line
     for (GoBlockIterator it(m_bd); it; ++it)
     {
-        SgBlackWhite c = m_bd.GetStone(*it);
-        bool isDead = safe[SgOppBW(c)].Contains(*it);
-        if (! isDead && ! safe[c].Contains(*it))
-        {
-            SgStatistics<float,int> averageStatus;
-            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
-            {
-                if (territoryStatistics[*it2].Count() == 0)
-                    // No statistics, maybe all simulations aborted due to
-                    // max length or mercy rule.
-                    return;
-                averageStatus.Add(territoryStatistics[*it2].Mean());
-            }
-            const float threshold = 0.3;
-            isDead =
-                ((c == SG_BLACK && averageStatus.Mean() < threshold)
-                 || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold));
-        }
-        if (isDead)
+        if ((getDead && deadPoints.Contains(*it))
+            || (! getDead && ! deadPoints.Contains(*it)))
         {
             for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
                 cmd << SgWritePoint(*it2) << ' ';
@@ -405,7 +375,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c max_games See GoUctPlayer::MaxGames
     @arg @c max_nodes See GoUctPlayer::MaxNodes
     @arg @c max_time See GoUctPlayer::MaxTime
-    @arg @c prior_knowledge @c none|even|policy See GoUctPlayer::PriorKnowledge
+    @arg @c prior_knowledge @c none|even|policy See
+        GoUctPlayer::PriorKnowledge
     @arg @c resign_min_games See GoUctPlayer::ResignMinGames
     @arg @c resign_threshold See GoUctPlayer::ResignThreshold
     @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode
@@ -974,6 +945,81 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     cmd << value;
 }
 
+/** Do a small search with territory statistics enabled to determine what
+    blocks are dead for the final_status_list and final_score commands.
+    @return Point set containing dead stones.
+*/
+SgPointSet GoUctCommands::DoFinalStatusSearch()
+{
+    SgPointSet deadStones;
+    if (GoBoardUtil::TwoPasses(m_bd) && m_bd.Rules().CaptureDead())
+        // Everything is alive if end position and Tromp-Taylor rules
+        return deadStones;
+
+    const size_t MAX_GAMES = 5000;
+    SgDebug() << "GoUctCommands::DoFinalStatusSearch: doing a search with "
+              << MAX_GAMES << " games to determine final status\n";
+    GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
+        search = GlobalSearch();
+    SgRestorer<bool> restorer(&search.m_param.m_territoryStatistics);
+    search.m_param.m_territoryStatistics = true;
+    // Undo passes, because UCT search always scores with Tromp-Taylor after
+    // two passes in-tree
+    int nuUndoPass = 0;
+    SgBlackWhite toPlay = m_bd.ToPlay();
+    while (m_bd.GetLastMove() == SG_PASS)
+    {
+        m_bd.Undo();
+        toPlay = SgOppBW(toPlay);
+        ++nuUndoPass;
+    }
+    m_player->UpdateSubscriber();
+    if (nuUndoPass > 0)
+        SgDebug() << "Undoing " << nuUndoPass << " passes\n";
+    vector<SgMove> sequence;
+    search.Search(MAX_GAMES, numeric_limits<double>::max(), sequence);
+    SgDebug() << SgWriteLabel("Sequence")
+              << SgWritePointList(sequence, "", false);
+    for (int i = 0; i < nuUndoPass; ++i)
+    {
+        m_bd.Play(SG_PASS, toPlay);
+        toPlay = SgOppBW(toPlay);
+    }
+    m_player->UpdateSubscriber();
+
+    SgPointArray<SgUctStatistics> territoryStatistics =
+        ThreadState(0).m_territoryStatistics;
+    GoSafetySolver safetySolver(m_bd);
+    SgBWSet safe;
+    safetySolver.FindSafePoints(&safe);
+    for (GoBlockIterator it(m_bd); it; ++it)
+    {
+        SgBlackWhite c = m_bd.GetStone(*it);
+        bool isDead = safe[SgOppBW(c)].Contains(*it);
+        if (! isDead && ! safe[c].Contains(*it))
+        {
+            SgStatistics<float,int> averageStatus;
+            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+            {
+                if (territoryStatistics[*it2].Count() == 0)
+                    // No statistics, maybe all simulations aborted due to
+                    // max length or mercy rule.
+                    return deadStones;
+                averageStatus.Add(territoryStatistics[*it2].Mean());
+            }
+            const float threshold = 0.3;
+            isDead =
+                ((c == SG_BLACK && averageStatus.Mean() < threshold)
+                 || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold));
+        }
+        if (isDead)
+            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+                deadStones.Include(*it2);
+    }
+    return deadStones;
+}
+
 GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                       GoUctPlayoutPolicyFactory<GoUctBoard> >&
 GoUctCommands::GlobalSearch()
@@ -1008,6 +1054,7 @@ GoUctCommands::Policy(std::size_t threadId)
 
 void GoUctCommands::Register(GtpEngine& e)
 {
+    Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);
     Register(e, "uct_estimator_stat", &GoUctCommands::CmdEstimatorStat);
