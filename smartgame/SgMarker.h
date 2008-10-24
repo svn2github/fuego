@@ -27,6 +27,7 @@ public:
 
     bool Contains(SgPoint p) const;
 
+    /** Mark a point and return true if it was not already marked */
     bool NewMark(SgPoint p);
 
     void Clear();
