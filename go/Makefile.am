@@ -37,7 +37,8 @@ GoSafetyUtil.cpp \
 GoSearch.cpp \
 GoStaticLadder.cpp \
 GoStaticSafetySolver.cpp \
-GoTimeControl.cpp
+GoTimeControl.cpp \
+GoUtil.cpp
 
 noinst_HEADERS = \
 GoAssertBoardRestored.h \
@@ -80,7 +81,8 @@ GoSearch.h \
 GoSortedMoves.h \
 GoStaticLadder.h \
 GoStaticSafetySolver.h \
-GoTimeControl.h
+GoTimeControl.h \
+GoUtil.h
 
 libfuego_go_a_CPPFLAGS = \
 $(BOOST_CPPFLAGS) \

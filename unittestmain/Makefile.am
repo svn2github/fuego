@@ -15,6 +15,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoKomiTest.cpp \
 ../go/test/GoRegionBoardTest.cpp \
 ../go/test/GoTimeControlTest.cpp \
+../go/test/GoUtilTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
 ../gouct/test/GoUctUtilTest.cpp \
 ../gtpengine/test/GtpEngineTest.cpp \
