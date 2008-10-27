@@ -127,6 +127,7 @@ void SgStatisticsBase<FLOAT,INT>::LoadFromText(std::istream& in)
 template<typename FLOAT, typename INT>
 const FLOAT& SgStatisticsBase<FLOAT,INT>::Mean() const
 {
+    SG_ASSERT(m_count > 0);
     return m_mean;
 }
 
@@ -205,13 +206,21 @@ SgStatistics<FLOAT,INT>::SgStatistics(FLOAT val, INT count)
 template<typename FLOAT, typename INT>
 void SgStatistics<FLOAT,INT>::Add(FLOAT val)
 {
-    FLOAT meanOld = SgStatisticsBase<FLOAT,INT>::Mean();
     INT countOld = SgStatisticsBase<FLOAT,INT>::Count();
-    SgStatisticsBase<FLOAT,INT>::Add(val);
-    FLOAT mean = SgStatisticsBase<FLOAT,INT>::Mean();
-    INT count = SgStatisticsBase<FLOAT,INT>::Count();
-    m_variance = (countOld * (m_variance + meanOld * meanOld)
-                  + val * val) / count  - mean * mean;
+    if (countOld > 0)
+    {
+        FLOAT meanOld = SgStatisticsBase<FLOAT,INT>::Mean();
+        SgStatisticsBase<FLOAT,INT>::Add(val);
+        FLOAT mean = SgStatisticsBase<FLOAT,INT>::Mean();
+        INT count = SgStatisticsBase<FLOAT,INT>::Count();
+        m_variance = (countOld * (m_variance + meanOld * meanOld)
+                      + val * val) / count  - mean * mean;
+    }
+    else
+    {
+        SgStatisticsBase<FLOAT,INT>::Add(val);
+        m_variance = 0;
+    }
 }
 
 template<typename FLOAT, typename INT>
