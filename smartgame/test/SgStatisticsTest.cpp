@@ -18,6 +18,17 @@ namespace {
 
 //----------------------------------------------------------------------------
 
+BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_AddWeighted)
+{
+    SgStatisticsBase<double,double> statistics;
+    statistics.AddWeighted(2., 1.);
+    BOOST_CHECK_CLOSE(statistics.Mean(), 2., 0.1);
+    statistics.AddWeighted(5., 0.5);
+    BOOST_CHECK_CLOSE(statistics.Mean(), 3., 0.1);
+}
+
+//----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(SgStatisticsTest_Basics)
 {
     typedef SgStatistics<double,std::size_t> Statistics;
@@ -29,7 +40,7 @@ BOOST_AUTO_TEST_CASE(SgStatisticsTest_Basics)
     BOOST_CHECK_EQUAL(statistics.Count(), 3u);
     BOOST_CHECK_CLOSE(statistics.Mean(), 2., 0.1);
     BOOST_CHECK_CLOSE(statistics.Deviation(), 0.816, 0.1);
-    
+
     Statistics statistics2;
     statistics2.Add(-1.0);
     statistics2.Add(2.5);

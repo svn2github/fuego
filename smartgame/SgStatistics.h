@@ -41,6 +41,12 @@ public:
 
     void Add(VALUE val);
 
+    /** Add a weighted value.
+        This function can only be used with floating point count types,
+        because is will add a fractional count.
+    */
+    void AddWeighted(VALUE val, VALUE weight);
+
     void Clear();
 
     const COUNT& Count() const;
@@ -50,6 +56,14 @@ public:
         Add(val)
     */
     void Initialize(VALUE val, COUNT count);
+
+    /** Check if the mean value is defined.
+        The mean value is defined, if the count if greater than zero. The
+        result of this function is equivalent to <tt>Count() > 0</tt>, for
+        integer count types and <tt>Count() > epsilon()</tt> for floating
+        point count types.
+    */
+    bool IsDefined() const;
 
     const VALUE& Mean() const;
 
@@ -92,9 +106,24 @@ void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val)
     // that m_mean is valid, if m_count is greater zero
     COUNT count = m_count;
     ++count;
-    SG_ASSERT(count > 0); // overflow
+    SG_ASSERT(! std::numeric_limits<COUNT>::is_exact
+              || count > 0); // overflow
     val -= m_mean;
     m_mean +=  val / count;
+    m_count = count;
+}
+
+template<typename VALUE, typename COUNT>
+void SgStatisticsBase<VALUE,COUNT>::AddWeighted(VALUE val, VALUE weight)
+{
+    SG_ASSERT(! std::numeric_limits<COUNT>::is_exact);
+    // Write order dependency: at least on class (SgUctSearch in lock-free
+    // mode) uses SgStatisticsBase concurrently without locking and assumes
+    // that m_mean is valid, if m_count is greater zero
+    COUNT count = m_count;
+    count += weight;
+    val -= m_mean;
+    m_mean +=  weight * val / count;
     m_count = count;
 }
 
@@ -119,6 +148,15 @@ void SgStatisticsBase<VALUE,COUNT>::Initialize(VALUE val, COUNT count)
 }
 
 template<typename VALUE, typename COUNT>
+bool SgStatisticsBase<VALUE,COUNT>::IsDefined() const
+{
+    if (std::numeric_limits<COUNT>::is_exact)
+        return m_count > 0;
+    else
+        return m_count > std::numeric_limits<COUNT>::epsilon();
+}
+
+template<typename VALUE, typename COUNT>
 void SgStatisticsBase<VALUE,COUNT>::LoadFromText(std::istream& in)
 {
     in >> m_count >> m_mean;
@@ -127,17 +165,17 @@ void SgStatisticsBase<VALUE,COUNT>::LoadFromText(std::istream& in)
 template<typename VALUE, typename COUNT>
 const VALUE& SgStatisticsBase<VALUE,COUNT>::Mean() const
 {
-    SG_ASSERT(m_count > 0);
+    SG_ASSERT(IsDefined());
     return m_mean;
 }
 
 template<typename VALUE, typename COUNT>
 void SgStatisticsBase<VALUE,COUNT>::Write(std::ostream& out) const
 {
-    if (m_count == 0)
-        out << '-';
-    else
+    if (IsDefined())
         out << Mean();
+    else
+        out << '-';
 }
 
 template<typename VALUE, typename COUNT>
@@ -206,9 +244,9 @@ SgStatistics<VALUE,COUNT>::SgStatistics(VALUE val, COUNT count)
 template<typename VALUE, typename COUNT>
 void SgStatistics<VALUE,COUNT>::Add(VALUE val)
 {
-    COUNT countOld = SgStatisticsBase<VALUE,COUNT>::Count();
-    if (countOld > 0)
+    if (SgStatisticsBase<VALUE,COUNT>::IsDefined())
     {
+        COUNT countOld = SgStatisticsBase<VALUE,COUNT>::Count();
         VALUE meanOld = SgStatisticsBase<VALUE,COUNT>::Mean();
         SgStatisticsBase<VALUE,COUNT>::Add(val);
         VALUE mean = SgStatisticsBase<VALUE,COUNT>::Mean();
@@ -252,11 +290,11 @@ VALUE SgStatistics<VALUE,COUNT>::Variance() const
 template<typename VALUE, typename COUNT>
 void SgStatistics<VALUE,COUNT>::Write(std::ostream& out) const
 {
-    if (SgStatisticsBase<VALUE,COUNT>::Count() == 0)
-        out << '-';
-    else
+    if (SgStatisticsBase<VALUE,COUNT>::IsDefined())
         out << SgStatisticsBase<VALUE,COUNT>::Mean() << " dev="
             << Deviation();
+    else
+        out << '-';
 }
 
 template<typename VALUE, typename COUNT>
@@ -335,13 +373,13 @@ VALUE SgStatisticsExt<VALUE,COUNT>::Min() const
 template<typename VALUE, typename COUNT>
 void SgStatisticsExt<VALUE,COUNT>::Write(std::ostream& out) const
 {
-    if (SgStatistics<VALUE,COUNT>::Count() == 0)
-        out << '-';
-    else
+    if (SgStatisticsBase<VALUE,COUNT>::IsDefined())
     {
         SgStatistics<VALUE,COUNT>::Write(out);
         out << " min=" << m_min << " max=" << m_max;
     }
+    else
+        out << '-';
 }
 
 //----------------------------------------------------------------------------
