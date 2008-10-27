@@ -2,7 +2,7 @@
 # Check that all SGF files referenced by a test in regression/ exist and that
 # regression/Makefile.am contains all tests and SGF files
 
-cd ../regression
+cd `dirname $0`/../regression
 
 echo -n "Checking that regression/Makefile.am contains all tests... "
 for TSTFILE in `find . -name "*.tst" -o -name "*.list" | sed s,^./,,`; do
