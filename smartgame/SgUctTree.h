@@ -103,23 +103,26 @@ public:
     /** Get RAVE count.
         @see SgUctSearch::Rave().
     */
-    std::size_t RaveCount() const;
+    float RaveCount() const;
 
     /** Get RAVE mean value.
+        Requires: HasRaveValue()
         @see SgUctSearch::Rave().
     */
     float RaveValue() const;
 
+    bool HasRaveValue() const;
+
     /** Add a game result value to the RAVE value.
         @see SgUctSearch::Rave().
     */
-    void AddRaveValue(float value);
+    void AddRaveValue(float value, float weight);
 
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(float value, std::size_t count);
 
 private:
-    SgUctStatisticsBaseVolatile m_statistics;
+    SgStatisticsBase<volatile float,volatile std::size_t> m_statistics;
 
     const SgUctNode* volatile m_firstChild;
 
@@ -127,7 +130,10 @@ private:
 
     volatile SgMove m_move;
 
-    SgUctStatisticsBaseVolatile m_raveValue;
+    /** RAVE statistics.
+        Uses floating point type for count to allow adding weighted values.
+    */
+    SgStatisticsBase<volatile float,volatile float> m_raveValue;
 
     volatile std::size_t m_posCount;
 };
@@ -145,9 +151,9 @@ inline void SgUctNode::AddGameResult(float eval)
     m_statistics.Add(eval);
 }
 
-inline void SgUctNode::AddRaveValue(float value)
+inline void SgUctNode::AddRaveValue(float value, float weight)
 {
-    m_raveValue.Add(value);
+    m_raveValue.AddWeighted(value, weight);
 }
 
 inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
@@ -167,6 +173,11 @@ inline const SgUctNode* SgUctNode::FirstChild() const
 inline bool SgUctNode::HasChildren() const
 {
     return (m_nuChildren > 0);
+}
+
+inline bool SgUctNode::HasRaveValue() const
+{
+    return m_raveValue.IsDefined();
 }
 
 inline void SgUctNode::IncPosCount()
@@ -212,14 +223,13 @@ inline std::size_t SgUctNode::PosCount() const
     return m_posCount;
 }
 
-inline std::size_t SgUctNode::RaveCount() const
+inline float SgUctNode::RaveCount() const
 {
     return m_raveValue.Count();
 }
 
 inline float SgUctNode::RaveValue() const
 {
-    SG_ASSERT(RaveCount() > 0);
     return m_raveValue.Mean();
 }
 
@@ -410,9 +420,10 @@ public:
     /** Add a game result value to the RAVE value of a node.
         @param node The node with the move
         @param value
+        @param weight
         @see SgUctSearch::Rave().
     */
-    void AddRaveValue(const SgUctNode& node, float value);
+    void AddRaveValue(const SgUctNode& node, float value, float weight);
 
     /** Initialize the value and count of a node. */
     void InitializeValue(const SgUctNode& node, float value,
@@ -496,12 +507,13 @@ inline void SgUctTree::AddGameResult(const SgUctNode& node,
     const_cast<SgUctNode&>(node).AddGameResult(eval);
 }
 
-inline void SgUctTree::AddRaveValue(const SgUctNode& node, float value)
+inline void SgUctTree::AddRaveValue(const SgUctNode& node, float value,
+                                    float weight)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
-    const_cast<SgUctNode&>(node).AddRaveValue(value);
+    const_cast<SgUctNode&>(node).AddRaveValue(value, weight);
 }
 
 inline SgUctAllocator& SgUctTree::Allocator(std::size_t i)

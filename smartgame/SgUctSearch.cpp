@@ -221,6 +221,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
       m_lockFree(false),
+      m_weightRaveUpdates(true),
       m_numberThreads(1),
       m_numberPlayouts(1),
       m_maxNodes(5000000),
@@ -436,11 +437,10 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             if (find(begin, end, child.Move()) != end)
                 continue;
         }
-        size_t raveCount = child.RaveCount();
         if (child.MoveCount() == 0
             && ! ((m_moveSelect == SG_UCTMOVESELECT_BOUND
                    || m_moveSelect == SG_UCTMOVESELECT_ESTIMATE)
-                  && m_rave && raveCount > 0))
+                  && m_rave && child.HasRaveValue()))
             continue;
         float moveValue = InverseEval(child.Mean());
         size_t moveCount = child.MoveCount();
@@ -539,13 +539,13 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
     }
     if (m_rave)
     {
-        size_t raveCount = child.RaveCount();
-        if (raveCount > 0)
+        if (child.HasRaveValue())
         {
-            float weight;
-            weight =
+            float raveCount = child.RaveCount();
+            float weight =
                 raveCount
-                / (m_raveWeightParam1 + m_raveWeightParam2 * raveCount);
+                / (m_raveWeightParam1
+                   + m_raveWeightParam2 * raveCount);
             value += weight * child.RaveValue();
             weightSum += weight;
             hasValue = true;
@@ -567,11 +567,11 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
 {
     SG_ASSERT(m_rave);
     size_t moveCount = child.MoveCount();
-    size_t raveCount = child.RaveCount();
+    bool hasRave = child.HasRaveValue();
     float value;
     if (moveCount == 0)
     {
-        if (raveCount > 0)
+        if (hasRave)
             value = child.RaveValue();
         else
             value = m_firstPlayUrgency;
@@ -579,21 +579,24 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     else
     {
         float moveValue = InverseEval(child.Mean());
-        if (raveCount == 0)
+        if (hasRave)
         {
-            SG_ASSERT(m_numberThreads > 1);
-            value = moveValue;
+            float raveCount = child.RaveCount();
+            float weight =
+                raveCount
+                / (moveCount
+                   * (m_raveWeightParam1 + m_raveWeightParam2 * raveCount)
+                   + raveCount);
+            value = weight * child.RaveValue() + (1.f - weight) * moveValue;
         }
         else
         {
-            float raveCountFloat = static_cast<float>(raveCount);
-            float weight =
-                raveCountFloat
-                / (moveCount
-                   * (m_raveWeightParam1
-                      + m_raveWeightParam2 * raveCountFloat)
-                   + raveCountFloat);
-            value = weight * child.RaveValue() + (1.f - weight) * moveValue;
+            // This can happen only in lock-free multi-threading. Normally,
+            // each move played in a position should also cause a RAVE value
+            // added. But in lock-free multi-threading it can happen that the
+            // move value was already updated but the RAVE value not
+            SG_ASSERT(m_numberThreads > 1);
+            value = moveValue;
         }
     }
     SG_ASSERT(m_numberThreads > 1
@@ -1109,9 +1112,11 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state,
             if (i < first)
                 first = i;
             if (opp)
-                UpdateRaveValues(state, invEval, i, firstPlayOpp, firstPlay);
+                UpdateRaveValues(state, playout, invEval, i,
+                                 firstPlayOpp, firstPlay);
             else
-                UpdateRaveValues(state, eval, i, firstPlay, firstPlayOpp);
+                UpdateRaveValues(state, playout, eval, i,
+                                 firstPlay, firstPlayOpp);
         }
         if (i == 0)
             break;
@@ -1120,7 +1125,8 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state,
     }
 }
 
-void SgUctSearch::UpdateRaveValues(SgUctThreadState& state, float eval,
+void SgUctSearch::UpdateRaveValues(SgUctThreadState& state,
+                                   std::size_t playout, float eval,
                                    std::size_t i,
                                    const std::size_t firstPlay[],
                                    const std::size_t firstPlayOpp[])
@@ -1129,6 +1135,7 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state, float eval,
     const SgUctNode* node = state.m_gameInfo.m_nodes[i];
     if (! node->HasChildren())
         return;
+    std::size_t len = state.m_gameInfo.m_sequence[playout].size();
     for (SgUctChildIterator it(m_tree, *node); it; ++it)
     {
         const SgUctNode& child = *it;
@@ -1139,7 +1146,12 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state, float eval,
             continue;
         if  (m_raveCheckSame && SgUtil::InRange(firstPlayOpp[mv], i, first))
             continue;
-        m_tree.AddRaveValue(child, eval);
+        float weight;
+        if (m_weightRaveUpdates)
+            weight = 2.f - static_cast<float>(first - i) / (len - i);
+        else
+            weight = 1.f;
+        m_tree.AddRaveValue(child, eval, weight);
     }
 }
 

@@ -42,7 +42,7 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
         for (SgUctChildIterator it(tree, node); it; ++it)
         {
             const SgUctNode& child = *it;
-            if (child.RaveCount() > 0 && child.MoveCount() > 0)
+            if (child.HasRaveValue() && child.MoveCount() > 0)
             {
                 float childValue = SgUctSearch::InverseEval(child.Mean());
                 float biasRave = child.RaveValue() - childValue;

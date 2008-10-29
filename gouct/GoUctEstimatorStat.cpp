@@ -67,7 +67,7 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
                     % (child->MoveCount() > 0 ?
                        SgUctSearch::InverseEval(child->Mean()) : 0) // 4
                     % child->RaveCount() // 5
-                    % (child->RaveCount() > 0 ? child->RaveValue() : 0) // 6
+                    % (child->HasRaveValue() ? child->RaveValue() : 0) // 6
                     );
         }
     }

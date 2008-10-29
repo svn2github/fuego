@@ -760,6 +760,17 @@ public:
     /** See @ref sguctsearchweights. */
     void SetRaveWeightFinal(float value);
 
+    /** Weight RAVE updates.
+        Gives more weight to moves that are closer to the position for which
+        the RAVE statistics are stored. The weighting function is linearly
+        decreasing from 2 to 0 with the move number from the position for
+        which the RAVE statistics are stored to the end of the simulated game.
+    */
+    bool WeightRaveUpdates() const;
+
+    /** See WeightRaveUpdates() */
+    void SetWeightRaveUpdates(bool enable);
+
     // @} // name
 
 
@@ -876,7 +887,7 @@ private:
 
     /** See parameter earlyAbort in Search() */
     bool m_wasEarlyAbort;
-    
+
     /** See parameter earlyAbortReductionFactor in Search() */
     int m_earlyAbortReductionFactor;
 
@@ -888,6 +899,8 @@ private:
 
     /** See LockFree() */
     bool m_lockFree;
+
+    bool m_weightRaveUpdates;
 
     std::size_t m_numberThreads;
 
@@ -1029,7 +1042,8 @@ private:
 
     void UpdateRaveValues(SgUctThreadState& state, std::size_t playout);
 
-    void UpdateRaveValues(SgUctThreadState& state, float eval, std::size_t i,
+    void UpdateRaveValues(SgUctThreadState& state, std::size_t playout,
+                          float eval, std::size_t i,
                           const std::size_t firstPlay[],
                           const std::size_t firstPlayOpp[]);
 
@@ -1207,6 +1221,11 @@ inline void SgUctSearch::SetRaveWeightInitial(float value)
     m_raveWeightInitial = value;
 }
 
+inline void SgUctSearch::SetWeightRaveUpdates(bool enable)
+{
+    m_weightRaveUpdates = enable;
+}
+
 inline const SgUctSearchStat& SgUctSearch::Statistics() const
 {
     return m_statistics;
@@ -1231,6 +1250,11 @@ inline const SgUctTree& SgUctSearch::Tree() const
 inline bool SgUctSearch::WasEarlyAbort() const
 {
     return m_wasEarlyAbort;
+}
+
+inline bool SgUctSearch::WeightRaveUpdates() const
+{
+    return m_weightRaveUpdates;
 }
 
 //----------------------------------------------------------------------------

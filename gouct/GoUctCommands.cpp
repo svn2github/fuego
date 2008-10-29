@@ -522,6 +522,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c no_bias_term See SgUctSearch::NoBiasTerm
     @arg @c rave See SgUctSearch::Rave
     @arg @c rave_check_same SgUctSearch::RaveCheckSame
+    @arg @c weight_rave_updates SgUctSearch::WeightRaveUpdates
     @arg @c bias_term_constant See SgUctSearch::BiasTermConstant
     @arg @c expand_threshold See SgUctSearch::ExpandThreshold
     @arg @c first_play_urgency See SgUctSearch::FirstPlayUrgency
@@ -548,6 +549,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
             << "[bool] rave " << s.Rave() << '\n'
             << "[bool] rave_check_same " << s.RaveCheckSame() << '\n'
+            << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
@@ -580,6 +582,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetRave(cmd.BoolArg(1));
         else if (name == "rave_check_same")
             s.SetRaveCheckSame(cmd.BoolArg(1));
+        else if (name == "weight_rave_updates")
+            s.SetWeightRaveUpdates(cmd.BoolArg(1));
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.FloatArg(1));
         else if (name == "expand_threshold")
@@ -749,7 +753,7 @@ void GoUctCommands::CmdRaveValues(GtpCommand& cmd)
     {
         const SgUctNode& child = *it;
         SgPoint p = child.Move();
-        if (p == SG_PASS || child.RaveCount() == 0)
+        if (p == SG_PASS || ! child.HasRaveValue())
             continue;
         ostringstream out;
         out << fixed << setprecision(2) << child.RaveValue();

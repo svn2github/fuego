@@ -38,7 +38,7 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
     {
         const SgUctNode& child = *it;
         SgPoint move = child.Move();
-        if (child.RaveCount() > 0)
+        if (child.HasRaveValue())
         {
             out << '\n' << SgWritePoint(move) << ' '
                 << fixed << setprecision(2) << child.RaveValue()
