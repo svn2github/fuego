@@ -423,6 +423,30 @@ struct SgUctSearchStat
 
 //----------------------------------------------------------------------------
 
+/** Optional parameters to SgUctSearch::Search() to allow early aborts.
+    If early abort is used, the search will be aborted after a fraction of the
+    resources (max time, max nodes) are spent, if the value is a clear win
+    (above a threshold).
+*/
+struct SgUctEarlyAbortParam
+{
+    /** The threshold to define what a clear win is. */
+    float m_threshold;
+
+    /** The minimum number of games to allow an early abort.
+        For a very low number of simulations, the value can be very
+        unreliable.
+    */
+    std::size_t m_minGames;
+
+    /** The inverse fraction of the total resources (max time, max nodes),
+        after which the early abort check is performed.
+    */
+    int m_reductionFactor;
+};
+
+//----------------------------------------------------------------------------
+
 /** Monte Carlo tree search using UCT.
     The evaluation function is assumed to be in <code>[0..1]</code> and
     inverted with <code>1 - eval</code>.
@@ -540,23 +564,16 @@ public:
         @param rootFilter Moves to filter at the root node
         @param initTree The tree to initialize the search with. 0 for no
         initialization. The trees are actually swapped, not copied.
-        @param earlyAbort Abort search after half of the resources (max time,
-        max nodes) are spent, if the value is above a threshold.
-        @param earlyAbortThreshold See parameter earlyAbort
-        @param earlyAbortMinGames Minimum number of simulations before to
-        check for early abort. See parameter earlyAbort
-        @param earlyAbortReductionFactor Fraction of total search time to use 
-               for early abort check
+        @param earlyAbort See SgUctEarlyAbortParam. Null means not to do an
+        early abort.
         @return The value of the root position.
     */
     float Search(std::size_t maxGames, double maxTime,
                  std::vector<SgMove>& sequence,
                  const std::vector<SgMove>& rootFilter
                  = std::vector<SgMove>(),
-                 SgUctTree* initTree = 0, bool earlyAbort = false,
-                 float earlyAbortThreshold = 0.9,
-                 std::size_t earlyAbortMinGames = 0,
-                 int earlyAbortReductionFactor = 3);
+                 SgUctTree* initTree = 0,
+                 SgUctEarlyAbortParam* earlyAbort = 0);
 
     /** Do a one-ply Monte-Carlo search instead of the UCT search.
         @param maxGames
@@ -882,14 +899,13 @@ private:
     /** See NoBiasTerm() */
     bool m_noBiasTerm;
 
-    /** See parameter earlyAbort in Search() */
-    bool m_earlyAbort;
-
-    /** See parameter earlyAbort in Search() */
+    /** See SgUctEarlyAbortParam. */
     bool m_wasEarlyAbort;
 
-    /** See parameter earlyAbortReductionFactor in Search() */
-    int m_earlyAbortReductionFactor;
+    /** See SgUctEarlyAbortParam.
+        The auto pointer is empty, if no early abort is used.
+    */
+    std::auto_ptr<SgUctEarlyAbortParam> m_earlyAbort;
 
     /** See SgUctMoveSelect */
     SgUctMoveSelect m_moveSelect;
@@ -907,9 +923,6 @@ private:
     std::size_t m_numberPlayouts;
 
     std::size_t m_maxNodes;
-
-    /** See parameter earlyAbortMinGames in Search() */
-    std::size_t m_earlyAbortMinGames;
 
     /** See parameter moveRange in constructor */
     const int m_moveRange;
@@ -953,9 +966,6 @@ private:
     /** m_raveWeightInitial / m_raveWeightFinal precomputed for efficiency */
     float m_raveWeightParam2;
 
-    /** See parameter earlyAbortThreshold in Search() */
-    float m_earlyAbortThreshold;
-
     /** Time limit for current search. */
     double m_maxTime;
 
@@ -997,13 +1007,13 @@ private:
 
     bool CheckAbortSearch(const SgUctThreadState& state);
 
+    bool CheckEarlyAbort() const;
+
     bool CheckCountAbort(std::size_t remainingGames) const;
 
     void Debug(const SgUctThreadState& state, const std::string& textLine);
 
     void DeleteThreads();
-
-    bool EarlyAbort() const;
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node,
                     bool& isTreeOutOfMem, bool& deepenTree);

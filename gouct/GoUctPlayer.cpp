@@ -238,12 +238,12 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     maxTime -= timer.GetTime();
     m_search.SetToPlay(toPlay);
     vector<SgPoint> sequence;
-    const bool earlyAbort = true;
-    const float earlyAbortThreshold = 1 - m_resignThreshold;
-    const int earlyAbortReductionFactor = 3;
+    SgUctEarlyAbortParam earlyAbort;
+    earlyAbort.m_threshold = 1 - m_resignThreshold;
+    earlyAbort.m_minGames = m_resignMinGames;
+    earlyAbort.m_reductionFactor = 3;
     float value = m_search.Search(m_maxGames, maxTime, sequence, rootFilter,
-                                  initTree, earlyAbort, earlyAbortThreshold,
-                                  m_resignMinGames, earlyAbortReductionFactor);
+                                  initTree, &earlyAbort);
 
     // Write debug output to a string stream first to avoid intermingling
     // of debug output with response in GoGui GTP shell
@@ -272,14 +272,13 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
         move = GoUctSearchUtil::TrompTaylorPassCheck(move, m_search);
     }
 
-    // If SgUctSearch aborted early, 
-    // use the remaining time/nodes for doing a search, if an early
-    // pass is possible
+    // If SgUctSearch aborted early, use the remaining time/nodes for doing a
+    // search, if an early pass is possible
     if (m_search.WasEarlyAbort())
     {
         maxTime -= timer.GetTime();
         SgPoint earlyPassMove;
-        if (DoEarlyPassSearch(m_maxGames / earlyAbortReductionFactor, 
+        if (DoEarlyPassSearch(m_maxGames / earlyAbort.m_reductionFactor,
                               maxTime, earlyPassMove))
             return earlyPassMove;
     }

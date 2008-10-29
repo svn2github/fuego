@@ -265,14 +265,14 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
         Debug(state, "SgUctSearch: abort flag");
         return true;
     }
-    const bool earlyAbort = EarlyAbort();
+    const bool isEarlyAbort = CheckEarlyAbort();
     if (m_numberGames >= m_maxGames)
     {
         Debug(state, "SgUctSearch: max games reached");
         return true;
     }
-    if (   earlyAbort 
-        && m_earlyAbortReductionFactor * m_numberGames >= m_maxGames
+    if (   isEarlyAbort
+        && m_earlyAbort->m_reductionFactor * m_numberGames >= m_maxGames
        )
     {
         Debug(state, "SgUctSearch: max games reached (early abort)");
@@ -287,7 +287,8 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
             Debug(state, "SgUctSearch: max time reached");
             return true;
         }
-        if (earlyAbort && m_earlyAbortReductionFactor * time > m_maxTime)
+        if (isEarlyAbort
+            && m_earlyAbort->m_reductionFactor * time > m_maxTime)
         {
             Debug(state, "SgUctSearch: max time reached (early abort)");
             m_wasEarlyAbort = true;
@@ -339,6 +340,15 @@ bool SgUctSearch::CheckCountAbort(std::size_t remainingGames) const
     return (secondBestCount + remainingGames <= bestCount);
 }
 
+bool SgUctSearch::CheckEarlyAbort() const
+{
+    const SgUctNode& root = m_tree.Root();
+    return (m_earlyAbort.get() != 0
+            && root.MoveCount() > 0
+            && root.MoveCount() >= m_earlyAbort->m_minGames
+            && root.Mean() > m_earlyAbort->m_threshold);
+}
+
 void SgUctSearch::CreateThreads()
 {
     DeleteThreads();
@@ -382,15 +392,6 @@ void SgUctSearch::Debug(const SgUctThreadState& state,
 void SgUctSearch::DeleteThreads()
 {
     m_threads.clear();
-}
-
-bool SgUctSearch::EarlyAbort() const
-{
-    const SgUctNode& root = m_tree.Root();
-    return (m_earlyAbort
-            && root.MoveCount() > 0
-            && root.MoveCount() >= m_earlyAbortMinGames
-            && root.Mean() > m_earlyAbortThreshold);
 }
 
 /** Expand a node.
@@ -798,10 +799,8 @@ bool SgUctSearch::PlayoutGame(SgUctThreadState& state, std::size_t playout)
 float SgUctSearch::Search(std::size_t maxGames, double maxTime,
                           vector<SgMove>& sequence,
                           const vector<SgMove>& rootFilter,
-                          SgUctTree* initTree, bool earlyAbort,
-                          float earlyAbortThreshold,
-                          std::size_t earlyAbortMinGames,
-                          int earlyAbortReductionFactor)
+                          SgUctTree* initTree,
+                          SgUctEarlyAbortParam* earlyAbort)
 {
     m_timer.Start();
     m_rootFilter = rootFilter;
@@ -812,10 +811,9 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     }
     m_maxGames = maxGames;
     m_maxTime = maxTime;
-    m_earlyAbort = earlyAbort;
-    m_earlyAbortThreshold = earlyAbortThreshold;
-    m_earlyAbortMinGames = earlyAbortMinGames;
-    m_earlyAbortReductionFactor = earlyAbortReductionFactor;
+    m_earlyAbort.reset(0);
+    if (earlyAbort != 0)
+        m_earlyAbort.reset(new SgUctEarlyAbortParam(*earlyAbort));
     StartSearch(rootFilter, initTree);
     for (size_t i = 0; i < m_threads.size(); ++i)
         m_threads[i]->StartPlay();
