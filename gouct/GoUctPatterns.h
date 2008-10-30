@@ -14,6 +14,18 @@
 
 //----------------------------------------------------------------------------
 
+/** Used only internally by GoUctPatterns. */
+static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
+
+/** Used only internally by GoUctPatterns. */
+static const int GOUCT_POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
+
+/** Used only internally by GoUctPatterns. */
+typedef SgArray<int,GOUCT_POWER3_5> GoUctEdgePatternTable;
+
+/** Used only internally by GoUctPatterns. */
+typedef SgArray<int,GOUCT_POWER3_8> GoUctPatternTable;
+
 /** Some hard-coded pattern matching routines to match patterns used by MoGo.
     See <a href="http://hal.inria.fr/docs/00/11/72/66/PDF/MoGoReport.pdf">
     Modification of UCT with Patterns in Monte-Carlo Go</a>.
@@ -68,14 +80,6 @@ public:
     bool MatchAny(SgPoint p) const;
 
 private:
-    static const int POWER3_5 = 3 * 3 * 3 * 3 * 3;
-
-    static const int POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
-
-    typedef SgArray<int,POWER3_5> GoUctEdgePatternTable;
-
-    typedef SgArray<int,POWER3_8> GoUctPatternTable;
-
     const BOARD& m_bd;
 
     SgBWArray<GoUctPatternTable> m_table;
@@ -194,7 +198,7 @@ inline int GoUctPatterns<BOARD>::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
                     + EBWCodeOfPoint(bd, p + SG_NS)) * 3
                     + EBWCodeOfPoint(bd, p + SG_NS + SG_WE);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < POWER3_8);
+    SG_ASSERT(code < GOUCT_POWER3_8);
     return code;
 }
 
@@ -212,7 +216,7 @@ inline int GoUctPatterns<BOARD>::CodeOfEdgeNeighbors(const BOARD& bd,
                 + EBWCodeOfPoint(bd, p + up - other)) * 3
                 + EBWCodeOfPoint(bd, p - other);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < POWER3_5);
+    SG_ASSERT(code < GOUCT_POWER3_5);
     return code;
 }
 
@@ -267,7 +271,7 @@ void GoUctPatterns<BOARD>::InitEdgePatternTable(
 {
     GoBoard bd(5);
     const SgPoint p = SgPointUtil::Pt(1, 3);
-    for (int i = 0; i < POWER3_5; ++i)
+    for (int i = 0; i < GOUCT_POWER3_5; ++i)
     {
         int count = SetupCodedEdgePosition(bd, i);
         for(SgBWIterator it; it; ++it)
@@ -286,7 +290,7 @@ void GoUctPatterns<BOARD>::InitCenterPatternTable(
 {
     GoBoard bd(5);
     const SgPoint p = SgPointUtil::Pt(3, 3);
-    for (int i = 0; i < POWER3_8; ++i)
+    for (int i = 0; i < GOUCT_POWER3_8; ++i)
     {
         int count = SetupCodedPosition(bd, i);
         for(SgBWIterator it; it; ++it)
