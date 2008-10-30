@@ -18,11 +18,9 @@ FUEGO_WEB_DIR=/usr/brazeau/misc/games/go/fuego
 SVN_BACKUP_DIR=$FUEGO_DIR/../fuego_svn_backup
 
 # Update the checked out sources.
-# Exit immediately if nothing was changed (svn status code U, A, D did not
-# occur).
 
 cd $FUEGO_DIR
-svn update | awk '/[UAD] /{exit 1}' && exit
+svn update || exit 1
 
 # Generate documentation and put it on the UofA web server. Don't use
 # fuego.sourceforge.net, because it allows only 100 MB webspace
