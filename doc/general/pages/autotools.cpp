@@ -25,11 +25,11 @@ The above commands need to be run only initially. Then the compilation works
 as in the previous section.
 
 After adding or removing files or doing other changes to
-<tt>configure.in</tt> or a <tt>Makefile.am</tt>, you need to run
+<tt>configure.ac</tt> or a <tt>Makefile.am</tt>, you need to run
 <tt>autoreconf</tt> again before doing a make.
 A better way is to configure your makefiles with
 <tt>./configure --enable-maintainer-mode</tt>. Then a make will automatically
-check, if <tt>configure.in</tt> or a <tt>Makefile.am</tt> have changed and
+check, if <tt>configure.ac</tt> or a <tt>Makefile.am</tt> have changed and
 recreate the makefiles before the compilation if necessary.
 
 @section generalautotoolsinstall Installing Fuego
