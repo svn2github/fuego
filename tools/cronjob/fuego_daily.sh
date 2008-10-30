@@ -15,7 +15,7 @@
 FUEGO_DIR=$(dirname $0)/../..
 FUEGO_WEB_SERVER=games.cs.ualberta.ca
 FUEGO_WEB_DIR=/usr/brazeau/misc/games/go/fuego
-SVN_BACKUP_DIR=$FUEGO_DIR/../fuego_svn_backup
+SVN_BACKUP_DIR=../fuego_svn_backup
 
 # Update the checked out sources.
 
@@ -25,10 +25,11 @@ svn update || exit 1
 # Generate documentation and put it on the UofA web server. Don't use
 # fuego.sourceforge.net, because it allows only 100 MB webspace
 
-cd $FUEGO_DIR/doc
+cd doc
 make || exit 1
 rsync -r fuego-doc $FUEGO_WEB_SERVER:$FUEGO_WEB_DIR
 
 # Backup subversion repository
 
+cd ..
 rsync -av fuego.svn.sourceforge.net::svn/fuego/* $SVN_BACKUP_DIR
