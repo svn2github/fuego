@@ -57,14 +57,16 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgWriteTest.cpp \
 ../unittestmain/UnitTestMain.cpp
 
-fuego_unittest_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(BOOST_THREAD_LIB)
+fuego_unittest_LDFLAGS = $(BOOST_LDFLAGS)
 
 fuego_unittest_LDADD = \
 ../gouct/libfuego_gouct.a \
 ../simpleplayers/libfuego_simpleplayers.a \
 ../go/libfuego_go.a \
 ../smartgame/libfuego_smartgame.a \
-../gtpengine/libfuego_gtpengine.a
+../gtpengine/libfuego_gtpengine.a \
+$(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
+$(BOOST_THREAD_LIB)
 
 fuego_unittest_DEPENDENCIES = \
 ../gouct/libfuego_gouct.a \
