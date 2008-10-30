@@ -8,7 +8,6 @@ GoUctDefaultRootFilter.cpp \
 GoUctEstimatorStat.cpp \
 GoUctGlobalSearch.cpp \
 GoUctObjectWithSearch.cpp \
-GoUctPatterns.cpp \
 GoUctPlayer.cpp \
 GoUctPlayoutPolicy.cpp \
 GoUctRootFilter.cpp \
