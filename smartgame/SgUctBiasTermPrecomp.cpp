@@ -23,7 +23,7 @@ SgUctBiasTermPrecomp::SgUctBiasTermPrecomp(std::size_t maxPosCount,
     for (size_t posCount = 0; posCount < maxPosCount; ++posCount)
         for (size_t moveCount = 0; moveCount < maxMoveCount; ++moveCount)
             Value(posCount, moveCount) =
-                Compute(log(posCount), moveCount);
+                Compute(log(static_cast<float>(posCount)), moveCount);
 }
 
 //----------------------------------------------------------------------------
