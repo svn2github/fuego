@@ -26,6 +26,8 @@ namespace {
 
 bool g_noHandicap;
 
+bool g_noBook;
+
 bool g_quiet;
 
 int g_fixedBoardSize;
@@ -34,11 +36,32 @@ int g_maxGames;
 
 string g_config;
 
+string g_programDir;
+
 const char* g_programPath;
 
 int g_srand;
 
 // @} // @name
+
+/** Get program directory from program path.
+    @param programPath
+    Program path taken from <code>argv[0]</code> in <code>main</code>.
+    According to ANSI C, this can be <code>0</code>.
+    @return Program directory, with '/' appended or "" if programPath is 0.
+ */
+string GetProgramDir(const char* programPath)
+{
+    if (programPath == 0)
+        return "";
+    const char pathSeparator = '/'; // Not yet platform independent.
+    string dir(programPath);
+    size_t pos = dir.find_last_of(pathSeparator);
+    if (pos == string::npos)
+        return "";
+    dir = dir.substr(0, pos + 1);
+    return dir;
+}
 
 void MainLoop()
 {
@@ -47,6 +70,8 @@ void MainLoop()
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_maxGames >= 0)
         engine.SetMaxClearBoard(g_maxGames);
+    if (! g_noBook)
+        FuegoMainUtil::LoadBook(engine.Book(), g_programDir);
     if (g_config != "")
         engine.ExecuteFile(g_config);
     engine.MainLoop();
@@ -59,6 +84,7 @@ void ParseOptions(int argc, char** argv)
     specs.push_back("config:");
     specs.push_back("help");
     specs.push_back("maxgames:");
+    specs.push_back("nobook");
     specs.push_back("nohandicap");
     specs.push_back("quiet");
     specs.push_back("srand:");
@@ -74,6 +100,7 @@ void ParseOptions(int argc, char** argv)
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
             "  -maxgames n  make clear_board fail after n invocations\n"
+            "  -nobook      don't automatically load opening book\n"
             "  -nohandicap  don't support handicap commands\n"
             "  -quiet       don't print debug messages\n"
             "  -size        initial (and fixed) board size\n"
@@ -84,6 +111,7 @@ void ParseOptions(int argc, char** argv)
     g_maxGames = opt.GetInteger("maxgames", -1);
     g_quiet = opt.Contains("quiet");
     g_noHandicap = opt.Contains("nohandicap");
+    g_noBook = opt.Contains("nobook");
     // Don't be deterministic by default (0 means non-deterministic seed)
     g_srand = opt.GetInteger("srand", 0);
     g_fixedBoardSize = opt.GetInteger("size", 0);
@@ -108,6 +136,7 @@ int main(int argc, char** argv)
     if (argc > 0 && argv != 0)
     {
         g_programPath = argv[0];
+        g_programDir = GetProgramDir(argv[0]);
         try
         {
             ParseOptions(argc, argv);
