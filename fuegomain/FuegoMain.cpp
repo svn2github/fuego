@@ -7,7 +7,7 @@
 #include "SgSystem.h"
 
 #include <iostream>
-#include "boost/filesystem.hpp"
+#include "boost/filesystem/path.hpp"
 #include "FuegoMainEngine.h"
 #include "FuegoMainUtil.h"
 #include "GoInit.h"

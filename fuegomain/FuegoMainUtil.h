@@ -6,7 +6,7 @@
 #define FUEGOMAIN_UTIL_H
 
 #include <string>
-#include "boost/filesystem.hpp"
+#include "boost/filesystem/path.hpp"
 
 class GoBook;
 

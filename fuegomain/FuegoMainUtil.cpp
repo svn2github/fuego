@@ -21,7 +21,8 @@ namespace {
 
 bool LoadBookFile(GoBook& book, const path& file)
 {
-    SgDebug() << "Loading opening book from '" << file << "'... ";
+    SgDebug() << "Loading opening book from '"
+              << file.native_file_string() << "'... ";
     ifstream in(file.native_file_string().c_str());
     if (! in)
     {
