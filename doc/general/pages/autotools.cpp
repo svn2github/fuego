@@ -16,9 +16,7 @@ assertions or @c --enable-optimize=no for switching off optimizations.
 @verbatim
 aclocal
 autoheader
-automake --add-missing
-autoreconf
-automake --add-missing
+autoreconf -i
 @endverbatim
 
 The above commands need to be run only initially. Then the compilation works
