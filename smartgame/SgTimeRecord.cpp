@@ -22,8 +22,8 @@ using namespace std;
 
 SgTimeRecord::SgTimeRecord(int numMoves, double period, double overhead,
                            bool loseOnTime)
-    : m_OTNumMoves(numMoves),
-      m_OTPeriod(period),
+    : m_overtimeNumMoves(numMoves),
+      m_overtimePeriod(period),
       m_overhead(overhead),
       m_loseOnTime(loseOnTime),
       m_player(SG_BLACK),
@@ -37,8 +37,8 @@ SgTimeRecord::SgTimeRecord(int numMoves, double period, double overhead,
 }
 
 SgTimeRecord::SgTimeRecord(bool fOneMoveOnly, double timeForMove)
-    : m_OTNumMoves(1),
-      m_OTPeriod(timeForMove),
+    : m_overtimeNumMoves(1),
+      m_overtimePeriod(timeForMove),
       m_overhead(0),
       m_loseOnTime(false),
       m_player(SG_BLACK),

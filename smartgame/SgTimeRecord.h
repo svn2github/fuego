@@ -176,10 +176,10 @@ private:
     /** How many moves to play in one overtime period.
         zero if there is no overtime.
     */
-    int m_OTNumMoves;
+    int m_overtimeNumMoves;
 
     /** The length of one overtime period. */
-    double m_OTPeriod;
+    double m_overtimePeriod;
 
     /** How much time to subtract for each move due to time
         used by the operator of the program (move entry, etc.).
@@ -241,12 +241,12 @@ inline int SgTimeRecord::MovesLeft(SgBlackWhite color) const
 
 inline int SgTimeRecord::OTNumMoves() const
 {
-    return m_OTNumMoves;
+    return m_overtimeNumMoves;
 }
 
 inline double SgTimeRecord::OTPeriod() const
 {
-    return m_OTPeriod;
+    return m_overtimePeriod;
 }
 
 inline double SgTimeRecord::Overhead() const
@@ -266,12 +266,12 @@ inline void SgTimeRecord::SetMovesLeft(SgBlackWhite color, int moves)
 
 inline void SgTimeRecord::SetOTNumMoves(int numMoves)
 {
-    m_OTNumMoves = numMoves;
+    m_overtimeNumMoves = numMoves;
 }
 
 inline void SgTimeRecord::SetOTPeriod(double period)
 {
-    m_OTPeriod = period;
+    m_overtimePeriod = period;
 }
 
 inline void SgTimeRecord::SetOverhead(double overhead)
@@ -286,7 +286,7 @@ inline void SgTimeRecord::SetTimeLeft(SgBlackWhite color, double timeLeft)
 
 inline bool SgTimeRecord::UseOvertime() const
 {
-    return m_OTNumMoves > 0;
+    return m_overtimeNumMoves > 0;
 }
 
 //----------------------------------------------------------------------------
