@@ -7,6 +7,7 @@
 #include "SgSystem.h"
 
 #include <iostream>
+#include "boost/filesystem.hpp"
 #include "FuegoMainEngine.h"
 #include "FuegoMainUtil.h"
 #include "GoInit.h"
@@ -16,6 +17,7 @@
 #include "SgInit.h"
 
 using namespace std;
+using boost::filesystem::path;
 
 //----------------------------------------------------------------------------
 
@@ -36,7 +38,7 @@ int g_maxGames;
 
 string g_config;
 
-string g_programDir;
+path g_programDir;
 
 const char* g_programPath;
 
@@ -45,22 +47,14 @@ int g_srand;
 // @} // @name
 
 /** Get program directory from program path.
-    @param programPath
-    Program path taken from <code>argv[0]</code> in <code>main</code>.
-    According to ANSI C, this can be <code>0</code>.
-    @return Program directory, with '/' appended or "" if programPath is 0.
+    @param programPath Program path taken from @c argv[0] in
+    @c main. According to ANSI C, this can be @c 0.
  */
-string GetProgramDir(const char* programPath)
+path GetProgramDir(const char* programPath)
 {
     if (programPath == 0)
         return "";
-    const char pathSeparator = '/'; // Not yet platform independent.
-    string dir(programPath);
-    size_t pos = dir.find_last_of(pathSeparator);
-    if (pos == string::npos)
-        return "";
-    dir = dir.substr(0, pos + 1);
-    return dir;
+    return path(programPath).branch_path();
 }
 
 void MainLoop()

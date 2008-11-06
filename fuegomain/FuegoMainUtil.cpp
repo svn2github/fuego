@@ -13,15 +13,16 @@
 #include "SgDebug.h"
 
 using namespace std;
+using namespace boost::filesystem;
 
 //----------------------------------------------------------------------------
 
 namespace {
 
-bool LoadBookFile(GoBook& book, const string& file)
+bool LoadBookFile(GoBook& book, const path& file)
 {
     SgDebug() << "Loading opening book from '" << file << "'... ";
-    ifstream in(file.c_str());
+    ifstream in(file.native_file_string().c_str());
     if (! in)
     {
         SgDebug() << "not found\n";
@@ -44,17 +45,18 @@ bool LoadBookFile(GoBook& book, const string& file)
 
 //----------------------------------------------------------------------------
 
-void FuegoMainUtil::LoadBook(GoBook& book, const std::string& programDir)
+void FuegoMainUtil::LoadBook(GoBook& book,
+                             const boost::filesystem::path& programDir)
 {
     const string fileName = "book.dat";
-    if (LoadBookFile(book, programDir + fileName))
+    if (LoadBookFile(book, programDir / fileName))
         return;
 #ifdef ABS_TOP_SRCDIR
-    if (LoadBookFile(book, string(ABS_TOP_SRCDIR) + "/book/" + fileName))
+    if (LoadBookFile(book, path(ABS_TOP_SRCDIR) / "book" / fileName))
         return;
 #endif
 #if defined(DATADIR) && defined(PACKAGE)
-    if (LoadBookFile(book, string(DATADIR) + "/" + PACKAGE + "/" + fileName))
+    if (LoadBookFile(book, path(DATADIR) / PACKAGE / fileName))
         return;
 #endif
     throw SgException("Could not find opening book.");

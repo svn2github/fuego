@@ -6,6 +6,7 @@
 #define FUEGOMAIN_UTIL_H
 
 #include <string>
+#include "boost/filesystem.hpp"
 
 class GoBook;
 
@@ -19,10 +20,11 @@ namespace FuegoMainUtil
         - ABS_TOP_SRCDIR/book
         - DATADIR/PACKAGE
         @param book The opening book to load
-        @param programDir the directory of the executable
+        @param programDir the directory of the executable (may be a relative
+        path or an empty string)
         @throws SgException, if book is not found
     */
-    void LoadBook(GoBook& book, const std::string& programDir);
+    void LoadBook(GoBook& book, const boost::filesystem::path& programDir);
 
     /** Return Fuego version.
         If the macro VERSION was defined by the build system during compile
