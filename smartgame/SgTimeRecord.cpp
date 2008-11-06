@@ -36,7 +36,7 @@ SgTimeRecord::SgTimeRecord(int numMoves, double period, double overhead,
 {
 }
 
-SgTimeRecord::SgTimeRecord(bool fOneMoveOnly, double timeForMove)
+SgTimeRecord::SgTimeRecord(bool oneMoveOnly, double timeForMove)
     : m_overtimeNumMoves(1),
       m_overtimePeriod(timeForMove),
       m_overhead(0),
@@ -49,8 +49,8 @@ SgTimeRecord::SgTimeRecord(bool fOneMoveOnly, double timeForMove)
       m_movesLeft(1),
       m_timeOfLastUpdate(0)
 {
-    SG_DEBUG_ONLY(fOneMoveOnly);
-    SG_ASSERT(fOneMoveOnly);
+    SG_DEBUG_ONLY(oneMoveOnly);
+    SG_ASSERT(oneMoveOnly);
 }
 
 SgBWArray<double> SgTimeRecord::GetTimeFromTree(SgNode& node)

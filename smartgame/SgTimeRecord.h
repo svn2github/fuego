@@ -51,12 +51,12 @@ public:
                           double overhead = 0, bool loseOnTime = false);
 
     /** Constructor.
-        'fOneMoveOnly' must be true for the second constructor (just to
+        'oneMoveOnly' must be true for the second constructor (just to
         distinguish the two constructors). The second one creates a time
         record that can be used to set a specific time period for one move
         only.
     */
-    SgTimeRecord(bool fOneMoveOnly, double timeForMove);
+    SgTimeRecord(bool oneMoveOnly, double timeForMove);
 
     ~SgTimeRecord();
 
