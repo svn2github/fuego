@@ -48,7 +48,7 @@ class SgTimeRecord
 {
 public:
     explicit SgTimeRecord(int numMoves = 0, double period = 0,
-                        double overhead = 0, bool loseOnTime = false);
+                          double overhead = 0, bool loseOnTime = false);
 
     /** Constructor.
         'fOneMoveOnly' must be true for the second constructor (just to
@@ -58,39 +58,40 @@ public:
     */
     SgTimeRecord(bool fOneMoveOnly, double timeForMove);
 
-    ~SgTimeRecord() { }
+    ~SgTimeRecord();
 
-    bool UseOvertime() const { return m_OTNumMoves > 0; }
 
-    int OTNumMoves() const { return m_OTNumMoves; }
+    /** @name Time settings for the game */
+    // @{
 
-    double OTPeriod() const { return m_OTPeriod; }
+    bool UseOvertime() const;
 
-    double Overhead() const { return m_overhead; }
+    int OTNumMoves() const;
 
-    bool LoseOnTime() const { return m_loseOnTime; }
+    double OTPeriod() const;
 
-    void SetOTNumMoves(int numMoves) { m_OTNumMoves = numMoves; }
+    double Overhead() const;
 
-    void SetOTPeriod(double period) { m_OTPeriod = period; }
+    bool LoseOnTime() const;
 
-    void SetOverhead(double overhead) { m_overhead = overhead; }
+    void SetOTNumMoves(int numMoves);
 
-    void SetLoseOnTime(bool lose) { m_loseOnTime = lose; }
+    void SetOTPeriod(double period);
 
-    /** Returns the time stored at the given node or its most recent
-        ancestor. */
-    static SgBWArray<double> GetTimeFromTree(SgNode& node);
+    void SetOverhead(double overhead);
 
-    /** Returns the number of moves left to play in overtime as determined by
-        the given node or an ancestor with that property.
-    */
-    static SgBWArray<int> GetOTMovesFromTree(SgNode& node);
+    void SetLoseOnTime(bool lose);
+
+    // @} // name
+
+
+    /** @name Clock state */
+    // @{
 
     /** Return the state of the clock: stopped, running, or suspended. */
     SgClockState GetClockState() const;
 
-    bool ClockIsRunning() const { return m_clockIsOn; }
+    bool ClockIsRunning() const;
 
     /** Returns the current time left.
         Call UpdateTimeLeft first to get the newest information.
@@ -100,13 +101,9 @@ public:
     /** The number of moves left to play in this overtime period.
         This is zero if the game is in main time.
     */
-    int MovesLeft(SgBlackWhite color) const { return m_movesLeft[color]; }
+    int MovesLeft(SgBlackWhite color) const;
 
-    /** Sets the time property at the given node for both players. */
-    static void SetTimeInTree(SgNode& node, SgBWArray<double> time);
-
-    void SetTimeLeft(SgBlackWhite color, double timeLeft) {
-        m_timeLeft[color] = timeLeft; }
+    void SetTimeLeft(SgBlackWhite color, double timeLeft);
 
     /** Turn the clock on or off.
         @todo Set gUserAbort if the time is turned off, so that for example a
@@ -117,22 +114,22 @@ public:
     /** Set number of moves left to play in this overtime period.
         This is zero if the game is in main time.
     */
-    void SetMovesLeft(SgBlackWhite color, int moves)
-    {
-        SG_ASSERT(moves >= 0); m_movesLeft[color] = moves;
-    }
+    void SetMovesLeft(SgBlackWhite color, int moves);
 
     /** Set the clock into suspended state. */
     void SuspendClock();
-
-    /** Store the time left for the given player as a property in the tree. */
-    void SetClock(SgNode& node, SgBlackWhite player, double time);
 
     /** Update the internal m_timeLeft.
         If the time left is negative, m_movesLeft is set if overtime is
         starting, or a "lost on time" is shown if m_loseOnTime is true.
     */
     void UpdateTimeLeft();
+
+    // @} // name
+
+
+    /** @name Functions for using the clock in a game */
+    // @{
 
     /** Called by GoGame to react to user events.
         Called when a node is entered after moving in the tree or just to
@@ -150,6 +147,30 @@ public:
         properties in the new node.
     */
     void PlayedMove(SgNode& node, SgBlackWhite player);
+
+    /** Set time left and store it as a property in the tree. */
+    void SetClock(SgNode& node, SgBlackWhite player, double time);
+
+    // @} // name
+
+
+    /** @name Utility functions */
+    // @{
+
+    /** Returns the time stored at the given node or its most recent
+        ancestor.
+    */
+    static SgBWArray<double> GetTimeFromTree(SgNode& node);
+
+    /** Returns the number of moves left to play in overtime as determined by
+        the given node or an ancestor with that property.
+    */
+    static SgBWArray<int> GetOTMovesFromTree(SgNode& node);
+
+    /** Sets the time property at the given node for both players. */
+    static void SetTimeInTree(SgNode& node, SgBWArray<double> time);
+
+    // @} // name
 
 private:
     /** How many moves to play in one overtime period.
@@ -194,10 +215,79 @@ private:
        This is zero if game is in main time.
     */
     SgBWArray<int> m_movesLeft;
-                
+
     /** The time at which fTimeLeft was last updated. */
     double m_timeOfLastUpdate;
 };
+
+inline SgTimeRecord::~SgTimeRecord()
+{
+}
+
+inline bool SgTimeRecord::ClockIsRunning() const
+{
+    return m_clockIsOn;
+}
+
+inline bool SgTimeRecord::LoseOnTime() const
+{
+    return m_loseOnTime;
+}
+
+inline int SgTimeRecord::MovesLeft(SgBlackWhite color) const
+{
+    return m_movesLeft[color];
+}
+
+inline int SgTimeRecord::OTNumMoves() const
+{
+    return m_OTNumMoves;
+}
+
+inline double SgTimeRecord::OTPeriod() const
+{
+    return m_OTPeriod;
+}
+
+inline double SgTimeRecord::Overhead() const
+{
+    return m_overhead;
+}
+
+inline void SgTimeRecord::SetLoseOnTime(bool lose)
+{
+    m_loseOnTime = lose;
+}
+
+inline void SgTimeRecord::SetMovesLeft(SgBlackWhite color, int moves)
+{
+    SG_ASSERT(moves >= 0); m_movesLeft[color] = moves;
+}
+
+inline void SgTimeRecord::SetOTNumMoves(int numMoves)
+{
+    m_OTNumMoves = numMoves;
+}
+
+inline void SgTimeRecord::SetOTPeriod(double period)
+{
+    m_OTPeriod = period;
+}
+
+inline void SgTimeRecord::SetOverhead(double overhead)
+{
+    m_overhead = overhead;
+}
+
+inline void SgTimeRecord::SetTimeLeft(SgBlackWhite color, double timeLeft)
+{
+    m_timeLeft[color] = timeLeft;
+}
+
+inline bool SgTimeRecord::UseOvertime() const
+{
+    return m_OTNumMoves > 0;
+}
 
 //----------------------------------------------------------------------------
 

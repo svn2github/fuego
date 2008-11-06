@@ -32,9 +32,9 @@ SgTimeRecord::SgTimeRecord(int numMoves, double period, double overhead,
       m_atNode(0),
       m_timeLeft(0),
       m_movesLeft(0),
-      m_timeOfLastUpdate(0)      
+      m_timeOfLastUpdate(0)
 {
-}   
+}
 
 SgTimeRecord::SgTimeRecord(bool fOneMoveOnly, double timeForMove)
     : m_OTNumMoves(1),
