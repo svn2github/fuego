@@ -26,8 +26,8 @@ fuego_DEPENDENCIES = \
 ../gtpengine/libfuego_gtpengine.a
 
 fuego_CPPFLAGS = \
--DDATADIR='"$(datadir)"' \
--DABS_TOP_SRCDIR='"$(abs_top_srcdir)"' \
+-DDATADIR='"@datadir@"' \
+-DABS_TOP_SRCDIR='"@abs_top_srcdir@"' \
 $(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame \
