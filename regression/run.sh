@@ -15,7 +15,7 @@ if [[ "$FUEGO_BUILD_ROOT" == "" ]]; then
         FUEGO_BUILD_ROOT="../build/autotools/debug"
     fi
 fi
-FUEGO="$FUEGO_BUILD_ROOT/fuegomain/fuego -srand 1"
+FUEGO="$FUEGO_BUILD_ROOT/fuegomain/fuego -nobook -srand 1"
 FUEGOTEST="$FUEGO_BUILD_ROOT/fuegotest/fuego_test -srand 1"
 
 #-----------------------------------------------------------------------------
