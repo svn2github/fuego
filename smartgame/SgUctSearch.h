@@ -264,6 +264,11 @@ public:
     /** Number of the thread between 0 and SgUctSearch::NumberThreads() - 1 */
     const std::size_t m_threadId;
 
+    /** Flag indicating the a node could not be expanded, because the
+        maximum tree size was reached.
+    */
+    bool m_isTreeOutOfMem;
+
     SgUctGameInfo m_gameInfo;
 
     /** Local variable for SgUctSearch::UpdateRaveValues().
@@ -542,10 +547,8 @@ public:
     /** Play a single game.
         Plays a single game using the thread state of the first thread.
         Call StartSearch() before calling this function.
-        @param[in,out] isTreeOutOfMem Was the game aborted because the
-        maximum tree size was reached?
     */
-    void PlayGame(bool& isTreeOutOfMem);
+    void PlayGame();
 
     /** Start search.
         Initializes search for current position and clears statistics.
@@ -629,6 +632,14 @@ public:
 
     const SgUctTree& Tree() const;
 
+    /** Get temporary tree.
+        Returns a tree that is compatible in size and number of allocators
+        to the tree of the search. This tree is used by the search itself as
+        a temporary tree for certain operations during the search, but can be
+        used by other code while the search is not running.
+    */
+    SgUctTree& GetTempTree();
+
     // @} // name
 
 
@@ -662,7 +673,11 @@ public:
     /** See NoBiasTerm() */
     void SetNoBiasTerm(bool enable);
 
-    /** Maximum number of nodes in the tree. */
+    /** Maximum number of nodes in the tree.
+        @note The search owns two trees, one of which is used as a temporary
+        tree for some operations (see GetTempTree()). This functions sets
+        the maximum number of nodes per tree.
+    */
     std::size_t MaxNodes() const;
 
     /** See MaxNodes()
@@ -787,6 +802,24 @@ public:
 
     /** See WeightRaveUpdates() */
     void SetWeightRaveUpdates(bool enable);
+
+    /** Prune nodes with low counts if tree is full.
+        This will prune nodes below a minimum count, if the tree gets full
+        during a search. The minimum count is PruneMinCount() at the beginning
+        of the search and is doubled every time a pruning operation does not
+        reduce the tree by at least a factor of 2. The creation of the pruned
+        tree uses the temporary tree (see GetTempTree()).
+    */
+    bool PruneFullTree() const;
+
+    /** See PruneFullTree() */
+    void SetPruneFullTree(bool enable);
+
+    /** See PruneFullTree() */
+    std::size_t PruneMinCount() const;
+
+    /** See PruneFullTree() */
+    void SetPruneMinCount(std::size_t n);
 
     // @} // name
 
@@ -916,13 +949,23 @@ private:
     /** See LockFree() */
     bool m_lockFree;
 
+    /** See WeightRaveUpdates() */
     bool m_weightRaveUpdates;
 
+    /** See PruneFullTree() */
+    bool m_pruneFullTree;
+
+    /** See NumberThreads() */
     std::size_t m_numberThreads;
 
+    /** See NumberPlayouts() */
     std::size_t m_numberPlayouts;
 
+    /** See MaxNodes() */
     std::size_t m_maxNodes;
+
+    /** See PruneMinCount() */
+    std::size_t m_pruneMinCount;
 
     /** See parameter moveRange in constructor */
     const int m_moveRange;
@@ -977,6 +1020,9 @@ private:
 
     SgUctTree m_tree;
 
+    /** See GetTempTree() */
+    SgUctTree m_tempTree;
+
     /** See parameter rootFilter in function Search() */
     std::vector<SgMove> m_rootFilter;
 
@@ -1016,7 +1062,7 @@ private:
     void DeleteThreads();
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node,
-                    bool& isTreeOutOfMem, bool& deepenTree);
+                    bool& deepenTree);
 
     void InitPriorKnowledge(SgUctThreadState& state, const SgUctNode& node,
                             bool& deepenTree);
@@ -1030,11 +1076,9 @@ private:
 
     float Log(std::size_t x) const;
 
-    void PlayGame(SgUctThreadState& state, GlobalLock* lock,
-                  bool& isTreeOutOfMem);
+    void PlayGame(SgUctThreadState& state, GlobalLock* lock);
 
-    bool PlayInTree(SgUctThreadState& state, bool& isTerminal,
-                    bool& isTreeOutOfMem);
+    bool PlayInTree(SgUctThreadState& state, bool& isTerminal);
 
     bool PlayoutGame(SgUctThreadState& state, std::size_t playout);
 
@@ -1132,9 +1176,19 @@ inline std::size_t SgUctSearch::NumberPlayouts() const
     return m_numberPlayouts;
 }
 
-inline void SgUctSearch::PlayGame(bool& isTreeOutOfMem)
+inline void SgUctSearch::PlayGame()
 {
-    PlayGame(ThreadState(0), 0, isTreeOutOfMem);
+    PlayGame(ThreadState(0), 0);
+}
+
+inline bool SgUctSearch::PruneFullTree() const
+{
+    return m_pruneFullTree;
+}
+
+inline std::size_t SgUctSearch::PruneMinCount() const
+{
+    return m_pruneMinCount;
 }
 
 inline bool SgUctSearch::Rave() const
@@ -1214,6 +1268,16 @@ inline void SgUctSearch::SetNumberPlayouts(std::size_t n)
 {
     SG_ASSERT(n >= 1);
     m_numberPlayouts = n;
+}
+
+inline void SgUctSearch::SetPruneFullTree(bool enable)
+{
+    m_pruneFullTree = enable;
+}
+
+inline void SgUctSearch::SetPruneMinCount(std::size_t n)
+{
+    m_pruneMinCount = n;
 }
 
 inline void SgUctSearch::SetRaveCheckSame(bool enable)

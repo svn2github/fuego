@@ -159,17 +159,6 @@ public:
     /** See IgnoreClock() */
     void SetIgnoreClock(bool enable);
 
-    /** Maximum number of nodes in search tree.
-        @note If ReuseSubtree() is enabled, then the player keeps a second
-        tree of the same size to be used during extracting the subtree.
-    */
-    std::size_t MaxNodes() const;
-
-    /** See MaxNodes()
-        @param maxNodes Maximum number of nodes (>= 1)
-    */
-    void SetMaxNodes(std::size_t maxNodes);
-
     /** Limit on number of simulated games per move. */
     std::size_t MaxGames() const;
 
@@ -316,12 +305,6 @@ private:
     */
     boost::scoped_ptr<GoUctPlayoutPolicy<GoBoard> > m_playoutPolicy;
 
-    /** Initial tree if subtree of last search is reused.
-        This variable is used only locally and only a member to avoid frequent
-        allocation and deallocation.
-    */
-    SgUctTree m_initTree;
-
     SgMove GenMovePlayoutPolicy(SgBlackWhite toPlay);
 
     bool DoEarlyPassSearch(size_t maxGames, double maxTime, SgPoint& move);
@@ -329,7 +312,8 @@ private:
     SgPoint DoSearch(SgBlackWhite toPlay, double maxTime,
                      bool isDuringPondering);
 
-    void FindInitTree(SgBlackWhite toPlay, double maxTime);
+    void FindInitTree(SgUctTree& initTree, SgBlackWhite toPlay,
+                      double maxTime);
 
     bool VerifyNeutralMove(size_t maxGames, double maxTime, SgPoint move);
 };
@@ -371,13 +355,6 @@ inline bool GoUctPlayer::IgnoreClock() const
 inline std::size_t GoUctPlayer::MaxGames() const
 {
     return m_maxGames;
-}
-
-inline std::size_t GoUctPlayer::MaxNodes() const
-{
-    size_t maxNodes = m_search.MaxNodes();
-    SG_ASSERT(! m_reuseSubtree || m_initTree.MaxNodes() == maxNodes);
-    return maxNodes;
 }
 
 inline double GoUctPlayer::MaxTime() const

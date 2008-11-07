@@ -373,7 +373,6 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c reuse_subtree See GoUctPlayer::ReuseSubtree
     @arg @c use_root_filter See GoUctPlayer::UseRootFilter
     @arg @c max_games See GoUctPlayer::MaxGames
-    @arg @c max_nodes See GoUctPlayer::MaxNodes
     @arg @c max_time See GoUctPlayer::MaxTime
     @arg @c prior_knowledge @c none|even|policy See
         GoUctPlayer::PriorKnowledge
@@ -396,7 +395,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
             << "[bool] use_root_filter " << p.UseRootFilter() << '\n'
             << "[string] max_games " << p.MaxGames() << '\n'
-            << "[string] max_nodes " << p.MaxNodes() << '\n'
             << "[string] max_time " << p.MaxTime() << '\n'
             << "[list/none/even/default] prior_knowledge "
             << PriorKnowledgeToString(p.PriorKnowledge()) << '\n'
@@ -422,8 +420,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetUseRootFilter(cmd.BoolArg(1));
         else if (name == "max_games")
             p.SetMaxGames(cmd.SizeTypeArg(1, 1));
-        else if (name == "max_nodes")
-            p.SetMaxNodes(cmd.SizeTypeArg(1, 1));
         else if (name == "max_time")
             p.SetMaxTime(cmd.FloatArg(1));
         else if (name == "prior_knowledge")
@@ -520,6 +516,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c lock_free See SgUctSearch::LockFree
     @arg @c log_games See SgUctSearch::LogGames
     @arg @c no_bias_term See SgUctSearch::NoBiasTerm
+    @arg @c prune_full_tree See SgUctSearch::PruneFullTree
     @arg @c rave See SgUctSearch::Rave
     @arg @c rave_check_same SgUctSearch::RaveCheckSame
     @arg @c weight_rave_updates SgUctSearch::WeightRaveUpdates
@@ -528,9 +525,11 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c first_play_urgency See SgUctSearch::FirstPlayUrgency
     @arg @c live_gfx @c none|counts|sequence See GoUctSearch::LiveGfx
     @arg @c live_gfx_interval See GoUctSearch::LiveGfxInterval
+    @arg @c max_nodes See SgUctSearch::MaxNodes
     @arg @c move_select @c value|count|bound|rave See SgUctSearch::MoveSelect
     @arg @c number_threads See SgUctSearch::NumberThreads
     @arg @c number_playouts See SgUctSearch::NumberPlayouts
+    @arg @c prune_min_count See SgUctSearch::PruneMinCount
     @arg @c rave_weight_final See SgUctSearch::RaveWeightFinal
     @arg @c rave_weight_initial See SgUctSearch::RaveWeightInitial
 */
@@ -547,6 +546,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] lock_free " << s.LockFree() << '\n'
             << "[bool] log_games " << s.LogGames() << '\n'
             << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
+            << "[bool] prune_full_tree " << s.PruneFullTree() << '\n'
             << "[bool] rave " << s.Rave() << '\n'
             << "[bool] rave_check_same " << s.RaveCheckSame() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
@@ -556,10 +556,12 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[list/none/counts/sequence] live_gfx "
             << LiveGfxToString(s.LiveGfx()) << '\n'
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
+            << "[string] max_nodes " << s.MaxNodes() << '\n'
             << "[list/value/count/bound/estimate] move_select "
             << MoveSelectToString(s.MoveSelect()) << '\n'
             << "[string] number_threads " << s.NumberThreads() << '\n'
             << "[string] number_playouts " << s.NumberPlayouts() << '\n'
+            << "[string] prune_min_count " << s.PruneMinCount() << '\n'
             << "[string] rave_weight_final " << s.RaveWeightFinal() << '\n'
             << "[string] rave_weight_initial "
             << s.RaveWeightInitial() << '\n';
@@ -578,6 +580,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetLogGames(cmd.BoolArg(1));
         else if (name == "no_bias_term")
             s.SetNoBiasTerm(cmd.BoolArg(1));
+        else if (name == "prune_full_tree")
+            s.SetPruneFullTree(cmd.BoolArg(1));
         else if (name == "rave")
             s.SetRave(cmd.BoolArg(1));
         else if (name == "rave_check_same")
@@ -594,12 +598,16 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
             s.SetLiveGfxInterval(cmd.IntArg(1, 1));
+        else if (name == "max_nodes")
+            s.SetMaxNodes(cmd.SizeTypeArg(1, 1));
         else if (name == "move_select")
             s.SetMoveSelect(MoveSelectArg(cmd, 1));
         else if (name == "number_threads")
             s.SetNumberThreads(cmd.SizeTypeArg(1, 1));
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.IntArg(1, 1));
+        else if (name == "prune_min_count")
+            s.SetPruneMinCount(cmd.SizeTypeArg(1, 1));
         else if (name == "rave_weight_final")
             s.SetRaveWeightFinal(cmd.FloatArg(1));
         else if (name == "rave_weight_initial")

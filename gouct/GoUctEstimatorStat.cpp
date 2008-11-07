@@ -40,12 +40,9 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
     }
     search.StartSearch();
     ofstream out(fileName.c_str(), ios::app);
-    bool isTreeOutOfMem = false;
     for (size_t n = 0; n < maxGames; n += stepSize)
     {
-        search.PlayGame(isTreeOutOfMem);
-        if (isTreeOutOfMem)
-            break;
+        search.PlayGame();
         for (size_t i = 0; i < moves.size(); ++i)
         {
             SgPoint p = moves[i];

@@ -194,7 +194,7 @@ bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
         SgDebug() << "GoUctPlayer: neutral move failed to verify\n";
         return false;
     }
-    
+
     return true;
 }
 
@@ -215,10 +215,10 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     double timeInitTree = 0;
     if (m_reuseSubtree)
     {
+        initTree = &m_search.GetTempTree();
         timeInitTree = -timer.GetTime();
-        FindInitTree(toPlay, maxTime);
+        FindInitTree(*initTree, toPlay, maxTime);
         timeInitTree += timer.GetTime();
-        initTree = &m_initTree;
         if (SgUserAbort() && isDuringPondering)
             // If abort occurs during pondering, better don't start a search
             // with a truncated init tree. The search would be aborted after
@@ -292,19 +292,9 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     sequence of moves starting with the color to play of the search tree.
     @see SetReuseSubtree
 */
-void GoUctPlayer::FindInitTree(SgBlackWhite toPlay, double maxTime)
+void GoUctPlayer::FindInitTree(SgUctTree& initTree, SgBlackWhite toPlay,
+                               double maxTime)
 {
-    m_initTree.Clear();
-    // Make sure that tree has same number of allocators and max nodes
-    // as m_search.Tree() (such that it can be swapped with m_search.Tree()).
-    // Use m_search.NumberThreads() (not m_search.Tree().NuAllocators()) and
-    // m_search.MaxNodes() (not m_search.Tree().MaxNodes()), because of the
-    // delayed thread (and thereby allocator) creation in m_search
-    if (m_initTree.NuAllocators() != m_search.NumberThreads())
-        m_initTree.CreateAllocators(m_search.NumberThreads());
-    if (m_initTree.MaxNodes() != m_search.MaxNodes())
-        m_initTree.SetMaxNodes(m_search.MaxNodes());
-
     Board().SetToPlay(toPlay);
     GoBoardHistory currentPosition;
     currentPosition.SetFromBoard(Board());
@@ -315,9 +305,9 @@ void GoUctPlayer::FindInitTree(SgBlackWhite toPlay, double maxTime)
         SgDebug() << "GoUctPlayer: No tree to reuse found\n";
         return;
     }
-    SgUctTreeUtil::ExtractSubtree(m_search.Tree(), m_initTree, sequence,
-                                  true, maxTime);
-    size_t initTreeNodes = m_initTree.NuNodes();
+    SgUctTreeUtil::ExtractSubtree(m_search.Tree(), initTree, sequence, true,
+                                  maxTime);
+    size_t initTreeNodes = initTree.NuNodes();
     size_t oldTreeNodes = m_search.Tree().NuNodes();
     if (oldTreeNodes > 1 && initTreeNodes > 1)
     {
@@ -336,12 +326,12 @@ void GoUctPlayer::FindInitTree(SgBlackWhite toPlay, double maxTime)
     }
 
     // Check consistency
-    for (SgUctChildIterator it(m_initTree, m_initTree.Root()); it; ++it)
+    for (SgUctChildIterator it(initTree, initTree.Root()); it; ++it)
         if (! Board().IsLegal((*it).Move()))
         {
             SgWarning() <<
                 "GoUctPlayer: illegal move in root child of init tree\n";
-            m_initTree.Clear();
+            initTree.Clear();
             // Should not happen, if no bugs
             assert(false);
         }
@@ -468,13 +458,6 @@ const GoUctSearch& GoUctPlayer::Search() const
     return m_search;
 }
 
-void GoUctPlayer::SetMaxNodes(std::size_t maxNodes)
-{
-    m_search.SetMaxNodes(maxNodes);
-    if (m_reuseSubtree)
-        m_initTree.SetMaxNodes(maxNodes);
-}
-
 void GoUctPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
 {
     SgUctPriorKnowledgeFactory* factory;
@@ -499,9 +482,6 @@ void GoUctPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
 
 void GoUctPlayer::SetReuseSubtree(bool enable)
 {
-    if (m_reuseSubtree && ! enable)
-        // Free some memory, if initTree is no longer used
-        m_initTree.SetMaxNodes(0);
     m_reuseSubtree = enable;
 }
 

@@ -99,11 +99,24 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     return false;
 }
 
-/** Recursive function used by SgUctTree::ExtractSubtree.
+void SgUctTree::CopyPruneLowCount(SgUctTree& target, std::size_t minCount,
+                                  bool warnTruncate, double maxTime) const
+{
+    size_t allocatorId = 0;
+    SgTimer timer;
+    bool abort = false;
+    CopySubtree(target, target.m_root, m_root, minCount, allocatorId,
+                warnTruncate, abort, timer, maxTime);
+}
+
+/** Recursive function used by SgUctTree::ExtractSubtree and
+    SgUctTree::CopyPruneLowCount.
     @param target The target tree.
     @param targetNode The target node; it is already created but the content
     not yet copied
     @param node The node in the source tree to be copied.
+    @param minCount The minimum count (SgUctNode::MoveCount()) of a non-root
+    node in the source tree to copy
     @param currentAllocatorId The current node allocator. Will be incremented
     in each call to CopySubtree to use node allocators of target tree evenly.
     @param warnTruncate Print warning to SgDebug() if tree was
@@ -114,7 +127,7 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     @param maxTime See ExtractSubtree()
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
-                            const SgUctNode& node,
+                            const SgUctNode& node, std::size_t minCount,
                             std::size_t& currentAllocatorId,
                             bool warnTruncate, bool& abort, SgTimer& timer,
                             double maxTime) const
@@ -123,7 +136,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
     SG_ASSERT(target.Contains(targetNode));
     targetNode.CopyDataFrom(node);
 
-    if (! node.HasChildren())
+    if (! node.HasChildren() || node.MoveCount() < minCount)
         return;
 
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
@@ -184,7 +197,8 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
         CopySubtree(target, targetNodes[firstTargetChild + i], child,
-                    currentAllocatorId, warnTruncate, abort, timer, maxTime);
+                    minCount, currentAllocatorId, warnTruncate, abort, timer,
+                    maxTime);
     }
 }
 
@@ -252,7 +266,7 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
     size_t allocatorId = 0;
     SgTimer timer;
     bool abort = false;
-    CopySubtree(target, target.m_root, node, allocatorId, warnTruncate,
+    CopySubtree(target, target.m_root, node, 0, allocatorId, warnTruncate,
                 abort, timer, maxTime);
 }
 

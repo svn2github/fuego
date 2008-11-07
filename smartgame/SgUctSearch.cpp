@@ -222,9 +222,11 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_raveCheckSame(false),
       m_lockFree(false),
       m_weightRaveUpdates(true),
+      m_pruneFullTree(true),
       m_numberThreads(1),
       m_numberPlayouts(1),
       m_maxNodes(5000000),
+      m_pruneMinCount(16),
       m_moveRange(moveRange),
       m_maxGameLength(numeric_limits<size_t>::max()),
       m_expandThreshold(1),
@@ -397,22 +399,20 @@ void SgUctSearch::DeleteThreads()
 /** Expand a node.
     @param state The thread state with state.m_moves already computed.
     @param node The node to expand.
-    @param[in,out] isTreeOutOfMem Will be set to true, if node was not
-    expanded because maximum tree size was reached.
     @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
 */
 void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
-                             bool& isTreeOutOfMem, bool& deepenTree)
+                             bool& deepenTree)
 {
     SG_ASSERT(deepenTree == false); // Should be initialized by caller
     size_t threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
-        if (! isTreeOutOfMem)
+        if (! state.m_isTreeOutOfMem)
             Debug(state,
                   str(format("SgUctSearch: maximum tree size %1% reached")
                       % m_tree.MaxNodes()));
-        isTreeOutOfMem = true;
+        state.m_isTreeOutOfMem = true;
         return;
     }
     m_tree.CreateChildren(threadId, node, state.m_moves);
@@ -523,6 +523,19 @@ float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
             * m_biasTermPrecomp.Get(posCount, logPosCount, moveCount + 1);
         return bound;
     }
+}
+
+SgUctTree& SgUctSearch::GetTempTree()
+{
+    m_tempTree.Clear();
+    // Use NumberThreads() (not m_tree.NuAllocators()) and MaxNodes() (not
+    // m_tree.MaxNodes()), because of the delayed thread (and thereby
+    // allocator) creation in SgUctSearch
+    if (m_tempTree.NuAllocators() != NumberThreads())
+        m_tempTree.CreateAllocators(NumberThreads());
+    if (m_tempTree.MaxNodes() != MaxNodes())
+        m_tempTree.SetMaxNodes(MaxNodes());
+    return m_tempTree;
 }
 
 float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
@@ -665,14 +678,13 @@ void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
     SG_UNUSED(info);
 }
 
-void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock,
-                           bool& isTreeOutOfMem)
+void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
 {
     state.GameStart();
     SgUctGameInfo& info = state.m_gameInfo;
     info.Clear(m_numberPlayouts);
     bool isTerminal;
-    bool abortInTree = ! PlayInTree(state, isTerminal, isTreeOutOfMem);
+    bool abortInTree = ! PlayInTree(state, isTerminal);
 
     // The playout phase is always unlocked
     if (lock != 0)
@@ -686,7 +698,8 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock,
         info.m_sequence[i] = info.m_inTreeSequence;
         // skipRaveUpdate only used in playout phase
         info.m_skipRaveUpdate[i].assign(nuMovesInTree, false);
-        bool abort = abortInTree || (isTreeOutOfMem && m_abortOutOfMem);
+        bool abort =
+            abortInTree || (state.m_isTreeOutOfMem && m_abortOutOfMem);
         if (! abort && ! isTerminal)
             abort = ! PlayoutGame(state, i);
         float eval;
@@ -718,12 +731,9 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock,
     @param state
     @param[out] isTerminal Was the sequence terminated because of a real
     terminal position (GenerateAllMoves() returned an empty list)?
-    @param[in,out] isTreeOutOfMem Didn't the tree have the capacity to create
-    new children?
     @return @c false, if game was aborted due to maximum length
  */
-bool SgUctSearch::PlayInTree(SgUctThreadState& state,
-                             bool& isTerminal, bool& isTreeOutOfMem)
+bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
 {
     vector<SgMove>& sequence = state.m_gameInfo.m_inTreeSequence;
     vector<const SgUctNode*>& nodes = state.m_gameInfo.m_nodes;
@@ -751,8 +761,8 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state,
             if (deepenTree || current->MoveCount() >= m_expandThreshold)
             {
                 deepenTree = false;
-                ExpandNode(state, *current, isTreeOutOfMem, deepenTree);
-                if (isTreeOutOfMem)
+                ExpandNode(state, *current, deepenTree);
+                if (state.m_isTreeOutOfMem)
                     return true;
                 if (! deepenTree)
                     breakAfterSelect = true;
@@ -815,10 +825,40 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     if (earlyAbort != 0)
         m_earlyAbort.reset(new SgUctEarlyAbortParam(*earlyAbort));
     StartSearch(rootFilter, initTree);
-    for (size_t i = 0; i < m_threads.size(); ++i)
-        m_threads[i]->StartPlay();
-    for (size_t i = 0; i < m_threads.size(); ++i)
-        m_threads[i]->WaitPlayFinished();
+    size_t pruneMinCount = m_pruneMinCount;
+    while (true)
+    {
+        bool isTreeOutOfMem = false;
+        for (size_t i = 0; i < m_threads.size(); ++i)
+            m_threads[i]->StartPlay();
+        for (size_t i = 0; i < m_threads.size(); ++i)
+        {
+            m_threads[i]->WaitPlayFinished();
+            if (m_threads[i]->m_state->m_isTreeOutOfMem)
+                isTreeOutOfMem = true;
+        }
+        if (! isTreeOutOfMem || SgUserAbort() || ! m_pruneFullTree)
+            break;
+        double startPruneTime = m_timer.GetTime();
+        SgDebug() << "SgUctSearch: pruning nodes with count < "
+                  << pruneMinCount << " (at time " << fixed << setprecision(1)
+                  << startPruneTime << ")\n";
+        SgUctTree& tempTree = GetTempTree();
+        m_tree.CopyPruneLowCount(tempTree, pruneMinCount, true);
+        if (SgUserAbort())
+            break;
+        else
+        {
+            int prunedSizePercentage =
+                static_cast<int>(tempTree.NuNodes() * 100 / m_tree.NuNodes());
+            SgDebug() << "SgUctSearch: pruned size: " << tempTree.NuNodes()
+                      << " (" << prunedSizePercentage << "%) time: "
+                      << (m_timer.GetTime() - startPruneTime) << "\n";
+            if (prunedSizePercentage > 50)
+                pruneMinCount *= 2;
+            m_tree.Swap(tempTree);
+        }
+    }
     m_statistics.m_time = m_timer.GetTime();
     if (m_statistics.m_time > numeric_limits<double>::epsilon())
         m_statistics.m_gamesPerSecond = m_numberGames / m_statistics.m_time;
@@ -828,18 +868,18 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     return m_tree.Root().Mean();
 }
 
-/** Loop invoked by multiple-threads for playing games. */
+/** Loop invoked by each thread for playing games. */
 void SgUctSearch::SearchLoop(SgUctThreadState& state, GlobalLock* lock)
 {
     if (NumberThreads() == 1 || m_lockFree)
         lock = 0;
     if (lock != 0)
         lock->lock();
-    bool isTreeOutOfMem = false;
+    state.m_isTreeOutOfMem = false;
     while (true)
     {
-        PlayGame(state, lock, isTreeOutOfMem);
-        if (isTreeOutOfMem && m_abortOutOfMem)
+        PlayGame(state, lock);
+        if (state.m_isTreeOutOfMem && m_abortOutOfMem)
             break;
         OnSearchIteration(m_numberGames + 1, state.m_threadId,
                           state.m_gameInfo);

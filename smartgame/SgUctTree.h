@@ -405,6 +405,21 @@ public:
                    bool warnTruncate,
                    double maxTime = std::numeric_limits<double>::max()) const;
 
+    /** Get a copy of the tree with low count nodes pruned.
+        The tree will be truncated if one of the allocators overflows (can
+        happen due to reassigning nodes to different allocators), the given
+        max time is exceeded or on SgUserAbort().
+        @param[out] target The resulting tree. Must have the same maximum
+        number of nodes. Will be cleared before using.
+        @param minCount The minimum count (SgUctNode::MoveCount())
+        @param warnTruncate Print warning to SgDebug() if tree was truncated
+        @param maxTime Truncate the tree, if the extraction takes longer than
+        the given time
+    */
+    void CopyPruneLowCount(SgUctTree& target, std::size_t minCount,
+                   bool warnTruncate,
+                   double maxTime = std::numeric_limits<double>::max()) const;
+
     const SgUctNode& Root() const;
 
     std::size_t NuAllocators() const;
@@ -489,7 +504,7 @@ private:
     const SgUctAllocator& Allocator(std::size_t i) const;
 
     void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
-                     const SgUctNode& node,
+                     const SgUctNode& node, std::size_t minCount,
                      std::size_t& currentAllocatorId, bool warnTruncate,
                      bool& abort, SgTimer& timer, double maxTime) const;
 
