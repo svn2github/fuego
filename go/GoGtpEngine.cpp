@@ -1134,8 +1134,6 @@ void GoGtpEngine::CmdTimeSettings(GtpCommand& cmd)
         throw GtpFailure("cannot change time settings during game");
     m_timeSettings = timeSettings;
     ApplyTimeSettings();
-    if (mainTime > 0 && byoYomiStones > 0)
-        cmd << "warning: main and byoyomi time not supported both yet";
 }
 
 /** Undo a move. */
