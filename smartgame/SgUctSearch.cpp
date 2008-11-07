@@ -317,7 +317,7 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
                 remainingGames = static_cast<size_t>(remainingGamesDouble);
             if (CheckCountAbort(remainingGames))
             {
-                Debug(state, "SgUctSearch: best move cannot change anymore");
+                Debug(state, "SgUctSearch: move cannot change anymore");
                 return true;
             }
         }
