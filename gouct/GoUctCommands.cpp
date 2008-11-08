@@ -511,7 +511,6 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c abort_out_of_mem See SgUctSearch::AbortOutOfMem
     @arg @c keep_games See GoUctSearch::KeepGames
     @arg @c lock_free See SgUctSearch::LockFree
     @arg @c log_games See SgUctSearch::LogGames
@@ -541,8 +540,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] abort_out_of_mem " << s.AbortOutOfMem() << '\n'
-            << "[bool] keep_games " << s.KeepGames() << '\n'
+        cmd << "[bool] keep_games " << s.KeepGames() << '\n'
             << "[bool] lock_free " << s.LockFree() << '\n'
             << "[bool] log_games " << s.LogGames() << '\n'
             << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
@@ -570,9 +568,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "abort_out_of_mem")
-            s.SetAbortOutOfMem(cmd.BoolArg(1));
-        else if (name == "keep_games")
+        if (name == "keep_games")
             s.SetKeepGames(cmd.BoolArg(1));
         else if (name == "lock_free")
             s.SetLockFree(cmd.BoolArg(1));

@@ -214,7 +214,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
                          int moveRange, std::size_t precompMaxPos,
                          std::size_t precompMaxMove)
     : m_threadStateFactory(threadStateFactory),
-      m_abortOutOfMem(true),
       m_logGames(false),
       m_rave(false),
       m_noBiasTerm(false),
@@ -408,10 +407,8 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
     size_t threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
-        if (! state.m_isTreeOutOfMem)
-            Debug(state,
-                  str(format("SgUctSearch: maximum tree size %1% reached")
-                      % m_tree.MaxNodes()));
+        Debug(state, str(format("SgUctSearch: maximum tree size %1% reached")
+                         % m_tree.MaxNodes()));
         state.m_isTreeOutOfMem = true;
         return;
     }
@@ -680,6 +677,7 @@ void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
 
 void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
 {
+    state.m_isTreeOutOfMem = false;
     state.GameStart();
     SgUctGameInfo& info = state.m_gameInfo;
     info.Clear(m_numberPlayouts);
@@ -698,8 +696,7 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
         info.m_sequence[i] = info.m_inTreeSequence;
         // skipRaveUpdate only used in playout phase
         info.m_skipRaveUpdate[i].assign(nuMovesInTree, false);
-        bool abort =
-            abortInTree || (state.m_isTreeOutOfMem && m_abortOutOfMem);
+        bool abort = abortInTree || state.m_isTreeOutOfMem;
         if (! abort && ! isTerminal)
             abort = ! PlayoutGame(state, i);
         float eval;
@@ -875,11 +872,10 @@ void SgUctSearch::SearchLoop(SgUctThreadState& state, GlobalLock* lock)
         lock = 0;
     if (lock != 0)
         lock->lock();
-    state.m_isTreeOutOfMem = false;
     while (true)
     {
         PlayGame(state, lock);
-        if (state.m_isTreeOutOfMem && m_abortOutOfMem)
+        if (state.m_isTreeOutOfMem)
             break;
         OnSearchIteration(m_numberGames + 1, state.m_threadId,
                           state.m_gameInfo);

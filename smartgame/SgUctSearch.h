@@ -646,15 +646,6 @@ public:
     /** @name Parameters */
     // @{
 
-    /** Abort search if tree is out of memory.
-        If false, the search will continue without creating new nodes.
-        The default is @c true.
-    */
-    bool AbortOutOfMem() const;
-
-    /** See AbortOutOfMem() */
-    void SetAbortOutOfMem(bool enable);
-
     /** Constant c in the bias term.
         This constant corresponds to 2 C_p in the original UCT paper.
         The default value is 0.7, which works well in 9x9 Go.
@@ -920,9 +911,6 @@ private:
 
     std::auto_ptr<SgUctThreadStateFactory> m_threadStateFactory;
 
-    /** See AbortOutOfMem() */
-    bool m_abortOutOfMem;
-
     /** See LogGames() */
     bool m_logGames;
 
@@ -1106,11 +1094,6 @@ private:
     void UpdateTree(const SgUctGameInfo& info);
 };
 
-inline bool SgUctSearch::AbortOutOfMem() const
-{
-    return m_abortOutOfMem;
-}
-
 inline float SgUctSearch::BiasTermConstant() const
 {
     return m_biasTermConstant;
@@ -1209,11 +1192,6 @@ inline float SgUctSearch::RaveWeightInitial() const
 inline float SgUctSearch::RaveWeightFinal() const
 {
     return m_raveWeightFinal;
-}
-
-inline void SgUctSearch::SetAbortOutOfMem(bool enable)
-{
-    m_abortOutOfMem = enable;
 }
 
 inline void SgUctSearch::SetBiasTermConstant(float biasTermConstant)
