@@ -410,9 +410,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        Tree: [nodeIndex](count,value)
        0[0](0,0)
     */
-    bool isTreeOutOfMem = false;
-    search.PlayGame(isTreeOutOfMem);
-    BOOST_CHECK(! isTreeOutOfMem);
+    search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
         BOOST_CHECK_CLOSE(0.f, info.m_eval[0], 1e-3f);
@@ -434,8 +432,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        \----------3[3]
        \----------4[4]
     */
-    search.PlayGame(isTreeOutOfMem);
-    BOOST_CHECK(! isTreeOutOfMem);
+    search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
         BOOST_CHECK_CLOSE(0.f, info.m_eval[0], 1e-3f);
@@ -459,8 +456,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        \-------------3[3]
        \-------------4[4]
     */
-    search.PlayGame(isTreeOutOfMem);
-    BOOST_CHECK(! isTreeOutOfMem);
+    search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
         BOOST_CHECK_CLOSE(1.f, info.m_eval[0], 1e-3f);
@@ -484,8 +480,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        \------------3[3](1,0)
        \------------4[4]
     */
-    search.PlayGame(isTreeOutOfMem);
-    BOOST_CHECK(! isTreeOutOfMem);
+    search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
         BOOST_CHECK_CLOSE(1.f, info.m_eval[0], 1e-3f);
@@ -509,8 +504,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        \------------3[3](1,0)
        \------------4[4](1,1)
     */
-    search.PlayGame(isTreeOutOfMem);
-    BOOST_CHECK(! isTreeOutOfMem);
+    search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
         BOOST_CHECK_CLOSE(0.f, info.m_eval[0], 1e-3f);
