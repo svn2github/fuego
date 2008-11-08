@@ -251,7 +251,7 @@ protected:
 
     void CheckMoveStackOverflow() const;
 
-    SgPoint GenMove(SgBlackWhite color);
+    SgPoint GenMove(SgBlackWhite color, bool ignoreClock);
 
     GoGame& GetGame();
 

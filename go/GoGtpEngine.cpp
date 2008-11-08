@@ -440,7 +440,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     auto_ptr<SgDebugToString> debugStrToString;
     if (m_debugToComment)
         debugStrToString.reset(new SgDebugToString(true));
-    SgPoint move = GenMove(color);
+    SgPoint move = GenMove(color, false);
     if (move == SG_RESIGN)
     {
         cmd << "resign";
@@ -841,7 +841,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
         playerBd.Init(playerBd.Size(), setup);
         for (int i = stones.Length(); i < n; ++i)
         {
-            SgPoint p = GenMove(SG_BLACK);
+            SgPoint p = GenMove(SG_BLACK, true);
             SgDebug() << "GoGtpEngine: " << i << ' ' << SgWritePoint(p)
                       << '\n';
             if (p == SG_PASS)
@@ -957,7 +957,7 @@ void GoGtpEngine::CmdRegGenMove(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgRandom::SetSeed(SgRandom::Seed());
-    SgPoint move = GenMove(BlackWhiteArg(cmd, 0));
+    SgPoint move = GenMove(BlackWhiteArg(cmd, 0), true);
     if (move == SG_RESIGN)
         cmd << "resign";
     else
@@ -973,7 +973,7 @@ void GoGtpEngine::CmdRegGenMoveToPlay(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
     SgRandom::SetSeed(SgRandom::Seed());
-    SgPoint move = GenMove(Board().ToPlay());
+    SgPoint move = GenMove(Board().ToPlay(), true);
     cmd << SgWritePoint(move);
 }
 
@@ -1210,7 +1210,7 @@ void GoGtpEngine::GameFinished()
         m_player->OnGameFinished();
 }
 
-SgPoint GoGtpEngine::GenMove(SgBlackWhite color)
+SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
 {
     SG_ASSERT_BW(color);
     CheckMoveStackOverflow();
@@ -1220,7 +1220,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color)
     bd.SetToPlay(color);
     double startTime = SgTime::Get();
     SgTimeRecord time;
-    if (m_timeSettings.NoTimeLimits())
+    if (ignoreClock || m_timeSettings.NoTimeLimits())
         time = SgTimeRecord(true, m_timeLimit);
     else
         time = GetGame().Time();
