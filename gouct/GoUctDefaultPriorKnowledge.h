@@ -50,6 +50,9 @@ private:
 
     SgArray<std::size_t,SG_PASS+1> m_types;
 
+    bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
+                                        SgPointSet& atari) const;
+
     void Initialize(SgPoint p, float value, std::size_t count, int type);
 };
 

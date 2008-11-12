@@ -65,6 +65,34 @@ void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
     m_types[p] = type;
 }
 
+/** Find global moves that match a playout pattern or set a block into atari.
+    @param[out] pattern
+    @param[out] atari
+    @return @c true if any such moves was found
+*/
+bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
+                                                      SgPointSet& pattern,
+                                                      SgPointSet& atari) const
+{
+    const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
+    bool result = false;
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+        if (m_bd.IsEmpty(*it))
+        {
+            if (patterns.MatchAny(*it))
+            {
+                pattern.Include(*it);
+                result = true;
+            }
+            if (SetsAtari(m_bd, *it))
+            {
+                atari.Include(*it);
+                result = true;
+            }
+        }
+    return result;
+}
+
 void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 {
     SG_UNUSED(deepenTree);
@@ -73,28 +101,12 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     GoUctPlayoutPolicyType type = m_policy.MoveType();
     bool isFullBoardRandom =
         (type == GOUCT_RANDOM || type == GOUCT_FILLBOARD);
-    const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
-    SgPointSet patternMatch;
-    SgPointSet setsAtari;
-    bool anyHeuristic = false;
-    for (GoBoard::Iterator it(m_bd); it; ++it)
-        if (m_bd.IsEmpty(*it))
-        {
-            if (patterns.MatchAny(*it))
-            {
-                patternMatch.Include(*it);
-                anyHeuristic = true;
-            }
-            if (SetsAtari(m_bd, *it))
-            {
-                setsAtari.Include(*it);
-                anyHeuristic = true;
-            }
-        }
-
+    SgPointSet pattern;
+    SgPointSet atari;
+    bool anyHeuristic = FindGlobalPatternAndAtariMoves(pattern, atari);
+    Initialize(SG_PASS, 0.1, 9, 1);
     if (isFullBoardRandom && ! anyHeuristic)
     {
-        Initialize(SG_PASS, 0.1, 9, 1);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
@@ -108,7 +120,6 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     }
     else if (isFullBoardRandom && anyHeuristic)
     {
-        Initialize(SG_PASS, 0.1, 9, 1);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
@@ -116,9 +127,9 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
                 Initialize(*it, 0.1, 9, 2);
-            else if (setsAtari[*it])
+            else if (atari[*it])
                 Initialize(*it, 1.0, 3, 3);
-            else if (patternMatch[*it])
+            else if (pattern[*it])
                 Initialize(*it, 0.9, 3, 4);
             else
                 Initialize(*it, 0.5, 3, 5);
@@ -126,7 +137,6 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     }
     else
     {
-        Initialize(SG_PASS, 0.1, 9, 1);
         for (GoBoard::Iterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
@@ -134,9 +144,9 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
                 Initialize(*it, 0.1, 9, 2);
-            else if (setsAtari[*it])
+            else if (atari[*it])
                 Initialize(*it, 0.8, 9, 6);
-            else if (patternMatch[*it])
+            else if (pattern[*it])
                 Initialize(*it, 0.6, 9, 7);
             else
                 Initialize(*it, 0.4, 9, 8);
@@ -145,7 +155,6 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
         for (GoPointList::Iterator it(moves); it; ++it)
             Initialize(*it, 1.0, 9, 9);
     }
-
     m_policy.EndPlayout();
 }
 
