@@ -101,10 +101,17 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     GoUctPlayoutPolicyType type = m_policy.MoveType();
     bool isFullBoardRandom =
         (type == GOUCT_RANDOM || type == GOUCT_FILLBOARD);
+    const int sz = m_bd.Size();
     SgPointSet pattern;
     SgPointSet atari;
     bool anyHeuristic = FindGlobalPatternAndAtariMoves(pattern, atari);
-    Initialize(SG_PASS, 0.1, 9, 1);
+
+    // The initialization values/counts are mainly tuned by selfplay experiments
+    // and games vs MoGo Rel 3 and GNU Go 3.6 on 9x9 and 19x19. If different
+    // values are used for the small and large board, the ones from the 9x9
+    // experiments are used for board sizes < 15, the ones from 19x19 otherwise.
+
+    Initialize(SG_PASS, 0.1, sz < 15 ? 9 : 13, 1);
     if (isFullBoardRandom && ! anyHeuristic)
     {
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -113,7 +120,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
-                Initialize(*it, 0.1, 9, 2);
+                Initialize(*it, 0.1, sz < 15 ? 9 : 13, 2);
             else
                 Initialize(*it, 0.5, 0, 0); // Don't initialize
         }
@@ -126,7 +133,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
-                Initialize(*it, 0.1, 9, 2);
+                Initialize(*it, 0.1, sz < 15 ? 9 : 13, 2);
             else if (atari[*it])
                 Initialize(*it, 1.0, 3, 3);
             else if (pattern[*it])
@@ -143,17 +150,17 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
-                Initialize(*it, 0.1, 9, 2);
+                Initialize(*it, 0.1, sz < 15 ? 9 : 13, 2);
             else if (atari[*it])
-                Initialize(*it, 0.8, 9, 6);
+                Initialize(*it, 0.8, sz < 15 ? 9 : 13, 6);
             else if (pattern[*it])
-                Initialize(*it, 0.6, 9, 7);
+                Initialize(*it, 0.6, sz < 15 ? 9 : 13, 7);
             else
-                Initialize(*it, 0.4, 9, 8);
+                Initialize(*it, 0.4, sz < 15 ? 9 : 13, 8);
         }
         GoPointList moves = m_policy.GetEquivalentBestMoves();
         for (GoPointList::Iterator it(moves); it; ++it)
-            Initialize(*it, 1.0, 9, 9);
+            Initialize(*it, 1.0, sz < 15 ? 9 : 13, 9);
     }
     m_policy.EndPlayout();
 }
