@@ -52,7 +52,6 @@ public:
         - @link CmdPatterns() @c uct_patterns @endlink
         - @link CmdPolicyMoves() @c uct_policy_moves @endlink
         - @link CmdPriorKnowledge() @c uct_prior_knowledge @endlink
-        - @link CmdPriorKnowledgeType() @c uct_prior_knowledge_type @endlink
         - @link CmdRaveValues() @c uct_rave_values @endlink
         - @link CmdRootFilter() @c uct_root_filter @endlink
         - @link CmdSaveGames() @c uct_savegames @endlink
@@ -85,7 +84,6 @@ public:
     void CmdPatterns(GtpCommand& cmd);
     void CmdPolicyMoves(GtpCommand& cmd);
     void CmdPriorKnowledge(GtpCommand& cmd);
-    void CmdPriorKnowledgeType(GtpCommand& cmd);
     void CmdRaveValues(GtpCommand& cmd);
     void CmdRootFilter(GtpCommand& cmd);
     void CmdSaveGames(GtpCommand& cmd);

@@ -24,21 +24,6 @@ public:
 
     void InitializeMove(SgMove move, float& value, std::size_t& count);
 
-    /** Get the number of move types.
-        @see GetType
-    */
-    int GetNuTypes() const;
-
-    /** Get the type of a move.
-        A move type is a class of moves that are initialized with a certain
-        value/count pair. Move types are dependent on the implementation of
-        this class and identified by an integer between 0 and
-        GetNuTypes() - 1. The move type is interesting for debugging and for
-        tuning the value/count initialization pairs used in the
-        implementation.
-    */
-    int GetType(SgPoint p) const;
-
 private:
     const GoBoard& m_bd;
 
@@ -48,12 +33,10 @@ private:
 
     SgArray<std::size_t,SG_PASS+1> m_counts;
 
-    SgArray<std::size_t,SG_PASS+1> m_types;
-
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari) const;
 
-    void Initialize(SgPoint p, float value, std::size_t count, int type);
+    void Initialize(SgPoint p, float value, std::size_t count);
 };
 
 //----------------------------------------------------------------------------
