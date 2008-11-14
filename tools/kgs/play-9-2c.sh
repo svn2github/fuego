@@ -52,8 +52,6 @@ uct_param_player ponder 1
 # Set KGS rules (Chinese, positional superko)
 go_rules kgs
 
-book_load ../../book/book.dat
-
 sg_param time_mode real
 uct_param_search number_threads 2
 uct_param_search lock_free 1

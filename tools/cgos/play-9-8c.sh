@@ -36,8 +36,6 @@ uct_param_player ponder 1
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos
 
-book_load ../../book/book.dat
-
 sg_param time_mode real
 uct_param_search number_threads 8
 uct_param_search lock_free 1
