@@ -46,6 +46,9 @@ public:
 
     void Add(VALUE val);
 
+    /** Add a value n times */
+    void Add(VALUE val, COUNT n);
+
     /** Add a weighted value.
         This function can only be used with floating point count types,
         because is will add a fractional count.
@@ -106,11 +109,26 @@ SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase(VALUE val, COUNT count)
 template<typename VALUE, typename COUNT>
 void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val)
 {
-    // Write order dependency: at least on class (SgUctSearch in lock-free
+    // Write order dependency: at least one class (SgUctSearch in lock-free
     // mode) uses SgStatisticsBase concurrently without locking and assumes
     // that m_mean is valid, if m_count is greater zero
     COUNT count = m_count;
     ++count;
+    SG_ASSERT(! std::numeric_limits<COUNT>::is_exact
+              || count > 0); // overflow
+    val -= m_mean;
+    m_mean +=  val / count;
+    m_count = count;
+}
+
+template<typename VALUE, typename COUNT>
+void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val, COUNT n)
+{
+    // Write order dependency: at least one class (SgUctSearch in lock-free
+    // mode) uses SgStatisticsBase concurrently without locking and assumes
+    // that m_mean is valid, if m_count is greater zero
+    COUNT count = m_count;
+    count += n;
     SG_ASSERT(! std::numeric_limits<COUNT>::is_exact
               || count > 0); // overflow
     val -= m_mean;
