@@ -165,13 +165,6 @@ public:
     /** See MaxGames() */
     void SetMaxGames(std::size_t maxGames);
 
-    /** Timelimit per move in seconds.
-        Default is 1e10
-    */
-    double MaxTime() const;
-
-    void SetMaxTime(double maxTime);
-
     /** Think during the opponents time.
         For enabling pondering, ReuseSubtree() also has to be true.
         Pondering search will be terminated after MaxGames() or 60 min.
@@ -277,9 +270,6 @@ private:
     /** See EarlyPass() */
     bool m_earlyPass;
 
-    /** See MaxTime() */
-    double m_maxTime;
-
     /** See ResignThreshold() */
     double m_resignThreshold;
 
@@ -357,11 +347,6 @@ inline std::size_t GoUctPlayer::MaxGames() const
     return m_maxGames;
 }
 
-inline double GoUctPlayer::MaxTime() const
-{
-    return m_maxTime;
-}
-
 inline GoUctGlobalSearchPrior GoUctPlayer::PriorKnowledge() const
 {
     return m_priorKnowledge;
@@ -420,11 +405,6 @@ inline void GoUctPlayer::SetIgnoreClock(bool enable)
 inline void GoUctPlayer::SetMaxGames(std::size_t maxGames)
 {
     m_maxGames = maxGames;
-}
-
-inline void GoUctPlayer::SetMaxTime(double maxTime)
-{
-    m_maxTime = maxTime;
 }
 
 inline void GoUctPlayer::SetUseRootFilter(bool enable)

@@ -372,7 +372,6 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c reuse_subtree See GoUctPlayer::ReuseSubtree
     @arg @c use_root_filter See GoUctPlayer::UseRootFilter
     @arg @c max_games See GoUctPlayer::MaxGames
-    @arg @c max_time See GoUctPlayer::MaxTime
     @arg @c prior_knowledge @c none|even|policy See
         GoUctPlayer::PriorKnowledge
     @arg @c resign_min_games See GoUctPlayer::ResignMinGames
@@ -394,7 +393,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
             << "[bool] use_root_filter " << p.UseRootFilter() << '\n'
             << "[string] max_games " << p.MaxGames() << '\n'
-            << "[string] max_time " << p.MaxTime() << '\n'
             << "[list/none/even/default] prior_knowledge "
             << PriorKnowledgeToString(p.PriorKnowledge()) << '\n'
             << "[string] resign_min_games " << p.ResignMinGames() << '\n'
@@ -419,8 +417,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetUseRootFilter(cmd.BoolArg(1));
         else if (name == "max_games")
             p.SetMaxGames(cmd.SizeTypeArg(1, 1));
-        else if (name == "max_time")
-            p.SetMaxTime(cmd.FloatArg(1));
         else if (name == "prior_knowledge")
             p.SetPriorKnowledge(PriorKnowledgeArg(cmd, 1));
         else if (name == "resign_min_games")

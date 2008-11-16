@@ -64,7 +64,6 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_useRootFilter(true),
       m_reuseSubtree(false),
       m_earlyPass(true),
-      m_maxTime(1e10),
       m_resignThreshold(0.04),
       m_lastBoardSize(-1),
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
@@ -352,9 +351,9 @@ SgPoint GoUctPlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
     {
         double maxTime;
         if (m_ignoreClock)
-            maxTime = m_maxTime;
+            maxTime = numeric_limits<double>::max();
         else
-            maxTime = min(m_maxTime, m_timeControl.TimeForCurrentMove(time));
+            maxTime = m_timeControl.TimeForCurrentMove(time);
         float value;
         if (m_searchMode == GOUCT_SEARCHMODE_ONEPLY)
         {
