@@ -8,6 +8,7 @@
 #define GO_GTPENGINE_H
 
 #include <sstream>
+#include <boost/filesystem/path.hpp>
 #include "GoBoard.h"
 #include "GoBook.h"
 #include "GoGame.h"
@@ -45,6 +46,7 @@ public:
         - @link CmdPointNumbers() @c go_point_numbers @endlink
         - @link CmdPointInfo() @c go_point_info @endlink
         - @link CmdRules() @c go_rules @endlink
+        - @link CmdSentinelFile() @c go_sentinel_file @endlink
         - @link CmdSetInfo() @c go_set_info @endlink
         - @link CmdAnalyzeCommands() @c gogui-analyze_commands @endlink
         - @link CmdInterrupt() @c gogui-interrupt @endlink
@@ -105,6 +107,7 @@ public:
     virtual void CmdRegGenMoveToPlay(GtpCommand&);
     virtual void CmdRules(GtpCommand&);
     virtual void CmdSaveSgf(GtpCommand&);
+    virtual void CmdSentinelFile(GtpCommand&);
     virtual void CmdSetFreeHandicap(GtpCommand&);
     virtual void CmdSetInfo(GtpCommand&);
     virtual void CmdSetup(GtpCommand&);
@@ -395,6 +398,9 @@ private:
     std::string m_autoSaveFileName;
 
     std::string m_autoSavePrefix;
+
+    /** See CmdSentinelFile() */
+    boost::filesystem::path m_sentinelFile;
 
     std::string m_statisticsFile;
 

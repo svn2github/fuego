@@ -9,10 +9,12 @@
 
 #include <algorithm>
 #include <cmath>
+#include <exception>
 #include <fstream>
 #include <iomanip>
 #include <limits>
 #include <time.h>
+#include <boost/filesystem/operations.hpp>
 #include "GoGtpCommandUtil.h"
 #include "GoNodeUtil.h"
 #include "GoPlayer.h"
@@ -33,6 +35,9 @@
 #endif
 
 using namespace std;
+using boost::filesystem::exists;
+using boost::filesystem::path;
+using boost::filesystem::remove;
 using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------
@@ -104,8 +109,10 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
     Register("go_point_info", &GoGtpEngine::CmdPointInfo, this);
     Register("go_point_numbers", &GoGtpEngine::CmdPointNumbers, this);
     Register("go_rules", &GoGtpEngine::CmdRules, this);
+    Register("go_sentinel_file", &GoGtpEngine::CmdSentinelFile, this);
     Register("go_set_info", &GoGtpEngine::CmdSetInfo, this);
-    Register("gogui-analyze_commands", &GoGtpEngine::CmdAnalyzeCommands, this);
+    Register("gogui-analyze_commands", &GoGtpEngine::CmdAnalyzeCommands,
+             this);
     Register("gogui-interrupt", &GoGtpEngine::CmdInterrupt, this);
     Register("gogui-play_sequence", &GoGtpEngine::CmdPlaySequence, this);
     Register("gogui-setup", &GoGtpEngine::CmdSetup, this);
@@ -390,6 +397,9 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
     CheckMaxClearBoard();
+    if (! m_sentinelFile.empty() && exists(m_sentinelFile))
+        throw GtpFailure() << "Detected sentinel file '" << m_sentinelFile
+                           << "'";
     if (Board().MoveNumber() > 0)
         GameFinished();
     Init(Board().Size());
@@ -1003,6 +1013,31 @@ void GoGtpEngine::CmdSaveSgf(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SaveGame(cmd.Arg(0));
+}
+
+/** Define a file that makes future clear_board commands fail.
+    Defining a sentinel file can be used, for example, to abort playing on
+    KGS, because <a href="http://www.gokgs.com/download.xhtml">kgsGtp.jar</a>
+    quits, if a clear_board command fails. This command will remove the
+    sentinel file, if it currently exists. Future invocations of clear_board
+    will fail, if the sentinel file exists at that time. <br>
+    Argument: filename
+*/
+void GoGtpEngine::CmdSentinelFile(GtpCommand& cmd)
+{
+    cmd.CheckNuArg(1);
+    path sentinelFile = path(cmd.Arg(0));
+    if (! sentinelFile.empty())
+        try
+        {
+            remove(sentinelFile);
+        }
+        catch (const exception& e)
+        {
+            throw GtpFailure() << "could not remove sentinel file: "
+                               << e.what();
+        }
+    m_sentinelFile = sentinelFile;
 }
 
 /** Standard GTP command for explicit placement of handicap stones.

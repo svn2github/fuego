@@ -42,6 +42,7 @@ cat <<EOF >config-19-8c.gtp
 
 go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
+go_sentinel_file stop-19-8c
 
 # A node size is currently 56 bytes on a 64-bit machine, so a main memory
 # of 7.3 GB can contain two trees (of the search and the init tree used for
