@@ -18,7 +18,7 @@ namespace {
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(SgHashCodeClear)
+BOOST_AUTO_TEST_CASE(SgHashCodeTest_Clear)
 {
     SgHashCode hash = SgHashCode::Random();
     hash.Clear();
@@ -28,30 +28,28 @@ BOOST_AUTO_TEST_CASE(SgHashCodeClear)
 /** SgHashCode constructor test.
     Checks that hash code is initialized with zero.
 */
-BOOST_AUTO_TEST_CASE(SgHashCodeConstructor)
+BOOST_AUTO_TEST_CASE(SgHashCodeTest_Constructor)
 {
     SgHashCode hash;
     BOOST_CHECK(hash.IsZero());
 }
 
-BOOST_AUTO_TEST_CASE(SgHashCodeConstructor2)
+BOOST_AUTO_TEST_CASE(SgHashCodeTest_Constructor2)
 {
     SgHashCode hash1(12435);
-    BOOST_CHECK(!hash1.IsZero());
-
+    BOOST_CHECK(! hash1.IsZero());
     SgHashCode hash2(23456);
-    BOOST_CHECK(!hash2.IsZero());
-    
+    BOOST_CHECK(! hash2.IsZero());
     BOOST_CHECK(hash1 != hash2);
 }
 
-BOOST_AUTO_TEST_CASE(SgHashCodeRandom)
+BOOST_AUTO_TEST_CASE(SgHashCodeTest_Random)
 {
     SgHashCode hash = SgHashCode::Random();
     BOOST_CHECK(! hash.IsZero());
 }
 
-BOOST_AUTO_TEST_CASE(SgHashCodeRoll)
+BOOST_AUTO_TEST_CASE(SgHashCodeTest_Roll)
 {
     SgHashCode hash(12345);
     for (int i = 0; i < SgHashCode::Size(); ++i)
@@ -67,7 +65,7 @@ BOOST_AUTO_TEST_CASE(SgHashCodeRoll)
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(SgHashUtilTestXorZobrist)
+BOOST_AUTO_TEST_CASE(SgHashUtilTest_XorZobrist)
 {
     SgHashCode origHash;
     SgHashCode hash(origHash);
@@ -85,7 +83,7 @@ BOOST_AUTO_TEST_CASE(SgHashUtilTestXorZobrist)
     BOOST_CHECK_EQUAL(hash, origHash);
 }
 
-BOOST_AUTO_TEST_CASE(SgHashUtilTestXorInteger)
+BOOST_AUTO_TEST_CASE(SgHashUtilTest_XorInteger)
 {
     SgHashCode origHash;
     SgHashCode hash(origHash);
@@ -108,7 +106,7 @@ BOOST_AUTO_TEST_CASE(SgHashUtilTestXorInteger)
 /** Entries in Zobrist table should be distinct and non-zero.
     Tests only consecutive values for distinctness, not all pairs.
 */
-BOOST_AUTO_TEST_CASE(SgHashZobristTableInitialization)
+BOOST_AUTO_TEST_CASE(SgHashZobristTest_Initialization)
 {
     SgHashZobrist<64> t;
     SgHash<64> emptyHash;
@@ -122,8 +120,8 @@ BOOST_AUTO_TEST_CASE(SgHashZobristTableInitialization)
         prev = hash;
     }
 }
-//----------------------------------------------------------------------------
-} // namespace
 
 //----------------------------------------------------------------------------
+
+} // namespace
 
