@@ -116,7 +116,18 @@ SgHash<N>::SgHash(unsigned int key)
 template<int N>
 bool SgHash<N>::operator<(const SgHash& code) const
 {
-    return ToString() < code.ToString();
+    // std::bitset does not define operator<, so we have to do it (less
+    // efficiently) ourselves
+    for (int i = N; i >= 0; --i)
+    {
+        bool c1 = m_code[i];
+        bool c2 = code.m_code[i];
+        if (! c1 && c2)
+            return true;
+        if (c1 && ! c2)
+            return false;
+    }
+    return false;
 }
 
 template<int N>

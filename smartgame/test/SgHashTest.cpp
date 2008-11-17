@@ -43,6 +43,16 @@ BOOST_AUTO_TEST_CASE(SgHashCodeTest_Constructor2)
     BOOST_CHECK(hash1 != hash2);
 }
 
+BOOST_AUTO_TEST_CASE(SgHashCodeTest_Less)
+{
+    SgHashCode hash1(1);
+    SgHashCode hash2(20);
+    SgHashCode hash3(20);
+    BOOST_CHECK(hash1 < hash2);
+    BOOST_CHECK(! (hash2 < hash1));
+    BOOST_CHECK(! (hash2 < hash3));
+}
+
 BOOST_AUTO_TEST_CASE(SgHashCodeTest_Random)
 {
     SgHashCode hash = SgHashCode::Random();
