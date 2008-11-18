@@ -87,8 +87,16 @@ namespace GoBoardUtil
     void BlocksAdjacentToPoints(const GoBoard& bd, const SgPointSet& points,
                                 SgBlackWhite c, SgList<SgPoint>* anchors);
 
+    /** Compute the common fate graph distance from all points to a given
+        point.
+        The common fate graph distance ist the shortest path between points
+        with an edge cost of 0 for edges between stones of the same block,
+        and an edge cost of 1 otherwise.
+    */
+    SgPointArray<int> CfgDistance(const GoBoard& bd, SgPoint p);
+
     /** Is p contained in anchor[] ?
-     anchor[] must be terminated by END_POINT.
+        anchor[] must be terminated by END_POINT.
     */
     bool ContainsAnchor(const SgPoint anchor[], const SgPoint p);
 
@@ -96,11 +104,11 @@ namespace GoBoardUtil
     GoSetup CurrentPosSetup(const GoBoard& bd);
 
    /** Get diagonal points with a color.
-        @param bd The board.
-        @param p The point.
-        @param c The color.
-        @param diagonals Resulting point list. Will be cleared before
-        adding the points.
+       @param bd The board.
+       @param p The point.
+       @param c The color.
+       @param diagonals Resulting point list. Will be cleared before
+       adding the points.
     */
     void DiagonalsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgList<SgPoint>* diagonals);

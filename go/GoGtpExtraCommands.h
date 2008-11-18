@@ -29,12 +29,14 @@ public:
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
     /** @page gogtpextracommands GoGtpExtraCommands Commands
+        - @link CmdCfgDistance() @c go_distance @endlink
         - @link CmdLadder() @c go_ladder @endlink
         - @link CmdStaticLadder() @c go_static_ladder @endlink
     */
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file
+    void CmdCfgDistance(GtpCommand& cmd);
     void CmdLadder(GtpCommand& cmd);
     void CmdStaticLadder(GtpCommand& cmd);
     // @} // @name

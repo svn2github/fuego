@@ -26,6 +26,24 @@ using SgPropUtil::PointToSgfString;
 
 namespace {
 
+/** Function used in GoBoardUtil::CfgDistance() */
+void CfgDistanceRecurse(SgPointArray<int>& distance, const GoBoard& bd,
+                        SgPoint p, int d, SgEmptyBlackWhite lastColor)
+{
+    if (bd.IsBorder(p))
+        return;
+    SgEmptyBlackWhite color = bd.GetColor(p);
+    if (color == SG_EMPTY || lastColor != color)
+        ++d;
+    if (d >= distance[p])
+        return;
+    distance[p] = d;
+    CfgDistanceRecurse(distance, bd, p + SG_NS, d, color);
+    CfgDistanceRecurse(distance, bd, p - SG_NS, d, color);
+    CfgDistanceRecurse(distance, bd, p + SG_WE, d, color);
+    CfgDistanceRecurse(distance, bd, p - SG_WE, d, color);
+}
+
 /** Function used in GoBoardUtil::ScorePosition() */
 void ScorePositionRecurse(const GoBoard& bd, SgPoint p,
                           const SgPointSet& deadStones, SgMarker& marker,
@@ -249,6 +267,14 @@ bool GoBoardUtil::BlockIsAdjacentTo(const GoBoard& bd, SgPoint block,
             return true;
     }
     return false;
+}
+
+SgPointArray<int> GoBoardUtil::CfgDistance(const GoBoard& bd, SgPoint p)
+{
+    SgPointArray<int> distance(numeric_limits<int>::max());
+    int d = -1;
+    CfgDistanceRecurse(distance, bd, p, d, SG_EMPTY);
+    return distance;
 }
 
 GoSetup GoBoardUtil::CurrentPosSetup(const GoBoard& bd)

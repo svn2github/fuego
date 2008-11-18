@@ -7,12 +7,14 @@
 #include "GoGtpExtraCommands.h"
 
 #include "GoBoard.h"
+#include "GoBoardUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoLadder.h"
 #include "GoStaticLadder.h"
 
 using namespace std;
 
+using GoGtpCommandUtil::PointArg;
 using GoGtpCommandUtil::StoneArg;
 
 //----------------------------------------------------------------------------
@@ -25,8 +27,23 @@ GoGtpExtraCommands::GoGtpExtraCommands(GoBoard& bd)
 void GoGtpExtraCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
+        "sboard/Go CFG Distance/go_cfg_distance %p\n"
         "string/Go Ladder/go_ladder %p\n"
         "string/Go Static Ladder/go_static_ladder %p\n";
+}
+
+/** Compute the distance from a point as defined in GoBoardUtil::CfgDistance.
+    This command is compatible with GoGui's analyze command type
+    @c sboard <br>
+    Argument: point <br>
+    Returns: Board of integer numbers
+*/
+void GoGtpExtraCommands::CmdCfgDistance(GtpCommand& cmd)
+{
+    cmd.CheckNuArg(1);
+    SgPoint p = PointArg(cmd, 0, m_bd);
+    cmd << SgWritePointArray<int>(GoBoardUtil::CfgDistance(m_bd, p),
+                                  m_bd.Size());
 }
 
 /** Return fast ladder status.
@@ -75,6 +92,7 @@ void GoGtpExtraCommands::CmdStaticLadder(GtpCommand& cmd)
 
 void GoGtpExtraCommands::Register(GtpEngine& e)
 {
+    Register(e, "go_cfg_distance", &GoGtpExtraCommands::CmdCfgDistance);
     Register(e, "go_ladder", &GoGtpExtraCommands::CmdLadder);
     Register(e, "go_static_ladder", &GoGtpExtraCommands::CmdStaticLadder);
 }
