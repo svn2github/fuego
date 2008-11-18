@@ -668,10 +668,9 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     {
         SgPoint p = EmptyPointArg(cmd, 0, m_bd);
         float value;
-        size_t count;
+        float count;
         priorKnowledge->InitializeMove(p, value, count);
-        if (count > 0)
-            cmd << count << ' ' << value;
+        cmd << count << ' ' << value;
     }
     else
     {
@@ -680,9 +679,9 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
             if (m_bd.IsEmpty(*it))
             {
                 float value;
-                size_t count;
+                float count;
                 priorKnowledge->InitializeMove(*it, value, count);
-                if (count > 0)
+                if (count > numeric_limits<float>::epsilon())
                 {
                     float scaledValue = (value * 2 - 1);
                     if (m_bd.ToPlay() != SG_BLACK)
@@ -695,9 +694,9 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
             if (m_bd.IsEmpty(*it))
             {
                 float value;
-                size_t count;
+                float count;
                 priorKnowledge->InitializeMove(*it, value, count);
-                if (count > 0)
+                if (count > numeric_limits<float>::epsilon())
                     cmd << ' ' << SgWritePoint(*it) << ' ' << count;
             }
         cmd << '\n';

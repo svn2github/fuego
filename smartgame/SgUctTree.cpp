@@ -136,7 +136,8 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
     SG_ASSERT(target.Contains(targetNode));
     targetNode.CopyDataFrom(node);
 
-    if (! node.HasChildren() || node.MoveCount() < minCount)
+    if (! node.HasChildren()
+        || node.MoveCount() < minCount - numeric_limits<float>::epsilon())
         return;
 
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
@@ -169,7 +170,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
     {
         // Don't copy the children and set the pos count to zero (should
         // reflect the sum of children move counts)
-        targetNode.SetPosCount(0);
+        targetNode.SetPosCount(0.);
         return;
     }
 

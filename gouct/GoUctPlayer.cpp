@@ -259,7 +259,7 @@ SgPoint GoUctPlayer::DoSearch(SgBlackWhite toPlay, double maxTime,
     SgDebug() << out.str();
 
     if (value < m_resignThreshold
-        && m_search.Tree().Root().MoveCount() >= m_resignMinGames)
+        && m_search.Tree().Root().MoveCount() > m_resignMinGames)
         return SG_RESIGN;
 
     SgPoint move;

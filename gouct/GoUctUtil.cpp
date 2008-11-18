@@ -25,8 +25,8 @@ namespace {
 void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
               SgBlackWhite toPlay, int boardSize, int maxDepth, int depth)
 {
-    out << "C[MoveCount " << node.MoveCount()
-        << "\nPosCount " << node.PosCount()
+    out << "C[MoveCount " << static_cast<size_t>(node.MoveCount())
+        << "\nPosCount " << static_cast<size_t>(node.PosCount())
         << "\nMean " << fixed << setprecision(2) << node.Mean();
     if (! node.HasChildren())
     {
@@ -49,12 +49,11 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
     for (SgUctChildIterator it(tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
-        SgPoint move = child.Move();
-        size_t count = child.MoveCount();
-        if (count == 0)
+        if (! child.HasMean())
             continue;
-        out << "[" << PointToSgfString(move, boardSize, SG_PROPPOINTFMT_GO)
-            << ':' << count << ']';
+        out << "["
+            << PointToSgfString(child.Move(), boardSize, SG_PROPPOINTFMT_GO)
+            << ':' << static_cast<size_t>(child.MoveCount()) << ']';
     }
     out << '\n';
     if (maxDepth >= 0 && depth >= maxDepth)
@@ -62,7 +61,7 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
     for (SgUctChildIterator it(tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
-        if (child.MoveCount() == 0)
+        if (! child.HasMean())
             continue;
         SgPoint move = child.Move();
         out << "(;" << (toPlay == SG_BLACK ? 'B' : 'W') << '['
@@ -109,9 +108,9 @@ void GoUctUtil::GfxCounts(const SgUctTree& tree, ostream& out)
         for (SgUctChildIterator it(tree, root); it; ++it)
         {
             const SgUctNode& child = *it;
-            size_t count = child.MoveCount();
-            if (count > 0)
-                out << ' ' << SgWritePoint(child.Move()) << ' ' << count;
+            if (child.HasMean())
+                out << ' ' << SgWritePoint(child.Move()) << ' '
+                    << static_cast<size_t>(child.MoveCount());
         }
     out << '\n';
 }
@@ -126,7 +125,7 @@ void GoUctUtil::GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,
         for (SgUctChildIterator it(tree, root); it; ++it)
         {
             const SgUctNode& child = *it;
-            if (child.MoveCount() == 0)
+            if (! child.HasMean())
                 continue;
             float value = SgUctSearch::InverseEval(child.Mean());
             // Scale to [-1,+1], black positive
@@ -161,7 +160,7 @@ void GoUctUtil::GfxStatus(const SgUctSearch& search, ostream& out)
     const SgUctNode& root = tree.Root();
     const SgUctSearchStat& stat = search.Statistics();
     int abortPercent = static_cast<int>(stat.m_aborted.Mean() * 100);
-    out << "TEXT N=" << root.MoveCount()
+    out << "TEXT N=" << static_cast<size_t>(root.MoveCount())
         << " V=" << setprecision(2) << root.Mean()
         << " Len=" << static_cast<int>(stat.m_gameLength.Mean())
         << " Tree=" << setprecision(1) << stat.m_movesInTree.Mean()

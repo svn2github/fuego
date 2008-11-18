@@ -211,8 +211,7 @@ void SgUctSearchStat::Write(std::ostream& out) const
 //----------------------------------------------------------------------------
 
 SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
-                         int moveRange, std::size_t precompMaxPos,
-                         std::size_t precompMaxMove)
+                         int moveRange)
     : m_threadStateFactory(threadStateFactory),
       m_logGames(false),
       m_rave(false),
@@ -234,7 +233,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_raveWeightInitial(1.f),
       m_raveWeightFinal(20000),
       m_logFileName("uctsearch.log"),
-      m_biasTermPrecomp(precompMaxPos, precompMaxMove),
       m_fastLog(10)
 {
     // Don't create thread states here, because the factory passes the search
@@ -330,23 +328,23 @@ bool SgUctSearch::CheckCountAbort(std::size_t remainingGames) const
     const SgUctNode* bestChild = FindBestChild(root);
     if (bestChild == 0)
         return false;
-    size_t bestCount = bestChild->MoveCount();
+    float bestCount = bestChild->MoveCount();
     vector<SgMove> excludeMoves;
     excludeMoves.push_back(bestChild->Move());
     const SgUctNode* secondBestChild = FindBestChild(root, &excludeMoves);
     if (secondBestChild == 0)
         return false;
-    size_t secondBestCount = secondBestChild->MoveCount();
-    SG_ASSERT(secondBestCount <= bestCount || m_numberThreads > 1);
+    float secondBestCount = secondBestChild->MoveCount();
+    SG_ASSERT(secondBestCount <= bestCount + numeric_limits<float>::epsilon()
+              || m_numberThreads > 1);
     return (secondBestCount + remainingGames <= bestCount);
 }
 
 bool SgUctSearch::CheckEarlyAbort() const
 {
     const SgUctNode& root = m_tree.Root();
-    return (m_earlyAbort.get() != 0
-            && root.MoveCount() > 0
-            && root.MoveCount() >= m_earlyAbort->m_minGames
+    return (m_earlyAbort.get() != 0 && root.HasMean()
+            && root.MoveCount() > m_earlyAbort->m_minGames
             && root.Mean() > m_earlyAbort->m_threshold);
 }
 
@@ -435,13 +433,13 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             if (find(begin, end, child.Move()) != end)
                 continue;
         }
-        if (child.MoveCount() == 0
+        if (! child.HasMean()
             && ! ((m_moveSelect == SG_UCTMOVESELECT_BOUND
                    || m_moveSelect == SG_UCTMOVESELECT_ESTIMATE)
                   && m_rave && child.HasRaveValue()))
             continue;
         float moveValue = InverseEval(child.Mean());
-        size_t moveCount = child.MoveCount();
+        float moveCount = child.MoveCount();
         float value;
         switch (m_moveSelect)
         {
@@ -499,12 +497,11 @@ void SgUctSearch::GenerateAllMoves(std::vector<SgMove>& moves)
 float SgUctSearch::GetBound(const SgUctNode& node,
                             const SgUctNode& child) const
 {
-    size_t posCount = node.PosCount();
-    return GetBound(posCount, Log(posCount), child);
+    float posCount = node.PosCount();
+    return GetBound(Log(posCount), child);
 }
 
-float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
-                            const SgUctNode& child) const
+float SgUctSearch::GetBound(float logPosCount, const SgUctNode& child) const
 {
     float value;
     if (m_rave)
@@ -515,9 +512,9 @@ float SgUctSearch::GetBound(std::size_t posCount, float logPosCount,
         return value;
     else
     {
-        size_t moveCount = child.MoveCount();
-        float bound = value + m_biasTermConstant
-            * m_biasTermPrecomp.Get(posCount, logPosCount, moveCount + 1);
+        float moveCount = child.MoveCount();
+        float bound =
+            value + m_biasTermConstant * sqrt(logPosCount / (moveCount + 1));
         return bound;
     }
 }
@@ -540,10 +537,9 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
     float value = 0.f;
     float weightSum = 0.f;
     bool hasValue = false;
-    size_t moveCount = child.MoveCount();
-    if (moveCount > 0)
+    if (child.HasMean())
     {
-        float weight = moveCount;
+        float weight = child.MoveCount();
         value += weight * InverseEval(child.Mean());
         weightSum += weight;
         hasValue = true;
@@ -577,10 +573,9 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
 float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
 {
     SG_ASSERT(m_rave);
-    size_t moveCount = child.MoveCount();
     bool hasRave = child.HasRaveValue();
     float value;
-    if (moveCount == 0)
+    if (! child.HasMean())
     {
         if (hasRave)
             value = child.RaveValue();
@@ -589,6 +584,7 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     }
     else
     {
+        float moveCount = child.MoveCount();
         float moveValue = InverseEval(child.Mean());
         if (hasRave)
         {
@@ -627,16 +623,14 @@ void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
     SG_ASSERT(priorKnowledge != 0);
     SG_ASSERT(deepenTree == false); // Should be initialized by caller
     priorKnowledge->ProcessPosition(deepenTree);
-    size_t posCount = 0;
+    float posCount = 0;
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
         SgMove move = child.Move();
         float value;
-        size_t count;
+        float count;
         priorKnowledge->InitializeMove(move, value, count);
-        if (count == 0)
-            continue;
         m_tree.InitializeValue(child, InverseEval(value), count);
         posCount += count;
         if (m_rave)
@@ -650,16 +644,16 @@ string SgUctSearch::LastGameSummaryLine() const
     return SummaryLine(LastGameInfo());
 }
 
-float SgUctSearch::Log(std::size_t x) const
+float SgUctSearch::Log(float x) const
 {
     // TODO: can we speed up the computation of the logarithm by taking
     // advantage of the fact that the argument is an integer type?
     // Maybe round result to integer (then it is simple the position of the
     // highest bit
 #if SG_UCTFASTLOG
-    return m_fastLog.Log(static_cast<float>(x));
+    return m_fastLog.Log(x);
 #else
-    return log(static_cast<float>(x));
+    return log(x);
 #endif
 }
 
@@ -755,7 +749,9 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                 isTerminal = true;
                 break;
             }
-            if (deepenTree || current->MoveCount() >= m_expandThreshold)
+            if (deepenTree
+                || current->MoveCount()
+                   > m_expandThreshold - numeric_limits<float>::epsilon())
             {
                 deepenTree = false;
                 ExpandNode(state, *current, deepenTree);
@@ -951,8 +947,8 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
 const SgUctNode& SgUctSearch::SelectChild(const SgUctNode& node)
 {
     SG_ASSERT(node.HasChildren());
-    size_t posCount = node.PosCount();
-    if (posCount == 0)
+    float posCount = node.PosCount();
+    if (posCount < numeric_limits<float>::epsilon())
         // If position count is zero, return first child
         return *SgUctChildIterator(m_tree, node);
     float logPosCount = Log(posCount);
@@ -961,7 +957,7 @@ const SgUctNode& SgUctSearch::SelectChild(const SgUctNode& node)
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
-        float bound = GetBound(posCount, logPosCount, child);
+        float bound = GetBound(logPosCount, child);
         if (bestChild == 0 || bound > bestUpperBound)
         {
             bestChild = &child;

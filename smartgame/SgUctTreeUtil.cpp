@@ -34,7 +34,7 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
     {
         const SgUctNode& node = *it;
         ++m_nuNodes;
-        size_t count = node.MoveCount();
+        size_t count = static_cast<size_t>(node.MoveCount());
         if (count < SgUctTreeStatistics::MAX_MOVECOUNT)
             ++m_moveCounts[count];
         if (! node.HasChildren())
@@ -42,7 +42,7 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
         for (SgUctChildIterator it(tree, node); it; ++it)
         {
             const SgUctNode& child = *it;
-            if (child.HasRaveValue() && child.MoveCount() > 0)
+            if (child.HasRaveValue() && child.HasMean())
             {
                 float childValue = SgUctSearch::InverseEval(child.Mean());
                 float biasRave = child.RaveValue() - childValue;

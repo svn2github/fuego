@@ -19,7 +19,6 @@
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 #include "SgTimer.h"
-#include "SgUctBiasTermPrecomp.h"
 #include "SgUctTree.h"
 
 #define SG_UCTFASTLOG 1
@@ -205,7 +204,7 @@ public:
         @param[out] count The initial count for the state.
     */
     virtual void InitializeMove(SgMove move, float& value,
-                                std::size_t& count) = 0;
+                                float& count) = 0;
 };
 
 //----------------------------------------------------------------------------
@@ -472,20 +471,9 @@ public:
         efficient implementation. If the game does not use a small integer
         range for its move representation, this parameter should be 0.
         Then, enhancements that require a small move range cannot be enabled.
-        @param precompMaxPos Maximum position count for precomputed bias
-        term (see SgUctBiasTermPrecomp). The optimal value depends on the
-        values of other search parameters. It should cover the majority of
-        count values encountered during the search. A value too large
-        increases the construction time and the memory consumption and even
-        slower runtime due to bad main memory caching. The default value
-        worked well for a 9x9-Go search with 30000 simulations,
-        pattern-based playout and RAVE enabled.
-        @param precompMaxMove Maximum move count for precomputed bias term.
     */
     SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
-                int moveRange = 0,
-                std::size_t precompMaxPos = 6000,
-                std::size_t precompMaxMove = 300);
+                int moveRange = 0);
 
     virtual ~SgUctSearch();
 
@@ -1023,8 +1011,6 @@ private:
     */
     boost::recursive_mutex m_globalMutex;
 
-    SgUctBiasTermPrecomp m_biasTermPrecomp;
-
     SgUctSearchStat m_statistics;
 
     /** List of threads.
@@ -1055,14 +1041,13 @@ private:
     void InitPriorKnowledge(SgUctThreadState& state, const SgUctNode& node,
                             bool& deepenTree);
 
-    float GetBound(std::size_t posCount, float logPosCount,
-                   const SgUctNode& child) const;
+    float GetBound(float logPosCount, const SgUctNode& child) const;
 
     float GetValueEstimate(const SgUctNode& child) const;
 
     float GetValueEstimateRave(const SgUctNode& child) const;
 
-    float Log(std::size_t x) const;
+    float Log(float x) const;
 
     void PlayGame(SgUctThreadState& state, GlobalLock* lock);
 

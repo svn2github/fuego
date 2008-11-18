@@ -23,14 +23,14 @@ public:
         @param count The count to initialize moves with (e.g. 50, which
         worked well for 9x9-Go in the Gelly/Silver 2007 paper)
     */
-    SgUctPriorKnowledgeEven(std::size_t count);
+    SgUctPriorKnowledgeEven(float count);
 
     void ProcessPosition(bool& deepenTree);
 
-    void InitializeMove(SgMove move, float& value, std::size_t& count);
+    void InitializeMove(SgMove move, float& value, float& count);
 
 private:
-    const std::size_t m_count;
+    const float m_count;
 };
 
 //----------------------------------------------------------------------------
@@ -42,12 +42,12 @@ class SgUctPriorKnowledgeEvenFactory
     : public SgUctPriorKnowledgeFactory
 {
 public:
-    SgUctPriorKnowledgeEvenFactory(std::size_t count);
+    SgUctPriorKnowledgeEvenFactory(float count);
 
     SgUctPriorKnowledge* Create(SgUctThreadState& state);
 
 private:
-    const std::size_t m_count;
+    const float m_count;
 };
 
 //----------------------------------------------------------------------------

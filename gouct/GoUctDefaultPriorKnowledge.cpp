@@ -46,7 +46,7 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
 }
 
 void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
-                                            std::size_t count)
+                                            float count)
 {
     m_values[p] = value;
     m_counts[p] = count;
@@ -154,7 +154,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 }
 
 void GoUctDefaultPriorKnowledge::InitializeMove(SgMove move, float& value,
-                                                std::size_t& count)
+                                                float& count)
 {
     value = m_values[move];
     count = m_counts[move];

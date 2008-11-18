@@ -11,7 +11,7 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-SgUctPriorKnowledgeEven::SgUctPriorKnowledgeEven(std::size_t count)
+SgUctPriorKnowledgeEven::SgUctPriorKnowledgeEven(float count)
     : m_count(count)
 {
 }
@@ -22,7 +22,7 @@ void SgUctPriorKnowledgeEven::ProcessPosition(bool& deepenTree)
 }
 
 void SgUctPriorKnowledgeEven::InitializeMove(SgMove move, float& value,
-                                             std::size_t& count)
+                                             float& count)
 {
     SG_UNUSED(move);
     value = 0.5f;
@@ -32,7 +32,7 @@ void SgUctPriorKnowledgeEven::InitializeMove(SgMove move, float& value,
 //----------------------------------------------------------------------------
 
 SgUctPriorKnowledgeEvenFactory
-::SgUctPriorKnowledgeEvenFactory(std::size_t count)
+::SgUctPriorKnowledgeEvenFactory(float count)
      : m_count(count)
 {
 }

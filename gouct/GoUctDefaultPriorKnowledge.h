@@ -22,7 +22,7 @@ public:
 
     void ProcessPosition(bool& deepenTree);
 
-    void InitializeMove(SgMove move, float& value, std::size_t& count);
+    void InitializeMove(SgMove move, float& value, float& count);
 
 private:
     const GoBoard& m_bd;
@@ -31,12 +31,12 @@ private:
 
     SgArray<float,SG_PASS+1> m_values;
 
-    SgArray<std::size_t,SG_PASS+1> m_counts;
+    SgArray<float,SG_PASS+1> m_counts;
 
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari) const;
 
-    void Initialize(SgPoint p, float value, std::size_t count);
+    void Initialize(SgPoint p, float value, float count);
 };
 
 //----------------------------------------------------------------------------
