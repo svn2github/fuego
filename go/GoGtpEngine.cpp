@@ -398,8 +398,8 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
     cmd.CheckArgNone();
     CheckMaxClearBoard();
     if (! m_sentinelFile.empty() && exists(m_sentinelFile))
-        throw GtpFailure() << "Detected sentinel file '" << m_sentinelFile
-                           << "'";
+        throw GtpFailure() << "Detected sentinel file '"
+                           << m_sentinelFile.native_file_string() << "'";
     if (Board().MoveNumber() > 0)
         GameFinished();
     Init(Board().Size());
