@@ -166,6 +166,7 @@ const COUNT& SgStatisticsBase<VALUE,COUNT>::Count() const
 template<typename VALUE, typename COUNT>
 void SgStatisticsBase<VALUE,COUNT>::Initialize(VALUE val, COUNT count)
 {
+    SG_ASSERT(count > 0);
     m_count = count;
     m_mean = val;
 }
