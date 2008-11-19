@@ -132,7 +132,7 @@ void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val, COUNT n)
     SG_ASSERT(! std::numeric_limits<COUNT>::is_exact
               || count > 0); // overflow
     val -= m_mean;
-    m_mean +=  val / count;
+    m_mean +=  n * val / count;
     m_count = count;
 }
 
@@ -140,7 +140,7 @@ template<typename VALUE, typename COUNT>
 void SgStatisticsBase<VALUE,COUNT>::AddWeighted(VALUE val, VALUE weight)
 {
     SG_ASSERT(! std::numeric_limits<COUNT>::is_exact);
-    // Write order dependency: at least on class (SgUctSearch in lock-free
+    // Write order dependency: at least one class (SgUctSearch in lock-free
     // mode) uses SgStatisticsBase concurrently without locking and assumes
     // that m_mean is valid, if m_count is greater zero
     COUNT count = m_count;
