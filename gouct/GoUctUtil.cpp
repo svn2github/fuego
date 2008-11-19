@@ -77,7 +77,7 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
 //----------------------------------------------------------------------------
 
 void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
-                         ostream& out)
+                            ostream& out)
 {
     const SgUctTree& tree = search.Tree();
     const SgUctNode& root = tree.Root();
@@ -88,14 +88,6 @@ void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
         SgPoint move = bestValueChild->Move();
         out << ' ' << (toPlay == SG_BLACK ? 'B' : 'W') << ' '
             << SgWritePoint(move);
-        const SgUctNode* bestValueGrandChild =
-            search.FindBestChild(*bestValueChild);
-        if (bestValueGrandChild != 0)
-        {
-            SgPoint move = bestValueGrandChild->Move();
-            out << ' ' << (toPlay == SG_WHITE ? 'B' : 'W') << ' '
-                << SgWritePoint(move);
-        }
     }
     out << '\n';
 }
