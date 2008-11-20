@@ -631,10 +631,13 @@ void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
         float value;
         float count;
         priorKnowledge->InitializeMove(move, value, count);
-        m_tree.InitializeValue(child, InverseEval(value), count);
-        posCount += count;
-        if (m_rave)
-            m_tree.InitializeRaveValue(child, value, count);
+        if (count > numeric_limits<float>::epsilon())
+        {
+            m_tree.InitializeValue(child, InverseEval(value), count);
+            if (m_rave)
+                m_tree.InitializeRaveValue(child, value, count);
+            posCount += count;
+        }
     }
     m_tree.SetPosCount(node, posCount);
 }
