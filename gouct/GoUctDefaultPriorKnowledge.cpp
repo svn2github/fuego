@@ -39,7 +39,7 @@ bool SetsAtari(const GoBoard& bd, SgPoint p)
 //----------------------------------------------------------------------------
 
 GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                              const GoUctPlayoutPolicyParam& param)
+                                         const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_policy(bd, param)
 {
@@ -107,7 +107,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
+            if (GoBoardUtil::SelfAtari(m_bd, *it))
                 Initialize(*it, 0.1, sz < 15 ? 9 : 13);
             else
                 Initialize(*it, 0.5, 0); // Don't initialize
@@ -120,7 +120,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
+            if (GoBoardUtil::SelfAtari(m_bd, *it))
                 Initialize(*it, 0.1, sz < 15 ? 9 : 13);
             else if (atari[*it])
                 Initialize(*it, 1.0, 3);
@@ -137,7 +137,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             SgPoint p = *it;
             if (! m_bd.IsEmpty(p))
                 continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it) || m_bd.IsSuicide(*it))
+            if (GoBoardUtil::SelfAtari(m_bd, *it))
                 Initialize(*it, 0.1, sz < 15 ? 9 : 13);
             else if (atari[*it])
                 Initialize(*it, 0.8, sz < 15 ? 9 : 13);
