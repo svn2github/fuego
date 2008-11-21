@@ -95,13 +95,13 @@ private:
 };
 
 template<typename VALUE, typename COUNT>
-SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase()
+inline SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase()
 {
     Clear();
 }
 
 template<typename VALUE, typename COUNT>
-SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase(VALUE val, COUNT count)
+inline SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase(VALUE val, COUNT count)
 {
     Initialize(val, count);
 }
@@ -151,20 +151,20 @@ void SgStatisticsBase<VALUE,COUNT>::AddWeighted(VALUE val, VALUE weight)
 }
 
 template<typename VALUE, typename COUNT>
-void SgStatisticsBase<VALUE,COUNT>::Clear()
+inline void SgStatisticsBase<VALUE,COUNT>::Clear()
 {
     m_count = 0;
     m_mean = 0;
 }
 
 template<typename VALUE, typename COUNT>
-const COUNT& SgStatisticsBase<VALUE,COUNT>::Count() const
+inline const COUNT& SgStatisticsBase<VALUE,COUNT>::Count() const
 {
     return m_count;
 }
 
 template<typename VALUE, typename COUNT>
-void SgStatisticsBase<VALUE,COUNT>::Initialize(VALUE val, COUNT count)
+inline void SgStatisticsBase<VALUE,COUNT>::Initialize(VALUE val, COUNT count)
 {
     SG_ASSERT(count > 0);
     m_count = count;
@@ -172,7 +172,7 @@ void SgStatisticsBase<VALUE,COUNT>::Initialize(VALUE val, COUNT count)
 }
 
 template<typename VALUE, typename COUNT>
-bool SgStatisticsBase<VALUE,COUNT>::IsDefined() const
+inline bool SgStatisticsBase<VALUE,COUNT>::IsDefined() const
 {
     if (std::numeric_limits<COUNT>::is_exact)
         return m_count > 0;
@@ -187,7 +187,7 @@ void SgStatisticsBase<VALUE,COUNT>::LoadFromText(std::istream& in)
 }
 
 template<typename VALUE, typename COUNT>
-const VALUE& SgStatisticsBase<VALUE,COUNT>::Mean() const
+inline const VALUE& SgStatisticsBase<VALUE,COUNT>::Mean() const
 {
     SG_ASSERT(IsDefined());
     return m_mean;
@@ -260,13 +260,13 @@ private:
 };
 
 template<typename VALUE, typename COUNT>
-SgStatistics<VALUE,COUNT>::SgStatistics()
+inline SgStatistics<VALUE,COUNT>::SgStatistics()
 {
     Clear();
 }
 
 template<typename VALUE, typename COUNT>
-SgStatistics<VALUE,COUNT>::SgStatistics(VALUE val, COUNT count)
+inline SgStatistics<VALUE,COUNT>::SgStatistics(VALUE val, COUNT count)
     : m_statisticsBase(val, count)
 {
     m_variance = 0;
@@ -293,26 +293,26 @@ void SgStatistics<VALUE,COUNT>::Add(VALUE val)
 }
 
 template<typename VALUE, typename COUNT>
-void SgStatistics<VALUE,COUNT>::Clear()
+inline void SgStatistics<VALUE,COUNT>::Clear()
 {
     m_statisticsBase.Clear();
     m_variance = 0;
 }
 
 template<typename VALUE, typename COUNT>
-const COUNT& SgStatistics<VALUE,COUNT>::Count() const
+inline const COUNT& SgStatistics<VALUE,COUNT>::Count() const
 {
     return m_statisticsBase.Count();
 }
 
 template<typename VALUE, typename COUNT>
-VALUE SgStatistics<VALUE,COUNT>::Deviation() const
+inline VALUE SgStatistics<VALUE,COUNT>::Deviation() const
 {
     return std::sqrt(m_variance);
 }
 
 template<typename VALUE, typename COUNT>
-bool SgStatistics<VALUE,COUNT>::IsDefined() const
+inline bool SgStatistics<VALUE,COUNT>::IsDefined() const
 {
     return m_statisticsBase.IsDefined();
 }
@@ -325,13 +325,13 @@ void SgStatistics<VALUE,COUNT>::LoadFromText(std::istream& in)
 }
 
 template<typename VALUE, typename COUNT>
-const VALUE& SgStatistics<VALUE,COUNT>::Mean() const
+inline const VALUE& SgStatistics<VALUE,COUNT>::Mean() const
 {
     return m_statisticsBase.Mean();
 }
 
 template<typename VALUE, typename COUNT>
-VALUE SgStatistics<VALUE,COUNT>::Variance() const
+inline VALUE SgStatistics<VALUE,COUNT>::Variance() const
 {
     return m_variance;
 }
@@ -394,7 +394,7 @@ private:
 };
 
 template<typename VALUE, typename COUNT>
-SgStatisticsExt<VALUE,COUNT>::SgStatisticsExt()
+inline SgStatisticsExt<VALUE,COUNT>::SgStatisticsExt()
 {
     Clear();
 }
@@ -410,7 +410,7 @@ void SgStatisticsExt<VALUE,COUNT>::Add(VALUE val)
 }
 
 template<typename VALUE, typename COUNT>
-void SgStatisticsExt<VALUE,COUNT>::Clear()
+inline void SgStatisticsExt<VALUE,COUNT>::Clear()
 {
     m_statistics.Clear();
     m_min = std::numeric_limits<VALUE>::max();
@@ -418,43 +418,43 @@ void SgStatisticsExt<VALUE,COUNT>::Clear()
 }
 
 template<typename VALUE, typename COUNT>
-const COUNT& SgStatisticsExt<VALUE,COUNT>::Count() const
+inline const COUNT& SgStatisticsExt<VALUE,COUNT>::Count() const
 {
     return m_statistics.Count();
 }
 
 template<typename VALUE, typename COUNT>
-VALUE SgStatisticsExt<VALUE,COUNT>::Deviation() const
+inline VALUE SgStatisticsExt<VALUE,COUNT>::Deviation() const
 {
     return m_statistics.Deviation();
 }
 
 template<typename VALUE, typename COUNT>
-bool SgStatisticsExt<VALUE,COUNT>::IsDefined() const
+inline bool SgStatisticsExt<VALUE,COUNT>::IsDefined() const
 {
     return m_statistics.IsDefined();
 }
 
 template<typename VALUE, typename COUNT>
-VALUE SgStatisticsExt<VALUE,COUNT>::Max() const
+inline VALUE SgStatisticsExt<VALUE,COUNT>::Max() const
 {
     return m_max;
 }
 
 template<typename VALUE, typename COUNT>
-const VALUE& SgStatisticsExt<VALUE,COUNT>::Mean() const
+inline const VALUE& SgStatisticsExt<VALUE,COUNT>::Mean() const
 {
     return m_statistics.Mean();
 }
 
 template<typename VALUE, typename COUNT>
-VALUE SgStatisticsExt<VALUE,COUNT>::Min() const
+inline VALUE SgStatisticsExt<VALUE,COUNT>::Min() const
 {
     return m_min;
 }
 
 template<typename VALUE, typename COUNT>
-VALUE SgStatisticsExt<VALUE,COUNT>::Variance() const
+inline VALUE SgStatisticsExt<VALUE,COUNT>::Variance() const
 {
     return m_statistics.Deviation();
 }
