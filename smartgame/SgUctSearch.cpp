@@ -575,19 +575,12 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     SG_ASSERT(m_rave);
     bool hasRave = child.HasRaveValue();
     float value;
-    if (! child.HasMean())
+    if (child.HasMean())
     {
-        if (hasRave)
-            value = child.RaveValue();
-        else
-            value = m_firstPlayUrgency;
-    }
-    else
-    {
-        float moveCount = child.MoveCount();
         float moveValue = InverseEval(child.Mean());
         if (hasRave)
         {
+            float moveCount = child.MoveCount();
             float raveCount = child.RaveCount();
             float weight =
                 raveCount
@@ -600,12 +593,16 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
         {
             // This can happen only in lock-free multi-threading. Normally,
             // each move played in a position should also cause a RAVE value
-            // added. But in lock-free multi-threading it can happen that the
-            // move value was already updated but the RAVE value not
-            SG_ASSERT(m_numberThreads > 1);
+            // to be added. But in lock-free multi-threading it can happen
+            // that the move value was already updated but the RAVE value not
+            SG_ASSERT(m_numberThreads > 1 && m_lockFree);
             value = moveValue;
         }
     }
+    else if (hasRave)
+        value = child.RaveValue();
+    else
+        value = m_firstPlayUrgency;
     SG_ASSERT(m_numberThreads > 1
               || fabs(value - GetValueEstimate(child)) < 1e-3/*epsilon*/);
     return value;
