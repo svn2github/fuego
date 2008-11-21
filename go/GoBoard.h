@@ -1594,12 +1594,7 @@ inline bool GoBoard::IsSingleStone(SgPoint p) const
 
 inline bool GoBoard::IsSuicide(SgPoint p) const
 {
-    SG_ASSERT(IsEmpty(p));
-    GoBoard* bd = const_cast<GoBoard*>(this);
-    bd->Play(p);
-    bool result = LastMoveInfo(GO_MOVEFLAG_SUICIDE);
-    bd->Undo();
-    return result;
+    return IsSuicide(p, ToPlay());
 }
 
 inline bool GoBoard::IsValidPoint(SgPoint p) const
