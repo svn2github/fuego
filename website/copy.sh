@@ -9,4 +9,4 @@ index.html \
 echo "Enter user id for SourceForge:"
 read NAME
 
-scp $FILES $NAME,gogui@web.sourceforge.net:/home/groups/f/fu/fuego/htdocs
+scp $FILES $NAME,fuego@web.sourceforge.net:/home/groups/f/fu/fuego/htdocs
