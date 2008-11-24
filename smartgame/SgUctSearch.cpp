@@ -230,7 +230,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_expandThreshold(1),
       m_biasTermConstant(0.7f),
       m_firstPlayUrgency(10000),
-      m_raveWeightInitial(1.f),
+      m_raveWeightInitial(0.9f),
       m_raveWeightFinal(20000),
       m_logFileName("uctsearch.log"),
       m_fastLog(10)
