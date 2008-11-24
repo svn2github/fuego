@@ -371,7 +371,7 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
 /** Remove liberty from adjacent blocks and kill opponent blocks without
     liberties.
     As a side effect, computes adjacent blocks of own color to avoid a
-    decond call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone().
+    second call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone().
 */
 void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                                   SgSList<Block*,4>& ownAdjBlocks)
