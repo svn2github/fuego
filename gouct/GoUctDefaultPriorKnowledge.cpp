@@ -99,7 +99,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     // from the 9x9 experiments are used for board sizes < 15, the ones from
     // 19x19 otherwise.
 
-    Initialize(SG_PASS, 0.1, sz < 15 ? 9 : 13);
+    Initialize(SG_PASS, 0.1, sz < 15 ? 9 : 18);
     if (isFullBoardRandom && ! anyHeuristic)
     {
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -108,7 +108,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, sz < 15 ? 9 : 13);
+                Initialize(*it, 0.1, sz < 15 ? 9 : 18);
             else
                 Initialize(*it, 0.5, 0); // Don't initialize
         }
@@ -121,7 +121,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, sz < 15 ? 9 : 13);
+                Initialize(*it, 0.1, sz < 15 ? 9 : 18);
             else if (atari[*it])
                 Initialize(*it, 1.0, 3);
             else if (pattern[*it])
@@ -138,17 +138,17 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, sz < 15 ? 9 : 13);
+                Initialize(*it, 0.1, sz < 15 ? 9 : 18);
             else if (atari[*it])
-                Initialize(*it, 0.8, sz < 15 ? 9 : 13);
+                Initialize(*it, 0.8, sz < 15 ? 9 : 18);
             else if (pattern[*it])
-                Initialize(*it, 0.6, sz < 15 ? 9 : 13);
+                Initialize(*it, 0.6, sz < 15 ? 9 : 18);
             else
-                Initialize(*it, 0.4, sz < 15 ? 9 : 13);
+                Initialize(*it, 0.4, sz < 15 ? 9 : 18);
         }
         GoPointList moves = m_policy.GetEquivalentBestMoves();
         for (GoPointList::Iterator it(moves); it; ++it)
-            Initialize(*it, 1.0, sz < 15 ? 9 : 13);
+            Initialize(*it, 1.0, sz < 15 ? 9 : 18);
     }
     m_policy.EndPlayout();
 }
