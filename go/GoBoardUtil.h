@@ -92,8 +92,15 @@ namespace GoBoardUtil
         The common fate graph distance ist the shortest path between points
         with an edge cost of 0 for edges between stones of the same block,
         and an edge cost of 1 otherwise.
+        @param bd
+        @param p
+        @param maxDist The maximum distance to search (points with a
+        distance &gt; maxDist will get the value numeric_limits<int>::max())
+        @return The array containing the distances; for blocks only the
+        element at the block anchor is defined.
     */
-    SgPointArray<int> CfgDistance(const GoBoard& bd, SgPoint p);
+    SgPointArray<int> CfgDistance(const GoBoard& bd, SgPoint p,
+                               int maxDist = std::numeric_limits<int>::max());
 
     /** Is p contained in anchor[] ?
         anchor[] must be terminated by END_POINT.

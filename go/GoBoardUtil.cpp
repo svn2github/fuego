@@ -27,21 +27,19 @@ using SgPropUtil::PointToSgfString;
 namespace {
 
 /** Function used in GoBoardUtil::CfgDistance() */
-void CfgDistanceRecurse(SgPointArray<int>& distance, const GoBoard& bd,
-                        SgPoint p, int d, SgEmptyBlackWhite lastColor)
+void CfgDistanceCheck(const GoBoard& bd, SgPointArray<int>& array,
+                      GoPointList& pointList, int d, SgPoint p)
 {
-    if (bd.IsBorder(p))
-        return;
-    SgEmptyBlackWhite color = bd.GetColor(p);
-    if (color == SG_EMPTY || lastColor != color)
-        ++d;
-    if (d >= distance[p])
-        return;
-    distance[p] = d;
-    CfgDistanceRecurse(distance, bd, p + SG_NS, d, color);
-    CfgDistanceRecurse(distance, bd, p - SG_NS, d, color);
-    CfgDistanceRecurse(distance, bd, p + SG_WE, d, color);
-    CfgDistanceRecurse(distance, bd, p - SG_WE, d, color);
+    if (! bd.IsBorder(p))
+    {
+        if (bd.Occupied(p))
+            p = bd.Anchor(p);
+        if (array[p] == numeric_limits<int>::max())
+        {
+            array[p] = d;
+            pointList.Append(p);
+        }
+    }
 }
 
 /** Function used in GoBoardUtil::ScorePosition() */
@@ -269,12 +267,46 @@ bool GoBoardUtil::BlockIsAdjacentTo(const GoBoard& bd, SgPoint block,
     return false;
 }
 
-SgPointArray<int> GoBoardUtil::CfgDistance(const GoBoard& bd, SgPoint p)
+SgPointArray<int> GoBoardUtil::CfgDistance(const GoBoard& bd, SgPoint p,
+                                           int maxDist)
 {
-    SgPointArray<int> distance(numeric_limits<int>::max());
-    int d = -1;
-    CfgDistanceRecurse(distance, bd, p, d, SG_EMPTY);
-    return distance;
+    SgPointArray<int> array(numeric_limits<int>::max());
+    GoPointList pointList;
+    if (bd.Occupied(p))
+        p = bd.Anchor(p);
+    pointList.Append(p);
+    int begin = 0;
+    int end = 1;
+    int d = 0;
+    array[p] = d;
+    while (begin != end && d < maxDist)
+    {
+        ++d;
+        for (int i = begin; i != end; ++i)
+        {
+            p = pointList[i];
+            if (bd.Occupied(p))
+            {
+                for (GoBoard::StoneIterator it(bd, p); it; ++it)
+                {
+                    CfgDistanceCheck(bd, array, pointList, d, *it + SG_NS);
+                    CfgDistanceCheck(bd, array, pointList, d, *it - SG_NS);
+                    CfgDistanceCheck(bd, array, pointList, d, *it + SG_WE);
+                    CfgDistanceCheck(bd, array, pointList, d, *it - SG_WE);
+                }
+            }
+            else
+            {
+                CfgDistanceCheck(bd, array, pointList, d, p + SG_NS);
+                CfgDistanceCheck(bd, array, pointList, d, p - SG_NS);
+                CfgDistanceCheck(bd, array, pointList, d, p + SG_WE);
+                CfgDistanceCheck(bd, array, pointList, d, p - SG_WE);
+            }
+        }
+        begin = end;
+        end = pointList.Length();
+    }
+    return array;
 }
 
 GoSetup GoBoardUtil::CurrentPosSetup(const GoBoard& bd)

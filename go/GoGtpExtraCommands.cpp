@@ -6,6 +6,8 @@
 #include "SgSystem.h"
 #include "GoGtpExtraCommands.h"
 
+#include <limits>
+#include <boost/format.hpp>
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoGtpCommandUtil.h"
@@ -13,7 +15,7 @@
 #include "GoStaticLadder.h"
 
 using namespace std;
-
+using boost::format;
 using GoGtpCommandUtil::PointArg;
 using GoGtpCommandUtil::StoneArg;
 
@@ -28,6 +30,7 @@ void GoGtpExtraCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
         "sboard/Go CFG Distance/go_cfg_distance %p\n"
+        "sboard/Go CFG Distance N/go_cfg_distance %p %s\n"
         "string/Go Ladder/go_ladder %p\n"
         "string/Go Static Ladder/go_static_ladder %p\n";
 }
@@ -35,15 +38,23 @@ void GoGtpExtraCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 /** Compute the distance from a point as defined in GoBoardUtil::CfgDistance.
     This command is compatible with GoGui's analyze command type
     @c sboard <br>
-    Argument: point <br>
+    Argument: point [max_dist]<br>
     Returns: Board of integer numbers
 */
 void GoGtpExtraCommands::CmdCfgDistance(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
+    cmd.CheckNuArgLessEqual(2);
     SgPoint p = PointArg(cmd, 0, m_bd);
-    cmd << SgWritePointArray<int>(GoBoardUtil::CfgDistance(m_bd, p),
-                                  m_bd.Size());
+    int maxDist = numeric_limits<int>::max();
+    if (cmd.NuArg() > 1)
+        maxDist = cmd.IntArg(1, 0);
+    SgPointArray<int> distance = GoBoardUtil::CfgDistance(m_bd, p, maxDist);
+    // distance elements are only defined for empty points or block anchors
+    SgPointArray<string> stringArray("\"\"");
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+        if (m_bd.IsEmpty(*it) || m_bd.Anchor(*it) == *it)
+            stringArray[*it] = str(format("%i") % distance[*it]);
+    cmd << '\n' << SgWritePointArray<string>(stringArray, m_bd.Size());
 }
 
 /** Return fast ladder status.

@@ -39,33 +39,66 @@ bool SetsAtari(const GoBoard& bd, SgPoint p)
 //----------------------------------------------------------------------------
 
 GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                                         const GoUctPlayoutPolicyParam& param)
+                              const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_policy(bd, param)
 {
 }
 
-void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
-                                            float count)
+void GoUctDefaultPriorKnowledge::Add(SgPoint p, float value, float count)
 {
-    m_values[p] = value;
-    m_counts[p] = count;
+    m_values[p].Add(value, count);
+}
+
+void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& empty)
+{
+    SgPoint last = m_bd.GetLastMove();
+    if (last != SG_NULLMOVE && last != SG_PASS)
+    {
+        SgPointArray<int> dist = GoBoardUtil::CfgDistance(m_bd, last, 3);
+        const float count = 3;
+        for (GoPointList::Iterator it(empty); it; ++it)
+        {
+            const SgPoint p = *it;
+            switch (dist[p])
+            {
+            case 1:
+                Add(p, 1.0, count);
+                break;
+            case 2:
+                Add(p, 0.6, count);
+                break;
+            case 3:
+                Add(p, 0.6, count);
+                break;
+            default:
+                Add(p, 0.1, count);
+                break;
+            }
+        }
+        Add(SG_PASS, 0.1, count);
+    }
 }
 
 /** Find global moves that match a playout pattern or set a block into atari.
     @param[out] pattern
     @param[out] atari
+    @param[out] empty As a side effect, this function finds all empty points
+    on the board
     @return @c true if any such moves was found
 */
 bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
-                                                      SgPointSet& pattern,
-                                                      SgPointSet& atari) const
+                                                     SgPointSet& pattern,
+                                                     SgPointSet& atari,
+                                                     GoPointList& empty) const
 {
+    SG_ASSERT(empty.IsEmpty());
     const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
     bool result = false;
     for (GoBoard::Iterator it(m_bd); it; ++it)
         if (m_bd.IsEmpty(*it))
         {
+            empty.Append(*it);
             if (patterns.MatchAny(*it))
             {
                 pattern.Include(*it);
@@ -80,6 +113,12 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
     return result;
 }
 
+void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
+                                            float count)
+{
+    m_values[p].Initialize(value, count);
+}
+
 void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 {
     SG_UNUSED(deepenTree);
@@ -91,7 +130,8 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     const int sz = m_bd.Size();
     SgPointSet pattern;
     SgPointSet atari;
-    bool anyHeuristic = FindGlobalPatternAndAtariMoves(pattern, atari);
+    GoPointList empty;
+    bool anyHeuristic = FindGlobalPatternAndAtariMoves(pattern, atari, empty);
 
     // The initialization values/counts are mainly tuned by selfplay
     // experiments and games vs MoGo Rel 3 and GNU Go 3.6 on 9x9 and 19x19.
@@ -110,7 +150,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (GoBoardUtil::SelfAtari(m_bd, *it))
                 Initialize(*it, 0.1, sz < 15 ? 9 : 18);
             else
-                Initialize(*it, 0.5, 0); // Don't initialize
+                m_values[p].Clear(); // Don't initialize
         }
     }
     else if (isFullBoardRandom && anyHeuristic)
@@ -150,14 +190,19 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
         for (GoPointList::Iterator it(moves); it; ++it)
             Initialize(*it, 1.0, sz < 15 ? 9 : 18);
     }
+    // TODO: Test locality bonus on 9x9 (probably with smaller counts)
+    if (sz >= 15)
+        AddLocalityBonus(empty);
     m_policy.EndPlayout();
 }
 
 void GoUctDefaultPriorKnowledge::InitializeMove(SgMove move, float& value,
                                                 float& count)
 {
-    value = m_values[move];
-    count = m_counts[move];
+    const SgStatisticsBase<float,float>& val = m_values[move];
+    if (val.IsDefined())
+        value = val.Mean();
+    count = val.Count();
 }
 
 //----------------------------------------------------------------------------

@@ -29,12 +29,15 @@ private:
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
 
-    SgArray<float,SG_PASS+1> m_values;
+    SgArray<SgStatisticsBase<float,float>,SG_PASS+1> m_values;
 
-    SgArray<float,SG_PASS+1> m_counts;
+    void Add(SgPoint p, float value, float count);
+
+    void AddLocalityBonus(GoPointList& empty);
 
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
-                                        SgPointSet& atari) const;
+                                        SgPointSet& atari,
+                                        GoPointList& empty) const;
 
     void Initialize(SgPoint p, float value, float count);
 };
