@@ -127,7 +127,6 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     GoUctPlayoutPolicyType type = m_policy.MoveType();
     bool isFullBoardRandom =
         (type == GOUCT_RANDOM || type == GOUCT_FILLBOARD);
-    const int sz = m_bd.Size();
     SgPointSet pattern;
     SgPointSet atari;
     GoPointList empty;
@@ -138,8 +137,9 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     // If different values are used for the small and large board, the ones
     // from the 9x9 experiments are used for board sizes < 15, the ones from
     // 19x19 otherwise.
+    const bool isSmallBoard = (m_bd.Size() < 15);
 
-    Initialize(SG_PASS, 0.1, sz < 15 ? 9 : 18);
+    Initialize(SG_PASS, 0.1, isSmallBoard ? 9 : 18);
     if (isFullBoardRandom && ! anyHeuristic)
     {
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -148,7 +148,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, sz < 15 ? 9 : 18);
+                Initialize(*it, 0.1, isSmallBoard ? 9 : 18);
             else
                 m_values[p].Clear(); // Don't initialize
         }
@@ -161,7 +161,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, sz < 15 ? 9 : 18);
+                Initialize(*it, 0.1, isSmallBoard ? 9 : 18);
             else if (atari[*it])
                 Initialize(*it, 1.0, 3);
             else if (pattern[*it])
@@ -178,20 +178,20 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, sz < 15 ? 9 : 18);
+                Initialize(*it, 0.1, isSmallBoard ? 9 : 18);
             else if (atari[*it])
-                Initialize(*it, 0.8, sz < 15 ? 9 : 18);
+                Initialize(*it, 0.8, isSmallBoard ? 9 : 18);
             else if (pattern[*it])
-                Initialize(*it, 0.6, sz < 15 ? 9 : 18);
+                Initialize(*it, 0.6, isSmallBoard ? 9 : 18);
             else
-                Initialize(*it, 0.4, sz < 15 ? 9 : 18);
+                Initialize(*it, 0.4, isSmallBoard ? 9 : 18);
         }
         GoPointList moves = m_policy.GetEquivalentBestMoves();
         for (GoPointList::Iterator it(moves); it; ++it)
-            Initialize(*it, 1.0, sz < 15 ? 9 : 18);
+            Initialize(*it, 1.0, isSmallBoard ? 9 : 18);
     }
     // TODO: Test locality bonus on 9x9 (probably with smaller counts)
-    if (sz >= 15)
+    if (! isSmallBoard)
         AddLocalityBonus(empty);
     m_policy.EndPlayout();
 }
