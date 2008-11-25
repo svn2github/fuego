@@ -1133,24 +1133,34 @@ inline SgRelaxedSearchControl::SgRelaxedSearchControl(double maxTime)
 
 const int MaxSearchDepth = 256;
 
-/** @todo Document
-    ==31743. AR: make them nicer numbers
+/** The best possible search result - highest possible value.
+    A win in n ply is encoded with a value of PosValue - n.
+    
+    A loss is encoded as -value if the win would be encoded as value.
+    PosValue==31743. @todo: make them nicer numbers
 */
 const int PosValue = MaxSearchDepth * 124 - 1;
 
-/** @todo Document */
+/** The worst possible search result. 
+    All search results are in the range [NegValue..PosValue].
+*/
 const int NegValue = -PosValue;
 
-/** @todo Document
-    ==31488.
+/** KoValue is the result for win by ko.
+    Similarly with PosValue, a win by Ko in n ply is encoded as KoValue - n.
+    KoValue==31488.
 */
 const int KoValue = PosValue - (MaxSearchDepth - 1);
 
-/** @todo Document */
+/** The maximum number of Ko recaptures allowed. */
 const int MaxNuKo = 3;
 
-/** @todo Document
-    ==30719.
+/** SureValue is the lowest possible score that indicates a proven win.
+    1. values in the range [NegValue..-SureValue] are proven losses 
+       (possibly by ko).
+    2. values in the range [-SureValue+1..SureValue-1] are heuristic scores.
+    3. values in range [SureValue..PosValue] are proven wins (possibly by ko).
+    SureValue==30719.
 */
 const int SureValue = PosValue - (MaxNuKo + 1) * MaxSearchDepth;
 
