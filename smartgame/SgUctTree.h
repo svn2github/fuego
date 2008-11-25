@@ -267,12 +267,9 @@ inline void SgUctNode::SetPosCount(float value)
 class SgUctAllocator
 {
 public:
-    /** The array to allocate nodes from.
-        This vector changes its capacity only when SetMaxNodes() is called.
-        Therefore, pointers and references to its elements (as used in
-        members of SgUctNode) are never invalidated.
-    */
-    std::vector<SgUctNode> m_nodes;
+    SgUctAllocator();
+
+    ~SgUctAllocator();
 
     void Clear();
 
@@ -294,43 +291,123 @@ public:
     */
     bool Contains(const SgUctNode& node) const;
 
+    const SgUctNode* Start() const;
+
+    SgUctNode* Finish();
+
+    const SgUctNode* Finish() const;
+
+    /** Create a new node at the end of the storage.
+        REQUIRES: HasCapacity(1)
+        @param move The constructor argument.
+        @return A pointer to new newly created node.
+    */
+    SgUctNode* CreateOne(SgMove move);
+
+    /** Create a number of new nodes with a given list of moves at the end of
+        the storage.
+        REQUIRES: HasCapacity(moves.size())
+        @param moves The list of moves.
+    */
+    void Create(std::vector<SgMove> moves);
+
+    /** Create a number of new nodes at the end of the storage.
+        REQUIRES: HasCapacity(n)
+        @param n The number of nodes to create.
+    */
+    void CreateN(std::size_t n);
+
     void Swap(SgUctAllocator& allocator);
 
 private:
+    SgUctNode* m_start;
+
+    SgUctNode* m_finish;
+
+    SgUctNode* m_endOfStorage;
+
     /** Not implemented.
-        Cannot be copied because vector contains pointers to elements.
+        Cannot be copied because array contains pointers to elements.
         Use Swap() instead.
     */
     SgUctAllocator& operator=(const SgUctAllocator& tree);
 };
 
+inline SgUctAllocator::SgUctAllocator()
+{
+    m_start = 0;
+}
+
+inline SgUctAllocator::~SgUctAllocator()
+{
+    if (m_start != 0)
+    {
+        Clear();
+        delete[] m_start;
+    }
+}
+
 inline void SgUctAllocator::Clear()
 {
-    m_nodes.clear();
+    if (m_start != 0)
+    {
+        for (SgUctNode* it = m_start; it != m_finish; ++it)
+            it->~SgUctNode();
+        m_finish = m_start;
+    }
+}
+
+inline SgUctNode* SgUctAllocator::CreateOne(SgMove move)
+{
+    SG_ASSERT(HasCapacity(1));
+    new(m_finish) SgUctNode(move);
+    return (m_finish++);
+}
+
+inline void SgUctAllocator::Create(std::vector<SgMove> moves)
+{
+    SG_ASSERT(HasCapacity(moves.size()));
+    for (std::vector<SgMove>::const_iterator it = moves.begin();
+         it != moves.end(); ++it, ++m_finish)
+        new(m_finish) SgUctNode(*it);
+}
+
+inline void SgUctAllocator::CreateN(std::size_t n)
+{
+    SG_ASSERT(HasCapacity(n));
+    SgUctNode* newFinish = m_finish + n;
+    for ( ; m_finish != newFinish; ++m_finish)
+        new(m_finish) SgUctNode(SG_NULLMOVE);
+}
+
+inline SgUctNode* SgUctAllocator::Finish()
+{
+    return m_finish;
+}
+
+inline const SgUctNode* SgUctAllocator::Finish() const
+{
+    return m_finish;
 }
 
 inline bool SgUctAllocator::HasCapacity(std::size_t n) const
 {
-    return (m_nodes.size() + n <= m_nodes.capacity());
+    return (m_finish + n <= m_endOfStorage);
 }
 
 inline std::size_t SgUctAllocator::MaxNodes() const
 {
-    return m_nodes.capacity();
+    return m_endOfStorage - m_start;
 }
 
 inline std::size_t SgUctAllocator::NuNodes() const
 {
-    return m_nodes.size();
+    return m_finish - m_start;
 }
 
-inline void SgUctAllocator::SetMaxNodes(std::size_t maxNodes)
+inline const SgUctNode* SgUctAllocator::Start() const
 {
-    // Swap with a new vector to ensure that size shrinks if new maxNodes is
-    // smaller than before
-    std::vector<SgUctNode> nodes;
-    nodes.reserve(maxNodes);
-    m_nodes.swap(nodes);
+    return m_start;
 }
 
 //----------------------------------------------------------------------------

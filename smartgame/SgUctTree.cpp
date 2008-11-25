@@ -19,12 +19,29 @@ using boost::shared_ptr;
 
 bool SgUctAllocator::Contains(const SgUctNode& node) const
 {
-    return (&node >= &m_nodes[0] && &node <= &m_nodes[m_nodes.size() - 1]);
+    return (&node >= m_start && &node < m_finish);
 }
 
 void SgUctAllocator::Swap(SgUctAllocator& allocator)
 {
-    m_nodes.swap(allocator.m_nodes);
+    swap(m_start, allocator.m_start);
+    swap(m_finish, allocator.m_finish);
+    swap(m_endOfStorage, allocator.m_endOfStorage);
+}
+
+void SgUctAllocator::SetMaxNodes(std::size_t maxNodes)
+{
+    if (m_start != 0)
+    {
+        Clear();
+        std::free(m_start);
+    }
+    void* ptr = std::malloc(maxNodes * sizeof(SgUctNode));
+    if (ptr == 0)
+        throw std::bad_alloc();
+    m_start = static_cast<SgUctNode*>(ptr);
+    m_finish = m_start;
+    m_endOfStorage = m_start + maxNodes;
 }
 
 //----------------------------------------------------------------------------
@@ -44,8 +61,7 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
         return;
 
     SgUctAllocator& allocator = Allocator(allocatorId);
-    vector<SgUctNode>& nodes = allocator.m_nodes;
-    const SgUctNode* firstChild = &nodes[nodes.size()];
+    const SgUctNode* firstChild = allocator.Finish();
 
     int nuChildren = 0;
     for (SgUctChildIterator it(*this, node); it; ++it)
@@ -54,13 +70,12 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
         if (find(rootFilter.begin(), rootFilter.end(), move)
             == rootFilter.end())
         {
-            SgUctNode child(move);
-            child.CopyDataFrom(*it);
+            SgUctNode* child = allocator.CreateOne(move);
+            child->CopyDataFrom(*it);
             int childNuChildren = (*it).NuChildren();
-            child.SetNuChildren(childNuChildren);
+            child->SetNuChildren(childNuChildren);
             if (childNuChildren > 0)
-                child.SetFirstChild((*it).FirstChild());
-            nodes.push_back(child);
+                child->SetFirstChild((*it).FirstChild());
             ++nuChildren;
         }
     }
@@ -174,32 +189,23 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         return;
     }
 
-    vector<SgUctNode>& targetNodes = targetAllocator.m_nodes;
-
-    size_t firstTargetChild = targetNodes.size();
-    targetNode.SetFirstChild(&targetNodes[firstTargetChild]);
+    SgUctNode* firstTargetChild = targetAllocator.Finish();
+    targetNode.SetFirstChild(firstTargetChild);
     targetNode.SetNuChildren(nuChildren);
 
     // Create target nodes first (must be contiguous in the target tree)
-    for (int i = 0; i < nuChildren; ++i)
-    {
-        // Move will be copied later with CopyDataFrom
-        SgUctNode targetChild(SG_NULLMOVE);
-        SG_ASSERT(targetAllocator.HasCapacity(1));
-        targetNodes.push_back(targetChild);
-    }
+    targetAllocator.CreateN(nuChildren);
 
     // Recurse
-    size_t i = 0;
-    for (SgUctChildIterator it(*this, node); it; ++it, ++i)
+    SgUctNode* targetChild = firstTargetChild;
+    for (SgUctChildIterator it(*this, node); it; ++it, ++targetChild)
     {
         const SgUctNode& child = *it;
         ++currentAllocatorId; // Cycle to use allocators uniformly
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
-        CopySubtree(target, targetNodes[firstTargetChild + i], child,
-                    minCount, currentAllocatorId, warnTruncate, abort, timer,
-                    maxTime);
+        CopySubtree(target, *targetChild, child, minCount, currentAllocatorId,
+                    warnTruncate, abort, timer, maxTime);
     }
 }
 
@@ -231,15 +237,8 @@ void SgUctTree::CreateChildren(std::size_t allocatorId, const SgUctNode& node,
     // thread)
     SG_ASSERT(NuAllocators() > 1 || ! node.HasChildren());
 
-    vector<SgUctNode>& nodes = allocator.m_nodes;
-    const SgUctNode* firstChild = &nodes[nodes.size()];
-    for (vector<SgMove>::const_iterator it = moves.begin(); it != moves.end();
-         ++it)
-    {
-        SgMove move = *it;
-        SgUctNode child(move);
-        nodes.push_back(child);
-    }
+    const SgUctNode* firstChild = allocator.Finish();
+    allocator.Create(moves);
 
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
@@ -252,9 +251,9 @@ void SgUctTree::DumpDebugInfo(std::ostream& out) const
     out << "Root " << &m_root << '\n';
     for (size_t i = 0; i < NuAllocators(); ++i)
         out << "Allocator " << i
-            << " size=" << Allocator(i).m_nodes.size()
-            << " begin=" << &(*Allocator(i).m_nodes.begin())
-            << " end=" << &(*Allocator(i).m_nodes.end()) << '\n';
+            << " size=" << Allocator(i).NuNodes()
+            << " start=" << Allocator(i).Start()
+            << " finish=" << Allocator(i).Finish() << '\n';
 }
 
 void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
