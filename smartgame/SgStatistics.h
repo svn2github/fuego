@@ -46,12 +46,14 @@ public:
 
     void Add(VALUE val);
 
+    void Remove(VALUE val);
+
     /** Add a value n times */
     void Add(VALUE val, COUNT n);
 
     /** Add a weighted value.
         This function can only be used with floating point count types,
-        because is will add a fractional count.
+        because it will add a fractional count.
     */
     void AddWeighted(VALUE val, VALUE weight);
 
@@ -119,6 +121,26 @@ void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val)
     val -= m_mean;
     m_mean +=  val / count;
     m_count = count;
+}
+
+template<typename VALUE, typename COUNT>
+void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val)
+{
+    // Write order dependency: at least on class (SgUctSearch in lock-free
+    // mode) uses SgStatisticsBase concurrently without locking and assumes
+    // that m_mean is valid, if m_count is greater zero
+    if (m_count > 1) 
+    {
+        COUNT count = m_count;
+        --count;
+        m_mean += (m_mean - val) / count;
+        m_count = count;
+    }
+    else
+    {
+        m_mean = 0.0;
+        m_count = 0;
+    }
 }
 
 template<typename VALUE, typename COUNT>

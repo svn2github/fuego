@@ -232,6 +232,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_firstPlayUrgency(10000),
       m_raveWeightInitial(0.9f),
       m_raveWeightFinal(20000),
+      m_virtualLoss(false),
       m_logFileName("uctsearch.log"),
       m_fastLog(10)
 {
@@ -677,6 +678,12 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     info.Clear(m_numberPlayouts);
     bool isTerminal;
     bool abortInTree = ! PlayInTree(state, isTerminal);
+
+    // add a virtual loss to all nodes in path
+    if (m_virtualLoss)
+    {
+        m_tree.AddVirtualLoss(info.m_nodes);
+    }
 
     // The playout phase is always unlocked
     if (lock != 0)
@@ -1206,6 +1213,12 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     eval /= m_numberPlayouts;
     float inverseEval = InverseEval(eval);
     const vector<const SgUctNode*>& nodes = info.m_nodes;
+
+    if (m_virtualLoss)
+    {
+        m_tree.RemoveVirtualLoss(nodes);
+    }
+
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode& node = *nodes[i];

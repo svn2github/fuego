@@ -782,6 +782,12 @@ public:
     /** See WeightRaveUpdates() */
     void SetWeightRaveUpdates(bool enable);
 
+    /** Whether search uses virtual loss. */
+    bool VirtualLoss() const;
+
+    /** See VirtualLoss() */
+    void SetVirtualLoss(bool enable);
+
     /** Prune nodes with low counts if tree is full.
         This will prune nodes below a minimum count, if the tree gets full
         during a search. The minimum count is PruneMinCount() at the beginning
@@ -987,6 +993,9 @@ private:
 
     /** Time limit for current search. */
     double m_maxTime;
+
+    /** See VirtualLoss() */
+    bool m_virtualLoss;
 
     std::auto_ptr<SgUctPriorKnowledgeFactory> m_priorKnowledgeFactory;
 
@@ -1261,6 +1270,16 @@ inline void SgUctSearch::SetRaveWeightInitial(float value)
 inline void SgUctSearch::SetWeightRaveUpdates(bool enable)
 {
     m_weightRaveUpdates = enable;
+}
+
+inline bool SgUctSearch::VirtualLoss() const
+{
+    return m_virtualLoss;
+}
+
+inline void SgUctSearch::SetVirtualLoss(bool enable)
+{
+    m_virtualLoss = enable;
 }
 
 inline const SgUctSearchStat& SgUctSearch::Statistics() const

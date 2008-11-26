@@ -42,6 +42,11 @@ public:
     */
     void AddGameResult(float eval);
 
+    /** Removes a game result. 
+        @param eval The game result (e.g. score or 0/1 for win loss)
+    */
+    void RemoveGameResult(float eval);
+
     /** Number of times this node was visited.
         This corresponds to the sum of MoveCount() of all children.
         It can be different from MoveCount() of this position, if prior
@@ -89,6 +94,11 @@ public:
     */
     void IncPosCount();
 
+    /** Decrement the position count.
+        See PosCount()
+    */
+    void DecPosCount();
+
     void SetPosCount(float value);
 
     /** Initialize value with prior knowledge. */
@@ -123,6 +133,9 @@ public:
     */
     void AddRaveValue(float value, float weight);
 
+    /** Removes a rave result. */
+    void RemoveRaveValue(float value);
+
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(float value, float count);
 
@@ -156,9 +169,19 @@ inline void SgUctNode::AddGameResult(float eval)
     m_statistics.Add(eval);
 }
 
+inline void SgUctNode::RemoveGameResult(float eval)
+{
+    m_statistics.Remove(eval);
+}
+
 inline void SgUctNode::AddRaveValue(float value, float weight)
 {
     m_raveValue.AddWeighted(value, weight);
+}
+
+inline void SgUctNode::RemoveRaveValue(float value)
+{
+    m_raveValue.Remove(value);
 }
 
 inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
@@ -193,6 +216,11 @@ inline bool SgUctNode::HasRaveValue() const
 inline void SgUctNode::IncPosCount()
 {
     ++m_posCount;
+}
+
+inline void SgUctNode::DecPosCount()
+{
+    --m_posCount;
 }
 
 inline void SgUctNode::InitializeValue(float value, float count)
@@ -442,6 +470,21 @@ public:
     void AddGameResult(const SgUctNode& node, const SgUctNode* father,
                        float eval);
 
+
+    /** Removes a game result.
+        @param node The node.
+        @param father The father (if not root) to update the position count.
+        @param eval
+    */
+    void RemoveGameResult(const SgUctNode& node, const SgUctNode* father,
+                          float eval);
+
+    /** Adds a virtual loss to the given nodes. */
+    void AddVirtualLoss(const std::vector<const SgUctNode*>& nodes);
+
+    /** Removes a virtual loss to the given nodes. */
+    void RemoveVirtualLoss(const std::vector<const SgUctNode*>& nodes);
+
     void Clear();
 
     /** Return the current maximum number of nodes.
@@ -525,6 +568,14 @@ public:
     */
     void AddRaveValue(const SgUctNode& node, float value, float weight);
 
+    /** Remove a game result from the RAVE value of a node.
+        @param node The node with the move
+        @param value
+        @param weight
+        @see SgUctSearch::Rave().
+    */
+    void RemoveRaveValue(const SgUctNode& node, float value, float weight);
+
     /** Initialize the value and count of a node. */
     void InitializeValue(const SgUctNode& node, float value, float count);
 
@@ -605,6 +656,17 @@ inline void SgUctTree::AddGameResult(const SgUctNode& node,
     const_cast<SgUctNode&>(node).AddGameResult(eval);
 }
 
+inline void SgUctTree::RemoveGameResult(const SgUctNode& node,
+                                        const SgUctNode* father, float eval)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    if (father != 0)
+        const_cast<SgUctNode*>(father)->DecPosCount();
+    const_cast<SgUctNode&>(node).RemoveGameResult(eval);
+}
+
 inline void SgUctTree::AddRaveValue(const SgUctNode& node, float value,
                                     float weight)
 {
@@ -612,6 +674,16 @@ inline void SgUctTree::AddRaveValue(const SgUctNode& node, float value,
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     const_cast<SgUctNode&>(node).AddRaveValue(value, weight);
+}
+
+inline void SgUctTree::RemoveRaveValue(const SgUctNode& node, float value,
+                                       float weight)
+{
+    SG_UNUSED(weight);
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    const_cast<SgUctNode&>(node).RemoveRaveValue(value);
 }
 
 inline SgUctAllocator& SgUctTree::Allocator(std::size_t i)

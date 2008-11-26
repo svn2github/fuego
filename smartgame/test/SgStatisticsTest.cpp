@@ -27,6 +27,27 @@ BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_AddWeighted)
     BOOST_CHECK_CLOSE(statistics.Mean(), 3., 0.1);
 }
 
+BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_CheckRemove)
+{
+    SgStatisticsBase<double,std::size_t> stat;
+    stat.Add(2.0);
+    stat.Remove(2.0);
+    BOOST_CHECK(!stat.IsDefined());
+
+    stat.Add(2.0);
+    stat.Add(1.0);
+    stat.Remove(1.0);
+    BOOST_CHECK_EQUAL(stat.Count(), 1u);
+    BOOST_CHECK_CLOSE(stat.Mean(), 2.0, 0.001);
+
+    stat.Add(1.0);
+    stat.Add(3.0);
+    stat.Add(6.0);
+    stat.Remove(3.0);
+    BOOST_CHECK_EQUAL(stat.Count(), 3u);
+    BOOST_CHECK_CLOSE(stat.Mean(), 3.0, 0.001);
+}
+
 //----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(SgStatisticsTest_Basics)

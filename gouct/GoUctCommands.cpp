@@ -543,6 +543,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] rave " << s.Rave() << '\n'
             << "[bool] rave_check_same " << s.RaveCheckSame() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
+            << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
@@ -579,6 +580,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetRaveCheckSame(cmd.BoolArg(1));
         else if (name == "weight_rave_updates")
             s.SetWeightRaveUpdates(cmd.BoolArg(1));
+        else if (name == "virtual_loss")
+            s.SetVirtualLoss(cmd.BoolArg(1));
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.FloatArg(1));
         else if (name == "expand_threshold")

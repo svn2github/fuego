@@ -52,6 +52,16 @@ SgUctTree::SgUctTree()
 {
 }
 
+void SgUctTree::AddVirtualLoss(const std::vector<const SgUctNode*>& nodes)
+{
+    for (size_t i=0; i<nodes.size(); ++i)
+    {
+        const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
+        AddGameResult(*nodes[i], father, 0.0);
+        AddRaveValue(*nodes[i], 0.0, 1.0);
+    }
+}
+
 void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                             const vector<SgMove>& rootFilter)
 {
@@ -276,6 +286,16 @@ std::size_t SgUctTree::NuNodes() const
     for (size_t i = 0; i < NuAllocators(); ++i)
         nuNodes += Allocator(i).NuNodes();
     return nuNodes;
+}
+
+void SgUctTree::RemoveVirtualLoss(const std::vector<const SgUctNode*>& nodes)
+{
+    for (size_t i=0; i<nodes.size(); ++i)
+    {
+        const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
+        RemoveGameResult(*nodes[i], father, 0.0);
+        RemoveRaveValue(*nodes[i], 0.0, 1.0);
+    }
 }
 
 void SgUctTree::SetMaxNodes(std::size_t maxNodes)
