@@ -56,7 +56,7 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& empty)
     if (last != SG_NULLMOVE && last != SG_PASS)
     {
         SgPointArray<int> dist = GoBoardUtil::CfgDistance(m_bd, last, 3);
-        const float count = 3;
+        const float count = 5;
         for (GoPointList::Iterator it(empty); it; ++it)
         {
             const SgPoint p = *it;
