@@ -50,14 +50,15 @@ void GoUctDefaultPriorKnowledge::Add(SgPoint p, float value, float count)
     m_values[p].Add(value, count);
 }
 
-void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& empty)
+void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
+                                                  bool isSmallBoard)
 {
     SgPoint last = m_bd.GetLastMove();
     if (last != SG_NULLMOVE && last != SG_PASS)
     {
         SgPointArray<int> dist = GoBoardUtil::CfgDistance(m_bd, last, 3);
-        const float count = 5;
-        for (GoPointList::Iterator it(empty); it; ++it)
+        const float count = (isSmallBoard ? 4 : 5);
+        for (GoPointList::Iterator it(emptyPoints); it; ++it)
         {
             const SgPoint p = *it;
             switch (dist[p])
@@ -190,9 +191,7 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
         for (GoPointList::Iterator it(moves); it; ++it)
             Initialize(*it, 1.0, isSmallBoard ? 9 : 18);
     }
-    // TODO: Test locality bonus on 9x9 (probably with smaller counts)
-    if (! isSmallBoard)
-        AddLocalityBonus(empty);
+    AddLocalityBonus(empty, isSmallBoard);
     m_policy.EndPlayout();
 }
 

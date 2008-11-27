@@ -33,7 +33,7 @@ private:
 
     void Add(SgPoint p, float value, float count);
 
-    void AddLocalityBonus(GoPointList& empty);
+    void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari,
