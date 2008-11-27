@@ -656,6 +656,33 @@ inline void SgUctTree::AddGameResult(const SgUctNode& node,
     const_cast<SgUctNode&>(node).AddGameResult(eval);
 }
 
+inline void SgUctTree::CreateChildren(std::size_t allocatorId,
+                                      const SgUctNode& node,
+                                      const std::vector<SgMove>& moves)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
+    size_t nuChildren = moves.size();
+    SG_ASSERT(nuChildren > 0);
+    SgUctAllocator& allocator = Allocator(allocatorId);
+    SG_ASSERT(allocator.HasCapacity(nuChildren));
+
+    // In lock-free multi-threading, a node can be expanded multiple times
+    // (the later thread overwrites the children information of the previous
+    // thread)
+    SG_ASSERT(NuAllocators() > 1 || ! node.HasChildren());
+
+    const SgUctNode* firstChild = allocator.Finish();
+    allocator.Create(moves);
+
+    // Write order dependency: SgUctSearch in lock-free mode assumes that
+    // m_firstChild is valid if m_nuChildren is greater zero
+    nonConstNode.SetFirstChild(firstChild);
+    nonConstNode.SetNuChildren(nuChildren);
+}
+
 inline void SgUctTree::RemoveGameResult(const SgUctNode& node,
                                         const SgUctNode* father, float eval)
 {
