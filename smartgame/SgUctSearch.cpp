@@ -837,7 +837,7 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
             if (m_threads[i]->m_state->m_isTreeOutOfMem)
                 isTreeOutOfMem = true;
         }
-        if (! isTreeOutOfMem || SgUserAbort() || ! m_pruneFullTree)
+        if (! isTreeOutOfMem || m_aborted || ! m_pruneFullTree)
             break;
         double startPruneTime = m_timer.GetTime();
         SgDebug() << "SgUctSearch: pruning nodes with count < "
@@ -886,7 +886,10 @@ void SgUctSearch::SearchLoop(SgUctThreadState& state, GlobalLock* lock)
             m_log << SummaryLine(state.m_gameInfo) << '\n';
         ++m_numberGames;
         if (CheckAbortSearch(state))
+        {
+            m_aborted = true;
             break;
+        }
     }
     if (lock != 0)
         lock->unlock();
@@ -1043,6 +1046,7 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
                 "root filter not applied (tree reached maximum size)\n";
     }
     m_statistics.Clear();
+    m_aborted = false;
     m_wasEarlyAbort = false;
     m_checkTimeInterval = 1;
     m_numberGames = 0;

@@ -914,6 +914,11 @@ private:
     /** See NoBiasTerm() */
     bool m_noBiasTerm;
 
+    /** Flag indicating that the search was terminated because the maximum
+        time or number of games was reached.
+    */
+    bool m_aborted;
+
     /** See SgUctEarlyAbortParam. */
     bool m_wasEarlyAbort;
 
