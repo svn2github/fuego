@@ -5,6 +5,7 @@
 #include "SgSystem.h"
 #include "SgGameReader.h"
 
+#include <cstdio> // Defines EOF
 #include <iostream>
 #include <map>
 #include <vector>
