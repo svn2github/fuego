@@ -161,6 +161,7 @@ private:
 
     bool m_japaneseScoring;
 
+    /** See ExtraHandicapKomi() */
     bool m_extraHandicapKomi;
 
     /** Initial handicap for this game. */

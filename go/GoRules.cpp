@@ -37,6 +37,7 @@ bool GoRules::operator==(const GoRules& rules) const
         && m_komi == rules.m_komi
         && m_japaneseHandicap == rules.m_japaneseHandicap
         && m_japaneseScoring == rules.m_japaneseScoring
+        && m_extraHandicapKomi == rules.m_extraHandicapKomi
         && m_twoPassesEndGame == rules.m_twoPassesEndGame
         && m_koRule == rules.m_koRule;
 }
