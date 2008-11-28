@@ -76,9 +76,9 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_rootFilter(new GoUctDefaultRootFilter(Board()))
 {
     m_timeControl.SetFastOpenMoves(0);
-    m_timeControl.SetFinalSpace(1);
+    m_timeControl.SetFinalSpace(0.9);
     m_timeControl.SetMinTime(0);
-    m_timeControl.SetRemainingConstant(0.15);
+    m_timeControl.SetRemainingConstant(0.2);
     m_timeControl.SetReserveMovesConstant(0.2);
     SetPriorKnowledge(m_priorKnowledge);
 }
