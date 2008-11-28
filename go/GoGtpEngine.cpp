@@ -627,8 +627,10 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     game.Init(root, true, false);
     if (! GoGameUtil::GotoBeforeMove(&game, moveNumber))
         throw GtpFailure("invalid move number");
-    Board().Rules() = m_defaultRules;
-    Board().Rules().SetKomi(GoNodeUtil::GetKomi(game.CurrentNode()));
+    GoRules& rules = Board().Rules();
+    rules = m_defaultRules;
+    rules.SetKomi(GoNodeUtil::GetKomi(game.CurrentNode()));
+    rules.SetHandicap(GoNodeUtil::GetHandicap(game.CurrentNode()));
     RulesChanged();
     if (m_player != 0)
         m_player->OnNewGame();

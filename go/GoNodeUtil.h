@@ -32,9 +32,15 @@ namespace GoNodeUtil
         Search parent nodes until a node with a komi property is found.
     */
     GoKomi GetKomi(const SgNode* node);
+
+    /** Find handicap that is valid for this node.
+        Search parent nodes until a node with a handicap property is found.
+    */
+    int GetHandicap(const SgNode* node);
 }
 
 //----------------------------------------------------------------------------
+
 template<class BOARD>
 SgNode* GoNodeUtil::CreateRoot(const BOARD& board)
 {
