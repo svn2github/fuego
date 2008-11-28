@@ -175,7 +175,7 @@ private:
     /** See SetMercyRule() */
     float m_mercyRuleResult;
 
-    /** Inverse of maximum score, one can reach on a board of the current
+    /** Inverse of maximum score one can reach on a board of the current
         size.
     */
     float m_invMaxScore;
@@ -194,6 +194,8 @@ private:
 
     template<class BOARD>
     float EvaluateBoard(const BOARD& bd, float komi);
+
+    float GetKomi() const;
 };
 
 template<class POLICY>
@@ -246,9 +248,16 @@ void GoUctGlobalSearchState<POLICY>::ClearTerritoryStatistics()
 }
 
 template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::EndPlayout()
+{
+    GoUctState::EndPlayout();
+    m_policy->EndPlayout();
+}
+
+template<class POLICY>
 float GoUctGlobalSearchState<POLICY>::Evaluate()
 {
-    float komi = Board().Rules().Komi().ToFloat();
+    float komi = GetKomi();
     if (IsInPlayout())
         return EvaluateBoard(UctBoard(), komi);
     else
@@ -313,6 +322,14 @@ void GoUctGlobalSearchState<POLICY>::ExecutePlayout(SgMove move)
     else
         m_stoneDiff += bd.NuCapturedStones();
     m_policy->OnPlay();
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::GameStart()
+{
+    GoUctState::GameStart();
+    int size = Board().Size();
+    m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
 }
 
 template<class POLICY>
@@ -398,19 +415,15 @@ SgMove GoUctGlobalSearchState<POLICY>::GeneratePlayoutMove(
     return move;
 }
 
+/** Get komi including extra handicap komi points, if used by the rules. */
 template<class POLICY>
-void GoUctGlobalSearchState<POLICY>::GameStart()
+float GoUctGlobalSearchState<POLICY>::GetKomi() const
 {
-    GoUctState::GameStart();
-    int size = Board().Size();
-    m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
-}
-
-template<class POLICY>
-void GoUctGlobalSearchState<POLICY>::EndPlayout()
-{
-    GoUctState::EndPlayout();
-    m_policy->EndPlayout();
+    const GoRules& rules = Board().Rules();
+    float komi = rules.Komi().ToFloat();
+    if (rules.ExtraHandicapKomi())
+        komi += rules.Handicap();
+    return komi;
 }
 
 template<class POLICY>
@@ -448,7 +461,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     GoUctState::StartSearch();
     const GoBoard& bd = Board();
     int size = bd.Size();
-    float maxScore = size * size + bd.Rules().Komi().ToFloat();
+    float maxScore = size * size + GetKomi();
     m_invMaxScore = 1 / maxScore;
     m_initialMoveNumber = bd.MoveNumber();
     ClearTerritoryStatistics();

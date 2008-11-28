@@ -41,8 +41,13 @@ public:
 
     bool operator!=(const GoRules& rules) const;
 
+    /** @name Set and query rule details */
+    // @{
+
     /** Default is false. */
     bool AllowSuicide() const;
+
+    void SetAllowSuicide(bool allowSuicide);
 
     /** Whether it necessary to capture dead stones.
         With some rules all un-captured stones count as alive.
@@ -50,35 +55,50 @@ public:
     */
     bool CaptureDead() const;
 
+    /** See CaptureDead() */
+    void SetCaptureDead(bool captureDead);
+
     KoRule GetKoRule() const;
+
+    void SetKoRule(KoRule koRule);
 
     int Handicap() const;
 
+    void SetHandicap(int handicap);
+
     /** True if using Japanese style handicap. */
     bool JapaneseHandicap() const;
-    
+
+    void SetJapaneseHandicap(bool japaneseHandicap);
+
     /** True if using Japanese style scoring.
         Japanese style scoring counts territory and prisoners, but not
         own stones.
     */
     bool JapaneseScoring() const;
-    
-    const GoKomi& Komi() const;
-
-    void SetAllowSuicide(bool allowSuicide);
-
-    /** See CaptureDead() */
-    void SetCaptureDead(bool captureDead);
-
-    void SetHandicap(int handicap);
-
-    void SetJapaneseHandicap(bool japaneseHandicap);
 
     void SetJapaneseScoring(bool japaneseScoring);
 
+    const GoKomi& Komi() const;
+
     void SetKomi(const GoKomi& komi);
 
-    void SetKoRule(KoRule koRule);
+    /** True if two passes end the game, false if 3 passes needed. */
+    bool TwoPassesEndGame() const;
+
+    void SetTwoPassesEndGame(bool twoPassesEndGame);
+
+    /** Each handicap stone counts as an extra komi point for white.
+        This extra komi point is not included in the komi settings. Used by
+        the KGS Go server. Default is false.
+    */
+    bool ExtraHandicapKomi() const;
+
+    /** See ExtraHandicapKomi() */
+    void SetExtraHandicapKomi(bool enable);
+
+    // @} // name
+
 
     /** Set several rule settings according to rule name.
         Currently supported:
@@ -90,6 +110,7 @@ public:
         <th>JapaneseScoring</th>
         <th>KoRule</th>
         <th>CaptureDead</th>
+        <th>ExtraHandicapKomi</th>
         </tr>
         <tr>
         <td>cgos</td>
@@ -98,6 +119,7 @@ public:
         <td>no</td>
         <td>positional superko</td>
         <td>yes</td>
+        <td>no</td>
         </tr>
         <tr>
         <td>chinese</td>
@@ -105,6 +127,7 @@ public:
         <td>no</td>
         <td>no</td>
         <td>superko</td>
+        <td>no</td>
         <td>no</td>
         </tr>
         <tr>
@@ -114,6 +137,7 @@ public:
         <td>yes</td>
         <td>simple</td>
         <td>no</td>
+        <td>no</td>
         </tr>
         <tr>
         <td>kgs</td>
@@ -122,6 +146,7 @@ public:
         <td>no</td>
         <td>positional superko</td>
         <td>no</td>
+        <td>yes</td>
         </tr>
         </table>
         @param namedRules The named rules.
@@ -129,17 +154,14 @@ public:
      */
     void SetNamedRules(const std::string& namedRules);
 
-    void SetTwoPassesEndGame(bool twoPassesEndGame);
-
-    /** True if two passes end the game, false if 3 passes needed. */
-    bool TwoPassesEndGame() const;
-
 private:
     bool m_allowSuicide;
 
     bool m_captureDead;
 
     bool m_japaneseScoring;
+
+    bool m_extraHandicapKomi;
 
     /** Initial handicap for this game. */
     int m_handicap;
@@ -169,6 +191,11 @@ inline bool GoRules::CaptureDead() const
     return m_captureDead;
 }
 
+inline bool GoRules::ExtraHandicapKomi() const
+{
+    return m_extraHandicapKomi;
+}
+
 inline GoRules::KoRule GoRules::GetKoRule() const
 {
     return m_koRule;
@@ -183,7 +210,7 @@ inline bool GoRules::JapaneseHandicap() const
 {
     return m_japaneseHandicap;
 }
-    
+
 inline bool GoRules::JapaneseScoring() const
 {
     return m_japaneseScoring;
@@ -202,6 +229,11 @@ inline void GoRules::SetAllowSuicide(bool allowSuicide)
 inline void GoRules::SetCaptureDead(bool captureDead)
 {
     m_captureDead = captureDead;
+}
+
+inline void GoRules::SetExtraHandicapKomi(bool enable)
+{
+    m_extraHandicapKomi = enable;
 }
 
 inline void GoRules::SetHandicap(int handicap)

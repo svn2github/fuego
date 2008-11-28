@@ -704,6 +704,7 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
     Parameters:
     @arg @c allow_suicde See GoRules:AllowSuicide()
     @arg @c capture_dead See GoRules:CaptureDead()
+    @arg @c extra_handicap_komi See GoRules:ExtraHandicapKomi()
     @arg @c japanese_scoring See GoRules:JapaneseScoring()
     @arg @c two_passes_end_game See GoRules:TwoPassesEndGame()
     @arg @c ko_rule (simple, superko, pos_superko) See GoRules:KoRule()
@@ -718,6 +719,8 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
             << SgWriteBoolAsInt(r.AllowSuicide()) << '\n'
             << "[bool] capture_dead "
             << SgWriteBoolAsInt(r.CaptureDead()) << '\n'
+            << "[bool] extra_handicap_komi "
+            << SgWriteBoolAsInt(r.ExtraHandicapKomi()) << '\n'
             << "[bool] japanese_scoring "
             << SgWriteBoolAsInt(r.JapaneseScoring()) << '\n'
             << "[bool] two_passes_end_game "
@@ -737,6 +740,11 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
         {
             r.SetCaptureDead(cmd.BoolArg(1));
             m_defaultRules.SetCaptureDead(cmd.BoolArg(1));
+        }
+        else if (name == "extra_handicap_komi")
+        {
+            r.SetExtraHandicapKomi(cmd.BoolArg(1));
+            m_defaultRules.SetExtraHandicapKomi(cmd.BoolArg(1));
         }
         else if (name == "japanese_scoring")
         {

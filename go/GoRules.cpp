@@ -20,6 +20,7 @@ GoRules::GoRules(int handicap, const GoKomi& komi, bool japanese,
     : m_allowSuicide(false),
       m_captureDead(false),
       m_japaneseScoring(japanese),
+      m_extraHandicapKomi(false),
       m_handicap(handicap),
       m_komi(komi),
       m_japaneseHandicap(japanese),
@@ -49,6 +50,7 @@ void GoRules::SetNamedRules(const std::string& namedRules)
         SetJapaneseScoring(false);
         SetKoRule(POS_SUPERKO);
         SetCaptureDead(true);
+        SetExtraHandicapKomi(false);
     }
     else if (namedRules == "chinese")
     {
@@ -57,6 +59,7 @@ void GoRules::SetNamedRules(const std::string& namedRules)
         SetJapaneseScoring(false);
         SetKoRule(SUPERKO);
         SetCaptureDead(false);
+        SetExtraHandicapKomi(false);
     }
     else if (namedRules == "japanese")
     {
@@ -65,6 +68,7 @@ void GoRules::SetNamedRules(const std::string& namedRules)
         SetJapaneseScoring(true);
         SetKoRule(SIMPLEKO);
         SetCaptureDead(false);
+        SetExtraHandicapKomi(false);
     }
     else if (namedRules == "kgs")
     {
@@ -73,6 +77,7 @@ void GoRules::SetNamedRules(const std::string& namedRules)
         SetJapaneseScoring(false);
         SetKoRule(POS_SUPERKO);
         SetCaptureDead(false);
+        SetExtraHandicapKomi(true);
     }
     else
         throw SgException("Unknown rules: " + namedRules);
