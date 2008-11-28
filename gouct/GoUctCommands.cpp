@@ -512,7 +512,6 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c no_bias_term See SgUctSearch::NoBiasTerm
     @arg @c prune_full_tree See SgUctSearch::PruneFullTree
     @arg @c rave See SgUctSearch::Rave
-    @arg @c rave_check_same SgUctSearch::RaveCheckSame
     @arg @c weight_rave_updates SgUctSearch::WeightRaveUpdates
     @arg @c bias_term_constant See SgUctSearch::BiasTermConstant
     @arg @c expand_threshold See SgUctSearch::ExpandThreshold
@@ -541,7 +540,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
             << "[bool] prune_full_tree " << s.PruneFullTree() << '\n'
             << "[bool] rave " << s.Rave() << '\n'
-            << "[bool] rave_check_same " << s.RaveCheckSame() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
             << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
@@ -576,8 +574,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetPruneFullTree(cmd.BoolArg(1));
         else if (name == "rave")
             s.SetRave(cmd.BoolArg(1));
-        else if (name == "rave_check_same")
-            s.SetRaveCheckSame(cmd.BoolArg(1));
         else if (name == "weight_rave_updates")
             s.SetWeightRaveUpdates(cmd.BoolArg(1));
         else if (name == "virtual_loss")
