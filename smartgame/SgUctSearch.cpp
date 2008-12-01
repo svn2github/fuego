@@ -1077,20 +1077,18 @@ void SgUctSearch::UpdateCheckTimeInterval(double time)
         return;
     // Dynamically update m_checkTimeInterval (see comment at definition of
     // m_checkTimeInterval)
-    if (time < numeric_limits<double>::min())
+    float wantedTimeDiff = (m_maxTime > 1 ? 0.1 : 0.1 * m_maxTime);
+    if (time < wantedTimeDiff / 10)
     {
+        // Computing games per second might be unreliable for small times
         m_checkTimeInterval *= 2;
         return;
     }
     m_statistics.m_gamesPerSecond = m_numberGames / time;
     double gamesPerSecondPerThread =
         m_statistics.m_gamesPerSecond / m_numberThreads;
-    if (m_maxTime < 0.1)
-        m_checkTimeInterval =
-            static_cast<size_t>(m_maxTime * gamesPerSecondPerThread / 10);
-    else
-        m_checkTimeInterval =
-            static_cast<size_t>(gamesPerSecondPerThread / 10);
+    m_checkTimeInterval =
+        static_cast<size_t>(wantedTimeDiff * gamesPerSecondPerThread);
     if (m_checkTimeInterval == 0)
         m_checkTimeInterval = 1;
 }
