@@ -17,6 +17,15 @@ using boost::shared_ptr;
 
 //----------------------------------------------------------------------------
 
+SgUctAllocator::~SgUctAllocator()
+{
+    if (m_start != 0)
+    {
+        Clear();
+        std::free(m_start);
+    }
+}
+
 bool SgUctAllocator::Contains(const SgUctNode& node) const
 {
     return (&node >= m_start && &node < m_finish);

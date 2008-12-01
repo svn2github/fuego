@@ -366,15 +366,6 @@ inline SgUctAllocator::SgUctAllocator()
     m_start = 0;
 }
 
-inline SgUctAllocator::~SgUctAllocator()
-{
-    if (m_start != 0)
-    {
-        Clear();
-        delete[] m_start;
-    }
-}
-
 inline void SgUctAllocator::Clear()
 {
     if (m_start != 0)
