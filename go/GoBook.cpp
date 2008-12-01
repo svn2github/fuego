@@ -224,12 +224,6 @@ SgPoint GoBook::LookupMove(const GoBoard& bd) const
     if (nuMoves == 0)
         return SG_NULLMOVE;
     SgPoint p = moves[rand() % nuMoves];
-    if (! bd.IsLegal(p))
-    {
-        // Should not happen with 64-bit hashes, but not impossible
-        SgWarning() << "illegal book move (hash code collision?)\n";
-        return SG_NULLMOVE;
-    }
     return p;
 }
 
@@ -246,7 +240,17 @@ vector<SgPoint> GoBook::LookupAllMoves(const GoBoard& bd) const
     const int size = mapEntry->m_size;
     for (vector<SgPoint>::const_iterator it = moves.begin();
          it != moves.end(); ++it)
-        result.push_back(SgPointUtil::Rotate(rotation, *it, size));
+    {
+        SgPoint p = SgPointUtil::Rotate(rotation, *it, size);
+        if (! bd.IsLegal(p))
+        {
+            // Should not happen with 64-bit hashes, but not impossible
+            SgWarning() << "illegal book move (hash code collision?)\n";
+            result.clear();
+            break;
+        }
+        result.push_back(p);
+    }
     return result;
 }
 
