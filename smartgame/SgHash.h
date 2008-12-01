@@ -118,7 +118,7 @@ bool SgHash<N>::operator<(const SgHash& code) const
 {
     // std::bitset does not define operator<, so we have to do it (less
     // efficiently) ourselves
-    for (int i = N; i >= 0; --i)
+    for (int i = N - 1; i >= 0; --i)
     {
         bool c1 = m_code[i];
         bool c2 = code.m_code[i];
