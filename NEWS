@@ -8,7 +8,23 @@ history.
 Current development version
 ===========================
 
-* 
+* Change some default settings to be more friendly to end users (e.g.
+  automatic loading of opening book, set ignore_clock to 0)
+* New parameter GoUctPlayer::ResignMinGames
+* Filter moves on empty edge in GoUctDefaultRootFilter
+* Added fillboard and nakade heuristic as described in recent MoGo paper
+  (not enabled by default)
+* reg_genmove uses now the time limit set with go_param timelimit
+* Use weighted RAVE updates in SgUctSearch
+* Prune nodes with low visit counts if the tree runs out of memory
+* Use different counts in the prior knowledge for small and large board sizes
+* New command go_sentinel_file
+* Use float type for counts in SgUctNode to allow fractional counts in prior
+  knowledge
+* Add a locality bonus in prior knowledge (caused a big playing strength
+  increase on 19x19)
+* New parameter SgUctSearch::VirtualLoss
+* Other improvements and fixes
 
 
 Version 0.2 - 2008 Aug 28
@@ -17,8 +33,8 @@ Version 0.2 - 2008 Aug 28
 * Declare data members of UCT nodes and signature statistis as volatile.
   This avoids that the compiler reorders writes, which could cause crashes
   if the UCT search is used in lock-free mode.
-* Fix bug that caused reusing the subtree not to work (if options reuse_subtree
-  or ponder were used)
+* Fix bug that caused reusing the subtree not to work (if options
+  reuse_subtree or ponder were used)
 
 
 Version 0.1 - 2008 May 30
