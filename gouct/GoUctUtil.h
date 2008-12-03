@@ -79,6 +79,13 @@ namespace GoUctUtil
     template<class BOARD>
     bool DoClumpCorrection(const BOARD& bd, SgPoint& p);
 
+    /** Check, if playing at a lib gains liberties.
+        Does not handle capturing moves for efficiency. Not needed, because
+        capturing moves have a higher priority in the playout.
+    */
+    template<class BOARD>
+    bool GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib);
+
     /** Filter for generating moves in random phase.
         Checks if a point (must be empty) is a legal move and
         GoBoardUtil::IsCompletelySurrounded() returns false.
@@ -183,6 +190,10 @@ namespace GoUctUtil
                          GoPointList& emptyPts,
                          SgRandom& random);
 
+    /** Utility function used in DoClumpCorrection() */
+    template<class BOARD>
+    void SetEdgeCorrection(const BOARD& bd, SgPoint p, int& edgeCorrection);
+
     /** Return statistics of all children of a node.
         @param search The search containing the tree and statistics
         @param bSort Whether sort the children
@@ -194,22 +205,6 @@ namespace GoUctUtil
     /** check if anchors[] are subset of neighbor blocks of nb */
     template<class BOARD>
     bool SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[], SgPoint nb);
-}
-
-//----------------------------------------------------------------------------
-// Local utility functions
-
-template<class BOARD>
-void SetEdgeCorrection(const BOARD& bd, SgPoint p, int& edgeCorrection)
-{
-    if (bd.Line(p) == 1)
-    {
-        edgeCorrection += 3;
-        if (bd.Pos(p) == 1)
-        {
-            edgeCorrection += 2;
-        }
-    }
 }
 
 //----------------------------------------------------------------------------
@@ -344,6 +339,36 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
 }
 
 template<class BOARD>
+bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
+{
+    SG_ASSERT(bd.IsEmpty(lib));
+    const SgBlackWhite color = bd.GetStone(anchor);
+    int nu = -2; // need 2 new libs (lose 1 lib by playing on lib itself)
+    for (SgNb4Iterator it(lib); it; ++it)
+    {
+        SgEmptyBlackWhite c = bd.GetColor(*it);
+        if (c == SG_EMPTY)
+        {
+            if (! bd.IsLibertyOfBlock(*it, anchor))
+                if (++nu >= 0)
+                    return true;
+        }
+        else if (c == color) // merge with block
+        {
+            const SgPoint anchor2 = bd.Anchor(*it);
+            if (anchor != anchor2)
+                for (typename BOARD::LibertyIterator it(bd, anchor2); it;
+                     ++it)
+                    if (! bd.IsLibertyOfBlock(*it, anchor))
+                        if (++nu >= 0)
+                            return true;
+        }
+        // else capture - not handled, see function documentation
+    }
+    return false;
+}
+
+template<class BOARD>
 inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
                                      SgBlackWhite toPlay)
 {
@@ -362,7 +387,7 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
             // todo: check for nakade shapes here.
            )
         {
-            //SgDebug() << m_bd << "Removed selfatari"
+            //SgDebug() << bd << "Removed selfatari"
             //<< SgWriteMove(mv, toPlay);
             return false;
         }
@@ -393,7 +418,21 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
 }
 
 template<class BOARD>
-bool GoUctUtil::SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[], SgPoint nb)
+void GoUctUtil::SetEdgeCorrection(const BOARD& bd, SgPoint p,
+                                  int& edgeCorrection)
+{
+    if (bd.Line(p) == 1)
+    {
+        edgeCorrection += 3;
+        if (bd.Pos(p) == 1)
+            edgeCorrection += 2;
+    }
+}
+
+
+template<class BOARD>
+bool GoUctUtil::SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[],
+                               SgPoint nb)
 {
     SgPoint nbanchor[4 + 1];
     bd.NeighborBlocks(nb, bd.ToPlay(), nbanchor);

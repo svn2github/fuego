@@ -250,9 +250,6 @@ private:
     bool CorrectMove(GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
                      SgPoint& mv, GoUctPlayoutPolicyType moveType);
 
-    /** Test whether playing on lib increases the liberties of anchor block */
-    bool GainsLiberties(SgPoint anchor, SgPoint lib) const;
-
     /** Captures if last move was self-atari */
     bool GenerateAtariCaptureMove();
 
@@ -393,40 +390,6 @@ void GoUctPlayoutPolicy<BOARD>::EndPlayout()
 }
 
 template<class BOARD>
-bool GoUctPlayoutPolicy<BOARD>::GainsLiberties(SgPoint anchor,
-                                               SgPoint lib) const
-{
-    const SgBlackWhite color = m_bd.GetStone(anchor);
-    SG_ASSERT(m_bd.IsEmpty(lib));
-    int nu = -1; // lose 1 lib by playing on lib itself.
-    for (SgNb4Iterator it(lib); it; ++it)
-    {
-        if (m_bd.IsEmpty(*it))
-        {
-            if (! m_bd.IsLibertyOfBlock(*it, anchor))
-            {
-                if (++nu > 0)
-                    return true;
-            }
-        }
-        else if (m_bd.IsColor(*it, color)) // merge with block
-        {
-            const SgPoint anchor2 = m_bd.Anchor(*it);
-            if (anchor != anchor2)
-                for (typename BOARD::LibertyIterator it(m_bd, anchor2); it;
-                     ++it)
-                    if (! m_bd.IsLibertyOfBlock(*it, anchor))
-                    {
-                        if (++nu > 0)
-                            return true;
-                    }
-        }
-        // else capture - ignore since it already has higher priority in UCT
-    }
-    return false;
-}
-
-template<class BOARD>
 bool GoUctPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 {
     SG_ASSERT(! SgIsSpecialMove(m_lastMove));
@@ -489,13 +452,12 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     // take liberty of last move
     if (m_bd.NumLiberties(lastMove) == 2)
     {
+        const SgPoint anchor = m_bd.Anchor(lastMove);
         for (typename BOARD::LibertyIterator it(m_bd, lastMove); it; ++it)
-        {
-            if (GainsLiberties(m_bd.Anchor(lastMove), *it)
+            if (GoUctUtil::GainsLiberties(m_bd, anchor, *it)
                 && ! GoBoardUtil::SelfAtari(m_bd, *it)
                )
                 m_moves.Append(*it);
-        }
     }
 
     if (m_bd.NumNeighbors(lastMove, toPlay) != 0)
@@ -513,11 +475,9 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
                     anchorList.Append(anchor);
                     for (typename BOARD::LibertyIterator it(m_bd, anchor); it;
                          ++it)
-                        if (GainsLiberties(anchor, *it)
+                        if (GoUctUtil::GainsLiberties(m_bd, anchor, *it)
                             && ! GoBoardUtil::SelfAtari(m_bd, *it))
-                        {
                             m_moves.Append(*it);
-                        }
                 }
             }
         }
