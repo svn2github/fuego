@@ -285,7 +285,8 @@ public:
     bool OccupiedInAtari(SgPoint p) const;
 
     /** Return whether playing colour c at p can capture anything,
-        ignoring any possible repetition. */
+        ignoring any possible repetition.
+    */
     bool CanCapture(SgPoint p, SgBlackWhite c) const;
 
     /** Checks whether all the board data structures are in a consistent

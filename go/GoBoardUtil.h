@@ -171,11 +171,6 @@ namespace GoBoardUtil
     bool HasStonesOfBothColors(const GoBoard& bd,
                                const SgList<SgPoint>& stones);
 
-    /** Check if move would capture stones without playing it.
-        Faster than using bd.Play(p), then bd.CapturingMove().
-    */
-    bool IsCapturingMove(const GoBoard& bd, SgPoint p);
-
     /** Return if point is surrounded by one color and no adjacent block is
         in atari.
         Good criterion for move generation in Monte-Carlo. See:

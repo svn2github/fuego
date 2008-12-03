@@ -582,7 +582,8 @@ public:
     bool OccupiedInAtari(SgPoint p) const;
 
     /** Return whether playing colour c at p can capture anything,
-        ignoring any possible repetition. */
+        ignoring any possible repetition.
+    */
     bool CanCapture(SgPoint p, SgBlackWhite c) const;
 
     /** %Player who has immediately retaken a ko.

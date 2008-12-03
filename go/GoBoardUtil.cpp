@@ -818,14 +818,6 @@ bool GoBoardUtil::MoveLegalAndNotAtari(GoBoard& bd, SgPoint move)
     return (execute.IsLegal() && ! bd.InAtari(move));
 }
 
-bool GoBoardUtil::IsCapturingMove(const GoBoard& bd, SgPoint p)
-{
-    SgPoint anchors[4 + 1];
-    bd.NeighborBlocks(p, bd.Opponent(), 1, anchors);
-    // check if at least one neighbor in atari exists
-    return anchors[0] != SG_ENDPOINT;
-}
-
 bool GoBoardUtil::ScorePosition(const GoBoard& bd,
                                 const SgPointSet& deadStones, float& score)
 {
