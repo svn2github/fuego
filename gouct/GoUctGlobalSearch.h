@@ -657,7 +657,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetRaveWeightInitial(1.0);
     SetRaveWeightFinal(5000);
     SetExpandThreshold(1);
-    if (boardSize <= 13)
+    if (boardSize < 15)
     {
         // These parameters were mainly tested on 9x9
         SetNoBiasTerm(false);
@@ -666,7 +666,8 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     else
     {
         // These parameters were mainly tested on 19x19
-        SetNoBiasTerm(true);
+        SetNoBiasTerm(false);
+        SetBiasTermConstant(0.004);
     }
 }
 
