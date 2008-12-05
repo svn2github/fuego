@@ -1,6 +1,7 @@
 EXTRA_DIST = \
 run.sh \
 ladder.tst \
+performance_icgc2008.tst \
 repetition.tst \
 simpleplayers.tst \
 static_safety_basics.tst \
@@ -133,6 +134,8 @@ sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf \
 sgf/games/2008/KGS/7/27/Yuusen-Fuego9-3.sgf \
 sgf/games/2008/KGS/7/27/hahaha6k-Fuego9.sgf \
 sgf/games/2008/KGS/7/28/dege-Fuego9.sgf \
+sgf/games/2008/KGS/8/17/AyaMC-Fuego9.sgf \
+sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf \
 sgf/games/2008/KGS/8/21/Hellyta-Fuego.sgf \
 sgf/games/2008/KGS/9/16/Fuego-masaician.sgf \
 sgf/games/2008/blunder-move-25.sgf \

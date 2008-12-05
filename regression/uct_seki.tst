@@ -18,7 +18,7 @@ reg_genmove w
 
 loadsgf sgf/games/2007/CGOS/193838.sgf 80
 30 reg_genmove w
-#? [J1]*
+#? [J1]
 # kill seki by ko fight to win this game.
 
 40 sg_compare_float 0.7 uct_value
@@ -34,11 +34,11 @@ loadsgf sgf/games/2007/CGOS/193838.sgf 81
 
 loadsgf sgf/games/2007/CGOS/193838.sgf 82
 70 reg_genmove w
-#? [J1]*
+#? [J1]
 # kill seki by ko fight to win this game.
 
 80 sg_compare_float 0.7 uct_value
-#? [1]
+#? [1]*
 
 loadsgf sgf/games/2008/leela-seki-variation.sgf 45
 90 reg_genmove b
@@ -59,7 +59,7 @@ loadsgf sgf/games/2008/leela-seki-variation.sgf 46
 
 loadsgf sgf/games/2008/leela-seki-variation.sgf 48
 130 reg_genmove w
-#? [A7]
+#? [A7]*
 # make seki.
 
 140 sg_compare_float 0.5 uct_value
@@ -112,7 +112,7 @@ reg_genmove b
 loadsgf sgf/games/2008/seki-miseval.sgf 57
 reg_genmove b
 220 sg_compare_float 0.5 uct_value
-#? [-1]*
+#? [-1]
 
 loadsgf sgf/games/2008/seki-miseval.sgf 59
 reg_genmove b
@@ -122,7 +122,7 @@ reg_genmove b
 
 loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 31
 240 reg_genmove b
-#? [F4]*
+#? [F4]
 # kill, avoid seki.
 
 loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 35
@@ -144,7 +144,7 @@ reg_genmove b
 
 loadsgf sgf/games/2008/KGS/7/25/PaperTiger-Fuego.sgf 163
 280 reg_genmove b
-#? [Q13]*
+#? [Q13]
 # Q13 is the only way to attack. O12 leads to seki.
 
 loadsgf sgf/games/2008/KGS/7/25/PaperTiger-Fuego.sgf 235
@@ -169,3 +169,36 @@ reg_genmove b
 320 sg_compare_float 0.5 uct_value
 #? [-1]*
 # B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 1
+330 reg_genmove b
+#? [G9]*
+# prevents seki.
+# This position was analyzed by "bitti" in the German Go Bund forum
+# http://www.dgob.de/yabbse/index.php?topic=3314.msg153446#msg153446
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 3
+340 reg_genmove b
+#? [J8]*
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 5
+350 reg_genmove b
+#? [E9|B9|A8]*
+# E9 is good style, but others work too.
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 7
+360 reg_genmove b
+#? [J7|B9|A8]*
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 9
+370 reg_genmove b
+#? [B9|A8]*
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 11
+380 reg_genmove b
+#? [A8]*
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 13
+390 reg_genmove b
+#? [A5]*
+

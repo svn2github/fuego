@@ -36,14 +36,14 @@ loadsgf sgf/games/2007/CGOS/196322-variation.1.sgf 33
 
 loadsgf sgf/games/2007/CGOS/196322-variation.1.sgf 35
 60 reg_genmove b
-#? [J4|F3|G1|G4]*
+#? [J4|F3|G1|G4]
 # maybe even more moves work.
 
 loadsgf sgf/games/2007/CGOS/194557.sgf 43
 70 reg_genmove b
-#? [G5|G1]*
-# H3 loses quickly. G5 is much more complicated, and probably good for B.
-# G1 probably works but did not research in detail.
+#? [G5|G1]
+# H3 as in the game loses quickly. G5 is much more complicated, 
+# and probably good for B. G1 probably works but did not research in detail.
 
 loadsgf sgf/games/2007/CGOS/200109.sgf 27
 80 reg_genmove b
@@ -52,7 +52,7 @@ loadsgf sgf/games/2007/CGOS/200109.sgf 27
 
 loadsgf sgf/games/2007/CGOS/200109-variation.sgf 29
 90 reg_genmove b
-#? [G8]*
+#? [G8]
 # strengthened B on left side to make this into a good semeai problem.
 
 100 sg_compare_float 0.5 uct_value
@@ -65,9 +65,8 @@ loadsgf sgf/games/2007/CGOS/200109-variation.sgf 31
 # It loves G2 but that is wrong.
 
 120 sg_compare_float 0.5 uct_value
-#? [1]*
+#? [1]
 # B can win.
-# 20080126 run: new FAIL.
 
 loadsgf sgf/games/2007/CGOS/200109-variation.sgf 33
 130 reg_genmove b
@@ -119,7 +118,7 @@ loadsgf sgf/games/2008/CGOS/249009.sgf 59
 
 loadsgf sgf/games/2008/CGOS/248559.sgf 47
 250 reg_genmove b
-#? [G1]*
+#? [G1]
 # win semeai - good ko for us
 
 260 sg_compare_float 0.5 uct_value
@@ -133,52 +132,52 @@ loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 36
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 37
 280 reg_genmove b
-#? [G9]*
+#? [G9]
 
 290 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B can win.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 38
 reg_genmove w
 300 sg_compare_float 0.4 uct_value
-#? [-1]*
+#? [-1]
 # W lost.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 39
 310 reg_genmove b
-#? [E7|G7|J6]*
+#? [E7|G7|J6]
 
 320 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B can win.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 40
 reg_genmove w
 330 sg_compare_float 0.4 uct_value
-#? [-1]*
+#? [-1]
 # W lost.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 41
 340 reg_genmove b
-#? [G7|J6]*
+#? [G7|J6]
 
 350 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B can win.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 42
 reg_genmove w
 360 sg_compare_float 0.4 uct_value
-#? [-1]*
+#? [-1]
 # W lost.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 43
 370 reg_genmove b
-#? [G7|A8]*
+#? [G7|A8]
 
 380 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B can win.
 
 loadsgf sgf/games/2008/CGOS/uct20080117031720-variation.sgf 44
@@ -208,7 +207,7 @@ loadsgf sgf/semeai/semeai-eval.1.sgf 5
 #? [E3]
 
 450 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B won, but current program is unsure about bottom right - score around 0.5.
 # unstable value, sometimes solved
 
@@ -217,7 +216,7 @@ loadsgf sgf/semeai/semeai-eval.1.sgf 7
 #? [J2]
 
 470 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 # B won, but current program is unsure about bottom right - score around 0.5.
 # unstable value, sometimes solved
 
@@ -228,12 +227,12 @@ loadsgf sgf/games/2008/KGS/7/27/Yuusen-Fuego9-3.sgf 33
 
 loadsgf sgf/games/2008/CGOS/365007-variation.sgf 1
 490 reg_genmove w
-#? [H2|J1]
+#? [H2|J1]*
 # W can make big seki. Unstable search - why does fuego often not see this???
 
 loadsgf sgf/games/2008/CGOS/595027.sgf 48
 500 reg_genmove w
-#? [B3]
+#? [B3]*
 # wins semeai and game. Current search is unstable between A7 (loses) and B3.
 
 loadsgf sgf/games/2008/CGOS/595267.sgf 57
@@ -299,7 +298,7 @@ loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 1
 #? [C6|C7|C8|C9]
 
 1150 sg_compare_float 0.8 uct_value
-#? [1]
+#? [1]*
 
 loadsgf sgf/semeai-exact/semeai-plain-4L.sgf 3
 1160 reg_genmove b
@@ -390,7 +389,7 @@ loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 5
 #? [C6|C7|C8|C9]
 
 1410 sg_compare_float 0.6 uct_value
-#? [1]*
+#? [1]
 
 loadsgf sgf/semeai-exact/semeai-plain-6L.sgf 7
 1420 reg_genmove b
@@ -443,10 +442,10 @@ loadsgf sgf/semeai-exact/semeai-1eye-1shared-0ext.sgf 5
 
 loadsgf sgf/semeai-exact/semeai-1eye-1shared-1+3ext.sgf 1
 1560 reg_genmove b
-#? [A9|E9]*
+#? [A9|E9]
 
 1570 sg_compare_float 0.5 uct_value
-#? [1]*
+#? [1]
 
 loadsgf sgf/semeai-exact/semeai-1eye-1shared-1+3ext.sgf 3
 1580 reg_genmove b

@@ -39,7 +39,7 @@ loadsgf sgf/games/2007/CGOS/107433.sgf 18
 
 loadsgf sgf/games/2008/gnu-uct3K-11.sgf 56
 70 reg_genmove w
-#? [A1]*
+#? [A1]
 # must capture now to win by 0.5. Often the simulatons do not see that B
 # has a ko threat, so they waste a move and play inside territory.
 # Actually, W can still win - see next test - but capturing now 
@@ -86,7 +86,7 @@ loadsgf sgf/games/2008/blunder-move-25.sgf 33
 
 loadsgf sgf/games/2008/gnu-uct3K-17.sgf 58
 160 reg_genmove w
-#? [A2]*
+#? [A2]
 # with few simulations it likes throw-in A1, loses because no ko threats
 # A2 is trivial 0.5 pt win.
 
@@ -105,3 +105,9 @@ loadsgf sgf/games/2008/CGOS/595022.sgf 49
 #? [J3|A7|A8|E7|C8]
 # Anything but A4.
 # Bug with playing "neutral point" to wrap up game when winning.
+
+loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9.sgf 65
+200 reg_genmove b
+#? [H7]*
+# everything is safe after H7.
+

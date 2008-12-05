@@ -36,9 +36,10 @@ loadsgf sgf/games/2008/CGOS/248520.sgf 43
 loadsgf sgf/games/2008/mogo-ko+ld-problem-variation.sgf 35
 reg_genmove w
 70 sg_compare_float 0.5 uct_value
-#? [-1]*
+#? [-1]
 # W lost, but program does not see it
 # Only after Black E2 the value drops
+# new PASS 20081106
 
 loadsgf sgf/games/2008/mogo-ko+ld-problem-variation.sgf 37
 reg_genmove w
@@ -99,7 +100,7 @@ loadsgf sgf/games/2008/gnu-uct3K-28.sgf 40
 
 loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 36
 220 reg_genmove w
-#? [D2|E2]
+#? [D2|E2]*
 
 loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 37
 230 reg_genmove b
@@ -107,8 +108,9 @@ loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 37
 
 loadsgf sgf/games/2008/KGS/7/26/MatroidX-4.sgf 39
 240 reg_genmove b
-#? [A1]
+#? [A1]*
 # play ko for kill
+# new FAIL 20081106
 
 loadsgf sgf/games/2008/KGS/7/26/MatroidX-5.sgf 43
 250 reg_genmove b
@@ -129,7 +131,8 @@ loadsgf sgf/games/2008/CGOS/428168.sgf 41
 
 loadsgf sgf/games/2008/CGOS/428168.sgf 42
 290 reg_genmove w
-#? [A6]
+#? [A6]*
+# new FAIL 20081106
 
 loadsgf sgf/games/2008/CGOS/428168.sgf 73
 300 reg_genmove b
@@ -151,9 +154,10 @@ loadsgf sgf/games/2008/CGOS/397739.sgf 44
 
 loadsgf sgf/games/2008/CGOS/397651.sgf 60
 340 reg_genmove w
-#? [B2|C2|C1]
+#? [B2|C2|C1]*
 # must defend bottom or lose at least 4 stones and game.
 # interesting case for Niu?
+# new FAIL 20081106
 
 loadsgf sgf/games/2008/CGOS/397651.sgf 61
 350 reg_genmove b
@@ -161,11 +165,11 @@ loadsgf sgf/games/2008/CGOS/397651.sgf 61
 
 loadsgf sgf/games/2008/CGOS/397651.sgf 63
 360 reg_genmove b
-#? [C2]*
+#? [C2]
 
 loadsgf sgf/games/2008/CGOS/397651.sgf 65
 370 reg_genmove b
-#? [B2]*
+#? [B2]
 
 loadsgf sgf/games/2008/CGOS/397651.sgf 67
 380 reg_genmove b
@@ -205,7 +209,8 @@ loadsgf sgf/games/2008/CGOS/594998.sgf 39
 
 loadsgf sgf/games/2008/CGOS/595383.sgf 40
 460 reg_genmove w
-#? [H9]*
+#? [H9]
+# new PASS 20081106
 
 loadsgf sgf/games/2008/CGOS/595383.sgf 41
 470 reg_genmove b

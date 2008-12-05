@@ -70,7 +70,7 @@ loadsgf sgf/games/2007/CGOS/200163-variation.sgf 25
 
 loadsgf sgf/games/2007/CGOS/200163-variation.sgf 27
 170 reg_genmove b
-#? [C3|C2]*
+#? [C3|C2]
 
 180 sg_compare_float 0.5 uct_value
 #? [1]*
@@ -139,14 +139,14 @@ loadsgf sgf/games/2007/CGOS/200163-variation.sgf 45
 #? [D2]
 
 360 sg_compare_float 0.7 uct_value
-#? [1]
+#? [1]*
 
 loadsgf sgf/games/2007/CGOS/200163-variation.sgf 47
 370 reg_genmove b
-#? [G8|A6]
+#? [G8|A6]*
 
 380 sg_compare_float 0.7 uct_value
-#? [1]
+#? [1]*
 
 loadsgf sgf/games/2007/CGOS/200163-variation.sgf 49
 390 reg_genmove b

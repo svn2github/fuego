@@ -10,7 +10,7 @@ uct_param_player max_games 50000
 
 loadsgf sgf/games/2007/CGOS/193893.sgf 26
 10 reg_genmove w
-#? [G3]
+#? [G3]*
 # best chance to live somehow
 
 loadsgf sgf/games/2007/CGOS/200058.sgf 18

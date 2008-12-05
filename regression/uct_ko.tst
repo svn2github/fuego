@@ -24,7 +24,7 @@ loadsgf sgf/games/2008/CGOS/251434-variation.sgf 69
 
 loadsgf sgf/games/2008/CGOS/251434-variation.sgf 71
 40 reg_genmove b
-#? [F1]
+#? [F1]*
 
 loadsgf sgf/games/2008/CGOS/251434-variation.sgf 72
 50 reg_genmove w
@@ -38,7 +38,7 @@ loadsgf sgf/games/2008/CGOS/251434-variation.sgf 73
 
 loadsgf sgf/games/2008/CGOS/251434-variation.sgf 74
 70 reg_genmove w
-#? [A4]*
+#? [A4]
 # W has threats here.
 
 loadsgf sgf/games/2007/CGOS/107439.sgf 29
@@ -56,7 +56,7 @@ loadsgf sgf/games/2007/CGOS/189715.sgf 73
 
 loadsgf sgf/games/2007/CGOS/189715.sgf 77
 110 reg_genmove b
-#? [B4|E3]
+#? [B4|E3]*
 # B4 is best, win by double ko. E3 also wins game.
 
 120 sg_compare_float 0.5 uct_value
@@ -82,8 +82,7 @@ loadsgf sgf/games/2008/CGOS/386193-mogo-mannenko-bug.sgf 88
 # Mogo destroyed the mannen-ko, which is seki in this case.
 
 170 sg_compare_float 0.7 uct_value
-#? [1]*
-# Fuego thinks it's about even...
+#? [1]
 
 loadsgf sgf/games/2008/CGOS/397892.sgf 48
 180 reg_genmove w

@@ -7,7 +7,7 @@ uct_param_player max_games 10000
 loadsgf sgf/games/2008/KGS/9/16/Fuego-masaician.sgf 296
 
 10 kgs-genmove_cleanup w
-#? [!PASS]
+#? [!PASS]*
 # Fuego played a pass here, because the implementation of kgs-genmove_cleanup
 # at the time was done independent of the player in GoGtpEngine by temporarily
 # switching on GoRules::CaptureDead() and calling GoPlayer::GenMove(). This

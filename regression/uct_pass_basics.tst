@@ -18,3 +18,16 @@ go_rules kgs
 
 20 reg_genmove b
 #? [A1]
+
+#-----------------------------------------------------------------------------
+# Tests for early passes which lose with Tromp-Taylor rules
+#-----------------------------------------------------------------------------
+
+go_rules cgos
+
+loadsgf sgf/games/2007/CGOS/71814-test.sgf
+
+30 reg_genmove b
+#? [A5]
+# GoUctGlobalSearchPlayer passed here and lost the game because
+# of Tromp-Taylor rules
