@@ -240,6 +240,21 @@ loadsgf sgf/games/2008/CGOS/595267.sgf 57
 #? [A6|A9|C9]*
 # wins semeai and game.
 
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081109232055.sgf 55
+520 reg_genmove b
+#? [J8]*
+# wins semeai and game.
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081109232055.sgf 57
+530 reg_genmove b
+#? [J8]*
+# wins semeai and game.
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081109232055.sgf 59
+540 reg_genmove b
+#? [J8]*
+# wins semeai and game.
+
 #-----------------------------------------------------------------------------
 # Systematic tests with simple semeai. In each case, the right semeai move
 # is 1 point better than the obvious capture/escape move, and wins the game.

@@ -202,3 +202,38 @@ loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 13
 390 reg_genmove b
 #? [A5]*
 
+loadsgf sgf/games/2008/CGOS/seki-miseval-20081113151939.sgf 2
+reg_genmove b
+400 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/CGOS/seki-miseval-20081113151939.sgf 4
+reg_genmove b
+410 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/CGOS/seki-miseval-20081113151939.sgf 6
+reg_genmove b
+420 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/CGOS/seki-miseval-20081113151939.sgf 8
+reg_genmove b
+430 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/CGOS/seki-miseval-20081113151939.sgf 10
+reg_genmove b
+440 sg_compare_float 0.5 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 59
+450 reg_genmove b
+#? [E9]*
+# E9 wins the endgame. Because of seki misevaluation, B plays 'safe'
+# and loses this game.

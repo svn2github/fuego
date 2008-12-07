@@ -154,3 +154,10 @@ loadsgf sgf/games/2007/CGOS/200163-variation.sgf 49
 
 400 sg_compare_float 0.7 uct_value
 #? [1]
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081112153751.sgf 54
+410 reg_genmove w
+#? [G4|G5|J1]*
+# W has many ways to win but seems to misevaluate this corner
+# and lose by 0.5
+

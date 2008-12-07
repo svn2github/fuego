@@ -27,6 +27,7 @@ uct_selfatari.tst \
 uct_semeai.tst \
 basics_fuegotest.list \
 basics_uct.list \
+performance.list \
 static_safety.list \
 uct.list \
 sgf/eyes/1.5/make-nakade.1.sgf \
@@ -74,6 +75,11 @@ sgf/games/2007/simulation-bug-107407.2.sgf \
 sgf/games/2007/simulation-bug-107407.sgf \
 sgf/games/2007/uct160K-mogo10K-2.sgf \
 sgf/games/2008/CGOS/Fuego-519-2c-20080920080149.sgf \
+sgf/games/2008/CGOS/Fuego-640-8c-20081109232055.sgf \
+sgf/games/2008/CGOS/Fuego-640-8c-20081112153751.sgf \
+sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf \
+sgf/games/2008/CGOS/Fuego-671-2c-20081125113323.sgf \
+sgf/games/2008/CGOS/seki-miseval-20081113151939.sgf \
 sgf/games/2008/CGOS/248520.sgf \
 sgf/games/2008/CGOS/248559.sgf \
 sgf/games/2008/CGOS/249009.sgf \

@@ -226,3 +226,44 @@ loadsgf sgf/games/2008/CGOS/Fuego-519-2c-20080920080149.sgf 40
 #? [F9|G9|H9]*
 # simple mistake. Worth looking into. Problem with selfatari/throwin?
 
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 39
+500 reg_genmove b
+#? [B1]
+# kill, avoid seki
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 40
+510 reg_genmove w
+#? [A2]
+# make seki
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 41
+520 reg_genmove b
+#? [B1]
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 42
+530 reg_genmove w
+#? [A2]
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 43
+540 reg_genmove b
+#? [B1]
+
+loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 45
+550 reg_genmove b
+#? [B1]
+
+loadsgf sgf/games/2008/CGOS/Fuego-671-2c-20081125070320.sgf 40
+560 reg_genmove w
+#? [J9]*
+# alive with J9 and it seems a safe 0.5 point win.
+# J6 also lives but not sure if it works for points.
+
+loadsgf sgf/games/2008/CGOS/Fuego-671-2c-20081125113323.sgf 16
+570 reg_genmove w
+#? [D2|B6]*
+
+loadsgf sgf/games/2008/CGOS/Fuego-671-2c-20081125113323.sgf 24
+580 reg_genmove w
+#? [B6]*
+
+
