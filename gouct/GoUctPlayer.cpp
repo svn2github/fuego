@@ -92,21 +92,6 @@ void GoUctPlayer::ClearStatistics()
     m_statistics.Clear();
 }
 
-/** Verify that the move selected by DoEarlyPassSearch is viable.
-    Prevent blunders from so-called neutral moves that are not.
-*/
-bool GoUctPlayer::VerifyNeutralMove(size_t maxGames, double maxTime,
-                                    SgPoint move)
-{
-    GoBoard& bd = Board();
-    bd.Play(move);
-    vector<SgPoint> sequence;
-    double value = m_search.Search(maxGames, maxTime, sequence);
-    value = m_search.InverseEval(value);
-    bd.Undo();
-    return value >= 1 - m_resignThreshold;
-}
-
 /** Perform a search after playing a pass and see if it is still a win and
     all points are safe as determined by territory statistics.
     @param maxGames Maximum simulations for the search
@@ -492,6 +477,21 @@ SgDefaultTimeControl& GoUctPlayer::TimeControl()
 const SgDefaultTimeControl& GoUctPlayer::TimeControl() const
 {
     return m_timeControl;
+}
+
+/** Verify that the move selected by DoEarlyPassSearch is viable.
+    Prevent blunders from so-called neutral moves that are not.
+*/
+bool GoUctPlayer::VerifyNeutralMove(size_t maxGames, double maxTime,
+                                    SgPoint move)
+{
+    GoBoard& bd = Board();
+    bd.Play(move);
+    vector<SgPoint> sequence;
+    double value = m_search.Search(maxGames, maxTime, sequence);
+    value = m_search.InverseEval(value);
+    bd.Undo();
+    return value >= 1 - m_resignThreshold;
 }
 
 //----------------------------------------------------------------------------

@@ -38,19 +38,30 @@ struct GoUctGlobalSearchStateParam
     /** Compute probabilities of territory in terminal positions. */
     bool m_territoryStatistics;
 
+    /** Modify game result by the length of the simulation.
+        This modifies the win/loss result (1/0) by the length of the game
+        counted as number of moves from the root position of the search. This
+        can help to prefer shorter games (if it is a win) or longer games (if
+        it is a loss). It can also have a positive effect on the playing
+        strength, because the variance of results is larger for longer games.
+        The modification is added for losses and subtracted for wins. The
+        value is the length of times the value of the modification parameter.
+        The maximum modification is 0.5. The default value of the parameter
+        is 0.
+    */
+    float m_lengthModification;
+
     /** Modify game result by score.
         This modifies the win/loss result (1/0) by the score of the end
         position. The modification is added for losses and subtracted for
         wins. The modification value is the score divided by the maximum
-        score, which can be reached on the board, times the maximum
-        score modification value.
-        This helps to play moves to maximize the score even if the game is
-        already clearly lost or won. Otherwise all moves look equal in
-        clearly won or lost positions.
-        It can also reduce the typical game length and could even have a
-        positive effect on the playing strength.
-        The modification can be disabled by setting the maximum score
-        modification value to zero. The default value is 0.02.
+        score, which can be reached on the board, times the value of the score
+        modification parameter. This helps to play moves to maximize the score
+        even if the game is already clearly lost or won. Otherwise all moves
+        look equal in clearly won or lost positions. It can also reduce the
+        typical game length and could even have a positive effect on the
+        playing strength. The modification can be disabled by setting the
+        parameter to zero. The default value is 0.02.
     */
     float m_scoreModification;
 
@@ -302,14 +313,20 @@ float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
             }
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
+    float lengthMod = min(GameLength() * m_param.m_lengthModification, 0.5f);
     if (score > std::numeric_limits<float>::epsilon())
-        return ((1 - m_param.m_scoreModification)
-                + m_param.m_scoreModification * score * m_invMaxScore);
+        return
+            (1 - m_param.m_scoreModification)
+            + m_param.m_scoreModification * score * m_invMaxScore
+            - lengthMod;
     else if (score < -std::numeric_limits<float>::epsilon())
-        return (m_param.m_scoreModification
-                + m_param.m_scoreModification * score * m_invMaxScore);
+        return
+            m_param.m_scoreModification
+            + m_param.m_scoreModification * score * m_invMaxScore
+            + lengthMod;
     else
-        return 0.0; // Draw, can happen if komi is an integer
+        // Draw. Can happen if komi is an integer
+        return 0;
 }
 
 template<class POLICY>
@@ -328,8 +345,6 @@ template<class POLICY>
 void GoUctGlobalSearchState<POLICY>::GameStart()
 {
     GoUctState::GameStart();
-    int size = Board().Size();
-    m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
 }
 
 template<class POLICY>
@@ -464,6 +479,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     float maxScore = size * size + GetKomi();
     m_invMaxScore = 1 / maxScore;
     m_initialMoveNumber = bd.MoveNumber();
+    m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
     ClearTerritoryStatistics();
 }
 
@@ -662,12 +678,14 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
         // These parameters were mainly tested on 9x9
         SetNoBiasTerm(false);
         SetBiasTermConstant(0.02);
+        m_param.m_lengthModification = 0;
     }
     else
     {
         // These parameters were mainly tested on 19x19
         SetNoBiasTerm(false);
         SetBiasTermConstant(0.004);
+        m_param.m_lengthModification = 0.00028;
     }
 }
 

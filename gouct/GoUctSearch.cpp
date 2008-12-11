@@ -125,6 +125,7 @@ void GoUctState::Execute(SgMove move)
     m_bd.Rules().SetKoRule(GoRules::SIMPLEKO);
     m_bd.Play(move);
     SG_ASSERT(! m_bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
+    ++m_gameLength;
 }
 
 void GoUctState::ExecutePlayout(SgMove move)
@@ -132,11 +133,13 @@ void GoUctState::ExecutePlayout(SgMove move)
     SG_ASSERT(m_isInPlayout);
     SG_ASSERT(move == SG_PASS || ! m_uctBd.Occupied(move));
     m_uctBd.Play(move);
+    ++m_gameLength;
 }
 
 void GoUctState::GameStart()
 {
     m_isInPlayout = false;
+    m_gameLength = 0;
 }
 
 void GoUctState::StartPlayout()
@@ -162,7 +165,7 @@ void GoUctState::TakeBackInTree(std::size_t nuMoves)
 
 void GoUctState::TakeBackPlayout(std::size_t nuMoves)
 {
-    SG_UNUSED(nuMoves);
+    m_gameLength -= nuMoves;
 }
 
 //----------------------------------------------------------------------------

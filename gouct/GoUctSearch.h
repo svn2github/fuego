@@ -71,6 +71,9 @@ public:
 
     bool IsInPlayout() const;
 
+    /** Length of the current game from the root position of the search. */
+    int GameLength() const;
+
     void Dump(std::ostream& out) const;
 
 private:
@@ -98,11 +101,19 @@ private:
     GoBoardSynchronizer m_synchronizer;
 
     bool m_isInPlayout;
+
+    /** See GameLength() */
+    int m_gameLength;
 };
 
 inline const GoBoard& GoUctState::Board() const
 {
     return m_bd;
+}
+
+inline int GoUctState::GameLength() const
+{
+    return m_gameLength;
 }
 
 inline bool GoUctState::IsInPlayout() const

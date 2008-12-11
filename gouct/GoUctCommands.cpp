@@ -323,6 +323,8 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
     @arg @c mercy_rule See GoUctGlobalSearchStateParam::m_mercyRule
     @arg @c territory_statistics See
         GoUctGlobalSearchStateParam::m_territoryStatistics
+    @arg @c length_modification See
+        GoUctGlobalSearchStateParam::m_langthModification
     @arg @c score_modification See
         GoUctGlobalSearchStateParam::m_scoreModification
 */
@@ -341,6 +343,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             << "[bool] mercy_rule " << p.m_mercyRule << '\n'
             << "[bool] territory_statistics " << p.m_territoryStatistics
             << '\n'
+            << "[string] length_modification " << p.m_lengthModification
+            << '\n'
             << "[string] score_modification " << p.m_scoreModification
             << '\n';
     }
@@ -353,6 +357,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             p.m_mercyRule = cmd.BoolArg(1);
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.BoolArg(1);
+        else if (name == "length_modification")
+            p.m_lengthModification = cmd.FloatArg(1);
         else if (name == "score_modification")
             p.m_scoreModification = cmd.FloatArg(1);
         else
