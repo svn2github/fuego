@@ -24,6 +24,8 @@ Current development version
 * Add a locality bonus in prior knowledge (caused a big playing strength
   increase on 19x19)
 * New parameter SgUctSearch::VirtualLoss
+* New parameter GoUctGlobalSearchStateParam::m_lengthModification (used on
+  19x19)
 * Other improvements and fixes
 
 
