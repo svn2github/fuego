@@ -683,8 +683,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     else
     {
         // These parameters were mainly tested on 19x19
-        SetNoBiasTerm(false);
-        SetBiasTermConstant(0.004);
+        SetNoBiasTerm(true);
         m_param.m_lengthModification = 0.00028;
     }
 }
