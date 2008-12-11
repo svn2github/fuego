@@ -25,7 +25,7 @@ using namespace std;
 
 namespace {
 
-SgTimeMode g_defaultMode = SG_TIME_CPU;
+SgTimeMode g_defaultMode = SG_TIME_REAL;
 
 bool g_isInitialized = false;
 

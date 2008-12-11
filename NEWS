@@ -26,6 +26,7 @@ Current development version
 * New parameter SgUctSearch::VirtualLoss
 * New parameter GoUctGlobalSearchStateParam::m_lengthModification (used on
   19x19)
+* Use real time as default mode for SgTime
 * Other improvements and fixes
 
 
