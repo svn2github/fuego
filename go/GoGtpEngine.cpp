@@ -780,8 +780,6 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
     @arg @c fast_open_moves See SgDefaultTimeControl::FastOpenMoves()
     @arg @c final_space See GoTimeControl::FinalSpace()
     @arg @c remaining_constant See SgDefaultTimeControl::RemainingConstant()
-    @arg @c reserve_moves_constant See
-        SgDefaultTimeControl::ReserveMovesConstant()
 */
 void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
 {
@@ -799,8 +797,7 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
         cmd << "fast_open_factor " << c->FastOpenFactor() << '\n'
             << "fast_open_moves " << c->FastOpenMoves() << '\n'
             << "final_space " << c->FinalSpace() << '\n'
-            << "remaining_constant " << c->RemainingConstant() << '\n'
-            << "reserve_moves_constant " << c->ReserveMovesConstant() << '\n';
+            << "remaining_constant " << c->RemainingConstant() << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
@@ -813,8 +810,6 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
             c->SetFinalSpace(max(cmd.FloatArg(1), 0.));
         else if (name == "remaining_constant")
             c->SetRemainingConstant(max(cmd.FloatArg(1), 0.));
-        else if (name == "reserve_moves_constant")
-            c->SetReserveMovesConstant(max(cmd.FloatArg(1), 0.));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }

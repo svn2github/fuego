@@ -17,7 +17,6 @@ GoTimeControl::GoTimeControl(const GoBoard& bd)
     : m_bd(bd),
       m_finalSpace(0.75f)
 {
-    SetReserveMovesConstant(0.15); // roughly 4 moves on 9x9
 }
 
 float GoTimeControl::FinalSpace() const

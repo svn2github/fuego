@@ -35,10 +35,7 @@ public:
     It queries the estimated number of remaining moves by a virtual
     function that needs to be implemented in the game-dependent subclass.
     -# If in an overtime period the remaining number of moves is used exactly
-       as returned by GetPositionInfo(). If no overtime settings are used
-       (absolute time for the game), a fixed number of reserve moves is always
-       added to the number of remaining moves to avoid completely running out
-       of time (see ReserveMovesConstant()).
+       as returned by GetPositionInfo().
     -# The time for a move is the remaining time (in the main time or current
        overtime period) divided by the number of remaining moves.
     -# During the opening (first 10 moves; can be controlled by
@@ -95,24 +92,6 @@ public:
     /** See RemainingConstant() */
     void SetRemainingConstant(double value);
 
-    /** Determines how many reserve moves to use if no overtime is used.
-        This constant determines the number of moves to add to the expected
-        remaining moves, if no overtime is used in the time settings, such
-        that the player will never completely run out of time, even if there
-        is no known limit on the maximum number of moves in the game. Since a
-        good value for this constant depends on the expected game length
-        and therefore probably on the board size, the constant is given as
-        a fraction between 0 and 1 and the number of reserve moves is computed
-        by multiplication with the expected number of total moves by the
-        current player in the current game (moves played plus expected
-        remaining moves). If the value would be smaller than 1, 1 is used.
-        The default value is 0, which means, that 1 reserve move is used.
-    */
-    double ReserveMovesConstant() const;
-
-    /** See ReserveMovesConstant() */
-    void SetReserveMovesConstant(double value);
-
     /** Set minimum time for any move.
         Could be made obsolete? If the player cannot generate a meaningful
         move in less than a minimum time, he can decide itself to ignore
@@ -148,9 +127,6 @@ private:
 
     /** See RemainingConstant() */
     double m_remainingConstant;
-
-    /** See ReserveMovesConstant() */
-    double m_reserveMovesConstant;
 };
 
 //----------------------------------------------------------------------------

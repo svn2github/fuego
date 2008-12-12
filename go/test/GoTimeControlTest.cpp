@@ -72,11 +72,9 @@ BOOST_AUTO_TEST_CASE(GoTimeControlTest_EmptyBoard)
                                                         /*quiet*/true);
     // Expected time for move:
     // Final space parameter 0.75 (the documented default value)
-    // ReserveMovesConstant 0.15 (the default value in GoTimeControl)
-    // expectedRemaining = (19 * 19 - int(19 * 19 * (1 - 0.75))) / 2 = 135
-    // no overtime -> add int(0.15 * 135) = 20 reserve moves = 155
-    // timeForMove = 100 / 155 = 0.6452
-    BOOST_CHECK_CLOSE(timeForMove, 0.6452, 1e-2);
+    // expectedRemaining = (19 * 19 - 19 * 19 * (1 - 0.75)) / 2 = 135
+    // timeForMove = 100 / 135 = 0.7407
+    BOOST_CHECK_CLOSE(timeForMove, 0.7407, 1e-2);
 }
 
 //----------------------------------------------------------------------------

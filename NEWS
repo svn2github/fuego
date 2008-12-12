@@ -27,6 +27,7 @@ Current development version
 * New parameter GoUctGlobalSearchStateParam::m_lengthModification (used on
   19x19)
 * Use real time as default mode for SgTime
+* Don't use SgTimeControl::ReserveMoveConstant anymore
 * Other improvements and fixes
 
 

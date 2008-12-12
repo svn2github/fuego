@@ -24,8 +24,7 @@ SgDefaultTimeControl::SgDefaultTimeControl()
     : m_fastOpenFactor(0.25),
       m_fastOpenMoves(0),
       m_minTime(0),
-      m_remainingConstant(1.0),
-      m_reserveMovesConstant(0.0)
+      m_remainingConstant(1.0)
 {
 }
 
@@ -44,19 +43,9 @@ double SgDefaultTimeControl::RemainingConstant() const
     return m_remainingConstant;
 }
 
-double SgDefaultTimeControl::ReserveMovesConstant() const
-{
-    return m_reserveMovesConstant;
-}
-
 void SgDefaultTimeControl::SetRemainingConstant(double value)
 {
     m_remainingConstant = value;
-}
-
-void SgDefaultTimeControl::SetReserveMovesConstant(double value)
-{
-    m_reserveMovesConstant = value;
 }
 
 void SgDefaultTimeControl::SetFastOpenFactor(double factor)
@@ -83,25 +72,16 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
     GetPositionInfo(toPlay, movesPlayed, estimatedRemainingMoves);
     const bool useOvertime = time.UseOvertime();
     const bool isInOvertime = (useOvertime && time.MovesLeft(toPlay) > 0);
-    int remainingMoves = 0;
+    double remainingMoves = 0;
     if (isInOvertime)
         remainingMoves = time.MovesLeft(toPlay);
     else
     {
-        int estimatedTotalMoves = movesPlayed + estimatedRemainingMoves;
-        int remainingMovesLimit =
-            static_cast<int>(m_remainingConstant * estimatedTotalMoves);
-        remainingMoves = min(estimatedRemainingMoves, remainingMovesLimit);
-        if (! useOvertime)
-        {
-            int reserveMoves =
-                static_cast<int>(m_reserveMovesConstant
-                                 * estimatedTotalMoves);
-            reserveMoves = max(reserveMoves, 1);
-            remainingMoves += reserveMoves;
-        }
+        double estimatedTotalMoves = movesPlayed + estimatedRemainingMoves;
+        remainingMoves = m_remainingConstant * estimatedTotalMoves;
+        if (useOvertime && remainingMoves > estimatedRemainingMoves)
+            remainingMoves = estimatedRemainingMoves;
     }
-    remainingMoves = max(remainingMoves, 1);
 
     double timeLeft = time.TimeLeft(toPlay);
     double timeForMove = timeLeft / remainingMoves - time.Overhead();
