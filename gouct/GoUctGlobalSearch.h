@@ -670,20 +670,24 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetFirstPlayUrgency(1);
     SetMoveSelect(SG_UCTMOVESELECT_COUNT);
     SetRave(true);
-    SetRaveWeightInitial(1.0);
-    SetRaveWeightFinal(5000);
     SetExpandThreshold(1);
     if (boardSize < 15)
     {
         // These parameters were mainly tested on 9x9
+        // using GoUctPlayoutPolicy and GoUctDefaultPriorKnowledge
         SetNoBiasTerm(false);
         SetBiasTermConstant(0.02);
+        SetRaveWeightInitial(1.0);
+        SetRaveWeightFinal(5000);
         m_param.m_lengthModification = 0;
     }
     else
     {
         // These parameters were mainly tested on 19x19
+        // using GoUctPlayoutPolicy and GoUctDefaultPriorKnowledge
         SetNoBiasTerm(true);
+        SetRaveWeightInitial(0.9);
+        SetRaveWeightFinal(5000);
         m_param.m_lengthModification = 0.00028;
     }
 }
