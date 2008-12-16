@@ -1030,7 +1030,7 @@ public:
 
         const GoBoard& m_board;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         uint64_t m_countPlay;
 #endif
 
@@ -1073,7 +1073,7 @@ public:
 
         const GoBoard& m_board;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         uint64_t m_countPlay;
 #endif
 
@@ -1117,7 +1117,7 @@ public:
 
         const GoBoard& m_board;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         SgHashCode m_oldHash;
 #endif
 
@@ -1134,7 +1134,7 @@ inline GoBoard::StoneIterator::StoneIterator(const GoBoard& bd, SgPoint p)
       m_board(bd)
 {
     SG_ASSERT(m_board.Occupied(p));
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_countPlay = m_board.CountPlay();
 #endif
 }
@@ -1166,7 +1166,7 @@ inline GoBoard::LibertyIterator::LibertyIterator(const GoBoard& bd, SgPoint p)
       m_board(bd)
 {
     SG_ASSERT(m_board.Occupied(p));
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_countPlay = m_board.CountPlay();
 #endif
 }
@@ -1194,7 +1194,7 @@ inline GoBoard::LibertyCopyIterator::LibertyCopyIterator(const GoBoard& bd,
       m_board(bd)
 {
     SG_ASSERT(m_board.Occupied(p));
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_oldHash = m_board.GetHashCode();
 #endif
 }

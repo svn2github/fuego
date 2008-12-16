@@ -31,9 +31,9 @@ void SgFini();
 */
 inline void SgInit()
 {
-    // This function must be inline, it needs to use the setting of _DEBUG
+    // This function must be inline, it needs to use the setting of NDEBUG
     // of the user code including this header
-#ifdef _DEBUG
+#ifndef NDEBUG
     SgInitImpl(true);
 #else
     SgInitImpl(false);

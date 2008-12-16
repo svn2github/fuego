@@ -54,7 +54,7 @@ SgAssertionHandler::~SgAssertionHandler()
 
 //----------------------------------------------------------------------------
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 
 #if MW_COMPILER
 /** On Metrowerks compiler, always drop into the debugger

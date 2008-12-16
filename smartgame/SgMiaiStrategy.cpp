@@ -34,7 +34,7 @@ void SgMiaiStrategy::Write(std::ostream& stream) const
 
 void SgMiaiStrategy::AddPair(const SgMiaiPair& m)
 {
-#if _DEBUG // check that points are new.
+#ifndef NDEBUG // check that points are new.
     SgPointSet dependency = Dependency();
     SG_ASSERT(! dependency.Contains(m.first));
     SG_ASSERT(! dependency.Contains(m.second));

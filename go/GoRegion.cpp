@@ -83,7 +83,7 @@ GoRegion::GoRegion(const GoBoard& board, const SgPointSet& points,
           m_1vcDepth(0),
           m_miaiStrategy(color)
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     ++s_alloc;
 #endif
 }
@@ -1021,14 +1021,15 @@ void GoRegion::Fini()
     GoChain::Fini();
     GoBlock::Fini();
     GoRegionBoard::Fini();
-#ifdef _DEBUG
+#ifndef NDEBUG
     SG_ASSERT(s_alloc == s_free);
 #endif
 }
 
-#ifdef _DEBUG
-    int GoRegion::s_alloc = 0;
-    int GoRegion::s_free = 0;
+#ifndef NDEBUG
+int GoRegion::s_alloc = 0;
+
+int GoRegion::s_free = 0;
 #endif
 
 void GoRegion::ComputeBasicFlags()

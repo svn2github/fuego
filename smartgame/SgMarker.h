@@ -45,7 +45,7 @@ private:
     /** Marked points */
     SgArray<int,SG_MAXPOINT> m_mark;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     /** See ReserveBoardMarker */
     bool m_markerInUse;
 
@@ -60,7 +60,7 @@ private:
 };
 
 inline SgMarker::SgMarker()
-#ifdef _DEBUG
+#ifndef NDEBUG
     : m_markerInUse(false)
 #endif
 {
@@ -128,12 +128,12 @@ public:
     ~SgReserveMarker();
 
 private:
-#ifdef _DEBUG
+#ifndef NDEBUG
     SgMarker& m_marker;
 #endif
 };
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 
 inline SgReserveMarker::SgReserveMarker(SgMarker& marker)
     : m_marker(marker)

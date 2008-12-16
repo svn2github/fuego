@@ -139,7 +139,7 @@ public:
     {
         if (! m_healthy.Contains(r))
             m_healthy.Append(r);
-#if _DEBUG
+#ifndef NDEBUG
         else
             // @todo debug me! see case 1540-1550 in uct_move.tst
             // seems to happen after same position recomputed with second

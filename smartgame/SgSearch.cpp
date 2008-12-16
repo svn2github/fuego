@@ -870,7 +870,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         }
 
         // Make sure the move added to the hash table really got generated.
-#ifdef _DEBUG
+#ifndef NDEBUG
         if (fHasMove && sequence->NonEmpty() && ! m_aborted)
         {
             SgMove bestMove = sequence->Top();

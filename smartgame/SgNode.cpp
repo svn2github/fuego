@@ -30,7 +30,7 @@ SgNode::SgNode()
       m_props(),
       m_marked(false)
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     ++s_alloc;
 #endif
 }
@@ -67,7 +67,7 @@ SgNode::~SgNode()
         // cannot delete the root node if it has a subtree
         SG_ASSERT(m_son == 0);
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     ++s_free;
 #endif
 }
@@ -763,7 +763,7 @@ int SgNode::CountNodes(bool fSetPropOnThisNode)
     return n;
 }
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 int SgNode::s_alloc = 0;
 
 int SgNode::s_free = 0;

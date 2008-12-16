@@ -76,7 +76,7 @@ std::string FuegoMainUtil::Version()
 #ifdef SVNREV
     s << "(" SVNREV ")";
 #endif
-#ifdef _DEBUG
+#ifndef NDEBUG
     s << " (dbg)";
 #endif
     return s.str();

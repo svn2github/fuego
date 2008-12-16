@@ -95,9 +95,9 @@ public:
     /** Destructor */
     ~GoRegion()
     {
-        #ifdef _DEBUG
-            ++s_free;
-        #endif
+#ifndef NDEBUG
+        ++s_free;
+#endif
     }
 
     /** Clear all flags etc. to recompute region */
@@ -443,10 +443,10 @@ private:
     */
     void InteriorEmpty(SgList<SgPoint>* interiorEmpty, int maxNu) const;
 
-    #ifdef _DEBUG
-        /** debugging bookkeeping. */
-        static int s_alloc, s_free;
-    #endif
+#ifndef NDEBUG
+    /** debugging bookkeeping. */
+    static int s_alloc, s_free;
+#endif
 };
 
 std::ostream& operator<<(std::ostream& stream, const GoRegion& r);

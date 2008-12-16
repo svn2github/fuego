@@ -27,10 +27,10 @@ inline void SG_UNUSED(const T&)
 {
 }
 
-/** Avoid compiler warnings for variables used only if _DEBUG is defined.
+/** Avoid compiler warnings for variables used only if NDEBUG is not defined.
     This macro is more portable than using a \#pragma directive.
 */
-#ifdef _DEBUG
+#ifndef NDEBUG
 #define SG_DEBUG_ONLY(x)
 #else
 #define SG_DEBUG_ONLY(x) SG_UNUSED(x)
@@ -89,7 +89,7 @@ public:
     virtual void Run() = 0;
 };
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 
 /** System-specific action when an ASSERT fails */
 void SgHandleAssertion(const char* expr, const char* file, int line);
@@ -108,7 +108,7 @@ void SgHandleAssertion(const char* expr, const char* file, int line);
 
 //----------------------------------------------------------------------------
 
-#if _DEBUG
+#ifndef NDEBUG
 const bool SG_CHECK = true;
 const bool SG_HEAVYCHECK = SG_CHECK && true;
 #else

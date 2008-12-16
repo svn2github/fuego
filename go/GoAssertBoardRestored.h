@@ -35,7 +35,7 @@ public:
     void Clear();
 
 private:
-#ifdef _DEBUG
+#ifndef NDEBUG
     const GoBoard* m_bd;
 
     int m_size;
@@ -63,7 +63,7 @@ private:
     int m_koLevel;
 
     SgEmptyBlackWhite m_koLoser;
-#endif // _DEBUG
+#endif // NDEBUG
 
     /** Not implemented. */
     GoAssertBoardRestored(const GoAssertBoardRestored&);
@@ -74,7 +74,7 @@ private:
 
 inline GoAssertBoardRestored::GoAssertBoardRestored()
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_bd = 0;
 #endif
 }
@@ -82,21 +82,21 @@ inline GoAssertBoardRestored::GoAssertBoardRestored()
 inline GoAssertBoardRestored::GoAssertBoardRestored(const GoBoard& bd)
 {
     SG_DEBUG_ONLY(bd);
-#ifdef _DEBUG
+#ifndef NDEBUG
     Init(bd);
 #endif
 }
 
 inline GoAssertBoardRestored::~GoAssertBoardRestored()
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     AssertRestored();
 #endif
 }
 
 inline void GoAssertBoardRestored::AssertRestored()
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     if (m_bd == 0)
         return;
     SG_ASSERT(m_bd->Size() == m_size);
@@ -117,7 +117,7 @@ inline void GoAssertBoardRestored::AssertRestored()
 
 inline void GoAssertBoardRestored::Clear()
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_bd = 0;
 #endif
 }
@@ -125,7 +125,7 @@ inline void GoAssertBoardRestored::Clear()
 inline void GoAssertBoardRestored::Init(const GoBoard& bd)
 {
     SG_DEBUG_ONLY(bd);
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_bd = &bd;
     m_size = bd.Size();
     m_toPlay = bd.ToPlay();

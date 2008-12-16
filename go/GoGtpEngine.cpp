@@ -154,7 +154,7 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
 
 GoGtpEngine::~GoGtpEngine()
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     m_player = 0;
 #endif
 }

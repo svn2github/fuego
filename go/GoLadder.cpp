@@ -559,12 +559,12 @@ bool GoLadderUtil::Ladder(const GoBoard& bd, SgPoint prey,
     // Sequence is empty.  So I have to special case this and look for
     // moves that escape from ladder myself.
     // ---> need to tell Martin if I find this
-#ifdef _DEBUG
+#ifndef NDEBUG
     SgHashCode oldHash = bd.GetHashCode();
 #endif
     GoLadder ladder;
     int result = ladder.Ladder(bd, prey, toPlay, sequence, twoLibIsEscape);
-#ifdef _DEBUG
+#ifndef NDEBUG
     // Make sure Ladder didn't change the board position.
     SG_ASSERT(oldHash == bd.GetHashCode());
 #endif
@@ -579,7 +579,7 @@ GoLadderStatus GoLadderUtil::LadderStatus(const GoBoard& bd, SgPoint prey,
 {
     SG_ASSERT(bd.IsValidPoint(prey));
     SG_ASSERT(bd.Occupied(prey));
-#ifdef _DEBUG
+#ifndef NDEBUG
     SgHashCode oldHash = bd.GetHashCode();
 #endif
     // Unsettled only if can capture when hunter plays first, and can escape
@@ -610,7 +610,7 @@ GoLadderStatus GoLadderUtil::LadderStatus(const GoBoard& bd, SgPoint prey,
                                                        escapeSequence.Top();
         }
     }
-#ifdef _DEBUG
+#ifndef NDEBUG
     // Make sure Ladder didn't change the board position.
     SG_ASSERT(oldHash == bd.GetHashCode());
 #endif

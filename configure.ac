@@ -33,7 +33,7 @@ if test "x$assert" = "xno"
 then
 	CXXFLAGS="$CXXFLAGS -DNDEBUG"
 else
-	CXXFLAGS="$CXXFLAGS -D_DEBUG=1"
+	CXXFLAGS="$CXXFLAGS"
 fi
 
 AX_CXXFLAGS_WARN_ALL

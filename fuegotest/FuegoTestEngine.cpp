@@ -112,7 +112,7 @@ void FuegoTestEngine::CmdVersion(GtpCommand& cmd)
 #else
     cmd << "(" __DATE__ ")";
 #endif
-#ifdef _DEBUG
+#ifndef NDEBUG
     cmd << " (dbg)";
 #endif
 }

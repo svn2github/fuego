@@ -358,7 +358,7 @@ public:
 
     static void CopySubtree(const SgNode* node, SgNode* copy);
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     /** Total number of nodes allocated, still in use. */
     static void GetStatistics(int* numAlloc, int* numUsed);
 #endif
@@ -421,7 +421,7 @@ private:
     /** Not implemented. */
     SgNode& operator=(const SgNode&);
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     static int s_alloc;
 
     static int s_free;
