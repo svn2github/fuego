@@ -6,6 +6,7 @@
 #ifndef GOUCT_GLOBALSEARCH_H
 #define GOUCT_GLOBALSEARCH_H
 
+#include <boost/scoped_ptr.hpp>
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeUtil.h"
@@ -193,7 +194,7 @@ private:
 
     SgRandom m_random;
 
-    std::auto_ptr<POLICY> m_policy;
+    boost::scoped_ptr<POLICY> m_policy;
 
     /** Not implemented */
     GoUctGlobalSearchState(const GoUctGlobalSearchState& search);
@@ -594,7 +595,7 @@ private:
 
     SgPointArray<bool> m_allSafe;
 
-    std::auto_ptr<FACTORY> m_playoutPolicyFactory;
+    boost::scoped_ptr<FACTORY> m_playoutPolicyFactory;
 
     GoRegionBoard m_regions;
 
@@ -606,6 +607,7 @@ template<class POLICY, class FACTORY>
 GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
                                                      FACTORY* playoutFactory)
     : GoUctSearch(bd, 0),
+      m_playoutPolicyFactory(playoutFactory),
       m_regions(bd),
       m_globalSearchLiveGfx(GOUCT_LIVEGFX_NONE)
 {
