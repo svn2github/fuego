@@ -97,8 +97,8 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
     {
         SgDebug() << "SgDefaultTimeControl: timeLeft=" << timeLeft;
         if (useOvertime)
-            SgDebug() << " movesLeft=" << time.MovesLeft(toPlay);
-        SgDebug() << " remainingMoves=" << remainingMoves << " timeForMove="
+            SgDebug() << '/' << time.MovesLeft(toPlay);
+        SgDebug() << " remaining=" << remainingMoves << " timeMove="
                   << timeForMove << '\n';
     }
 
