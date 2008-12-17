@@ -305,6 +305,8 @@ private:
     void FindInitTree(SgUctTree& initTree, SgBlackWhite toPlay,
                       double maxTime);
 
+    void SetDefaultParameters(int boardSize);
+
     bool VerifyNeutralMove(size_t maxGames, double maxTime, SgPoint move);
 };
 

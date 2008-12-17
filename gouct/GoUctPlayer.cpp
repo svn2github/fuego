@@ -64,7 +64,6 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_useRootFilter(true),
       m_reuseSubtree(false),
       m_earlyPass(true),
-      m_resignThreshold(0.05),
       m_lastBoardSize(-1),
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(999999999),
@@ -75,9 +74,7 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_timeControl(Board()),
       m_rootFilter(new GoUctDefaultRootFilter(Board()))
 {
-    m_timeControl.SetFastOpenMoves(0);
-    m_timeControl.SetMinTime(0);
-    m_timeControl.SetRemainingConstant(0.5);
+    SetDefaultParameters(Board().Size());
     SetPriorKnowledge(m_priorKnowledge);
 }
 
@@ -399,6 +396,7 @@ void GoUctPlayer::OnBoardChange()
     {
         SgDebug() << "GoUctPlayer: Setting default parameters for size "
                   << size << '\n';
+        SetDefaultParameters(size);
         m_search.SetDefaultParameters(size);
         m_lastBoardSize = size;
     }
@@ -438,6 +436,23 @@ GoUctSearch& GoUctPlayer::Search()
 const GoUctSearch& GoUctPlayer::Search() const
 {
     return m_search;
+}
+
+void GoUctPlayer::SetDefaultParameters(int boardSize)
+{
+    m_timeControl.SetFastOpenMoves(0);
+    m_timeControl.SetMinTime(0);
+    m_timeControl.SetRemainingConstant(0.5);
+    if (boardSize < 15)
+    {
+        m_resignThreshold = 0.05;
+    }
+    else
+    {
+        // Need higher resign threshold, because GoUctGlobalSearch uses
+        // length modification on large board
+        m_resignThreshold = 0.08;
+    }
 }
 
 void GoUctPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
