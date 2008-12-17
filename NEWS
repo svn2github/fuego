@@ -5,8 +5,8 @@ of changes in the main development branch, consult the version control
 history.
 
 
-Current development version
-===========================
+Version 0.3 - 2008 Dec 17
+=========================
 
 * Change some default settings to be more friendly to end users (e.g.
   automatic loading of opening book, set ignore_clock to 0)
