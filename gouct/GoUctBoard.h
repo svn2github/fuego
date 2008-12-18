@@ -409,8 +409,6 @@ private:
 
     void AddStone(SgPoint p, SgBlackWhite c);
 
-    void RemoveStone(SgPoint p);
-
     void KillBlock(const Block* block);
 
     bool HasLiberties(SgPoint p) const;

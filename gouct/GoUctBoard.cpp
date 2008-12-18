@@ -428,33 +428,26 @@ void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
     }
 }
 
-void GoUctBoard::RemoveStone(SgPoint p)
-{
-    SgBlackWhite c = GetStone(p);
-    SG_ASSERT_BW(c);
-    m_color[p] = SG_EMPTY;
-    ++m_nuNeighborsEmpty[p - SG_NS];
-    ++m_nuNeighborsEmpty[p - SG_WE];
-    ++m_nuNeighborsEmpty[p + SG_WE];
-    ++m_nuNeighborsEmpty[p + SG_NS];
-    SgArray<int,SG_MAXPOINT>& nuNeighbors = m_nuNeighbors[c];
-    --nuNeighbors[p - SG_NS];
-    --nuNeighbors[p - SG_WE];
-    --nuNeighbors[p + SG_WE];
-    --nuNeighbors[p + SG_NS];
-}
-
 void GoUctBoard::KillBlock(const Block* block)
 {
     SgBlackWhite c = block->m_color;
     SgBlackWhite opp = SgOppBW(c);
+    SgArray<int,SG_MAXPOINT>& nuNeighbors = m_nuNeighbors[c];
     for (Block::StoneIterator it(block->m_stones); it; ++it)
     {
-        SgPoint stn = *it;
-        AddLibToAdjBlocks(stn, opp);
-        RemoveStone(stn);
-        m_capturedStones.Append(stn);
-        m_block[stn] = 0;
+        SgPoint p = *it;
+        AddLibToAdjBlocks(p, opp);
+        m_color[p] = SG_EMPTY;
+        ++m_nuNeighborsEmpty[p - SG_NS];
+        ++m_nuNeighborsEmpty[p - SG_WE];
+        ++m_nuNeighborsEmpty[p + SG_WE];
+        ++m_nuNeighborsEmpty[p + SG_NS];
+        --nuNeighbors[p - SG_NS];
+        --nuNeighbors[p - SG_WE];
+        --nuNeighbors[p + SG_WE];
+        --nuNeighbors[p + SG_NS];
+        m_capturedStones.Append(p);
+        m_block[p] = 0;
     }
     int nuStones = block->m_stones.Length();
     m_prisoners[c] += nuStones;
