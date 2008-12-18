@@ -355,55 +355,53 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
 void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                                   SgSList<Block*,4>& ownAdjBlocks)
 {
-    SgSList<Block*,4> adjBlocks;
-    Block* block;
-    if ((block = m_block[p - SG_NS]) != 0)
+    SgReserveMarker reserve(m_marker);
+    m_marker.Clear();
+    Block* b;
+    if ((b = m_block[p - SG_NS]) != 0)
     {
-        block->m_liberties.Exclude(p);
-        if (block->m_color == opp)
+        m_marker.Include(b->m_anchor);
+        b->m_liberties.Exclude(p);
+        if (b->m_color == opp)
         {
-            if (block->m_liberties.Length() == 0)
-                KillBlock(block);
+            if (b->m_liberties.Length() == 0)
+                KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(block);
-        adjBlocks.Append(block);
+            ownAdjBlocks.Append(b);
     }
-    if ((block = m_block[p - SG_WE]) != 0 && ! adjBlocks.Contains(block))
+    if ((b = m_block[p - SG_WE]) != 0 && m_marker.NewMark(b->m_anchor))
     {
-        block->m_liberties.Exclude(p);
-        if (block->m_color == opp)
+        b->m_liberties.Exclude(p);
+        if (b->m_color == opp)
         {
-            if (block->m_liberties.Length() == 0)
-                KillBlock(block);
+            if (b->m_liberties.Length() == 0)
+                KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(block);
-        adjBlocks.Append(block);
+            ownAdjBlocks.Append(b);
     }
-    if ((block = m_block[p + SG_WE]) != 0 && ! adjBlocks.Contains(block))
+    if ((b = m_block[p + SG_WE]) != 0 && m_marker.NewMark(b->m_anchor))
     {
-        block->m_liberties.Exclude(p);
-        if (block->m_color == opp)
+        b->m_liberties.Exclude(p);
+        if (b->m_color == opp)
         {
-            if (block->m_liberties.Length() == 0)
-                KillBlock(block);
+            if (b->m_liberties.Length() == 0)
+                KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(block);
-        adjBlocks.Append(block);
+            ownAdjBlocks.Append(b);
     }
-    if ((block = m_block[p + SG_NS]) != 0 && ! adjBlocks.Contains(block))
+    if ((b = m_block[p + SG_NS]) != 0 && m_marker.NewMark(b->m_anchor))
     {
-        block->m_liberties.Exclude(p);
-        if (block->m_color == opp)
+        b->m_liberties.Exclude(p);
+        if (b->m_color == opp)
         {
-            if (block->m_liberties.Length() == 0)
-                KillBlock(block);
+            if (b->m_liberties.Length() == 0)
+                KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(block);
-        adjBlocks.Append(block);
+            ownAdjBlocks.Append(b);
     }
 }
 
