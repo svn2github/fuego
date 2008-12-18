@@ -392,7 +392,7 @@ void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
         else
             ownAdjBlocks.Append(b);
     }
-    if ((b = m_block[p + SG_NS]) != 0 && m_marker.NewMark(b->m_anchor))
+    if ((b = m_block[p + SG_NS]) != 0 && ! m_marker.Contains(b->m_anchor))
     {
         b->m_liberties.Exclude(p);
         if (b->m_color == opp)
