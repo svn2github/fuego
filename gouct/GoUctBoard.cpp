@@ -157,27 +157,6 @@ void GoUctBoard::CreateSingleStoneBlock(SgPoint p, SgBlackWhite c)
     m_block[p] = &block;
 }
 
-SgSList<GoUctBoard::Block*,4> GoUctBoard::GetAdjacentBlocks(SgPoint p) const
-{
-    SgSList<Block*,4> result;
-    if (NumNeighbors(p, SG_BLACK) > 0 || NumNeighbors(p, SG_WHITE) > 0)
-    {
-        Block* block;
-        if ((block = m_block[p - SG_NS]) != 0)
-            result.Append(block);
-        if ((block = m_block[p - SG_WE]) != 0
-            && ! result.Contains(block))
-            result.Append(block);
-        if ((block = m_block[p + SG_WE]) != 0
-            && ! result.Contains(block))
-            result.Append(block);
-        if ((block = m_block[p + SG_NS]) != 0
-            && ! result.Contains(block))
-            result.Append(block);
-    }
-    return result;
-}
-
 SgSList<GoUctBoard::Block*,4>
 GoUctBoard::GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const
 {

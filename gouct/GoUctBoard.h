@@ -387,8 +387,6 @@ private:
 
     void CreateSingleStoneBlock(SgPoint p, SgBlackWhite c);
 
-    SgSList<Block*,4> GetAdjacentBlocks(SgPoint p) const;
-
     SgSList<Block*,4> GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const;
 
     void InitSize(const GoBoard& bd);
