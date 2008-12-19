@@ -371,6 +371,8 @@ private:
 
     mutable SgMarker m_marker;
 
+    SgMarker m_marker2;
+
     GoPointList m_capturedStones;
 
     SgArray<bool,SG_MAXPOINT> m_isBorder;
@@ -386,8 +388,6 @@ private:
     void AddStoneToBlock(SgPoint p, Block* block);
 
     void CreateSingleStoneBlock(SgPoint p, SgBlackWhite c);
-
-    SgSList<Block*,4> GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const;
 
     void InitSize(const GoBoard& bd);
 

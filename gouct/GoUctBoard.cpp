@@ -114,13 +114,23 @@ void GoUctBoard::AddLibToAdjBlocks(SgPoint p, SgBlackWhite c)
 {
     if (NumNeighbors(p, c) == 0)
         return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p, c);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    SgReserveMarker reserve(m_marker2);
+    m_marker2.Clear();
+    Block* b;
+    if (m_color[p - SG_NS] == c && (b = m_block[p - SG_NS]) != 0)
     {
-        Block* block = *it;
-        if (block != 0)
-            block->m_liberties.Append(p);
+        m_marker2.Include(b->m_anchor);
+        b->m_liberties.Append(p);
     }
+    if (m_color[p + SG_NS] == c && (b = m_block[p + SG_NS]) != 0
+        && m_marker2.NewMark(b->m_anchor))
+        b->m_liberties.Append(p);
+    if (m_color[p - SG_WE] == c && (b = m_block[p - SG_WE]) != 0
+        && m_marker2.NewMark(b->m_anchor))
+        b->m_liberties.Append(p);
+    if (m_color[p + SG_WE] == c && (b = m_block[p + SG_WE]) != 0
+        && ! m_marker2.Contains(b->m_anchor))
+        b->m_liberties.Append(p);
 }
 
 void GoUctBoard::AddStoneToBlock(SgPoint p, Block* block)
@@ -155,28 +165,6 @@ void GoUctBoard::CreateSingleStoneBlock(SgPoint p, SgBlackWhite c)
     if (IsEmpty(p + SG_NS))
         block.m_liberties.Append(p + SG_NS);
     m_block[p] = &block;
-}
-
-SgSList<GoUctBoard::Block*,4>
-GoUctBoard::GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const
-{
-    SgSList<Block*,4> result;
-    if (NumNeighbors(p, c) > 0)
-    {
-        Block* block;
-        if (IsColor(p - SG_NS, c))
-            result.Append(m_block[p - SG_NS]);
-        if (IsColor(p - SG_WE, c)
-            && ! result.Contains((block = m_block[p - SG_WE])))
-            result.Append(block);
-        if (IsColor(p + SG_WE, c)
-            && ! result.Contains((block = m_block[p + SG_WE])))
-            result.Append(block);
-        if (IsColor(p + SG_NS, c)
-            && ! result.Contains((block = m_block[p + SG_NS])))
-            result.Append(block);
-    }
-    return result;
 }
 
 bool GoUctBoard::IsAdjacentTo(SgPoint p,
