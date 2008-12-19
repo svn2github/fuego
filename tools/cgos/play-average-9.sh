@@ -2,7 +2,7 @@
 
 # Script for playing the AverageLib simple player on 9x9 CGOS
 
-AVERAGELIB="../../fuegotest/fuego_test -player average"
+AVERAGELIB="../../fuegotest/fuego_test -player average -config config-average.gtp"
 NAME=AverageLib
 
 echo "Enter CGOS password for $NAME:"
