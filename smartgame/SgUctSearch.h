@@ -205,6 +205,17 @@ public:
     */
     virtual void InitializeMove(SgMove move, float& value,
                                 float& count) = 0;
+
+    /** Initialize children nodes.
+        The default implementation calls InitializeMove(),
+        SgUctTree::InitializeValue() and SgUctTree::InitializeRaveValue(), if
+        @c rave is @c true, for each child and updates the sum of counts of
+        all children with SgUctTree::SetPosCount() at the parent node.
+        The subclass may provide an optimized implementation to avoid many
+        calls to the virtual function InitializeMove().
+    */
+    virtual void InitializeChildren(SgUctTree& tree, const SgUctNode& node,
+                                    bool rave);
 };
 
 //----------------------------------------------------------------------------
@@ -1051,9 +1062,6 @@ private:
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node,
                     bool& deepenTree);
-
-    void InitPriorKnowledge(SgUctThreadState& state, const SgUctNode& node,
-                            bool& deepenTree);
 
     float GetBound(float logPosCount, const SgUctNode& child) const;
 

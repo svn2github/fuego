@@ -120,6 +120,39 @@ void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
     m_values[p].Initialize(value, count);
 }
 
+void GoUctDefaultPriorKnowledge::InitializeChildren(SgUctTree& tree,
+                                                    const SgUctNode& node,
+                                                    bool rave)
+{
+    float posCount = 0;
+    for (SgUctChildIterator it(tree, node); it; ++it)
+    {
+        const SgUctNode& child = *it;
+        SgMove move = child.Move();
+        const SgStatisticsBase<float,float>& val = m_values[move];
+        if (val.IsDefined())
+        {
+            float count = val.Count();
+            float value = val.Mean();
+            tree.InitializeValue(child, SgUctSearch::InverseEval(value),
+                                 count);
+            if (rave)
+                tree.InitializeRaveValue(child, value, count);
+            posCount += count;
+        }
+    }
+    tree.SetPosCount(node, posCount);
+}
+
+void GoUctDefaultPriorKnowledge::InitializeMove(SgMove move, float& value,
+                                                float& count)
+{
+    const SgStatisticsBase<float,float>& val = m_values[move];
+    if (val.IsDefined())
+        value = val.Mean();
+    count = val.Count();
+}
+
 void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
 {
     SG_UNUSED(deepenTree);
@@ -193,15 +226,6 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     }
     AddLocalityBonus(empty, isSmallBoard);
     m_policy.EndPlayout();
-}
-
-void GoUctDefaultPriorKnowledge::InitializeMove(SgMove move, float& value,
-                                                float& count)
-{
-    const SgStatisticsBase<float,float>& val = m_values[move];
-    if (val.IsDefined())
-        value = val.Mean();
-    count = val.Count();
 }
 
 //----------------------------------------------------------------------------

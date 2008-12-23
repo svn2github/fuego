@@ -67,6 +67,29 @@ SgUctPriorKnowledge::~SgUctPriorKnowledge()
 {
 }
 
+void SgUctPriorKnowledge::InitializeChildren(SgUctTree& tree,
+                                             const SgUctNode& node, bool rave)
+{
+    float posCount = 0;
+    for (SgUctChildIterator it(tree, node); it; ++it)
+    {
+        const SgUctNode& child = *it;
+        SgMove move = child.Move();
+        float value;
+        float count;
+        InitializeMove(move, value, count);
+        if (count > numeric_limits<float>::epsilon())
+        {
+            tree.InitializeValue(child, SgUctSearch::InverseEval(value),
+                                 count);
+            if (rave)
+                tree.InitializeRaveValue(child, value, count);
+            posCount += count;
+        }
+    }
+    tree.SetPosCount(node, posCount);
+}
+
 //----------------------------------------------------------------------------
 
 SgUctPriorKnowledgeFactory::~SgUctPriorKnowledgeFactory()
@@ -412,8 +435,12 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
         return;
     }
     m_tree.CreateChildren(threadId, node, state.m_moves);
-    if (state.m_priorKnowledge.get() != 0)
-        InitPriorKnowledge(state, node, deepenTree);
+    SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
+    if (priorKnowledge != 0)
+    {
+        priorKnowledge->ProcessPosition(deepenTree);
+        priorKnowledge->InitializeChildren(m_tree, node, m_rave);
+    }
 }
 
 const SgUctNode*
@@ -607,37 +634,6 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     SG_ASSERT(m_numberThreads > 1
               || fabs(value - GetValueEstimate(child)) < 1e-3/*epsilon*/);
     return value;
-}
-
-/** Initialize new nodes with prior knowledge.
-    @param state
-    @param node
-    @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
-*/
-void SgUctSearch::InitPriorKnowledge(SgUctThreadState& state,
-                                     const SgUctNode& node, bool& deepenTree)
-{
-    SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
-    SG_ASSERT(priorKnowledge != 0);
-    SG_ASSERT(deepenTree == false); // Should be initialized by caller
-    priorKnowledge->ProcessPosition(deepenTree);
-    float posCount = 0;
-    for (SgUctChildIterator it(m_tree, node); it; ++it)
-    {
-        const SgUctNode& child = *it;
-        SgMove move = child.Move();
-        float value;
-        float count;
-        priorKnowledge->InitializeMove(move, value, count);
-        if (count > numeric_limits<float>::epsilon())
-        {
-            m_tree.InitializeValue(child, InverseEval(value), count);
-            if (m_rave)
-                m_tree.InitializeRaveValue(child, value, count);
-            posCount += count;
-        }
-    }
-    m_tree.SetPosCount(node, posCount);
 }
 
 string SgUctSearch::LastGameSummaryLine() const
