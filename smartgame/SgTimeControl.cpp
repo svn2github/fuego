@@ -82,6 +82,7 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
         if (useOvertime && remainingMoves > estimatedRemainingMoves)
             remainingMoves = estimatedRemainingMoves;
     }
+    remainingMoves = max(remainingMoves, 1.0);
 
     double timeLeft = time.TimeLeft(toPlay);
     double timeForMove = timeLeft / remainingMoves - time.Overhead();
