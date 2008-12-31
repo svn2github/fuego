@@ -162,7 +162,6 @@ SgSearch::SgSearch(SgSearchHashTable* hash)
       m_useOpponentBest(0),
       m_useNullMove(0),
       m_nullMoveDepth(2),
-      m_halfDeltaForHashHit(false),
       m_aborted(false),
       m_foundNewBest(false),
       m_reachedDepthLimit(false),
@@ -726,12 +725,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 }
             }
 
-            // The move suggested by the hash table is likely to be a good
-            // move: try it first. Looking twice as deep for moves found
-            // in the hash-table is a great heuristic: it cuts the average
-            // node count for capture problems in half!
-            int delta = m_halfDeltaForHashHit ? DEPTH_UNIT/2 : DEPTH_UNIT;
-
+            int delta = DEPTH_UNIT;
             if (tryFirst != SG_NULLMOVE
                 && CallExecute(tryFirst, &delta, depth))
             {

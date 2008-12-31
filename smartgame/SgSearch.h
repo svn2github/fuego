@@ -601,11 +601,6 @@ public:
 
     void SetMustReturnExactResult(bool flag);
 
-    /** Turn reduced delta for hash table moves off for fixed-depth
-        searches
-    */
-    void SetHalfDeltaForHashHit(bool flag = true);
-
     /** Get the current statistics.
         Can be called during search.
         Override for derived search and statistics.
@@ -774,9 +769,6 @@ private:
     /** How much less deep to search during null move pruning */
     int m_nullMoveDepth;
 
-    /** Search moves from hash table deeper */
-    bool m_halfDeltaForHashHit;
-
     /** True if search is in the process of being aborted. */
     bool m_aborted;
 
@@ -914,11 +906,6 @@ inline const SgSearchControl* SgSearch::SearchControl() const
 inline void SgSearch::SetAbortSearch(bool fAborted)
 {
     m_aborted = fAborted;
-}
-
-inline void SgSearch::SetHalfDeltaForHashHit(bool flag)
-{
-    m_halfDeltaForHashHit = flag;
 }
 
 inline void SgSearch::SetKillers(bool flag)
