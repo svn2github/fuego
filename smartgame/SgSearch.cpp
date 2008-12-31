@@ -35,17 +35,17 @@ const bool DEBUG_SEARCH_ITERATIONS = false;
 */
 string SgValue::ToString(int unitPerPoint) const
 {
-    if (m_v == 0)
+    if (m_value == 0)
         return "0";
     ostringstream o;
-    o << (m_v > 0 ? "B+" : "W+");
+    o << (m_value > 0 ? "B+" : "W+");
     if (IsEstimate())
     {
         if (unitPerPoint == 1)
-            o << (abs(m_v) / unitPerPoint);
+            o << (abs(m_value) / unitPerPoint);
         else
             o << setprecision(1)
-              << (static_cast<float>(abs(m_v)) / unitPerPoint);
+              << (static_cast<float>(abs(m_value)) / unitPerPoint);
     }
     else
     {
@@ -72,7 +72,7 @@ int SgValue::KoLevel() const
         return 0;
     else
     {
-        int level = (abs(m_v) - 1) / MAX_DEPTH;
+        int level = (abs(m_value) - 1) / MAX_DEPTH;
         return (MAX_LEVEL - 1) - level;
     }
 }
