@@ -4,6 +4,7 @@ fuego-screenshot.html \
 fuego-screenshot.jpg \
 fuego-screenshot-thumb.jpg \
 index.html \
+projects.html \
 "
 
 echo "Enter user id for SourceForge:"
