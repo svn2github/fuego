@@ -287,9 +287,9 @@ void GoRegionBoard::CheckConsistency() const
     for (SgPoint p = SgPointUtil::Pt(1, 1);
          p <= SgPointUtil::Pt(SG_MAX_SIZE, SG_MAX_SIZE); ++p)
     {
-        GoBlock* b = m_block[p];
-        SG_UNUSED(b);
-        SG_ASSERT((b != 0) == Board().Occupied().Contains(p));
+        GoBlock* block = m_block[p];
+        SG_DEBUG_ONLY(block);
+        SG_ASSERT((block != 0) == Board().Occupied().Contains(p));
     }
 }
 
