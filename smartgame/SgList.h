@@ -1409,10 +1409,10 @@ bool SgList<T>::Replace(const T& oldElt, const T& newElt)
         int saveElt = m_last->m_data;
         m_last->m_data = oldElt;
         SgListRec<T>* x = First();
-        ASSERT(m_last->m_data == oldElt);
+        SG_ASSERT(m_last->m_data == oldElt);
         while (x->m_data != oldElt)
         {
-            ASSERT(m_last->m_data == oldElt);
+            SG_ASSERT(m_last->m_data == oldElt);
             x = x->m_next;
         }
         m_last->m_data = saveElt;
@@ -1623,7 +1623,7 @@ template<typename T>
 bool SgList<T>::InsertR(const T& elt)
 {
     if (SGLIST_CHECK_SORTED)
-        ASSERT(IsSorted(false)); // sorted descending
+        SG_ASSERT(IsSorted(false)); // sorted descending
     if (m_last == 0 || (First()->m_data < elt))
         Push(elt);
     else if (elt < m_last->m_data)
@@ -1654,7 +1654,7 @@ bool SgList<T>::Extract(const T& elt)
 {
     // slow, can be optimized
     if (SGLIST_CHECK_SORTED)
-        ASSERT(IsSorted());
+        SG_ASSERT(IsSorted());
     if (m_last)
     {
         // Sorted list, so must be larger than first and smaller than last.
@@ -1706,8 +1706,8 @@ void SgList<T>::LimitListLength(int length)
 template<typename T>
 void SgList<T>::Merge(const SgList<T>& list)
 {
-    //ASSERT(IsSortedAndUnique(ascending));
-    //ASSERT(list.IsSortedAndUnique(ascending));
+    //SG_ASSERT(IsSortedAndUnique(ascending));
+    //SG_ASSERT(list.IsSortedAndUnique(ascending));
     if ((this == &list) || list.IsEmpty())
         return;
     else if (IsEmpty())
@@ -1737,12 +1737,12 @@ void SgList<T>::Merge(const SgList<T>& list)
                 if (prev->m_data != curr2->m_data)
                 {
                     AppendData(curr2, &prev, ! isfirst1 && prev==m_last);
-                    //ASSERT(IsSortedAndUnique(ascending));
+                    //SG_ASSERT(IsSortedAndUnique(ascending));
                 }
             }
             isfirst1 = false;
         }
-        //ASSERT(IsSortedAndUnique(ascending));
+        //SG_ASSERT(IsSortedAndUnique(ascending));
         // copy rest of list
         prev = m_last;
         for (; isfirst2 || curr2 != last2; curr2 = curr2->m_next)
@@ -1751,12 +1751,12 @@ void SgList<T>::Merge(const SgList<T>& list)
             if (prev->m_data != curr2->m_data)
             {
                 AppendData(curr2, &prev, true);
-                //ASSERT(IsSortedAndUnique(ascending));
+                //SG_ASSERT(IsSortedAndUnique(ascending));
             }
         }
     }
-    //ASSERT(IsSortedAndUnique(ascending));
-    //ASSERT(*this == duplicate);
+    //SG_ASSERT(IsSortedAndUnique(ascending));
+    //SG_ASSERT(*this == duplicate);
 }
 
 template<typename T>

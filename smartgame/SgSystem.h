@@ -91,7 +91,7 @@ public:
 
 #ifndef NDEBUG
 
-/** System-specific action when an ASSERT fails */
+/** System-specific action when an SG_ASSERT fails */
 void SgHandleAssertion(const char* expr, const char* file, int line);
 
 #define SG_ASSERT(x) \
