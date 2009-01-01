@@ -135,10 +135,7 @@ void GoRegionUtil::FindCurrentAnchors(const GoBoard& board,
 {
     SG_ASSERT(currentAnchors->IsEmpty());
     for (SgListIterator<SgPoint> it(origAnchors); it; ++it)
-    {
-        const SgPoint a = board.Anchor(*it);
-        currentAnchors->Insert(a);
-    }
+        currentAnchors->Insert(board.Anchor(*it));
 }
 
 bool GoRegionUtil::Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
