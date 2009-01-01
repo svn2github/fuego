@@ -1,5 +1,10 @@
 EXTRA_DIST = \
 run.sh \
+blunder_long_ladder_19.tst \
+blunder_play_near_dead_19.tst \
+blunder_selfatari_19.tst \
+blunder_short_ladder_19.tst \
+escape_capture_19.tst \
 ladder.tst \
 performance_icgc2008.tst \
 repetition.tst \
@@ -7,6 +12,7 @@ simpleplayers.tst \
 static_safety_basics.tst \
 static_safety_from_semeai.tst \
 static_safety_fullboard.tst \
+tactics_19.tst \
 uct_basics.tst \
 uct_blunder.tst \
 uct_blunder_19.tst \
@@ -25,6 +31,7 @@ uct_rootfilter.tst \
 uct_seki.tst \
 uct_selfatari.tst \
 uct_semeai.tst \
+19.list \
 basics_fuegotest.list \
 basics_uct.list \
 performance.list \
@@ -85,6 +92,10 @@ sgf/games/2008/CGOS/248520.sgf \
 sgf/games/2008/CGOS/248559.sgf \
 sgf/games/2008/CGOS/249009.sgf \
 sgf/games/2008/CGOS/251434-variation.sgf \
+sgf/games/2008/CGOS/31410.sgf \
+sgf/games/2008/CGOS/31423.sgf \
+sgf/games/2008/CGOS/31425.sgf \
+sgf/games/2008/CGOS/31431.sgf \
 sgf/games/2008/CGOS/365007-variation.sgf \
 sgf/games/2008/CGOS/365007.sgf \
 sgf/games/2008/CGOS/386193-mogo-mannenko-bug.sgf \
