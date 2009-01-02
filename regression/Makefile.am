@@ -1,5 +1,10 @@
 EXTRA_DIST = \
 run.sh \
+19.suite \
+basics.suite \
+performance.suite \
+static_safety.suite \
+uct.suite \
 blunder_long_ladder_19.tst \
 blunder_play_near_dead_19.tst \
 blunder_selfatari_19.tst \

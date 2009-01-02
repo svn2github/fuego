@@ -5,7 +5,8 @@
 cd `dirname $0`/../regression
 
 echo -n "Checking that regression/Makefile.am contains all tests... "
-for TSTFILE in `find . -name "*.tst" -o -name "*.list" | sed s,^./,,`; do
+ALL_TSTFILES=`find . -name "*.tst" -o -name "*.list" -o -name "*.suite" | sed s,^./,,`
+for TSTFILE in $ALL_TSTFILES; do
    if ! grep -q "$TSTFILE" Makefile.am; then
        echo "fail"
        echo "regression/Makefile.am does not contain $TSTFILE"
