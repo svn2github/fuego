@@ -70,7 +70,7 @@ string SgPropUtil::PointToSgfString(SgMove p, int boardSize,
         {
             SG_ASSERT(p != SG_PASS);
             int col = SgPointUtil::Col(p);
-                int row = boardSize - SgPointUtil::Row(p) + 1;
+            int row = boardSize - SgPointUtil::Row(p) + 1;
             out << static_cast<char>('a' + col - 1) << row;
         }
         break;
