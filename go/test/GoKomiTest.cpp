@@ -83,6 +83,7 @@ BOOST_AUTO_TEST_CASE(GoKomiTest_ToString)
     BOOST_CHECK_EQUAL(GoKomi(5).ToString(), "5");
     BOOST_CHECK_EQUAL(GoKomi(6.5).ToString(), "6.5");
     BOOST_CHECK_EQUAL(GoKomi(-1.5).ToString(), "-1.5");
+    BOOST_CHECK_EQUAL(GoKomi(-0.5).ToString(), "-0.5");
 }
 
 //----------------------------------------------------------------------------

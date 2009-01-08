@@ -64,11 +64,20 @@ string GoKomi::ToString() const
 {
     if (m_isUnknown)
         return "";
-    ostringstream buffer;
-    buffer << (m_value / 2);
-    if (m_value % 2 != 0)
-        buffer << ".5";
-    return buffer.str();
+    if (m_value % 2 == 0)
+    {
+        ostringstream buffer;
+        buffer << (m_value / 2);
+        return buffer.str();
+    }
+    else if (m_value == -1)
+        return "-0.5";
+    else
+    {
+        ostringstream buffer;
+        buffer << (m_value / 2) << ".5";
+        return buffer.str();
+    }
 }
 
 //----------------------------------------------------------------------------
