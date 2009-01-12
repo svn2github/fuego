@@ -7,25 +7,25 @@
     {
         node [shape=box]
 
-        gtp [label="GtpEngine", color=black]
+        gtp [label="GtpEngine"]
 
-        sg [label="SmartGame", color=black]
+        sg [label="SmartGame"]
         gtp -> sg
 
-        go [label="Go", color=black]
+        go [label="Go"]
         sg -> go
 
-        sp [label="SimplePlayers", color=black]
+        sp [label="SimplePlayers"]
         go -> sp
 
-        gouct [label="GoUct", color=black]
+        gouct [label="GoUct"]
         go -> gouct
 
-        fuegotest [label="FuegoTest", color=blue]
+        fuegotest [label="FuegoTest", style=bold]
         gouct -> fuegotest
         sp -> fuegotest
 
-        fuegomain [label="FuegoMain", color=blue]
+        fuegomain [label="FuegoMain", style=bold]
         gouct -> fuegomain
     }
     @enddot
