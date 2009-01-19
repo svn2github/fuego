@@ -658,7 +658,7 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
     anchors.Clear();
     for (SgListIterator<SgPoint> it(stones); it; ++it)
         if (bd.Occupied(*it))
-            anchors.Include(*it);
+            anchors.Include(bd.Anchor(*it));
 }
 
 void GoBoardUtil::RegionCode(const GoBoard& bd, const SgList<SgPoint>& region,
