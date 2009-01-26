@@ -8,13 +8,14 @@
 
 #include <iomanip>
 #include <iostream>
+#include <boost/io/ios_state.hpp>
 #include "SgBWSet.h"
 #include "SgPointSet.h"
 #include "SgProp.h"
-#include "SgStreamFmtRestorer.h"
 #include "SgUctSearch.h"
 
 using namespace std;
+using boost::io::ios_all_saver;
 using SgPropUtil::PointToSgfString;
 
 //----------------------------------------------------------------------------
@@ -165,7 +166,7 @@ void GoUctUtil::GfxTerritoryStatistics(
                      const SgPointArray<SgUctStatistics>& territoryStatistics,
                      const GoBoard& bd, std::ostream& out)
 {
-    SgStreamFmtRestorer restorer(out);
+    ios_all_saver saver(out);
     out << fixed << setprecision(3) << "INFLUENCE";
     for (GoBoard::Iterator it(bd); it; ++it)
         if (territoryStatistics[*it].Count() > 0)

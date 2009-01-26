@@ -10,10 +10,10 @@
 #include <cmath>
 #include <iomanip>
 #include <boost/format.hpp>
+#include <boost/io/ios_state.hpp>
 #include <boost/version.hpp>
 #include "SgDebug.h"
 #include "SgHashTable.h"
-#include "SgStreamFmtRestorer.h"
 #include "SgMath.h"
 #include "SgWrite.h"
 
@@ -23,6 +23,7 @@ using boost::condition;
 using boost::format;
 using boost::mutex;
 using boost::shared_ptr;
+using boost::io::ios_all_saver;
 
 #define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
 #define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
@@ -217,7 +218,7 @@ void SgUctSearchStat::Clear()
 
 void SgUctSearchStat::Write(std::ostream& out) const
 {
-    SgStreamFmtRestorer restorer(out);
+    ios_all_saver saver(out);
     out << SgWriteLabel("Time") << setprecision(2) << m_time << '\n'
         << SgWriteLabel("GameLen") << fixed << setprecision(1);
     m_gameLength.Write(out);

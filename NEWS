@@ -8,7 +8,7 @@ history.
 Current development version
 ===========================
 
-* 
+* Remove SgStreamFmtRestorer; use Boost IO State Savers instead 
 
 
 Version 0.3 - 2008 Dec 17

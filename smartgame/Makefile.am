@@ -95,7 +95,6 @@ SgSortedMoves.h \
 SgStack.h \
 SgStatistics.h \
 SgStrategy.h \
-SgStreamFmtRestorer.h \
 SgStringUtil.h \
 SgSystem.h \
 SgTime.h \
