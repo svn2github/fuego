@@ -7,4 +7,5 @@
     - @ref generalportability
     - @ref generalstyle
     - @ref generalautotools
+    - @ref generalreleases
 */
