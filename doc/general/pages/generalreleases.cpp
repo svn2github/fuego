@@ -1,6 +1,6 @@
 /** @page generalreleases How to make a release
 
-This is a short HOWTO for maintainers how to to a Fuego release.
+This is a short HOWTO for maintainers how to do a Fuego release.
 
 -# Run <tt>make distcheck</tt> to check that the compilation, the unit tests,
    and a VPATH build work
