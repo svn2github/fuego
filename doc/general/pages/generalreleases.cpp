@@ -22,7 +22,7 @@ https://fuego.svn.sourceforge.net/svnroot/fuego/tags/VERSION_0_3_1 \
 svn copy  \
 https://fuego.svn.sourceforge.net/svnroot/fuego/trunk  \
 https://fuego.svn.sourceforge.net/svnroot/fuego/tags/VERSION_0_3 \
--m "Tag release 0.3.1"
+-m "Tag release 0.3"
 @endverbatim
 -# Run <tt>autoreconf -i</tt> in the root directory of Fuego and then
    <tt>make dist</tt>. The file release is now in the current directory
