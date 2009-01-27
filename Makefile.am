@@ -49,6 +49,7 @@ doc/fuegomain/doxygen.cfg \
 doc/general/Makefile \
 doc/general/pages/mainpage.cpp \
 doc/general/pages/modules.cpp \
+doc/general/pages/generalreleases.cpp \
 doc/general/pages/style.cpp \
 doc/general/doxygen.cfg \
 doc/gtpengine/Makefile \
