@@ -1,7 +1,5 @@
 /** @page generalmodules Module Dependencies
 
-    Libraries are shown in black boxes, applications in blue boxes.
-
     @dot
     digraph modules
     {
