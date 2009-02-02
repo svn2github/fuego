@@ -337,7 +337,7 @@ public:
         REQUIRES: HasCapacity(moves.size())
         @param moves The list of moves.
     */
-    void Create(std::vector<SgMove> moves);
+    void Create(const std::vector<SgMove>& moves);
 
     /** Create a number of new nodes at the end of the storage.
         REQUIRES: HasCapacity(n)
@@ -383,7 +383,7 @@ inline SgUctNode* SgUctAllocator::CreateOne(SgMove move)
     return (m_finish++);
 }
 
-inline void SgUctAllocator::Create(std::vector<SgMove> moves)
+inline void SgUctAllocator::Create(const std::vector<SgMove>& moves)
 {
     SG_ASSERT(HasCapacity(moves.size()));
     for (std::vector<SgMove>::const_iterator it = moves.begin();
