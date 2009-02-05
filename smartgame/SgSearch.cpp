@@ -255,6 +255,7 @@ void SgSearch::SetProbCut(SgProbCut* probcut)
 void SgSearch::StoreHash(int depth, int value, SgMove move,
                          bool isUpperBound, bool isLowerBound, bool isExact)
 {
+    SG_ASSERT(m_hash);
     SgSearchHashData data(depth, value, move, isUpperBound, isLowerBound,
                           isExact);
     if (DEBUG_SEARCH)

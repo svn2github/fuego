@@ -702,28 +702,32 @@ public:
     */
     SgMove PrevMove2() const;
 
+    /** Is the game over? */
     virtual bool EndOfGame() const = 0;
 
     /** Initialize PrevMove, CurrentDepth and other variables so that they can
-        be accessed when move generation/evaluation called directly,
+        be accessed when move generation/evaluation are called directly,
         not as part of a search.
     */
     void InitSearch(int startDepth = 0);
 
     void UpdateTime();
 
-    /** 0 if not tracing */
+    /** Current node in tracing; set to 0 if not tracing */
     SgNode* m_traceNode;
 
+    /** Add comment to current tracenode */
     void TraceComment(const char* comment) const;
-
+    
+    /** Add value as a comment to current tracenode */
     void TraceValue(int value) const;
 
+    /** Add value and text as a comment to current tracenode */
     void TraceValue(int value, const char* comment, bool isExact) const;
 
     /** Add the given move as a new node to the trace tree and go to that
         node.
-        Don't do anything if m_traceNode is null. To be called from the
+        Don't do anything if m_traceNode is 0. To be called from the
         client's Execute method.
     */
     void AddTraceNode(SgMove move, SgBlackWhite player);
@@ -734,10 +738,13 @@ public:
     */
     void TakeBackTraceNode();
 
+    /** Is tracing currently active?*/
     virtual bool TraceIsOn() const;
 
+    /** Creates a new root node for tracing */
     void InitTracing(const std::string& type);
 
+    /** Move trace tree to a subtree of toNode, and set m_traceNode = 0 */
     void AppendTrace(SgNode* toNode);
 
     void SetAbortFrequency(int value);
@@ -782,8 +789,10 @@ private:
 
     int m_timerLevel;
 
+    /** The search result from the previous iteration */
     int m_prevValue;
 
+    /** The PV from the previous search iteration */
     SgList<SgMove> m_prevSequence;
 
     static const int MAX_KILLER_DEPTH = 10;
@@ -801,6 +810,7 @@ private:
     int DFS(int startDepth, int depthLimit, int boundLo, int boundHi,
             SgList<SgMove>* sequence, bool* isExactValue);
 
+    /** Try to find current position in m_hash */
     bool LookupHash(SgSearchHashData& data) const;
 
     void MoveKillersToFront(SgList<SgMove>& moves);
@@ -814,19 +824,24 @@ private:
 
     bool NullMovePrune(int depth, int delta, int beta);
 
+    /** Store current position in hash table */
     void StoreHash(int depth, int value, SgMove move, bool isUpperBound,
                    bool isLowerBound, bool isExact);
 
     /** Seed the hash table with the given sequence. */
     void AddSequenceToHash(const SgList<SgMove>& sequence, int depth);
 
-    int  CallEvaluate(int depth, int alpha, int beta,
-                      SgList<SgMove>* sequence, bool* isExact);
+    /** Evaluate current position; possibly write debug output */
+    int CallEvaluate(int depth, int alpha, int beta,
+                     SgList<SgMove>* sequence, bool* isExact);
 
+    /** Execute move; update m_moveStack, m_currentDepth and statistics */
     bool CallExecute(SgMove move, int* delta, int depth);
 
+    /** Generate moves; possibly write debug output */
     void CallGenerate(SgList<SgMove>* moves, int depth);
 
+    /** Take back move; update m_moveStack and m_currentDepth */
     void CallTakeBack();
 
     /** Not implemented */
