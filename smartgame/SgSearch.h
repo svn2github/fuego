@@ -689,10 +689,6 @@ public:
     */
     int CurrentDepth() const;
 
-    /** The value of the previous level of search,
-        during iterative deepening. */
-    int PrevValue(SgList<SgMove>* sequence) const;
-
     /** Indicates which move in the movelist at the previous level was
         executed.
         This may be necessary if the value or moves at a
@@ -879,13 +875,6 @@ inline int SgSearch::IteratedSearch(int depthMin, int depthMax,
 {
     return IteratedSearch(depthMin, depthMax, -SG_INFINITY, SG_INFINITY,
                           sequence, clearHash, traceNode);
-}
-
-inline int SgSearch::PrevValue(SgList<SgMove>* sequence) const
-{
-    if (sequence)
-        *sequence = m_prevSequence;
-    return m_prevValue;
 }
 
 inline SgMove SgSearch::PrevMove() const
