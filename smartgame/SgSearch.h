@@ -599,8 +599,6 @@ public:
 
     void SetNullMoveDepth(int depth);
 
-    void SetMustReturnExactResult(bool flag);
-
     /** Get the current statistics.
         Can be called during search.
         Override for derived search and statistics.
@@ -781,8 +779,6 @@ private:
     /** Keeps track of whether the depth limit was reached. */
     bool m_reachedDepthLimit;
 
-    bool m_mustReturnExactResult;
-
     SgSearchStatistics m_stat;
 
     SgTimer m_timer;
@@ -930,11 +926,6 @@ inline void SgSearch::SetNullMove(bool flag)
 inline void SgSearch::SetNullMoveDepth(int depth)
 {
     m_nullMoveDepth = depth;
-}
-
-inline void SgSearch::SetMustReturnExactResult(bool flag)
-{
-    m_mustReturnExactResult = flag;
 }
 
 inline void SgSearch::SetScout(bool flag)

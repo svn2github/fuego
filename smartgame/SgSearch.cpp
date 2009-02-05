@@ -165,7 +165,6 @@ SgSearch::SgSearch(SgSearchHashTable* hash)
       m_aborted(false),
       m_foundNewBest(false),
       m_reachedDepthLimit(false),
-      m_mustReturnExactResult(false),
       m_stat(),
       m_timerLevel(0),
       m_control(0),
