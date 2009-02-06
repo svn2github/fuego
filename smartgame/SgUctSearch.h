@@ -299,6 +299,11 @@ public:
     */
     std::vector<SgMove> m_moves;
 
+    /** Local variable for SgUctSearch::CheckCountAbort().
+        Reused for efficiency.
+    */
+    std::vector<SgMove> m_excludeMoves;
+
     std::auto_ptr<SgUctPriorKnowledge> m_priorKnowledge;
 
     SgUctThreadState(size_t threadId, int moveRange = 0);
@@ -1050,11 +1055,12 @@ private:
 
     void ApplyRootFilter(std::vector<SgMove>& moves);
 
-    bool CheckAbortSearch(const SgUctThreadState& state);
+    bool CheckAbortSearch(SgUctThreadState& state);
 
     bool CheckEarlyAbort() const;
 
-    bool CheckCountAbort(std::size_t remainingGames) const;
+    bool CheckCountAbort(SgUctThreadState& state,
+                         std::size_t remainingGames) const;
 
     void Debug(const SgUctThreadState& state, const std::string& textLine);
 

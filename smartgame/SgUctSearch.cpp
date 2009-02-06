@@ -282,7 +282,7 @@ void SgUctSearch::ApplyRootFilter(vector<SgMove>& moves)
     moves = filteredMoves;
 }
 
-bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
+bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
 {
     if (SgUserAbort())
     {
@@ -337,7 +337,7 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
                 remainingGames = sizeTypeMax;
             else
                 remainingGames = static_cast<size_t>(remainingGamesDouble);
-            if (CheckCountAbort(remainingGames))
+            if (CheckCountAbort(state, remainingGames))
             {
                 Debug(state, "SgUctSearch: move cannot change anymore");
                 return true;
@@ -347,14 +347,16 @@ bool SgUctSearch::CheckAbortSearch(const SgUctThreadState& state)
     return false;
 }
 
-bool SgUctSearch::CheckCountAbort(std::size_t remainingGames) const
+bool SgUctSearch::CheckCountAbort(SgUctThreadState& state,
+                                  std::size_t remainingGames) const
 {
     const SgUctNode& root = m_tree.Root();
     const SgUctNode* bestChild = FindBestChild(root);
     if (bestChild == 0)
         return false;
     float bestCount = bestChild->MoveCount();
-    vector<SgMove> excludeMoves;
+    vector<SgMove>& excludeMoves = state.m_excludeMoves;
+    excludeMoves.clear();
     excludeMoves.push_back(bestChild->Move());
     const SgUctNode* secondBestChild = FindBestChild(root, &excludeMoves);
     if (secondBestChild == 0)
