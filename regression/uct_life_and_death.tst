@@ -266,4 +266,17 @@ loadsgf sgf/games/2008/CGOS/Fuego-671-2c-20081125113323.sgf 24
 580 reg_genmove w
 #? [B6]*
 
+loadsgf sgf/games/2009/CGOS/702960.sgf 25
+590 reg_genmove b
+#? [A2]*
+# Fuego likes only D1 and A3 which are ko.
 
+loadsgf sgf/games/2009/CGOS/702960.sgf 35 
+600 reg_genmove b
+#? [D2]
+# keep corner ko
+
+loadsgf sgf/games/2009/CGOS/702960.sgf 37
+610 reg_genmove b
+#? [D2]
+# keep corner ko

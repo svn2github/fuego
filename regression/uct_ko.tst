@@ -89,3 +89,8 @@ loadsgf sgf/games/2008/CGOS/397892.sgf 48
 #? [C8]*
 # C8 wins the ko and the game. It looks like fuego does not generate E9
 # for black in the search.
+
+loadsgf sgf/games/2009/MM-Fuego20090124-variation.sgf 54
+190 reg_genmove w
+#? [J7]*
+# Ko threat, often not generated because of prior knowledge

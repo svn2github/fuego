@@ -111,3 +111,12 @@ loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9.sgf 65
 #? [H7]*
 # everything is safe after H7.
 
+loadsgf sgf/games/2009/CGOS/703006.sgf 110
+210 reg_genmove w
+#? [C2]
+# Killing is safer than passing
+
+loadsgf sgf/games/2009/CGOS/703006.sgf 112
+220 reg_genmove w
+#? [C4]
+# Passing is a blunder, loses by 0.5

@@ -171,6 +171,9 @@ sgf/games/2008/leela-seki-variation.sgf \
 sgf/games/2008/mogo-ko+ld-problem-variation.sgf \
 sgf/games/2008/mogo-ko+ld-problem.sgf \
 sgf/games/2008/seki-miseval.sgf \
+sgf/games/2009/MM-Fuego20090124-variation.sgf \
+sgf/games/2009/CGOS/702960.sgf \
+sgf/games/2009/CGOS/703006.sgf \
 sgf/gnugo-games/seki01.sgf \
 sgf/gnugo-games/seki02.sgf \
 sgf/gnugo-games/seki03.sgf \
