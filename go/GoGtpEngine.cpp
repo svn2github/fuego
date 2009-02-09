@@ -1059,10 +1059,10 @@ void GoGtpEngine::CmdSetFreeHandicap(GtpCommand& cmd)
 /** Set game info property in root node of internal SGF tree.
     Arguments: info value (value is remaining line after gameinfo) <br>
     Supported infos:
+    - game_name
     - player_black
     - player_white
     - result
-    - game_name
 */
 void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 {
