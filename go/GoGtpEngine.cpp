@@ -1062,6 +1062,7 @@ void GoGtpEngine::CmdSetFreeHandicap(GtpCommand& cmd)
     - player_black
     - player_white
     - result
+    - game_name
 */
 void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 {
@@ -1074,6 +1075,8 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
         AddPlayerProp(SG_WHITE, value, true);
     else if (key == "result")
         root.SetStringProp(SG_PROP_RESULT, value);
+    else if (key == "game_name")
+        root.SetStringProp(SG_PROP_GAME_NAME, value);
     AutoSave();
 }
 

@@ -234,6 +234,8 @@ while {1} {
 		    set msg [eCmd $inout "go_set_info player_black $black"]
 		    # PATCHED
 		    set msg [eCmd $inout "go_set_info player_white $white"]
+		    # PATCHED
+		    set msg [eCmd $inout "go_set_info game_name $gid"]
 
 		    # catch up game if needed
 		    # -----------------------
