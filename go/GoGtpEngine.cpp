@@ -1069,14 +1069,14 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
     string key = cmd.Arg(0);
     string value = cmd.RemainingLine(0);
     SgNode& root = GetGame().Root();
-    if (key == "player_black")
+    if (key == "game_name")
+        root.SetStringProp(SG_PROP_GAME_NAME, value);
+    else if (key == "player_black")
         AddPlayerProp(SG_BLACK, value, true);
     else if (key == "player_white")
         AddPlayerProp(SG_WHITE, value, true);
     else if (key == "result")
         root.SetStringProp(SG_PROP_RESULT, value);
-    else if (key == "game_name")
-        root.SetStringProp(SG_PROP_GAME_NAME, value);
     AutoSave();
 }
 
