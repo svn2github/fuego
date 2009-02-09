@@ -100,13 +100,23 @@ bool GoUctPlayer::DoEarlyPassSearch(size_t maxGames, double maxTime,
     SgDebug() << "GoUctPlayer: doing a search if early pass is possible\n";
     GoBoard& bd = Board();
     bd.Play(SG_PASS);
-    SgRestorer<bool> restorer(&m_search.m_param.m_territoryStatistics);
-    m_search.m_param.m_territoryStatistics = true;
-    vector<SgPoint> sequence;
-    double value = m_search.Search(maxGames, maxTime, sequence);
-    value = m_search.InverseEval(value);
+    bool winAfterPass = false;
+    if (GoBoardUtil::PassWins(bd, bd.ToPlay()))
+        // Using GoBoardUtil::PassWins here is not strictly necessary, but
+        // safer, because it can take the search in the else-statement a while
+        // to explore the pass move
+        winAfterPass = false;
+    else
+    {
+        SgRestorer<bool> restorer(&m_search.m_param.m_territoryStatistics);
+        m_search.m_param.m_territoryStatistics = true;
+        vector<SgPoint> sequence;
+        double value = m_search.Search(maxGames, maxTime, sequence);
+        value = m_search.InverseEval(value);
+        winAfterPass = (value > 1 - m_resignThreshold);
+    }
     bd.Undo();
-    if (value < 1 - m_resignThreshold)
+    if (! winAfterPass)
     {
         SgDebug() << "GoUctPlayer: no early pass possible (no win)\n";
         return false;
