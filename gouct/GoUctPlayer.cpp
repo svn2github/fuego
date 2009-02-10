@@ -67,7 +67,7 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_lastBoardSize(-1),
       m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(999999999),
-      m_resignMinGames(3000),
+      m_resignMinGames(5000),
       m_search(Board(),
                new GoUctPlayoutPolicyFactory<GoUctBoard>(
                                                       m_playoutPolicyParam)),
