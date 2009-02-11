@@ -129,8 +129,9 @@
     - @f$ c_{\rm final} @f$ Final weight parameter; this is they weight if
       @f$ N \rightarrow \infty @f$
 
-    For the move value, @f$ c_{\rm initial} = c_{\rm final} = 0 @f$, so the
-    weight is simply @f$ N_{\rm move} @f$.
+    For the move value, @f$ c_{\rm bias} = 0 @f$, and the variance can become
+    part of the normalization constant, so the weight is simply
+    @f$ N_{\rm move} @f$.
     If no estimator has a sample count yet, the first-play-urgency parameter
     is used for the value estimate.
 */
