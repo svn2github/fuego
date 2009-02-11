@@ -1031,7 +1031,7 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
         // does not contribute to the cputime.
         SgWarning() << "SgUctSearch: using cpu time with multiple threads\n";
     m_raveWeightParam1 = 1.f / m_raveWeightInitial;
-    m_raveWeightParam2 = m_raveWeightInitial / m_raveWeightFinal;
+    m_raveWeightParam2 = 1.f / m_raveWeightFinal;
     if (initTree == 0)
         m_tree.Clear();
     else
