@@ -14,18 +14,12 @@
     Mainly uses GoUctPlayoutPolicy to generate prior knowledge.
 */
 class GoUctDefaultPriorKnowledge
-    : public SgUctPriorKnowledge
 {
 public:
     GoUctDefaultPriorKnowledge(const GoBoard& bd,
                                const GoUctPlayoutPolicyParam& param);
 
-    void ProcessPosition(bool& deepenTree);
-
-    void InitializeMove(SgMove move, float& value, float& count);
-
-    void InitializeChildren(SgUctTree& tree, const SgUctNode& node,
-                            bool rave);
+    void ProcessPosition(std::vector<SgMoveInfo>& moves);
 
 private:
     const GoBoard& m_bd;
@@ -43,21 +37,6 @@ private:
                                         GoPointList& empty) const;
 
     void Initialize(SgPoint p, float value, float count);
-};
-
-//----------------------------------------------------------------------------
-
-class GoUctDefaultPriorKnowledgeFactory
-    : public SgUctPriorKnowledgeFactory
-{
-public:
-    /** Stores a reference to param */
-    GoUctDefaultPriorKnowledgeFactory(const GoUctPlayoutPolicyParam& param);
-
-    SgUctPriorKnowledge* Create(SgUctThreadState& state);
-
-private:
-    const GoUctPlayoutPolicyParam& m_param;
 };
 
 //----------------------------------------------------------------------------

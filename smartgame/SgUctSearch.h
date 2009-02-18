@@ -184,59 +184,6 @@ struct SgUctGameInfo
 
 //----------------------------------------------------------------------------
 
-/** Provides an initialization of unknown states.
-    @ingroup sguctgroup
-*/
-class SgUctPriorKnowledge
-{
-public:
-    virtual ~SgUctPriorKnowledge();
-
-    /** Called in each position before any calls to InitializeMove().
-        @param[out] deepenTree Used for selective deepening of the tree.
-        Initialized with @c false by the caller. Set to @c true, if the
-        in-tree phase should continue for another move.
-    */
-    virtual void ProcessPosition(bool& deepenTree) = 0;
-
-    /** Initialize the value for a move in the current state.
-        @param move The move to initialize.
-        @param[out] value The initial value for the state.
-        @param[out] count The initial count for the state.
-    */
-    virtual void InitializeMove(SgMove move, float& value,
-                                float& count) = 0;
-
-    /** Initialize children nodes.
-        The default implementation calls InitializeMove(),
-        SgUctTree::InitializeValue() and SgUctTree::InitializeRaveValue(), if
-        @c rave is @c true, for each child and updates the sum of counts of
-        all children with SgUctTree::SetPosCount() at the parent node.
-        The subclass may provide an optimized implementation to avoid many
-        calls to the virtual function InitializeMove().
-    */
-    virtual void InitializeChildren(SgUctTree& tree, const SgUctNode& node,
-                                    bool rave);
-};
-
-//----------------------------------------------------------------------------
-
-class SgUctThreadState;
-
-/** Create SgUctPriorKnowledge instances.
-    Needs one per thread.
-    @ingroup sguctgroup
-*/
-class SgUctPriorKnowledgeFactory
-{
-public:
-    virtual ~SgUctPriorKnowledgeFactory();
-
-    virtual SgUctPriorKnowledge* Create(SgUctThreadState& state) = 0;
-};
-
-//----------------------------------------------------------------------------
-
 /** Move selection strategy after search is finished.
     @ingroup sguctgroup
 */
@@ -298,14 +245,12 @@ public:
     /** Local variable for SgUctSearch::PlayInTree().
         Reused for efficiency.
     */
-    std::vector<SgMove> m_moves;
+    std::vector<SgMoveInfo> m_moves;
 
     /** Local variable for SgUctSearch::CheckCountAbort().
         Reused for efficiency.
     */
     std::vector<SgMove> m_excludeMoves;
-
-    std::auto_ptr<SgUctPriorKnowledge> m_priorKnowledge;
 
     SgUctThreadState(size_t threadId, int moveRange = 0);
 
@@ -338,7 +283,7 @@ public:
         Moves will be explored in the order of the returned list.
         @param[out] moves The generated moves or empty list at end of game
     */
-    virtual void GenerateAllMoves(std::vector<SgMove>& moves) = 0;
+    virtual void GenerateAllMoves(std::vector<SgMoveInfo>& moves) = 0;
 
     /** Generate random move.
         Generate a random move in the play-out phase (outside the UCT tree).
@@ -547,7 +492,7 @@ public:
         Sets up thread state 0 for a seach and calls GenerateAllMoves
         of the thread state.
     */
-    void GenerateAllMoves(std::vector<SgMove>& moves);
+    void GenerateAllMoves(std::vector<SgMoveInfo>& moves);
 
     /** Play a single game.
         Plays a single game using the thread state of the first thread.
@@ -764,11 +709,6 @@ public:
 
     /** See Rave() */
     void SetRave(bool enable);
-
-    /** Set initializer for unknown moves.
-        Takes ownership. Default is 0 (no initializer).
-    */
-    void SetPriorKnowledge(SgUctPriorKnowledgeFactory* factory);
 
     /** See SgUctMoveSelect */
     SgUctMoveSelect MoveSelect() const;
@@ -1019,8 +959,6 @@ private:
     /** See VirtualLoss() */
     bool m_virtualLoss;
 
-    std::auto_ptr<SgUctPriorKnowledgeFactory> m_priorKnowledgeFactory;
-
     std::string m_logFileName;
 
     SgTimer m_timer;
@@ -1054,7 +992,7 @@ private:
     SgFastLog m_fastLog;
 #endif
 
-    void ApplyRootFilter(std::vector<SgMove>& moves);
+    void ApplyRootFilter(std::vector<SgMoveInfo>& moves);
 
     bool CheckAbortSearch(SgUctThreadState& state);
 
@@ -1067,8 +1005,7 @@ private:
 
     void DeleteThreads();
 
-    void ExpandNode(SgUctThreadState& state, const SgUctNode& node,
-                    bool& deepenTree);
+    void ExpandNode(SgUctThreadState& state, const SgUctNode& node);
 
     float GetBound(float logPosCount, const SgUctNode& child) const;
 

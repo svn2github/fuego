@@ -22,10 +22,10 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ApplyFilter)
     SgUctTree tree;
     tree.CreateAllocators(1);
     tree.SetMaxNodes(10);
-    vector<SgMove> moves;
-    moves.push_back(10);
-    moves.push_back(20);
-    moves.push_back(30);
+    vector<SgMoveInfo> moves;
+    moves.push_back(SgMoveInfo(10));
+    moves.push_back(SgMoveInfo(20));
+    moves.push_back(SgMoveInfo(30));
     const SgUctNode& root = tree.Root();
     tree.CreateChildren(0, root, moves);
 
@@ -62,18 +62,18 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree)
     SgUctTree tree;
     tree.CreateAllocators(1);
     tree.SetMaxNodes(10);
-    vector<SgMove> moves;
-    moves.push_back(10);
-    moves.push_back(20);
-    moves.push_back(30);
+    vector<SgMoveInfo> moves;
+    moves.push_back(SgMoveInfo(10));
+    moves.push_back(SgMoveInfo(20));
+    moves.push_back(SgMoveInfo(30));
     const SgUctNode* node;
     node = &tree.Root();
     tree.CreateChildren(0, *node, moves);
 
     node = SgUctTreeUtil::FindChildWithMove(tree, *node, 20);
     moves.clear();
-    moves.push_back(40);
-    moves.push_back(50);
+    moves.push_back(SgMoveInfo(40));
+    moves.push_back(SgMoveInfo(50));
     tree.CreateChildren(0, *node, moves);
 
     node = SgUctTreeUtil::FindChildWithMove(tree, *node, 50);
@@ -114,25 +114,25 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree_Overflow)
     SgUctTree tree;
     tree.CreateAllocators(2);
     tree.SetMaxNodes(10); // 5 nodes per allocator
-    vector<SgMove> moves;
-    moves.push_back(10);
-    moves.push_back(20);
-    moves.push_back(30);
+    vector<SgMoveInfo> moves;
+    moves.push_back(SgMoveInfo(10));
+    moves.push_back(SgMoveInfo(20));
+    moves.push_back(SgMoveInfo(30));
     const SgUctNode* node;
     node = &tree.Root();
     tree.CreateChildren(0, *node, moves); // 3 nodes into allocator 0
 
     node = SgUctTreeUtil::FindChildWithMove(tree, *node, 10);
     moves.clear();
-    moves.push_back(40);
-    moves.push_back(50);
+    moves.push_back(SgMoveInfo(40));
+    moves.push_back(SgMoveInfo(50));
     tree.CreateChildren(0, *node, moves); // 2 nodes into allocator 0
 
     node = SgUctTreeUtil::FindChildWithMove(tree, *node, 40);
     moves.clear();
-    moves.push_back(60);
-    moves.push_back(70);
-    moves.push_back(80);
+    moves.push_back(SgMoveInfo(60));
+    moves.push_back(SgMoveInfo(70));
+    moves.push_back(SgMoveInfo(80));
     tree.CreateChildren(1, *node, moves); // 3 nodes into allocator 1
 
     // In the buggy implementation, the target allocator was cycling

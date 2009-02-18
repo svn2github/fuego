@@ -37,7 +37,6 @@ SgSystem.cpp \
 SgTime.cpp \
 SgTimeControl.cpp \
 SgTimeRecord.cpp \
-SgUctPriorKnowledgeEven.cpp \
 SgUctSearch.cpp \
 SgUctTree.cpp \
 SgUctTreeUtil.cpp \
@@ -101,7 +100,6 @@ SgTime.h \
 SgTimeControl.h \
 SgTimeRecord.h \
 SgTimer.h \
-SgUctPriorKnowledgeEven.h \
 SgUctSearch.h \
 SgUctTree.h \
 SgUctTreeUtil.h \

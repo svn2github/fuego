@@ -25,12 +25,12 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
                                  const std::string& fileName)
 {
     double maxTime = numeric_limits<double>::max();
-    vector<SgPoint> moves;
+    vector<SgMoveInfo> moves;
     search.GenerateAllMoves(moves);
     SgArray<float,SG_PASS + 1> trueValues;
     for (size_t i = 0; i < moves.size(); ++i)
     {
-        SgPoint p = moves[i];
+        SgPoint p = moves[i].m_move;
         GoModBoard modBoard(search.Board());
         modBoard.Board().Play(p);
         vector<SgMove> sequence;
@@ -45,7 +45,7 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
         search.PlayGame();
         for (size_t i = 0; i < moves.size(); ++i)
         {
-            SgPoint p = moves[i];
+            SgPoint p = moves[i].m_move;
             const SgUctTree& tree = search.Tree();
             const SgUctNode* child =
                 SgUctTreeUtil::FindChildWithMove(tree, tree.Root(), p);

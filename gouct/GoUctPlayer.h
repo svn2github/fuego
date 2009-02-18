@@ -22,21 +22,6 @@ template<typename T,int SIZE> class SgSList;
 
 //----------------------------------------------------------------------------
 
-/** What kind of SgPriorKnowledge to use in GoUctPlayer */
-enum GoUctGlobalSearchPrior
-{
-    /** Don't use any prior knowledge. */
-    GOUCT_PRIORKNOWLEDGE_NONE,
-
-    /** Use SgUctPriorKnowledgeEven */
-    GOUCT_PRIORKNOWLEDGE_EVEN,
-
-    /** Use GoUctDefaultPriorKnowledge */
-    GOUCT_PRIORKNOWLEDGE_DEFAULT
-};
-
-//----------------------------------------------------------------------------
-
 /** What search mode to use in GoUctPlayer to select a move. */
 enum GoUctGlobalSearchMode
 {
@@ -214,12 +199,6 @@ public:
     /** See GoUctGlobalSearchMode */
     void SetSearchMode(GoUctGlobalSearchMode mode);
 
-    /** See GoUctGlobalSearchPrior */
-    GoUctGlobalSearchPrior PriorKnowledge() const;
-
-    /** See GoUctGlobalSearchPrior */
-    void SetPriorKnowledge(GoUctGlobalSearchPrior prior);
-
     // @} // @name
 
 
@@ -275,8 +254,6 @@ private:
 
     /** Used in OnBoardChange() */
     int m_lastBoardSize;
-
-    GoUctGlobalSearchPrior m_priorKnowledge;
 
     std::size_t m_maxGames;
 
@@ -347,11 +324,6 @@ inline bool GoUctPlayer::IgnoreClock() const
 inline std::size_t GoUctPlayer::MaxGames() const
 {
     return m_maxGames;
-}
-
-inline GoUctGlobalSearchPrior GoUctPlayer::PriorKnowledge() const
-{
-    return m_priorKnowledge;
 }
 
 inline bool GoUctPlayer::UseRootFilter() const

@@ -39,6 +39,7 @@ public:
     SgStatisticsBase();
 
     /** Create statistics initialized with values.
+        Note that value must be initialized to 0 if count is 0.
         Equivalent to creating a statistics and calling @c count times
         Add(val)
     */
@@ -104,8 +105,9 @@ inline SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase()
 
 template<typename VALUE, typename COUNT>
 inline SgStatisticsBase<VALUE,COUNT>::SgStatisticsBase(VALUE val, COUNT count)
+    : m_count(count),
+      m_mean(val)
 {
-    Initialize(val, count);
 }
 
 template<typename VALUE, typename COUNT>

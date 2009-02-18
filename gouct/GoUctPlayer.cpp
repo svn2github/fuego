@@ -22,7 +22,6 @@
 #include "SgSList.h"
 #include "SgTime.h"
 #include "SgTimer.h"
-#include "SgUctPriorKnowledgeEven.h"
 #include "SgUctTreeUtil.h"
 #include "SgWrite.h"
 
@@ -65,17 +64,17 @@ GoUctPlayer::GoUctPlayer(GoBoard& bd)
       m_reuseSubtree(false),
       m_earlyPass(true),
       m_lastBoardSize(-1),
-      m_priorKnowledge(GOUCT_PRIORKNOWLEDGE_DEFAULT),
       m_maxGames(999999999),
       m_resignMinGames(5000),
       m_search(Board(),
                new GoUctPlayoutPolicyFactory<GoUctBoard>(
-                                                      m_playoutPolicyParam)),
+                                                 m_playoutPolicyParam),
+               m_playoutPolicyParam),
+      
       m_timeControl(Board()),
       m_rootFilter(new GoUctDefaultRootFilter(Board()))
 {
     SetDefaultParameters(Board().Size());
-    SetPriorKnowledge(m_priorKnowledge);
 }
 
 GoUctPlayer::~GoUctPlayer()
@@ -463,28 +462,6 @@ void GoUctPlayer::SetDefaultParameters(int boardSize)
         // length modification on large board
         m_resignThreshold = 0.08;
     }
-}
-
-void GoUctPlayer::SetPriorKnowledge(GoUctGlobalSearchPrior prior)
-{
-    SgUctPriorKnowledgeFactory* factory;
-    switch (prior)
-    {
-    case GOUCT_PRIORKNOWLEDGE_NONE:
-        factory = 0;
-        break;
-    case GOUCT_PRIORKNOWLEDGE_EVEN:
-        factory = new SgUctPriorKnowledgeEvenFactory(30);
-        break;
-    case GOUCT_PRIORKNOWLEDGE_DEFAULT:
-        factory = new GoUctDefaultPriorKnowledgeFactory(m_playoutPolicyParam);
-        break;
-    default:
-        SG_ASSERT(false);
-        factory = 0;
-    }
-    m_search.SetPriorKnowledge(factory);
-    m_priorKnowledge = prior;
 }
 
 void GoUctPlayer::SetReuseSubtree(bool enable)

@@ -89,7 +89,7 @@ public:
 
     void ExecutePlayout(SgMove move);
 
-    void GenerateAllMoves(vector<SgMove>& moves);
+    void GenerateAllMoves(vector<SgMoveInfo>& moves);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -163,7 +163,7 @@ float TestThreadState::Evaluate()
     return CurrentNode().m_eval;
 }
 
-void TestThreadState::GenerateAllMoves(vector<SgMove>& moves)
+void TestThreadState::GenerateAllMoves(vector<SgMoveInfo>& moves)
 {
     if (WRITE)
         SgDebug() << "TestUctSearch::Generate " << m_currentNode << ": ";
@@ -172,7 +172,7 @@ void TestThreadState::GenerateAllMoves(vector<SgMove>& moves)
     {
         if (WRITE)
             SgDebug() << Node(child).m_move << ' ';
-        moves.push_back(Node(child).m_move);
+        moves.push_back(SgMoveInfo(Node(child).m_move));
         child = Node(child).m_sibling;
     }
     if (WRITE)
@@ -183,12 +183,12 @@ SgMove TestThreadState::GeneratePlayoutMove(bool& skipRaveUpdate)
 {
     SG_UNUSED(skipRaveUpdate);
     // Search does not use randomness
-    vector<SgMove> moves;
+    vector<SgMoveInfo> moves;
     GenerateAllMoves(moves);
     if (moves.empty())
         return SG_NULLMOVE;
     else
-        return *(moves.begin());
+        return moves.begin()->m_move;
 }
 
 inline const TestNode& TestThreadState::Node(size_t index) const

@@ -120,42 +120,9 @@ void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
     m_values[p].Initialize(value, count);
 }
 
-void GoUctDefaultPriorKnowledge::InitializeChildren(SgUctTree& tree,
-                                                    const SgUctNode& node,
-                                                    bool rave)
+void 
+GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
 {
-    float posCount = 0;
-    for (SgUctChildIterator it(tree, node); it; ++it)
-    {
-        const SgUctNode& child = *it;
-        SgMove move = child.Move();
-        const SgStatisticsBase<float,float>& val = m_values[move];
-        if (val.IsDefined())
-        {
-            float count = val.Count();
-            float value = val.Mean();
-            tree.InitializeValue(child, SgUctSearch::InverseEval(value),
-                                 count);
-            if (rave)
-                tree.InitializeRaveValue(child, value, count);
-            posCount += count;
-        }
-    }
-    tree.SetPosCount(node, posCount);
-}
-
-void GoUctDefaultPriorKnowledge::InitializeMove(SgMove move, float& value,
-                                                float& count)
-{
-    const SgStatisticsBase<float,float>& val = m_values[move];
-    if (val.IsDefined())
-        value = val.Mean();
-    count = val.Count();
-}
-
-void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
-{
-    SG_UNUSED(deepenTree);
     m_policy.StartPlayout();
     m_policy.GenerateMove();
     GoUctPlayoutPolicyType type = m_policy.MoveType();
@@ -226,23 +193,18 @@ void GoUctDefaultPriorKnowledge::ProcessPosition(bool& deepenTree)
     }
     AddLocalityBonus(empty, isSmallBoard);
     m_policy.EndPlayout();
-}
 
-//----------------------------------------------------------------------------
-
-GoUctDefaultPriorKnowledgeFactory
-::GoUctDefaultPriorKnowledgeFactory(const GoUctPlayoutPolicyParam& param)
-    : m_param(param)
-{
-}
-
-SgUctPriorKnowledge*
-GoUctDefaultPriorKnowledgeFactory::Create(SgUctThreadState& state)
-{
-    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
-        globalSearchState = dynamic_cast<
-      GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>(state);
-    return new GoUctDefaultPriorKnowledge(globalSearchState.Board(), m_param);
+    for (std::size_t i = 0; i < outmoves.size(); ++i) 
+    {
+        SgMove p = outmoves[i].m_move;
+        if (m_values[p].IsDefined())
+        {
+            outmoves[i].m_count = m_values[p].Count();
+            outmoves[i].m_value = SgUctSearch::InverseEval(m_values[p].Mean());
+            outmoves[i].m_raveCount = m_values[p].Count();
+            outmoves[i].m_raveValue = m_values[p].Mean();
+        }
+    }
 }
 
 //----------------------------------------------------------------------------

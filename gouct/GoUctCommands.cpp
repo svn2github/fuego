@@ -96,34 +96,6 @@ string MoveSelectToString(SgUctMoveSelect moveSelect)
     }
 }
 
-GoUctGlobalSearchPrior PriorKnowledgeArg(const GtpCommand& cmd, size_t number)
-{
-    string arg = cmd.ArgToLower(number);
-    if (arg == "none")
-        return GOUCT_PRIORKNOWLEDGE_NONE;
-    if (arg == "even")
-        return GOUCT_PRIORKNOWLEDGE_EVEN;
-    if (arg == "default")
-        return GOUCT_PRIORKNOWLEDGE_DEFAULT;
-    throw GtpFailure() << "unknown prior knowledge argument \"" << arg << '"';
-}
-
-string PriorKnowledgeToString(GoUctGlobalSearchPrior prior)
-{
-    switch (prior)
-    {
-    case GOUCT_PRIORKNOWLEDGE_NONE:
-        return "none";
-    case GOUCT_PRIORKNOWLEDGE_EVEN:
-        return "even";
-    case GOUCT_PRIORKNOWLEDGE_DEFAULT:
-        return "default";
-    default:
-        SG_ASSERT(false);
-        return "?";
-    }
-}
-
 GoUctGlobalSearchMode SearchModeArg(const GtpCommand& cmd, size_t number)
 {
     string arg = cmd.ArgToLower(number);
@@ -310,9 +282,11 @@ void GoUctCommands::CmdGfx(GtpCommand& cmd)
 void GoUctCommands::CmdMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    vector<SgPoint> moves;
+    vector<SgMoveInfo> moves;
     Search().GenerateAllMoves(moves);
-    cmd << SgWritePointList(moves, "", false);
+    for (std::size_t i = 0; i < moves.size(); ++i)
+        cmd << SgWritePoint(moves[i].m_move) << ' ';
+    cmd << '\n';
 }
 
 /** Get and set GoUctGlobalSearch parameters.
@@ -378,8 +352,6 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c reuse_subtree See GoUctPlayer::ReuseSubtree
     @arg @c use_root_filter See GoUctPlayer::UseRootFilter
     @arg @c max_games See GoUctPlayer::MaxGames
-    @arg @c prior_knowledge @c none|even|policy See
-        GoUctPlayer::PriorKnowledge
     @arg @c resign_min_games See GoUctPlayer::ResignMinGames
     @arg @c resign_threshold See GoUctPlayer::ResignThreshold
     @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode
@@ -399,8 +371,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
             << "[bool] use_root_filter " << p.UseRootFilter() << '\n'
             << "[string] max_games " << p.MaxGames() << '\n'
-            << "[list/none/even/default] prior_knowledge "
-            << PriorKnowledgeToString(p.PriorKnowledge()) << '\n'
             << "[string] resign_min_games " << p.ResignMinGames() << '\n'
             << "[string] resign_threshold " << p.ResignThreshold() << '\n'
             << "[list/playout_policy/uct/one_ply] search_mode "
@@ -423,8 +393,6 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetUseRootFilter(cmd.BoolArg(1));
         else if (name == "max_games")
             p.SetMaxGames(cmd.SizeTypeArg(1, 1));
-        else if (name == "prior_knowledge")
-            p.SetPriorKnowledge(PriorKnowledgeArg(cmd, 1));
         else if (name == "resign_min_games")
             p.SetResignMinGames(cmd.SizeTypeArg(1));
         else if (name == "resign_threshold")
@@ -652,60 +620,43 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 }
 
 /** Show prior knowledge.
-    If no argument is given, the the response is compatible to the GoGui
-    analyze command type @c gfx and shows the prior knowledge values as
-    influence and the counts as labels. If a point argument is given,
-    the reponse is the count and value for this move or empty, if this
-    move is not initialized by prior knowledge.
+    The response is compatible to the GoGui analyze command type @c
+    gfx and shows the prior knowledge values as influence and the
+    counts as labels.
 */
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
-    SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
-    if (priorKnowledge == 0)
-        throw GtpFailure("no prior knowledge set at search");
     state.StartSearch(); // Updates thread state board
-    bool deepenTree = false;
-    priorKnowledge->ProcessPosition(deepenTree);
-    if (cmd.NuArg() == 1)
+    std::vector<SgMoveInfo> moves;
+    state.GenerateAllMoves(moves);
+
+    cmd << "INFLUENCE ";
+    for (std::size_t i = 0; i < moves.size(); ++i) 
     {
-        SgPoint p = EmptyPointArg(cmd, 0, m_bd);
-        float value;
-        float count;
-        priorKnowledge->InitializeMove(p, value, count);
-        cmd << count << ' ' << value;
+        SgMove move = moves[i].m_move;
+        float value = SgUctSearch::InverseEval(moves[i].m_value);
+        //float value = moves[i].m_value;
+        float count = moves[i].m_count;
+        if (count > numeric_limits<float>::epsilon())
+        {
+            float scaledValue = (value * 2 - 1);
+            if (m_bd.ToPlay() != SG_BLACK)
+                scaledValue *= -1;
+            cmd << ' ' << SgWritePoint(move) << ' ' << scaledValue;
+        }
     }
-    else
+    cmd << "\nLABEL ";
+    for (std::size_t i = 0; i < moves.size(); ++i)
     {
-        cmd << "INFLUENCE ";
-        for (GoBoard::Iterator it(m_bd); it; ++it)
-            if (m_bd.IsEmpty(*it))
-            {
-                float value;
-                float count;
-                priorKnowledge->InitializeMove(*it, value, count);
-                if (count > numeric_limits<float>::epsilon())
-                {
-                    float scaledValue = (value * 2 - 1);
-                    if (m_bd.ToPlay() != SG_BLACK)
-                        scaledValue *= -1;
-                    cmd << ' ' << SgWritePoint(*it) << ' ' << scaledValue;
-                }
-            }
-        cmd << "\nLABEL ";
-        for (GoBoard::Iterator it(m_bd); it; ++it)
-            if (m_bd.IsEmpty(*it))
-            {
-                float value;
-                float count;
-                priorKnowledge->InitializeMove(*it, value, count);
-                if (count > numeric_limits<float>::epsilon())
-                    cmd << ' ' << SgWritePoint(*it) << ' ' << count;
-            }
-        cmd << '\n';
+        SgMove move = moves[i].m_move;
+        float count = moves[i].m_count;
+        if (count > numeric_limits<float>::epsilon())
+            cmd << ' ' << SgWritePoint(move) << ' ' << count;
     }
+    cmd << '\n';
 }
 
 /** Show RAVE values of last search at root position.

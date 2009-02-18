@@ -23,6 +23,65 @@ typedef SgStatisticsBase<volatile float,volatile std::size_t>
 
 //----------------------------------------------------------------------------
 
+/** Used for node creation. */
+struct SgMoveInfo
+{
+    /** Move for the child. */
+    SgMove m_move;
+
+    /** Value of node after node is created. Value is from child's
+        perspective, so the value stored here must be the inverse of
+        the evaluation from the parent's perspective. */
+    float m_value;
+
+    /** Count of node after node is created. */
+    float m_count;
+
+    /** Rave value of move after node is created from viewpoint of
+        parent node. Value should not be inverted to child's
+        perspective. */
+    float m_raveValue;
+
+    /** Rave count of move after node is created. */
+    float m_raveCount;
+
+    SgMoveInfo();
+
+    SgMoveInfo(SgMove move);
+
+    SgMoveInfo(SgMove move, float value, float count, 
+               float raveValue, float raveCount);
+};
+
+inline SgMoveInfo::SgMoveInfo()
+    : m_value(0.0),
+      m_count(0.0),
+      m_raveValue(0.0),
+      m_raveCount(0.0)
+{
+}
+
+inline SgMoveInfo::SgMoveInfo(SgMove move)
+    : m_move(move),
+      m_value(0.0),
+      m_count(0.0),
+      m_raveValue(0.0),
+      m_raveCount(0.0)
+{
+}
+
+inline SgMoveInfo::SgMoveInfo(SgMove move, float value, float count,
+                              float raveValue, float raveCount)
+    : m_move(move),
+      m_value(value),
+      m_count(count),
+      m_raveValue(raveValue),
+      m_raveCount(raveCount)
+{
+}
+
+//----------------------------------------------------------------------------
+
 /** Node used in SgUctTree.
     All data members are declared as volatile to avoid that the compiler
     re-orders writes, which can break assumptions made by SgUctSearch in
@@ -35,7 +94,8 @@ typedef SgStatisticsBase<volatile float,volatile std::size_t>
 class SgUctNode
 {
 public:
-    SgUctNode(SgMove move);
+    /** Initializes node with given move, value and count. */
+    SgUctNode(const SgMoveInfo& info);
 
     /** Add game result.
         @param eval The game result (e.g. score or 0/1 for win loss)
@@ -156,9 +216,11 @@ private:
     volatile float m_posCount;
 };
 
-inline SgUctNode::SgUctNode(SgMove move)
-    : m_nuChildren(0),
-      m_move(move),
+inline SgUctNode::SgUctNode(const SgMoveInfo& info)
+    : m_statistics(info.m_value, info.m_count),
+      m_nuChildren(0),
+      m_move(info.m_move),
+      m_raveValue(info.m_raveValue, info.m_raveCount),
       m_posCount(0.)
 {
     // m_firstChild is not initialized, only defined if m_nuChildren > 0
@@ -333,11 +395,11 @@ public:
     SgUctNode* CreateOne(SgMove move);
 
     /** Create a number of new nodes with a given list of moves at the end of
-        the storage.
+        the storage. Returns the sum of counts of moves.
         REQUIRES: HasCapacity(moves.size())
         @param moves The list of moves.
     */
-    void Create(const std::vector<SgMove>& moves);
+    float Create(const std::vector<SgMoveInfo>& moves);
 
     /** Create a number of new nodes at the end of the storage.
         REQUIRES: HasCapacity(n)
@@ -383,12 +445,17 @@ inline SgUctNode* SgUctAllocator::CreateOne(SgMove move)
     return (m_finish++);
 }
 
-inline void SgUctAllocator::Create(const std::vector<SgMove>& moves)
+inline float SgUctAllocator::Create(const std::vector<SgMoveInfo>& moves)
 {
     SG_ASSERT(HasCapacity(moves.size()));
-    for (std::vector<SgMove>::const_iterator it = moves.begin();
+    float count = 0.0;
+    for (std::vector<SgMoveInfo>::const_iterator it = moves.begin();
          it != moves.end(); ++it, ++m_finish)
+    {
         new(m_finish) SgUctNode(*it);
+        count += it->m_count;
+    }
+    return count;
 }
 
 inline void SgUctAllocator::CreateN(std::size_t n)
@@ -507,7 +574,7 @@ public:
         Requires: Allocator(allocatorId).HasCapacity(moves.size())
     */
     void CreateChildren(std::size_t allocatorId, const SgUctNode& node,
-                        const std::vector<SgMove>& moves);
+                        const std::vector<SgMoveInfo>& moves);
 
     /** Extract subtree to a different tree.
         The tree will be truncated if one of the allocators overflows (can
@@ -649,7 +716,7 @@ inline void SgUctTree::AddGameResult(const SgUctNode& node,
 
 inline void SgUctTree::CreateChildren(std::size_t allocatorId,
                                       const SgUctNode& node,
-                                      const std::vector<SgMove>& moves)
+                                      const std::vector<SgMoveInfo>& moves)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
@@ -666,10 +733,12 @@ inline void SgUctTree::CreateChildren(std::size_t allocatorId,
     SG_ASSERT(NuAllocators() > 1 || ! node.HasChildren());
 
     const SgUctNode* firstChild = allocator.Finish();
-    allocator.Create(moves);
+    
+    float parentCount = allocator.Create(moves);
 
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
+    nonConstNode.SetPosCount(parentCount);
     nonConstNode.SetFirstChild(firstChild);
     nonConstNode.SetNuChildren(nuChildren);
 }

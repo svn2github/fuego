@@ -64,41 +64,6 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
 
 //----------------------------------------------------------------------------
 
-SgUctPriorKnowledge::~SgUctPriorKnowledge()
-{
-}
-
-void SgUctPriorKnowledge::InitializeChildren(SgUctTree& tree,
-                                             const SgUctNode& node, bool rave)
-{
-    float posCount = 0;
-    for (SgUctChildIterator it(tree, node); it; ++it)
-    {
-        const SgUctNode& child = *it;
-        SgMove move = child.Move();
-        float value;
-        float count;
-        InitializeMove(move, value, count);
-        if (count > numeric_limits<float>::epsilon())
-        {
-            tree.InitializeValue(child, SgUctSearch::InverseEval(value),
-                                 count);
-            if (rave)
-                tree.InitializeRaveValue(child, value, count);
-            posCount += count;
-        }
-    }
-    tree.SetPosCount(node, posCount);
-}
-
-//----------------------------------------------------------------------------
-
-SgUctPriorKnowledgeFactory::~SgUctPriorKnowledgeFactory()
-{
-}
-
-//----------------------------------------------------------------------------
-
 SgUctThreadState::SgUctThreadState(size_t threadId, int moveRange)
     : m_threadId(threadId)
 {
@@ -270,13 +235,13 @@ SgUctSearch::~SgUctSearch()
     DeleteThreads();
 }
 
-void SgUctSearch::ApplyRootFilter(vector<SgMove>& moves)
+void SgUctSearch::ApplyRootFilter(vector<SgMoveInfo>& moves)
 {
     // Filter without changing the order of the unfiltered moves
-    vector<SgMove> filteredMoves;
-    for (vector<SgMove>::const_iterator it = moves.begin();
+    vector<SgMoveInfo> filteredMoves;
+    for (vector<SgMoveInfo>::const_iterator it = moves.begin();
          it != moves.end(); ++it)
-        if (find(m_rootFilter.begin(), m_rootFilter.end(), *it)
+        if (find(m_rootFilter.begin(), m_rootFilter.end(), it->m_move)
             == m_rootFilter.end())
             filteredMoves.push_back(*it);
     moves = filteredMoves;
@@ -382,12 +347,6 @@ void SgUctSearch::CreateThreads()
     {
         auto_ptr<SgUctThreadState> state(
                                       m_threadStateFactory->Create(i, *this));
-        if (m_priorKnowledgeFactory.get() != 0)
-        {
-            SgUctPriorKnowledge* priorKnowledge =
-                m_priorKnowledgeFactory->Create(*state);
-            state->m_priorKnowledge.reset(priorKnowledge);
-        }
         shared_ptr<Thread> thread(new Thread(*this, state));
         m_threads.push_back(thread);
     }
@@ -423,12 +382,9 @@ void SgUctSearch::DeleteThreads()
 /** Expand a node.
     @param state The thread state with state.m_moves already computed.
     @param node The node to expand.
-    @param[out] deepenTree See SgUctPriorKnowledge::ProcessPosition
 */
-void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
-                             bool& deepenTree)
+void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node)
 {
-    SG_ASSERT(deepenTree == false); // Should be initialized by caller
     size_t threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
@@ -438,12 +394,6 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node,
         return;
     }
     m_tree.CreateChildren(threadId, node, state.m_moves);
-    SgUctPriorKnowledge* priorKnowledge = state.m_priorKnowledge.get();
-    if (priorKnowledge != 0)
-    {
-        priorKnowledge->ProcessPosition(deepenTree);
-        priorKnowledge->InitializeChildren(m_tree, node, m_rave);
-    }
 }
 
 const SgUctNode*
@@ -514,7 +464,7 @@ void SgUctSearch::FindBestSequence(vector<SgMove>& sequence) const
     }
 }
 
-void SgUctSearch::GenerateAllMoves(std::vector<SgMove>& moves)
+void SgUctSearch::GenerateAllMoves(std::vector<SgMoveInfo>& moves)
 {
     if (m_threads.size() == 0)
         CreateThreads();
@@ -760,7 +710,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                    > m_expandThreshold - numeric_limits<float>::epsilon())
             {
                 deepenTree = false;
-                ExpandNode(state, *current, deepenTree);
+                ExpandNode(state, *current);
                 if (state.m_isTreeOutOfMem)
                     return true;
                 if (! deepenTree)
@@ -769,6 +719,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             else
                 break;
         }
+
         current = &SelectChild(*current);
         nodes.push_back(current);
         SgMove move = current->Move();
@@ -904,7 +855,7 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
     // It uses the state of the first thread.
     SgUctThreadState& state = ThreadState(0);
     state.StartSearch();
-    vector<SgMove> moves;
+    vector<SgMoveInfo> moves;
     state.GameStart();
     state.GenerateAllMoves(moves);
     vector<SgUctStatisticsBase> statistics(moves.size());
@@ -917,7 +868,7 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
         {
             state.GameStart();
             info.Clear(1);
-            SgMove move = moves[i];
+            SgMove move = moves[i].m_move;
             state.Execute(move);
             info.m_inTreeSequence.push_back(move);
             info.m_sequence[0].push_back(move);
@@ -942,11 +893,11 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
     SgMove bestMove = SG_NULLMOVE;
     for (size_t i = 0; i < moves.size(); ++i)
     {
-        SgDebug() << SgWritePoint(moves[i]) << ' ' << statistics[i].Mean()
-                  << '\n';
+        SgDebug() << SgWritePoint(moves[i].m_move) 
+                  << ' ' << statistics[i].Mean() << '\n';
         if (bestMove == SG_NULLMOVE || statistics[i].Mean() > value)
         {
-            bestMove = moves[i];
+            bestMove = moves[i].m_move;
             value = statistics[i].Mean();
         }
     }
@@ -984,21 +935,6 @@ void SgUctSearch::SetNumberThreads(std::size_t n)
         return;
     m_numberThreads = n;
     CreateThreads();
-}
-
-void SgUctSearch::SetPriorKnowledge(SgUctPriorKnowledgeFactory* factory)
-{
-    m_priorKnowledgeFactory.reset(factory);
-    for (size_t i = 0; i < m_threads.size(); ++i)
-    {
-        SgUctPriorKnowledge* priorKnowledge;
-        SgUctThreadState& state = ThreadState(i);
-        if (factory == 0)
-            priorKnowledge = 0;
-        else
-            priorKnowledge = factory->Create(state);
-        state.m_priorKnowledge.reset(priorKnowledge);
-    }
 }
 
 void SgUctSearch::SetRave(bool enable)
@@ -1219,7 +1155,6 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     {
         m_tree.RemoveVirtualLoss(nodes);
     }
-
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode& node = *nodes[i];
