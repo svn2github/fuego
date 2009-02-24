@@ -45,7 +45,7 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
 {
 }
 
-void GoUctDefaultPriorKnowledge::Add(SgPoint p, float value, float count)
+void GoUctDefaultPriorKnowledge::Add(SgPoint p, float value, size_t count)
 {
     m_values[p].Add(value, count);
 }
@@ -57,7 +57,7 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
     if (last != SG_NULLMOVE && last != SG_PASS)
     {
         SgPointArray<int> dist = GoBoardUtil::CfgDistance(m_bd, last, 3);
-        const float count = (isSmallBoard ? 4 : 5);
+        const size_t count = (isSmallBoard ? 4 : 5);
         for (GoPointList::Iterator it(emptyPoints); it; ++it)
         {
             const SgPoint p = *it;
@@ -115,7 +115,7 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
 }
 
 void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
-                                            float count)
+                                            size_t count)
 {
     m_values[p].Initialize(value, count);
 }
@@ -200,7 +200,8 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
         if (m_values[p].IsDefined())
         {
             outmoves[i].m_count = m_values[p].Count();
-            outmoves[i].m_value = SgUctSearch::InverseEval(m_values[p].Mean());
+            outmoves[i].m_value =
+                SgUctSearch::InverseEval(m_values[p].Mean());
             outmoves[i].m_raveCount = m_values[p].Count();
             outmoves[i].m_raveValue = m_values[p].Mean();
         }

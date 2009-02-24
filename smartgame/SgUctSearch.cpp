@@ -319,16 +319,15 @@ bool SgUctSearch::CheckCountAbort(SgUctThreadState& state,
     const SgUctNode* bestChild = FindBestChild(root);
     if (bestChild == 0)
         return false;
-    float bestCount = bestChild->MoveCount();
+    size_t bestCount = bestChild->MoveCount();
     vector<SgMove>& excludeMoves = state.m_excludeMoves;
     excludeMoves.clear();
     excludeMoves.push_back(bestChild->Move());
     const SgUctNode* secondBestChild = FindBestChild(root, &excludeMoves);
     if (secondBestChild == 0)
         return false;
-    float secondBestCount = secondBestChild->MoveCount();
-    SG_ASSERT(secondBestCount <= bestCount + numeric_limits<float>::epsilon()
-              || m_numberThreads > 1);
+    std::size_t secondBestCount = secondBestChild->MoveCount();
+    SG_ASSERT(secondBestCount <= bestCount || m_numberThreads > 1);
     return (secondBestCount + remainingGames <= bestCount);
 }
 
@@ -420,7 +419,7 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
                   && m_rave && child.HasRaveValue()))
             continue;
         float moveValue = InverseEval(child.Mean());
-        float moveCount = child.MoveCount();
+        size_t moveCount = child.MoveCount();
         float value;
         switch (m_moveSelect)
         {
@@ -478,7 +477,7 @@ void SgUctSearch::GenerateAllMoves(std::vector<SgMoveInfo>& moves)
 float SgUctSearch::GetBound(const SgUctNode& node,
                             const SgUctNode& child) const
 {
-    float posCount = node.PosCount();
+    size_t posCount = node.PosCount();
     return GetBound(Log(posCount), child);
 }
 
@@ -493,7 +492,7 @@ float SgUctSearch::GetBound(float logPosCount, const SgUctNode& child) const
         return value;
     else
     {
-        float moveCount = child.MoveCount();
+        float moveCount = static_cast<float>(child.MoveCount());
         float bound =
             value + m_biasTermConstant * sqrt(logPosCount / (moveCount + 1));
         return bound;
@@ -520,7 +519,7 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
     bool hasValue = false;
     if (child.HasMean())
     {
-        float weight = child.MoveCount();
+        float weight = static_cast<float>(child.MoveCount());
         value += weight * InverseEval(child.Mean());
         weightSum += weight;
         hasValue = true;
@@ -706,8 +705,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                 break;
             }
             if (deepenTree
-                || current->MoveCount()
-                   > m_expandThreshold - numeric_limits<float>::epsilon())
+                || current->MoveCount() >= m_expandThreshold)
             {
                 deepenTree = false;
                 ExpandNode(state, *current);
@@ -907,8 +905,8 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
 const SgUctNode& SgUctSearch::SelectChild(const SgUctNode& node)
 {
     SG_ASSERT(node.HasChildren());
-    float posCount = node.PosCount();
-    if (posCount < numeric_limits<float>::epsilon())
+    size_t posCount = node.PosCount();
+    if (posCount == 0)
         // If position count is zero, return first child
         return *SgUctChildIterator(m_tree, node);
     float logPosCount = Log(posCount);

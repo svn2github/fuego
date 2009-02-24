@@ -34,7 +34,7 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
     {
         const SgUctNode& node = *it;
         ++m_nuNodes;
-        size_t count = static_cast<size_t>(node.MoveCount());
+        size_t count = node.MoveCount();
         if (count < SgUctTreeStatistics::MAX_MOVECOUNT)
             ++m_moveCounts[count];
         if (! node.HasChildren())

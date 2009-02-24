@@ -26,9 +26,9 @@ private:
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
 
-    SgArray<SgStatisticsBase<float,float>,SG_PASS+1> m_values;
+    SgArray<SgStatisticsBase<float,std::size_t>,SG_PASS+1> m_values;
 
-    void Add(SgPoint p, float value, float count);
+    void Add(SgPoint p, float value, std::size_t count);
 
     void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
@@ -36,7 +36,7 @@ private:
                                         SgPointSet& atari,
                                         GoPointList& empty) const;
 
-    void Initialize(SgPoint p, float value, float count);
+    void Initialize(SgPoint p, float value, std::size_t count);
 };
 
 //----------------------------------------------------------------------------

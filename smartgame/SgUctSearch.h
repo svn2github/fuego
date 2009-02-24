@@ -948,10 +948,10 @@ private:
     float m_raveWeightFinal;
 
     /** 1 / m_raveWeightInitial precomputed for efficiency */
-    float m_raveWeightParam1;
+    double m_raveWeightParam1;
 
     /** m_raveWeightInitial / m_raveWeightFinal precomputed for efficiency */
-    float m_raveWeightParam2;
+    double m_raveWeightParam2;
 
     /** Time limit for current search. */
     double m_maxTime;
