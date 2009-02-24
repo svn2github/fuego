@@ -64,32 +64,70 @@
     - @ref sguctsearchweights
 */
 
-/** @page sguctsearchlockfree Lock-free usage of SgUctSearch
-    SgUctSearch can be used in a lock-free way for improved multi-threaded
-    performance. Then, the threads access the common data structures (like
-    the tree) without any locking. Lock-free usage is enabled with
-    SgUctSearch::SetLockFree(true).
+/** @page sguctsearchlockfree Lock-free mode in SgUctSearch
 
-    It depends on the memory model of the platform, if lock-free usage
-    works. It assumes that writes of some basic types (size_t, int, float,
-    pointers) are atomic and that the CPU does not reorder certain
-    instructions. In particular, SgUctNode::SetNuChildren() is always called
-    after the children were created, such that SgUctNode::HasChildren()
-    returns only true, if the children are ready to use. Because of the
-    platform-dependency, lock-free is not enabled by default.
-    Statistics collected during the search may not be accurate in
-    lock-free usage, because counts and mean values may be manipulated
-    concurrently.
+The basic idea of the lock-free mode in SgUctSearch is to share a tree between
+multiple threads without using any locks. Because of specific requirements on
+the memory model of the hardware platform, lock-free mode is an optional
+feature of the SgUctSearch and needs to be enabled explicitly.
 
-    In particular, the IA-32 and Intel-64 architecture guarantees these
-    assumptions. Writes of the used data types are atomic (if properly
-    aligned) and writes by one CPU are seen in the same order by other CPUs
-    (the critical data is declared as volatile to avoid that the compiler
-    reorders writes for optimization purposes). In addition, the architecture
-    synchronizes CPU caches after writes. See
-    <a href="http://download.intel.com/design/processor/manuals/253668.pdf">
-    Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
-    7.1 (Locked Atomic Operations) and 7.2 (Memory Ordering).
+@section sguctsearchlockfreetree Modifying the Tree Structure
+
+The first change to make the lock-free search work is in the handling of
+concurrent changes to the structure of the tree. SgUctSearch never deletes
+nodes during a search; new nodes are created in a pre-allocated memory array.
+In the lock-free algorithm, each thread has its own memory array for creating
+new nodes. Only after the nodes are fully created and initialized, are they
+linked to the parent node. This can cause some memory overhead, because if
+several threads expand the same node only the children created by the last
+thread will be used in future simulations. It can also happen that some of the
+children that are lost already received value updates; these updates will be
+lost.
+
+The child information of a node consists of two variables: a pointer to the
+first child in the array, and the number of children. To avoid that another
+thread sees an inconsistent state of these variables, all threads assume that
+the number of children is valid if the pointer to the first child is not null.
+Linking a parent to a new set of children requires first writing the number of
+children, then the pointer to the first child. The compiler is prevented from
+reordering the writes by declaring these variables as volatile.
+
+@section sguctsearchlockfreevalues Updating Values
+
+The move and RAVE values are stored in the nodes as counts and mean values.
+The mean values are updated using an incremental algorithm. Updating them
+without protection by a mutex can cause updates of the mean to be lost with or
+without increment of the count, as well as updates of the mean occurring
+without increment of the count. It could also happen that one thread reads the
+count and mean while they are written by another thread, and the first thread
+sees an erroneous state that exists only temporarily. In practice, these
+faulty updates occur with a low probability and will have only a small effect
+on the counts and mean values. They are intentionally ignored.
+
+The only problematic case is if a count is zero, because the mean value is
+undefined if the count is zero, and this case has a special meaning at several
+places in the search. For example, the computation of the values for the
+selection of children in the in-tree phase distinguishes three cases: if the
+move count and RAVE count is non-zero, the value will be computed as a
+weighted linear combination of both mean values, if the move count is zero,
+only the RAVE mean is used, and if both counts are zero, a configurable
+constant value, the first play urgency, is used. To avoid this problem, all
+threads assume that a mean value is only valid if the corresponding count is
+non-zero. Updating a value requires first writing the new mean value, then the
+new count. The compiler is prevented from reordering the writes by declaring
+the counts and mean values as volatile.
+
+@section sguctsearchlockfreeplatform Platform Requirements
+
+There are some requirements on the memory model of the platform to make the
+lock-free search algorithm work. Writes of certain basic types (size_t, int,
+float, pointers) must be atomic. Writes by one thread must be seen by other
+threads in the same order. The IA-32 and Intel-64 CPU architectures, which are
+used in most modern standard computers, guarantee these assumptions. They also
+synchronize CPU caches after writes. (See
+<a href="http://download.intel.com/design/processor/manuals/253668.pdf">
+Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
+7.1 Locked Atomic Operations and 7.2 Memory Ordering).
 */
 
 /** @page sguctsearchweights Estimator weights in SgUctSearch
