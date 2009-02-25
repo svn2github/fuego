@@ -9,6 +9,7 @@ Current development version
 ===========================
 
 * Remove SgStreamFmtRestorer; use Boost IO State Savers instead 
+* Change move count type in SgUctNode from float to size_t
 
 
 Version 0.3 - 2008 Dec 17
