@@ -9,8 +9,9 @@ Current development version
 ===========================
 
 * Remove SgStreamFmtRestorer; use Boost IO State Savers instead 
+* Remove SgUctPriorKnowledge; Derived thread state class will supply knowledge
+  values through the GenerateAllMoves() function.
 * Change move count type in SgUctNode from float to size_t
-
 
 Version 0.3 - 2008 Dec 17
 =========================
