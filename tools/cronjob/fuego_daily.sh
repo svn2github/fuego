@@ -25,7 +25,7 @@ svn update || exit 1
 # Generate documentation and put it on the UofA web server. Don't use
 # fuego.sourceforge.net, because it allows only 100 MB webspace
 
-cd doc
+cd doc/doxygen
 make || exit 1
 rsync -r fuego-doc $FUEGO_WEB_SERVER:$FUEGO_WEB_DIR
 
