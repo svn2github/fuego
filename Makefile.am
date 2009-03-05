@@ -56,4 +56,6 @@ doc/doxygen/simpleplayers/pages/mainpage.cpp \
 doc/doxygen/smartgame/Makefile \
 doc/doxygen/smartgame/doxygen.cfg \
 doc/doxygen/smartgame/pages/mainpage.cpp \
-doc/doxygen/smartgame/pages/sgnotes.cpp
+doc/doxygen/smartgame/pages/sgnotes.cpp \
+doc/manual/index.html
+

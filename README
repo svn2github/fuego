@@ -38,5 +38,14 @@ Compilation
 ===========
 
 See INSTALL for generic compilation instructions from GNU Automake.
-The file doc/general/pages/autotools.cpp contains additional and Fuego
-specific documentation.
+The file doc/doxygen/general/pages/autotools.cpp contains additional and
+Fuego specific documentation.
+
+Documentation
+=============
+
+The developer documentation for the libraries and applications can be
+created with Doxygen (http://www.doxygen.org). There is a makefile in
+doc/doxygen/Makefile.
+
+The user manual for the main Go player is in doc/manual/
