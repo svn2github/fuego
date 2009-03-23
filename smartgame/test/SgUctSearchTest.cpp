@@ -89,7 +89,7 @@ public:
 
     void ExecutePlayout(SgMove move);
 
-    void GenerateAllMoves(vector<SgMoveInfo>& moves);
+    void GenerateAllMoves(std::size_t count, vector<SgMoveInfo>& moves);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -163,7 +163,8 @@ float TestThreadState::Evaluate()
     return CurrentNode().m_eval;
 }
 
-void TestThreadState::GenerateAllMoves(vector<SgMoveInfo>& moves)
+void TestThreadState::GenerateAllMoves(std::size_t count, 
+                                       vector<SgMoveInfo>& moves)
 {
     if (WRITE)
         SgDebug() << "TestUctSearch::Generate " << m_currentNode << ": ";
@@ -175,6 +176,21 @@ void TestThreadState::GenerateAllMoves(vector<SgMoveInfo>& moves)
         moves.push_back(SgMoveInfo(Node(child).m_move));
         child = Node(child).m_sibling;
     }
+
+    // Test knowledge expansion: give all children boost of one win,
+    // remove last child, and add new move with move 100 and (value, count)
+    // of (1.0, 10)
+    if (count)
+    {
+        moves.pop_back();
+        for (size_t i = 0; i < moves.size(); ++i) 
+        {
+            moves[i].m_value = 1.0;
+            moves[i].m_count = 1;
+        }
+        moves.push_back(SgMoveInfo(100, 1.0, 10, 0, 0));
+    }
+
     if (WRITE)
         SgDebug() << '\n';
 }
@@ -184,7 +200,7 @@ SgMove TestThreadState::GeneratePlayoutMove(bool& skipRaveUpdate)
     SG_UNUSED(skipRaveUpdate);
     // Search does not use randomness
     vector<SgMoveInfo> moves;
-    GenerateAllMoves(moves);
+    GenerateAllMoves(0, moves);
     if (moves.empty())
         return SG_NULLMOVE;
     else
@@ -386,6 +402,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
 {
     TestUctSearch search;
     search.SetExpandThreshold(1);
+    search.SetKnowledgeThreshold(0);
     //search.m_write = true;
 
     // Add nodes. Parameters: father, move (=target node), [eval]
@@ -520,6 +537,152 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
         BOOST_CHECK_CLOSE(1.f, GetNode(tree, 4)->Mean(), 1e-3f);
     }
 }
+
+//----------------------------------------------------------------------------
+
+/** Search simple test tree.
+    @verbatim
+    Numbers are node indices; L=Loss, W=Win for player at root
+    0--1  L
+    \--2  W
+    \--3  W
+    @endverbatim
+*/
+BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
+{
+    TestUctSearch search;
+    search.SetExpandThreshold(1);
+    search.SetKnowledgeThreshold(4);
+    //search.m_write = true;
+
+    // Add nodes. Parameters: father, move (=target node), [eval]
+    search.AddNode(NO_NODE, SG_NULLMOVE);
+    search.AddLeafNode(0, 1, 1.f);
+    search.AddLeafNode(0, 2, 0.f);
+    search.AddLeafNode(0, 3, 0.f);
+
+    search.StartSearch();
+
+    /* Game 1
+       Sequence: 1 (no expand)
+       Tree: [nodeIndex](count,value)
+       0[0](1,0)
+    */
+    search.PlayGame();
+    {
+        const SgUctGameInfo& info = search.LastGameInfo();
+        BOOST_CHECK_CLOSE(0.f, info.m_eval[0], 1e-3f);
+        const vector<SgMove>& sequence = info.m_sequence[0];
+        BOOST_CHECK_EQUAL(1u, sequence.size());
+        BOOST_CHECK_EQUAL(1, sequence[0]);
+        const SgUctTree& tree = search.Tree();
+        BOOST_CHECK_EQUAL(1u, tree.NuNodes());
+        BOOST_CHECK_EQUAL(1u, tree.Root().MoveCount());
+        BOOST_CHECK_CLOSE(0.f, tree.Root().Mean(), 1e-3f);
+    }
+
+    /* Game 2
+       Sequence: 1 (expand 0)
+       Tree: [nodeIndex](count,value)
+       0[0](2,0)--1[1](1,1)
+       \----------2[2]
+       \----------3[3]
+    */
+    search.PlayGame();
+    {
+        const SgUctGameInfo& info = search.LastGameInfo();
+        BOOST_CHECK_CLOSE(0.f, info.m_eval[0], 1e-3f);
+        const vector<SgMove>& sequence = info.m_sequence[0];
+        BOOST_CHECK_EQUAL(1u, sequence.size());
+        BOOST_CHECK_EQUAL(1, sequence[0]);
+        const SgUctTree& tree = search.Tree();
+        BOOST_CHECK_EQUAL(4u, tree.NuNodes());
+        BOOST_CHECK_EQUAL(2u, tree.Root().MoveCount());
+        BOOST_CHECK_CLOSE(0.f, tree.Root().Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(1u, GetNode(tree, 1)->MoveCount());
+        BOOST_CHECK_CLOSE(1.f, GetNode(tree, 1)->Mean(), 1e-3f);
+    }
+
+    /* Game 3
+       Sequence: 2 (no expand)
+       Tree: [nodeIndex](count,value)
+       0[0](3,0.33)--1[1](1,1)
+       \-------------2[2](1,0)
+       \-------------3[3]
+    */
+    search.PlayGame();
+    {
+        const SgUctGameInfo& info = search.LastGameInfo();
+        BOOST_CHECK_CLOSE(1.f, info.m_eval[0], 1e-3f);
+        const vector<SgMove>& sequence = info.m_sequence[0];
+        BOOST_CHECK_EQUAL(1u, sequence.size());
+        BOOST_CHECK_EQUAL(2, sequence[0]);
+        const SgUctTree& tree = search.Tree();
+        BOOST_CHECK_EQUAL(4u, tree.NuNodes());
+        BOOST_CHECK_EQUAL(3u, tree.Root().MoveCount());
+        BOOST_CHECK_CLOSE(0.33f, tree.Root().Mean(), 2.f);
+        BOOST_CHECK_EQUAL(1u, GetNode(tree, 2)->MoveCount());
+        BOOST_CHECK_CLOSE(0.f, GetNode(tree, 2)->Mean(), 1e-3f);
+    }
+
+    /* Game 4
+       Sequence: 3 (no expand)
+       Tree: [nodeIndex](count,value)
+       0[0](4,0.5)--1[1](1,1)
+       \------------2[2](1,0)
+       \------------3[3](1,0)
+    */
+    search.PlayGame();
+    {
+        const SgUctGameInfo& info = search.LastGameInfo();
+        BOOST_CHECK_CLOSE(1.f, info.m_eval[0], 1e-3f);
+        const vector<SgMove>& sequence = info.m_sequence[0];
+        BOOST_CHECK_EQUAL(1u, sequence.size());
+        BOOST_CHECK_EQUAL(3, sequence[0]);
+        const SgUctTree& tree = search.Tree();
+        BOOST_CHECK_EQUAL(4u, tree.NuNodes());
+        BOOST_CHECK_EQUAL(4u, tree.Root().MoveCount());
+        BOOST_CHECK_EQUAL(3u, tree.Root().PosCount());
+        BOOST_CHECK_CLOSE(0.5f, tree.Root().Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(1u, GetNode(tree, 3)->MoveCount());
+        BOOST_CHECK_CLOSE(0.f, GetNode(tree, 3)->Mean(), 1e-3f);
+    }
+
+    /* Game 5
+       Sequence: 2 (no expand)
+       Tree: [nodeIndex](count,value)
+       0[0](5,0.6)--1[1](2,1.0)
+       \------------2[2](3,0.33)
+       \------------100[100](10,1.0)
+
+       Node 1 receives its 1 win bonus. Node 2 is chosen for the
+       playout, and is a loss, but it also receives a bonus of a
+       single win. Node 100 is a new node and is given a large bonus.
+    */
+    search.PlayGame();
+    {
+        const SgUctGameInfo& info = search.LastGameInfo();
+        BOOST_CHECK_CLOSE(1.f, info.m_eval[0], 1e-3f);
+        const vector<SgMove>& sequence = info.m_sequence[0];
+        BOOST_CHECK_EQUAL(1u, sequence.size());
+        BOOST_CHECK_EQUAL(2, sequence[0]);
+        const SgUctTree& tree = search.Tree();
+        // tree size is now 7: root + 3 old children + 3 new children
+        BOOST_CHECK_EQUAL(7u, tree.NuNodes());
+        BOOST_CHECK_EQUAL(5u, tree.Root().MoveCount());
+        BOOST_CHECK_EQUAL(15u, tree.Root().PosCount());
+        BOOST_CHECK_CLOSE(0.6f, tree.Root().Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(2u, GetNode(tree, 1)->MoveCount());
+        BOOST_CHECK_CLOSE(1.f, GetNode(tree, 1)->Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(3u, GetNode(tree, 2)->MoveCount());
+        BOOST_CHECK_CLOSE(0.33333333f, GetNode(tree, 2)->Mean(), 1e-3f);
+        BOOST_CHECK(!GetNode(tree, 3));
+        BOOST_CHECK_EQUAL(10u, GetNode(tree, 100)->MoveCount());
+        BOOST_CHECK_CLOSE(1.f, GetNode(tree, 100)->Mean(), 1e-3f);
+    }
+}
+
+//----------------------------------------------------------------------------
 
 } // namespace
 

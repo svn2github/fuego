@@ -32,6 +32,12 @@ using GoGtpCommandUtil::BlackWhiteArg;
 using GoGtpCommandUtil::EmptyPointArg;
 using GoGtpCommandUtil::PointArg;
 
+typedef GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                                      GoUctPlayoutPolicyFactory<GoUctBoard> >,
+                    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >
+                    GoUctPlayerType;
+
+
 //----------------------------------------------------------------------------
 
 namespace {
@@ -359,7 +365,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
 void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctPlayer& p = Player();
+    GoUctPlayerType& p = Player();
     if (cmd.NuArg() == 0)
     {
         // Boolean parameters first for better layout of GoGui parameter
@@ -490,6 +496,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c bias_term_constant See SgUctSearch::BiasTermConstant
     @arg @c expand_threshold See SgUctSearch::ExpandThreshold
     @arg @c first_play_urgency See SgUctSearch::FirstPlayUrgency
+    @arg @c knowledge_threshold See SgUctSearch::KnowledgeThreshold
     @arg @c live_gfx @c none|counts|sequence See GoUctSearch::LiveGfx
     @arg @c live_gfx_interval See GoUctSearch::LiveGfxInterval
     @arg @c max_nodes See SgUctSearch::MaxNodes
@@ -519,6 +526,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
+            << "[string] knowledge_threshold " << s.KnowledgeThreshold() << '\n'
             << "[list/none/counts/sequence] live_gfx "
             << LiveGfxToString(s.LiveGfx()) << '\n'
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
@@ -538,6 +546,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         string name = cmd.Arg(0);
         if (name == "keep_games")
             s.SetKeepGames(cmd.BoolArg(1));
+        else if (name == "knowledge_threshold")
+            s.SetKnowledgeThreshold(cmd.SizeTypeArg(1, 0));
         else if (name == "lock_free")
             s.SetLockFree(cmd.BoolArg(1));
         else if (name == "log_games")
@@ -604,8 +614,7 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
 void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    GoUctPlayoutPolicy<GoBoard> policy(m_bd,
-                                              Player().m_playoutPolicyParam);
+    GoUctPlayoutPolicy<GoBoard> policy(m_bd, Player().m_playoutPolicyParam);
     policy.StartPlayout();
     policy.GenerateMove();
     cmd << GoUctPlayoutPolicyTypeStr(policy.MoveType());
@@ -627,20 +636,23 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
+    size_t count = 0;
+    if (cmd.NuArg() == 1)
+        count = cmd.SizeTypeArg(0, 0);
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
-    std::vector<SgMoveInfo> moves;
-    state.GenerateAllMoves(moves);
+    vector<SgMoveInfo> moves;
+    state.GenerateAllMoves(count, moves);
 
     cmd << "INFLUENCE ";
-    for (std::size_t i = 0; i < moves.size(); ++i) 
+    for (size_t i = 0; i < moves.size(); ++i) 
     {
         SgMove move = moves[i].m_move;
         float value = SgUctSearch::InverseEval(moves[i].m_value);
         //float value = moves[i].m_value;
-        float count = moves[i].m_count;
-        if (count > numeric_limits<float>::epsilon())
+        size_t count = moves[i].m_count;
+        if (count > 0)
         {
             float scaledValue = (value * 2 - 1);
             if (m_bd.ToPlay() != SG_BLACK)
@@ -649,11 +661,11 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
         }
     }
     cmd << "\nLABEL ";
-    for (std::size_t i = 0; i < moves.size(); ++i)
+    for (size_t i = 0; i < moves.size(); ++i)
     {
         SgMove move = moves[i].m_move;
-        float count = moves[i].m_count;
-        if (count > numeric_limits<float>::epsilon())
+        size_t count = moves[i].m_count;
+        if (count > 0)
             cmd << ' ' << SgWritePoint(move) << ' ' << count;
     }
     cmd << '\n';
@@ -954,13 +966,13 @@ GoUctCommands::GlobalSearch()
     return Player().GlobalSearch();
 }
 
-GoUctPlayer& GoUctCommands::Player()
+GoUctPlayerType& GoUctCommands::Player()
 {
     if (m_player == 0)
         throw GtpFailure("player not GoUctPlayer");
     try
     {
-        return dynamic_cast<GoUctPlayer&>(*m_player);
+        return dynamic_cast<GoUctPlayerType&>(*m_player);
     }
     catch (const bad_cast&)
     {

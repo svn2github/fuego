@@ -262,6 +262,60 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
                 abort, timer, maxTime);
 }
 
+void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
+                              const std::vector<SgMoveInfo>& moves)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
+    size_t nuNewChildren = moves.size();
+    SG_ASSERT(nuNewChildren > 0);
+    SgUctAllocator& allocator = Allocator(allocatorId);
+    SG_ASSERT(allocator.HasCapacity(nuNewChildren));
+
+    const SgUctNode* newFirstChild = allocator.Finish();
+    std::size_t parentCount = allocator.Create(moves);
+    
+    // Update new children with data in old children
+    for (std::size_t i = 0; i < moves.size(); ++i) 
+    {
+        SgUctNode* newChild = const_cast<SgUctNode*>(&newFirstChild[i]);
+        for (SgUctChildIterator it(*this, node); it; ++it)
+        {
+            const SgUctNode& oldChild = *it;
+            if (oldChild.Move() == moves[i].m_move)
+            {
+                newChild->MergeResults(oldChild);
+                newChild->SetPosCount(oldChild.PosCount());
+                parentCount += oldChild.MoveCount();
+                if (oldChild.HasChildren())
+                {
+                    newChild->SetFirstChild(oldChild.FirstChild());
+                    newChild->SetNuChildren(oldChild.NuChildren());
+                }
+                break;
+            }
+        }
+    }
+    nonConstNode.SetPosCount(parentCount);
+
+    // Write order dependency: We do not want an SgUctChildIterator to
+    // run past the end of a node's children, which can happen if one
+    // is created between the two statements below. We modify node in
+    // such a way so as to avoid that.
+    if (nonConstNode.NuChildren() < nuNewChildren)
+    {
+        nonConstNode.SetFirstChild(newFirstChild);
+        nonConstNode.SetNuChildren(nuNewChildren);
+    }
+    else
+    {
+        nonConstNode.SetNuChildren(nuNewChildren);
+        nonConstNode.SetFirstChild(newFirstChild);
+    }
+}
+
 std::size_t SgUctTree::NuNodes() const
 {
     size_t nuNodes = 1; // Count root node

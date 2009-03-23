@@ -319,9 +319,12 @@ public:
 
     /** Generate moves.
         Moves will be explored in the order of the returned list.
+        @param count Number of times node has been visited. For knowledge-
+        based computations.
         @param[out] moves The generated moves or empty list at end of game
     */
-    virtual void GenerateAllMoves(std::vector<SgMoveInfo>& moves) = 0;
+    virtual void GenerateAllMoves(std::size_t count, 
+                                  std::vector<SgMoveInfo>& moves) = 0;
 
     /** Generate random move.
         Generate a random move in the play-out phase (outside the UCT tree).
@@ -407,6 +410,9 @@ public:
 struct SgUctSearchStat
 {
     double m_time;
+
+    /** Number of nodes for which the knowledge threshold was exceeded. */ 
+    std::size_t m_knowledge;
 
     /** Games per second.
         Useful values only if search time is higher than resolution of
@@ -651,6 +657,16 @@ public:
 
     /** See NoBiasTerm() */
     void SetNoBiasTerm(bool enable);
+
+    /** Point at which to recompute children.  
+        Calls GenerateAllMoves() again. Returned move info will be
+        merged with info in the tree. This is can be used prune, add
+        children, give a bonus to a move, etc.
+    */
+    std::size_t KnowledgeThreshold() const;
+
+    /** See KnowledgeThreshold() */
+    void SetKnowledgeThreshold(std::size_t count);
 
     /** Maximum number of nodes in the tree.
         @note The search owns two trees, one of which is used as a temporary
@@ -908,6 +924,9 @@ private:
 
     /** See NoBiasTerm() */
     bool m_noBiasTerm;
+   
+    /** See KnowledgeThreshold() */
+    std::size_t m_knowledgeThreshold;
 
     /** Flag indicating that the search was terminated because the maximum
         time or number of games was reached.
@@ -1044,6 +1063,8 @@ private:
     void DeleteThreads();
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node);
+
+    void CreateChildren(SgUctThreadState& state, const SgUctNode& node);
 
     float GetBound(float logPosCount, const SgUctNode& child) const;
 
@@ -1229,6 +1250,16 @@ inline void SgUctSearch::SetMoveSelect(SgUctMoveSelect moveSelect)
 inline void SgUctSearch::SetNoBiasTerm(bool enable)
 {
     m_noBiasTerm = enable;
+}
+
+inline std::size_t SgUctSearch::KnowledgeThreshold() const
+{
+    return m_knowledgeThreshold;
+}
+
+inline void SgUctSearch::SetKnowledgeThreshold(std::size_t t)
+{
+    m_knowledgeThreshold = t;
 }
 
 inline void SgUctSearch::SetNumberPlayouts(std::size_t n)

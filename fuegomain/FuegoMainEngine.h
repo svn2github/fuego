@@ -10,8 +10,6 @@
 #include "GoSafetyCommands.h"
 #include "GoUctCommands.h"
 
-class GoUctPlayer;
-
 //----------------------------------------------------------------------------
 
 /** GTP engine for GoUctPlayer. */

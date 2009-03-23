@@ -25,7 +25,10 @@ FuegoMainEngine::FuegoMainEngine(istream& in, ostream& out,
     m_uctCommands.Register(*this);
     m_safetyCommands.Register(*this);
     Register("fuego-license", &FuegoMainEngine::CmdLicense, this);
-    SetPlayer(new GoUctPlayer(Board()));
+    SetPlayer(new GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+              GoUctPlayoutPolicyFactory<GoUctBoard> >,
+              GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >
+              (Board()));
 }
 
 FuegoMainEngine::~FuegoMainEngine()

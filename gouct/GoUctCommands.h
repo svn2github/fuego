@@ -10,10 +10,10 @@
 #include "GtpEngine.h"
 #include "GoUctPlayoutPolicy.h"
 #include "GoUctGlobalSearch.h"
+#include "GoUctPlayer.h"
 
 class GoBoard;
 class GoPlayer;
-class GoUctPlayer;
 class GoUctBoard;
 class GoUctSearch;
 
@@ -113,7 +113,10 @@ private:
                       GoUctPlayoutPolicyFactory<GoUctBoard> >&
         GlobalSearch();
 
-    GoUctPlayer& Player();
+    GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+        GoUctPlayoutPolicyFactory<GoUctBoard> >,
+        GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >&
+        Player();
 
     GoUctPlayoutPolicy<GoUctBoard>& Policy(std::size_t threadId);
 

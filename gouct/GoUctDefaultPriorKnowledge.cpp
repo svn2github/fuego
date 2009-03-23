@@ -38,16 +38,54 @@ bool SetsAtari(const GoBoard& bd, SgPoint p)
 
 //----------------------------------------------------------------------------
 
-GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
-                              const GoUctPlayoutPolicyParam& param)
-    : m_bd(bd),
-      m_policy(bd, param)
+GoUctKnowledge::GoUctKnowledge(const GoBoard& bd)
+    : m_bd(bd)
 {
 }
 
-void GoUctDefaultPriorKnowledge::Add(SgPoint p, float value, size_t count)
+GoUctKnowledge::~GoUctKnowledge()
+{
+}
+
+void GoUctKnowledge::Add(SgPoint p, float value, size_t count)
 {
     m_values[p].Add(value, count);
+}
+
+void GoUctKnowledge::Initialize(SgPoint p, float value, size_t count)
+{
+    m_values[p].Initialize(value, count);
+}
+
+void GoUctKnowledge::ClearValues()
+{
+    for (std::size_t i = 0; i < SG_PASS+1; ++i)
+        m_values[i].Clear();
+}
+
+void GoUctKnowledge::TransferValues(std::vector<SgMoveInfo>& outmoves) const
+{
+    for (std::size_t i = 0; i < outmoves.size(); ++i) 
+    {
+        SgMove p = outmoves[i].m_move;
+        if (m_values[p].IsDefined())
+        {
+            outmoves[i].m_count = m_values[p].Count();
+            outmoves[i].m_value =
+                SgUctSearch::InverseEval(m_values[p].Mean());
+            outmoves[i].m_raveCount = m_values[p].Count();
+            outmoves[i].m_raveValue = m_values[p].Mean();
+        }
+    }
+}
+
+//----------------------------------------------------------------------------
+
+GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
+                              const GoUctPlayoutPolicyParam& param)
+    : GoUctKnowledge(bd),
+      m_policy(bd, param)
+{
 }
 
 void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
@@ -112,12 +150,6 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
             }
         }
     return result;
-}
-
-void GoUctDefaultPriorKnowledge::Initialize(SgPoint p, float value,
-                                            size_t count)
-{
-    m_values[p].Initialize(value, count);
 }
 
 void 
@@ -194,18 +226,7 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
     AddLocalityBonus(empty, isSmallBoard);
     m_policy.EndPlayout();
 
-    for (std::size_t i = 0; i < outmoves.size(); ++i) 
-    {
-        SgMove p = outmoves[i].m_move;
-        if (m_values[p].IsDefined())
-        {
-            outmoves[i].m_count = m_values[p].Count();
-            outmoves[i].m_value =
-                SgUctSearch::InverseEval(m_values[p].Mean());
-            outmoves[i].m_raveCount = m_values[p].Count();
-            outmoves[i].m_raveValue = m_values[p].Mean();
-        }
-    }
+    TransferValues(outmoves);
 }
 
 //----------------------------------------------------------------------------

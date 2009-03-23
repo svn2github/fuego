@@ -29,17 +29,20 @@ struct SgMoveInfo
     /** Move for the child. */
     SgMove m_move;
 
-    /** Value of node after node is created. Value is from child's
-        perspective, so the value stored here must be the inverse of
-        the evaluation from the parent's perspective. */
+    /** Value of node after node is created. 
+        Value is from child's perspective, so the value stored here
+        must be the inverse of the evaluation from the parent's
+        perspective. 
+    */
     float m_value;
 
     /** Count of node after node is created. */
     std::size_t m_count;
 
     /** Rave value of move after node is created from viewpoint of
-        parent node. Value should not be inverted to child's
-        perspective. */
+        parent node.
+        Value should not be inverted to child's perspective.
+    */
     float m_raveValue;
 
     /** Rave count of move after node is created. */
@@ -101,6 +104,9 @@ public:
         @param eval The game result (e.g. score or 0/1 for win loss)
     */
     void AddGameResult(float eval);
+
+    /** Add other nodes results to this node's. */
+    void MergeResults(const SgUctNode& node);
 
     /** Removes a game result.
         @param eval The game result (e.g. score or 0/1 for win loss)
@@ -230,6 +236,14 @@ inline SgUctNode::SgUctNode(const SgMoveInfo& info)
 inline void SgUctNode::AddGameResult(float eval)
 {
     m_statistics.Add(eval);
+}
+
+inline void SgUctNode::MergeResults(const SgUctNode& node)
+{
+    if (node.m_statistics.IsDefined())
+        m_statistics.Add(node.m_statistics.Mean(), node.m_statistics.Count());
+    if (node.m_raveValue.IsDefined())
+        m_raveValue.Add(node.m_raveValue.Mean(), node.m_raveValue.Count());
 }
 
 inline void SgUctNode::RemoveGameResult(float eval)
@@ -577,6 +591,12 @@ public:
     */
     void CreateChildren(std::size_t allocatorId, const SgUctNode& node,
                         const std::vector<SgMoveInfo>& moves);
+
+    /** Merge new children with old.
+        Requires: Allocator(allocatorId).HasCapacity(moves.size())
+     */
+    void MergeChildren(std::size_t allocatorId, const SgUctNode& node,
+                       const std::vector<SgMoveInfo>& moves);
 
     /** Extract subtree to a different tree.
         The tree will be truncated if one of the allocators overflows (can

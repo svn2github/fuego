@@ -10,10 +10,37 @@
 
 //----------------------------------------------------------------------------
 
+/** Base knowledge class. */
+class GoUctKnowledge
+{
+public:
+    GoUctKnowledge(const GoBoard& bd);
+
+    virtual ~GoUctKnowledge();
+
+    virtual void ProcessPosition(std::vector<SgMoveInfo>& moves)=0;
+
+protected:
+    const GoBoard& m_bd;
+
+    SgArray<SgStatisticsBase<float,std::size_t>,SG_PASS+1> m_values;
+
+    void Add(SgPoint p, float value, std::size_t count);
+
+    void Initialize(SgPoint p, float value, std::size_t count);
+
+    void ClearValues();
+
+    void TransferValues(std::vector<SgMoveInfo>& outmoves) const;
+};
+
+//----------------------------------------------------------------------------
+
 /** Default prior knowledge heuristic.
     Mainly uses GoUctPlayoutPolicy to generate prior knowledge.
 */
-class GoUctDefaultPriorKnowledge
+class GoUctDefaultPriorKnowledge 
+: public GoUctKnowledge
 {
 public:
     GoUctDefaultPriorKnowledge(const GoBoard& bd,
@@ -22,21 +49,14 @@ public:
     void ProcessPosition(std::vector<SgMoveInfo>& moves);
 
 private:
-    const GoBoard& m_bd;
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
-
-    SgArray<SgStatisticsBase<float,std::size_t>,SG_PASS+1> m_values;
-
-    void Add(SgPoint p, float value, std::size_t count);
 
     void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari,
                                         GoPointList& empty) const;
-
-    void Initialize(SgPoint p, float value, std::size_t count);
 };
 
 //----------------------------------------------------------------------------
