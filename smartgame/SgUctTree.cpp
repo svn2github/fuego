@@ -304,7 +304,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     // run past the end of a node's children, which can happen if one
     // is created between the two statements below. We modify node in
     // such a way so as to avoid that.
-    if (nonConstNode.NuChildren() < nuNewChildren)
+    if (nonConstNode.NuChildren() < (int)nuNewChildren)
     {
         nonConstNode.SetFirstChild(newFirstChild);
         nonConstNode.SetNuChildren(nuNewChildren);
