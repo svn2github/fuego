@@ -9,7 +9,7 @@
 <h2>Graphical User Interface</h2>
 
 <p>
-Fuego is a Go playing engine, which communicates to a user interface using
+Fuego is a Go playing engine, which communicates with a user interface using
 the Go Text Protocol (GTP).
 You need a graphical user interface that supports GTP to play against Fuego.
 The recommended one is <a href="http://gogui.sf.net/">GoGui</a> because
@@ -28,11 +28,11 @@ also be useful for users.
 The default configuration for Fuego makes conservative assumptions about
 the available computing power and memory.
 You can increase the playing strength of Fuego by using parallel search
-on a mulit-core or multi-CPU machine and by increasing the amount of memory
+on a multi-core or multi-CPU machine and by increasing the amount of memory
 to use.
 Parameters can be changed with certain commands in the analyze window of
 GoGui, but this will affect only the current session.
-To optimize the default configuration for a certain machine in a persisent
+To optimize the default configuration for a certain machine in a persistent
 way, you can write a text file with GTP commands (e.g. <tt>configfile</tt>)
 and change the command line for invocation of Fuego in the user interface to
 <tt>fuego -config configfile</tt>. Here is an example of such a configuration
@@ -59,7 +59,8 @@ The meaning of these GTP commands is:
 <dd>
 The number of threads to use.
 The default is 1.
-This should be set to the number of cores or CPUs available on the system.
+This should be set to the number of cores or CPUs available on the system
+for maximum performance. It has been tested with up to 8 cores.
 </dd>
 
 <dt><tt>uct_param_search lock_free</tt></dt>
@@ -82,7 +83,7 @@ The default is 4000000.
 The node size is 48 bytes on 64-bit computers (and 32 bytes on 32-bit
 computers).
 Fuego maintains two search trees internally.
-So you should use about 10000000 nodes per GB main memory that you want to
+You should use about 10000000 nodes per GB main memory that you want to
 give to Fuego on 64-bit computers (and 15000000 per GB on 32-bit computers).
 </dd>
 
@@ -109,7 +110,7 @@ enabled.
 
 <p>
 This a list of some game-specific parameters, which can be changed in GoGui's
-the analyze command window.
+analyze command window.
 </p>
 
 <dl>
@@ -152,7 +153,7 @@ Another display mode is <em>Live gfx</em> in the
 <em>Uct Param GlobalSearch</em> analyze command.
 It shows the statistics for ownership of each point averaged over all end
 positions of the simulations.
-This command requires that <em>Territor statistics</em> in
+This command requires that <em>Territory statistics</em> in
 <em>Uct Param GlobalSearch</em> is also enabled.
 </p>
 
