@@ -34,11 +34,12 @@ BOOST_AUTO_TEST_CASE(SgSListTest_Append_List)
     a.Append(1);
     a.Append(2);
     SgSList<int,10> b;
-    a.Append(1);
-    a.Append(2);
-    a.Append(3);
+    b.Append(1);
+    b.Append(2);
+    b.Append(3);
     a.Append(b);
     BOOST_CHECK_EQUAL(a.Length(), 5);
+    BOOST_CHECK_EQUAL(b.Length(), 3);
     BOOST_CHECK_EQUAL(a[0], 1);
     BOOST_CHECK_EQUAL(a[1], 2);
     BOOST_CHECK_EQUAL(a[2], 1);
