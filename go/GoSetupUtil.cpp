@@ -11,6 +11,13 @@
 
 //----------------------------------------------------------------------------
 
+GoSetup GoSetupUtil::CreateSetupFromStream(std::istream& in)
+{
+    GoSetup setup;
+
+    return setup;
+}
+
 GoSetup GoSetupUtil::CurrentPosSetup(const GoBoard& bd)
 {
     GoSetup setup;

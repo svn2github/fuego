@@ -14,6 +14,13 @@
 namespace GoSetupUtil
 {
 
+    /** Create a setup instance from text stream. 
+        Recognizes '0','o','O' for white stones,
+                   'x', 'X', '@' for black stones,
+                   '.' and '+' for empty points.
+    */
+    GoSetup CreateSetupFromStream(std::istream& in);
+
     /** Get a setup instance with the current position on board. */
     GoSetup CurrentPosSetup(const GoBoard& bd);
 
