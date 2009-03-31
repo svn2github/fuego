@@ -35,6 +35,7 @@ GoSafetyCommands.cpp \
 GoSafetySolver.cpp \
 GoSafetyUtil.cpp \
 GoSearch.cpp \
+GoSetupUtil.cpp \
 GoStaticLadder.cpp \
 GoStaticSafetySolver.cpp \
 GoTimeControl.cpp \
@@ -78,6 +79,8 @@ GoSafetyCommands.h \
 GoSafetySolver.h \
 GoSafetyUtil.h \
 GoSearch.h \
+GoSetup.h \
+GoSetupUtil.h \
 GoSortedMoves.h \
 GoStaticLadder.h \
 GoStaticSafetySolver.h \

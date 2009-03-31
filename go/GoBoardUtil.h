@@ -107,9 +107,6 @@ namespace GoBoardUtil
     */
     bool ContainsAnchor(const SgPoint anchor[], const SgPoint p);
 
-    /** Get a setup instance with the current position on board. */
-    GoSetup CurrentPosSetup(const GoBoard& bd);
-
    /** Get diagonal points with a color.
        @param bd The board.
        @param p The point.

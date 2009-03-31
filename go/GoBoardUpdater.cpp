@@ -6,7 +6,7 @@
 #include "GoBoardUpdater.h"
 
 #include "GoBoard.h"
-#include "GoBoardUtil.h"
+#include "GoSetupUtil.h"
 #include "SgNode.h"
 #include "SgUtil.h"
 
@@ -58,7 +58,7 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
         {
             // Compute the new initial setup position to re-initialize the
             // board with
-            GoSetup setup = GoBoardUtil::CurrentPosSetup(bd);
+            GoSetup setup = GoSetupUtil::CurrentPosSetup(bd);
             if (player != SG_EMPTY)
                 setup.m_player = player;
             if (node->HasProp(SG_PROP_ADD_BLACK))

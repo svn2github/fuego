@@ -309,19 +309,6 @@ SgPointArray<int> GoBoardUtil::CfgDistance(const GoBoard& bd, SgPoint p,
     return array;
 }
 
-GoSetup GoBoardUtil::CurrentPosSetup(const GoBoard& bd)
-{
-    GoSetup setup;
-    setup.m_player = bd.ToPlay();
-    for (GoBoard::Iterator it2(bd); it2; ++it2)
-    {
-        SgPoint p = *it2;
-        if (bd.Occupied(p))
-            setup.m_stones[bd.GetColor(p)].Include(p);
-    }
-    return setup;
-}
-
 void GoBoardUtil::DumpBoard(const GoBoard& bd, std::ostream& out)
 {
     const int size = bd.Size();
