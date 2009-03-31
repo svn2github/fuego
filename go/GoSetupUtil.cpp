@@ -9,11 +9,88 @@
 #include "GoSetup.h"
 #include "GoSetupUtil.h"
 
+using SgPointUtil::Pt;
+
+//----------------------------------------------------------------------------
+namespace {
+
+bool IsBlackChar(char c)
+{
+    return c == 'x' || c == 'X' || c == '@';
+}
+
+bool IsWhiteChar(char c)
+{
+    return c == '0' || c == 'o' || c == 'O';
+}
+
+bool IsEmptyChar(char c)
+{
+    return c == '.' || c == '+';
+}
+
+bool IsIgnoreChar(char c)
+{
+    return c == ' ' || c == '\t';
+}
+
+bool ReadLine(std::streambuf& in, GoSetup& setup, int row, int& currLength)
+{
+    int col = 0;
+    
+    for (;;)
+    {
+        char c = in.sbumpc();
+        
+        if (c == EOF || c == '\n') // end of row - check if complete
+        {
+            currLength = col;
+            return currLength > 0;
+        }
+        
+        if (IsBlackChar(c) || IsWhiteChar(c) || IsEmptyChar(c))
+        {
+            ++col;
+            if (col > SG_MAX_SIZE)
+                return false; // bad data?
+        }
+        else if (! IsIgnoreChar(c))
+            throw SgException("bad input data for ReadLine");
+
+        SgPoint p = Pt(row, col);
+        if (IsBlackChar(c))
+        {
+            setup.m_stones[SG_BLACK].Include(p);
+        }
+        else if (IsWhiteChar(c))
+        {
+            setup.m_stones[SG_WHITE].Include(p);
+        }
+    }
+}
+
+} // namespace
+
 //----------------------------------------------------------------------------
 
-GoSetup GoSetupUtil::CreateSetupFromStream(std::istream& in)
+GoSetup GoSetupUtil::CreateSetupFromStream(std::streambuf& in, int& boardSize)
 {
     GoSetup setup;
+    boardSize = 0;
+    
+    int currLength = 0;
+    for (int row = 1; ReadLine(in, setup, row, currLength); ++row)
+    {
+        if (currLength != boardSize)
+        {
+            if (boardSize == 0)
+                boardSize = currLength; // length established
+            else
+                throw SgException("bad input data for CreateSetupFromStream");
+        }
+        if (row > boardSize)
+            break;
+    }
 
     return setup;
 }

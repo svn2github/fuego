@@ -7,6 +7,7 @@
 #ifndef GO_SETUPUTIL_H
 #define GO_SETUPUTIL_H
 
+#include <streambuf>
 #include "GoBoard.h"
 #include "GoSetup.h"
 
@@ -19,7 +20,7 @@ namespace GoSetupUtil
                    'x', 'X', '@' for black stones,
                    '.' and '+' for empty points.
     */
-    GoSetup CreateSetupFromStream(std::istream& in);
+    GoSetup CreateSetupFromStream(std::streambuf& in, int& boardSize);
 
     /** Get a setup instance with the current position on board. */
     GoSetup CurrentPosSetup(const GoBoard& bd);
