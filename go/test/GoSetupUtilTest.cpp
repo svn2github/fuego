@@ -6,6 +6,7 @@
 
 #include "SgSystem.h"
 
+#include <string>
 #include <sstream>
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
@@ -99,6 +100,24 @@ BOOST_AUTO_TEST_CASE(GoSetupUtilTest_GoBoard)
     BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 1);
 }
 
+/** Test for CreateSetupFromString. */
+BOOST_AUTO_TEST_CASE(GoSetupUtilTest_CreateSetupFromString)
+{
+    std::string s("XO.\n"
+                 ".X.\n"
+                 "...");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK_EQUAL(bd.Size(), boardSize);
+    BOOST_CHECK_EQUAL(bd.All(SG_BLACK), setup.m_stones[SG_BLACK]);
+    BOOST_CHECK_EQUAL(bd.All(SG_WHITE), setup.m_stones[SG_WHITE]);
+    BOOST_CHECK_EQUAL(bd.GetColor(Pt(1, 1)), SG_BLACK);
+    BOOST_CHECK_EQUAL(bd.GetColor(Pt(1, 2)), SG_WHITE);
+    BOOST_CHECK_EQUAL(bd.GetColor(Pt(1, 3)), SG_EMPTY);
+    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 2);
+    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 1);
+}
 //----------------------------------------------------------------------------
 
 } // namespace

@@ -19,8 +19,12 @@ namespace GoSetupUtil
         Recognizes '0','o','O' for white stones,
                    'x', 'X', '@' for black stones,
                    '.' and '+' for empty points.
+        Blanks ' ' and tabs are ignored.
+        Lines must be separated by a '\n' character.
     */
     GoSetup CreateSetupFromStream(std::streambuf& in, int& boardSize);
+
+    GoSetup CreateSetupFromString(std::string& in, int& boardSize);
 
     /** Get a setup instance with the current position on board. */
     GoSetup CurrentPosSetup(const GoBoard& bd);

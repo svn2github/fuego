@@ -37,17 +37,8 @@ bool IsIgnoreChar(char c)
 bool ReadLine(std::streambuf& in, GoSetup& setup, int row, int& currLength)
 {
     int col = 0;
-    
-    for (;;)
+    for (char c = in.sbumpc(); c != EOF && c != '\n'; c = in.sbumpc())
     {
-        char c = in.sbumpc();
-        
-        if (c == EOF || c == '\n') // end of row - check if complete
-        {
-            currLength = col;
-            return currLength > 0;
-        }
-        
         if (IsBlackChar(c) || IsWhiteChar(c) || IsEmptyChar(c))
         {
             ++col;
@@ -67,6 +58,8 @@ bool ReadLine(std::streambuf& in, GoSetup& setup, int row, int& currLength)
             setup.m_stones[SG_WHITE].Include(p);
         }
     }
+    currLength = col;
+    return currLength > 0;
 }
 
 } // namespace
@@ -93,6 +86,13 @@ GoSetup GoSetupUtil::CreateSetupFromStream(std::streambuf& in, int& boardSize)
     }
 
     return setup;
+}
+
+GoSetup GoSetupUtil::CreateSetupFromString(std::string& in,
+                                           int& boardSize)
+{
+    std::stringbuf inBuf(in);
+    return GoSetupUtil::CreateSetupFromStream(inBuf, boardSize);
 }
 
 GoSetup GoSetupUtil::CurrentPosSetup(const GoBoard& bd)
