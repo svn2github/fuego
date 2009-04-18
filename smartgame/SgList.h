@@ -272,7 +272,7 @@ public:
 
     /** Return reference to element.
         @param index Position of the element in range <code>1..length</code>.
-        Deprecated.
+        @deprecated don't use SgList if you need random access.
     */
     T& At(int index)
     {
@@ -281,7 +281,7 @@ public:
 
     /** Return const reference to element.
         @param index Position of the element in range <code>1..length</code>.
-        Deprecated.
+        @deprecated don't use SgList if you need random access.
     */
     const T& At(int index) const
     {

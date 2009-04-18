@@ -186,13 +186,11 @@ BOOST_AUTO_TEST_CASE(SgListTestIterator)
     SgList<int> a;                 
     for (int i = 0; i < 10; ++i)
         a.Append(i);
-    SgListIterator<int> iter(a);
     int count = 0;
-    while (iter)
+    for (SgListIterator<int> it(a); it; ++it)
     {
-        BOOST_CHECK_EQUAL(*iter, count);
+        BOOST_CHECK_EQUAL(*it, count);
         ++count;
-        ++iter;
     }
     BOOST_CHECK_EQUAL(count, 10);    
 }

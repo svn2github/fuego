@@ -75,6 +75,9 @@ public:
     */
     bool Contains(const T& elt) const;
     
+    /** delete element at specified index */
+    void DeleteAt(int index);
+
     /** Remove the first occurence of element.
         If <code>elt</code> is in the list, remove the first
         occurence of <code>elt</code> from the list, and return
@@ -82,10 +85,17 @@ public:
     */
     bool Exclude(const T& elt);
 
+    /** Find position of element.
+        @returns The position of <code>elt</code> in the list,
+        in range <code>0..length-1</code>. Returns -1 if <code>elt</code>
+        is not in the list.
+    */
+    int Index(const T& elt) const;
+
     /** Return whether this list contains zero elements. */
     bool IsEmpty() const
     {
-        return Length() == 0;
+        return m_vec.empty();
     }
 
     /** Test whether a list is as long as a given length. */
@@ -100,15 +110,31 @@ public:
         return m_vec.size();
     }
     
+    /** Test whether a list is as long as or longer than a given length.
+    */ 
+    bool MinLength(int length) const
+    {
+        return Length() >= length;
+    }
+
+    /** Test whether a list is shorter than or equal to a given length.
+    */ 
+    bool MaxLength(int length) const
+    {
+        return Length() <= length;
+    }
+
     /** Return whether this list contains more than zero elements. */
     bool NonEmpty() const
     {
-        return Length() != 0;
+        return ! IsEmpty();
     }
 
     /** Remove the head of the list.
         The list must not be empty.
         @return The head of the list.
+        @deprecated Don't use this function; it is slow. 
+        Only exists for SgList compatibility.
     */
     T Pop();
 
@@ -117,6 +143,12 @@ public:
         @return The head of the list.
     */
     void PopBack();
+
+    /** Insert element at the beginning of the vector.
+        @deprecated Don't use this function; it is slow.
+        Only exists for SgList compatibility.
+    */
+    void Push(const T& elt);
 
     /** Add a single element at the end of the list. */
     void PushBack(const T& elt)
@@ -130,7 +162,7 @@ public:
     const T& Tail() const
     {
         SG_ASSERT(NonEmpty());
-        return m_vec[m_vec.size() - 1];
+        return m_vec.back();
     }
 
     /** Returns the Nth-last element of the list. It must exist.
@@ -189,6 +221,14 @@ bool SgVector<T>::Contains(const T& elt) const
 }
 
 template<typename T>
+void SgVector<T>::DeleteAt(int index)
+{
+    SG_ASSERT(index >= 0);
+    SG_ASSERT(index < Length());
+    m_vec.erase(m_vec.begin() + index);
+}
+
+template<typename T>
 bool SgVector<T>::Exclude(const T& elt)
 {
     typename vector<T>::iterator end = m_vec.end();
@@ -199,6 +239,17 @@ bool SgVector<T>::Exclude(const T& elt)
         return true;
     }
     return false;
+}
+
+template<typename T>
+int SgVector<T>::Index(const T& elt) const
+{
+    typename vector<T>::const_iterator end = m_vec.end();
+    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
+    if (pos == end)
+        return -1;
+    else
+        return pos - m_vec.begin();
 }
 
 template<typename T>
@@ -214,8 +265,15 @@ template<typename T>
 void SgVector<T>::PopBack()
 {
     SG_ASSERT(NonEmpty());
-    m_vec.erase(m_vec.end() - 1);
+    m_vec.pop_back();
 }
+
+template<typename T>
+void SgVector<T>::Push(const T& elt)
+{
+    m_vec.insert(m_vec.begin(), elt);
+}
+
 
 //----------------------------------------------------------------------------
 /** List iterator.

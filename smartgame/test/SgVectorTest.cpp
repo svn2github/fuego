@@ -147,6 +147,50 @@ BOOST_AUTO_TEST_CASE(SgVectorTestExclude)
     BOOST_CHECK(! a.Contains(666));
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestIterator)
+{
+    SgVector<int> a;                 
+    for (int i = 0; i < 10; ++i)
+        a.Append(i);
+    int count = 0;
+    for (SgVectorIterator<int> it(a); it; ++it)
+    {
+        BOOST_CHECK_EQUAL(*it, count);
+        ++count;
+    }
+    BOOST_CHECK_EQUAL(count, 10);    
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestLargeList)
+{
+    SgVector<int> a;                 
+    for (int i = 1; i <= 1000; ++i)
+        a.Append(i);
+    BOOST_CHECK(a.MinLength(1000));
+    BOOST_CHECK(a.IsLength(1000));
+    BOOST_CHECK(a.Contains(233));
+    BOOST_CHECK(a.Contains(234));
+    for (int i = 1; i <= 1000; i += 2)
+        a.Exclude(i);
+    BOOST_CHECK(a.MaxLength(1000));
+    BOOST_CHECK(a.IsLength(500));
+    BOOST_CHECK(! a.Contains(233));
+    BOOST_CHECK(a.Contains(234));
+    int y = a.Index(2);
+    BOOST_CHECK_EQUAL(y, 0);
+    y = a.Index(456);
+    BOOST_CHECK_EQUAL(y, 227);
+    BOOST_CHECK(a.Contains(456));
+    a.DeleteAt(y);
+    BOOST_CHECK(! a.Contains(456));
+    BOOST_CHECK(a.Contains(2));
+    a.DeleteAt(0);
+    BOOST_CHECK(! a.Contains(2));
+    BOOST_CHECK(a.Contains(1000));
+    a.DeleteAt(a.Length() - 1);
+    BOOST_CHECK(! a.Contains(1000));
+}
+
 
 BOOST_AUTO_TEST_CASE(SgVectorTestPop)
 {
@@ -176,6 +220,26 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
         BOOST_CHECK_EQUAL(a.Length(), i);
     }
     BOOST_CHECK(a.IsEmpty());
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestPush)
+{
+    SgVector<int> a;
+    a.Push(0);
+    a.Push(1);
+    BOOST_CHECK_EQUAL(a[0], 1);
+    BOOST_CHECK_EQUAL(a[1], 0);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestPushBack)
+{
+    SgVector<int> a;
+    a.PushBack(0);
+    a.PushBack(1);
+    BOOST_CHECK_EQUAL(a[0], 0);
+    BOOST_CHECK_EQUAL(a[1], 1);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestTopNth)
