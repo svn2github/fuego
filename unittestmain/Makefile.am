@@ -56,6 +56,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgUctSearchTest.cpp \
 ../smartgame/test/SgUctTreeTest.cpp \
 ../smartgame/test/SgUctTreeUtilTest.cpp \
+../smartgame/test/SgVectorTest.cpp \
 ../smartgame/test/SgWriteTest.cpp \
 ../unittestmain/UnitTestMain.cpp
 

@@ -275,7 +275,7 @@ public:
     */
     T& operator[](int index);
 
-    /** Return copy of element.
+    /** Return const reference to element.
         @param index Position of the element in range <code>1..length</code>.
     */
     const T& operator[](int index) const;
@@ -294,13 +294,13 @@ public:
     /** Add a single element at the end of the list. */
     void Append(const T& elt);
 
+    /** Append all elements from <code>list</code> at the end of this list. */
+    void AppendList(const SgList<T>& list);
+
     /** Append <code>*tail</code> at the end of this list,
         and empty the <code>*tail</code> list.
     */
     void Concat(SgList<T>* tail);
-
-    /** Append all elements from <code>list</code> at the end of this list. */
-    void AppendList(const SgList<T>& list);
 
     /** Include all elements from <code>set</code> into this list.
         Appends new elements at the end of this list.
@@ -384,6 +384,12 @@ public:
         (which is the top of the stack).
     */
     void Push(const T& elt);
+
+    /** Add a single element at the end of the list. */
+    void PushBack(const T& elt)
+    {
+        Append(elt);
+    }
 
     /** Remove the head of the list.
         The list must not be empty.

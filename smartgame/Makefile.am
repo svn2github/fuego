@@ -104,6 +104,7 @@ SgUctSearch.h \
 SgUctTree.h \
 SgUctTreeUtil.h \
 SgUtil.h \
+SgVector.h \
 SgWrite.h
 
 libfuego_smartgame_a_CPPFLAGS = \
