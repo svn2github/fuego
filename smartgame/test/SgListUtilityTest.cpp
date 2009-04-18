@@ -27,9 +27,9 @@ BOOST_AUTO_TEST_CASE(SgListUtilityTestIntersection)
     AddToList(8,12,b);
     SgListUtility::Intersection(&a, b);
     BOOST_CHECK_EQUAL(a.Length(), 3);
-    BOOST_CHECK_EQUAL(a[1], 8);
-    BOOST_CHECK_EQUAL(a[2], 9);
-    BOOST_CHECK_EQUAL(a[3], 10);
+    BOOST_CHECK_EQUAL(a.At(1), 8);
+    BOOST_CHECK_EQUAL(a.At(2), 9);
+    BOOST_CHECK_EQUAL(a.At(3), 10);
 }
 
 BOOST_AUTO_TEST_CASE(SgListUtilityTestDifference)
@@ -40,9 +40,9 @@ BOOST_AUTO_TEST_CASE(SgListUtilityTestDifference)
     AddToList(8,12,b);
     SgListUtility::Difference(&a, b);
     BOOST_CHECK_EQUAL(a.Length(), 3);
-    BOOST_CHECK_EQUAL(a[1], 5);
-    BOOST_CHECK_EQUAL(a[2], 6);
-    BOOST_CHECK_EQUAL(a[3], 7);
+    BOOST_CHECK_EQUAL(a.At(1), 5);
+    BOOST_CHECK_EQUAL(a.At(2), 6);
+    BOOST_CHECK_EQUAL(a.At(3), 7);
 }
 
 BOOST_AUTO_TEST_CASE(SgListUtilityTestReverse)
@@ -51,12 +51,12 @@ BOOST_AUTO_TEST_CASE(SgListUtilityTestReverse)
     AddToList(5,10,a);
     SgListUtility::Reverse(&a);
     BOOST_CHECK_EQUAL(a.Length(), 6);
-    BOOST_CHECK_EQUAL(a[1], 10);
-    BOOST_CHECK_EQUAL(a[2], 9);
-    BOOST_CHECK_EQUAL(a[3], 8);
-    BOOST_CHECK_EQUAL(a[4], 7);
-    BOOST_CHECK_EQUAL(a[5], 6);
-    BOOST_CHECK_EQUAL(a[6], 5);
+    BOOST_CHECK_EQUAL(a.At(1), 10);
+    BOOST_CHECK_EQUAL(a.At(2), 9);
+    BOOST_CHECK_EQUAL(a.At(3), 8);
+    BOOST_CHECK_EQUAL(a.At(4), 7);
+    BOOST_CHECK_EQUAL(a.At(5), 6);
+    BOOST_CHECK_EQUAL(a.At(6), 5);
 }
 
 //----------------------------------------------------------------------------

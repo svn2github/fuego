@@ -1136,7 +1136,7 @@ bool SgPropTextList::GetStringAtPoint(SgPoint p, string* s) const
     int index = m_points.Index(p);
     if (index > 0)
     {
-        *s = *m_strings[index];
+        *s = *m_strings.At(index);
         return true;
     }
     return false;
@@ -1163,7 +1163,7 @@ void SgPropTextList::ClearStringAtPoint(SgPoint p)
     if (index > 0)
     {
         m_points.DeleteAt(index);
-        delete m_strings[index];
+        delete m_strings.At(index);
         m_strings.DeleteAt(index);
     }
 }
@@ -1181,7 +1181,8 @@ bool SgPropTextList::ToString(std::vector<std::string>& values,
     {
         ostringstream buffer;
         buffer << PointToSgfString(*iter, boardSize, fmt, fileFormat) << ':'
-               << EscapeSpecialCharacters(*m_strings[++index], true);
+               << EscapeSpecialCharacters(*m_strings.At(++index), true)
+               ;
         values.push_back(buffer.str());
     }
     return true;

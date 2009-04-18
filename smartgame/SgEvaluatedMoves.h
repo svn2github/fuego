@@ -8,6 +8,7 @@
 #define SG_EVALUATEDMOVES_H
 
 #include "SgPointSet.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -38,7 +39,7 @@ public:
 
     virtual void AddMoves(const SgPointSet& moves, int value);
 
-    virtual void AddMoves(const SgList<SgPoint>& moves, int value);
+    virtual void AddMoves(const SgVector<SgPoint>& moves, int value);
 
     virtual void Clear()
     {
@@ -87,12 +88,12 @@ public:
     }
 
     /** Compute list of the n best moves. */
-    virtual void BestMoves(SgList<SgPoint>& best, int nuMoves) const;
+    virtual void BestMoves(SgVector<SgPoint>& best, int nuMoves) const;
 
 protected:
     int m_bestValue;
 
-    SgList<SgPoint> m_moveList;
+    SgVector<SgPoint> m_moveList;
 
     SgPointSet m_relevant;
 
@@ -141,14 +142,14 @@ public:
         return m_value[p];
     }
 
-    virtual void BestMoves(SgList<SgPoint>& best, int nuMoves) const;
+    virtual void BestMoves(SgVector<SgPoint>& best, int nuMoves) const;
 
 private:
     int m_value[SG_MAXPOINT];
 
     int m_boardSize;
 
-    SgPoint SelectNextBest(SgList<SgPoint>& bestSoFar) const;
+    SgPoint SelectNextBest(SgVector<SgPoint>& bestSoFar) const;
 };
 
 //----------------------------------------------------------------------------

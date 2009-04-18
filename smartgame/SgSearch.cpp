@@ -193,8 +193,8 @@ void SgSearch::InitSearch(int startDepth)
 {
     m_currentDepth = startDepth;
     m_moveStack.Clear();
-    m_moveStack.Push(SG_NULLMOVE);
-    m_moveStack.Push(SG_NULLMOVE);
+    m_moveStack.PushBack(SG_NULLMOVE);
+    m_moveStack.PushBack(SG_NULLMOVE);
     if (m_useKillers)
     {
         for (int i = 0; i <= MAX_KILLER_DEPTH; ++i)
@@ -425,7 +425,7 @@ bool SgSearch::CallExecute(SgMove move, int* delta, int depth)
         m_stat.IncNumMoves();
         if (move == SG_PASS)
             m_stat.IncNumPassMoves();
-        m_moveStack.Push(move);
+        m_moveStack.PushBack(move);
         ++m_currentDepth;
         return true;
     }
@@ -437,7 +437,7 @@ void SgSearch::CallTakeBack()
     if (DEBUG_SEARCH)
         SgDebug() << "SgSearch::CallTakeBack\n";
     TakeBack();
-    m_moveStack.Pop();
+    m_moveStack.PopBack();
     --m_currentDepth;
 }
 

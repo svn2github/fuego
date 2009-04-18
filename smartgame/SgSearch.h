@@ -16,6 +16,7 @@
 #include "SgMove.h"
 #include "SgSearchStatistics.h"
 #include "SgTimer.h"
+#include "SgVector.h"
 
 template <class DATA> class SgHashTable;
 class SgNode;
@@ -755,7 +756,7 @@ private:
 
     int m_depthLimit;
 
-    SgList<SgMove> m_moveStack;
+    SgVector<SgMove> m_moveStack;
 
     bool m_useScout;
 
@@ -890,12 +891,12 @@ inline int SgSearch::IteratedSearch(int depthMin, int depthMax,
 
 inline SgMove SgSearch::PrevMove() const
 {
-    return m_moveStack[1];
+    return m_moveStack.Tail();
 }
 
 inline SgMove SgSearch::PrevMove2() const
 {
-    return m_moveStack[2];
+    return m_moveStack.TopNth(2);
 }
 
 inline const SgSearchControl* SgSearch::SearchControl() const

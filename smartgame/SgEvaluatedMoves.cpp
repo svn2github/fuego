@@ -36,9 +36,9 @@ void SgEvaluatedMoves::AddMoves(const SgPointSet& moves, int value)
         AddMove(*it, value);
 }
 
-void SgEvaluatedMoves::AddMoves(const SgList<SgPoint>& moves, int value)
+void SgEvaluatedMoves::AddMoves(const SgVector<SgPoint>& moves, int value)
 {
-    for (SgListIterator<SgPoint> it(moves); it; ++it)
+    for (SgVectorIterator<SgPoint> it(moves); it; ++it)
         AddMove(*it, value);
 }
 
@@ -47,10 +47,10 @@ SgPoint SgEvaluatedMoves::BestMove()
     if (m_moveList.IsEmpty())
         return SG_PASS;
     else
-        return m_moveList[SgRandom::Global().Int(m_moveList.Length()) + 1];
+        return m_moveList[SgRandom::Global().Int(m_moveList.Length())];
 }
 
-void SgEvaluatedMoves::BestMoves(SgList<SgPoint>& best, int nuMoves) const
+void SgEvaluatedMoves::BestMoves(SgVector<SgPoint>& best, int nuMoves) const
 {
     SG_UNUSED(nuMoves);
     best = m_moveList; // AR: cut off at 'nuMoves'??
@@ -85,7 +85,7 @@ void SgEvaluatedMovesArray::ReduceMove(SgPoint move, int value)
     }
 }
 
-SgPoint SgEvaluatedMovesArray::SelectNextBest(SgList<SgPoint>& bestSoFar)
+SgPoint SgEvaluatedMovesArray::SelectNextBest(SgVector<SgPoint>& bestSoFar)
     const
 {
     int bestValue = s_minValue; SgPoint best = 0;
@@ -100,7 +100,7 @@ SgPoint SgEvaluatedMovesArray::SelectNextBest(SgList<SgPoint>& bestSoFar)
     return best;
 }
 
-void SgEvaluatedMovesArray::BestMoves(SgList<SgPoint>& best, int nuMoves)
+void SgEvaluatedMovesArray::BestMoves(SgVector<SgPoint>& best, int nuMoves)
     const
 {
     best.Clear();

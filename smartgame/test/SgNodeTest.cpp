@@ -32,8 +32,8 @@ BOOST_AUTO_TEST_CASE(SgNodeTest)
     BOOST_CHECK_EQUAL(s2->Father(), &r);
     SgListOf<SgNode> path;
     s2->PathToRoot(&path);
-    BOOST_CHECK_EQUAL((SgNode*)path[1], &r);
-    BOOST_CHECK_EQUAL((SgNode*)path[2], s2);
+    BOOST_CHECK_EQUAL((SgNode*)path.At(1), &r);
+    BOOST_CHECK_EQUAL((SgNode*)path.At(2), s2);
     int numBack;
     s1->ShortestPathTo(s2, &numBack, &path);
     BOOST_CHECK_EQUAL(numBack, 1);

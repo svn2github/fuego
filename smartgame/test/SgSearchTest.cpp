@@ -306,8 +306,8 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_Simple)
     int value = search.IteratedSearch(1, 10, -1000, 1000, &sequence, true, 0);
     BOOST_CHECK_EQUAL(value, 5);
     BOOST_CHECK_EQUAL(sequence.Length(), 2);
-    BOOST_CHECK_EQUAL(sequence[1], 3);
-    BOOST_CHECK_EQUAL(sequence[2], 7);
+    BOOST_CHECK_EQUAL(sequence.At(1), 3);
+    BOOST_CHECK_EQUAL(sequence.At(2), 7);
 }
 
 /** Test that result from last iteration is used, if iteration was aborted
@@ -341,7 +341,7 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_IncompleteIteration)
     BOOST_CHECK_EQUAL(search.NumNodes(), 6);
     BOOST_CHECK_EQUAL(value, 5);
     BOOST_CHECK_EQUAL(sequence.Length(), 1);
-    BOOST_CHECK_EQUAL(sequence[1], 2);
+    BOOST_CHECK_EQUAL(sequence.At(1), 2);
     delete control;
 }
 
@@ -378,8 +378,8 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_NewBestInIncompleteIteration)
     BOOST_CHECK_EQUAL(search.NumNodes(), 11);
     BOOST_CHECK_EQUAL(value, 3);
     BOOST_CHECK_EQUAL(sequence.Length(), 2);
-    BOOST_CHECK_EQUAL(sequence[1], 1);
-    BOOST_CHECK_EQUAL(sequence[2], 5);
+    BOOST_CHECK_EQUAL(sequence.At(1), 1);
+    BOOST_CHECK_EQUAL(sequence.At(2), 5);
     delete control;
 }
 

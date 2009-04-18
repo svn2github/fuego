@@ -272,13 +272,21 @@ public:
 
     /** Return reference to element.
         @param index Position of the element in range <code>1..length</code>.
+        Deprecated.
     */
-    T& operator[](int index);
+    T& At(int index)
+    {
+        return (*this)[index];
+    }
 
     /** Return const reference to element.
         @param index Position of the element in range <code>1..length</code>.
+        Deprecated.
     */
-    const T& operator[](int index) const;
+    const T& At(int index) const
+    {
+        return (*this)[index];
+    }
 
     /** Compare whether the contents of two lists are identical.
         Same length, and the same elements in the same sequence.
@@ -510,6 +518,16 @@ protected:
                     bool adjustLast = false);
 
 private:
+    /** Return reference to element.
+        @param index Position of the element in range <code>1..length</code>.
+    */
+    T& operator[](int index);
+
+    /** Return const reference to element.
+        @param index Position of the element in range <code>1..length</code>.
+    */
+    const T& operator[](int index) const;
+
     bool LongContains(const T& elt) const;
 
     SgListRec<T>* m_last;
@@ -635,10 +653,6 @@ class SgListOf
     : public SgList<void*>
 {
 public:
-    T* operator[] (int index) const
-    {
-        return static_cast<T*>(SgList<void*>::operator[](index));
-    }
 
     void Append(const T* element)
     {
@@ -646,6 +660,11 @@ public:
         SgList<void*>::Append(GetVoidPtr(element));
     }
 
+    T* At(int index) const
+    {
+        return static_cast<T*>(SgList<void*>::At(index));
+    }
+    
     bool Contains(const T* element) const
     {
         SG_ASSERT(element);
@@ -709,6 +728,11 @@ public:
     void RemoveDuplicateContent();
 
 private:
+    T* operator[] (int index) const
+    {
+        return static_cast<T*>(SgList<void*>::At(index));
+    }
+
     T* Data(const SgListRec<void*>* rec) const
     {
         return static_cast<T*>(SgList<void*>::Data(rec));

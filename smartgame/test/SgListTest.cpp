@@ -39,15 +39,15 @@ BOOST_AUTO_TEST_CASE(SgListTestAppendList)
     a.AppendList(b);
     BOOST_CHECK(b.IsLength(3));
     BOOST_CHECK(a.IsLength(6));
-    BOOST_CHECK_EQUAL(a[1], 1);
-    BOOST_CHECK_EQUAL(a[2], 2);
-    BOOST_CHECK_EQUAL(a[3], 3);
-    BOOST_CHECK_EQUAL(a[4], 30);
-    BOOST_CHECK_EQUAL(a[5], 20);
-    BOOST_CHECK_EQUAL(a[6], 10);
-    BOOST_CHECK_EQUAL(b[1], 30);
-    BOOST_CHECK_EQUAL(b[2], 20);
-    BOOST_CHECK_EQUAL(b[3], 10);
+    BOOST_CHECK_EQUAL(a.At(1), 1);
+    BOOST_CHECK_EQUAL(a.At(2), 2);
+    BOOST_CHECK_EQUAL(a.At(3), 3);
+    BOOST_CHECK_EQUAL(a.At(4), 30);
+    BOOST_CHECK_EQUAL(a.At(5), 20);
+    BOOST_CHECK_EQUAL(a.At(6), 10);
+    BOOST_CHECK_EQUAL(b.At(1), 30);
+    BOOST_CHECK_EQUAL(b.At(2), 20);
+    BOOST_CHECK_EQUAL(b.At(3), 10);
 }
 
 BOOST_AUTO_TEST_CASE(SgListTestAssign)
@@ -58,9 +58,9 @@ BOOST_AUTO_TEST_CASE(SgListTestAssign)
     a.Append(789);
     SgList<int> b;
     b = a;
-    BOOST_CHECK_EQUAL(b[1], 123);
-    BOOST_CHECK_EQUAL(b[2], 444);
-    BOOST_CHECK_EQUAL(b[3], 789);
+    BOOST_CHECK_EQUAL(b.At(1), 123);
+    BOOST_CHECK_EQUAL(b.At(2), 444);
+    BOOST_CHECK_EQUAL(b.At(3), 789);
     BOOST_CHECK(a == b);
 }
 
@@ -69,9 +69,9 @@ BOOST_AUTO_TEST_CASE(SgListTestAssignElement)
     SgList<int> a;
     a.Append(0);
     a.Append(789);
-    BOOST_CHECK_EQUAL(a[2], 789);
-    a[2] = 444;
-    BOOST_CHECK_EQUAL(a[2], 444);
+    BOOST_CHECK_EQUAL(a.At(2), 789);
+    a.At(2) = 444;
+    BOOST_CHECK_EQUAL(a.At(2), 444);
     BOOST_CHECK_EQUAL(a.Length(), 2);
 }
 
@@ -175,9 +175,9 @@ BOOST_AUTO_TEST_CASE(SgListTestInsert)
     SgList<int> a;
     a.Insert(789);
     BOOST_CHECK_EQUAL(a.Length(), 1);
-    BOOST_CHECK_EQUAL(a[1], 789);
+    BOOST_CHECK_EQUAL(a.At(1), 789);
     BOOST_CHECK(a.Insert(666));
-    BOOST_CHECK_EQUAL(a[1], 666);
+    BOOST_CHECK_EQUAL(a.At(1), 666);
     BOOST_CHECK(! a.Insert(666));
 }
 
@@ -259,8 +259,8 @@ BOOST_AUTO_TEST_CASE(SgListTestPop)
     BOOST_CHECK_EQUAL(a.Tail(), 456);
     a.Append(x);
     BOOST_CHECK_EQUAL(a.Length(), 2);
-    BOOST_CHECK_EQUAL(a[1], 456);
-    BOOST_CHECK_EQUAL(a[2], 123);
+    BOOST_CHECK_EQUAL(a.At(1), 456);
+    BOOST_CHECK_EQUAL(a.At(2), 123);
 }
 
 BOOST_AUTO_TEST_CASE(SgListTestPush)
@@ -268,7 +268,7 @@ BOOST_AUTO_TEST_CASE(SgListTestPush)
     SgList<int> a;
     a.Append(0);
     a.Push(1);
-    BOOST_CHECK_EQUAL(a[1], 1);
+    BOOST_CHECK_EQUAL(a.At(1), 1);
     BOOST_CHECK_EQUAL(a.Length(), 2);
 }
 
@@ -276,7 +276,7 @@ BOOST_AUTO_TEST_CASE(SgListTestSetTo)
 {
     SgList<int> a;
     a.SetTo(3);
-    BOOST_CHECK_EQUAL(a[1], 3);
+    BOOST_CHECK_EQUAL(a.At(1), 3);
     BOOST_CHECK_EQUAL(a.Length(), 1);
 }
 
@@ -288,10 +288,10 @@ BOOST_AUTO_TEST_CASE(SgListTestSort)
     a.Append(123);
     a.Append(-15);
     a.Sort();
-    BOOST_CHECK_EQUAL(a[1], -15);
-    BOOST_CHECK_EQUAL(a[2], 0);
-    BOOST_CHECK_EQUAL(a[3], 123);
-    BOOST_CHECK_EQUAL(a[4], 789);
+    BOOST_CHECK_EQUAL(a.At(1), -15);
+    BOOST_CHECK_EQUAL(a.At(2), 0);
+    BOOST_CHECK_EQUAL(a.At(3), 123);
+    BOOST_CHECK_EQUAL(a.At(4), 789);
 }
 
 } // namespace
