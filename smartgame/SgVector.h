@@ -112,6 +112,12 @@ public:
     */
     T Pop();
 
+    /** Remove the last element of the list.
+        The list must not be empty.
+        @return The head of the list.
+    */
+    void PopBack();
+
     /** Add a single element at the end of the list. */
     void PushBack(const T& elt)
     {
@@ -127,6 +133,16 @@ public:
         return m_vec[m_vec.size() - 1];
     }
 
+    /** Returns the Nth-last element of the list. It must exist.
+    */
+    const T& TopNth(int index) const
+    {
+        SG_ASSERT(NonEmpty());
+        SG_ASSERT(index >= 1);
+        SG_ASSERT(index <= static_cast<int>(m_vec.size()));
+        return m_vec[m_vec.size() - index];
+    }
+
     /** Returns the head of the list.
         Asserts if the list is empty.
     */
@@ -136,6 +152,16 @@ public:
         return m_vec[0];
     }
 
+    std::vector<T>& Vector()
+    {
+        return m_vec;
+    }
+    
+    const std::vector<T>& Vector() const
+    {
+        return m_vec;
+    }
+    
 private:
     std::vector<T> m_vec;
 };
@@ -163,15 +189,6 @@ bool SgVector<T>::Contains(const T& elt) const
 }
 
 template<typename T>
-T SgVector<T>::Pop()
-{
-    SG_ASSERT(NonEmpty());
-    T elt = Top();
-    m_vec.erase(m_vec.begin());
-    return elt;
-}
-
-template<typename T>
 bool SgVector<T>::Exclude(const T& elt)
 {
     typename vector<T>::iterator end = m_vec.end();
@@ -183,6 +200,81 @@ bool SgVector<T>::Exclude(const T& elt)
     }
     return false;
 }
+
+template<typename T>
+T SgVector<T>::Pop()
+{
+    SG_ASSERT(NonEmpty());
+    T elt = Top();
+    m_vec.erase(m_vec.begin());
+    return elt;
+}
+
+template<typename T>
+void SgVector<T>::PopBack()
+{
+    SG_ASSERT(NonEmpty());
+    m_vec.erase(m_vec.end() - 1);
+}
+
+//----------------------------------------------------------------------------
+/** List iterator.
+    More concise way to iterate (from "Large-Scale C++ Software Design" by
+    John Lakos):
+    <pre>
+      for (SgListIterator<T> it(list); it; ++it) { ... it() ... }
+    </pre>
+    Better performance because every method is inline.
+*/
+template<typename T>
+class SgVectorIterator
+{
+public:
+    /** Create a list iterator to iterate through list. */
+    SgVectorIterator(const SgVector<T>& vec)
+        : m_vec(vec),
+          m_it(m_vec.Vector().begin())
+    { }
+
+    /** Copy current state of iterator.
+        Useful for creating a new iterator that only runs from the current
+        position to the list end. See <code>UniqueElements()</code>
+        for an example.
+    */
+    SgVectorIterator(const SgVectorIterator& it)
+        : m_vec(it.m_vec)
+    { }
+
+    virtual ~SgVectorIterator() { }
+
+    /** Advance the state of the iteration to the next element. */
+    SgVectorIterator& operator++()
+    {
+        ++m_it;
+        return *this;
+    }
+
+    /** Return the value of the current element. */
+    const T& operator*() const
+    {
+        SG_ASSERT(*this);
+        return *m_it;
+    };
+
+    /** Return true if iteration is valid, otherwise false. */
+    operator bool() const
+    {
+        return m_it != m_vec.Vector().end(); // @todo cache end.
+    }
+
+private:
+    const SgVector<T>& m_vec;
+
+    typename vector<T>::const_iterator m_it;
+    
+    /** not implemented */
+    SgVectorIterator& operator=(const SgVectorIterator&);
+};
 
 //----------------------------------------------------------------------------
 

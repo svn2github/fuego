@@ -164,6 +164,30 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPop)
     BOOST_CHECK_EQUAL(a[1], 123);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
+{
+    SgVector<int> a;
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    BOOST_CHECK_EQUAL(a.Length(), 10);
+    for (int i = 9; i >= 0; --i)
+    {
+        a.PopBack();
+        BOOST_CHECK_EQUAL(a.Length(), i);
+    }
+    BOOST_CHECK(a.IsEmpty());
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestTopNth)
+{
+    SgVector<int> a;
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    for (int i = 1; i <= 10; ++i)
+        BOOST_CHECK_EQUAL(a.TopNth(i), 10 - i);
+}
+
+
 
 } // namespace
 
