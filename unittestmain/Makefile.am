@@ -29,6 +29,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgCmdLineOptTest.cpp \
 ../smartgame/test/SgConnCompIteratorTest.cpp \
 ../smartgame/test/SgEBWArrayTest.cpp \
+../smartgame/test/SgEvaluatedMovesTest.cpp \
 ../smartgame/test/SgFastLogTest.cpp \
 ../smartgame/test/SgGameReaderTest.cpp \
 ../smartgame/test/SgGtpUtilTest.cpp \
