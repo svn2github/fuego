@@ -278,6 +278,34 @@ BOOST_AUTO_TEST_CASE(SgListTestSetTo)
     BOOST_CHECK_EQUAL(a.Length(), 1);
 }
 
+BOOST_AUTO_TEST_CASE(SgListTestSwapWith)
+{
+    SgList<int> a;
+    a.PushBack(1);
+    a.PushBack(2);
+    a.PushBack(3);
+    SgList<int> b;
+    b.PushBack(4);
+    b.PushBack(5);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    BOOST_CHECK_EQUAL(b.Length(), 2);
+    a.SwapWith(&b);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(b.Length(), 3);
+    BOOST_CHECK_EQUAL(a.At(1), 4);
+    BOOST_CHECK_EQUAL(a.At(2), 5);
+    BOOST_CHECK_EQUAL(b.At(1), 1);
+    BOOST_CHECK_EQUAL(b.At(2), 2);
+    BOOST_CHECK_EQUAL(b.At(3), 3);
+    b.Clear();
+    b.SwapWith(&a);
+    BOOST_CHECK_EQUAL(a.Length(), 0);
+    BOOST_CHECK_EQUAL(b.Length(), 2);
+    b.SwapWith(&a);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(b.Length(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(SgListTestSort)
 {
     SgList<int> a;
