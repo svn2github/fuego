@@ -187,6 +187,13 @@ public:
         PushBack(elt);
     }
 
+    /** Clear this list and set it to contain the <code>%count</code>
+        elements from
+        <code>array[0]</code> to <code>array[%count - 1]</code>.
+        If <code>%count</code> is zero, the list is just cleared.
+    */
+    void SetTo(const T* array, int count);
+
     /** Swap the entire contents of this list with <code>*list</code>. */
     void SwapWith(SgVector<T>* vec)
     {
@@ -337,6 +344,17 @@ template<typename T>
 void SgVector<T>::Push(const T& elt)
 {
     m_vec.insert(m_vec.begin(), elt);
+}
+
+template<typename T>
+void SgVector<T>::SetTo(const T* array, int count)
+{
+    m_vec.assign(array, array + count);
+    /*Clear();
+    for (int i = 0; i < count; ++i)
+        PushBack(array[i]);
+    */
+    SG_ASSERT(IsLength(count));
 }
 
 

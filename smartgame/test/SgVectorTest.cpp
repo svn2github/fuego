@@ -312,6 +312,39 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPushBack)
     BOOST_CHECK_EQUAL(a.Length(), 2);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestSetTo_Element)
+{
+    SgVector<int> a;
+    a.PushBack(0);
+    a.PushBack(1);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    a.SetTo(5);
+    BOOST_CHECK_EQUAL(a.Length(), 1);
+    BOOST_CHECK_EQUAL(a[0], 5);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestSetTo_Array)
+{
+    SgVector<int> a;
+    a.PushBack(0);
+    a.PushBack(1);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    int b[5] = {5, 4, 3, 2, 1};
+    a.SetTo(b, 5);
+    BOOST_CHECK_EQUAL(a.Length(), 5);
+    BOOST_CHECK_EQUAL(a[0], 5);
+    BOOST_CHECK_EQUAL(a[1], 4);
+    BOOST_CHECK_EQUAL(a[2], 3);
+    BOOST_CHECK_EQUAL(a[3], 2);
+    BOOST_CHECK_EQUAL(a[4], 1);
+    a.SetTo(b, 2);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(a[0], 5);
+    BOOST_CHECK_EQUAL(a[1], 4);
+    a.SetTo(b, 0);
+    BOOST_CHECK_EQUAL(a.Length(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestSwapWith)
 {
     SgVector<int> a;
