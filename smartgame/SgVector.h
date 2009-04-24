@@ -140,7 +140,6 @@ public:
 
     /** Remove the last element of the list.
         The list must not be empty.
-        @return The head of the list.
     */
     void PopBack();
 
@@ -154,6 +153,19 @@ public:
     void PushBack(const T& elt)
     {
         m_vec.push_back(elt);
+    }
+
+    /** Clear this list and set it to contain only <code>elt</code>. */
+    void SetTo(const T& elt)
+    {
+        Clear();
+        PushBack(elt);
+    }
+
+    /** Swap the entire contents of this list with <code>*list</code>. */
+    void SwapWith(SgVector<T>* vec)
+    {
+        std::swap(m_vec, vec->m_vec);
     }
 
     /** Returns the last element of the list.
@@ -334,6 +346,133 @@ private:
     SgVectorIterator& operator=(const SgVectorIterator&);
 };
 
+/** Typed list of pointers to T. Pointers cannot be 0. */
+template<class T>
+class SgVectorOf
+    : public SgVector<void*>
+{
+public:
+
+    T* operator[] (int index) const
+    {
+        return static_cast<T*>(SgVector<void*>::operator[](index));
+    }
+
+    void Append(const T* element)
+    {
+        SG_ASSERT(element);
+        SgVector<void*>::Append(GetVoidPtr(element));
+    }
+    
+    bool Contains(const T* element) const
+    {
+        SG_ASSERT(element);
+        return SgVector<void*>::Contains(GetVoidPtr(element));
+    }
+
+    /** Append <code>elt</code> at the end of the list if it's not
+        already in the list. */
+    void Include(const T* element)
+    {
+        SG_ASSERT(element);
+        if (! Contains(element))
+            Append(element);
+    }
+
+    bool Exclude(const T* element)
+    {
+        return SgVector<void*>::Exclude(GetVoidPtr(element));
+    }
+
+    void Exclude(const SgVectorOf<T>& list)
+    {
+        SgVector<void*>::Exclude(list);
+    }
+
+    void Push(const T* element)
+    {
+        SG_ASSERT(element);
+        SgVector<void*>::Push(GetVoidPtr(element));
+    }
+
+    T* Pop()
+    {
+        return static_cast<T*>(SgVector<void*>::Pop());
+    }
+
+    T* Top() const
+    {
+        return static_cast<T*>(SgVector<void*>::Top());
+    }
+
+    T* Tail() const
+    {
+        return static_cast<T*>(SgVector<void*>::Tail());
+    }
+
+#if UNUSED
+    bool Insert(const T* element)
+    {
+        return SgVector<void*>::Insert(GetVoidPtr(element));
+    }
+
+    bool Extract(const T* element)
+    {
+        return SgVector<void*>::Extract(GetVoidPtr(element));
+    }
+
+    // The following are defined below since they use SgVectorIteratorOf
+
+    bool ContainsContent(const T& element) const;
+
+    void RemoveDuplicateContent();
+#endif
+private:
+
+    /** Conversion of element pointer to non-const void pointer.
+        @note Not sure if there is a better way without needing the
+        const cast.
+    */
+    static void* GetVoidPtr(const T* element)
+    {
+        return const_cast<void*>(static_cast<const void*>(element));
+    }
+};
+
+//----------------------------------------------------------------------------
+
+/** Iterator for ListOf<T> typed list of pointers to T */
+template<class T>
+class SgVectorIteratorOf
+    : private SgVectorIterator<void*>
+{
+public:
+    /** Create a list iterator to iterate through list. */
+    SgVectorIteratorOf(const SgVectorOf<T>& list)
+        : SgVectorIterator<void*>(static_cast<const SgVector<void*>&>(list))
+    { }
+
+#if UNUSED
+    void Reset()
+    {
+        SgVectorIterator<void*>::Reset();
+    }
+#endif
+    void operator++()
+    {
+        SgVectorIterator<void*>::operator++();
+    }
+
+    T* operator*() const
+    {
+        return static_cast<T*>(SgVectorIterator<void*>::operator*());
+    }
+
+    operator bool() const
+    {
+        return SgVectorIterator<void*>::operator bool();
+    }
+};
 //----------------------------------------------------------------------------
 
 #endif // SG_VECTOR_H

@@ -242,6 +242,34 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPushBack)
     BOOST_CHECK_EQUAL(a.Length(), 2);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestSwapWith)
+{
+    SgVector<int> a;
+    a.PushBack(1);
+    a.PushBack(2);
+    a.PushBack(3);
+    SgVector<int> b;
+    b.PushBack(4);
+    b.PushBack(5);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    BOOST_CHECK_EQUAL(b.Length(), 2);
+    a.SwapWith(&b);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(b.Length(), 3);
+    BOOST_CHECK_EQUAL(a[0], 4);
+    BOOST_CHECK_EQUAL(a[1], 5);
+    BOOST_CHECK_EQUAL(b[0], 1);
+    BOOST_CHECK_EQUAL(b[1], 2);
+    BOOST_CHECK_EQUAL(b[2], 3);
+    b.Clear();
+    b.SwapWith(&a);
+    BOOST_CHECK_EQUAL(a.Length(), 0);
+    BOOST_CHECK_EQUAL(b.Length(), 2);
+    b.SwapWith(&a);
+    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(b.Length(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestTopNth)
 {
     SgVector<int> a;
@@ -251,6 +279,51 @@ BOOST_AUTO_TEST_CASE(SgVectorTestTopNth)
         BOOST_CHECK_EQUAL(a.TopNth(i), 10 - i);
 }
 
+void MakeTestVector(SgVector<int>& a, SgVectorOf<int>& pa)
+{
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    for (int i = 0; i < 10; ++i)
+        pa.Append(&a[i]);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorOfTestAppend)
+{
+    SgVector<int> a;
+    SgVectorOf<int> pa;
+    MakeTestVector(a, pa);
+    for (int i = 0; i < 10; ++i)
+    {
+        BOOST_CHECK_EQUAL(pa[i], &a[i]);
+        BOOST_CHECK_EQUAL(*pa[i], i);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorOfTestContains)
+{
+    SgVector<int> a;
+    SgVectorOf<int> pa;
+    MakeTestVector(a, pa);
+    for (int i = 0; i < 10; ++i)
+    {
+        BOOST_CHECK(pa.Contains(&a[i]));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorIteratorOfTest)
+{
+    SgVector<int> a;
+    SgVectorOf<int> pa;
+    MakeTestVector(a, pa);
+    
+    int i = 0;
+    for (SgVectorIteratorOf<int> it(pa); it; ++it,++i)
+    {
+        BOOST_CHECK_EQUAL(*it, &a[i]);
+        BOOST_CHECK_EQUAL(**it, i);
+    }
+    BOOST_CHECK_EQUAL(i, 10);
+}
 
 
 } // namespace
