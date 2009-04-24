@@ -95,6 +95,15 @@ public:
     */
     int Index(const T& elt) const;
 
+    /** Append <code>elt</code> at the end of the list
+        if it's not already in the list.
+    */
+    void Include(const T& elt)
+    {
+        if (! Contains(elt))
+            PushBack(elt);
+    }
+
     /** Includes the element in a ascending sorted list at the right place.
         Does nothing and returns <code>false</code> if the element is
         already in the list;

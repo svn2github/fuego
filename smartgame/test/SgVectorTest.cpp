@@ -147,6 +147,28 @@ BOOST_AUTO_TEST_CASE(SgVectorTestExclude)
     BOOST_CHECK(! a.Contains(666));
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestInclude)
+{
+    SgVector<int> a;
+    a.Include(789);
+    a.Include(666);
+    a.Include(123);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(123);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(789);
+    a.Include(666);
+    a.Include(123);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(-123);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+    a.Exclude(666);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(666);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+}
+
+
 BOOST_AUTO_TEST_CASE(SgVectorTestInsert)
 {
     SgVector<int> a;                 
