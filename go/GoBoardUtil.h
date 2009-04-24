@@ -13,6 +13,7 @@
 #include "SgPoint.h"
 #include "SgPointArray.h"
 #include "SgStack.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -258,6 +259,7 @@ namespace GoBoardUtil
         will be sorted by anchors.
     */
     void ReduceToAnchors(const GoBoard& bd, SgList<SgPoint>* stones);
+    void ReduceToAnchors(const GoBoard& bd, SgVector<SgPoint>* stones);
 
     /** Keep only the anchor of each block in the list.
         Points not occupied are removed from the list. The initial list may

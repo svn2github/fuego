@@ -10,6 +10,10 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
 
+#include "GoSetup.h"
+#include "GoSetupUtil.h"
+#include "SgPointSet.h"
+
 using namespace std;
 using namespace GoBoardUtil;
 using SgPointUtil::Pt;
@@ -339,6 +343,32 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_PassWins)
     BOOST_CHECK(PassWins(bd, SG_BLACK));
     rules.SetJapaneseScoring(true);
     BOOST_CHECK(! PassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_ReduceToAnchors)
+{
+    std::string s("XO.\n"
+                  "XX.\n"
+                  ".OO");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    GoBoard bd(boardSize, setup);
+    SgPointSet black = bd.All(SG_BLACK);
+    BOOST_CHECK_EQUAL(black.Size(), 3);
+    SgPointSet white = bd.All(SG_WHITE);
+    BOOST_CHECK_EQUAL(white.Size(), 3);
+    
+    // SgList version
+    SgList<SgPoint> stones;
+    black.ToList(&stones);
+    GoBoardUtil::ReduceToAnchors(bd, &stones);
+    BOOST_CHECK_EQUAL(stones.Length(), 1);
+    stones.Clear();
+    white.ToList(&stones);
+    GoBoardUtil::ReduceToAnchors(bd, &stones);
+    BOOST_CHECK_EQUAL(stones.Length(), 2);
+    
+    // SgVector version
 }
 
 void CheckSelfAtari(const GoBoard& bd, SgPoint p, int nuExpectedStones)

@@ -638,6 +638,17 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd, SgList<SgPoint>* stones)
     stones->SwapWith(&result);
 }
 
+void GoBoardUtil::ReduceToAnchors(const GoBoard& bd, SgVector<SgPoint>* stones)
+{
+    SG_ASSERT(stones);
+    SgVector<SgPoint> result;
+    for (SgVectorIterator<SgPoint> stone(*stones); stone; ++stone)
+        if (bd.Occupied(*stone))
+            result.Insert(bd.Anchor(*stone));
+    // Trick to avoid copy needed by: *stones = result.
+    stones->SwapWith(&result);
+}
+
 void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
                                   const SgList<SgPoint>& stones,
                                   SgSList<SgPoint,SG_MAXPOINT>& anchors)
