@@ -17,11 +17,11 @@
 
 namespace SgListUtility
 {
-    /** Keep only elements in list that also occur in list2 */
-    void Intersection(SgList<int>* list, const SgList<int>& list2);
-
     /** Exclude all elements of list2 from list */
     void Difference(SgList<int>* list, const SgList<int>& list2);
+
+    /** Keep only elements in list that also occur in list2 */
+    void Intersection(SgList<int>* list, const SgList<int>& list2);
 
     /** Reverse order of elements in list */
     void Reverse(SgList<int>* list);
@@ -33,6 +33,20 @@ namespace SgListUtility
     /** Utility function, as long as both SgList and SgVector used */
     template<typename T>
     void VectorToList(const SgVector<T>& vec, SgList<T>& list);
+}
+
+namespace SgVectorUtility // @todo move to own file!!!
+{
+    /** Exclude all elements of list2 from list */
+    void Difference(SgVector<int>* list, const SgVector<int>& list2);
+
+#if UNUSED
+    /** Keep only elements in list that also occur in list2 */
+    void Intersection(SgVector<int>* list, const SgVector<int>& list2);
+
+    /** Reverse order of elements in list */
+    void Reverse(SgVector<int>* list);
+#endif
 }
 
 //----------------------------------------------------------------------------

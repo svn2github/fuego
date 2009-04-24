@@ -76,6 +76,31 @@ BOOST_AUTO_TEST_CASE(SgListUtilityTestVectorConversion)
     SgListUtility::VectorToList(b, c);
     BOOST_CHECK(a == c);
 }
+
+BOOST_AUTO_TEST_CASE(SgVectorUtilityTestDifference)
+{
+    SgVector<int> a;
+    a.PushBack(5);
+    a.PushBack(6);
+    a.PushBack(7);
+    a.PushBack(8);
+    a.PushBack(-56);
+    a.PushBack(9);
+    a.PushBack(10);
+    SgVector<int> b;
+    b.PushBack(8);
+    b.PushBack(-56);
+    b.PushBack(9);
+    b.PushBack(10);
+    b.PushBack(11);
+    b.PushBack(12);
+    SgVectorUtility::Difference(&a, b);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    BOOST_CHECK_EQUAL(a[0], 5);
+    BOOST_CHECK_EQUAL(a[1], 6);
+    BOOST_CHECK_EQUAL(a[2], 7);
+}
+
 //----------------------------------------------------------------------------
 } // namespace
 //----------------------------------------------------------------------------

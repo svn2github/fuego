@@ -27,7 +27,7 @@ void SgListUtility::Intersection(SgList<int>* list, const SgList<int>& list2)
 
 void SgListUtility::Difference(SgList<int>* list, const SgList<int>& list2)
 {
-    // AR speed up by using tags, if used in time-critical code.
+    // @todo speed up by using tags, if used in time-critical code.
     for (SgListIterator<int> it(list2); it; ++it)
         list->Exclude(*it);
 }
@@ -46,3 +46,9 @@ void SgListUtility::Reverse(SgList<int>* list)
 }
 
 //----------------------------------------------------------------------------
+void SgVectorUtility::Difference(SgVector<int>* list, const SgVector<int>& list2)
+{
+    // @todo speed up by using tags, if used in time-critical code.
+    for (SgVectorIterator<int> it(list2); it; ++it)
+        list->Exclude(*it);
+}
