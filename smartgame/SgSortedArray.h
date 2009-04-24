@@ -8,6 +8,7 @@
 #define SG_SORTEDARRAY_H
 
 #include "SgList.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -28,7 +29,7 @@ public:
 
     void AddItem(T elt, K key)
     {
-        SG_ASSERT(m_numElt < size - 1);
+        SG_ASSERT(m_numElt < size);
         m_elt[m_numElt] = elt;
         m_key[m_numElt] = key;
         ++m_numElt;
@@ -119,6 +120,11 @@ public:
     }
 
     void GetElements(SgList<T>* listOfElts) const
+    {
+        listOfElts->SetTo(m_elt, m_numElt);
+    }
+
+    void GetElements(SgVector<T>* listOfElts) const
     {
         listOfElts->SetTo(m_elt, m_numElt);
     }
