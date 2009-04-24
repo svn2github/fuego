@@ -6,8 +6,11 @@
 #ifndef SG_VECTOR_H
 #define SG_VECTOR_H
 
+#include <functional>
 #include <vector>
 
+using std::greater;
+using std::less;
 using std::vector;
 
 template<typename T>
@@ -92,6 +95,16 @@ public:
     */
     int Index(const T& elt) const;
 
+    /** Includes the element in a ascending sorted list at the right place.
+        Does nothing and returns <code>false</code> if the element is
+        already in the list;
+        returns <code>true</code> if the element is inserted.
+        @todo made two separate functions for efficiency, should be
+        a template taking a compare template arg.
+        Same for <code>Merge()</code> below.
+    */
+    bool Insert(const T& elt);
+
     /** Return whether this list contains zero elements. */
     bool IsEmpty() const
     {
@@ -103,6 +116,9 @@ public:
     {
         return Length() == length;
     }
+
+    /** Returns whether the list is sorted in ascending order. */
+    bool IsSorted(bool ascending = true) const;
 
     /** Return the number of elements in this list. */
     int Length() const
@@ -262,6 +278,34 @@ int SgVector<T>::Index(const T& elt) const
         return -1;
     else
         return pos - m_vec.begin();
+}
+
+template<typename T>
+bool SgVector<T>::Insert(const T& elt)
+{
+    SG_ASSERT(IsSorted());
+    typename vector<int>::iterator location = 
+    lower_bound( m_vec.begin(), m_vec.end(), elt);
+
+    if (*location == elt)
+        return false;
+    else
+    {
+        m_vec.insert(location, elt);
+        SG_ASSERT(IsSorted());
+    }
+    return true;
+}
+
+template<typename T>
+bool SgVector<T>::IsSorted(bool ascending) const
+{
+    typename vector<T>::const_iterator result;
+    if (ascending)
+        result = adjacent_find(m_vec.begin(), m_vec.end(), greater<T>());
+    else
+        result = adjacent_find(m_vec.begin(), m_vec.end(), less<T>());
+    return result == m_vec.end();
 }
 
 template<typename T>

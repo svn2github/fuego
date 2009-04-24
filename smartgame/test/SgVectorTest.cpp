@@ -139,12 +139,60 @@ BOOST_AUTO_TEST_CASE(SgVectorTestContains)
 BOOST_AUTO_TEST_CASE(SgVectorTestExclude)
 {
     SgVector<int> a;
-    a.Append(789);
-    a.Append(666);
-    a.Append(123);
+    a.PushBack(789);
+    a.PushBack(666);
+    a.PushBack(123);
     BOOST_CHECK(! a.Exclude(555));
     BOOST_CHECK(a.Exclude(666));
     BOOST_CHECK(! a.Contains(666));
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestInsert)
+{
+    SgVector<int> a;                 
+    a.PushBack(123);
+    a.PushBack(666);
+    a.PushBack(789);
+    BOOST_CHECK(a.IsSorted());
+    bool result = a.Insert(555);
+    BOOST_CHECK(result);
+    BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK_EQUAL(a.Length(), 4);    
+    BOOST_CHECK_EQUAL(a[1], 555);    
+    result = a.Insert(555); // same number - do not insert.
+    BOOST_CHECK(! result);
+    BOOST_CHECK_EQUAL(a[1], 555);    
+    BOOST_CHECK_EQUAL(a.Length(), 4);    
+    result = a.Insert(5555);
+    BOOST_CHECK(result);
+    BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK_EQUAL(a[4], 5555);    
+    BOOST_CHECK_EQUAL(a.Length(), 5);    
+    result = a.Insert(-3);
+    BOOST_CHECK(result);
+    BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK_EQUAL(a[0], -3);    
+    BOOST_CHECK_EQUAL(a.Length(), 6);    
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestIsSorted)
+{
+    // ascending
+    SgVector<int> a;                 
+    BOOST_CHECK(a.IsSorted());
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    BOOST_CHECK(a.IsSorted());
+    a.PushBack(5);    
+    BOOST_CHECK(! a.IsSorted()); 
+    
+    // descending
+    SgVector<int> b;                 
+    for (int i = 10; i > 0; --i)
+        b.PushBack(i);
+    BOOST_CHECK(b.IsSorted(false));
+    b.PushBack(5);    
+    BOOST_CHECK(! b.IsSorted(false));    
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestIterator)
