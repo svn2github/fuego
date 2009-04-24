@@ -170,6 +170,27 @@ BOOST_AUTO_TEST_CASE(SgListTestExclude)
     BOOST_CHECK(! a.Contains(666));
 }
 
+BOOST_AUTO_TEST_CASE(SgListTestInclude)
+{
+    SgList<int> a;
+    a.Include(789);
+    a.Include(666);
+    a.Include(123);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(123);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(789);
+    a.Include(666);
+    a.Include(123);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(-123);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+    a.Exclude(666);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    a.Include(666);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+}
+
 BOOST_AUTO_TEST_CASE(SgListTestInsert)
 {
     SgList<int> a;
