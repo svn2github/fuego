@@ -350,10 +350,6 @@ template<typename T>
 void SgVector<T>::SetTo(const T* array, int count)
 {
     m_vec.assign(array, array + count);
-    /*Clear();
-    for (int i = 0; i < count; ++i)
-        PushBack(array[i]);
-    */
     SG_ASSERT(IsLength(count));
 }
 
