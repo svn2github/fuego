@@ -165,11 +165,11 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
     GoPointList newAdj(adjBlk);
     SgList<SgPoint> newLib;
     SgList<SgPoint> newStones;
-    SgList<SgPoint> neighbors;
+    SgVector<SgPoint> neighbors;
     if (move == lib1)
     {
         NeighborsOfColor(*m_bd, move, m_preyColor, &neighbors);
-        for (SgListIterator<SgPoint> iter(neighbors); iter; ++iter)
+        for (SgVectorIterator<SgPoint> iter(neighbors); iter; ++iter)
         {
             SgPoint block = *iter;
             if (! m_partOfPrey[block])
@@ -455,7 +455,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                 // (;GM[1]SZ[19]FF[3]
                 // AB[qa][pa][pb][pd][pc][qe][re][rd][rc][se]
                 // AW[pe][pf][qf][qd][qc][rb][qb][sa][sc][rf][rg][sg])
-                SgList<SgPoint> movesToTry;
+                SgVector<SgPoint> movesToTry;
 
                 // Liberties of adj. blocks with at most two liberties.
                 adjBlk = GoBoardUtil::AdjacentStones(*m_bd, prey);
@@ -478,14 +478,14 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                 movesToTry.Append(lib2);
 
                 // Moves one away from liberties.
-                SgList<SgPoint> neighbors;
+                SgVector<SgPoint> neighbors;
                 NeighborsOfColor(*m_bd, lib1, SG_EMPTY, &neighbors);
                 movesToTry.Concat(&neighbors);
                 NeighborsOfColor(*m_bd, lib2, SG_EMPTY, &neighbors);
                 movesToTry.Concat(&neighbors);
 
                 // Try whether any of these moves lead to escape.
-                for (SgListIterator<SgPoint> it(movesToTry); it; ++it)
+                for (SgVectorIterator<SgPoint> it(movesToTry); it; ++it)
                 {
                     if (PlayIfLegal(*m_bd, *it, m_preyColor))
                     {
