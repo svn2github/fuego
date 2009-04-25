@@ -82,7 +82,7 @@ void ScorePositionRecurse(const GoBoard& bd, SgPoint p,
 
 void GoBoardUtil::AddNeighborBlocksOfColor(const GoBoard& bd, SgPoint p,
                                            SgBlackWhite c,
-                                           SgList<SgPoint>& neighbors)
+                                           SgVector<SgPoint>& neighbors)
 {
     if (bd.IsColor(p - SG_NS, c))
         neighbors.Include(bd.Anchor(p - SG_NS));
@@ -412,7 +412,7 @@ bool GoBoardUtil::EndOfGame(const GoBoard& bd)
 
 
 bool GoBoardUtil::GenerateIfLegal(const GoBoard& bd, SgPoint move,
-                                  SgList<SgPoint>* moves)
+                                  SgVector<SgPoint>* moves)
 {
     if (bd.IsLegal(move))
     {
@@ -484,7 +484,7 @@ bool GoBoardUtil::IsHandicapPoint(SgGrid size, SgGrid col, SgGrid row)
 
 bool GoBoardUtil::IsSimpleEyeOfBlock(const GoBoard& bd, SgPoint lib,
                                      SgPoint blockAnchor,
-                                     const SgList<SgPoint>& eyes)
+                                     const SgVector<SgPoint>& eyes)
 {
     SgBlackWhite color = bd.GetStone(blockAnchor);
     // need IsColor test for nbs because might be off board.
@@ -579,7 +579,7 @@ SgSList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p,
 }
 
 void GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
-                                   SgList<SgPoint>* neighbors)
+                                   SgVector<SgPoint>* neighbors)
 {
     neighbors->Clear();
     if (bd.IsColor(p - SG_NS, c))
@@ -659,14 +659,14 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
             anchors.Include(bd.Anchor(*it));
 }
 
-void GoBoardUtil::RegionCode(const GoBoard& bd, const SgList<SgPoint>& region,
+void GoBoardUtil::RegionCode(const GoBoard& bd, const SgVector<SgPoint>& region,
                              SgHashCode* c)
 {
     BOOST_STATIC_ASSERT(SG_BLACK < 2);
     BOOST_STATIC_ASSERT(SG_WHITE < 2);
 
     c->Clear();
-    for (SgListIterator<SgPoint> it(region); it; ++it)
+    for (SgVectorIterator<SgPoint> it(region); it; ++it)
     {
         SgPoint p = *it;
         if (bd.Occupied(p))
@@ -774,7 +774,7 @@ bool GoBoardUtil::AtLeastTwoSharedLibs(const GoBoard& bd, SgPoint block1,
 }
 
 void GoBoardUtil::TestForChain(GoBoard& bd, SgPoint block, SgPoint block2,
-                               SgPoint lib, SgList<SgPoint>* extended)
+                               SgPoint lib, SgVector<SgPoint>* extended)
 {
     if (AtLeastTwoSharedLibs(bd, block, block2))
         extended->Append(block);

@@ -28,7 +28,7 @@ namespace GoBoardUtil
     void AddNeighborBlocksOfColor(const GoBoard& bd,
                                   SgPoint p,
                                   SgBlackWhite color,
-                                  SgList<SgPoint>& neighbors);
+                                  SgVector<SgPoint>& neighbors);
 
     /** Add wall of stones in color to the board.
         @param bd
@@ -142,7 +142,7 @@ namespace GoBoardUtil
     /** Include move in list if it is legal */
     bool GenerateIfLegal(const GoBoard& bd,
                          SgPoint move,
-                         SgList<SgPoint>* moves);
+                         SgVector<SgPoint>* moves);
 
     /** Convert the given move to human-readable coordinates.
         (lower left A1 to upper right T19, leaving out column I).
@@ -192,7 +192,7 @@ namespace GoBoardUtil
     */
     bool IsSimpleEyeOfBlock(const GoBoard& bd, SgPoint lib,
                             SgPoint blockAnchor,
-                            const SgList<SgPoint>& eyes);
+                            const SgVector<SgPoint>& eyes);
 
     /** Check if the move just played on p was a snapback.
         A snapback is a single stone in atari which can be captured by a
@@ -232,8 +232,10 @@ namespace GoBoardUtil
         adding the points.
         @note SgList is not thread-safe
     */
+//    void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
+//                          SgList<SgPoint>* neighbors);
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
-                          SgList<SgPoint>* neighbors);
+                          SgVector<SgPoint>* neighbors);
 
     /** Check if Tromp-Taylor rules and pass wins. */
     bool PassWins(const GoBoard& bd, SgBlackWhite toPlay);
@@ -270,7 +272,7 @@ namespace GoBoardUtil
                          SgSList<SgPoint,SG_MAXPOINT> &anchors);
 
     /** Compute the hash code for region of this board position. */
-    void RegionCode(const GoBoard& bd, const SgList<SgPoint>& region,
+    void RegionCode(const GoBoard& bd, const SgVector<SgPoint>& region,
                     SgHashCode* c);
 
     /** Returns true iff during the first N moves of a Chinese handicap game.
@@ -376,7 +378,7 @@ namespace GoBoardUtil
     int Stones(const GoBoard& bd, SgPoint p, SgPoint stones[]);
 
     void TestForChain(GoBoard& bd, SgPoint block, SgPoint block2, SgPoint lib,
-                      SgList<SgPoint>* extended);
+                      SgVector<SgPoint>* extended);
 
     /** Compute the Tromp-Taylor-score for the current positions.
         The Tromp-Taylor score is a chinese scoring method that assumes that
