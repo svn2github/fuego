@@ -38,6 +38,11 @@ public:
         return m_vec[index];
     }
 
+    /** Assignment operator.
+        Copy content of other vector.
+    */
+    SgVector<T>& operator=(const SgVector<T>& v);
+
     /** Compare whether the contents of two lists are identical.
         Same length, and the same elements in the same sequence.
     */
@@ -88,6 +93,8 @@ public:
     */
     bool Exclude(const T& elt);
 
+    void Exclude(const SgVector<T>& list);
+
     /** Find position of element.
         @returns The position of <code>elt</code> in the list,
         in range <code>0..length-1</code>. Returns -1 if <code>elt</code>
@@ -135,6 +142,9 @@ public:
         return m_vec.size();
     }
     
+    /** Cut off list after at most <code>length</code> elements. */
+    void LimitListLength (int limit);
+
     /** Test whether a list is as long as or longer than a given length.
     */ 
     bool MinLength(int length) const
@@ -187,6 +197,9 @@ public:
         PushBack(elt);
     }
 
+    /** Do vectors contain the same elements, possibly in different order? */
+    bool SetsAreEqual(const SgVector<T>& other) const;
+
     /** Clear this list and set it to contain the <code>%count</code>
         elements from
         <code>array[0]</code> to <code>array[%count - 1]</code>.
@@ -228,6 +241,11 @@ public:
         return m_vec[0];
     }
 
+    /** Include all elements from <code>set</code> into this list.
+        Appends new elements at the end of this list.
+    */
+    void Union(const SgVector<T>& set);
+
     std::vector<T>& Vector()
     {
         return m_vec;
@@ -243,116 +261,6 @@ private:
 };
 
 //----------------------------------------------------------------------------
-template<typename T>
-void SgVector<T>::AppendList(const SgVector<T>& v)
-{
-    copy(v.m_vec.begin(), v.m_vec.end(), back_inserter(m_vec));
-}
-    
-template<typename T>
-void SgVector<T>::Concat(SgVector<T>* tail)
-{
-    AppendList(*tail);
-    tail->Clear();
-}
-
-template<typename T>
-bool SgVector<T>::Contains(const T& elt) const
-{
-    typename vector<T>::const_iterator end = m_vec.end();
-    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
-    return pos != end;
-}
-
-template<typename T>
-void SgVector<T>::DeleteAt(int index)
-{
-    SG_ASSERT(index >= 0);
-    SG_ASSERT(index < Length());
-    m_vec.erase(m_vec.begin() + index);
-}
-
-template<typename T>
-bool SgVector<T>::Exclude(const T& elt)
-{
-    typename vector<T>::iterator end = m_vec.end();
-    typename vector<T>::iterator pos = find(m_vec.begin(), end, elt);
-    if (pos != end)
-    {
-        m_vec.erase(pos);
-        return true;
-    }
-    return false;
-}
-
-template<typename T>
-int SgVector<T>::Index(const T& elt) const
-{
-    typename vector<T>::const_iterator end = m_vec.end();
-    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
-    if (pos == end)
-        return -1;
-    else
-        return pos - m_vec.begin();
-}
-
-template<typename T>
-bool SgVector<T>::Insert(const T& elt)
-{
-    SG_ASSERT(IsSorted());
-    typename vector<int>::iterator location = 
-    lower_bound( m_vec.begin(), m_vec.end(), elt);
-
-    if (*location == elt)
-        return false;
-    else
-    {
-        m_vec.insert(location, elt);
-        SG_ASSERT(IsSorted());
-    }
-    return true;
-}
-
-template<typename T>
-bool SgVector<T>::IsSorted(bool ascending) const
-{
-    typename vector<T>::const_iterator result;
-    if (ascending)
-        result = adjacent_find(m_vec.begin(), m_vec.end(), greater<T>());
-    else
-        result = adjacent_find(m_vec.begin(), m_vec.end(), less<T>());
-    return result == m_vec.end();
-}
-
-template<typename T>
-T SgVector<T>::Pop()
-{
-    SG_ASSERT(NonEmpty());
-    T elt = Top();
-    m_vec.erase(m_vec.begin());
-    return elt;
-}
-
-template<typename T>
-void SgVector<T>::PopBack()
-{
-    SG_ASSERT(NonEmpty());
-    m_vec.pop_back();
-}
-
-template<typename T>
-void SgVector<T>::Push(const T& elt)
-{
-    m_vec.insert(m_vec.begin(), elt);
-}
-
-template<typename T>
-void SgVector<T>::SetTo(const T* array, int count)
-{
-    m_vec.assign(array, array + count);
-    SG_ASSERT(IsLength(count));
-}
-
 
 //----------------------------------------------------------------------------
 /** List iterator.
@@ -540,6 +448,171 @@ public:
         return SgVectorIterator<void*>::operator bool();
     }
 };
+//----------------------------------------------------------------------------
+
+template<typename T>
+SgVector<T>& SgVector<T>::operator=(const SgVector<T>& v)
+{
+    if (this != &v)
+    {
+        Clear();
+        AppendList(v);
+    }
+    return *this;
+}
+
+template<typename T>
+void SgVector<T>::AppendList(const SgVector<T>& v)
+{
+    copy(v.m_vec.begin(), v.m_vec.end(), back_inserter(m_vec));
+}
+    
+template<typename T>
+void SgVector<T>::Concat(SgVector<T>* tail)
+{
+    AppendList(*tail);
+    tail->Clear();
+}
+
+template<typename T>
+bool SgVector<T>::Contains(const T& elt) const
+{
+    typename vector<T>::const_iterator end = m_vec.end();
+    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
+    return pos != end;
+}
+
+template<typename T>
+void SgVector<T>::DeleteAt(int index)
+{
+    SG_ASSERT(index >= 0);
+    SG_ASSERT(index < Length());
+    m_vec.erase(m_vec.begin() + index);
+}
+
+template<typename T>
+bool SgVector<T>::Exclude(const T& elt)
+{
+    typename vector<T>::iterator end = m_vec.end();
+    typename vector<T>::iterator pos = find(m_vec.begin(), end, elt);
+    if (pos != end)
+    {
+        m_vec.erase(pos);
+        return true;
+    }
+    return false;
+}
+
+template<typename T>
+void SgVector<T>::Exclude(const SgVector<T>& list)
+{
+    for (SgVectorIterator<T> it(list); it; ++it)
+        Exclude(*it);
+}
+
+template<typename T>
+int SgVector<T>::Index(const T& elt) const
+{
+    typename vector<T>::const_iterator end = m_vec.end();
+    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
+    if (pos == end)
+        return -1;
+    else
+        return pos - m_vec.begin();
+}
+
+template<typename T>
+bool SgVector<T>::Insert(const T& elt)
+{
+    SG_ASSERT(IsSorted());
+    typename vector<int>::iterator location = 
+    lower_bound( m_vec.begin(), m_vec.end(), elt);
+
+    if (   location != m_vec.end()
+        && *location == elt
+       )
+        return false;
+    else
+    {
+        m_vec.insert(location, elt);
+        SG_ASSERT(IsSorted());
+    }
+    return true;
+}
+
+template<typename T>
+bool SgVector<T>::IsSorted(bool ascending) const
+{
+    typename vector<T>::const_iterator result;
+    if (ascending)
+        result = adjacent_find(m_vec.begin(), m_vec.end(), greater<T>());
+    else
+        result = adjacent_find(m_vec.begin(), m_vec.end(), less<T>());
+    return result == m_vec.end();
+}
+
+/** Cut off list after at most <code>length</code> elements. */
+template<typename T>
+void SgVector<T>::LimitListLength (int limit)
+{
+    if (Length() > limit)
+        m_vec.resize(limit);
+}
+
+template<typename T>
+T SgVector<T>::Pop()
+{
+    SG_ASSERT(NonEmpty());
+    T elt = Top();
+    m_vec.erase(m_vec.begin());
+    return elt;
+}
+
+template<typename T>
+void SgVector<T>::PopBack()
+{
+    SG_ASSERT(NonEmpty());
+    m_vec.pop_back();
+}
+
+template<typename T>
+void SgVector<T>::Push(const T& elt)
+{
+    m_vec.insert(m_vec.begin(), elt);
+}
+
+template<typename T>
+bool SgVector<T>::SetsAreEqual(const SgVector<T>& other) const
+{
+    if (! IsLength(other.Length()))
+        return false;
+
+    for (SgVectorIterator<T> it1(*this); it1; ++it1)
+    {
+        if (! other.Contains(*it1))
+            return false;
+    }
+    for (SgVectorIterator<T> it2(other); it2; ++it2)
+    {
+        if (! Contains(*it2))
+            return false;
+    }
+    return true;
+}
+
+template<typename T>
+void SgVector<T>::SetTo(const T* array, int count)
+{
+    m_vec.assign(array, array + count);
+    SG_ASSERT(IsLength(count));
+}
+
+template<typename T>
+void SgVector<T>::Union(const SgVector<T>& set)
+{
+    for (SgVectorIterator<T> it(set); it; ++it)
+        Include(*it);
+}
 //----------------------------------------------------------------------------
 
 #endif // SG_VECTOR_H

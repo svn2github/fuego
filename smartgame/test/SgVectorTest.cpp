@@ -21,6 +21,20 @@ BOOST_AUTO_TEST_CASE(SgVectorTestConstructor)
     BOOST_CHECK_EQUAL(a.Length(), 0);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestOperator_Equal)
+{
+    SgVector<int> a;
+    a.Append(123);
+    a.Append(444);
+    a.Append(789);
+    SgVector<int> b;
+    b = a;
+    BOOST_CHECK_EQUAL(b.Length(), 3);
+    BOOST_CHECK(a == b);
+    a = a;
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+}
+
 
 BOOST_AUTO_TEST_CASE(SgVectorTestAppend)
 {
@@ -195,6 +209,11 @@ BOOST_AUTO_TEST_CASE(SgVectorTestInsert)
     BOOST_CHECK(a.IsSorted());
     BOOST_CHECK_EQUAL(a[0], -3);    
     BOOST_CHECK_EQUAL(a.Length(), 6);    
+    result = a.Insert(100000);
+    BOOST_CHECK(result);
+    BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK_EQUAL(a[6], 100000);    
+    BOOST_CHECK_EQUAL(a.Length(), 7);    
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestIsSorted)
@@ -235,7 +254,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestLargeList)
 {
     SgVector<int> a;                 
     for (int i = 1; i <= 1000; ++i)
-        a.Append(i);
+        a.PushBack(i);
     BOOST_CHECK(a.MinLength(1000));
     BOOST_CHECK(a.IsLength(1000));
     BOOST_CHECK(a.Contains(233));
@@ -262,17 +281,29 @@ BOOST_AUTO_TEST_CASE(SgVectorTestLargeList)
 }
 
 
+BOOST_AUTO_TEST_CASE(SgVectorTestLimitListLength)
+{
+    SgVector<int> a;                 
+    for (int i = 1; i <= 10; ++i)
+        a.PushBack(i);
+    BOOST_CHECK_EQUAL(a.Length(), 10);
+    a.LimitListLength(5);
+    BOOST_CHECK_EQUAL(a.Length(), 5);
+    a.LimitListLength(10);
+    BOOST_CHECK_EQUAL(a.Length(), 5);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestPop)
 {
     SgVector<int> a;
-    a.Append(123);
-    a.Append(456);
+    a.PushBack(123);
+    a.PushBack(456);
     int x = a.Pop();
     BOOST_CHECK_EQUAL(x, 123);
     BOOST_CHECK_EQUAL(a.Length(), 1);
     BOOST_CHECK_EQUAL(a.Top(), 456);
     BOOST_CHECK_EQUAL(a.Tail(), 456);
-    a.Append(x);
+    a.PushBack(x);
     BOOST_CHECK_EQUAL(a.Length(), 2);
     BOOST_CHECK_EQUAL(a[0], 456);
     BOOST_CHECK_EQUAL(a[1], 123);
