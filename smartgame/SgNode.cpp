@@ -17,6 +17,8 @@
 
 #include <sstream>
 #include "SgList.h"
+#include "SgListUtility.h"
+#include "SgPointSet.h"
 #include "SgProp.h"
 
 using namespace std;
@@ -379,6 +381,15 @@ bool SgNode::HasProp(SgPropID id) const
 void SgNode::ShortestPathTo(SgNode* node, int* numBack,
                             SgListOf<SgNode>* path) const
 {
+    SgVectorOf<SgNode> vpath;
+    ShortestPathTo(node, numBack, &vpath);
+    path->Clear();
+    SgListUtility::VectorToList(vpath, *path);
+}
+
+void SgNode::ShortestPathTo(SgNode* node, int* numBack,
+                            SgVectorOf<SgNode>* path) const
+{
     //--- Go backwards from both nodes in parallel, marking all nodes, until
     //     finding a marked node (the common ancestor), or both are 0.
     SgNode* x = const_cast<SgNode*>(this);
@@ -686,6 +697,18 @@ void SgNode::SetStringProp(SgPropID id, const string& value)
         prop->SetValue(value);
         Add(prop);
     }
+}
+
+void SgNode::SetListProp(SgPropID id, const SgVector<SgPoint>& value)
+{
+    SetListProp(id, SgListUtility::VectorToList(value));
+}
+
+void SgNode::SetListProp(SgPropID id, const SgPointSet& value)
+{
+    SgList<SgPoint> valueList;
+    value.ToList(&valueList);
+    SetListProp(id, valueList);
 }
 
 void SgNode::SetListProp(SgPropID id, const SgList<SgPoint>& value)

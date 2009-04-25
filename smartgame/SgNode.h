@@ -28,6 +28,8 @@
 
 #include <string>
 #include "SgProp.h"
+#include "SgPointSet.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -177,6 +179,8 @@ public:
         there (excluding the common ancestor).
     */
     void ShortestPathTo(SgNode* node, int* numBack,
+                        SgVectorOf<SgNode>* path) const;
+    void ShortestPathTo(SgNode* node, int* numBack,
                         SgListOf<SgNode>* path) const;
 
     /** Promote this node to first son.
@@ -316,6 +320,8 @@ public:
         of class SgPropPointList (or a derived class).
     */
     void SetListProp(SgPropID id, const SgList<SgPoint>& value);
+    void SetListProp(SgPropID id, const SgVector<SgPoint>& value);
+    void SetListProp(SgPropID id, const SgPointSet& value);
 
     /** Set a void pointer list property.
         @deprecated Using void pointers is generally discouraged in C++.
