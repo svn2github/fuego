@@ -14,7 +14,7 @@
 #include <math.h>
 #include "SgDebug.h"
 #include "SgHashTable.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgMath.h"
 #include "SgNode.h"
 #include "SgTime.h"
@@ -129,14 +129,14 @@ bool SgSearchHashData::IsBetterThan(const SgSearchHashData& data) const
 
 namespace {
 
-void WriteMoves(const SgSearch& search, const SgList<SgMove>& sequence)
+void WriteMoves(const SgSearch& search, const SgVector<SgMove>& sequence)
 {
-    for (SgListIterator<SgMove> it(sequence); it; ++it)
+    for (SgVectorIterator<SgMove> it(sequence); it; ++it)
         SgDebug() << ' ' << search.MoveString(*it);
 }
 
 void PrintPV(const SgSearch& search, int depth, int value,
-             const SgList<SgMove>& sequence,
+             const SgVector<SgMove>& sequence,
              bool isExactValue)
 {
     SgDebug() << "Iteration d = " << depth
@@ -178,7 +178,7 @@ SgSearch::~SgSearch()
 {
 }
 
-void SgSearch::CallGenerate(SgList<SgMove>* moves, int depth)
+void SgSearch::CallGenerate(SgVector<SgMove>* moves, int depth)
 {
     Generate(moves, depth);
     if (DEBUG_SEARCH)
@@ -217,7 +217,7 @@ bool SgSearch::LookupHash(SgSearchHashData& data) const
 /** Move killer moves to the front.
     Add them to the list of moves if they were not otherwise generated.
 */
-void SgSearch::MoveKillersToFront(SgList<SgMove>& moves)
+void SgSearch::MoveKillersToFront(SgVector<SgMove>& moves)
 {
     if (m_useKillers && m_currentDepth <= MAX_KILLER_DEPTH)
     {
@@ -292,7 +292,7 @@ bool SgSearch::AbortSearch()
 }
 
 bool SgSearch::ProbCut(int depth, int alpha, int beta,
-                       SgList<SgMove>* sequence, bool* isExactValue,
+                       SgVector<SgMove>* sequence, bool* isExactValue,
                        int* value)
 {
     SG_ASSERT(m_probcut);
@@ -304,7 +304,7 @@ bool SgSearch::ProbCut(int depth, int alpha, int beta,
     int index = 0;
     while (m_probcut->GetCutoff(depth / DEPTH_UNIT, index++, c))
     {
-        SgList<SgMove> seq;
+        SgVector<SgMove> seq;
         bool isExact;
         float threshold = m_probcut->GetThreshold();
 
@@ -347,7 +347,7 @@ bool SgSearch::ProbCut(int depth, int alpha, int beta,
 
 bool SgSearch::NullMovePrune(int depth, int delta, int beta)
 {
-    SgList<SgMove> nullSeq;
+    SgVector<SgMove> nullSeq;
     bool childIsExact = true;
     if (beta >= SG_INFINITY - 1)
         return false;
@@ -403,7 +403,7 @@ int SgSearch::NumNodes() const
 }
 
 int SgSearch::CallEvaluate(int depth, int alpha, int beta,
-                           SgList<SgMove>* sequence, bool* isExact)
+                           SgVector<SgMove>* sequence, bool* isExact)
 {
     // Alpha, beta could be needed in Evaluate. Not implemented yet.
     SG_UNUSED(alpha);
@@ -441,12 +441,12 @@ void SgSearch::CallTakeBack()
     --m_currentDepth;
 }
 
-void SgSearch::AddSequenceToHash(const SgList<SgMove>& sequence, int depth)
+void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
 {
     if (! m_hash)
         return;
     int numMovesToUndo = 0;
-    for (SgListIterator<SgMove> iter(sequence); iter; ++iter)
+    for (SgVectorIterator<SgMove> iter(sequence); iter; ++iter)
     {
         SgMove move = *iter;
         int delta = DEPTH_UNIT;
@@ -478,7 +478,7 @@ void SgSearch::AddSequenceToHash(const SgList<SgMove>& sequence, int depth)
 
 int SgSearch::DFS(int startDepth, int depthLimit,
                 int boundLo, int boundHi,
-                SgList<SgMove>* sequence, bool* isExactValue)
+                SgVector<SgMove>* sequence, bool* isExactValue)
 {
     InitSearch(startDepth);
     SG_ASSERT(m_currentDepth == startDepth);
@@ -491,7 +491,7 @@ int SgSearch::DFS(int startDepth, int depthLimit,
 }
 
 int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
-                               SgList<SgMove>* sequence, bool clearHash,
+                               SgVector<SgMove>* sequence, bool clearHash,
                                SgNode* traceNode)
 {
     SG_ASSERT(sequence);
@@ -524,7 +524,7 @@ int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
 }
 
 int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
-                             int boundHi, SgList<SgMove>* sequence,
+                             int boundHi, SgVector<SgMove>* sequence,
                              bool clearHash, SgNode* traceNode)
 {
     SG_ASSERT(sequence);
@@ -612,7 +612,7 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
 }
 
 int SgSearch::SearchEngine(int depth, int alpha, int beta,
-                           SgList<SgMove>* sequence, bool* isExactValue,
+                           SgVector<SgMove>* sequence, bool* isExactValue,
                            bool lastNullMove)
 {
     SG_ASSERT(sequence);
@@ -770,7 +770,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         }
 
         // Generate the moves for this position.
-        SgList<SgMove> moves;
+        SgVector<SgMove> moves;
         if (! m_aborted)
         {
             CallGenerate(&moves, depth);
@@ -799,10 +799,10 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         int hiValue =
             (fHasMove && m_useScout) ? max(loValue, alpha) + 1 : beta;
 
-        SgList<SgMove> newSeq;
+        SgVector<SgMove> newSeq;
         // Iterate through all the moves to find the best move and
         // correct value for this position.
-        for (SgListIterator<SgMove> it(moves); it; ++it)
+        for (SgVectorIterator<SgMove> it(moves); it; ++it)
         {
             SgMove move = *it;
             int delta = DEPTH_UNIT;

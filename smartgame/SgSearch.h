@@ -12,7 +12,6 @@
 
 #include "SgBlackWhite.h"
 #include "SgHash.h"
-#include "SgList.h"
 #include "SgMove.h"
 #include "SgSearchStatistics.h"
 #include "SgTimer.h"
@@ -544,11 +543,11 @@ public:
         results from a previous search can speed up a re-search.
     */
     int DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
-                         SgList<SgMove>* sequence, bool clearHash = true,
+                         SgVector<SgMove>* sequence, bool clearHash = true,
                          SgNode* traceNode = 0);
 
     /** Call DepthFirstSearch with window [-SG_INFINITY,+SG_INFINITY] */
-    int DepthFirstSearch(int depthLimit, SgList<SgMove>* sequence,
+    int DepthFirstSearch(int depthLimit, SgVector<SgMove>* sequence,
                          bool clearHash = true, SgNode* traceNode = 0);
 
     /** Calls DepthFirstSearch repeatedly with the depth limit starting at
@@ -561,12 +560,12 @@ public:
         results from a previous search can speed up a re-search.
     */
     int IteratedSearch(int depthMin, int depthMax, int boundLo,
-                       int boundHi, SgList<SgMove>* sequence,
+                       int boundHi, SgVector<SgMove>* sequence,
                        bool clearHash = true, SgNode* traceNode = 0);
 
 
     /** Call IteratedSearch with window [-SG_INFINITY,+SG_INFINITY] */
-    int IteratedSearch(int depthMin, int depthMax, SgList<SgMove>* sequence,
+    int IteratedSearch(int depthMin, int depthMax, SgVector<SgMove>* sequence,
                        bool clearHash = true, SgNode* traceNode = 0);
 
     /** During IteratedSearch or CombinedSearch, this returns the current
@@ -641,7 +640,7 @@ public:
         The value is expressed in DEPTH_UNIT rather than using float to be
         stored compactly in the hash table.
     */
-    virtual void Generate(SgList<SgMove>* moves, int depth) = 0;
+    virtual void Generate(SgVector<SgMove>* moves, int depth) = 0;
 
     /** The returned value reflects the value of the position, with
         positive values being good for the current player (ToPlay).
@@ -653,7 +652,7 @@ public:
         @param depth See SgSearch::Generate()
         @return The evaluation of the current position.
     */
-    virtual int Evaluate(SgList<SgMove>* sequence, bool* isExact,
+    virtual int Evaluate(SgVector<SgMove>* sequence, bool* isExact,
                          int depth) = 0;
 
     /** Return true if the move was executed, false if it was illegal
@@ -790,7 +789,7 @@ private:
     int m_prevValue;
 
     /** The PV from the previous search iteration */
-    SgList<SgMove> m_prevSequence;
+    SgVector<SgMove> m_prevSequence;
 
     static const int MAX_KILLER_DEPTH = 10;
 
@@ -805,18 +804,18 @@ private:
 
     /** Depth-first search (see implementation) */
     int DFS(int startDepth, int depthLimit, int boundLo, int boundHi,
-            SgList<SgMove>* sequence, bool* isExactValue);
+            SgVector<SgMove>* sequence, bool* isExactValue);
 
     /** Try to find current position in m_hash */
     bool LookupHash(SgSearchHashData& data) const;
 
-    void MoveKillersToFront(SgList<SgMove>& moves);
+    void MoveKillersToFront(SgVector<SgMove>& moves);
 
     /** Alpha-beta search */
-    int SearchEngine(int depth, int alpha, int beta, SgList<SgMove>* sequence,
+    int SearchEngine(int depth, int alpha, int beta, SgVector<SgMove>* sequence,
                      bool* isExactValue, bool lastNullMove = false);
 
-    bool ProbCut(int depth, int alpha, int beta, SgList<SgMove>* sequence,
+    bool ProbCut(int depth, int alpha, int beta, SgVector<SgMove>* sequence,
                  bool* isExactValue, int* value);
 
     bool NullMovePrune(int depth, int delta, int beta);
@@ -826,17 +825,17 @@ private:
                    bool isLowerBound, bool isExact);
 
     /** Seed the hash table with the given sequence. */
-    void AddSequenceToHash(const SgList<SgMove>& sequence, int depth);
+    void AddSequenceToHash(const SgVector<SgMove>& sequence, int depth);
 
     /** Evaluate current position; possibly write debug output */
     int CallEvaluate(int depth, int alpha, int beta,
-                     SgList<SgMove>* sequence, bool* isExact);
+                     SgVector<SgMove>* sequence, bool* isExact);
 
     /** Execute move; update m_moveStack, m_currentDepth and statistics */
     bool CallExecute(SgMove move, int* delta, int depth);
 
     /** Generate moves; possibly write debug output */
-    void CallGenerate(SgList<SgMove>* moves, int depth);
+    void CallGenerate(SgVector<SgMove>* moves, int depth);
 
     /** Take back move; update m_moveStack and m_currentDepth */
     void CallTakeBack();
@@ -859,7 +858,7 @@ inline int SgSearch::CurrentDepth() const
 }
 
 inline int SgSearch::DepthFirstSearch(int depthLimit,
-                                      SgList<SgMove>* sequence,
+                                      SgVector<SgMove>* sequence,
                                       bool clearHash, SgNode* traceNode)
 {
     return DepthFirstSearch(depthLimit, -SG_INFINITY, SG_INFINITY, sequence,
@@ -882,7 +881,7 @@ inline int SgSearch::IteratedSearchDepthLimit() const
 }
 
 inline int SgSearch::IteratedSearch(int depthMin, int depthMax,
-                                    SgList<SgMove>* sequence, bool clearHash,
+                                    SgVector<SgMove>* sequence, bool clearHash,
                                     SgNode* traceNode)
 {
     return IteratedSearch(depthMin, depthMax, -SG_INFINITY, SG_INFINITY,

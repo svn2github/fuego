@@ -12,6 +12,7 @@
 #include "SgDebug.h"
 #include "SgHashTable.h"
 #include "SgSearch.h"
+#include "SgVector.h"
 
 using namespace std;
 
@@ -47,9 +48,9 @@ public:
 
     bool CheckDepthLimitReached() const;
 
-    void Generate(SgList<SgMove>* moves, int depth);
+    void Generate(SgVector<SgMove>* moves, int depth);
 
-    int Evaluate(SgList<SgMove>* sequence, bool* isExact, int depth);
+    int Evaluate(SgVector<SgMove>* sequence, bool* isExact, int depth);
 
     bool Execute(SgMove move, int* delta, int depth);
 
@@ -165,7 +166,7 @@ inline const TestSearch::TestNode& TestSearch::CurrentNode() const
     return Node(m_currentNode);
 }
 
-void TestSearch::Generate(SgList<SgMove>* moves, int depth)
+void TestSearch::Generate(SgVector<SgMove>* moves, int depth)
 {
     SG_UNUSED(depth);
     if (m_write)
@@ -182,7 +183,7 @@ void TestSearch::Generate(SgList<SgMove>* moves, int depth)
         SgDebug() << '\n';
 }
 
-int TestSearch::Evaluate(SgList<SgMove>* sequence, bool* isExact, int depth)
+int TestSearch::Evaluate(SgVector<SgMove>* sequence, bool* isExact, int depth)
 {
     SG_UNUSED(sequence);
     SG_UNUSED(depth);
@@ -302,12 +303,12 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_Simple)
     search.AddNode(3, 7, 5);
     search.AddNode(3, 8, 6);
     search.AddNode(3, 9, 7);
-    SgList<SgMove> sequence;
+    SgVector<SgMove> sequence;
     int value = search.IteratedSearch(1, 10, -1000, 1000, &sequence, true, 0);
     BOOST_CHECK_EQUAL(value, 5);
     BOOST_CHECK_EQUAL(sequence.Length(), 2);
-    BOOST_CHECK_EQUAL(sequence.At(1), 3);
-    BOOST_CHECK_EQUAL(sequence.At(2), 7);
+    BOOST_CHECK_EQUAL(sequence[0], 3);
+    BOOST_CHECK_EQUAL(sequence[1], 7);
 }
 
 /** Test that result from last iteration is used, if iteration was aborted
@@ -335,13 +336,13 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_IncompleteIteration)
     search.AddNode(1, 4, 6);
     SgSearchControl* control = new SgNodeSearchControl(6);
     search.SetSearchControl(control);
-    SgList<SgMove> sequence;
+    SgVector<SgMove> sequence;
     int value = search.IteratedSearch(1, 10, -1000, 1000, &sequence, true, 0);
     BOOST_CHECK_EQUAL(search.LastEvaluated(), 3u);
     BOOST_CHECK_EQUAL(search.NumNodes(), 6);
     BOOST_CHECK_EQUAL(value, 5);
     BOOST_CHECK_EQUAL(sequence.Length(), 1);
-    BOOST_CHECK_EQUAL(sequence.At(1), 2);
+    BOOST_CHECK_EQUAL(sequence[0], 2);
     delete control;
 }
 
@@ -372,14 +373,14 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_NewBestInIncompleteIteration)
     search.AddNode(3, 7, 1);
     SgSearchControl* control = new SgNodeSearchControl(11);
     search.SetSearchControl(control);
-    SgList<SgMove> sequence;
+    SgVector<SgMove> sequence;
     int value = search.IteratedSearch(1, 10, -1000, 1000, &sequence, true, 0);
     BOOST_CHECK_EQUAL(search.LastEvaluated(), 6u);
     BOOST_CHECK_EQUAL(search.NumNodes(), 11);
     BOOST_CHECK_EQUAL(value, 3);
     BOOST_CHECK_EQUAL(sequence.Length(), 2);
-    BOOST_CHECK_EQUAL(sequence.At(1), 1);
-    BOOST_CHECK_EQUAL(sequence.At(2), 5);
+    BOOST_CHECK_EQUAL(sequence[0], 1);
+    BOOST_CHECK_EQUAL(sequence[1], 5);
     delete control;
 }
 
