@@ -57,6 +57,15 @@ SgWritePointList::SgWritePointList(const vector<SgPoint>& pointList,
 {
 }
 
+SgWritePointList::SgWritePointList(const SgVector<SgPoint>& pointList,
+                                   string label, bool writeSize)
+    : m_writeSize(writeSize),
+      m_label(label)
+{
+    for (SgVectorIterator<SgPoint> it(pointList); it; ++it)
+        m_pointList.push_back(*it);
+}
+
 SgWritePointList::SgWritePointList(const SgList<SgPoint>& pointList,
                                    string label, bool writeSize)
     : m_writeSize(writeSize),

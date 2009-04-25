@@ -18,6 +18,7 @@
 #include "SgList.h"
 #include "SgPoint.h"
 #include "SgSList.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -47,9 +48,15 @@ class SgWritePointList
 {
 public:
     SgWritePointList(const std::vector<SgPoint>& pointList,
-                     std::string label = "", bool writeSize = true);
+                     std::string label = "",
+                     bool writeSize = true);
 
-    SgWritePointList(const SgList<SgPoint>& pointList, std::string label = "",
+    SgWritePointList(const SgList<SgPoint>& pointList,
+                     std::string label = "",
+                     bool writeSize = true);
+
+    SgWritePointList(const SgVector<SgPoint>& pointList,
+                     std::string label = "",
                      bool writeSize = true);
 
     std::ostream& Write(std::ostream& out) const;
