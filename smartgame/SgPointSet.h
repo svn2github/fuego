@@ -16,6 +16,7 @@
 #include "SgList.h"
 #include "SgPoint.h"
 #include "SgRect.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -31,6 +32,7 @@ public:
     ~SgPointSet();
 
     explicit SgPointSet(const SgList<SgPoint>& list);
+    explicit SgPointSet(const SgVector<SgPoint>& list);
 
     SgPointSet& operator-=(const SgPointSet& other);
 
@@ -173,9 +175,11 @@ public:
     
     void Swap(SgPointSet& other) throw();
     
+    SgPointSet& Toggle(SgPoint p);
+
     void ToList(SgList<SgPoint>* list) const;
 
-    SgPointSet& Toggle(SgPoint p);
+    void ToVector(SgVector<SgPoint>* vector) const;
 
     void Write(std::ostream& out, int boardSize) const;
     

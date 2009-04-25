@@ -129,11 +129,25 @@ SgPointSet::SgPointSet(const SgList<SgPoint>& list)
         Include(*it);
 }
 
+SgPointSet::SgPointSet(const SgVector<SgPoint>& list)
+{
+    Clear();
+    for (SgVectorIterator<SgPoint> it(list); it; ++it)
+        Include(*it);
+}
+
 void SgPointSet::ToList(SgList<SgPoint>* list) const
 {
     list->Clear();
     for (SgSetIterator si(*this); si; ++si)
-        list->Append(*si);
+        list->PushBack(*si);
+}
+
+void SgPointSet::ToVector(SgVector<SgPoint>* list) const
+{
+    list->Clear();
+    for (SgSetIterator si(*this); si; ++si)
+        list->PushBack(*si);
 }
 
 void SgPointSet::Write(ostream& out, int boardSize) const
