@@ -13,6 +13,7 @@
 #include <iostream>
 #include "SgList.h"
 #include "SgRandom.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -50,6 +51,7 @@ public:
 
     /**  */
     void GetMoves(SgList<MOVE>* moves) const;
+    void GetMoves(SgVector<MOVE>* moves) const;
 
     /** If move in table: increase its value. otherwise insert (move,value) */
     void SetMinValue(const MOVE& move, VALUE value);
@@ -332,6 +334,13 @@ void SgSortedMoves<MOVE, VALUE, SIZE>::GetMoves(SgList<MOVE>* moves) const
 {
     for (int i = 0; i < m_nuMoves; ++i)
         moves->Append(m_move[i]);
+}
+
+template<typename MOVE, typename VALUE, int SIZE>
+void SgSortedMoves<MOVE, VALUE, SIZE>::GetMoves(SgVector<MOVE>* moves) const
+{
+    for (int i = 0; i < m_nuMoves; ++i)
+        moves->PushBack(m_move[i]);
 }
 
 template<typename MOVE, typename VALUE, int SIZE>
