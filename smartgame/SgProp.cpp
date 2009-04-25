@@ -640,13 +640,13 @@ void SgProp::Init()
                                    + SG_PROPCLASS_NOTCLEAN);
     SG_PROP_OT_PERIOD = Register(timeProp, "OP",
                                  SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
-                                 + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
+                                + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
     SG_PROP_OVERHEAD = Register(timeProp, "OV",
                                 SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
                                 + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
     SG_PROP_LOSE_TIME = Register(simpleProp, "LT",
                                  SG_PROPCLASS_TIME + SG_PROPCLASS_ROOT
-                                 + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
+                                + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
 
     //--- statistics
     // AR: is official property?

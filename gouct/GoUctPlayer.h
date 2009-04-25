@@ -422,7 +422,8 @@ inline void GoUctPlayer<SEARCH, THREAD>::SetResignThreshold(double threshold)
 }
 
 template <class SEARCH, class THREAD>
-inline void GoUctPlayer<SEARCH, THREAD>::SetRootFilter(GoUctRootFilter* filter)
+inline void GoUctPlayer<SEARCH, THREAD>::SetRootFilter(GoUctRootFilter*
+                                                       filter)
 {
     m_rootFilter.reset(filter);
 }

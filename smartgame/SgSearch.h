@@ -812,7 +812,8 @@ private:
     void MoveKillersToFront(SgVector<SgMove>& moves);
 
     /** Alpha-beta search */
-    int SearchEngine(int depth, int alpha, int beta, SgVector<SgMove>* sequence,
+    int SearchEngine(int depth, int alpha, int beta,
+                     SgVector<SgMove>* sequence,
                      bool* isExactValue, bool lastNullMove = false);
 
     bool ProbCut(int depth, int alpha, int beta, SgVector<SgMove>* sequence,
@@ -881,7 +882,8 @@ inline int SgSearch::IteratedSearchDepthLimit() const
 }
 
 inline int SgSearch::IteratedSearch(int depthMin, int depthMax,
-                                    SgVector<SgMove>* sequence, bool clearHash,
+                                    SgVector<SgMove>* sequence, 
+                                    bool clearHash,
                                     SgNode* traceNode)
 {
     return IteratedSearch(depthMin, depthMax, -SG_INFINITY, SG_INFINITY,

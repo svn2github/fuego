@@ -638,7 +638,8 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd, SgList<SgPoint>* stones)
     stones->SwapWith(&result);
 }
 
-void GoBoardUtil::ReduceToAnchors(const GoBoard& bd, SgVector<SgPoint>* stones)
+void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
+                                  SgVector<SgPoint>* stones)
 {
     SG_ASSERT(stones);
     SgVector<SgPoint> result;
@@ -659,7 +660,8 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
             anchors.Include(bd.Anchor(*it));
 }
 
-void GoBoardUtil::RegionCode(const GoBoard& bd, const SgVector<SgPoint>& region,
+void GoBoardUtil::RegionCode(const GoBoard& bd,
+                             const SgVector<SgPoint>& region,
                              SgHashCode* c)
 {
     BOOST_STATIC_ASSERT(SG_BLACK < 2);

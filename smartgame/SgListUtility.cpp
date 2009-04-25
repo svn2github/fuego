@@ -46,14 +46,16 @@ void SgListUtility::Reverse(SgList<int>* list)
 }
 
 //----------------------------------------------------------------------------
-void SgVectorUtility::Difference(SgVector<int>* list, const SgVector<int>& list2)
+void SgVectorUtility::Difference(SgVector<int>* list,
+                                 const SgVector<int>& list2)
 {
     // @todo speed up by using tags, if used in time-critical code.
     for (SgVectorIterator<int> it(list2); it; ++it)
         list->Exclude(*it);
 }
 
-void SgVectorUtility::Intersection(SgVector<int>* list, const SgVector<int>& list2)
+void SgVectorUtility::Intersection(SgVector<int>* list,
+                                   const SgVector<int>& list2)
 {
      SgVector<int> newList;
      for (SgVectorIterator<int> it(*list); it; ++it)

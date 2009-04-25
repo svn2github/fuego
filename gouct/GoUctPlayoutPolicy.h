@@ -344,7 +344,7 @@ void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::Generate(GoPointList& moves)
 
 template<class BOARD>
 GoUctPlayoutPolicy<BOARD>::GoUctPlayoutPolicy(const BOARD& bd,
-                                          const GoUctPlayoutPolicyParam& param)
+                                        const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_param(param),
       m_patterns(bd),
@@ -497,7 +497,7 @@ SG_ATTR_FLATTEN SgPoint GoUctPlayoutPolicy<BOARD>::GenerateMove()
     {
         m_moveType = GOUCT_FILLBOARD;
         mv = m_pureRandomGenerator.GenerateFillboardMove(
-                                                     m_param.m_fillboardTries);
+                                                    m_param.m_fillboardTries);
     }
 
     m_lastMove = m_bd.GetLastMove();

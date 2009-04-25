@@ -526,7 +526,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
-            << "[string] knowledge_threshold " << s.KnowledgeThreshold() << '\n'
+            << "[string] knowledge_threshold "
+            << s.KnowledgeThreshold() << '\n'
             << "[list/none/counts/sequence] live_gfx "
             << LiveGfxToString(s.LiveGfx()) << '\n'
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
