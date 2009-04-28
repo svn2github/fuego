@@ -263,14 +263,23 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
 }
 
 void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
-                              const std::vector<SgMoveInfo>& moves)
+                              const std::vector<SgMoveInfo>& moves,
+                              bool deleteChildTrees)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
     size_t nuNewChildren = moves.size();
-    SG_ASSERT(nuNewChildren > 0);
+
+    if (nuNewChildren == 0)
+    {
+        // Write order dependency
+        nonConstNode.SetNuChildren(0);
+        nonConstNode.SetFirstChild(0);
+        return;
+    }
+
     SgUctAllocator& allocator = Allocator(allocatorId);
     SG_ASSERT(allocator.HasCapacity(nuNewChildren));
 
@@ -287,12 +296,15 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
             if (oldChild.Move() == moves[i].m_move)
             {
                 newChild->MergeResults(oldChild);
-                newChild->SetPosCount(oldChild.PosCount());
-                parentCount += oldChild.MoveCount();
-                if (oldChild.HasChildren())
+                if (!deleteChildTrees)
                 {
-                    newChild->SetFirstChild(oldChild.FirstChild());
-                    newChild->SetNuChildren(oldChild.NuChildren());
+                    newChild->SetPosCount(oldChild.PosCount());
+                    parentCount += oldChild.MoveCount();
+                    if (oldChild.HasChildren())
+                    {
+                        newChild->SetFirstChild(oldChild.FirstChild());
+                        newChild->SetNuChildren(oldChild.NuChildren());
+                    }
                 }
                 break;
             }

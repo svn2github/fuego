@@ -319,11 +319,12 @@ public:
 
     /** Generate moves.
         Moves will be explored in the order of the returned list.
+        If return is true, trees under children will be deleted.
         @param count Number of times node has been visited. For knowledge-
         based computations.
         @param[out] moves The generated moves or empty list at end of game
     */
-    virtual void GenerateAllMoves(std::size_t count, 
+    virtual bool GenerateAllMoves(std::size_t count, 
                                   std::vector<SgMoveInfo>& moves) = 0;
 
     /** Generate random move.
@@ -1064,7 +1065,8 @@ private:
 
     void ExpandNode(SgUctThreadState& state, const SgUctNode& node);
 
-    void CreateChildren(SgUctThreadState& state, const SgUctNode& node);
+    void CreateChildren(SgUctThreadState& state, const SgUctNode& node,
+                        bool deleteChildTrees);
 
     float GetBound(float logPosCount, const SgUctNode& child) const;
 

@@ -596,7 +596,8 @@ public:
         Requires: Allocator(allocatorId).HasCapacity(moves.size())
      */
     void MergeChildren(std::size_t allocatorId, const SgUctNode& node,
-                       const std::vector<SgMoveInfo>& moves);
+                       const std::vector<SgMoveInfo>& moves,
+                       bool deleteChildTrees);
 
     /** Extract subtree to a different tree.
         The tree will be truncated if one of the allocators overflows (can

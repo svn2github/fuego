@@ -139,7 +139,7 @@ public:
 
     float Evaluate();
 
-    void GenerateAllMoves(std::size_t count, std::vector<SgMoveInfo>& moves);
+    bool GenerateAllMoves(std::size_t count, std::vector<SgMoveInfo>& moves);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -405,7 +405,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
 }
 
 template<class POLICY>
-void GoUctGlobalSearchState<POLICY>::GenerateAllMoves(std::size_t count, 
+bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(std::size_t count, 
                                                std::vector<SgMoveInfo>& moves)
 {
     moves.clear();  // FIXME: needed?
@@ -415,6 +415,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateAllMoves(std::size_t count,
         if (count == 0)
             m_priorKnowledge.ProcessPosition(moves);
     }
+    return false;
 }
 
 template<class POLICY>

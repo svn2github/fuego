@@ -611,7 +611,8 @@ float SgUctSearch::Log(float x) const
 /** Creates the children with the given moves and merges with existing
     children in the tree. */
 void SgUctSearch::CreateChildren(SgUctThreadState& state, 
-                                 const SgUctNode& node)
+                                 const SgUctNode& node,
+                                 bool deleteChildTrees)
 {
     size_t threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
@@ -621,7 +622,7 @@ void SgUctSearch::CreateChildren(SgUctThreadState& state,
         state.m_isTreeOutOfMem = true;
         return;
     }
-    m_tree.MergeChildren(threadId, node, state.m_moves);
+    m_tree.MergeChildren(threadId, node, state.m_moves, deleteChildTrees);
 }
 
 void SgUctSearch::OnStartSearch()
@@ -740,10 +741,16 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             SG_ASSERT(current->MoveCount());
             m_statistics.m_knowledge++;
             deepenTree = false;
-            state.GenerateAllMoves(current->MoveCount(), state.m_moves);
+            bool truncate = state.GenerateAllMoves(current->MoveCount(), 
+                                                   state.m_moves);
             if (current == root)
                 ApplyRootFilter(state.m_moves);
-            CreateChildren(state, *current);
+            CreateChildren(state, *current, truncate);
+            if (state.m_moves.empty())
+            {
+                isTerminal = true;
+                break;
+            }
             if (state.m_isTreeOutOfMem)
                 return true;
             if (! deepenTree)
