@@ -54,12 +54,6 @@ void SgRect::Include(const SgRect& rect)
         m_bottom = rect.m_bottom;
 }
 
-void SgRect::Include(const SgList<SgPoint>& list)
-{
-    for (SgListIterator<SgPoint> it(list); it; ++it)
-        Include(*it);
-}
-
 void SgRect::Intersect(const SgRect& rect)
 {
     m_left = max(m_left, rect.m_left);

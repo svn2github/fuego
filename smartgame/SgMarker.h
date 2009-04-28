@@ -8,7 +8,6 @@
 #define SG_MARKER_H
 
 #include "SgArray.h"
-#include "SgList.h"
 #include "SgPoint.h"
 #include "SgPointSet.h"
 
@@ -33,8 +32,6 @@ public:
     void Clear();
 
     void GetPoints(SgPointSet* points) const;
-
-    void GetPoints(SgList<SgPoint>* points) const;
 
 private:
     void Init();
@@ -84,14 +81,6 @@ inline void SgMarker::GetPoints(SgPointSet* points) const
     for (SgPoint p = 0; p < SG_MAXPOINT; ++p)
         if (Contains(p))
             points->Include(p);
-}
-
-inline void SgMarker::GetPoints(SgList<SgPoint>* points) const
-{
-    points->Clear();
-    for (SgPoint p = 0; p < SG_MAXPOINT; ++p)
-        if (Contains(p))
-            points->Append(p);
 }
 
 inline void SgMarker::Include(SgPoint p)

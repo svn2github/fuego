@@ -7,7 +7,6 @@
 #ifndef SG_RECT_H
 #define SG_RECT_H
 
-#include "SgList.h"
 #include "SgPoint.h"
 
 //----------------------------------------------------------------------------
@@ -73,8 +72,6 @@ public:
     void Include(SgPoint p);
 
     void Include(const SgRect& rect);
-
-    void Include(const SgList<SgPoint>& list);
 
     void Intersect(const SgRect& rect);
 
