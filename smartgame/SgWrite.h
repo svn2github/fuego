@@ -109,9 +109,9 @@ SgWriteSPointList<SIZE>::SgWriteSPointList(const SgSList<SgPoint,SIZE>& list,
 template<int SIZE>
 std::ostream& SgWriteSPointList<SIZE>::Write(std::ostream& out) const
 {
-    SgList<SgPoint> list;
+    std::vector<SgPoint> list;
     for (typename SgSList<SgPoint,SIZE>::Iterator it(m_list); it; ++it)
-        list.Append(*it);
+        list.push_back(*it);
     return (out << SgWritePointList(list, m_label, m_writeSize));
 }
 
