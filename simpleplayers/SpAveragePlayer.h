@@ -35,8 +35,8 @@ class SpAveragePlayer
     : public SpSimplePlayer
 {
 public:
-    SpAveragePlayer(GoBoard& board, bool atarigo = false)
-        : SpSimplePlayer(board, new SpAverageMoveGenerator(board), atarigo)
+    SpAveragePlayer(GoBoard& board)
+        : SpSimplePlayer(board, new SpAverageMoveGenerator(board))
     { }
 
     std::string Name() const
@@ -46,7 +46,7 @@ public:
     
     bool UseFilter() const
     { 
-        return ! PlaysAtariGo(); 
+        return true; 
     }
 };
 

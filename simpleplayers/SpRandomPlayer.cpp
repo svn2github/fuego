@@ -15,9 +15,7 @@ int SpRandomMoveGenerator::Score(SgPoint p)
 {
     if (   m_board.IsEmpty(p)
         && m_board.IsLegal(p)
-        && (  m_atariGo
-           || ! GoEyeUtil::IsSinglePointEye(m_board, p, m_board.ToPlay())
-           )
+        && ! GoEyeUtil::IsSinglePointEye(m_board, p, m_board.ToPlay())
        )
         return 1;
     else

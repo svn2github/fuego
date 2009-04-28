@@ -35,8 +35,8 @@ class SpMinLibPlayer
     : public SpSimplePlayer
 {
 public:
-    SpMinLibPlayer(GoBoard& board, bool atarigo = false)
-        : SpSimplePlayer(board, new SpMinLibMoveGenerator(board), atarigo)
+    SpMinLibPlayer(GoBoard& board)
+        : SpSimplePlayer(board, new SpMinLibMoveGenerator(board))
     { }
 
     std::string Name() const
@@ -46,7 +46,7 @@ public:
     
     bool UseFilter() const
     { 
-        return ! PlaysAtariGo(); 
+        return true; 
     }
 };
 

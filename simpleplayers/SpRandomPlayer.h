@@ -19,15 +19,11 @@ class SpRandomMoveGenerator
     : public SpStaticMoveGenerator
 {
 public:
-    SpRandomMoveGenerator(GoBoard& board, bool atarigo)
-        : SpStaticMoveGenerator(board),
-          m_atariGo(atarigo)
+    SpRandomMoveGenerator(GoBoard& board)
+        : SpStaticMoveGenerator(board)
     { }
 
     virtual int Score(SgPoint p);
-    
-private:
-    bool m_atariGo;
 };
 
 //----------------------------------------------------------------------------
@@ -37,9 +33,8 @@ class SpRandomPlayer
     : public SpSimplePlayer
 {
 public:
-    SpRandomPlayer(GoBoard& board, bool atarigo = false)
-        : SpSimplePlayer(board, new SpRandomMoveGenerator(board, atarigo),
-                         atarigo)
+    SpRandomPlayer(GoBoard& board)
+        : SpSimplePlayer(board, new SpRandomMoveGenerator(board))
     { }
 
     std::string Name() const

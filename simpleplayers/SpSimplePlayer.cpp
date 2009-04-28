@@ -23,12 +23,10 @@
 
 //----------------------------------------------------------------------------
 
-SpSimplePlayer::SpSimplePlayer(GoBoard& board, SpMoveGenerator* generator,
-                               bool atarigo)
+SpSimplePlayer::SpSimplePlayer(GoBoard& board, SpMoveGenerator* generator)
     : GoPlayer(board),
       m_generator(generator),
-      m_randomGenerator(new SpRandomMoveGenerator(board, atarigo)),
-      m_atariGo(atarigo)
+      m_randomGenerator(new SpRandomMoveGenerator(board))
 {
 }
 
@@ -67,15 +65,7 @@ SgPoint SpSimplePlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
         SpUtil::GetRelevantMoves(Board(), toPlay, UseFilter());
     // Generate moves.
     SgEvaluatedMovesArray moves(relevant);
-    // If playing atari go then play largest available capture move
-    if (m_atariGo)
-    {
-        SpCaptureMoveGenerator captureGenerator(Board());
-        captureGenerator.GenerateMoves(moves, toPlay);
-        if (moves.BestMove() != SG_PASS)
-            return moves.BestMove();
-        // No need to clear moves if no captures were generated
-    }
+    
     // note: generators can disable certain unwanted moves by calling
     // Disable(p)
     m_generator->GenerateMoves(moves, toPlay);

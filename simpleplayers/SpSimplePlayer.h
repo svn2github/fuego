@@ -31,13 +31,7 @@ public:
     virtual int MoveValue(SgPoint p);
 
 protected:
-    SpSimplePlayer(GoBoard& board, SpMoveGenerator* generator,
-                   bool atarigo = false);
-
-    bool PlaysAtariGo() const
-    {
-        return m_atariGo;
-    }
+    SpSimplePlayer(GoBoard& board, SpMoveGenerator* generator);
             
 private:
     /** Move generator */
@@ -45,12 +39,6 @@ private:
 
     /** Use random generator if no other move found */
     SpRandomMoveGenerator* m_randomGenerator;
-
-    /** AtariGo flag causes following changes:
-        -Always capture if possible. 
-        -Pass move disabled. 
-        -Random moves may fill own eyes. */
-    const bool m_atariGo;
 
     /** Don't play on safe points */
     virtual bool UseFilter() const 
