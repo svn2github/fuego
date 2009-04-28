@@ -11,7 +11,6 @@
 #define SG_SORTEDMOVES_H
 
 #include <iostream>
-#include "SgList.h"
 #include "SgRandom.h"
 #include "SgVector.h"
 
@@ -50,7 +49,6 @@ public:
     bool GetMove(const MOVE& move, VALUE &value, int &index) const;
 
     /**  */
-    void GetMoves(SgList<MOVE>* moves) const;
     void GetMoves(SgVector<MOVE>* moves) const;
 
     /** If move in table: increase its value. otherwise insert (move,value) */
@@ -327,13 +325,6 @@ void SgSortedMoves<MOVE, VALUE, SIZE>::Shuffle()
         if (j > i + 1)
             ShuffleInterval(i, j - 1);
     }
-}
-
-template<typename MOVE, typename VALUE, int SIZE>
-void SgSortedMoves<MOVE, VALUE, SIZE>::GetMoves(SgList<MOVE>* moves) const
-{
-    for (int i = 0; i < m_nuMoves; ++i)
-        moves->Append(m_move[i]);
 }
 
 template<typename MOVE, typename VALUE, int SIZE>
