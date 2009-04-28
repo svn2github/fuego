@@ -89,7 +89,7 @@ public:
 
     void ExecutePlayout(SgMove move);
 
-    void GenerateAllMoves(std::size_t count, vector<SgMoveInfo>& moves);
+    bool GenerateAllMoves(std::size_t count, vector<SgMoveInfo>& moves);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -163,7 +163,7 @@ float TestThreadState::Evaluate()
     return CurrentNode().m_eval;
 }
 
-void TestThreadState::GenerateAllMoves(std::size_t count, 
+bool TestThreadState::GenerateAllMoves(std::size_t count, 
                                        vector<SgMoveInfo>& moves)
 {
     if (WRITE)
@@ -193,6 +193,8 @@ void TestThreadState::GenerateAllMoves(std::size_t count,
 
     if (WRITE)
         SgDebug() << '\n';
+
+    return false;
 }
 
 SgMove TestThreadState::GeneratePlayoutMove(bool& skipRaveUpdate)
