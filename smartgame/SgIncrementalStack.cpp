@@ -27,7 +27,7 @@ void SgIncrementalStack::PushPts(int type, SgEmptyBlackWhite col,
     int nu = 0;
     for (SgSetIterator it(pts); it; ++it)
     {
-        PushInt(*it);
+        PushPoint(*it);
         ++nu;
     }
     PushInt(col);
@@ -39,7 +39,7 @@ void SgIncrementalStack::PushPt(int type, SgEmptyBlackWhite col, SgPoint pt)
 // same as PushPts for a single point AR: could be optimized for space by
 // using different type tags for single and multiple point
 {
-    PushInt(pt);
+    PushPoint(pt);
     PushInt(col);
     PushInt(1);// nu pts
     PushInt(type);
@@ -63,48 +63,48 @@ void SgIncrementalStack::Clear()
 
 void SgIncrementalStack::SubtractPoints(SgPointSet* set)
 {
-    int nu = m_stack.Pop().m_int;
-    SgEmptyBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgEmptyBlackWhite col = PopInt();
     SG_UNUSED(col);
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         set->Exclude(p);
     }
 }
 
 void SgIncrementalStack::AddPoints(SgPointSet* set)
 {
-    int nu = m_stack.Pop().m_int;
-    SgEmptyBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgEmptyBlackWhite col = PopInt();
     SG_UNUSED(col);
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         set->Include(p);
     }
 }
 
 void SgIncrementalStack::SubtractPoints(SgBWSet* set)
 {
-    int nu = m_stack.Pop().m_int;
-    SgBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgBlackWhite col = PopInt();
     SgPointSet& s = (*set)[col];
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         s.Exclude(p);
     }
 }
 
 void SgIncrementalStack::AddPoints(SgBWSet* set)
 {
-    int nu = m_stack.Pop().m_int;
-    SgBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgBlackWhite col = PopInt();
     SgPointSet& s = (*set)[col];
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         s.Include(p);
     }
 }
@@ -112,13 +112,13 @@ void SgIncrementalStack::AddPoints(SgBWSet* set)
 void SgIncrementalStack::SubtractAndAddPoints(SgBWSet* subtractset,
             SgBWSet* addset)
 {
-    int nu = m_stack.Pop().m_int;
-    SgBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgBlackWhite col = PopInt();
     SgPointSet& s1 = (*subtractset)[col];
     SgPointSet& s2 = (*addset)[col];
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         s1.Exclude(p);
         s2.Include(p);
     }
@@ -127,13 +127,13 @@ void SgIncrementalStack::SubtractAndAddPoints(SgBWSet* subtractset,
 void SgIncrementalStack::SubtractAndAddPoints(SgPointSet* subtractset,
                                        SgBWSet* addset)
 {
-    int nu = m_stack.Pop().m_int;
-    SgBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgBlackWhite col = PopInt();
     SgPointSet& s1 = (*subtractset);
     SgPointSet& s2 = (*addset)[col];
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         s1.Exclude(p);
         s2.Include(p);
     }
@@ -142,13 +142,13 @@ void SgIncrementalStack::SubtractAndAddPoints(SgPointSet* subtractset,
 void SgIncrementalStack::SubtractAndAddPoints(SgBWSet* subtractset,
                                        SgPointSet* addset)
 {
-    int nu = m_stack.Pop().m_int;
-    SgBlackWhite col = m_stack.Pop().m_int;
+    int nu = PopInt();
+    SgBlackWhite col = PopInt();
     SgPointSet& s1 = (*subtractset)[col];
     SgPointSet& s2 = (*addset);
     for (int i = 1; i <= nu; ++i)
     {
-        SgPoint p = m_stack.Pop().m_int;
+        SgPoint p = PopPoint();
         s1.Exclude(p);
         s2.Include(p);
     }

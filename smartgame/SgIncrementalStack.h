@@ -8,7 +8,7 @@
 #define SG_INCREMENTALSTACK_H
 
 #include "SgBoardColor.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgPoint.h"
 
 class SgPointSet;
@@ -49,31 +49,47 @@ public:
     
     void PushPtr(void* ptr)
     {
-        m_stack.Push(IntOrPtr(ptr));
+        m_stack.PushBack(IntOrPtr(ptr));
     }
     
     void PushPtrEvent(int type, void* ptr);
 
     void PushInt(int i)
     {
-        m_stack.Push(IntOrPtr(i));
+        m_stack.PushBack(IntOrPtr(i));
+    }
+
+    /** relies on SgPoint == int; add to union if that changes */
+    void PushPoint(SgPoint p)
+    {
+        m_stack.PushBack(IntOrPtr(p));
     }
 
     void StartMoveInfo();
 
     SgIncrementalStackEvent PopEvent()
     {
-        return static_cast<SgIncrementalStackEvent>(m_stack.Pop().m_int);
+        return static_cast<SgIncrementalStackEvent>(PopInt());
     }
 
     void* PopPtr()
     {
-        return m_stack.Pop().m_ptr;
+        void* p = m_stack.Back().m_ptr;
+        m_stack.PopBack();
+        return p;
     }
 
     int PopInt()
     {
-        return m_stack.Pop().m_int;
+        int i = m_stack.Back().m_int;
+        m_stack.PopBack();
+        return i;
+    }
+    
+    /** relies on SgPoint == int; add to union if that changes */
+    SgPoint PopPoint()
+    {
+        return PopInt();
     }
     
     void SubtractPoints(SgPointSet* set);
@@ -114,7 +130,7 @@ private:
     };
 
     /** Stores incremental state changes for execute/undo moves */
-    SgList<IntOrPtr> m_stack;
+    SgVector<IntOrPtr> m_stack;
 };
 
 //----------------------------------------------------------------------------
