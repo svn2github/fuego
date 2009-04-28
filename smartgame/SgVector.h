@@ -57,15 +57,26 @@ public:
         return ! (*this == rhs);
     }
     
-    /** Add a single element at the end of the list. */
+    /** Add a single element at the end of the vector.
+        @deprecated use PushBack instead.
+    */
     void Append(const T& elt)
     {
         PushBack(elt);
     }
     
-    /** Append all elements from <code>list</code> at the end of this list. */
-    void AppendList(const SgVector<T>& list);
+    /** Append all elements from <code>vector</code> to end of this vector. */
+    void AppendList(const SgVector<T>& vector);
     
+    /** Returns the last element of the vector.
+        Asserts if the list is empty.
+    */
+    const T& Back() const
+    {
+        SG_ASSERT(NonEmpty());
+        return m_vec.back();
+    }
+
     /** Remove all elements in this list. */
     void Clear()
     {
@@ -215,6 +226,7 @@ public:
 
     /** Returns the last element of the list.
         Asserts if the list is empty.
+        @deprecated; use Back() instead
     */
     const T& Tail() const
     {
