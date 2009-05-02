@@ -118,13 +118,6 @@ public:
     /** Return whether there is a next node in the given direction. */
     bool CanGoInDirection(SgNode::Direction dir) const;
 
-    /** Set up the text or property to search for.
-        Modifies the GoInDirection command when PREV_DEPTHFIRST or
-        NEXT_DEPTHFIRST is passed.
-        An empty text restores it to next/previous node.
-    */
-    void SetUpFind(const std::string& text);
-
     /** Set the current player. */
     void SetToPlay(SgBlackWhite player);
 
@@ -166,9 +159,6 @@ public:
     /** Whether this game record owns the game tree. */
     bool OwnsTree() const;
 
-    /** Delete the current node from the tree and go to the previous move. */
-    void DeleteCurrentNode();
-
     bool CanDeleteCurrentNode() const;
 
     /** Return the move of the current node.
@@ -181,16 +171,6 @@ public:
     */
     int CurrentMoveNumber() const;
 
-    /** Reorder the tree such that the current node is on the main branch. */
-    void PromoteCurrentToMain();
-
-    /** Add the newest comment passed in '*comment' to the most recent
-        node at which UpdateComment was called last.
-        Change 'comment' to the comment associated with the current node.
-        Return true if the comment string got changed.
-    */
-    bool UpdateComment(std::string* comment);
-
 private:
     /** The position in the current tree. */
     SgNode* m_current;
@@ -201,9 +181,6 @@ private:
 
     /** A record of the clock settings and time left. */
     SgTimeRecord m_time;
-
-    /** Text to search for. */
-    std::string m_findText;
 
     /** Whether this game record owns the game tree. */
     bool m_ownsTree;

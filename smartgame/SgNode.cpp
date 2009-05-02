@@ -324,27 +324,6 @@ SgNode* SgNode::NodeInDirection(Direction dir) const
     return node;
 }
 
-SgNode* SgNode::FindNodeInDirection(Direction dir, const string& findText)
-{
-    SgNode* node = NodeInDirection(dir);
-    if (dir == PREV_DEPTHFIRST || dir == NEXT_DEPTHFIRST)
-    {
-        // Go through whole tree until found node or back at current node.
-        SgPropID id = SgProp::ConvertFindTextToPropID(findText);
-        if (id == SG_PROP_NONE)
-        {
-            while (node != this && ! node->ContainsText(findText))
-                node = node->NodeInDirection(dir);
-        }
-        else
-        {
-            while (node != this && ! node->HasProp(id))
-                node = node->NodeInDirection(dir);
-        }
-    }
-    return node;
-}
-
 bool SgNode::ContainsText(const string& findText)
 {
     // Handle check for special properties outside of this function.

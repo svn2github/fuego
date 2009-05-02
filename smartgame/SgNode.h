@@ -156,12 +156,6 @@ public:
     */
     SgNode* NodeInDirection(Direction dir) const;
 
-    /** Find the next node with the given text in the given direction.
-        If dir is PREV_DEPTHFIRST or NEXT_DEPTHFIRST, otherwise simply pass
-        the query on to NodeInDirection.
-    */
-    SgNode* FindNodeInDirection(Direction dir, const std::string& findText);
-
     /** Return whether this node contains a property that matches the given
         text.
         Doesn't handle text representing special properties.

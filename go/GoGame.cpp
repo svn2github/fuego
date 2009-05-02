@@ -41,7 +41,6 @@ GoGameRecord::GoGameRecord(GoBoard& board)
     : m_current(0),
       m_board(board),
       m_time(),
-      m_findText(),
       m_ownsTree(true),
       m_oldCommentNode(0),
       m_numMovesToInsert(0)
@@ -151,21 +150,6 @@ int GoGameRecord::CurrentMoveNumber() const
     return SgNodeUtil::GetMoveNumber(m_current);
 }
 
-void GoGameRecord::DeleteCurrentNode()
-{
-    if (CanGoInDirection(SgNode::PREVIOUS))
-    {
-        // Delete the current node, go to the previous move.
-        SgNode* node = CurrentNode();
-        GoInDirection(SgNode::PREVIOUS);
-        delete node;
-
-        // Make sure UpdateComment knows that this node is gone.
-        if (m_oldCommentNode == node)
-            m_oldCommentNode = 0;
-    }
-}
-
 void GoGameRecord::DeleteTreeAndInitState()
 {
     // Delete previous game tree if we own it.
@@ -211,8 +195,7 @@ bool GoGameRecord::GetScore(int* score) const
 
 void GoGameRecord::GoInDirection(SgNode::Direction dir)
 {
-    SgNode* node = m_findText.empty() ? m_current->NodeInDirection(dir)
-        : m_current->FindNodeInDirection(dir, m_findText);
+    SgNode* node = m_current->NodeInDirection(dir);
     if (node != m_current)
         GoToNode(node);
 }
@@ -362,11 +345,6 @@ void GoGameRecord::OnInitHandicap(const GoRules& rules, SgNode* root)
     }
 }
 
-void GoGameRecord::PromoteCurrentToMain()
-{
-    m_current->PromotePath();
-}
-
 void GoGameRecord::SetToPlay(SgBlackWhite player)
 {
     if (player != m_board.ToPlay())
@@ -381,58 +359,6 @@ void GoGameRecord::SetToPlay(SgBlackWhite player)
             m_time.EnterNode(*m_current, player);
         }
     }
-}
-
-void GoGameRecord::SetUpFind(const string& text)
-{
-    m_findText = text;
-}
-
-bool GoGameRecord::UpdateComment(std::string* comment)
-{
-    SG_ASSERT(comment);
-    // If at the same node as before, no need to do anything.
-    if (m_oldCommentNode == m_current)
-        return false;
-    // Keep old comment for comparison.
-    string oldComment(*comment);
-    // If not at the same node as before, need to store newest comment
-    // in the previous node.
-    if (m_oldCommentNode)
-    {
-        SgPropList& props = m_oldCommentNode->Props();
-        SgPropText* p = static_cast<SgPropText*>(props.Get(SG_PROP_COMMENT));
-        if (p)
-        {
-            // Remove comment property if empty comment, otherwise update
-            // to newest string.
-            if (comment->empty())
-                props.Remove(p);
-            else
-                p->Value() = *comment;
-        }
-        else if (! comment->empty())
-        {
-            // Create a new comment property.
-            p = new SgPropText(SG_PROP_COMMENT, *comment);
-            m_oldCommentNode->Add(p);
-        }
-    }
-
-    // Get the comment from the current node.
-    if (m_current)
-    {
-        SgPropList& props = m_current->Props();
-        SgPropText* p = static_cast<SgPropText*>(props.Get(SG_PROP_COMMENT));
-        if (p)
-            *comment = p->Value();
-        else
-            comment->clear();
-    }
-    // Save current node as most recent comment node.
-    m_oldCommentNode = m_current;
-    // Return whether comment got changed.
-    return oldComment != *comment;
 }
 
 //----------------------------------------------------------------------------
