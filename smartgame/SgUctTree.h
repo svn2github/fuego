@@ -205,6 +205,12 @@ public:
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(float value, float count);
 
+    /** Returns the last time knowledge was computed. */
+    std::size_t KnowledgeCount() const;
+
+    /** Set that knowledge has been computed at count. */
+    void SetKnowledgeCount(std::size_t count);
+
 private:
     SgStatisticsBase<volatile float,volatile std::size_t> m_statistics;
 
@@ -221,6 +227,8 @@ private:
     SgStatisticsBase<volatile float,volatile float> m_raveValue;
 
     volatile std::size_t m_posCount;
+
+    volatile std::size_t m_knowledgeCount;
 };
 
 inline SgUctNode::SgUctNode(const SgMoveInfo& info)
@@ -228,7 +236,8 @@ inline SgUctNode::SgUctNode(const SgMoveInfo& info)
       m_nuChildren(0),
       m_move(info.m_move),
       m_raveValue(info.m_raveValue, info.m_raveCount),
-      m_posCount(0)
+      m_posCount(0),
+      m_knowledgeCount(0)
 {
     // m_firstChild is not initialized, only defined if m_nuChildren > 0
 }
@@ -267,6 +276,7 @@ inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
     m_move = node.m_move;
     m_raveValue = node.m_raveValue;
     m_posCount = node.m_posCount;
+    m_knowledgeCount = node.m_knowledgeCount;
 }
 
 inline const SgUctNode* SgUctNode::FirstChild() const
@@ -360,6 +370,16 @@ inline void SgUctNode::SetNuChildren(int nuChildren)
 inline void SgUctNode::SetPosCount(std::size_t value)
 {
     m_posCount = value;
+}
+
+inline std::size_t SgUctNode::KnowledgeCount() const
+{
+    return m_knowledgeCount;
+}
+
+inline void SgUctNode::SetKnowledgeCount(std::size_t count)
+{
+    m_knowledgeCount = count;
 }
 
 //----------------------------------------------------------------------------

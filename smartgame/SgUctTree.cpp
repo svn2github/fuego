@@ -296,6 +296,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
             if (oldChild.Move() == moves[i].m_move)
             {
                 newChild->MergeResults(oldChild);
+                newChild->SetKnowledgeCount(oldChild.KnowledgeCount());
                 if (!deleteChildTrees)
                 {
                     newChild->SetPosCount(oldChild.PosCount());
