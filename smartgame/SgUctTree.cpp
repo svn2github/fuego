@@ -183,7 +183,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
             // nodes, because allocators are used differently.
             if (warnTruncate)
                 SgDebug() <<
-                    "SgUctTree::CopySubtree: Truncated (allocator capacity)\n";
+                "SgUctTree::CopySubtree: Truncated (allocator capacity)\n";
             abort = true;
         }
         if (timer.IsTimeOut(maxTime, 10000))

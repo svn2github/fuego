@@ -21,7 +21,7 @@ public:
     { }
     
     /** Return reference to element.
-        @param index Position of the element in range <code>0..length-1</code>.
+        @param index Position of element in range <code>0..length-1</code>.
     */
     T& operator[](int index)
     {
@@ -29,7 +29,7 @@ public:
     }
 
     /** Return const reference to element.
-        @param index Position of the element in range <code>0..length-1</code>.
+        @param index Position of element in range <code>0..length-1</code>.
     */
     const T& operator[](int index) const
     {
