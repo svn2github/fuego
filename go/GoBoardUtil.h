@@ -232,8 +232,6 @@ namespace GoBoardUtil
         adding the points.
         @note SgList is not thread-safe
     */
-//    void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
-//                          SgList<SgPoint>* neighbors);
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgVector<SgPoint>* neighbors);
 

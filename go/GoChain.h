@@ -112,7 +112,10 @@ public:
                GoChainCondition* cond);
     
     /** Destructor */
-    virtual ~GoChain(){++s_free;}
+    virtual ~GoChain()
+    {
+        ++s_free;
+    }
 
     /** For debugging */
     void CheckConsistency(const GoBoard& bd) const;
