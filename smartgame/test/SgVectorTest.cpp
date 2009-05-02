@@ -224,8 +224,13 @@ BOOST_AUTO_TEST_CASE(SgVectorTestIsSorted)
     for (int i = 0; i < 10; ++i)
         a.PushBack(i);
     BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK(a.IsSortedAndUnique());
+    a.PushBack(9);
+    BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK(! a.IsSortedAndUnique());
     a.PushBack(5);    
     BOOST_CHECK(! a.IsSorted()); 
+    BOOST_CHECK(! a.IsSortedAndUnique());
     
     // descending
     SgVector<int> b;                 
@@ -341,6 +346,28 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPushBack)
     BOOST_CHECK_EQUAL(a[0], 0);
     BOOST_CHECK_EQUAL(a[1], 1);
     BOOST_CHECK_EQUAL(a.Length(), 2);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestRemoveDuplicates)
+{
+    SgVector<int> a;                 
+    BOOST_CHECK(a.IsSorted());
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    BOOST_CHECK(a.UniqueElements());
+    a.PushBack(9);
+    BOOST_CHECK_EQUAL(a.Length(), 11);
+    BOOST_CHECK(! a.UniqueElements());
+    a.RemoveDuplicates();
+    BOOST_CHECK_EQUAL(a.Length(), 10);
+    BOOST_CHECK(a.UniqueElements());
+    for (int i = 9; i >= 0; --i)
+        a.PushBack(i);
+    BOOST_CHECK_EQUAL(a.Length(), 20);
+    BOOST_CHECK(! a.UniqueElements());
+    a.RemoveDuplicates();
+    BOOST_CHECK_EQUAL(a.Length(), 10);
+    BOOST_CHECK(a.UniqueElements());
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestSetTo_Element)

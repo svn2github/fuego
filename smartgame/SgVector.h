@@ -9,8 +9,6 @@
 #include <functional>
 #include <vector>
 
-using std::greater;
-using std::less;
 using std::vector;
 
 template<typename T>
@@ -144,8 +142,11 @@ public:
         return Length() == length;
     }
 
-    /** Returns whether the list is sorted in ascending order. */
+    /** Returns whether the list is sorted in given order. */
     bool IsSorted(bool ascending = true) const;
+
+    /** Returns whether the list is sorted and has no duplicates. */
+    bool IsSortedAndUnique(bool ascending = true) const;
 
     /** Return the number of elements in this list. */
     int Length() const
@@ -201,6 +202,12 @@ public:
         m_vec.push_back(elt);
     }
 
+    /** Removes all but the first copy of each element from the list.
+        After calling @c RemoveDuplicates(), @c UniqueElements() is @c true.
+        @return true, if at least one duplicate was removed
+    */
+    bool RemoveDuplicates();
+    
     /** Clear this list and set it to contain only <code>elt</code>. */
     void SetTo(const T& elt)
     {
@@ -257,6 +264,14 @@ public:
         Appends new elements at the end of this list.
     */
     void Union(const SgVector<T>& set);
+
+    /** Check for duplicate elements.
+        @return <code>true</code> if there are no duplicate elements in
+        the list.
+        Useful for debugging.
+        @todo speed it up
+    */
+    bool UniqueElements() const;
 
     std::vector<T>& Vector()
     {
@@ -557,9 +572,22 @@ bool SgVector<T>::IsSorted(bool ascending) const
 {
     typename vector<T>::const_iterator result;
     if (ascending)
-        result = adjacent_find(m_vec.begin(), m_vec.end(), greater<T>());
+        result = adjacent_find(m_vec.begin(), m_vec.end(), std::greater<T>());
     else
-        result = adjacent_find(m_vec.begin(), m_vec.end(), less<T>());
+        result = adjacent_find(m_vec.begin(), m_vec.end(), std::less<T>());
+    return result == m_vec.end();
+}
+
+template<typename T>
+bool SgVector<T>::IsSortedAndUnique(bool ascending) const
+{
+    typename vector<T>::const_iterator result;
+    if (ascending)
+        result = adjacent_find(m_vec.begin(), m_vec.end(), 
+                               std::greater_equal<T>());
+    else
+        result = adjacent_find(m_vec.begin(), m_vec.end(),
+                               std::less_equal<T>());
     return result == m_vec.end();
 }
 
@@ -625,6 +653,39 @@ void SgVector<T>::Union(const SgVector<T>& set)
     for (SgVectorIterator<T> it(set); it; ++it)
         Include(*it);
 }
+
+template<typename T>
+bool SgVector<T>::RemoveDuplicates()
+{
+    // @todo n^2; could be made much faster with tags
+    SgVector<T> uniqueList;
+    for (SgVectorIterator<T> it(*this); it; ++it)
+        if (! uniqueList.Contains(*it))
+            uniqueList.PushBack(*it);
+    SwapWith(&uniqueList); // avoid copying
+    SG_ASSERT(UniqueElements());
+    return uniqueList.Length() != Length();
+}
+
+template<typename T>
+bool SgVector<T>::UniqueElements() const
+{
+    // @todo n^2; could be made much faster with tags
+    if (MinLength(2))
+    {
+        if (IsSorted())
+            return IsSortedAndUnique();
+        else
+            for (int i=0; i < Length() - 1; ++i)
+            for (int j= i+1; j < Length(); ++j)
+            {
+                if (m_vec[i] == m_vec[j])
+                    return false;
+            }
+    }
+    return true;
+}
+
 //----------------------------------------------------------------------------
 
 #endif // SG_VECTOR_H
