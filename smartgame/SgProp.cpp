@@ -18,6 +18,7 @@
 #include "SgList.h"
 #include "SgRect.h"
 #include "SgUtil.h"
+#include "SgVector.h"
 
 using namespace std;
 using SgPointUtil::InBoardRange;
@@ -1106,13 +1107,13 @@ bool SgPropText::ContainsText(const string& findText)
 
 //----------------------------------------------------------------------------
 
-SgPropTextList::SgPropTextList(SgPropID id, const SgList<SgPoint>& points,
-                               SgListOf<std::string> strings)
+SgPropTextList::SgPropTextList(SgPropID id, const SgVector<SgPoint>& points,
+                               SgVectorOf<std::string> strings)
     : SgProp(id),
       m_points(points),
       m_strings()
 {
-    for (SgListIteratorOf<string> it(strings); it; ++it)
+    for (SgVectorIteratorOf<string> it(strings); it; ++it)
     {
         m_strings.Append(new string(*(*it)));
     }
@@ -1120,7 +1121,7 @@ SgPropTextList::SgPropTextList(SgPropID id, const SgList<SgPoint>& points,
 
 SgPropTextList::~SgPropTextList()
 {
-    for (SgListIteratorOf<string> it(m_strings); it; ++it)
+    for (SgVectorIteratorOf<string> it(m_strings); it; ++it)
     {
         delete *it;
     }
@@ -1134,9 +1135,9 @@ SgProp* SgPropTextList::Duplicate() const
 bool SgPropTextList::GetStringAtPoint(SgPoint p, string* s) const
 {
     int index = m_points.Index(p);
-    if (index > 0)
+    if (index >= 0)
     {
-        *s = *m_strings.At(index);
+        *s = *m_strings[index];
         return true;
     }
     return false;
@@ -1160,10 +1161,10 @@ void SgPropTextList::AppendToStringAtPoint(SgPoint p, const string& s)
 void SgPropTextList::ClearStringAtPoint(SgPoint p)
 {
     int index = m_points.Index(p);
-    if (index > 0)
+    if (index >= 0)
     {
         m_points.DeleteAt(index);
-        delete m_strings.At(index);
+        delete m_strings[index];
         m_strings.DeleteAt(index);
     }
 }
@@ -1177,13 +1178,14 @@ bool SgPropTextList::ToString(std::vector<std::string>& values,
         return false;
     values.clear();
     int index = 0;
-    for (SgListIterator<SgPoint> iter(m_points); iter; ++iter)
+    for (SgVectorIterator<SgPoint> it(m_points); it; ++it)
     {
         ostringstream buffer;
-        buffer << PointToSgfString(*iter, boardSize, fmt, fileFormat) << ':'
-               << EscapeSpecialCharacters(*m_strings.At(++index), true)
+        buffer << PointToSgfString(*it, boardSize, fmt, fileFormat) << ':'
+               << EscapeSpecialCharacters(*m_strings[index], true)
                ;
         values.push_back(buffer.str());
+        ++index;
     }
     return true;
 }
@@ -1212,7 +1214,7 @@ bool SgPropTextList::FromString(const std::vector<std::string>& values,
 
 bool SgPropTextList::ContainsText(const string& findText)
 {
-    for (SgListIteratorOf<string> it(m_strings); it; ++it)
+    for (SgVectorIteratorOf<string> it(m_strings); it; ++it)
     {
         if ((*it)->find(findText) != string::npos)
             return true;

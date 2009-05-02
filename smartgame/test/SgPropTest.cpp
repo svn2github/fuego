@@ -154,6 +154,38 @@ BOOST_AUTO_TEST_CASE(SgPropTextTest_ToString_All)
     SgPropTextTest_ToString("ab\\c", "ab\\\\c");
 }
 
+BOOST_AUTO_TEST_CASE(SgPropTextListTest)
+{
+    SgPropTextList list(SG_PROP_UNKNOWN);
+    SgPoint p = Pt(3,5);
+    string s;
+    bool hasString = list.GetStringAtPoint(p, &s);
+    BOOST_CHECK_EQUAL(hasString, false);
+    SgVector<SgPoint> pv = list.GetPointsWithText();
+    BOOST_CHECK_EQUAL(pv.Length(), 0);
+    list.AddStringAtPoint(p, "bla");
+    hasString = list.GetStringAtPoint(p, &s);
+    BOOST_CHECK_EQUAL(hasString, true);
+    BOOST_CHECK_EQUAL(s, "bla");
+    pv = list.GetPointsWithText();
+    BOOST_CHECK_EQUAL(pv.Length(), 1);
+    list.AppendToStringAtPoint(p, "blu");
+    hasString = list.GetStringAtPoint(p, &s);
+    BOOST_CHECK_EQUAL(hasString, true);
+    BOOST_CHECK_EQUAL(s, "blablu");
+    list.ClearStringAtPoint(p);
+    hasString = list.GetStringAtPoint(p, &s);
+    BOOST_CHECK_EQUAL(hasString, false);
+    pv = list.GetPointsWithText();
+    BOOST_CHECK_EQUAL(pv.Length(), 0);
+    list.AppendToStringAtPoint(p, "blu");
+    hasString = list.GetStringAtPoint(p, &s);
+    BOOST_CHECK_EQUAL(hasString, true);
+    BOOST_CHECK_EQUAL(s, "blu");
+    pv = list.GetPointsWithText();
+    BOOST_CHECK_EQUAL(pv.Length(), 1);
+}
+
 
 void SgPropRealTest_ToString(double value, const char* targetValue,
                              int precision)

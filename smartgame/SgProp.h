@@ -17,6 +17,7 @@
 #include "SgBlackWhite.h"
 #include "SgList.h"
 #include "SgPoint.h"
+#include "SgVector.h"
 
 class SgProp;
 
@@ -972,8 +973,8 @@ class SgPropTextList
 public:
     explicit SgPropTextList(SgPropID id);
 
-    SgPropTextList(SgPropID id, const SgList<SgPoint>& points,
-                   SgListOf<std::string> strings);
+    SgPropTextList(SgPropID id, const SgVector<SgPoint>& points,
+                   SgVectorOf<std::string> strings);
 
     virtual ~SgPropTextList();
 
@@ -982,7 +983,7 @@ public:
     /** Return a list with all the points that have text associated with
         them.
     */
-    const SgList<SgPoint>& GetPointsWithText() const;
+    const SgVector<SgPoint>& GetPointsWithText() const;
 
     /** If point 'p' has a string, copy that string into '*string' and return
         true.
@@ -1012,9 +1013,9 @@ public:
     virtual bool ContainsText(const std::string& findText);
 
 private:
-    SgList<SgPoint> m_points;
+    SgVector<SgPoint> m_points;
 
-    SgListOf<std::string> m_strings;
+    SgVectorOf<std::string> m_strings;
 };
 
 inline SgPropTextList::SgPropTextList(SgPropID id)
@@ -1024,7 +1025,7 @@ inline SgPropTextList::SgPropTextList(SgPropID id)
 {
 }
 
-inline const SgList<SgPoint>& SgPropTextList::GetPointsWithText() const
+inline const SgVector<SgPoint>& SgPropTextList::GetPointsWithText() const
 {
     return m_points;
 }
