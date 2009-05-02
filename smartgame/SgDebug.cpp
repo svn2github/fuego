@@ -23,13 +23,8 @@ static ofstream s_nullStream;
 
 static auto_ptr<ofstream> s_fileStream;
 
-#if MAC
-#define textoutputstream cout
-#else
-#define textoutputstream cerr
-#endif
 
-ostream* g_debugStrPtr(&textoutputstream);
+ostream* g_debugStrPtr(&cerr);
 
 std::ostream& SgDebug()
 {
@@ -52,7 +47,7 @@ std::ostream& SgWarning()
 
 void SgDebugToWindow()
 {
-    g_debugStrPtr = &textoutputstream;
+    g_debugStrPtr = &cerr;
 }
 
 void SgDebugToFile(const char* filename)

@@ -59,15 +59,11 @@ inline void SG_UNUSED(const T&)
 
 //----------------------------------------------------------------------------
 
-#if MAC
-#define OTHER_BYTE_ORDER 0
-#else
 #include <sys/types.h>
 #if (BYTE_ORDER == BIG_ENDIAN)
 #define OTHER_BYTE_ORDER 0
 #else
 #define OTHER_BYTE_ORDER 1
-#endif
 #endif
 
 //----------------------------------------------------------------------------
