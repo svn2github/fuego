@@ -40,6 +40,20 @@ void Notify(mutex& aMutex, condition& aCondition)
     aCondition.notify_all();
 }
 
+/** Hashes for sequence hashing.
+    Table of hashes containing a hash for each move in each of 512 distinct 
+    positions in the sequence. Hash for the sequence is the xor of all hashes
+    for each of the moves. We ignore the color of the move and assume 
+    alternating black/white moves. If sequence is longer than 512 moves, we 
+    just wrap around for now. 
+
+    Used to mark which nodes have a thread computing their knowledge. Prevents
+    multiple threads computing the same knowledge at the same time. 
+
+    @todo Implement a proper sequence hash.
+*/
+SgHashZobrist<64> s_sequenceZobrist[512];
+
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -648,9 +662,7 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
 
     // add a virtual loss to all nodes in path
     if (m_virtualLoss)
-    {
         m_tree.AddVirtualLoss(info.m_nodes);
-    }
 
     // The playout phase is always unlocked
     if (lock != 0)
@@ -704,12 +716,15 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     vector<const SgUctNode*>& nodes = state.m_gameInfo.m_nodes;
     const SgUctNode* root = &m_tree.Root();
     const SgUctNode* current = root;
+    SgHashCode seqHash = 0;
     nodes.push_back(current);
     bool breakAfterSelect = false;
     isTerminal = false;
     bool deepenTree = false;
     while (true)
     {
+        int hashIndex = seqHash.Hash(KNOWLEDGE_TABLE_SIZE);
+
         if (sequence.size() == m_maxGameLength)
             return false;
         if (! current->HasChildren())
@@ -736,10 +751,14 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             else
                 break;
         }
-        else if (current->MoveCount() == m_knowledgeThreshold)
+        else if (current->MoveCount() == m_knowledgeThreshold
+                 && !m_knowledgeComputed[hashIndex])
         {
-            SG_ASSERT(current->MoveCount());
+            m_knowledgeComputed[hashIndex] = true;
+	    SG_ASSERT(current->MoveCount());
+
             m_statistics.m_knowledge++;
+
             deepenTree = false;
             bool truncate = state.GenerateAllMoves(current->MoveCount(), 
                                                    state.m_moves);
@@ -761,6 +780,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
         nodes.push_back(current);
         SgMove move = current->Move();
         state.Execute(move);
+        seqHash.Xor(s_sequenceZobrist[sequence.size() & 511].Get(move));
         sequence.push_back(move);
         if (breakAfterSelect)
             break;
@@ -996,6 +1016,10 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
 {
     if (m_threads.size() == 0)
         CreateThreads();
+
+    for (size_t i = 0; i < KNOWLEDGE_TABLE_SIZE; ++i)
+        m_knowledgeComputed[i] = false;
+
     if (m_numberThreads > 1 && SgTime::DefaultMode() == SG_TIME_CPU)
         // Using CPU time with multiple threads makes the measured time
         // and games/sec not very meaningful; the total cputime is not equal
@@ -1189,9 +1213,8 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     const vector<const SgUctNode*>& nodes = info.m_nodes;
 
     if (m_virtualLoss)
-    {
         m_tree.RemoveVirtualLoss(nodes);
-    }
+
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode& node = *nodes[i];

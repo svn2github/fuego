@@ -1046,6 +1046,18 @@ private:
     */
     std::vector<boost::shared_ptr<Thread> > m_threads;
 
+    static const unsigned int KNOWLEDGE_TABLE_SIZE = 1<<16;
+
+    /** Table used to prevent multiple threads from computing
+        knowledge for the same node at the same time.
+
+	@todo Better way to do this? Adding this flag to the node seems
+	wrong since the only time it matters is the time between
+	the first thread seeing the node needs knowledge and the time
+	it finishes computing it. 
+    */
+    volatile bool m_knowledgeComputed[KNOWLEDGE_TABLE_SIZE];
+
 #if SG_UCTFASTLOG
     SgFastLog m_fastLog;
 #endif
