@@ -96,16 +96,6 @@ public:
     */
     SgNode* AddResignNode(SgBlackWhite player);
 
-    /** Set the number of moves to be inserted into the current line of
-        play instead of creating a new line of play.
-    */
-    void SetNumMovesToInsert(int numMoves);
-
-    /** Get the number of moves to be inserted into the current line of
-        play instead of creating a new line of play.
-    */
-    int NumMovesToInsert() const;
-
     /** Play to the given node.
         @c dest must be in this tree, or 0.
         Also updates the clock.
@@ -223,16 +213,6 @@ inline SgNode& GoGameRecord::Root() const
 {
     SG_ASSERT(m_current);
     return *m_current->Root();
-}
-
-inline void GoGameRecord::SetNumMovesToInsert(int numMoves)
-{
-    m_numMovesToInsert = numMoves;
-}
-
-inline int GoGameRecord::NumMovesToInsert() const
-{
-    return m_numMovesToInsert;
 }
 
 inline SgTimeRecord& GoGameRecord::Time()
