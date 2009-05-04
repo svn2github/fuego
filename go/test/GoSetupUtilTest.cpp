@@ -104,8 +104,8 @@ BOOST_AUTO_TEST_CASE(GoSetupUtilTest_GoBoard)
 BOOST_AUTO_TEST_CASE(GoSetupUtilTest_CreateSetupFromString)
 {
     std::string s("XO.\n"
-                 ".X.\n"
-                 "...");
+                  ".X.\n"
+                  "...");
     int boardSize;
     GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
     GoBoard bd(boardSize, setup);
