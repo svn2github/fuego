@@ -61,6 +61,9 @@ BOOST_AUTO_TEST_CASE(SgVectorTestAssign)
     BOOST_CHECK_EQUAL(b[1], 444);
     BOOST_CHECK_EQUAL(b[2], 789);
     BOOST_CHECK(a == b);
+    b.Append(0);
+    BOOST_CHECK(! (a == b));
+    BOOST_CHECK(a != b);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestAssignElement)
