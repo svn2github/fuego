@@ -684,6 +684,10 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     if (lock != 0)
         lock->lock();
 
+    // Remove the virtual loss
+    if (m_virtualLoss)
+        m_tree.RemoveVirtualLoss(info.m_nodes);
+
     UpdateTree(info);
     if (m_rave)
         UpdateRaveValues(state);
@@ -1196,9 +1200,6 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     eval /= m_numberPlayouts;
     float inverseEval = InverseEval(eval);
     const vector<const SgUctNode*>& nodes = info.m_nodes;
-
-    if (m_virtualLoss)
-        m_tree.RemoveVirtualLoss(nodes);
 
     for (size_t i = 0; i < nodes.size(); ++i)
     {
