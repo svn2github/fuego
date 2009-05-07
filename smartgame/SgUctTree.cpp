@@ -106,6 +106,51 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
     nonConstNode.SetNuChildren(nuChildren);
 }
 
+void SgUctTree::SetChildren(std::size_t allocatorId, const SgUctNode& node,
+                            const vector<SgMove>& moves)
+{
+    SG_ASSERT(Contains(node));
+    SG_ASSERT(Allocator(allocatorId).HasCapacity(moves.size()));
+    SG_ASSERT(node.HasChildren());
+
+    SgUctAllocator& allocator = Allocator(allocatorId);
+    const SgUctNode* firstChild = allocator.Finish();
+
+    int nuChildren = 0;
+    for (size_t i = 0; i < moves.size(); ++i)
+    {
+        bool found = false;
+        for (SgUctChildIterator it(*this, node); it; ++it)
+        {
+            SgMove move = (*it).Move();
+            if (move == moves[i])
+            {
+                found = true;
+                SgUctNode* child = allocator.CreateOne(move);
+                child->CopyDataFrom(*it);
+                int childNuChildren = (*it).NuChildren();
+                child->SetNuChildren(childNuChildren);
+                if (childNuChildren > 0)
+                    child->SetFirstChild((*it).FirstChild());
+                ++nuChildren;
+                break;
+            }
+        }
+        if (!found)
+        {
+            allocator.CreateOne(moves[i]);
+            ++nuChildren;
+        }
+    }
+    SG_ASSERT((size_t)nuChildren == moves.size());
+
+    SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
+    // Write order dependency: SgUctSearch in lock-free mode assumes that
+    // m_firstChild is valid if m_nuChildren is greater zero
+    nonConstNode.SetFirstChild(firstChild);
+    nonConstNode.SetNuChildren(nuChildren);
+}
+
 void SgUctTree::CheckConsistency() const
 {
     for (SgUctTreeIterator it(*this); it; ++it)

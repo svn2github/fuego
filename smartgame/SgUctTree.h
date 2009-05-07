@@ -697,6 +697,14 @@ public:
     void ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                      const std::vector<SgMove>& rootFilter);
 
+    /** Sets the children under node to be exactly those in moves,
+        reusing the old children if possible. Children not in moves
+        are pruned, children missing from moves are added as leaves.
+        Requires: Allocator(allocatorId).HasCapacity(moves.size())
+     */
+    void SetChildren(std::size_t allocatorId, const SgUctNode& node,
+                     const vector<SgMove>& moves);
+
     /** @name Functions for debugging */
     // @{
 
