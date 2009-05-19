@@ -738,8 +738,8 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             else
                 break;
         }
-        else if (current->MoveCount() == m_knowledgeThreshold
-                 && current->KnowledgeCount() < m_knowledgeThreshold)
+        else if (current->KnowledgeCount() < m_knowledgeThreshold
+	         && current->MoveCount() >= m_knowledgeThreshold)
         {
             {
                 // Mark knowledge computed immediately so other threads
