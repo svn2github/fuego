@@ -8,10 +8,15 @@ history.
 Current development version
 ===========================
 
+
+Version 0.4 - 2009 May 22
+=========================
+
 * Remove SgStreamFmtRestorer; use Boost IO State Savers instead 
 * Remove SgUctPriorKnowledge; Derived thread state class will supply knowledge
   values through the GenerateAllMoves() function.
 * Change move count type in SgUctNode from float to size_t
+* Add support for knowledge in the core of the uct tree
 
 Version 0.3 - 2008 Dec 17
 =========================
