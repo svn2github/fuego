@@ -5,6 +5,7 @@ basics.suite \
 performance.suite \
 static_safety.suite \
 uct.suite \
+backfill.tst \
 blunder_long_ladder_19.tst \
 blunder_play_near_dead_19.tst \
 blunder_selfatari_19.tst \
@@ -26,6 +27,7 @@ uct_cleanup.tst \
 uct_connection.tst \
 uct_direction_of_play.tst \
 uct_endgame.tst \
+uct_evaluation.tst \
 uct_fight_on.tst \
 uct_ko.tst \
 uct_life_and_death.tst \
@@ -36,12 +38,15 @@ uct_rootfilter.tst \
 uct_seki.tst \
 uct_selfatari.tst \
 uct_semeai.tst \
+uct_semeai_blunder.tst \
 19.list \
 basics_fuegotest.list \
 basics_uct.list \
 performance.list \
 static_safety.list \
 uct.list \
+sgf/approach_move/backfill.1.sgf \
+sgf/evaluation/miseval.1.sgf \
 sgf/eyes/1.5/make-nakade.1.sgf \
 sgf/eyes/1.5/make-nakade.2.sgf \
 sgf/eyes/1/nakade.1.sgf \
@@ -171,9 +176,10 @@ sgf/games/2008/leela-seki-variation.sgf \
 sgf/games/2008/mogo-ko+ld-problem-variation.sgf \
 sgf/games/2008/mogo-ko+ld-problem.sgf \
 sgf/games/2008/seki-miseval.sgf \
-sgf/games/2009/MM-Fuego20090124-variation.sgf \
 sgf/games/2009/CGOS/702960.sgf \
 sgf/games/2009/CGOS/703006.sgf \
+sgf/games/2009/May/Fuego9-Fuego-27.sgf \
+sgf/games/2009/MM-Fuego20090124-variation.sgf \
 sgf/gnugo-games/seki01.sgf \
 sgf/gnugo-games/seki02.sgf \
 sgf/gnugo-games/seki03.sgf \
@@ -335,6 +341,11 @@ sgf/semeai-exact/semeai-plain-3L.sgf \
 sgf/semeai-exact/semeai-plain-4L.sgf \
 sgf/semeai-exact/semeai-plain-5L.sgf \
 sgf/semeai-exact/semeai-plain-6L.sgf \
+sgf/semeai/Fuego9-Fuego-27-semeai.1.sgf \
+sgf/semeai/Fuego9-Fuego-27-semeai.2.sgf \
+sgf/semeai/Fuego9-Fuego-27-semeai.3.sgf \
+sgf/semeai/Fuego9-Fuego-27-semeai.4.sgf \
+sgf/semeai/Fuego9-Fuego-27-semeai.5.sgf \
 sgf/semeai/filllib-test.1.sgf \
 sgf/semeai/semeai-eval.1.sgf \
 sgf/simpleplayers/simpleplayers.1.sgf \

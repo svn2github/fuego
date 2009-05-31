@@ -1,3 +1,4 @@
+backfill.tst
 uct_basics.tst
 uct_blunder.tst
 uct_blunder_19.tst
@@ -6,6 +7,7 @@ uct_cleanup.tst
 uct_connection.tst
 uct_direction_of_play.tst
 uct_endgame.tst
+uct_evaluation.tst
 uct_fight_on.tst
 uct_ko.tst
 uct_life_and_death.tst
@@ -16,3 +18,4 @@ uct_rootfilter.tst
 uct_seki.tst
 uct_selfatari.tst
 uct_semeai.tst
+uct_semeai_blunder.tst
