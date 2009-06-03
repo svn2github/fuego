@@ -19,14 +19,9 @@
 #include "SgPointSetUtil.h"
 #include "SgWrite.h"
 
-using GoSafetyUtil::Find2Libs;
-using GoSafetyUtil::MightMakeLife;
-using GoSafetyUtil::ReduceToAnchors;
-
 //----------------------------------------------------------------------------
 
 namespace {
-
 const bool DEBUG_SAFETY = false;
 const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
 
@@ -34,7 +29,7 @@ const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
     if found, update libs and safe to indicate that the block is safe now:
     add block to safe, add block libs to libs, remove the two libs.
 */
-bool Find2Conn(const GoBoard& bd, SgPoint block, SgPointSet* libs,
+bool Find2Connections(const GoBoard& bd, SgPoint block, SgPointSet* libs,
                     SgPointSet* usedLibs, SgPointSet* safe)
 {
     SG_ASSERT(libs->Disjoint(*usedLibs));
@@ -72,17 +67,17 @@ bool Find2Conn(const GoBoard& bd, SgPoint block, SgPointSet* libs,
     maxNuOmissions = 1 if testing whether opponent can make 2 eyes here,
     0 otherwise. Returns bool whether connections were found.
 */
-bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
+bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
                 const SgPointSet& inSafe, SgBlackWhite color,
                 int maxNuOmissions = 0)
 {
     if (DEBUG_SAFETY)
-        SgDebug() << "Find2ConnForAll " << pts
+        SgDebug() << "Find2ConnectionsForAll " << pts
                   << "safe points - input: " << inSafe;
     SgPointSet safe(inSafe);
     SgList<SgPoint> unsafe;
     const int size = bd.Size();
-    ReduceToAnchors(bd, pts.Border(size) - safe, &unsafe);
+    GoSafetyUtil::ReduceToAnchors(bd, pts.Border(size) - safe, &unsafe);
     // AR sort by # empty nbs in pts
 
     if (DEBUG_SAFETY)
@@ -92,7 +87,8 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
     SgPointSet interior = pts - libs;
     interior -= bd.All(SgOppBW(color)); // remove opp. stones.
     SgList<SgPoint> unsafeInterior;
-    ReduceToAnchors(bd, interior & bd.All(color), &unsafeInterior);
+    GoSafetyUtil::ReduceToAnchors(bd, interior & bd.All(color),
+                                  &unsafeInterior);
     unsafe.Concat(&unsafeInterior);
 
     SgPointSet usedLibs;
@@ -101,7 +97,7 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
     {
         SgList<SgPoint> newSafe;
         for (SgListIterator<SgPoint> it(unsafe); it; ++it)
-            if (Find2Conn(bd, *it, &libs, &usedLibs, &safe))
+            if (Find2Connections(bd, *it, &libs, &usedLibs, &safe))
             {
                 newSafe.Append(*it);
             }
@@ -122,13 +118,13 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
     // miai strategy commitment on region.
 
     interior = (pts & bd.AllEmpty()) - safe.Border(size);
-    // new safe set after Find2Conn.
+    // new safe set after Find2Connections.
 
     // try to prove opp. can't live inside.
     if (maxNuOmissions == 1)
     {
         SgBlackWhite opp(SgOppBW(color));
-        if (! MightMakeLife(bd, interior, safe, opp))
+        if (! GoSafetyUtil::MightMakeLife(bd, interior, safe, opp))
             /* */ return true; /* */
     }
 
@@ -138,7 +134,7 @@ bool Find2ConnForAll(const GoBoard& bd, const SgPointSet& pts,
 
     for (SgSetIterator it(interior); it; ++it)
     {
-        if (! Find2Libs(*it, &libs))
+        if (! GoSafetyUtil::Find2Libs(*it, &libs))
         {
             if (--maxNuOmissions < 0)
                 return false;
@@ -241,7 +237,7 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
         SgDebug() << "case 2\n";
     SgPointSet rest = area;
     if (r == 0) // classical case. Call previous function
-        return MightMakeLife(board, area, safe, color);
+        return GoSafetyUtil::MightMakeLife(board, area, safe, color);
     else
     {
         if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
@@ -467,13 +463,14 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
     if (boundary.SubsetOf(safe))
     {
         SgBlackWhite opp = SgOppBW(color);
-        if (! MightMakeLife(board, pts, safe, opp))
+        if (! GoSafetyUtil::MightMakeLife(board, pts, safe, opp))
             /* */ return true; /* */
     }
 
-    if (boundary.SubsetOf(board.All(color))
-         && Find2ConnForAll(board, pts, safe, color, 1))
-        /* */ return true; /* */
+    if (   boundary.SubsetOf(board.All(color))
+        && Find2ConnectionsForAll(board, pts, safe, color, 1)
+       )
+       /* */ return true; /* */
     return false;
 }
 
