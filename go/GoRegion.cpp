@@ -144,9 +144,15 @@ SgListOf<GoBlock> GoRegion::InteriorBlocks() const
 bool GoRegion::IsInteriorBlock(const GoBlock* block) const
 {
     SG_ASSERT(m_blocks.Contains(block));
-    for (GoBoard::LibertyIterator it(m_bd, block->Anchor()); it; ++it)
-        if (! m_points.Contains(*it))
-            /* */ return false; /* */
+    const SgBlackWhite opp = SgOppBW(block->Color());
+    for (GoBoard::StoneIterator it(m_bd, block->Anchor()); it; ++it)
+        for (SgNb4Iterator nb(*it); nb; ++nb)
+        {
+            const SgPoint p = *nb;
+            if (   (m_bd.IsEmpty(p) || m_bd.IsColor(p, opp))
+                && ! m_points.Contains(*nb))
+                /* */ return false; /* */
+        }
     return true;
 }
 
@@ -199,8 +205,8 @@ bool GoRegion::Has2SureLibs(SgMiaiStrategy* miaiStrategy) const
     AllInsideLibs().ToList(&interior);
     SgList<SgPoint> usedLibs;
 
-    bool result2 =   Find2ConnForAllInterior(miaiStrategy, usedLibs)
-        && Has2IntersectionPoints(usedLibs);
+    bool result2 =    Find2ConnForAllInterior(miaiStrategy, usedLibs)
+                   && Has2IntersectionPoints(usedLibs);
     return result2;
 }
 
