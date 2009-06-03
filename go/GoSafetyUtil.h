@@ -93,6 +93,11 @@ namespace GoSafetyUtil
     bool MightMakeLife(const GoBoard& board, const SgPointSet& area,
                        const SgPointSet& safe, SgBlackWhite color);
 
+    /** Write statistics about the safe points */
+    void WriteStatistics(const std::string& heading,
+                      const GoRegionBoard* regions,
+                      const SgBWSet* safe);
+                      
 } // namespace GoSafetyUtil
 
 //----------------------------------------------------------------------------
