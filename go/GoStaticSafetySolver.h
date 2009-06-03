@@ -28,7 +28,6 @@ public:
     /** Destructor, deallocates if there are own regions */
     virtual ~GoStaticSafetySolver();
 
-protected:
     /** @name Accessors */
     // @{
 
@@ -56,9 +55,6 @@ protected:
     /** our regions */
     const GoRegionBoard* Regions() const;
 
-    /** our regions */
-    GoRegionBoard* Regions();
-
     /** See GoRegionBoard::AllBlocks */
     SgListOf<GoBlock>& AllBlocks(SgBlackWhite color);
 
@@ -82,6 +78,10 @@ protected:
 
     // @} // @name
 
+protected:
+
+    /** our regions */
+    GoRegionBoard* Regions();
 
     /** Main step of Benson's algorithm */
     virtual void FindTestSets(SgListOf<SgListOf<GoBlock> >* sets,
