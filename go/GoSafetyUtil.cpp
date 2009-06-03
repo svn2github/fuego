@@ -7,9 +7,11 @@
 #include "SgSystem.h"
 #include "GoSafetyUtil.h"
 
+#include "GoBlock.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeUtil.h"
+#include "GoRegion.h"
 #include "GoRegionBoard.h"
 #include "SgBWSet.h"
 #include "SgList.h"
@@ -155,6 +157,16 @@ void TestLiberty(SgPoint lib, const SgPointSet& libs,
         foundLibs->Append(lib);
         ++(*nuLibs);
     }
+}
+
+/** write part and total and rounded percentage of part in total */
+void WriteSafeTotal(std::ostream& stream, std::string text,
+                    int partCount, int totalCount)
+{
+    stream << partCount << " / " << totalCount
+           << " (" 
+           << (partCount * 100 + totalCount / 2) / totalCount
+           << "%) " << text << '\n';
 }
 
 } // namespace
@@ -476,5 +488,42 @@ void GoSafetyUtil::ReduceToAnchors(const GoBoard& board,
         anchors->Insert(board.Anchor(*it));
     }
 }
+
+void GoSafetyUtil::WriteStatistics(const std::string& heading,
+                      const GoRegionBoard* regions,
+                      const SgBWSet* safe)
+{    
+    const SgPointSet allSafe = safe->Both();
+    int totalRegions = 0;
+    int safeRegions = 0;
+    int totalBlocks = 0;
+    int safeBlocks = 0;  
+
+    for (SgBWIterator it; it; ++it)
+    {
+        SgBlackWhite color(*it);
+        for (SgListIteratorOf<GoRegion> it(regions->AllRegions(color));
+                                           it; ++it)
+        {
+            ++totalRegions;
+            if ((*it)->Points().SubsetOf(allSafe))
+                ++safeRegions;
+        }
+        for (SgListIteratorOf<GoBlock> it(regions->AllBlocks(color));
+                                        it; ++it)
+        {
+            ++totalBlocks;
+            if (allSafe.Overlaps((*it)->Stones()))
+                ++safeBlocks;
+        }
+    }
+    
+    const int bdSize = regions->Board().Size();
+    SgDebug() << heading << "\n";
+    WriteSafeTotal(SgDebug(), "points", allSafe.Size(), bdSize * bdSize);
+    WriteSafeTotal(SgDebug(), "regions", safeRegions, totalRegions);
+    WriteSafeTotal(SgDebug(), "blocks", safeBlocks, totalBlocks);
+}
+
 
 //----------------------------------------------------------------------------
