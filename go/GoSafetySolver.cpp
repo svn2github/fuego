@@ -12,10 +12,6 @@
 #include "GoSafetyUtil.h"
 #include "SgConnCompIterator.h"
 
-using GoSafetyUtil::AddToSafe;
-using GoSafetyUtil::ExtendedIsTerritory;
-using GoSafetyUtil::IsTerritory;
-
 //----------------------------------------------------------------------------
 
 namespace {
@@ -106,7 +102,7 @@ bool GoSafetySolver::RegionHealthyForBlock(const GoRegion& r,
 void GoSafetySolver::Test2Vital(GoRegion* r, SgBWSet* safe)
 {
     if (r->ComputeAndGetFlag(isStatic2v))
-        AddToSafe(Board(), r->Points(), r->Color(),
+        GoSafetyUtil::AddToSafe(Board(), r->Points(), r->Color(),
                   safe, "2-vital:", 0, true);
 }
 
@@ -116,7 +112,7 @@ void GoSafetySolver::Find2VitalAreas(SgBWSet* safe)
     {
         SgBlackWhite color(*it);
         for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
-            if (     (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
+            if (    (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
                  && (*it)->Points().Disjoint((*safe)[SG_WHITE]))
             {
                 Test2Vital(*it, safe);
@@ -143,13 +139,13 @@ void GoSafetySolver::FindSurroundedSafeAreas(SgBWSet* safe,
             if (   ! r->GetFlag(isSafe)
                 && r->SomeBlockIsSafe()
                 && ! r->Points().Overlaps(anySafe)
-                && ExtendedIsTerritory(Board(), Regions(),
+                && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
                                        r->PointsPlusInteriorBlocks(),
                                        (*safe)[color],
                                        color)
                )
             {
-                AddToSafe(Board(), r->Points(), color, safe,
+                GoSafetyUtil::AddToSafe(Board(), r->Points(), color, safe,
                           "surr-safe-1", 0, true);
                 Regions()->SetSafeFlags(*safe); 
                 anySafe = safe->Both();
@@ -175,9 +171,10 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
            )
         {
             const SgPointSet unionSet(r1->Points() | r2->Points());
-            if (IsTerritory(Board(), unionSet, (*safe)[color], color))
+            if (GoSafetyUtil::IsTerritory(Board(), unionSet,
+                                          (*safe)[color], color))
             {
-                AddToSafe(Board(), unionSet, color, safe,
+                GoSafetyUtil::AddToSafe(Board(), unionSet, color, safe,
                           "surr-safe-2", 0, true);
                 Regions()->SetSafeFlags(*safe); 
                 safe->AssertDisjoint();
@@ -215,10 +212,14 @@ void GoSafetySolver::FindSafePoints(SgBWSet* safe)
 {    
     GoStaticSafetySolver::FindSafePoints(safe);
     safe->AssertDisjoint();
+    if (DEBUG_SAFETY_SOLVER)
+        GoSafetyUtil::WriteStatistics("Base Solver", Regions(), safe);
 
     // find areas big enough for two eyes
     Find2VitalAreas(safe);
     safe->AssertDisjoint();
+    if (DEBUG_SAFETY_SOLVER)
+        GoSafetyUtil::WriteStatistics("2Vital", Regions(), safe);
  
 //    GoStaticSafetySolver::FindSafePoints(safe); 
 //called again before 030505,
@@ -234,37 +235,8 @@ void GoSafetySolver::FindSafePoints(SgBWSet* safe)
     }    
 
     if (DEBUG_SAFETY_SOLVER)
-    {    
-        const SgPointSet proved = safe->Both();
-        int totalRegions = 0;
-        int provedRegions = 0;
-        int totalBlocks = 0;
-        int provedBlocks = 0;  
-    
-        for (SgBWIterator it; it; ++it)
-        {
-            SgBlackWhite color(*it);
-            for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
-            {
-                ++totalRegions;
-                if ((*it)->Points().SubsetOf(proved))
-                    ++provedRegions;
-            }
-            for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
-            {
-                ++totalBlocks;
-                if (proved.Overlaps((*it)->Stones()))
-                    ++provedBlocks;
-            }
-        }
-        
-        SgDebug() << "\n****GoSafetySolver Result****" << "\n"
-            << "Total proved points = " << proved.Size() << "\n"
-            << "Total regions =  " << totalRegions
-            << " Proved regions = " << provedRegions << "\n"
-            << "Total blocks =  " << totalBlocks 
-            << " Proved blocks = " << provedBlocks << "\n";
-    }
+        GoSafetyUtil::WriteStatistics("SurroundedSafe-Final",
+                                      Regions(), safe);
 }
 
 void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
