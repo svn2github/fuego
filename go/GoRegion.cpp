@@ -150,7 +150,7 @@ bool GoRegion::IsInteriorBlock(const GoBlock* block) const
         {
             const SgPoint p = *nb;
             if (   (m_bd.IsEmpty(p) || m_bd.IsColor(p, opp))
-                && ! m_points.Contains(*nb))
+                && ! m_points.Contains(p))
                 /* */ return false; /* */
         }
     return true;
