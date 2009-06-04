@@ -9,6 +9,7 @@
 #include <limits>
 #include "GoBoard.h"
 #include "GtpEngine.h"
+#include "SgDebug.h"
 #include "SgPointArray.h"
 
 using namespace std;
@@ -132,6 +133,28 @@ SgMove GoGtpCommandUtil::MoveArg(const GtpCommand& cmd, std::size_t number,
     if (cmd.ArgToLower(number) == "pass")
         return SG_PASS;
     return PointArg(cmd, number, board);
+}
+
+void GoGtpCommandUtil::ParseMultiStoneArgument(GtpCommand& cmd,
+                                               const GoBoard& board,
+                                               SgBlackWhite& toPlay,
+                                               SgBlackWhite& defender,
+                                               SgVector<SgPoint>& crucial)
+{
+    toPlay = GoGtpCommandUtil::BlackWhiteArg(cmd, 0);
+    SgDebug() << "Set " << SgBW(toPlay) << " to play\n";
+    SgPoint point = GoGtpCommandUtil::StoneArg(cmd, 1, board);
+    defender = board.GetColor(point);
+    SG_ASSERT(defender == SG_BLACK || defender == SG_WHITE);
+    crucial.Append(point);
+    for (size_t i = 2; i < cmd.NuArg(); ++i)
+    {
+        SgPoint p = GoGtpCommandUtil::StoneArg(cmd, i, board);
+        if (board.GetColor(p) != defender)
+            throw GtpFailure("Crucial stones must be same color");
+        else
+            crucial.Append(p);
+    }
 }
 
 SgPoint GoGtpCommandUtil::PointArg(const GtpCommand& cmd,
