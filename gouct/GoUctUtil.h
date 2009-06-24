@@ -32,8 +32,10 @@ namespace GoUctUtil
 {
     /** reject random move if it was self atari */
     const bool REMOVE_SELF_ATARI = false;
+    const bool REMOVE_MUTUAL_ATARI = false;
 
     const int SELF_ATARI_LIMIT = 8;
+    const int MUTUAL_ATARI_LIMIT = 2;
 
     /** Conservative clump correction.
         Only "very clumpy" moves are replaced.
@@ -157,6 +159,10 @@ namespace GoUctUtil
     void GfxTerritoryStatistics(
             const SgPointArray<SgUctStatistics>& territoryStatistics,
             const GoBoard& bd, std::ostream& out);
+
+    /** selfatari of a larger number of stones and also atari on opponent. */
+    template<class BOARD>
+    bool IsMutualAtari(const BOARD& bd, SgPoint p, SgBlackWhite toPlay);
 
     /** Save tree contained in a search as a Go SGF file.
         The SGF file is written directly without using SgGameWriter to avoid
@@ -369,6 +375,35 @@ bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
 }
 
 template<class BOARD>
+inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgPoint p,
+                                     SgBlackWhite toPlay)
+{
+    int nuStones = 0;
+    if (   GoBoardUtil::SelfAtari(bd, p, nuStones)
+        && nuStones > MUTUAL_ATARI_LIMIT
+        // todo: check for nakade shapes here.
+       )
+    {
+        SG_ASSERT(bd.ToPlay() == toPlay);
+        SgBlackWhite opp = SgOppBW(toPlay);
+        bool selfatari =
+                bd.HasNeighbors(p, opp) &&
+                GoBoardUtil::SelfAtariForColor(bd, p, opp);
+        if (selfatari)
+        {
+            /*
+            static int count = 0;
+            if (++count < 30)
+                SgDebug() << bd << "Removed mutual atari"
+                << SgWriteMove(p, bd.ToPlay()) << '\n';
+            */
+            return true;
+        }
+    }
+    return false;
+}
+
+template<class BOARD>
 inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
                                      SgBlackWhite toPlay)
 {
@@ -388,10 +423,13 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
            )
         {
             //SgDebug() << bd << "Removed selfatari"
-            //<< SgWriteMove(mv, toPlay);
+            //<< SgWriteMove(p, toPlay);
             return false;
         }
     }
+    
+    if (REMOVE_MUTUAL_ATARI && IsMutualAtari(bd, p, toPlay))
+        return false;
     return true;
 }
 

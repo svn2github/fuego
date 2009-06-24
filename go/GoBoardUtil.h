@@ -289,6 +289,13 @@ namespace GoBoardUtil
     template<class BOARD>
     bool SelfAtari(const BOARD& bd, SgPoint p, int& numStones);
 
+    /** Check if move would be self-atari for given color.
+        That color may be different from bd.ToPlay().
+    */
+    template<class BOARD>
+    bool SelfAtariForColor(const BOARD& bd, SgPoint p,
+                           SgBlackWhite toPlay);
+
     /** Return all points that are liberties of both 'block1' and 'block2'.
         Not defined for empty or border points.
     */
@@ -533,9 +540,15 @@ float GoBoardUtil::ScoreSimpleEndPosition(const BOARD& bd, float komi,
     return score;
 }
 
-
 template<class BOARD>
 inline bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p)
+{
+    return SelfAtariForColor(bd, p, bd.ToPlay());
+}
+
+template<class BOARD>
+inline bool GoBoardUtil::SelfAtariForColor(const BOARD& bd, SgPoint p,
+                                          SgBlackWhite toPlay)
 {
     // This function is inline even if it is long, because it returns early
     // in many cases, which makes the function call an overhead.
@@ -548,7 +561,6 @@ inline bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p)
     // No self-atari, enough liberties
     if (bd.NumEmptyNeighbors(p) >= 2)
         return false;
-    const SgBlackWhite toPlay = bd.ToPlay();
     const SgBlackWhite opp = SgOppBW(toPlay);
     SgPoint lib = SG_NULLPOINT;
     bool hasOwnNb = false;
