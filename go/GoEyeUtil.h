@@ -14,6 +14,9 @@
 
 namespace GoEyeUtil
 {
+    /** size of largest standard nakade shape */
+    const int NAKADE_LIMIT = 6;
+
     /** Code for how many points of each degree there are.
         The degree measures how many of the (up to 4) neighbors
         are also in the set of points.
@@ -76,6 +79,11 @@ namespace GoEyeUtil
     */
     bool CanBecomeSinglePointEye(const GoBoard& board, SgPoint p,
                              const SgPointSet& oppSafe);
+
+    /** does playing at p create one of the standard nakade shapes? */
+    template<class BOARD>
+    bool MakesNakadeShape(const BOARD& bd, SgPoint p,
+                                 SgBlackWhite toPlay);
 
     /** Return true if a point can become an eye by adding number of
         defender's move.
@@ -153,6 +161,21 @@ namespace GoEyeUtil
                        SgBlackWhite opp, bool checkBlocks);
 }
 
+template<class BOARD>
+SgPoint GoEyeUtil::EmptyNeighbor(const BOARD& bd, SgPoint p)
+{
+    if (bd.IsEmpty(p + SG_NS))
+        return p + SG_NS;
+    if (bd.IsEmpty(p - SG_NS))
+        return p - SG_NS;
+    if (bd.IsEmpty(p + SG_WE))
+        return p + SG_WE;
+    if (bd.IsEmpty(p - SG_WE))
+        return p - SG_WE;
+    SG_ASSERT(false);
+    return SG_NULLPOINT;
+}
+
 inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
                                    SgBlackWhite c)
 {
@@ -212,18 +235,28 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
 }
 
 template<class BOARD>
-SgPoint GoEyeUtil::EmptyNeighbor(const BOARD& bd, SgPoint p)
+bool GoEyeUtil::MakesNakadeShape(const BOARD& bd, SgPoint p,
+                                 SgBlackWhite toPlay)
 {
-    if (bd.IsEmpty(p + SG_NS))
-        return p + SG_NS;
-    if (bd.IsEmpty(p - SG_NS))
-        return p - SG_NS;
-    if (bd.IsEmpty(p + SG_WE))
-        return p + SG_WE;
-    if (bd.IsEmpty(p - SG_WE))
-        return p - SG_WE;
-    SG_ASSERT(false);
-    return SG_NULLPOINT;
+    SgPointSet area;
+    area.Include(p);
+    int nu = 1;
+    SgVector<SgPoint> toProcess;
+    toProcess.PushBack(p);
+    while (toProcess.NonEmpty())
+    {
+        SgPoint p = toProcess.Back();
+        toProcess.PopBack();
+        for (SgNb4Iterator it(p); it; ++it)
+            if (bd.IsColor(*it, toPlay) && ! area.Contains(*it))
+            {
+                area.Include(*it);
+                toProcess.PushBack(*it);
+                if (++nu > NAKADE_LIMIT)
+                    return false;
+            }
+    }
+    return IsNakadeShape(area);
 }
 
 //----------------------------------------------------------------------------

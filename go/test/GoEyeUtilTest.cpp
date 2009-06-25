@@ -102,6 +102,41 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsNakadeShape)
     BOOST_CHECK(! IsNakadeShape(area));
 }
 
+BOOST_AUTO_TEST_CASE(GoEyeUtilTest_MakesNakadeShape)
+{
+    for (SgBWIterator it; it; ++it)
+    {
+        GoBoard bd;
+        SgBlackWhite color = *it;
+        SgBlackWhite opp = SgOppBW(color);
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
+        bd.Play(Pt(4,5), color);
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
+        bd.Play(Pt(3,5), color);
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
+        bd.Play(Pt(2,5), color); // 3 in row
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(5,5), color)); // 4 in row
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(3,4), color)); // T
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,6), color)); // diagonal away
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,4), color)); // L
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
+        bd.Play(Pt(3,4), color); // T
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(2,4), color)); // bulky five
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(4,4), color)); // bulky five, too
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(3,6), color)); // cross
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(2,6), color));
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,6), color));
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(5,5), color));
+        bd.Play(Pt(2,6), color); 
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(3,6), color)); // rabbity six
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(2,4), color));
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,6), color));
+    }
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------

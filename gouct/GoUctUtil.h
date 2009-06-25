@@ -36,7 +36,7 @@ namespace GoUctUtil
 
     const int SELF_ATARI_LIMIT = 8;
     const int MUTUAL_ATARI_LIMIT = 2;
-
+    
     /** Conservative clump correction.
         Only "very clumpy" moves are replaced.
         If false, more "clumps" are replaced.
@@ -163,7 +163,7 @@ namespace GoUctUtil
     /** selfatari of a larger number of stones and also atari on opponent. */
     template<class BOARD>
     bool IsMutualAtari(const BOARD& bd, SgPoint p, SgBlackWhite toPlay);
-
+                                 
     /** Save tree contained in a search as a Go SGF file.
         The SGF file is written directly without using SgGameWriter to avoid
         a memory-intensive construction of an intermediate game tree.
@@ -381,7 +381,9 @@ inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgPoint p,
     int nuStones = 0;
     if (   GoBoardUtil::SelfAtari(bd, p, nuStones)
         && nuStones > MUTUAL_ATARI_LIMIT
-        // todo: check for nakade shapes here.
+        && (   nuStones > GoEyeUtil::NAKADE_LIMIT
+            || ! GoEyeUtil::MakesNakadeShape(bd, p, toPlay)
+           )
        )
     {
         SG_ASSERT(bd.ToPlay() == toPlay);

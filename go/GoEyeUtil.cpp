@@ -15,6 +15,17 @@
 namespace
 {
 
+bool AreSameBlocks(const SgPoint anchors1[], const SgPoint anchors2[])
+{
+    int i = 0;
+    for (; anchors1[i] != SG_ENDPOINT; ++i)
+    {
+        if (! GoBoardUtil::ContainsAnchor(anchors2, anchors1[i]))
+            return false;
+    }
+    return (anchors2[i] == SG_ENDPOINT);
+}
+
 /** Count number of points on edge of board (Line 1) */
 int NuEdgePoints(const GoBoard& bd, const SgPointSet& points)
 {
@@ -512,17 +523,6 @@ bool GoEyeUtil::IsPossibleEye(const GoBoard& board, SgBlackWhite color,
     }
     
     return isPossibleEye;
-}
-
-bool AreSameBlocks(const SgPoint anchors1[], const SgPoint anchors2[])
-{
-    int i = 0;
-    for (; anchors1[i] != SG_ENDPOINT; ++i)
-    {
-        if (! GoBoardUtil::ContainsAnchor(anchors2, anchors1[i]))
-            return false;
-    }
-    return (anchors2[i] == SG_ENDPOINT);
 }
 
 bool GoEyeUtil::IsTwoPointEye(const GoBoard& bd, SgPoint p, 
