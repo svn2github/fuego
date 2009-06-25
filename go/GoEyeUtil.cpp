@@ -109,25 +109,13 @@ bool IsAlwaysAliveBlock(const SgPointSet& block)
         ;
 }
 
-/** Block has one of the standard nakade shapes */
+/** Is single block, and has one of the standard nakade shapes */
 bool IsNakadeBlock(const GoBoard& bd, 
                    const SgPointSet& block)
 {
-    const int blockSize = block.Size();
-    // More than one block?
-    if (bd.NumStones(block.PointOf()) != blockSize)
+    if (! GoEyeUtil::IsNakadeShape(block))
         return false;
-
-    if (blockSize <= 3)
-        return true;
-    else if (blockSize == 4)
-        return IsBulkyFour(block) || IsTShape(block);
-    else if (blockSize == 5)
-        return IsBulkyFive(block) || IsCross(block);
-    else if (blockSize == 6)
-        return IsRabbitySix(block);
-    else // too big
-        return false;
+    return bd.NumStones(block.PointOf()) == block.Size();
 }
 
 
@@ -141,11 +129,8 @@ bool AlmostFilledByLivingShape(const GoBoard& bd,
     // area must be surrounded by opponent.
     SG_ASSERT(points.Border(bd.Size()).SubsetOf(bd.All(SgOppBW(stoneColor))));
 
-    if ((points & bd.AllEmpty()).IsSize(1))
-    {
-        return IsAliveBlock(points & bd.All(stoneColor));
-    }
-    return false;
+    return   (points & bd.AllEmpty()).IsSize(1)
+          && IsAliveBlock(points & bd.All(stoneColor));
 }
 
 /** Area contains stones in an alive shape (two eyes for opponent).
@@ -461,6 +446,22 @@ long GoEyeUtil::DegreeCode8(const SgPointSet& points)
             + 1000000 * degrees[6]
            + 10000000 * degrees[7]
           + 100000000 * degrees[8];
+}
+
+bool GoEyeUtil::IsNakadeShape(const SgPointSet& area)
+{
+    const int size = area.Size();
+
+    if (size <= 3)
+        return true;
+    switch (size)
+    {
+        case 4: return IsBulkyFour(area) || IsTShape(area);
+        case 5: return IsBulkyFive(area) || IsCross(area);
+        case 6: return IsRabbitySix(area);
+        default: // too big
+            return false;
+    }
 }
 
 bool GoEyeUtil::IsSinglePointEye(const GoBoard& bd, SgPoint p,

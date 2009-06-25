@@ -45,6 +45,13 @@ namespace GoEyeUtil
     template<class BOARD>
     SgPoint EmptyNeighbor(const BOARD& bd, SgPoint p);
 
+    /** Check if area is one of the classical nakade shapes:
+        ***, **, ***, **, ***,  * ,  *  .
+              *   *   **  **   ***  ***
+                                *   **
+    */
+    bool IsNakadeShape(const SgPointSet& area);
+                       
     /** Check if point is a single point eye with one or two adjacent blocks.
         This is a fast eye detection routine, which can be used instead of
         Benson's static life detection, when end-of-game detection is a
