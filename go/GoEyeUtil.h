@@ -46,9 +46,9 @@ namespace GoEyeUtil
     SgPoint EmptyNeighbor(const BOARD& bd, SgPoint p);
 
     /** Check if area is one of the classical nakade shapes:
-        ***, **, ***, **, ***,  * ,  *  .
-              *   *   **  **   ***  ***
-                                *   **
+        *,**,***, **, ***, **, ***,  * ,  *  .
+                   *   *   **  **   ***  ***
+                                     *   **
     */
     bool IsNakadeShape(const SgPointSet& area);
                        

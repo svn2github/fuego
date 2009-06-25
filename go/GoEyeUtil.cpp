@@ -450,12 +450,11 @@ long GoEyeUtil::DegreeCode8(const SgPointSet& points)
 
 bool GoEyeUtil::IsNakadeShape(const SgPointSet& area)
 {
-    const int size = area.Size();
-
-    if (size <= 3)
-        return true;
-    switch (size)
+    switch (area.Size())
     {
+        case 1:
+        case 2:
+        case 3: return true;
         case 4: return IsBulkyFour(area) || IsTShape(area);
         case 5: return IsBulkyFive(area) || IsCross(area);
         case 6: return IsRabbitySix(area);

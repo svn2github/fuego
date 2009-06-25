@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsSimpleEye_3)
 BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsNakadeShape)
 {
     SgPointSet area;
-    BOOST_CHECK(IsNakadeShape(area));
+    BOOST_CHECK(! IsNakadeShape(area));
     area.Include(Pt(5,5)); // single stone
     BOOST_CHECK(IsNakadeShape(area));
     area.Include(Pt(5,6)); // two in a row
