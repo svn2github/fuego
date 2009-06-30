@@ -19,6 +19,12 @@ void AddToList(int from, int to, SgList<int>& list)
         list.Append(i);
 }
 
+void AddToVector(int from, int to, SgVector<int>& vector)
+{
+    for (int i = from; i <= to; ++i)
+        vector.Append(i);
+}
+
 BOOST_AUTO_TEST_CASE(SgListUtilityTestIntersection)
 {
     SgList<int> a;
@@ -113,6 +119,19 @@ BOOST_AUTO_TEST_CASE(SgVectorUtilityTestDifference)
     BOOST_CHECK_EQUAL(a[0], 5);
     BOOST_CHECK_EQUAL(a[1], 6);
     BOOST_CHECK_EQUAL(a[2], 7);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorUtilityTestIntersection)
+{
+    SgVector<int> a;
+    AddToVector(5,10,a);
+    SgVector<int> b;
+    AddToVector(8,12,b);
+    SgVectorUtility::Intersection(&a, b);
+    BOOST_CHECK_EQUAL(a.Length(), 3);
+    BOOST_CHECK_EQUAL(a[0], 8);
+    BOOST_CHECK_EQUAL(a[1], 9);
+    BOOST_CHECK_EQUAL(a[2], 10);
 }
 
 //----------------------------------------------------------------------------
