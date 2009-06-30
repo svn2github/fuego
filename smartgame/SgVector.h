@@ -15,7 +15,7 @@ template<typename T>
 class SgVector
 {
 public:
-    /** Construct empty list. */
+    /** Construct empty vector. */
     SgVector()
         : m_vec()
     { }
@@ -41,7 +41,7 @@ public:
     */
     SgVector<T>& operator=(const SgVector<T>& v);
 
-    /** Compare whether the contents of two lists are identical.
+    /** Compare whether the contents of two vectors are identical.
         Same length, and the same elements in the same sequence.
     */
     bool operator==(const SgVector<T>& rhs) const
@@ -49,7 +49,7 @@ public:
         return m_vec == rhs.m_vec;
     }
 
-    /** Compare whether the contents of two lists are not identical. */
+    /** Compare whether the contents of two vectors are not identical. */
     bool operator!=(const SgVector& rhs) const
     {
         return ! (*this == rhs);
@@ -67,7 +67,7 @@ public:
     void AppendList(const SgVector<T>& vector);
     
     /** Returns the last element of the vector.
-        Asserts if the list is empty.
+        Asserts if the vector is empty.
     */
     const T& Back() const
     {
@@ -75,20 +75,20 @@ public:
         return m_vec.back();
     }
 
-    /** Remove all elements in this list. */
+    /** Remove all elements in this vector. */
     void Clear()
     {
         m_vec.clear();
     }
 
-    /** Append <code>*tail</code> at the end of this list,
-        and empty the <code>*tail</code> list.
+    /** Append <code>*tail</code> at the end of this vector,
+        and empty the <code>*tail</code> vector.
     */
     void Concat(SgVector<T>* tail);
 
-    /** Check if element is in list.
+    /** Check if element is in vector.
         @return <code>true</code> if <code>elt</code> is included in this
-        list, <code>false</code> if not.
+        vector, <code>false</code> if not.
     */
     bool Contains(const T& elt) const;
     
@@ -96,23 +96,23 @@ public:
     void DeleteAt(int index);
 
     /** Remove the first occurence of element.
-        If <code>elt</code> is in the list, remove the first
-        occurence of <code>elt</code> from the list, and return
+        If <code>elt</code> is in the vector, remove the first
+        occurence of <code>elt</code> from the vector, and return
         <code>true</code>. Otherwise do nothing and return <code>false</code>.
     */
     bool Exclude(const T& elt);
 
-    void Exclude(const SgVector<T>& list);
+    void Exclude(const SgVector<T>& vector);
 
     /** Find position of element.
-        @returns The position of <code>elt</code> in the list,
+        @returns The position of <code>elt</code> in the vector,
         in range <code>0..length-1</code>. Returns -1 if <code>elt</code>
-        is not in the list.
+        is not in the vector.
     */
     int Index(const T& elt) const;
 
-    /** Append <code>elt</code> at the end of the list
-        if it's not already in the list.
+    /** Append <code>elt</code> at the end of the vector
+        if it's not already in the vector.
     */
     void Include(const T& elt)
     {
@@ -120,9 +120,9 @@ public:
             PushBack(elt);
     }
 
-    /** Includes the element in a ascending sorted list at the right place.
+    /** Includes the element in a ascending sorted vector at the right place.
         Does nothing and returns <code>false</code> if the element is
-        already in the list;
+        already in the vector;
         returns <code>true</code> if the element is inserted.
         @todo made two separate functions for efficiency, should be
         a template taking a compare template arg.
@@ -130,63 +130,63 @@ public:
     */
     bool Insert(const T& elt);
 
-    /** Return whether this list contains zero elements. */
+    /** Return whether this vector contains zero elements. */
     bool IsEmpty() const
     {
         return m_vec.empty();
     }
 
-    /** Test whether a list is as long as a given length. */
+    /** Test whether a vector is as long as a given length. */
     bool IsLength (int length) const
     {
         return Length() == length;
     }
 
-    /** Returns whether the list is sorted in given order. */
+    /** Returns whether the vector is sorted in given order. */
     bool IsSorted(bool ascending = true) const;
 
-    /** Returns whether the list is sorted and has no duplicates. */
+    /** Returns whether the vector is sorted and has no duplicates. */
     bool IsSortedAndUnique(bool ascending = true) const;
 
-    /** Return the number of elements in this list. */
+    /** Return the number of elements in this vector. */
     int Length() const
     {
         return m_vec.size();
     }
     
-    /** Cut off list after at most <code>length</code> elements. */
+    /** Cut off vector after at most <code>length</code> elements. */
     void LimitListLength (int limit);
 
-    /** Test whether a list is as long as or longer than a given length.
+    /** Test whether a vector is as long as or longer than a given length.
     */ 
     bool MinLength(int length) const
     {
         return Length() >= length;
     }
 
-    /** Test whether a list is shorter than or equal to a given length.
+    /** Test whether a vector is shorter than or equal to a given length.
     */ 
     bool MaxLength(int length) const
     {
         return Length() <= length;
     }
 
-    /** Return whether this list contains more than zero elements. */
+    /** Return whether this vector contains more than zero elements. */
     bool NonEmpty() const
     {
         return ! IsEmpty();
     }
 
-    /** Remove the head of the list.
-        The list must not be empty.
-        @return The head of the list.
+    /** Remove the head of the vector.
+        The vector must not be empty.
+        @return The head of the vector.
         @deprecated Don't use this function; it is slow. 
         Only exists for SgList compatibility.
     */
     T Pop();
 
-    /** Remove the last element of the list.
-        The list must not be empty.
+    /** Remove the last element of the vector.
+        The vector must not be empty.
     */
     void PopBack();
 
@@ -196,19 +196,19 @@ public:
     */
     void Push(const T& elt);
 
-    /** Add a single element at the end of the list. */
+    /** Add a single element at the end of the vector. */
     void PushBack(const T& elt)
     {
         m_vec.push_back(elt);
     }
 
-    /** Removes all but the first copy of each element from the list.
+    /** Removes all but the first copy of each element from the vector.
         After calling @c RemoveDuplicates(), @c UniqueElements() is @c true.
         @return true, if at least one duplicate was removed
     */
     bool RemoveDuplicates();
     
-    /** Clear this list and set it to contain only <code>elt</code>. */
+    /** Clear this vector and set it to contain only <code>elt</code>. */
     void SetTo(const T& elt)
     {
         Clear();
@@ -218,21 +218,21 @@ public:
     /** Do vectors contain the same elements, possibly in different order? */
     bool SetsAreEqual(const SgVector<T>& other) const;
 
-    /** Clear this list and set it to contain the <code>%count</code>
+    /** Clear this vector and set it to contain the <code>%count</code>
         elements from
         <code>array[0]</code> to <code>array[%count - 1]</code>.
-        If <code>%count</code> is zero, the list is just cleared.
+        If <code>%count</code> is zero, the vector is just cleared.
     */
     void SetTo(const T* array, int count);
 
-    /** Swap the entire contents of this list with <code>*list</code>. */
-    void SwapWith(SgVector<T>* vec)
+    /** Swap the entire contents of this vector with <code>*vector</code>. */
+    void SwapWith(SgVector<T>* vector)
     {
-        std::swap(m_vec, vec->m_vec);
+        std::swap(m_vec, vector->m_vec);
     }
 
-    /** Returns the last element of the list.
-        Asserts if the list is empty.
+    /** Returns the last element of the vector.
+        Asserts if the vector is empty.
         @deprecated; use Back() instead
     */
     const T& Tail() const
@@ -241,7 +241,7 @@ public:
         return m_vec.back();
     }
 
-    /** Returns the Nth-last element of the list. It must exist.
+    /** Returns the Nth-last element of the vector. It must exist.
     */
     const T& TopNth(int index) const
     {
@@ -251,8 +251,8 @@ public:
         return m_vec[m_vec.size() - index];
     }
 
-    /** Returns the head of the list.
-        Asserts if the list is empty.
+    /** Returns the head of the vector.
+        Asserts if the vector is empty.
     */
     const T& Top() const
     {
@@ -260,14 +260,14 @@ public:
         return m_vec[0];
     }
 
-    /** Include all elements from <code>set</code> into this list.
-        Appends new elements at the end of this list.
+    /** Include all elements from <code>set</code> into this vector.
+        Appends new elements at the end of this vector.
     */
     void Union(const SgVector<T>& set);
 
     /** Check for duplicate elements.
         @return <code>true</code> if there are no duplicate elements in
-        the list.
+        the vector.
         Useful for debugging.
         @todo speed it up
     */
@@ -294,7 +294,7 @@ private:
     More concise way to iterate (from "Large-Scale C++ Software Design" by
     John Lakos):
     <pre>
-      for (SgListIterator<T> it(list); it; ++it) { ... it() ... }
+      for (SgListIterator<T> it(vector); it; ++it) { ... it() ... }
     </pre>
     Better performance because every method is inline.
 */
@@ -302,7 +302,7 @@ template<typename T>
 class SgVectorIterator
 {
 public:
-    /** Create a list iterator to iterate through list. */
+    /** Create a vector iterator to iterate through vector. */
     SgVectorIterator(const SgVector<T>& vec)
         : m_vec(vec),
           m_it(m_vec.Vector().begin())
@@ -310,7 +310,7 @@ public:
 
     /** Copy current state of iterator.
         Useful for creating a new iterator that only runs from the current
-        position to the list end. See <code>UniqueElements()</code>
+        position to the vector end. See <code>UniqueElements()</code>
         for an example.
     */
     SgVectorIterator(const SgVectorIterator& it)
@@ -348,7 +348,7 @@ private:
     SgVectorIterator& operator=(const SgVectorIterator&);
 };
 
-/** Typed list of pointers to T. Pointers cannot be 0. */
+/** Typed vector of pointers to T. Pointers cannot be 0. */
 template<class T>
 class SgVectorOf
     : public SgVector<void*>
@@ -372,8 +372,8 @@ public:
         return SgVector<void*>::Contains(GetVoidPtr(element));
     }
 
-    /** Append <code>elt</code> at the end of the list if it's not
-        already in the list. */
+    /** Append <code>elt</code> at the end of the vector if it's not
+        already in the vector. */
     void Include(const T* element)
     {
         SG_ASSERT(element);
@@ -386,9 +386,9 @@ public:
         return SgVector<void*>::Exclude(GetVoidPtr(element));
     }
 
-    void Exclude(const SgVectorOf<T>& list)
+    void Exclude(const SgVectorOf<T>& vector)
     {
-        SgVector<void*>::Exclude(list);
+        SgVector<void*>::Exclude(vector);
     }
 
     void Push(const T* element)
@@ -443,15 +443,15 @@ private:
 
 //----------------------------------------------------------------------------
 
-/** Iterator for ListOf<T> typed list of pointers to T */
+/** Iterator for ListOf<T> typed vector of pointers to T */
 template<class T>
 class SgVectorIteratorOf
     : private SgVectorIterator<void*>
 {
 public:
-    /** Create a list iterator to iterate through list. */
-    SgVectorIteratorOf(const SgVectorOf<T>& list)
-        : SgVectorIterator<void*>(static_cast<const SgVector<void*>&>(list))
+    /** Create a vector iterator to iterate through vector. */
+    SgVectorIteratorOf(const SgVectorOf<T>& vector)
+        : SgVectorIterator<void*>(static_cast<const SgVector<void*>&>(vector))
     { }
 
 #if UNUSED
@@ -531,9 +531,9 @@ bool SgVector<T>::Exclude(const T& elt)
 }
 
 template<typename T>
-void SgVector<T>::Exclude(const SgVector<T>& list)
+void SgVector<T>::Exclude(const SgVector<T>& vector)
 {
-    for (SgVectorIterator<T> it(list); it; ++it)
+    for (SgVectorIterator<T> it(vector); it; ++it)
         Exclude(*it);
 }
 
@@ -591,7 +591,7 @@ bool SgVector<T>::IsSortedAndUnique(bool ascending) const
     return result == m_vec.end();
 }
 
-/** Cut off list after at most <code>length</code> elements. */
+/** Cut off vector after at most <code>length</code> elements. */
 template<typename T>
 void SgVector<T>::LimitListLength (int limit)
 {
