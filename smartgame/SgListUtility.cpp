@@ -46,23 +46,23 @@ void SgListUtility::Reverse(SgList<int>* list)
 }
 
 //----------------------------------------------------------------------------
-void SgVectorUtility::Difference(SgVector<int>* list,
-                                 const SgVector<int>& list2)
+void SgVectorUtility::Difference(SgVector<int>* vector,
+                                 const SgVector<int>& vector2)
 {
     // @todo speed up by using tags, if used in time-critical code.
-    for (SgVectorIterator<int> it(list2); it; ++it)
-        list->Exclude(*it);
+    for (SgVectorIterator<int> it(vector2); it; ++it)
+        vector->Exclude(*it);
 }
 
-void SgVectorUtility::Intersection(SgVector<int>* list,
-                                   const SgVector<int>& list2)
+void SgVectorUtility::Intersection(SgVector<int>* vector,
+                                   const SgVector<int>& vector2)
 {
-     SgVector<int> newList;
-     for (SgVectorIterator<int> it(*list); it; ++it)
+     SgVector<int> newVector;
+     for (SgVectorIterator<int> it(*vector); it; ++it)
      {
          // @todo speed up by hash tags, if used in time-critical code
-         if (list2.Contains(*it))
-             newList.Append(*it);
+         if (vector2.Contains(*it))
+             newVector.Append(*it);
      }
-     newList.SwapWith(list);
+     newVector.SwapWith(vector);
 }
