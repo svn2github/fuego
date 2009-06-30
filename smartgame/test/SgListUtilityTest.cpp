@@ -72,8 +72,22 @@ BOOST_AUTO_TEST_CASE(SgListUtilityTestVectorConversion)
     BOOST_CHECK_EQUAL(b[3], 8);
     BOOST_CHECK_EQUAL(b[4], 9);
     BOOST_CHECK_EQUAL(b[5], 10);
+    
+    b.Clear();
+    BOOST_CHECK_EQUAL(b.Length(), 0);
+    b = SgListUtility::ListToVector(a);
+    BOOST_CHECK_EQUAL(b.Length(), 6);
+    BOOST_CHECK_EQUAL(b[0], 5);
+    BOOST_CHECK_EQUAL(b[1], 6);
+    BOOST_CHECK_EQUAL(b[2], 7);
+    BOOST_CHECK_EQUAL(b[3], 8);
+    BOOST_CHECK_EQUAL(b[4], 9);
+    BOOST_CHECK_EQUAL(b[5], 10);
+
     SgList<int> c;
     SgListUtility::VectorToList(b, c);
+    BOOST_CHECK(a == c);
+    c = SgListUtility::VectorToList(b);
     BOOST_CHECK(a == c);
 }
 
