@@ -483,6 +483,22 @@ BOOST_AUTO_TEST_CASE(SgPointSetTest_SubsetOf)
     BOOST_CHECK(! b.SubsetOf(a));
 }
 
+BOOST_AUTO_TEST_CASE(SgPointSetTest_SgPointSet_SgVector)
+{
+    SgVector<SgPoint> a;
+    SgPointSet b(a);
+    BOOST_CHECK_EQUAL(b.Size(), 0);
+    a.PushBack(Pt(1, 1));
+    a.PushBack(Pt(2, 2));
+    a.PushBack(Pt(3, 3));
+    SgPointSet c(a);
+    BOOST_CHECK_EQUAL(c.Size(), 3);
+    SgVector<SgPoint> d;
+    BOOST_CHECK_EQUAL(d.Length(), 0);
+    c.ToVector(&d);
+    BOOST_CHECK_EQUAL(d.Length(), 3);
+}
+
 BOOST_AUTO_TEST_CASE(SgPointSetTest_SupersetOf)
 {
     SgPointSet a;
