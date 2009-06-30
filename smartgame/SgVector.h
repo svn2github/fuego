@@ -102,6 +102,7 @@ public:
     */
     bool Exclude(const T& elt);
 
+    /** Exclude each element of <code>vector</code> from this vector. */
     void Exclude(const SgVector<T>& vector);
 
     /** Find position of element.
