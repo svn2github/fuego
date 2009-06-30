@@ -32,6 +32,7 @@ namespace GoUctUtil
 {
     /** reject random move if it was self atari */
     const bool REMOVE_SELF_ATARI = false;
+    /** reject random move if it was both atari and self atari */
     const bool REMOVE_MUTUAL_ATARI = false;
 
     const int SELF_ATARI_LIMIT = 8;
