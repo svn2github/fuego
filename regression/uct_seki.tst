@@ -237,3 +237,9 @@ loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 59
 #? [E9]*
 # E9 wins the endgame. Because of seki misevaluation, B plays 'safe'
 # and loses this game.
+
+loadsgf sgf/seki/sheppard-seki.sgf
+reg_genmove b
+460 sg_compare_float 0.3 uct_value
+#? [-1]*
+# B is losing but thinks it wins the seki.
