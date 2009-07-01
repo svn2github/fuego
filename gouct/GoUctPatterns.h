@@ -425,7 +425,7 @@ bool GoUctPatterns<BOARD>::MatchHane(const GoBoard& bd, SgPoint p,
     const int nuEmpty = bd.NumEmptyNeighbors(p);
     if (nuEmpty < 2 || nuEmpty > 3)
         return false;
-    if (  (nuBlack < 1 || nuBlack > 2)
+    if (   (nuBlack < 1 || nuBlack > 2)
         && (nuWhite < 1 || nuWhite > 2)
         )
         return false;
@@ -471,20 +471,20 @@ bool GoUctPatterns<BOARD>::MatchHane(const GoBoard& bd, SgPoint p,
     const int nuBlackDiag = bd.NumDiagonals(p, SG_BLACK);
     if (   nuBlackDiag >= 2
         && nuWhite > 0
-        && (    CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_NS, SG_WE)
-            ||  CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_NS, SG_WE)
-            ||  CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_WE, SG_NS)
-            ||  CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_WE, SG_NS)
+        && (   CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_NS, SG_WE)
+            || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_NS, SG_WE)
+            || CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_WE, SG_NS)
+            || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_WE, SG_NS)
             )
         )
         return true;
     const int nuWhiteDiag = bd.NumDiagonals(p, SG_WHITE);
     if (   nuWhiteDiag >= 2
         && nuBlack > 0
-        && (    CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_NS, SG_WE)
-            ||  CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_NS, SG_WE)
-            ||  CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_WE, SG_NS)
-            ||  CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_WE, SG_NS)
+        && (   CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_NS, SG_WE)
+            || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_NS, SG_WE)
+            || CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_WE, SG_NS)
+            || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_WE, SG_NS)
             )
         )
         return true;
@@ -508,8 +508,9 @@ inline bool GoUctPatterns<BOARD>::MatchAny(SgPoint p) const
 {
     // Quick refutation using the incremental neighbor counts of the board:
     // all patterns have at least one adjacent stone
-    if (m_bd.NumNeighbors(p, SG_BLACK) == 0
-        && m_bd.NumNeighbors(p, SG_WHITE) == 0)
+    if (   m_bd.NumNeighbors(p, SG_BLACK) == 0
+        && m_bd.NumNeighbors(p, SG_WHITE) == 0
+       )
         return false;
 
     if (m_bd.Line(p) > 1)

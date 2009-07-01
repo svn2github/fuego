@@ -211,8 +211,8 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
     // Check if region is a nakade shape that fills all potential eye space
     for (SgListIteratorOf<GoRegion> it(regions->AllRegions(color)); it; ++it)
     {
-        if (    area.SupersetOf((*it)->Points())
-            &&  area.SupersetOf((*it)->BlocksPoints())
+        if (   area.SupersetOf((*it)->Points())
+            && area.SupersetOf((*it)->BlocksPoints())
            )
         {
             if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
@@ -378,7 +378,7 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
 
     if (allLibs.MaxLength(1))
         return false;
-    else if ( allLibs.IsLength(2))
+    else if (allLibs.IsLength(2))
     {
         SG_ASSERT(nuLibs == 2 && allLibs.IsLength(2));
         miaiPair->first = allLibs.Top();

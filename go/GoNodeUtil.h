@@ -26,7 +26,7 @@ namespace GoNodeUtil
     /** Create a position with given size, toPlay, b and w points */
     SgNode* CreatePosition(int boardSize, SgBlackWhite toPlay,
                                const SgList<SgPoint>& bPoints,
-                               const SgList<SgPoint>& wPoints );
+                               const SgList<SgPoint>& wPoints);
 
     /** Find komi that is valid for this node.
         Search parent nodes until a node with a komi property is found.

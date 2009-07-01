@@ -16,7 +16,7 @@ using namespace std;
 
 SgNode* GoNodeUtil::CreatePosition(int boardSize, SgBlackWhite toPlay,
                                const SgList<SgPoint>& bPoints,
-                               const SgList<SgPoint>& wPoints )
+                               const SgList<SgPoint>& wPoints)
 {
     SgNode* node = new SgNode();
     node->Add(new SgPropInt(SG_PROP_SIZE, boardSize));

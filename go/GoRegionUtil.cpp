@@ -113,7 +113,7 @@ bool TwoSeparateEyes(const GoBoard& bd, const SgPointSet& pts,
         else
         {
             const SgPointSet area = pts & bd.AllEmpty();
-            if ( area.MinSetSize(2))
+            if (area.MinSetSize(2))
             {
                 for (SgSetIterator it(area); it; ++it)
                     if (bd.IsLegal(*it, SgOppBW(color)))
@@ -168,13 +168,12 @@ bool GoRegionUtil::Has2SureLiberties(const GoBoard& board,
     // Cond 1: all empty points are in liberties of some boundary block
     // Cond 2: two intersection points
     
-    if ( ( (pts & board.AllEmpty()).SubsetOf(boundary.Border(size)))
-          &&  (Has2IntersectionPoints(board, pts, boundaryAnchors)
-              || TwoSeparateEyes(board, pts, boundary, color))
-         )
-    {
+    if (     (pts & board.AllEmpty()).SubsetOf(boundary.Border(size))
+          && (   Has2IntersectionPoints(board, pts, boundaryAnchors)
+              || TwoSeparateEyes(board, pts, boundary, color)
+             )
+       )
         /* */ return true; /* */
-    }
     
     return false;
 }

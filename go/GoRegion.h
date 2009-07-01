@@ -269,7 +269,7 @@ public:
     */
     bool AllEmptyAreLibs() const;
 
-    /** Test if ponits of region are 2-vital for color.
+    /** Test if points of region are 2-vital for color.
         Condition 1: all empty points are in liberties of some boundary block
         Condition 2: two intersection points (@see Has2IPs)
         refined version: points need not be liberty, if next to both IP.
@@ -324,7 +324,7 @@ public:
         same boundary block, and they are split points for region.
         This is a loose condition for SgMiaiPairs. 
     */
-    void GetDivideMiaiPairs(SgList<SgMiaiPair>& pairs) const;
+    void GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const;
 
     /** Compute joint liberties of all m_blocks. Since we need at least 2
         joint libs, we stop computing if we find that this is impossible.

@@ -359,9 +359,8 @@ void GoRegion::GetIPs(SgList<SgPoint>* ips) const
             ips->Append(*it);
 }
 
-void GoRegion::GetDivideMiaiPairs( SgList<SgMiaiPair>& pairs) const
+void GoRegion::GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const
 {
-
     SgList<SgPoint> divPs;
 
     for (SgListIteratorOf<GoBlock> it(Blocks()); it; ++it)
@@ -382,11 +381,11 @@ void GoRegion::GetDivideMiaiPairs( SgList<SgMiaiPair>& pairs) const
 
         for (SgListIterator<SgPoint> it2(temp); it2; ++it2)
         {
-            if ( a == -1)
+            if (a == -1)
                 a = (*it2);
             else
             {
-                if ( SgPointUtil::AreAdjacent(a, *it2))
+                if (SgPointUtil::AreAdjacent(a, *it2))
                 {
                     p1.first = a;
                     p1.second = *it2;
@@ -401,7 +400,7 @@ void GoRegion::GetDivideMiaiPairs( SgList<SgMiaiPair>& pairs) const
     if (WRITEDEBUG)
     {
         SgDebug() << SgWritePointList(divPs, "divPs: ", true);
-        for (SgListIterator<SgMiaiPair> it(pairs); it; ++it)
+        for (SgVectorIterator<SgMiaiPair> it(pairs); it; ++it)
         {
             SgDebug() << "Pair(1: " << SgWritePoint((*it).first)
             << " 2: " << SgWritePoint((*it).second) << ")\n";
@@ -456,7 +455,7 @@ bool GoRegion::Find2ConnForAll() const
 bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                                        SgList<SgPoint>& usedLibs) const
 {
-    SgList<SgMiaiPair> myStrategy;
+    SgVector<SgMiaiPair> myStrategy;
     const int size = m_bd.Size();
     SgPointSet interior = AllInsideLibs();
     if (interior.IsEmpty())
@@ -481,7 +480,7 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                 JointLibs(&jlibs);
                 SgList<SgPoint> ips;
                 GetIPs(&ips);
-                SgList<SgMiaiPair> updateStrg;
+                SgVector<SgMiaiPair> updateStrg;
 
                 for (SgSetIterator it(interior); it; ++it)
                 {
@@ -491,10 +490,10 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                     SgPointSet rest = s1.Border(size) & updateLibs;
                     if (!rest.IsEmpty())
                     {
-                        for (SgListIterator<SgMiaiPair> it2(myStrategy);
+                        for (SgVectorIterator<SgMiaiPair> it2(myStrategy);
                              it2; ++it2)
                         {
-                            SgMiaiPair x = (*it2);
+                            SgMiaiPair x = *it2;
                             if (   SgPointUtil::AreAdjacent(p, x.first)
                                 && SgPointUtil::AreAdjacent(p, x.second)
                                )
@@ -1101,7 +1100,7 @@ bool GoRegion::ProtectedCuts(const GoBoard& board) const
     const int size = board.Size();
     GoBlock* block1, *block2;
     for (SgListPairIteratorOf<GoBlock> it(m_blocks);
-         it.NextPair(block1, block2); )
+         it.NextPair(block1, block2);)
     {
         SgPointSet lib1(block1->Stones().Border(size));
         SgPointSet lib2(block2->Stones().Border(size));

@@ -112,8 +112,9 @@ void GoSafetySolver::Find2VitalAreas(SgBWSet* safe)
     {
         SgBlackWhite color(*it);
         for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
-            if (    (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
-                 && (*it)->Points().Disjoint((*safe)[SG_WHITE]))
+            if (   (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
+                && (*it)->Points().Disjoint((*safe)[SG_WHITE])
+               )
             {
                 Test2Vital(*it, safe);
                 safe->AssertDisjoint();
