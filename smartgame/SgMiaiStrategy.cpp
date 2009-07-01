@@ -23,7 +23,7 @@ void SgMiaiStrategy::Write(std::ostream& stream) const
 {
     SgStrategy::Write(stream);
     stream << "Miai Strategies: ";
-    for (SgListIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
+    for (SgVectorIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
         stream << '(' << SgWritePoint((*it).first)
                << "-" << SgWritePoint((*it).second)
                << ") ";
@@ -59,7 +59,7 @@ void SgMiaiStrategy::Clear()
 SgPointSet SgMiaiStrategy::Dependency() const
 {
     SgPointSet dependency;
-    for (SgListIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
+    for (SgVectorIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
     {
         dependency.Include((*it).first);
         dependency.Include((*it).second);
@@ -70,13 +70,13 @@ SgPointSet SgMiaiStrategy::Dependency() const
 SgStrategyStatus SgMiaiStrategy::Status() const
 {
     if (m_failed)
-        return strFailed;
+        return SGSTRATEGY_FAILED;
     else if (m_openThreats.IsEmpty())
-        return strAchieved;
-    else if (m_openThreats.IsLength1())
-        return strThreatened;
+        return SGSTRATEGY_ACHIEVED;
+    else if (m_openThreats.IsLength(1))
+        return SGSTRATEGY_THREATENED;
     else
-        return strFailed;
+        return SGSTRATEGY_FAILED;
 }
 
 void SgMiaiStrategy::StrategyFailed()
@@ -91,8 +91,8 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
     if (m_failed)
         /* */ return; /* */
 
-    SgList<SgPoint> fixedThreats;
-    for (SgListIterator<SgPoint> it(m_openThreats); it; ++it)
+    SgVector<SgPoint> fixedThreats;
+    for (SgVectorIterator<SgPoint> it(m_openThreats); it; ++it)
         if (p == *it)
         {
             if (player == Player())
@@ -109,8 +109,8 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
         /* */ return; /* */
     }
     
-    SgList<SgMiaiPair> toChange;
-    for (SgListIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
+    SgVector<SgMiaiPair> toChange;
+    for (SgVectorIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
         if (p == (*it).first || p == (*it).second)
             toChange.Append(*it);
 
@@ -122,7 +122,7 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
     }
     else
         // move other endpoint of toChange to open threats
-    for (SgListIterator<SgMiaiPair> it(toChange); it; ++it)
+    for (SgVectorIterator<SgMiaiPair> it(toChange); it; ++it)
     {
         m_openThreats.Append(SgMiaiPairUtil::Other(*it, p));
     }
@@ -131,7 +131,7 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
 bool SgMiaiStrategy::HasOverlappingMiaiPairs() const
 {
     SgPointSet used;
-    for (SgListIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
+    for (SgVectorIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
     {
         const SgPoint p1 = (*it).first;
         const SgPoint p2 = (*it).second;
@@ -144,7 +144,7 @@ bool SgMiaiStrategy::HasOverlappingMiaiPairs() const
     return false;
 }
 
-const SgList<SgPoint>& SgMiaiStrategy::OpenThreats() const
+const SgVector<SgPoint>& SgMiaiStrategy::OpenThreats() const
 {
     return m_openThreats;
 }

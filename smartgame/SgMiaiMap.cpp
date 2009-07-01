@@ -46,9 +46,9 @@ void SgMiaiMap::ExecuteMove(SgPoint p, SgBlackWhite player)
 
 SgStrategyStatus SgMiaiMap::Status() const
 {
-    return m_failed ? strFailed :
-           m_forcedMove != SG_NULLPOINT ? strThreatened :
-           strAchieved;
+    return m_failed ? SGSTRATEGY_FAILED :
+           m_forcedMove != SG_NULLPOINT ? SGSTRATEGY_THREATENED :
+           SGSTRATEGY_ACHIEVED;
 }
 
 void SgMiaiMap::ConvertFromSgMiaiStrategy(const SgMiaiStrategy& s)
@@ -56,7 +56,7 @@ void SgMiaiMap::ConvertFromSgMiaiStrategy(const SgMiaiStrategy& s)
     SG_ASSERT(! s.HasOverlappingMiaiPairs());
     
     const SgBlackWhite player = s.Player();
-    for (SgListIterator<SgMiaiPair> it(s.MiaiStrategies()); it; ++it)
+    for (SgVectorIterator<SgMiaiPair> it(s.MiaiStrategies()); it; ++it)
     {
         const SgPoint p1 = (*it).first;
         const SgPoint p2 = (*it).second;

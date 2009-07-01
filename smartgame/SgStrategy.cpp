@@ -14,12 +14,12 @@
 
 std::ostream& operator<<(std::ostream& stream, SgStrategyStatus f)
 {
-    static const char* s_string[nuSgStrategyStatus] = 
+    static const char* s_string[_SGSTRATEGY_COUNT] = 
         {
-            "strAchieved",
-            "strThreatened",
-            "strUnknown",
-            "strFailed"
+            "SGSTRATEGY_ACHIEVED",
+            "SGSTRATEGY_THREATENED",
+            "SGSTRATEGY_UNKNOWN",
+            "SGSTRATEGY_FAILED"
         };
 
     stream << s_string[f];

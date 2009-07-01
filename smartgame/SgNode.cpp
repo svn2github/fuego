@@ -137,6 +137,11 @@ SgList<SgPoint> SgNode::ListProp(SgPropID prop) const
     return SgList<SgPoint>();
 }
 
+SgVector<SgPoint> SgNode::VectorProp(SgPropID prop) const
+{
+    return SgListUtility::ListToVector(ListProp(prop));
+}
+
 SgList<void*> SgNode::VoidListProp(SgPropID prop) const
 {
     SgPropVoidList* lp = dynamic_cast<SgPropVoidList*>(Get(prop));

@@ -22,11 +22,11 @@
 
 enum SgStrategyStatus
 {
-    strAchieved,
-    strThreatened,
-    strUnknown,
-    strFailed,
-    nuSgStrategyStatus
+    SGSTRATEGY_ACHIEVED,
+    SGSTRATEGY_THREATENED,
+    SGSTRATEGY_UNKNOWN,
+    SGSTRATEGY_FAILED,
+    _SGSTRATEGY_COUNT
 };
 
 std::ostream& operator<<(std::ostream& stream, SgStrategyStatus s);

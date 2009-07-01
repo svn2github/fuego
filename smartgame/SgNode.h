@@ -68,6 +68,7 @@ public:
 
     /**  @todo: distinguish SgList<SgPoint>, SgList<int> etc. */
     SgList<SgPoint> ListProp(SgPropID prop) const;
+    SgVector<SgPoint> VectorProp(SgPropID prop) const;
 
     /** Get a void pointer list property.
         @deprecated Using void pointers is generally discouraged in C++.

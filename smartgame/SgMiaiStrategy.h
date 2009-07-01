@@ -12,9 +12,9 @@
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 #include "SgHash.h"
-#include "SgList.h"
 #include "SgPointSet.h"
 #include "SgStrategy.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -44,14 +44,14 @@ public:
     void AddPair(const SgMiaiPair& miaiPair);
     
     /** Set whole strategy */
-    void SetStrategy(const SgList<SgMiaiPair>& miaiStrategies)
+    void SetStrategy(const SgVector<SgMiaiPair>& miaiStrategies)
     {
         //SG_ASSERT(m_miaiStrategies.IsEmpty());
         m_miaiStrategies = miaiStrategies;
     }
     
     /** See m_miaiStrategies */
-    const SgList<SgMiaiPair>& MiaiStrategies() const
+    const SgVector<SgMiaiPair>& MiaiStrategies() const
     {
         return m_miaiStrategies;
     }
@@ -66,7 +66,7 @@ public:
     SgStrategyStatus Status() const;
     
     /** See m_openThreats */
-    const SgList<SgPoint>& OpenThreats() const;
+    const SgVector<SgPoint>& OpenThreats() const;
     
     /** If exactly one open threat, return that move.
         If no active threat, return SG_NULLPOINT.
@@ -89,12 +89,12 @@ private:
     void StrategyFailed();
 
     /** move pairs - must play one in each pair */
-    SgList<SgMiaiPair> m_miaiStrategies;
+    SgVector<SgMiaiPair> m_miaiStrategies;
     
     /** open threats must be answered to achieve strategy.
         More than one open threat means strategy cannot be achieved.
     */
-    SgList<SgPoint> m_openThreats;
+    SgVector<SgPoint> m_openThreats;
     
     /** Strategy has failed if opponent has occupied both points in a pair */
     bool m_failed;

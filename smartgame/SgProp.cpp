@@ -606,7 +606,7 @@ void SgProp::Init()
     SG_PROP_ADD_EMPTY = Register(addStoneProp, "AE", SG_PROPCLASS_NEWLINE);
 
     //--- value and territory
-    SG_PROP_VALUE = Register(valueProp, "V" );
+    SG_PROP_VALUE = Register(valueProp, "V");
     SG_PROP_TERR_BLACK = Register(listProp, "TB",
                                   SG_PROPCLASS_BLACK + SG_PROPCLASS_NEWLINE);
     SG_PROP_TERR_WHITE = Register(listProp, "TW",
