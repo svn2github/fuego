@@ -105,6 +105,15 @@ public:
     /** Exclude each element of <code>vector</code> from this vector. */
     void Exclude(const SgVector<T>& vector);
 
+    /** Returns the first element of the vector.
+        Asserts if the vector is empty.
+    */
+    const T& Front() const
+    {
+        SG_ASSERT(NonEmpty());
+        return m_vec.front();
+    }
+
     /** Find position of element.
         @returns The position of <code>elt</code> in the vector,
         in range <code>0..length-1</code>. Returns -1 if <code>elt</code>
@@ -158,18 +167,24 @@ public:
     /** Cut off vector after at most <code>length</code> elements. */
     void LimitListLength (int limit);
 
-    /** Test whether a vector is as long as or longer than a given length.
-    */ 
-    bool MinLength(int length) const
-    {
-        return Length() >= length;
-    }
-
-    /** Test whether a vector is shorter than or equal to a given length.
-    */ 
+    /** Test whether a vector is shorter than or equal to a given length. */ 
     bool MaxLength(int length) const
     {
         return Length() <= length;
+    }
+
+    /** Merges two sorted vectors into this. Equivalent to, but faster than:
+        <pre>
+        for (SgVectorIterator<T> it(vector); it; ++it)
+            Insert(*it);
+        </pre>
+    */
+    void Merge(const SgVector<T>& vector);
+
+    /** Test whether a vector is as long as or longer than a given length. */ 
+    bool MinLength(int length) const
+    {
+        return Length() >= length;
     }
 
     /** Return whether this vector contains more than zero elements. */
@@ -232,10 +247,7 @@ public:
         std::swap(m_vec, vector->m_vec);
     }
 
-    /** Returns the last element of the vector.
-        Asserts if the vector is empty.
-        @deprecated; use Back() instead
-    */
+    /** @deprecated; use Back() instead */
     const T& Tail() const
     {
         SG_ASSERT(NonEmpty());
@@ -252,13 +264,10 @@ public:
         return m_vec[m_vec.size() - index];
     }
 
-    /** Returns the head of the vector.
-        Asserts if the vector is empty.
-    */
+    /** @deprecated; use Front() instead */
     const T& Top() const
     {
-        SG_ASSERT(NonEmpty());
-        return m_vec[0];
+        return Front();
     }
 
     /** Include all elements from <code>set</code> into this vector.
@@ -392,6 +401,11 @@ public:
         SgVector<void*>::Exclude(vector);
     }
 
+    bool Insert(const T* element)
+    {
+        return SgVector<void*>::Insert(GetVoidPtr(element));
+    }
+
     void Push(const T* element)
     {
         SG_ASSERT(element);
@@ -414,10 +428,6 @@ public:
     }
 
 #if UNUSED
-    bool Insert(const T* element)
-    {
-        return SgVector<void*>::Insert(GetVoidPtr(element));
-    }
 
     bool Extract(const T* element)
     {
@@ -553,7 +563,7 @@ template<typename T>
 bool SgVector<T>::Insert(const T& elt)
 {
     SG_ASSERT(IsSorted());
-    typename vector<int>::iterator location = 
+    typename vector<T>::iterator location = 
     lower_bound( m_vec.begin(), m_vec.end(), elt);
 
     if (   location != m_vec.end()
@@ -598,6 +608,25 @@ void SgVector<T>::LimitListLength (int limit)
 {
     if (Length() > limit)
         m_vec.resize(limit);
+}
+
+template<typename T>
+void SgVector<T>::Merge(const SgVector<T>& vector)
+{
+    SG_ASSERT(IsSortedAndUnique());
+    SG_ASSERT(vector.IsSortedAndUnique());
+    if ((this == &vector) || vector.IsEmpty())
+        return;
+    else if (IsEmpty())
+        operator=(vector);
+    else if (vector.Top() > Tail())
+        // all new elements come after all old elements, just concat lists
+        AppendList(vector);
+    else
+    { // @todo: optimize as in SgList. Walk both vectors for O(n) time
+        for (SgVectorIterator<T> it(vector); it; ++it)
+            Insert(*it);
+    }
 }
 
 template<typename T>

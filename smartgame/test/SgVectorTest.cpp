@@ -335,6 +335,26 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPop)
     BOOST_CHECK_EQUAL(a[1], 123);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestMerge)
+{
+    SgVector<int> a;
+    for (int i = 0; i < 10; i+=2) // 0,2,4,6,8
+        a.PushBack(i);
+    SgVector<int> b;
+    b.PushBack(1);
+    b.PushBack(5);
+    b.PushBack(7);
+    b.PushBack(11);
+    b.PushBack(12);
+    a.Merge(b);
+    BOOST_CHECK_EQUAL(a.Length(), 10);
+    BOOST_CHECK_EQUAL(a[0], 0);
+    BOOST_CHECK_EQUAL(a[1], 1);
+    BOOST_CHECK_EQUAL(a[2], 2);
+    BOOST_CHECK_EQUAL(a[7], 8);
+    BOOST_CHECK_EQUAL(a[9], 12);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
 {
     SgVector<int> a;
