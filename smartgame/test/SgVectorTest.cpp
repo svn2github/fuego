@@ -411,6 +411,16 @@ BOOST_AUTO_TEST_CASE(SgVectorTestRemoveDuplicates)
     BOOST_CHECK(a.UniqueElements());
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestReverse)
+{
+    SgVector<int> a;                 
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    a.Reverse();
+    for (int i = 0; i < 10; ++i)
+        BOOST_CHECK_EQUAL(a[i], 9-i);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestSetTo_Element)
 {
     SgVector<int> a;

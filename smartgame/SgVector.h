@@ -224,6 +224,11 @@ public:
     */
     bool RemoveDuplicates();
     
+    void Reverse()
+    {
+        reverse(m_vec.begin(), m_vec.end());
+    }
+    
     /** Clear this vector and set it to contain only <code>elt</code>. */
     void SetTo(const T& elt)
     {
