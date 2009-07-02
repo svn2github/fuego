@@ -455,10 +455,10 @@ public:
     bool Extract(const T& elt);
 
     /** Merges this sorted list with the sorted <code>list</code>.
-        Equivalent to:
+        Equivalent to, but faster than:
         <pre>
-        for (SgListIterator<T> iter(list); iter; ++iter)
-            Insert(*iter).
+        for (SgListIterator<T> it(list); it; ++it)
+            Insert(*it);
         </pre>
     */
     void Merge(const SgList<T>& list);
