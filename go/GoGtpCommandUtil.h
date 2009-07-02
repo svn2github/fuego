@@ -45,7 +45,7 @@ namespace GoGtpCommandUtil
     SgMove MoveArg(const GtpCommand& cmd, std::size_t number,
                    const GoBoard& board);
 
-    /** Parse an argument list consisting of toPlay followed by list of stones.
+    /** Parse argument list consisting of toPlay followed by list of stones.
         All stones are of the same 'defender' color.
      */
     void ParseMultiStoneArgument(GtpCommand& cmd,
