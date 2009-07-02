@@ -175,12 +175,20 @@ void GoBoardUtil::AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
     blocks->SetTo(a, n);
 }
 
+void GoBoardUtil::AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
+                                 SgVector<SgPoint>* blocks)
+{
+    SG_ASSERT(blocks);
+    SgPoint a[SG_MAXPOINT];
+    int n = bd.AdjacentBlocks(p, maxLib, a, SG_MAXPOINT);
+    blocks->SetTo(a, n);
+}
+
 void GoBoardUtil::BlocksAdjacentToPoints(const GoBoard& bd,
                                          const SgList<SgPoint>& points,
                                          SgBlackWhite c,
-                                         SgList<SgPoint>* blocks)
+                                         SgVector<SgPoint>* blocks)
 {
-    SG_ASSERT(blocks);
     // Mark all points to avoid n^2 algorithm.
     SgMarker& mark = bd.m_userMarker;
     SgReserveMarker reserve(mark);
@@ -216,7 +224,7 @@ void GoBoardUtil::BlocksAdjacentToPoints(const GoBoard& bd,
 void GoBoardUtil::BlocksAdjacentToPoints(const GoBoard& bd,
                                          const SgPointSet& points,
                                          SgBlackWhite c,
-                                         SgList<SgPoint>* blocks)
+                                         SgVector<SgPoint>* blocks)
 {
     // exact copy from list version above
     SG_ASSERT(blocks);
@@ -710,7 +718,7 @@ void GoBoardUtil::SharedLiberties(const GoBoard& bd, SgPoint block1,
 }
 
 void GoBoardUtil::SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor,
-                                      int maxLib, SgList<SgPoint>* blocks)
+                                      int maxLib, SgVector<SgPoint>* blocks)
 {
     SG_ASSERT(blocks);
     // Mark all points and previous blocks.
@@ -720,7 +728,7 @@ void GoBoardUtil::SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor,
     mark.Clear();
     for (GoBoard::StoneIterator it1(bd, anchor); it1; ++it1)
         mark.Include(*it1);
-    for (SgListIterator<SgPoint> it(*blocks); it; ++it)
+    for (SgVectorIterator<SgPoint> it(*blocks); it; ++it)
     {
         SgPoint a = *it;
         for (GoBoard::StoneIterator it(bd, a); it; ++it)

@@ -120,7 +120,7 @@ SgNode* SgGameReader::ReadGame(bool resetWarnings)
     return root;
 }
 
-void SgGameReader::ReadGames(SgListOf<SgNode>* rootList)
+void SgGameReader::ReadGames(SgVectorOf<SgNode>* rootList)
 {
     m_warnings.reset();
     SG_ASSERT(rootList);

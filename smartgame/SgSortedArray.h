@@ -7,7 +7,6 @@
 #ifndef SG_SORTEDARRAY_H
 #define SG_SORTEDARRAY_H
 
-#include "SgList.h"
 #include "SgVector.h"
 
 //----------------------------------------------------------------------------
@@ -119,17 +118,12 @@ public:
         }
     }
 
-    void GetElements(SgList<T>* listOfElts) const
-    {
-        listOfElts->SetTo(m_elt, m_numElt);
-    }
-
     void GetElements(SgVector<T>* listOfElts) const
     {
         listOfElts->SetTo(m_elt, m_numElt);
     }
 
-    void GetKeys(SgList<K>* listOfKeys) const
+    void GetKeys(SgVector<K>* listOfKeys) const
     {
         listOfKeys->SetTo(m_key, m_numElt);
     }

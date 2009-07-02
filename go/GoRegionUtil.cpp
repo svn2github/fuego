@@ -86,9 +86,9 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
     GoRegion has an identical function taking a list of GoBlock's.
 */
 inline bool IsAdjacentToAll(const GoBoard& board, SgPoint p,
-                            const SgList<SgPoint>& anchors)
+                            const SgVector<SgPoint>& anchors)
 {
-    for (SgListIterator<SgPoint> it(anchors); it; ++it)
+    for (SgVectorIterator<SgPoint> it(anchors); it; ++it)
         if (! board.IsLibertyOfBlock(p, *it))
             return false;
     return true;
@@ -214,7 +214,7 @@ bool GoRegionUtil::StaticIs1VitalAndConnected(const GoBoard& board,
                                               SgBlackWhite color)
 {
     // type 1:small region with two connection points for all blocks
-    SgList<SgPoint> anchors;
+    SgVector<SgPoint> anchors;
     GoBoardUtil::BlocksAdjacentToPoints(board, pts, color, &anchors);
     
     bool is1Vital = false;

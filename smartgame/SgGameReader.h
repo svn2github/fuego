@@ -8,8 +8,8 @@
 #include <bitset>
 #include <map>
 #include <vector>
-#include "SgList.h"
 #include "SgProp.h"
+#include "SgVector.h"
 
 class SgNode;
 
@@ -70,7 +70,7 @@ public:
     /** Read all game trees from this file.
         Return a list with the root of each game tree.
     */
-    void ReadGames(SgListOf<SgNode>* rootList);
+    void ReadGames(SgVectorOf<SgNode>* rootList);
 
 private:
     /** Map label to values (unparsed) */

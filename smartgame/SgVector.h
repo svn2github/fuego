@@ -291,11 +291,11 @@ private:
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-/** List iterator.
+/** Vector iterator.
     More concise way to iterate (from "Large-Scale C++ Software Design" by
     John Lakos):
     <pre>
-      for (SgListIterator<T> it(vector); it; ++it) { ... it() ... }
+      for (SgVectorIterator<T> it(vector); it; ++it) { ... it() ... }
     </pre>
     Better performance because every method is inline.
 */
@@ -444,7 +444,7 @@ private:
 
 //----------------------------------------------------------------------------
 
-/** Iterator for ListOf<T> typed vector of pointers to T */
+/** Iterator for VectorOf<T> typed vector of pointers to T */
 template<class T>
 class SgVectorIteratorOf
     : private SgVectorIterator<void*>
@@ -659,13 +659,13 @@ template<typename T>
 bool SgVector<T>::RemoveDuplicates()
 {
     // @todo n^2; could be made much faster with tags
-    SgVector<T> uniqueList;
+    SgVector<T> uniqueVector;
     for (SgVectorIterator<T> it(*this); it; ++it)
-        if (! uniqueList.Contains(*it))
-            uniqueList.PushBack(*it);
-    SwapWith(&uniqueList); // avoid copying
+        if (! uniqueVector.Contains(*it))
+            uniqueVector.PushBack(*it);
+    SwapWith(&uniqueVector); // avoid copying
     SG_ASSERT(UniqueElements());
-    return uniqueList.Length() != Length();
+    return uniqueVector.Length() != Length();
 }
 
 template<typename T>
@@ -683,6 +683,63 @@ bool SgVector<T>::UniqueElements() const
                 if (m_vec[i] == m_vec[j])
                     return false;
             }
+    }
+    return true;
+}
+
+//----------------------------------------------------------------------------
+/** Iterator to iterate through all possible pairs of vector elements.
+
+    Each pair is returned exactly once, i.e. with
+    @verbatim
+        vector = e1, e2, ... en
+    @endverbatim
+    the returned pairs are (in order):
+    @verbatim
+        (e1, e2), (e1, e3), ... (e1, en), (e2,e3), ... (e(n - 1), en)
+    @endverbatim
+    @todo use standard iterator format.
+*/
+template<typename T>
+class SgVectorPairIterator
+{
+public:
+    SgVectorPairIterator(const SgVector<T>& vector);
+
+    virtual ~SgVectorPairIterator() { }
+
+    /** Find the next pair of data elements.
+        Return <code>true</code> and change <code>elt1</code> and
+        <code>elt2</code> if not reached the end of
+        the vector; return <code>false</code> and don't touch
+        the parameters if at the end of the vector.
+    */
+    bool NextPair(T& elt1, T& elt2);
+
+private:
+    const SgVector<T>& m_vector;
+    int m_index1;
+    int m_index2;
+};
+
+template<typename T>
+SgVectorPairIterator<T>::SgVectorPairIterator(const SgVector<T>& vector)
+    : m_vector(vector), m_index1(0), m_index2(1)
+{
+
+}
+
+template<typename T>
+bool SgVectorPairIterator<T>::NextPair(T& elt1, T& elt2)
+{
+    if (m_index1 == m_vector.Length() - 1)
+        return false;
+    elt1 = m_vector[m_index1];
+    elt2 = m_vector[m_index2];
+    if (++m_index2 == m_vector.Length())
+    {
+        ++m_index1;
+        m_index2 = m_index1 + 1;
     }
     return true;
 }

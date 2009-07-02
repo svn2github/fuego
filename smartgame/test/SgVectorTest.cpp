@@ -507,6 +507,27 @@ BOOST_AUTO_TEST_CASE(SgVectorIteratorOfTest)
     BOOST_CHECK_EQUAL(i, 10);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator)
+{
+    SgVector<int> a;                 
+    a.Append(1);
+    a.Append(2);
+    a.Append(3);
+    SgVectorPairIterator<int> iter(a);
+    int e1, e2;
+    BOOST_CHECK(iter.NextPair(e1, e2));
+    BOOST_CHECK_EQUAL(e1, 1);
+    BOOST_CHECK_EQUAL(e2, 2);
+    BOOST_CHECK(iter.NextPair(e1, e2));
+    BOOST_CHECK_EQUAL(e1, 1);
+    BOOST_CHECK_EQUAL(e2, 3);
+    BOOST_CHECK(iter.NextPair(e1, e2));
+    BOOST_CHECK_EQUAL(e1, 2);
+    BOOST_CHECK_EQUAL(e2, 3);
+    BOOST_CHECK(! iter.NextPair(e1, e2));
+    BOOST_CHECK_EQUAL(e1, 2);
+    BOOST_CHECK_EQUAL(e2, 3);
+}
 
 } // namespace
 

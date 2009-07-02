@@ -63,6 +63,8 @@ namespace GoBoardUtil
     */
     void AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
                         SgList<SgPoint>* blocks);
+    void AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
+                        SgVector<SgPoint>* blocks);
 
     /** Estimate second order liberties of point p for given block
         This is fast and approximate, may double count libs */
@@ -81,12 +83,12 @@ namespace GoBoardUtil
 
     void BlocksAdjacentToPoints(const GoBoard& bd,
                                 const SgList<SgPoint>& points, SgBlackWhite c,
-                                SgList<SgPoint>* anchors);
+                                SgVector<SgPoint>* anchors);
 
     /** List the anchors of all blocks of color 'c' adjacent to the region
         consisting of 'points'. */
     void BlocksAdjacentToPoints(const GoBoard& bd, const SgPointSet& points,
-                                SgBlackWhite c, SgList<SgPoint>* anchors);
+                                SgBlackWhite c, SgVector<SgPoint>* anchors);
 
     /** Compute the common fate graph distance from all points to a given
         point.
@@ -303,7 +305,7 @@ namespace GoBoardUtil
                          SgList<SgPoint>* sharedLibs);
 
     void SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor, int maxLib,
-                             SgList<SgPoint>* blocks);
+                             SgVector<SgPoint>* blocks);
 
     /** Count score given the set of dead stones.
         Checks all regions that are surrounded by stones that are not dead,

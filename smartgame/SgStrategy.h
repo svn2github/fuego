@@ -15,7 +15,6 @@
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 #include "SgHash.h"
-#include "SgList.h"
 #include "SgPointSet.h"
 
 //----------------------------------------------------------------------------
@@ -44,7 +43,10 @@ public:
     virtual ~SgStrategy() {}
 
     /** See m_player */
-    SgBlackWhite Player() const {return m_player;}
+    SgBlackWhite Player() const
+    {
+        return m_player;
+    }
 
     /** remove all data, reset to empty strategy. */
     virtual void Clear();
