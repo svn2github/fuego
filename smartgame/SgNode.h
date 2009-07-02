@@ -163,20 +163,16 @@ public:
     */
     bool ContainsText(const std::string& findText);
 
-    /** Returns a list of all nodes from the root to and including this
-        node.
-    */
-    void PathToRoot(SgListOf<SgNode>* path) const;
+    /** Returns all nodes on path from this node up to the root. */
+    void PathToRoot(SgVectorOf<SgNode>* path) const;
 
     /** Find the closest common ancestor of the two nodes.
         Returns the path from this node to 'node': how many times
-        to go one node back, and a list of the nodes to execute from
+        to go one node back, and a vector of the nodes to execute from
         there (excluding the common ancestor).
     */
     void ShortestPathTo(SgNode* node, int* numBack,
                         SgVectorOf<SgNode>* path) const;
-    void ShortestPathTo(SgNode* node, int* numBack,
-                        SgListOf<SgNode>* path) const;
 
     /** Promote this node to first son.
         Moves all its left brothers one position to the right.

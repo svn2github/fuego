@@ -241,15 +241,12 @@ SgNode* SgNode::PrevDepthFirst() const
     return node;
 }
 
-void SgNode::PathToRoot(SgListOf<SgNode>* path) const
+void SgNode::PathToRoot(SgVectorOf<SgNode>* path) const
 {
     path->Clear();
-    SgNode* node = const_cast<SgNode*>(this);
-    do
-    {
-        path->Push(node);
-        node = node->Father();
-    } while (node);
+    for (SgNode* node = const_cast<SgNode*>(this); node; 
+         node = node->Father())
+        path->PushBack(node);
 }
 
 SgNode* SgNode::NodeInDirection(Direction dir) const
@@ -363,15 +360,6 @@ bool SgNode::HasProp(SgPropID id) const
 // To do this efficiently, we mark all nodes from the two nodes back toward
 // the root until we find a node that's already marked.
 void SgNode::ShortestPathTo(SgNode* node, int* numBack,
-                            SgListOf<SgNode>* path) const
-{
-    SgVectorOf<SgNode> vpath;
-    ShortestPathTo(node, numBack, &vpath);
-    path->Clear();
-    SgListUtility::VectorToList(vpath, *path);
-}
-
-void SgNode::ShortestPathTo(SgNode* node, int* numBack,
                             SgVectorOf<SgNode>* path) const
 {
     //--- Go backwards from both nodes in parallel, marking all nodes, until
@@ -408,34 +396,31 @@ void SgNode::ShortestPathTo(SgNode* node, int* numBack,
     }
 
     //--- Unmark all nodes from 'common' toward the root.
-    x = common;
-    while (x && x->IsMarked())
+    
+    for (x = common; x && x->IsMarked(); x = x->m_father)
     {
         x->Unmark();
-        x = x->m_father;
     }
 
     //--- Unmark and count all nodes from this node to 'common'.
     *numBack = 0;
-    x = const_cast<SgNode*>(this);
-    while (x != common)
+    
+    for (x = const_cast<SgNode*>(this); x != common; x = x->m_father)
     {
         SG_ASSERT(x->IsMarked());
         x->Unmark();
         ++(*numBack);
-        x = x->m_father;
     }
 
     //--- Unmark and store all nodes from 'node' to 'common'.
     path->Clear();
-    x = node;
-    while (x != common)
+    for (x = node; x != common; x = x->m_father)
     {
         SG_ASSERT(x->IsMarked());
         x->Unmark();
-        path->Push(x);
-        x = x->m_father;
+        path->PushBack(x);
     }
+    path->Reverse();
 }
 
 void SgNode::PromoteNode()
