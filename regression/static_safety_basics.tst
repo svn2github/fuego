@@ -380,7 +380,7 @@ loadsgf sgf/safetytest/connect-to-safe.1.sgf
 #? [40 .*]
 
 900 go_safe static black
-#? [41 .*]*
+#? [41 .*]
 
 901 go_safe static white
 #? [40 .*]
