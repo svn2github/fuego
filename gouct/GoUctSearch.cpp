@@ -197,6 +197,8 @@ std::string GoUctSearch::MoveString(SgMove move) const
 void GoUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
                                     const SgUctGameInfo& info)
 {
+    SgUctSearch::OnSearchIteration(gameNumber, threadId, info);
+
     if (m_liveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
         && gameNumber % m_liveGfxInterval == 0)
     {
@@ -225,6 +227,8 @@ void GoUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
 
 void GoUctSearch::OnStartSearch()
 {
+    SgUctSearch::OnStartSearch();
+
     if (m_root != 0)
     {
         m_root->DeleteTree();

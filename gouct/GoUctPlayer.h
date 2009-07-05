@@ -526,7 +526,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(size_t maxGames,
         SgRestorer<bool> restorer(&m_search.m_param.m_territoryStatistics);
         m_search.m_param.m_territoryStatistics = true;
         std::vector<SgPoint> sequence;
-        double value = m_search.Search(maxGames, maxTime, sequence);
+        float value = m_search.Search(maxGames, maxTime, sequence);
         value = m_search.InverseEval(value);
         winAfterPass = (value > 1 - m_resignThreshold);
     }

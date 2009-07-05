@@ -68,6 +68,7 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
                     );
         }
     }
+    search.EndSearch();
 }
 
 //----------------------------------------------------------------------------
