@@ -555,6 +555,8 @@ public:
                      = std::vector<SgMove>(),
                      SgUctTree* initTree = 0);
 
+    void EndSearch();
+
     /** Calls StartSearch() and then maxGames times PlayGame().
         @param maxGames The maximum number of games (greater or equal one).
         @param maxTime The maximum time in seconds.

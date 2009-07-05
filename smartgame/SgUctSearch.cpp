@@ -380,6 +380,10 @@ void SgUctSearch::DeleteThreads()
     m_threads.clear();
 }
 
+void SgUctSearch::EndSearch()
+{
+}
+
 /** Expand a node.
     @param state The thread state with state.m_moves already computed.
     @param node The node to expand.
