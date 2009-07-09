@@ -48,15 +48,15 @@ public:
 
     void ProcessPosition(std::vector<SgMoveInfo>& moves);
 
+    bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
+                                        SgPointSet& atari,
+                                        GoPointList& empty) const;
 private:
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
 
     void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
-    bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
-                                        SgPointSet& atari,
-                                        GoPointList& empty) const;
 };
 
 //----------------------------------------------------------------------------

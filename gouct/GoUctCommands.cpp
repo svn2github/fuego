@@ -22,8 +22,9 @@
 #include "GoUctUtil.h"
 #include "GoUtil.h"
 #include "SgException.h"
-#include "SgUctTreeUtil.h"
+#include "SgPointSetUtil.h"
 #include "SgRestorer.h"
+#include "SgUctTreeUtil.h"
 #include "SgWrite.h"
 
 using namespace std;
@@ -144,6 +145,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
         "gfx/Uct Bounds/uct_bounds\n"
+        "plist/Uct Default Policy/uct_default_policy\n"
         "gfx/Uct Gfx/uct_gfx\n"
         "plist/Uct Moves/uct_moves\n"
         "param/Uct Param GlobalSearch/uct_param_globalsearch\n"
@@ -199,6 +201,18 @@ void GoUctCommands::CmdBounds(GtpCommand& cmd)
     cmd << '\n';
     if (hasPass)
         cmd << "TEXT PASS=" << fixed << setprecision(2) << passBound << '\n';
+}
+
+
+void GoUctCommands::CmdDefaultPolicy(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    GoUctDefaultPriorKnowledge knowledge(m_bd, GoUctPlayoutPolicyParam());
+    SgPointSet pattern;
+    SgPointSet atari;
+    GoPointList empty;
+    knowledge.FindGlobalPatternAndAtariMoves(pattern, atari, empty);
+    cmd << SgWritePointSet(atari, "", false) << '\n';
 }
 
 /** Compute estimator statistics.
@@ -711,7 +725,7 @@ void GoUctCommands::CmdRootFilter(GtpCommand& cmd)
 /** Save the UCT tree in SGF format.
     Arguments: filename [max_depth] <br>
     max_depth is an optional argument to cut the tree at a certain depth
-    (the root node has depth 0). If it is not used, the fill tree will be
+    (the root node has depth 0). If it is not used, the full tree will be
     saved.
     @see GoUctSearch::SaveTree()
 */
@@ -997,6 +1011,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);
+    Register(e, "uct_default_policy", &GoUctCommands::CmdDefaultPolicy);
     Register(e, "uct_estimator_stat", &GoUctCommands::CmdEstimatorStat);
     Register(e, "uct_gfx", &GoUctCommands::CmdGfx);
     Register(e, "uct_moves", &GoUctCommands::CmdMoves);

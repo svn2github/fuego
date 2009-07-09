@@ -41,6 +41,7 @@ public:
         - @link CmdFinalScore() @c final_score @endlink
         - @link CmdFinalStatusList() @c final_status_list @endlink
         - @link CmdBounds() @c uct_bounds @endlink
+        - @link CmdDefaultPolicy() @c uct_default_policy @endlink
         - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
         - @link CmdMoves() @c uct_moves @endlink
@@ -71,6 +72,7 @@ public:
     // @{
     // The callback functions are documented in the cpp file
     void CmdBounds(GtpCommand& cmd);
+    void CmdDefaultPolicy(GtpCommand& cmd);
     void CmdEstimatorStat(GtpCommand& cmd);
     void CmdFinalScore(GtpCommand&);
     void CmdFinalStatusList(GtpCommand&);
