@@ -4,6 +4,7 @@
 */
 //----------------------------------------------------------------------------
 
+#include <cstdio>
 #include "SgSystem.h"
 #include "GoBoard.h"
 #include "GoSetup.h"
