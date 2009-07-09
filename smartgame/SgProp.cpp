@@ -16,6 +16,7 @@
 #include <iomanip>
 #include <sstream>
 #include "SgList.h"
+#include "SgListUtility.h"
 #include "SgRect.h"
 #include "SgUtil.h"
 #include "SgVector.h"
@@ -1005,6 +1006,13 @@ bool SgPropVoidList::FromString(const std::vector<std::string>& values,
 }
 
 //----------------------------------------------------------------------------
+
+SgPropPointList::SgPropPointList(SgPropID id,
+                                const SgVector<SgPoint>& vector)
+    : SgProp(id),
+      m_list(SgListUtility::VectorToList(vector))
+{
+}
 
 SgPropPointList::~SgPropPointList()
 {

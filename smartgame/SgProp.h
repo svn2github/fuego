@@ -841,6 +841,7 @@ public:
     explicit SgPropPointList(SgPropID id);
 
     SgPropPointList(SgPropID id, const SgList<SgPoint>& list);
+    SgPropPointList(SgPropID id, const SgVector<SgPoint>& list);
 
     virtual ~SgPropPointList();
 
@@ -877,6 +878,7 @@ inline SgPropPointList::SgPropPointList(SgPropID id,
       m_list(list)
 {
 }
+
 
 inline const SgList<SgPoint>& SgPropPointList::Value() const
 {
