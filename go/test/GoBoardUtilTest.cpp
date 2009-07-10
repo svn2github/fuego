@@ -632,21 +632,21 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore)
     setup.AddWhite(Pt(9, 2));
     GoBoard bd(9, setup);
     float komi = 6.5;
-    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -77.5f, 1e-4);
+    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -77.5f, 1e-4f);
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore_Empty9)
 {
     GoBoard bd(9);
     float komi = 6.5;
-    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -6.5f, 1e-4);
+    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -6.5f, 1e-4f);
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore_Empty19)
 {
     GoBoard bd(19);
     float komi = 6.5;
-    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -6.5f, 1e-4);
+    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -6.5f, 1e-4f);
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TwoPasses)
