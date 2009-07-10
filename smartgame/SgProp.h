@@ -1095,6 +1095,7 @@ public:
     explicit SgPropAddStone(SgPropID id);
 
     SgPropAddStone(SgPropID id, const SgList<SgPoint>& list);
+    SgPropAddStone(SgPropID id, const SgVector<SgPoint>& list);
 
     virtual ~SgPropAddStone();
 
@@ -1108,6 +1109,12 @@ inline SgPropAddStone::SgPropAddStone(SgPropID id)
 
 inline SgPropAddStone::SgPropAddStone(SgPropID id,
                                       const SgList<SgPoint>& list)
+    : SgPropPointList(id, list)
+{
+}
+
+inline SgPropAddStone::SgPropAddStone(SgPropID id,
+                                      const SgVector<SgPoint>& list)
     : SgPropPointList(id, list)
 {
 }

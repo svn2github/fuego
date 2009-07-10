@@ -10,8 +10,8 @@
 #include "GoKomi.h"
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
-#include "SgList.h"
 #include "SgPoint.h"
+#include "SgVector.h"
 
 class GoBoard;
 class SgNode;
@@ -25,8 +25,8 @@ namespace GoNodeUtil
 
     /** Create a position with given size, toPlay, b and w points */
     SgNode* CreatePosition(int boardSize, SgBlackWhite toPlay,
-                               const SgList<SgPoint>& bPoints,
-                               const SgList<SgPoint>& wPoints);
+                               const SgVector<SgPoint>& bPoints,
+                               const SgVector<SgPoint>& wPoints);
 
     /** Find komi that is valid for this node.
         Search parent nodes until a node with a komi property is found.
@@ -44,7 +44,7 @@ namespace GoNodeUtil
 template<class BOARD>
 SgNode* GoNodeUtil::CreateRoot(const BOARD& board)
 {
-    SgBWArray<SgList<SgPoint> > pointList;
+    SgBWArray<SgVector<SgPoint> > pointList;
     for (typename BOARD::Iterator it(board); it; ++it)
     {
         if (board.Occupied(*it))
