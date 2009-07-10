@@ -9,7 +9,6 @@
 
 #include "GoBoard.h"
 #include "GoPlayer.h"
-#include "SgList.h"
 
 class SgTimeRecord;
 class SpMoveGenerator;
