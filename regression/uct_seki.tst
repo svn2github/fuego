@@ -243,3 +243,12 @@ reg_genmove b
 460 sg_compare_float 0.3 uct_value
 #? [-1]*
 # B is losing but thinks it wins the seki.
+
+loadsgf sgf/seki/sheppard-seki-2.sgf
+470 reg_genmove b
+#? [J3]*
+# program plays A1 which is silly but not fatal.
+
+480 sg_compare_float 0.5 uct_value
+#? [1]
+# B is winning.
