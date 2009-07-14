@@ -223,7 +223,8 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
             }
 
             if (! (*it)->ComputedFlag(GO_REGION_COMPUTED_NAKADE))
-                (*it)->DoComputeFlag(GO_REGION_COMPUTED_NAKADE); // sets MaxPotEyes()
+                (*it)->DoComputeFlag(GO_REGION_COMPUTED_NAKADE); 
+                // sets MaxPotEyes()
             if ((*it)->MaxPotEyes() > 1)
                 return true;
             else if (r == 0)

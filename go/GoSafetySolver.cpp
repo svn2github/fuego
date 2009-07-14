@@ -253,7 +253,8 @@ void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
     {
         SgPoint lib1, lib2;
         r->Find2FreeLibs(c1, c2, &lib1, &lib2);
-        c = new GoChainCondition(GO_CHAIN_TWO_LIBERTIES_IN_REGION, lib1, lib2);
+        c = new GoChainCondition(GO_CHAIN_TWO_LIBERTIES_IN_REGION,
+                                 lib1, lib2);
     }
     
     GoChain* m = new GoChain(c1, c2, c);

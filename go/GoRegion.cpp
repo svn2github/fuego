@@ -93,12 +93,11 @@ bool GoRegion::StaticIs1VitalAndConnected() const
 { // checks for 1-vitality, as explained in[Mueller 95, p.****]
 
     // type 1: small region with two connection points for all blocks
-
     bool is1Vital = false;
-
     if (GetFlag(GO_REGION_SMALL))
     {
-        if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY)) // single block, connected.
+        // single block, connected.
+        if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY)) 
             /* */ return true; /* */
         else if (m_blocks.MinLength(5))
         // no way so many blocks can be connected.
@@ -569,7 +568,8 @@ bool GoRegion::ComputeIs1Vital() const
         is1Vital = false;
     else
     {
-        if (const_cast<GoRegion*>(this)->ComputeAndGetFlag(GO_REGION_PROTECTED_CUTS))
+        if (const_cast<GoRegion*>(this)
+            ->ComputeAndGetFlag(GO_REGION_PROTECTED_CUTS))
         {
             is1Vital = true;
         }
@@ -661,12 +661,14 @@ void GoRegion::WriteID(std::ostream& stream) const
 
 const char* kRegionFlagStrings[_GO_REGION_FLAG_COUNT + 1] =
 {
-    "isSmall", "GO_REGION_CORRIDOR", "GO_REGION_STATIC_1VC", "GO_REGION_1VC", "GO_REGION_STATIC_2V", "GO_REGION_2V",
+    "isSmall", "GO_REGION_CORRIDOR", "GO_REGION_STATIC_1VC",
+    "GO_REGION_1VC", "GO_REGION_STATIC_2V", "GO_REGION_2V",
     "GO_REGION_SINGLE_BLOCK_BOUNDARY",
     "GO_REGION_OPP_CAN_LIVE_INSIDE",
     "GO_REGION_AT_LEAST_SEKI",
     "isSafe",
-    "GO_REGION_PROTECTED_CUTS", "GO_REGION_STATIC_1VITAL", "is1Vital",
+    "GO_REGION_PROTECTED_CUTS", "GO_REGION_STATIC_1VITAL",
+    "is1Vital",
     "GO_REGION_USED_FOR_MERGE",
     "GO_REGION_VALID",
     "GO_REGION_COMPUTED_BLOCKS",
@@ -765,7 +767,8 @@ void GoRegion::DoComputeFlag(GoRegionFlag flag)
     switch(flag)
     {
     case GO_REGION_SMALL:
-        SetFlag(GO_REGION_SMALL, IsSmallRegion(m_bd, Points(), SgOppBW(Color())));
+        SetFlag(GO_REGION_SMALL,
+                IsSmallRegion(m_bd, Points(), SgOppBW(Color())));
         break;
     case GO_REGION_CORRIDOR:
         SetFlag(GO_REGION_CORRIDOR, IsCorridor());
@@ -1040,14 +1043,7 @@ void GoRegion::ComputeBasicFlags()
     DoComputeFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY);
     DoComputeFlag(GO_REGION_STATIC_1VC);
     DoComputeFlag(GO_REGION_STATIC_2V);
-    //DoComputeFlag(GO_REGION_COMPUTED_NAKADE);  //@todo: too slow? not used yet.
     SetFlag(GO_REGION_USED_FOR_MERGE, false);
-
-    // set the flag for the 'generic' type of flags, which cannot be
-    // computed once and for all.
-    //m_computedFlags.set(GO_REGION_1VC);
-    //m_computedFlags.set(GO_REGION_2V);
-    //m_computedFlags.set(GO_REGION_SAFE);
 }
 
 bool GoRegion::Has2Conn() const
