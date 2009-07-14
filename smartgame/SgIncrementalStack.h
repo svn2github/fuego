@@ -19,16 +19,16 @@ class SgBWSet;
 /** constants for types of stack entries */
 enum SgIncrementalStackEvent
 {
-    kNewPoints          = 1000,
-    kAddEmpty           = 1001,
-    kNewSafe            = 1002,
-    kNewUnSafe          = 1003,
-    kUnsafeToSafe       = 1004,
-    kCaptures           = 1005,
-    kMove               = 1006,
-    kNextMove           = 1007,
-    kUnsafeToHalfSafe   = 1008,
-    kCaptureHalfSafes   = 1009
+    SG_NEW_POINTS          = 1000,
+    SG_ADD_EMPTY           = 1001,
+    SG_NEW_SAFE            = 1002,
+    SG_NEW_UNSAFE          = 1003,
+    SG_UNSAFE_TO_SAFE      = 1004,
+    SG_CAPTURES            = 1005,
+    SG_INCREMENTAL_MOVE    = 1006,
+    SG_NEXTMOVE            = 1007,
+    SG_UNSAFE_TO_HALF_SAFE = 1008,
+    SG_CAPTURE_HALF_SAFE   = 1009
 };
 
 /** Incremental Update Stack for fast undo during search.

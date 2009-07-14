@@ -507,7 +507,7 @@ void GoRegionBoard::OnUndoneMove()
     const bool kUndo = false;
     SgListOf<GoRegion> changed;
 
-    for (int val = m_stack.PopEvent(); val != kNextMove;
+    for (int val = m_stack.PopEvent(); val != SG_NEXTMOVE;
          val = m_stack.PopEvent())
     {
 

@@ -53,7 +53,7 @@ void SgIncrementalStack::PushPtrEvent(int type, void* ptr)
 
 void SgIncrementalStack::StartMoveInfo()
 {
-    PushInt(kNextMove);
+    PushInt(SG_NEXTMOVE);
 }
 
 void SgIncrementalStack::Clear()

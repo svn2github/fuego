@@ -49,7 +49,7 @@ void GoChain::TestFor1Eye(const GoRegionBoard* ra)
             /* */ return; /* */
         }
     for (SgListIteratorOf<GoRegion> it(ra->AllRegions(Color())); it; ++it)
-        if ((*it)->GetFlag(is1vc) && (*it)->Chains().Contains(this))
+        if ((*it)->GetFlag(GO_REGION_1VC) && (*it)->Chains().Contains(this))
         {
             m_has1Eye = true;
             /* */ return; /* */
@@ -134,13 +134,13 @@ bool GoChainCondition::Overlaps(const SgListOf<GoChainCondition>& conditions)
 
 //----------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& stream, GoChainConditionType f)
+std::ostream& operator<<(std::ostream& stream, GoChainType f)
 {
-    static const char* s_string[nuGoChainConditionType] = 
+    static const char* s_string[_GO_CHAIN_COUNT] = 
         {
-            "twoLibsInRegion",
-            "twoSeparateLibs",
-            "chainBySearch"
+            "GO_CHAIN_TWO_LIBERTIES_IN_REGION",
+            "GO_CHAIN_TWO_SEPARATE_LIBERTIES",
+            "GO_CHAIN_BY_SEARCH"
         };
 
     stream << s_string[f];

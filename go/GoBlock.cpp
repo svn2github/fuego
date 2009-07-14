@@ -57,7 +57,7 @@ bool GoBlock::AllEmptyAreLiberties(const SgPointSet& area) const
 
 void GoBlock::TestFor1Eye(const GoRegion* r)
 {
-    if (r->GetFlag(isSmall) && r->Blocks().IsLength1())
+    if (r->GetFlag(GO_REGION_SMALL) && r->Blocks().IsLength1())
     // @todo what if more than one block?
     {
         m_has1Eye = true;

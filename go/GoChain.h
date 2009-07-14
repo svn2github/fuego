@@ -21,14 +21,15 @@ class GoRegionBoard;
 //----------------------------------------------------------------------------
 
 /** The reason why two blocks or chains are merged into a single chain */
-enum GoChainConditionType
+enum GoChainType
 {
-    twoLibsInRegion, twoSeparateLibs,
-    chainBySearch,
-    nuGoChainConditionType
+    GO_CHAIN_TWO_LIBERTIES_IN_REGION,
+    GO_CHAIN_TWO_SEPARATE_LIBERTIES, // unused
+    GO_CHAIN_BY_SEARCH,
+    _GO_CHAIN_COUNT
 };
 
-std::ostream& operator<<(std::ostream& stream, GoChainConditionType f);
+std::ostream& operator<<(std::ostream& stream, GoChainType f);
 
 /** Condition that explains why two blocks or chains can be merged 
     into a new, larger chain.
@@ -38,22 +39,22 @@ class GoChainCondition
 public:
      
     /** A condition with no parameters */
-   GoChainCondition(GoChainConditionType type)
+   GoChainCondition(GoChainType type)
         : m_type(type), 
           m_lib1(SG_NULLPOINT),
           m_lib2(SG_NULLPOINT)
     {
-        SG_ASSERT(type==chainBySearch);
+        SG_ASSERT(type==GO_CHAIN_BY_SEARCH);
     }
 
     /** A condition depending on two liberties */
-    GoChainCondition(GoChainConditionType type, SgPoint lib1, SgPoint lib2)
+    GoChainCondition(GoChainType type, SgPoint lib1, SgPoint lib2)
         : m_type(type), 
           m_lib1(lib1),
           m_lib2(lib2)
     {
-        SG_ASSERT(type == twoLibsInRegion);
-        // @todo: || type==twoSeparateLibs
+        SG_ASSERT(type == GO_CHAIN_TWO_LIBERTIES_IN_REGION);
+        // @todo: || type==GO_CHAIN_TWO_SEPARATE_LIBERTIES
     }
 
     /** Is there a potential conflict between this and condition? */
@@ -63,27 +64,27 @@ public:
     bool Overlaps(const SgListOf<GoChainCondition>& conditions) const;
     
     /** Are liberties used? @todo make a base class without libs */
-    bool UsesLibs() const {return m_type != chainBySearch;}
+    bool UsesLibs() const {return m_type != GO_CHAIN_BY_SEARCH;}
     
-    GoChainConditionType Type() const {return m_type;}
+    GoChainType Type() const {return m_type;}
 
     /** first liberty used in condition */
     SgPoint Lib1() const
     {
-        SG_ASSERT(m_type != chainBySearch);
+        SG_ASSERT(m_type != GO_CHAIN_BY_SEARCH);
         return m_lib1;
     }
 
     /** second liberty used in condition */
     SgPoint Lib2() const
     {
-        SG_ASSERT(m_type != chainBySearch);
+        SG_ASSERT(m_type != GO_CHAIN_BY_SEARCH);
         return m_lib2;
     }
 
 private:
     /** Type @todo replace by class */
-    GoChainConditionType m_type;
+    GoChainType m_type;
     
     /** condition depends on these two liberties */
     SgPoint m_lib1, m_lib2;

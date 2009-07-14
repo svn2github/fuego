@@ -62,8 +62,6 @@ public:
         return m_color;
     }
 
-    bool IsColor(SgBlackWhite c) const {return m_color == c;}
-
     /** The unique stone with smallest number identifying a block */
     SgPoint Anchor() const
     {

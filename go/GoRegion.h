@@ -37,31 +37,29 @@ class GoRegionBoard;
 */
 enum GoRegionFlag
 {
-    isSmall,
-    isCorridor,
-    isStatic1vc,
-    is1vc,
-    isStatic2v,
-    is2v,
-    singleBlockBoundary,
-    oppCanLiveInside,
-    atLeastSeki,
-    isSafe,
-    protectedCuts,
-    isStatic1Vital,
-    is1Vital,
-    usedForMerge,
-    is1or2UnsettledNakade,
-    atLeastHalfEye,
-    valid,
-    computedBlocks,
-    computedChains,
-    computedNakade,
-    nuRegionFlag
+    GO_REGION_SMALL,
+    GO_REGION_CORRIDOR,
+    GO_REGION_STATIC_1VC,
+    GO_REGION_1VC,
+    GO_REGION_STATIC_2V,
+    GO_REGION_2V,
+    GO_REGION_SINGLE_BLOCK_BOUNDARY,
+    GO_REGION_OPP_CAN_LIVE_INSIDE,
+    GO_REGION_AT_LEAST_SEKI,
+    GO_REGION_SAFE,
+    GO_REGION_PROTECTED_CUTS,
+    GO_REGION_STATIC_1VITAL,
+    GO_REGION_1VITAL,
+    GO_REGION_USED_FOR_MERGE,
+    GO_REGION_VALID,
+    GO_REGION_COMPUTED_BLOCKS,
+    GO_REGION_COMPUTED_CHAINS,
+    GO_REGION_COMPUTED_NAKADE,
+    _GO_REGION_FLAG_COUNT
 };
 
 /** Set of GoRegionFlag */
-typedef std::bitset<nuRegionFlag> GoRegionFlags;
+typedef std::bitset<_GO_REGION_FLAG_COUNT> GoRegionFlags;
 
 //----------------------------------------------------------------------------
 
@@ -202,19 +200,20 @@ public:
     */
     void ResetNonBlockFlags()
     {   m_computedFlags.reset(); // clear all other flags.
-        m_computedFlags.set(computedBlocks);
+        m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
         m_eyes.Clear();
         Invalidate();
     }
 
     /** is region data valid? */
-    bool IsValid() const {return m_flags.test(valid);}
+    bool IsValid() const {return m_flags.test(GO_REGION_VALID);}
 
     /** reset valid flag, region data not current anymore */
-    void Invalidate() {m_flags.reset(valid);}
+    void Invalidate() {m_flags.reset(GO_REGION_VALID);}
 
-    /** Computes isSmall, isCorridor, singleBlockBoundary, 
-        isStatic1vc, isStatic2v
+    /** Computes GO_REGION_SMALL, GO_REGION_CORRIDOR, 
+        GO_REGION_SINGLE_BLOCK_BOUNDARY, 
+        GO_REGION_STATIC_1VC, GO_REGION_STATIC_2V
     */
     void ComputeBasicFlags();
 
@@ -359,7 +358,7 @@ public:
     void FindChains(const GoRegionBoard& ra);
 
     /** Set safe flag for region */
-    void SetToSafe() {SetFlag(isSafe, true);}
+    void SetToSafe() {SetFlag(GO_REGION_SAFE, true);}
 
     // Execute move helpers
     /** For incremental update - block no longer adjacent */

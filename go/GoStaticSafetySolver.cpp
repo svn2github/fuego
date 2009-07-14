@@ -217,6 +217,6 @@ void GoStaticSafetySolver::FindSafePoints(SgBWSet* safe)
         }
     }
 
-    Regions()->SetComputedFlagForAll(isSafe);
+    Regions()->SetComputedFlagForAll(GO_REGION_SAFE);
 }
 

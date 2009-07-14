@@ -36,7 +36,7 @@ void GoSafetySolver::FindHealthy()
     {
         SgBlackWhite color(*it);
         for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
-            (*it)->ComputeFlag(isStatic1Vital);
+            (*it)->ComputeFlag(GO_REGION_STATIC_1VITAL);
     }
    
     // used to just call GoStaticSafetySolver::FindHealthy() here, 
@@ -95,13 +95,13 @@ bool GoSafetySolver::RegionHealthyForBlock(const GoRegion& r,
                                            const GoBlock& b) const
 {
     return    GoStaticSafetySolver::RegionHealthyForBlock(r, b)
-           || r.GetFlag(isStatic1Vital);
+           || r.GetFlag(GO_REGION_STATIC_1VITAL);
 }
 
 
 void GoSafetySolver::Test2Vital(GoRegion* r, SgBWSet* safe)
 {
-    if (r->ComputeAndGetFlag(isStatic2v))
+    if (r->ComputeAndGetFlag(GO_REGION_STATIC_2V))
         GoSafetyUtil::AddToSafe(Board(), r->Points(), r->Color(),
                   safe, "2-vital:", 0, true);
 }
@@ -137,7 +137,7 @@ void GoSafetySolver::FindSurroundedSafeAreas(SgBWSet* safe,
         for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         {
             GoRegion* r = *it;
-            if (   ! r->GetFlag(isSafe)
+            if (   ! r->GetFlag(GO_REGION_SAFE)
                 && r->SomeBlockIsSafe()
                 && ! r->Points().Overlaps(anySafe)
                 && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
@@ -196,7 +196,7 @@ void GoSafetySolver::FindSurroundedRegionPairs(SgBWSet* safe,
         SgPointSet anySafe(safe->Both());
         for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         {   GoRegion* r1 = *it;
-            if (   ! r1->GetFlag(isSafe)
+            if (   ! r1->GetFlag(GO_REGION_SAFE)
                 && r1->SomeBlockIsSafe()
                 && ! r1->Points().Overlaps(anySafe)
                 && FindSafePair(safe, color, anySafe, r1)
@@ -243,17 +243,17 @@ void GoSafetySolver::FindSafePoints(SgBWSet* safe)
 void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
                            GoRegion* r, bool bySearch)
 {
-    SG_ASSERT(! r->GetFlag(usedForMerge));
-    r->SetFlag(usedForMerge, true);
+    SG_ASSERT(! r->GetFlag(GO_REGION_USED_FOR_MERGE));
+    r->SetFlag(GO_REGION_USED_FOR_MERGE, true);
     
     GoChainCondition* c = 0;
     if (bySearch)
-        c = new GoChainCondition(chainBySearch);
+        c = new GoChainCondition(GO_CHAIN_BY_SEARCH);
     else
     {
         SgPoint lib1, lib2;
         r->Find2FreeLibs(c1, c2, &lib1, &lib2);
-        c = new GoChainCondition(twoLibsInRegion, lib1, lib2);
+        c = new GoChainCondition(GO_CHAIN_TWO_LIBERTIES_IN_REGION, lib1, lib2);
     }
     
     GoChain* m = new GoChain(c1, c2, c);
@@ -274,7 +274,7 @@ void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
         if (replace1 || replace2)
         {
             r->ReInitialize();
-            r->ComputeFlag(isStatic1Vital);
+            r->ComputeFlag(GO_REGION_STATIC_1VITAL);
         }
     }
 
@@ -309,7 +309,7 @@ void GoSafetySolver::GenBlocksRegions()
         for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         {
             GoRegion* r = *it;
-            r->ComputeFlag(isStatic1Vital);
+            r->ComputeFlag(GO_REGION_STATIC_1VITAL);
         }
 
         bool changed = true;
@@ -317,7 +317,7 @@ void GoSafetySolver::GenBlocksRegions()
         {   changed = false;
             for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             {   GoRegion* r = *it;
-                if (   r->GetFlag(isStatic1vc)
+                if (   r->GetFlag(GO_REGION_STATIC_1VC)
                     && r->Chains().IsLength(2)
                     && r->Has2Conn() 
                         //  || r->Safe2Cuts(Board()) changed from && to ||
@@ -332,9 +332,9 @@ void GoSafetySolver::GenBlocksRegions()
                     changed = true;
                     break; // to leave iteration
                 }
-                else if (   r->GetFlag(isStatic1Vital)
-                         && r->GetFlag(isCorridor)
-                         && ! r->GetFlag(usedForMerge)
+                else if (   r->GetFlag(GO_REGION_STATIC_1VITAL)
+                         && r->GetFlag(GO_REGION_CORRIDOR)
+                         && ! r->GetFlag(GO_REGION_USED_FOR_MERGE)
                         ) 
                 {
                     GoChain* c1 = 0;

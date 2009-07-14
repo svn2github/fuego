@@ -96,9 +96,9 @@ bool GoRegion::StaticIs1VitalAndConnected() const
 
     bool is1Vital = false;
 
-    if (GetFlag(isSmall))
+    if (GetFlag(GO_REGION_SMALL))
     {
-        if (GetFlag(singleBlockBoundary)) // single block, connected.
+        if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY)) // single block, connected.
             /* */ return true; /* */
         else if (m_blocks.MinLength(5))
         // no way so many blocks can be connected.
@@ -256,7 +256,7 @@ bool GoRegion::HasLibsForBlock(const GoBlock* b, int n) const
 void GoRegion::JointLibs(SgList<SgPoint>* libs) const
 {
     GoBlock* first = m_blocks.Top();
-    if (GetFlag(singleBlockBoundary))
+    if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY))
     {
         InsideLibs(first, libs);
         return;
@@ -416,7 +416,7 @@ SgPointSet GoRegion::AllInsideLibs() const
 
 bool GoRegion::Find2ConnForAll() const
 {
-    if (GetFlag(singleBlockBoundary))
+    if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY))
     {
         const SgPointSet interior = AllInsideLibs();
         SgPointSet libs = (Points() & m_bd.AllEmpty()) - AllInsideLibs();
@@ -432,7 +432,7 @@ bool GoRegion::Find2ConnForAll() const
     return false;
 
 #if UNUSED
-    single = GetFlag(singleBlockBoundary);
+    single = GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY);
     if (! single)
     {
         // is1Vital = false;
@@ -462,7 +462,7 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
     {
         return true;
     }
-    //if (GetFlag(singleBlockBoundary))
+    //if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY))
     {
         SgPointSet testSet = interior;
         SgPointSet originalLibs = testSet.Border(size) & Dep().Border(size)
@@ -558,10 +558,10 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
 
 bool GoRegion::ComputeIs1Vital() const
 {
-    if (GetFlag(isStatic1vc))
+    if (GetFlag(GO_REGION_STATIC_1VC))
         /* */ return true; /* */
-    else if (ComputedFlag(isStatic1Vital))
-        /* */ return GetFlag(isStatic1Vital); /* */
+    else if (ComputedFlag(GO_REGION_STATIC_1VITAL))
+        /* */ return GetFlag(GO_REGION_STATIC_1VITAL); /* */
 
     bool is1Vital = true;
 
@@ -569,7 +569,7 @@ bool GoRegion::ComputeIs1Vital() const
         is1Vital = false;
     else
     {
-        if (const_cast<GoRegion*>(this)->ComputeAndGetFlag(protectedCuts))
+        if (const_cast<GoRegion*>(this)->ComputeAndGetFlag(GO_REGION_PROTECTED_CUTS))
         {
             is1Vital = true;
         }
@@ -584,7 +584,7 @@ bool GoRegion::ComputeIs1Vital() const
 bool GoRegion::IsCorridor() const
 
 {
-    SG_ASSERT(! m_computedFlags.test(isCorridor));
+    SG_ASSERT(! m_computedFlags.test(GO_REGION_CORRIDOR));
     for (SgSetIterator it(Points()); it; ++it)
     {
         if ((m_bd.NumNeighbors(*it, SgOppBW(Color()))
@@ -647,7 +647,7 @@ void GoRegion::Find2FreeLibs(const GoChain* c1, const GoChain* c2,
 void GoRegion::ReInitialize()
 {
     m_computedFlags.reset();
-    m_computedFlags.set(computedBlocks);
+    m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
     m_flags.reset();
     m_miaiStrategy.Clear();
     ComputeBasicFlags();
@@ -659,21 +659,20 @@ void GoRegion::WriteID(std::ostream& stream) const
            << SgWritePoint(Points().Center());
 }
 
-const char* kRegionFlagStrings[nuRegionFlag + 1] =
+const char* kRegionFlagStrings[_GO_REGION_FLAG_COUNT + 1] =
 {
-    "isSmall", "isCorridor", "isStatic1vc", "is1vc", "isStatic2v", "is2v",
-    "singleBlockBoundary",
-    "oppCanLiveInside",
-    "atLeastSeki",
+    "isSmall", "GO_REGION_CORRIDOR", "GO_REGION_STATIC_1VC", "GO_REGION_1VC", "GO_REGION_STATIC_2V", "GO_REGION_2V",
+    "GO_REGION_SINGLE_BLOCK_BOUNDARY",
+    "GO_REGION_OPP_CAN_LIVE_INSIDE",
+    "GO_REGION_AT_LEAST_SEKI",
     "isSafe",
-    "protectedCuts", "isStatic1Vital", "is1Vital",
-    "usedForMerge",
-    "is1or2UnsettledNakade", "atLeastHalfEye",
-    "valid",
-    "computedBlocks",
-    "computedChains",
-    "computedNakade",
-    "nuRegionFlag"
+    "GO_REGION_PROTECTED_CUTS", "GO_REGION_STATIC_1VITAL", "is1Vital",
+    "GO_REGION_USED_FOR_MERGE",
+    "GO_REGION_VALID",
+    "GO_REGION_COMPUTED_BLOCKS",
+    "GO_REGION_COMPUTED_CHAINS",
+    "GO_REGION_COMPUTED_NAKADE",
+    "_GO_REGION_FLAG_COUNT"
 };
 
 void GoRegion::Write(std::ostream& stream) const
@@ -704,7 +703,7 @@ void GoRegion::Write(std::ostream& stream) const
 
     stream << "\ncomputed region flags:\n";
 
-    for (int f = 0; f < nuRegionFlag; ++f)
+    for (int f = 0; f < _GO_REGION_FLAG_COUNT; ++f)
     {
         if (m_computedFlags.test(f))
         {
@@ -715,7 +714,7 @@ void GoRegion::Write(std::ostream& stream) const
     }
     stream << SgWriteLabel("not computed:");
     bool first = true;
-    for (int f = 0; f < nuRegionFlag; ++f)
+    for (int f = 0; f < _GO_REGION_FLAG_COUNT; ++f)
     {
         if (! m_computedFlags.test(f))
         {
@@ -765,79 +764,74 @@ void GoRegion::DoComputeFlag(GoRegionFlag flag)
     SG_ASSERT(! m_computedFlags.test(flag));
     switch(flag)
     {
-    case isSmall:
-        SetFlag(isSmall, IsSmallRegion(m_bd, Points(), SgOppBW(Color())));
+    case GO_REGION_SMALL:
+        SetFlag(GO_REGION_SMALL, IsSmallRegion(m_bd, Points(), SgOppBW(Color())));
         break;
-    case isCorridor:
-        SetFlag(isCorridor, IsCorridor());
+    case GO_REGION_CORRIDOR:
+        SetFlag(GO_REGION_CORRIDOR, IsCorridor());
         break;
-    case is1vc:
+    case GO_REGION_1VC:
         SG_ASSERT(false);
         break;
-    case is1Vital:
+    case GO_REGION_1VITAL:
         SG_ASSERT(false);
         break;
-    case isStatic1Vital:
+    case GO_REGION_STATIC_1VITAL:
         {
             bool is = ComputeIs1Vital();
-            SetFlag(isStatic1Vital, is);
+            SetFlag(GO_REGION_STATIC_1VITAL, is);
             if (is)
-                SetFlag(is1Vital, true);
+                SetFlag(GO_REGION_1VITAL, true);
         }
         break;
-    case isStatic1vc:
+    case GO_REGION_STATIC_1VC:
         {
             bool is = StaticIs1VitalAndConnected();
-            SetFlag(isStatic1vc, is);
+            SetFlag(GO_REGION_STATIC_1VC, is);
             if (is)
-                SetFlag(is1vc, true);
+                SetFlag(GO_REGION_1VC, true);
         }
         break;
-    case is2v:
+    case GO_REGION_2V:
         SG_ASSERT(false);
         break;
-    case isStatic2v:
+    case GO_REGION_STATIC_2V:
         {
             bool is = Has2SureLibs(&m_miaiStrategy);
-            SetFlag(isStatic2v, is);
+            SetFlag(GO_REGION_STATIC_2V, is);
             if (is)
             {
-                SetFlag(is2v, true);
+                SetFlag(GO_REGION_2V, true);
             }
         }
         break;
-    case singleBlockBoundary:
-        SG_ASSERT(m_computedFlags.test(computedBlocks));
-        SetFlag(singleBlockBoundary, m_blocks.MaxLength(1));
+    case GO_REGION_SINGLE_BLOCK_BOUNDARY:
+        SG_ASSERT(m_computedFlags.test(GO_REGION_COMPUTED_BLOCKS));
+        SetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY, m_blocks.MaxLength(1));
         // can have empty m_blocks list on empty board.
         //  SgPointSet boundary = pts.Border(board);
         //  boundary.ExpandToBlocks(board);
         //  SG_ASSERT(boundary.SubsetOf(board.All(color)));
         //      if (IsSingleBlock(board, boundary, color))
         break;
-    case oppCanLiveInside: // assuming Dep() is safe.
-        SetFlag(oppCanLiveInside,
+    case GO_REGION_OPP_CAN_LIVE_INSIDE: // assuming Dep() is safe.
+        SetFlag(GO_REGION_OPP_CAN_LIVE_INSIDE,
                 MightMakeLife(m_bd, Points(), Dep(), SgOppBW(Color())));
         break;
-    case atLeastSeki:
+    case GO_REGION_AT_LEAST_SEKI:
         SG_ASSERT(false);
         break;
-    case isSafe:
+    case GO_REGION_SAFE:
         SG_ASSERT(false);
         break;
-    case protectedCuts:
-        SetFlag(protectedCuts, ProtectedCuts(m_bd));
+    case GO_REGION_PROTECTED_CUTS:
+        SetFlag(GO_REGION_PROTECTED_CUTS, ProtectedCuts(m_bd));
         break;
         break;
-    case computedNakade:
+    case GO_REGION_COMPUTED_NAKADE:
         ComputeNakade();
-        SetFlag(computedNakade, true);
+        SetFlag(GO_REGION_COMPUTED_NAKADE, true);
         break;
-    case is1or2UnsettledNakade:
-        SG_ASSERT(false);
-        break;
-    case atLeastHalfEye:
-        SG_ASSERT(false);
     default:
         SG_ASSERT(false);
     }
@@ -979,7 +973,7 @@ void GoRegion::ComputeEyeSpace()
 void GoRegion::ComputeNakade()
 {
 
-    if (GetFlag(isStatic2v))
+    if (GetFlag(GO_REGION_STATIC_2V))
     {
         m_eyes.SetMinEyes(2);
     }
@@ -987,7 +981,7 @@ void GoRegion::ComputeNakade()
     {
         m_eyes.SetUnknown();
 
-        bool is1vital = ComputeAndGetFlag(isStatic1Vital);
+        bool is1vital = ComputeAndGetFlag(GO_REGION_STATIC_1VITAL);
         if (is1vital)
             m_eyes.SetMinEyes(1);
 
@@ -1040,20 +1034,20 @@ int GoRegion::s_free = 0;
 void GoRegion::ComputeBasicFlags()
 {
     SG_ASSERT(! IsValid());
-    m_flags.set(valid);
-    DoComputeFlag(isSmall);
-    DoComputeFlag(isCorridor);
-    DoComputeFlag(singleBlockBoundary);
-    DoComputeFlag(isStatic1vc);
-    DoComputeFlag(isStatic2v);
-    //DoComputeFlag(computedNakade);  //@todo: too slow? not used yet.
-    SetFlag(usedForMerge, false);
+    m_flags.set(GO_REGION_VALID);
+    DoComputeFlag(GO_REGION_SMALL);
+    DoComputeFlag(GO_REGION_CORRIDOR);
+    DoComputeFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY);
+    DoComputeFlag(GO_REGION_STATIC_1VC);
+    DoComputeFlag(GO_REGION_STATIC_2V);
+    //DoComputeFlag(GO_REGION_COMPUTED_NAKADE);  //@todo: too slow? not used yet.
+    SetFlag(GO_REGION_USED_FOR_MERGE, false);
 
     // set the flag for the 'generic' type of flags, which cannot be
     // computed once and for all.
-    //m_computedFlags.set(is1vc);
-    //m_computedFlags.set(is2v);
-    //m_computedFlags.set(isSafe);
+    //m_computedFlags.set(GO_REGION_1VC);
+    //m_computedFlags.set(GO_REGION_2V);
+    //m_computedFlags.set(GO_REGION_SAFE);
 }
 
 bool GoRegion::Has2Conn() const
@@ -1090,7 +1084,7 @@ bool GoRegion::Safe2Cuts(const GoBoard& board) const
 
 bool GoRegion::ProtectedCuts(const GoBoard& board) const
 {
-    if (! GetFlag(isCorridor))
+    if (! GetFlag(GO_REGION_CORRIDOR))
         return false;
     if (m_blocks.IsLength(2))
         /* */ return Safe2Cuts(board); /* */ // easy case of only 2 blocks
@@ -1131,7 +1125,7 @@ void GoRegion::FindBlocks(const GoRegionBoard& ra)
         if ((*it)->Stones().Overlaps(area))
             m_blocks.Append(*it);
     }
-    m_computedFlags.set(computedBlocks);
+    m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
 }
 
 SgPointSet GoRegion::BlocksPoints() const
@@ -1155,7 +1149,7 @@ void GoRegion::SetBlocks(const SgListOf<GoBlock>& blocks)
             m_blocks.Append(*it);
         }
     }
-    m_computedFlags.set(computedBlocks);
+    m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
 }
 
 void GoRegion::FindChains(const GoRegionBoard& ra)
@@ -1168,7 +1162,7 @@ void GoRegion::FindChains(const GoRegionBoard& ra)
         if ((*it)->Stones().Overlaps(area))
             m_chains.Append(*it);
     }
-    m_computedFlags.set(computedChains);
+    m_computedFlags.set(GO_REGION_COMPUTED_CHAINS);
 }
 
 bool GoRegion::IsSurrounded(const SgListOf<GoBlock>& blocks) const
@@ -1206,8 +1200,8 @@ bool GoRegion::AllBlockIsSafe() const
 
 bool GoRegion::ComputedVitalForDepth(int depth) const
 {
-    return    GetFlag(isStatic1vc)
-           || (ComputedFlag(is1vc) && m_1vcDepth >= depth);
+    return    GetFlag(GO_REGION_STATIC_1VC)
+           || (ComputedFlag(GO_REGION_1VC) && m_1vcDepth >= depth);
 }
 
 
