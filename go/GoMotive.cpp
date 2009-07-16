@@ -27,8 +27,6 @@ ostream& operator<<(ostream& out, GoMotive motive)
         "Urgent",
         "Expand",
         "Stabilize",
-        "Contain",
-        "BreakOut",
         "Reduce",
         "Defend",
         "Invade",

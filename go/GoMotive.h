@@ -47,12 +47,6 @@ enum GoMotive
     /** Stabilize block */
     GO_MOT_STABILIZE,
 
-    /** Build divider to stop block */
-    GO_MOT_CONTAIN,
-
-    /** avoid blockade by divider */
-    GO_MOT_BREAKOUT,
-
     /** Reduce zone (or group?) */
     GO_MOT_REDUCE,
 
