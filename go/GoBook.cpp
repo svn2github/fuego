@@ -370,6 +370,7 @@ void GoBookCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "gfx/Book Delete/book_delete %p\n"
         "hstring/Book Info/book_info\n"
         "none/Book Load/book_load %r\n"
+        "plist/Book Moves/book_moves\n"
         "gfx/Book Position/book_position\n"
         "none/Book Save/book_save\n"
         "none/Book Save As/book_save_as %w\n";
@@ -446,6 +447,15 @@ void GoBookCommands::CmdLoad(GtpCommand& cmd)
     }
 }
 
+void GoBookCommands::CmdMoves(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    vector<SgPoint> active = m_book.LookupAllMoves(m_bd);
+    for (vector<SgPoint>::const_iterator it = active.begin();
+         it != active.end(); ++it)
+        cmd << SgWritePoint(*it) << ' ';
+}
+
 /** Show book information for current positions.
     This command is compatible with the GoGui analyze command type "gfx".
     Moves in the book for the current position are marked with a green
@@ -520,6 +530,7 @@ void GoBookCommands::Register(GtpEngine& e)
     e.Register("book_delete", &GoBookCommands::CmdDelete, this);
     e.Register("book_info", &GoBookCommands::CmdInfo, this);
     e.Register("book_load", &GoBookCommands::CmdLoad, this);
+    e.Register("book_moves", &GoBookCommands::CmdMoves, this);
     e.Register("book_position", &GoBookCommands::CmdPosition, this);
     e.Register("book_save", &GoBookCommands::CmdSave, this);
     e.Register("book_save_as", &GoBookCommands::CmdSaveAs, this);

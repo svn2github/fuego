@@ -176,6 +176,7 @@ public:
         - @link CmdDelete() @c book_delete @endlink
         - @link CmdInfo() @c book_info @endlink
         - @link CmdLoad() @c book_load @endlink
+        - @link CmdMoves() @c book_moves @endlink
         - @link CmdPosition() @c book_position @endlink
         - @link CmdSave() @c book_save @endlink
         - @link CmdSaveAs() @c book_save_as @endlink
@@ -188,6 +189,7 @@ public:
     void CmdDelete(GtpCommand& cmd);
     void CmdInfo(GtpCommand& cmd);
     void CmdLoad(GtpCommand& cmd);
+    void CmdMoves(GtpCommand& cmd);
     void CmdPosition(GtpCommand& cmd);
     void CmdSave(GtpCommand& cmd);
     void CmdSaveAs(GtpCommand& cmd);
