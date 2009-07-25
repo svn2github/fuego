@@ -10,6 +10,7 @@ blunder_long_ladder_19.tst \
 blunder_play_near_dead_19.tst \
 blunder_selfatari_19.tst \
 blunder_short_ladder_19.tst \
+book_moves.tst \
 escape_capture_19.tst \
 ladder.tst \
 performance_icgc2008.tst \
