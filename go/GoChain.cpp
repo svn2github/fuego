@@ -18,7 +18,7 @@
 GoChain::GoChain(const GoChain* c1, const GoChain* c2,
                        GoChainCondition* cond) :
     GoBlock(c1, c1->Stones() | c2->Stones(),
-    c1->Healthy()), // AR: cannot do union here, no template -> wrong type.
+    c1->Healthy()),
     m_isSingleBlock(false),
     m_freeLiberties(c1->FreeLiberties() | c2->FreeLiberties())
 {
@@ -37,7 +37,6 @@ GoChain::GoChain(const GoChain* c1, const GoChain* c2,
     }
 }
 
-
 void GoChain::TestFor1Eye(const GoRegionBoard* ra)
 {
     SgListOf<GoBlock> blocks;
@@ -48,6 +47,7 @@ void GoChain::TestFor1Eye(const GoRegionBoard* ra)
             m_has1Eye = true;
             /* */ return; /* */
         }
+
     for (SgListIteratorOf<GoRegion> it(ra->AllRegions(Color())); it; ++it)
         if ((*it)->GetFlag(GO_REGION_1VC) && (*it)->Chains().Contains(this))
         {

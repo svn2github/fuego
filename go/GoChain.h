@@ -131,7 +131,10 @@ public:
     virtual bool AllEmptyAreLiberties(const SgPointSet& area) const;
     
     /** Does the chain consist of a single block, or more than one?*/
-    bool IsSingleBlock() const {return m_isSingleBlock;}
+    bool IsSingleBlock() const
+    {
+        return m_isSingleBlock;
+    }
     
     /** does chain have one eye? Uses blocks' eyes and 1vc regions */
     void TestFor1Eye(const GoRegionBoard* ra);
@@ -141,7 +144,9 @@ public:
 
     /** See m_chainConditions */
     const SgListOf<GoChainCondition>& ChainConditions() const
-    {return m_chainConditions;}
+    {
+        return m_chainConditions;
+    }
     
     /** returns list of all blocks in chain */
     void GetBlocks(const GoRegionBoard* ra,
