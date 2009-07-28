@@ -1,5 +1,6 @@
 backfill.tst
 eval_life_and_death.tst
+eval_seki.tst
 uct_basics.tst
 uct_blunder.tst
 uct_blunder_19.tst
