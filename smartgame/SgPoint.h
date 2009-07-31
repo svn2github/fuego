@@ -303,7 +303,7 @@ inline bool AreDiagonal(SgPoint p1, SgPoint p2)
             || p2 == p1 + SG_NS - SG_WE || p2 == p1 + SG_NS + SG_WE);
 }
 
-/** Manhatan distance between two points on the board */
+/** Manhattan distance between two points on the board */
 inline int Distance(SgPoint p1, SgPoint p2)
 {
     return (std::abs(SgPointUtil::Row(p1) - SgPointUtil::Row(p2))
