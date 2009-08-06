@@ -7,6 +7,8 @@
 #ifndef SG_UTIL_H
 #define SG_UTIL_H
 
+#include "SgBlackWhite.h"
+#include "SgBWArray.h"
 //----------------------------------------------------------------------------
 
 namespace SgUtil {
@@ -41,6 +43,70 @@ inline void UpperLimit(T& x, const T& limit)
 }
 
 } // namespace SgUtil
+
+/** Utility class to assure balance between black and white plays.
+    The difference between the number of plays by both colors
+    is forced to be within the margin.
+*/
+class SgBalancer
+{
+public:
+    SgBalancer(int margin) : 
+        m_balance(0),
+        m_margin(margin),
+        m_played(0,0),
+        m_rejected(0,0)
+    { }
+    
+    bool Play(SgBlackWhite color)
+    {
+        SG_ASSERT(SgIsBlackWhite(color));
+        if (color == SG_BLACK)
+        {
+            if (m_balance < m_margin)
+            {
+                ++m_balance;
+                ++m_played[SG_BLACK];
+                return true;
+            }
+        }
+        else if (m_balance > -m_margin)
+        {
+            --m_balance;
+            ++m_played[SG_WHITE];
+            return true;
+        }
+        ++m_rejected[color];
+        return false;
+    }
+    
+    int Balance() const
+    {
+        return m_balance;
+    }
+    
+    int Margin() const
+    {
+        return m_margin;
+    }
+    
+    int NuPlayed(SgBlackWhite color) const
+    {
+        return m_played[color];
+    }
+    
+    int NuRejected(SgBlackWhite color) const
+    {
+        return m_rejected[color];
+    }
+    
+private:
+    int m_balance;
+    const int m_margin;
+    SgBWArray<int> m_played;
+    SgBWArray<int> m_rejected;
+};
+
 
 //----------------------------------------------------------------------------
 
