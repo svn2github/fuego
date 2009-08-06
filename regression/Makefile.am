@@ -8,6 +8,7 @@ uct.suite \
 backfill.tst \
 blunder_long_ladder_19.tst \
 blunder_play_near_dead_19.tst \
+blunder_rave.tst \
 blunder_selfatari_19.tst \
 blunder_short_ladder_19.tst \
 book_moves.tst \
@@ -231,6 +232,8 @@ sgf/lifeanddeath/eye-tricky.sgf \
 sgf/lifeanddeath/good-selfatari.1.sgf \
 sgf/lifeanddeath/good-selfatari.2.sgf \
 sgf/pass/tromp-taylor-pass.sgf \
+sgf/rave-problems/823341-variation-rave-bug.sgf \
+sgf/rave-problems/results-105.sgf \
 sgf/repetition/long-life.sgf \
 sgf/repetition/positional-superko.sgf \
 sgf/repetition/repetition-1.sgf \
