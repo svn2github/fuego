@@ -433,13 +433,8 @@ public:
     */
     bool AreInSameBlock(SgPoint stone1, SgPoint stone2) const;
 
-    /** Return the reference point of the block at a point.
+    /** Return the smallest point of the block at a point.
         Requires: Occupied(p) <br>
-        The reference point of a block is guaranteed to stay the same for
-        a given position after moves were played and undone on the board.
-        @note Older versions of SmartGame guaranteed that the anchor is the
-        point with the smallest integer value of the block. This guarantee
-        was removed for efficiency reasons
     */
     SgPoint Anchor(SgPoint p) const;
 
@@ -578,6 +573,8 @@ private:
         typedef GoPointList::Iterator StoneIterator;
 
         SgPoint Anchor() const { return m_anchor; }
+
+        void UpdateAnchor(SgPoint p) { if (p < m_anchor) m_anchor = p; }
 
         void AppendLiberty(SgPoint p) { m_liberties.Append(p); }
 

@@ -44,26 +44,17 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor)
     setup.AddBlack(Pt(3, 2));
     setup.AddBlack(Pt(1, 2));
     GoBoard bd(19, setup);
+    // Check that anchor returns smallest point
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 1)), Pt(4, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 2)), Pt(4, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(3, 2)), Pt(4, 1));
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(1, 2));
-    SgPoint anchor = bd.Anchor(Pt(4, 1));
-    BOOST_CHECK(anchor == Pt(4, 1)
-                || anchor == Pt(4, 2)
-                || anchor == Pt(3, 2));
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 1)), anchor);
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 2)), anchor);
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(3, 2)), anchor);
     bd.Play(Pt(2, 2), SG_BLACK);
-    anchor = bd.Anchor(Pt(4, 1));
-    BOOST_CHECK(anchor == Pt(4, 1)
-                || anchor == Pt(4, 2)
-                || anchor == Pt(3, 2)
-                || anchor == Pt(2, 2)
-                || anchor == Pt(1, 2));
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 1)), anchor);
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 2)), anchor);
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(3, 2)), anchor);
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), anchor);
-    BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), anchor);
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 1)), Pt(4, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 2)), Pt(4, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(3, 2)), Pt(4, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(2, 2)), Pt(4, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(4, 1));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_CanUndo)
@@ -74,6 +65,21 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_CanUndo)
     BOOST_CHECK(bd.CanUndo());
     bd.Undo();
     BOOST_CHECK(! bd.CanUndo());
+}
+
+/** Test GoBoard::Anchor if block-merging stone is new smallest point. */
+BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor_2)
+{
+    GoSetup setup;
+    setup.AddBlack(Pt(1, 2));
+    setup.AddBlack(Pt(2, 1));
+    GoBoard bd(19, setup);
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(1, 2));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(2, 1)), Pt(2, 1));
+    bd.Play(Pt(1, 1), SG_BLACK);
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 1)), Pt(1, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(1, 1));
+    BOOST_CHECK_EQUAL(bd.Anchor(Pt(2, 1)), Pt(1, 1));
 }
 
 /** Test GoBoard::CapturedStones and GoBoard::NuCapturedStones and
