@@ -8,6 +8,7 @@
 
 #include <boost/test/auto_unit_test.hpp>
 #include "GoBoard.h"
+#include "GoSetupUtil.h"
 #include "GoUctUtil.h"
 
 using namespace std;
@@ -81,6 +82,45 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_3)
     SgPoint p = Pt(1, 1);
     DoSelfAtariCorrection(bd, p);
     BOOST_CHECK_EQUAL(p, Pt(2, 1));
+}
+
+/** Test GoUctUtil::DoSelfAtariCorrection (single stone and capture) */
+BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_4)
+{
+    std::string s("..X.\n"
+                  "OX..\n"
+                  "XOX.\n"
+                  "....");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    // single stone capture is not replaced
+    SgPoint p = Pt(1, 1);
+    DoSelfAtariCorrection(bd, p);
+    BOOST_CHECK_EQUAL(p, Pt(1, 1));
+    p = Pt(4, 1); // extension replaced by capture
+    DoSelfAtariCorrection(bd, p);
+    BOOST_CHECK_EQUAL(p, Pt(4, 2));
+}
+
+/** Test GoUctUtil::DoSelfAtariCorrection (single stone and capture) */
+BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_5)
+{
+    std::string s("XO..O.\n"
+                  ".XOO..\n"
+                  "......\n"
+                  "......\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    // replace single stone selfatari by capture
+    SgPoint p = Pt(1, 4);
+    DoSelfAtariCorrection(bd, p);
+    BOOST_CHECK_EQUAL(p, Pt(1, 3));
 }
 
 //----------------------------------------------------------------------------

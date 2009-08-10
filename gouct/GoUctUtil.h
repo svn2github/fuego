@@ -318,24 +318,19 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
             return true;
         }
     }
-    else if (bd.NumEmptyNeighbors(p) > 0)
+    else if (bd.NumEmptyNeighbors(p) > 0 && ! bd.CanCapture(p, toPlay))
     // single stone with empty neighbors - possibly replace
     {
         // should we shift to nb? Is it better than p?
         const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, p);
         // Check if legal, could violate superko (with BOARD=GoBoard in
         // GoUctDefaultPriorKnowledge)
-        if (bd.IsLegal(nb))
+        if (  bd.IsLegal(nb)
+           && (  bd.NumEmptyNeighbors(nb) >= 2
+              || bd.CanCapture(nb, toPlay)
+              )
+           )
         {
-            if (bd.NumEmptyNeighbors(nb) >= 2)
-            {
-                // check if p is a capturing move: then stay with p.
-                SgPoint anchors[4 + 1];
-                bd.NeighborBlocks(p, SgOppBW(toPlay), 1, anchors);
-                if (anchors[0] != SG_ENDPOINT)
-                    // at least one neighbor in atari exists
-                    return false;
-            }
             // nb seems better than p - switch.
             p = nb;
             return true;
