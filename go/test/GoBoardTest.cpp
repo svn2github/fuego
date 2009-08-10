@@ -8,6 +8,7 @@
 
 #include <boost/test/auto_unit_test.hpp>
 #include "GoBoard.h"
+#include "GoSetupUtil.h"
 #include "SgWrite.h"
 
 using namespace std;
@@ -57,16 +58,6 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor)
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(4, 1));
 }
 
-BOOST_AUTO_TEST_CASE(GoBoardTest_CanUndo)
-{
-    GoBoard bd;
-    BOOST_CHECK(! bd.CanUndo());
-    bd.Play(Pt(1, 1), SG_BLACK);
-    BOOST_CHECK(bd.CanUndo());
-    bd.Undo();
-    BOOST_CHECK(! bd.CanUndo());
-}
-
 /** Test GoBoard::Anchor if block-merging stone is new smallest point. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor_2)
 {
@@ -80,6 +71,38 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor_2)
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 1)), Pt(1, 1));
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(1, 1));
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(2, 1)), Pt(1, 1));
+}
+
+#include "SgDebug.h"
+BOOST_AUTO_TEST_CASE(GoBoardTest_CanCapture)
+{
+    std::string s("XO..O.\n"
+                  ".XOO..\n"
+                  "......\n"
+                  "......\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK(bd.IsColor(Pt(1, 1), SG_BLACK));
+    BOOST_CHECK(bd.IsColor(Pt(1, 2), SG_WHITE));
+    BOOST_CHECK(bd.CanCapture(Pt(1, 3), SG_BLACK));
+    BOOST_CHECK(! bd.CanCapture(Pt(1, 3), SG_WHITE));
+    BOOST_CHECK(! bd.CanCapture(Pt(1, 4), SG_BLACK));
+    BOOST_CHECK(! bd.CanCapture(Pt(2, 1), SG_BLACK));
+    BOOST_CHECK(bd.CanCapture(Pt(2, 1), SG_WHITE));
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardTest_CanUndo)
+{
+    GoBoard bd;
+    BOOST_CHECK(! bd.CanUndo());
+    bd.Play(Pt(1, 1), SG_BLACK);
+    BOOST_CHECK(bd.CanUndo());
+    bd.Undo();
+    BOOST_CHECK(! bd.CanUndo());
 }
 
 /** Test GoBoard::CapturedStones and GoBoard::NuCapturedStones and
