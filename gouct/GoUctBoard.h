@@ -217,7 +217,7 @@ public:
 
     /** Return a reference point in the block at a point.
         @note In contrast to GoBoard, the anchor point is not guaranteed
-        to be the smallest point (this functionality is not neede in
+        to be the smallest point (this functionality is not needed in
         Monte-Carlo)
         Requires: Occupied(p).
     */
