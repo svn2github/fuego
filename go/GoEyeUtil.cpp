@@ -15,17 +15,6 @@
 namespace
 {
 
-bool AreSameBlocks(const SgPoint anchors1[], const SgPoint anchors2[])
-{
-    int i = 0;
-    for (; anchors1[i] != SG_ENDPOINT; ++i)
-    {
-        if (! GoBoardUtil::ContainsAnchor(anchors2, anchors1[i]))
-            return false;
-    }
-    return (anchors2[i] == SG_ENDPOINT);
-}
-
 /** Count number of points on edge of board (Line 1) */
 int NuEdgePoints(const GoBoard& bd, const SgPointSet& points)
 {
@@ -525,31 +514,6 @@ bool GoEyeUtil::IsPossibleEye(const GoBoard& board, SgBlackWhite color,
     return isPossibleEye;
 }
 
-bool GoEyeUtil::IsTwoPointEye(const GoBoard& bd, SgPoint p, 
-                   SgBlackWhite color)
-{
-    const SgBlackWhite opp = SgOppBW(color);
-    if (bd.NumEmptyNeighbors(p) == 1
-        && bd.NumNeighbors(p, opp) == 0
-        )
-    {
-        const SgPoint p2 = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);
-        if (bd.NumEmptyNeighbors(p2) == 1
-            && bd.NumNeighbors(p2, opp) == 0
-            )
-        {
-            // check if p1, p2 are adjacent to the same blocks
-            SgPoint nbanchorp[4 + 1];
-            SgPoint nbanchorp2[4 + 1];
-            bd.NeighborBlocks(p, color, nbanchorp);
-            bd.NeighborBlocks(p2, color, nbanchorp2);
-            SG_ASSERT(nbanchorp[0] != SG_ENDPOINT);
-            SG_ASSERT(nbanchorp2[0] != SG_ENDPOINT);
-            return AreSameBlocks(nbanchorp, nbanchorp2);
-        }
-    }
-    return false;
-}
 bool GoEyeUtil::NumberOfMoveToEye(const GoBoard& board, SgBlackWhite color,
                                   SgPoint p, int& number)
 {
