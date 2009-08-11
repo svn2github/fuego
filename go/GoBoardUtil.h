@@ -139,7 +139,8 @@ namespace GoBoardUtil
     /** Find a neighboring point in color c.
         Precondition: Call only if such a point exists.
     */
-    SgPoint FindNeighbor(const GoBoard& bd, SgPoint p, SgEmptyBlackWhite c);
+    template<class BOARD>
+    SgPoint FindNeighbor(const BOARD& bd, SgPoint p, SgEmptyBlackWhite c);
 
     /** Include move in list if it is legal */
     bool GenerateIfLegal(const GoBoard& bd,
@@ -419,7 +420,8 @@ inline bool GoBoardUtil::ContainsAnchor(const SgPoint anchor[],
     return false;
 }
 
-inline SgPoint GoBoardUtil::FindNeighbor(const GoBoard& bd, SgPoint p,
+template<class BOARD>
+inline SgPoint GoBoardUtil::FindNeighbor(const BOARD& bd, SgPoint p,
                                          SgEmptyBlackWhite c)
 {
     if (bd.IsColor(p + SG_NS, c))
