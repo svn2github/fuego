@@ -344,6 +344,7 @@ template<class BOARD>
 bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
 {
     SG_ASSERT(bd.IsEmpty(lib));
+    SG_ASSERT(bd.Anchor(anchor) == anchor);
     const SgBlackWhite color = bd.GetStone(anchor);
     int nu = -2; // need 2 new libs (lose 1 lib by playing on lib itself)
     for (SgNb4Iterator it(lib); it; ++it)
