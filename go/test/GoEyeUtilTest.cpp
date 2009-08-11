@@ -8,6 +8,7 @@
 
 #include <boost/test/auto_unit_test.hpp>
 #include "GoEyeUtil.h"
+#include "GoSetupUtil.h"
 
 using namespace std;
 using namespace GoEyeUtil;
@@ -16,6 +17,44 @@ using SgPointUtil::Pt;
 //----------------------------------------------------------------------------
 
 namespace {
+
+
+BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsNakadeShape)
+{
+    SgPointSet area;
+    BOOST_CHECK(! IsNakadeShape(area));
+    area.Include(Pt(5,5)); // single stone
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Include(Pt(5,6)); // two in a row
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Include(Pt(5,4)); // three in a row
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Include(Pt(6,5)); // T-shape
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Include(Pt(4,5)); // cross
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Include(Pt(4,4)); // rabbity six
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Exclude(Pt(6,5)); // bulky five
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Exclude(Pt(5,6)); // bulky four, 2x2 block
+    BOOST_CHECK(IsNakadeShape(area));
+    
+    area.Clear();
+    area.Include(Pt(5,4));
+    area.Include(Pt(5,5));
+    area.Include(Pt(5,6));
+    area.Include(Pt(5,7)); // 4 in a row
+    BOOST_CHECK(! IsNakadeShape(area));
+    area.Exclude(Pt(5,7));
+    BOOST_CHECK(IsNakadeShape(area));
+    area.Include(Pt(6,6)); // L-shape
+    BOOST_CHECK(! IsNakadeShape(area));
+    area.Include(Pt(4,6)); // U-shape
+    BOOST_CHECK(! IsNakadeShape(area));
+    area.Include(Pt(5,6)); // 2x3 block
+    BOOST_CHECK(! IsNakadeShape(area));
+}
 
 BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsSimpleEye_1)
 {
@@ -65,41 +104,40 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsSimpleEye_3)
     BOOST_CHECK(IsSimpleEye(bd, Pt(2, 2), SG_BLACK));
 }
 
-BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsNakadeShape)
+BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsTwoPointEye)
 {
-    SgPointSet area;
-    BOOST_CHECK(! IsNakadeShape(area));
-    area.Include(Pt(5,5)); // single stone
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(5,6)); // two in a row
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(5,4)); // three in a row
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(6,5)); // T-shape
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(4,5)); // cross
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(4,4)); // rabbity six
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Exclude(Pt(6,5)); // bulky five
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Exclude(Pt(5,6)); // bulky four, 2x2 block
-    BOOST_CHECK(IsNakadeShape(area));
-    
-    area.Clear();
-    area.Include(Pt(5,4));
-    area.Include(Pt(5,5));
-    area.Include(Pt(5,6));
-    area.Include(Pt(5,7)); // 4 in a row
-    BOOST_CHECK(! IsNakadeShape(area));
-    area.Exclude(Pt(5,7));
-    BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(6,6)); // L-shape
-    BOOST_CHECK(! IsNakadeShape(area));
-    area.Include(Pt(4,6)); // U-shape
-    BOOST_CHECK(! IsNakadeShape(area));
-    area.Include(Pt(5,6)); // 2x3 block
-    BOOST_CHECK(! IsNakadeShape(area));
+    std::string s("..O..O.O.\n"
+                  "OOOOOO.O.\n"
+                  "..OO..OOO\n"
+                  "OO..OOOO.\n"
+                  ".OOO...O.\n"
+                  ".O..OOOO.\n"
+                  "O.......O\n"
+                  "OO.......\n"
+                  ".O.......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,1), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,2), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,4), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,5), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,7), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(2,7), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(2,9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,1), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,2), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,5), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,6), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(4,3), SG_WHITE)); // 3 blocks
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(4,4), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5,1), SG_WHITE)); // only 1 shared lib
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(6,1), SG_WHITE)); // only 1 shared lib
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5,5), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5,9), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(6,9), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(9,1), SG_WHITE));
 }
 
 BOOST_AUTO_TEST_CASE(GoEyeUtilTest_MakesNakadeShape)
