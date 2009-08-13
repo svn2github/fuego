@@ -188,6 +188,14 @@ namespace GoBoardUtil
     bool IsNeighborOfSome(const BOARD& bd, SgPoint p, SgPoint anchors[],
                           SgBlackWhite toPlay);
 
+    /** Does block have two shared liberties with some other block? 
+        WARNING: for efficiency this checks only the first two liberties
+        of the block. So it is accurate for two-liberty blocks,
+        and a heuristic for blocks with more liberties.
+    */
+    template<class BOARD>
+    bool IsSimpleChain(const BOARD& bd, SgPoint block, SgPoint& other);
+    
     /** Is lib a simple eye of block?
         Eyes is a list of other eye points, that do not need to be
         occupied for lib to be an eye.
@@ -473,6 +481,37 @@ inline bool GoBoardUtil::IsNeighborOfSome(const BOARD& bd, SgPoint p,
             for (int i = 0; anchors[i] != SG_ENDPOINT; ++i)
                 if (anchor == anchors[i])
                     return true;
+        }
+    }
+    return false;
+}
+
+template<class BOARD>
+bool GoBoardUtil::IsSimpleChain(const BOARD& bd,
+                                SgPoint block,
+                                SgPoint& other)
+{
+    if (bd.NumLiberties(block) < 2)
+        return false;
+    block = bd.Anchor(block);
+    const SgBlackWhite color = bd.GetStone(block);
+    typename BOARD::LibertyIterator it(bd, block);
+    const SgPoint lib1 = *it; 
+    ++it;
+    const SgPoint lib2 = *it; 
+    SgPoint anchors1[4 + 1];
+    SgPoint anchors2[4 + 1];
+    bd.NeighborBlocks(lib1, color, anchors1);
+    bd.NeighborBlocks(lib2, color, anchors2);
+    for (int i=0; anchors1[i] != SG_ENDPOINT; ++i)
+    {
+        const SgPoint anchor = anchors1[i];
+        if (  anchor != block
+           && GoBoardUtil::ContainsAnchor(anchors2, anchor)
+           )
+        {
+            other = anchor;
+            return true;
         }
     }
     return false;

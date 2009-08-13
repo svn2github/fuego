@@ -156,6 +156,31 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_HasAdjacentBlocks)
     BOOST_CHECK(HasAdjacentBlocks(bd, Pt(2, 1), 3));
 }
 
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSimpleChain_1)
+{
+    std::string s("X...XOOX.\n"
+                  ".X..X..X.\n"
+                  "....XOOX.\n"
+                  ".........\n"
+                  "..X...X..\n"
+                  "O.OX.XO.O\n"
+                  "........O\n"
+                  "..O...OOO\n"
+                  ".........");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    GoBoard bd(boardSize, setup);
+    SgPoint other;
+    BOOST_CHECK(IsSimpleChain(bd, Pt(1, 1), other));
+    BOOST_CHECK_EQUAL(Pt(2, 2), other);
+    BOOST_CHECK(IsSimpleChain(bd, Pt(1, 6), other));
+    BOOST_CHECK_EQUAL(Pt(3, 6), other);
+    BOOST_CHECK(! IsSimpleChain(bd, Pt(6, 3), other));
+    BOOST_CHECK(IsSimpleChain(bd, Pt(6, 7), other));
+    BOOST_CHECK_EQUAL(Pt(8, 7), other);
+}
+
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSnapback_1)
 {
     GoSetup setup;
@@ -210,7 +235,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
 }
 
 
-/** Test GoBoardUtil::NeighborsOfColor (SgList version) */
+/** Test GoBoardUtil::NeighborsOfColor (SgVector version) */
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgList)
 {
     GoSetup setup;
@@ -369,6 +394,16 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_ReduceToAnchors)
     BOOST_CHECK_EQUAL(stones.Length(), 2);
     
     // SgVector version
+    {
+    SgVector<SgPoint> stones;
+    black.ToVector(&stones);
+    GoBoardUtil::ReduceToAnchors(bd, &stones);
+    BOOST_CHECK_EQUAL(stones.Length(), 1);
+    stones.Clear();
+    white.ToVector(&stones);
+    GoBoardUtil::ReduceToAnchors(bd, &stones);
+    BOOST_CHECK_EQUAL(stones.Length(), 2);
+    }
 }
 
 void CheckSelfAtari(const GoBoard& bd, SgPoint p, int nuExpectedStones)
