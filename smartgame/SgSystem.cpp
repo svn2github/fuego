@@ -15,10 +15,6 @@
 #include <list>
 #include "SgTime.h"
 
-#if MW_COMPILER
-#include <OSUtils.h>
-#endif
-
 using namespace std;
 
 //----------------------------------------------------------------------------
@@ -56,26 +52,13 @@ SgAssertionHandler::~SgAssertionHandler()
 
 #ifndef NDEBUG
 
-#if MW_COMPILER
-/** On Metrowerks compiler, always drop into the debugger
-    instead of aborting the program whenever an SG_ASSERT fails
-*/
-static bool s_assert_continue = true;
-#else
 /** Set the shell variable SMARTGAME_ASSERT_CONTINUE to drop into the debugger
     instead of aborting the program whenever an SG_ASSERT fails
 */
 static bool s_assertContinue = std::getenv("SMARTGAME_ASSERT_CONTINUE");
-#endif
 
 void SgHandleAssertion(const char* expr, const char* file, int line)
 {
-#if MW_COMPILER
-    SG_UNUSED(expr);
-    SG_UNUSED(file);
-    SG_UNUSED(line);
-    ::Debugger();
-#else
     /** Set a breakpoint on the next line to drop into the debugger */
     cerr << "Assertion failed "
          << file << ':' << line << ": " << expr << '\n';
@@ -83,7 +66,6 @@ void SgHandleAssertion(const char* expr, const char* file, int line)
              mem_fun(&SgAssertionHandler::Run));
     if (! s_assertContinue)
         abort();
-#endif
 }
 #endif
 
