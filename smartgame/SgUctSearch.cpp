@@ -65,7 +65,8 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
 //----------------------------------------------------------------------------
 
 SgUctThreadState::SgUctThreadState(size_t threadId, int moveRange)
-    : m_threadId(threadId)
+    : m_threadId(threadId),
+      m_randomizeCounter(0)
 {
     if (moveRange > 0)
     {
@@ -209,6 +210,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_knowledgeThreshold(0),
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
+      m_randomizeRaveFrequency(0),
       m_lockFree(false),
       m_weightRaveUpdates(true),
       m_pruneFullTree(true),
@@ -436,7 +438,7 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             value = moveCount;
             break;
         case SG_UCTMOVESELECT_BOUND:
-            value = GetBound(node, child);
+            value = GetBound(m_rave, node, child);
             break;
         case SG_UCTMOVESELECT_ESTIMATE:
             value = GetValueEstimate(child);
@@ -480,17 +482,18 @@ void SgUctSearch::GenerateAllMoves(std::vector<SgMoveInfo>& moves)
     state.GenerateAllMoves(0, moves);
 }
 
-float SgUctSearch::GetBound(const SgUctNode& node,
+float SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
                             const SgUctNode& child) const
 {
     size_t posCount = node.PosCount();
-    return GetBound(Log(posCount), child);
+    return GetBound(useRave, Log(posCount), child);
 }
 
-float SgUctSearch::GetBound(float logPosCount, const SgUctNode& child) const
+float SgUctSearch::GetBound(bool useRave, float logPosCount, 
+                            const SgUctNode& child) const
 {
     float value;
-    if (m_rave)
+    if (useRave)
         value = GetValueEstimateRave(child);
     else
         value = GetValueEstimate(child);
@@ -773,7 +776,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                 breakAfterSelect = true;
         }
 
-        current = &SelectChild(*current);
+        current = &SelectChild(state.m_randomizeCounter, *current);
         nodes.push_back(current);
         SgMove move = current->Move();
         state.Execute(move);
@@ -957,8 +960,16 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
     return bestMove;
 }
 
-const SgUctNode& SgUctSearch::SelectChild(const SgUctNode& node)
+const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter, 
+                                          const SgUctNode& node)
 {
+    bool useRave = m_rave;
+    if (m_randomizeRaveFrequency > 0)
+    {
+        ++randomizeCounter;
+        if (randomizeCounter % m_randomizeRaveFrequency == 0)
+            useRave = false;
+    }
     SG_ASSERT(node.HasChildren());
     size_t posCount = node.PosCount();
     if (posCount == 0)
@@ -970,7 +981,7 @@ const SgUctNode& SgUctSearch::SelectChild(const SgUctNode& node)
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
-        float bound = GetBound(logPosCount, child);
+        float bound = GetBound(useRave, logPosCount, child);
         if (bestChild == 0 || bound > bestUpperBound)
         {
             bestChild = &child;

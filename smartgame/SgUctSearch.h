@@ -290,6 +290,10 @@ public:
     */
     std::vector<SgMove> m_excludeMoves;
 
+    /** Thread's counter for Randomized Rave in SgUctSearch::SelectChild().
+     */
+    int m_randomizeCounter;
+
     SgUctThreadState(size_t threadId, int moveRange = 0);
 
     virtual ~SgUctThreadState();
@@ -600,10 +604,12 @@ public:
     /** Return the bound of a move.
         This is the bound that was used for move selection. It can be the
         pure UCT bound or the combined bound if RAVE is used.
+        @param useRave Whether rave should be used or not.
         @param node The node corresponding to the position
         @param child The node corresponding to the move
     */
-    float GetBound(const SgUctNode& node, const SgUctNode& child) const;
+    float GetBound(bool useRave, const SgUctNode& node, 
+                   const SgUctNode& child) const;
 
     // @} // name
 
@@ -696,6 +702,16 @@ public:
 
     /** See LockFree() */
     void SetLockFree(bool enable);
+
+    /** See SetRandomizeRaveFrequency() */
+    int RandomizeRaveFrequency() const;
+
+    /** Randomly turns off rave with given frequency -
+        once in every frequency child selections.
+        Helps in rare cases where rave ignores the best move. 
+        Set frequency to 0 to switch it off.
+    */
+    void SetRandomizeRaveFrequency(int frequency);
 
     /** Don't update RAVE value if opponent played the same move first.
         Default is false (since it depends on the game and move
@@ -950,6 +966,9 @@ private:
     /** See RaveCheckSame() */
     bool m_raveCheckSame;
 
+    /** See SetRandomizeRaveFrequency() */
+    int m_randomizeRaveFrequency;
+
     /** See LockFree() */
     bool m_lockFree;
 
@@ -1070,7 +1089,8 @@ private:
     void CreateChildren(SgUctThreadState& state, const SgUctNode& node,
                         bool deleteChildTrees);
 
-    float GetBound(float logPosCount, const SgUctNode& child) const;
+    float GetBound(bool useRave, float logPosCount, 
+                   const SgUctNode& child) const;
 
     float GetValueEstimate(const SgUctNode& child) const;
 
@@ -1086,7 +1106,7 @@ private:
 
     void SearchLoop(SgUctThreadState& state, GlobalLock* lock);
 
-    const SgUctNode& SelectChild(const SgUctNode& node);
+    const SgUctNode& SelectChild(int& randomizeCounter, const SgUctNode& node);
 
     std::string SummaryLine(const SgUctGameInfo& info) const;
 
@@ -1280,6 +1300,16 @@ inline void SgUctSearch::SetPruneFullTree(bool enable)
 inline void SgUctSearch::SetPruneMinCount(std::size_t n)
 {
     m_pruneMinCount = n;
+}
+
+inline int SgUctSearch::RandomizeRaveFrequency() const
+{
+    return m_randomizeRaveFrequency;
+}
+
+inline void SgUctSearch::SetRandomizeRaveFrequency(int frequency)
+{
+    m_randomizeRaveFrequency = frequency;    
 }
 
 inline void SgUctSearch::SetRaveCheckSame(bool enable)

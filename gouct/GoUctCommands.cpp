@@ -188,7 +188,7 @@ void GoUctCommands::CmdBounds(GtpCommand& cmd)
     {
         const SgUctNode& child = *it;
         SgPoint move = child.Move();
-        float bound = search.GetBound(root, child);
+        float bound = search.GetBound(search.Rave(), root, child);
         if (move == SG_PASS)
         {
             hasPass = true;
@@ -551,6 +551,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] number_threads " << s.NumberThreads() << '\n'
             << "[string] number_playouts " << s.NumberPlayouts() << '\n'
             << "[string] prune_min_count " << s.PruneMinCount() << '\n'
+            << "[string] randomize_rave_frequency " 
+            << s.RandomizeRaveFrequency() << '\n'
             << "[string] rave_weight_final " << s.RaveWeightFinal() << '\n'
             << "[string] rave_weight_initial "
             << s.RaveWeightInitial() << '\n';
@@ -571,6 +573,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetNoBiasTerm(cmd.BoolArg(1));
         else if (name == "prune_full_tree")
             s.SetPruneFullTree(cmd.BoolArg(1));
+        else if (name == "randomize_rave_frequency")
+            s.SetRandomizeRaveFrequency(cmd.IntArg(1, 1));
         else if (name == "rave")
             s.SetRave(cmd.BoolArg(1));
         else if (name == "weight_rave_updates")
