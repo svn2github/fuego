@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <boost/array.hpp>
+#include "GoBoardUtil.h"
+#include "GoEyeUtil.h"
 #include "GoUctPatterns.h"
 #include "GoUctPureRandomGenerator.h"
 
@@ -242,6 +244,11 @@ private:
 
     GoUctPlayoutPolicyStat m_statistics;
 
+    /** Does playing on a liberty increase number of liberties for block?
+        If yes, add to m_moves.
+    */
+    void PlayGoodLiberties(SgPoint block, SgBlackWhite color);
+
     /** Try to correct the proposed move, typically by moving it to a
         'better' point such as other liberty or neighbor.
         Examples implemented: self-ataries, clumps.
@@ -442,6 +449,20 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 }
 
 template<class BOARD>
+void GoUctPlayoutPolicy<BOARD>::PlayGoodLiberties(SgPoint block,
+                                                  SgBlackWhite color)
+{
+    SG_UNUSED(color); // @todo remove arg.
+    SgPoint ignoreOther;
+    if (! GoBoardUtil::IsSimpleChain(m_bd, block, ignoreOther))
+        for (typename BOARD::LibertyIterator it(m_bd, block); it; ++it)
+            if (  GoUctUtil::GainsLiberties(m_bd, block, *it)
+               && ! GoBoardUtil::SelfAtari(m_bd, *it)
+               )
+                m_moves.Append(*it);
+}
+
+template<class BOARD>
 bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 {
     SG_ASSERT(! SgIsSpecialMove(lastMove));
@@ -452,11 +473,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     if (m_bd.NumLiberties(lastMove) == 2)
     {
         const SgPoint anchor = m_bd.Anchor(lastMove);
-        for (typename BOARD::LibertyIterator it(m_bd, lastMove); it; ++it)
-            if (GoUctUtil::GainsLiberties(m_bd, anchor, *it)
-                && ! GoBoardUtil::SelfAtari(m_bd, *it)
-               )
-                m_moves.Append(*it);
+        PlayGoodLiberties(anchor, toPlay);
     }
 
     if (m_bd.NumNeighbors(lastMove, toPlay) != 0)
@@ -472,11 +489,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
                 if (! anchorList.Contains(anchor))
                 {
                     anchorList.Append(anchor);
-                    for (typename BOARD::LibertyIterator it(m_bd, anchor); it;
-                         ++it)
-                        if (GoUctUtil::GainsLiberties(m_bd, anchor, *it)
-                            && ! GoBoardUtil::SelfAtari(m_bd, *it))
-                            m_moves.Append(*it);
+                    PlayGoodLiberties(anchor, toPlay);
                 }
             }
         }
