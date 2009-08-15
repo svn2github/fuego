@@ -246,8 +246,9 @@ private:
 
     /** Does playing on a liberty increase number of liberties for block?
         If yes, add to m_moves.
+        Disabled if both liberties are simple chain libs, e.g. bamboo.
     */
-    void PlayGoodLiberties(SgPoint block, SgBlackWhite color);
+    void PlayGoodLiberties(SgPoint block);
 
     /** Try to correct the proposed move, typically by moving it to a
         'better' point such as other liberty or neighbor.
@@ -449,10 +450,8 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 }
 
 template<class BOARD>
-void GoUctPlayoutPolicy<BOARD>::PlayGoodLiberties(SgPoint block,
-                                                  SgBlackWhite color)
+void GoUctPlayoutPolicy<BOARD>::PlayGoodLiberties(SgPoint block)
 {
-    SG_UNUSED(color); // @todo remove arg.
     SgPoint ignoreOther;
     if (! GoBoardUtil::IsSimpleChain(m_bd, block, ignoreOther))
         for (typename BOARD::LibertyIterator it(m_bd, block); it; ++it)
@@ -473,7 +472,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     if (m_bd.NumLiberties(lastMove) == 2)
     {
         const SgPoint anchor = m_bd.Anchor(lastMove);
-        PlayGoodLiberties(anchor, toPlay);
+        PlayGoodLiberties(anchor);
     }
 
     if (m_bd.NumNeighbors(lastMove, toPlay) != 0)
@@ -489,7 +488,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
                 if (! anchorList.Contains(anchor))
                 {
                     anchorList.Append(anchor);
-                    PlayGoodLiberties(anchor, toPlay);
+                    PlayGoodLiberties(anchor);
                 }
             }
         }
