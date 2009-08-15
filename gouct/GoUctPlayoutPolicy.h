@@ -244,12 +244,6 @@ private:
 
     GoUctPlayoutPolicyStat m_statistics;
 
-    /** Does playing on a liberty increase number of liberties for block?
-        If yes, add to m_moves.
-        Disabled if both liberties are simple chain libs, e.g. bamboo.
-    */
-    void PlayGoodLiberties(SgPoint block);
-
     /** Try to correct the proposed move, typically by moving it to a
         'better' point such as other liberty or neighbor.
         Examples implemented: self-ataries, clumps.
@@ -281,8 +275,16 @@ private:
 
     bool GeneratePoint(SgPoint p) const;
 
+    /** Does playing on a liberty increase number of liberties for block?
+        If yes, add to m_moves.
+        Disabled if both liberties are simple chain libs, e.g. bamboo.
+    */
+    void PlayGoodLiberties(SgPoint block);
+
+    /** see GoUctUtil::SelectRandom */
     SgPoint SelectRandom();
 
+    /** Add statistics for most recently played move. */
     void UpdateStatistics();
 };
 
