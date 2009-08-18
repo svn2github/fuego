@@ -7,6 +7,7 @@
 #ifndef SG_UTIL_H
 #define SG_UTIL_H
 
+#include <iostream>
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 //----------------------------------------------------------------------------
@@ -53,6 +54,7 @@ class SgBalancer
 public:
     SgBalancer(int margin) : 
         m_balance(0),
+        m_nuCalls(0),
         m_margin(margin),
         m_played(0,0),
         m_rejected(0,0)
@@ -61,6 +63,7 @@ public:
     bool Play(SgBlackWhite color)
     {
         SG_ASSERT(SgIsBlackWhite(color));
+        ++m_nuCalls;
         if (color == SG_BLACK)
         {
             if (m_balance < m_margin)
@@ -90,6 +93,11 @@ public:
         return m_margin;
     }
     
+    int NuCalls() const
+    {
+        return m_nuCalls;
+    }
+    
     int NuPlayed(SgBlackWhite color) const
     {
         return m_played[color];
@@ -102,11 +110,15 @@ public:
     
 private:
     int m_balance;
+    int m_nuCalls;
     const int m_margin;
     SgBWArray<int> m_played;
     SgBWArray<int> m_rejected;
 };
 
+//----------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& stream, const SgBalancer& balancer);
 
 //----------------------------------------------------------------------------
 

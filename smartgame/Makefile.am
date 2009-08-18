@@ -40,6 +40,7 @@ SgTimeRecord.cpp \
 SgUctSearch.cpp \
 SgUctTree.cpp \
 SgUctTreeUtil.cpp \
+SgUtil.cpp \
 SgWrite.cpp
 
 noinst_HEADERS = \
