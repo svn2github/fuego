@@ -238,6 +238,9 @@ private:
 
     SgRandom m_random;
 
+    /** Balancer for GoUctUtil::IsMutualAtari(). */
+    mutable SgBalancer m_balancer;
+    
     CaptureGenerator m_captureGenerator;
 
     GoUctPureRandomGenerator<BOARD> m_pureRandomGenerator;
@@ -359,6 +362,7 @@ GoUctPlayoutPolicy<BOARD>::GoUctPlayoutPolicy(const BOARD& bd,
       m_param(param),
       m_patterns(bd),
       m_checked(false),
+      m_balancer(100), 
       m_captureGenerator(bd),
       m_pureRandomGenerator(bd, m_random)
 {
@@ -555,7 +559,7 @@ SG_ATTR_FLATTEN SgPoint GoUctPlayoutPolicy<BOARD>::GenerateMove()
     if (mv == SG_NULLMOVE)
     {
         m_moveType = GOUCT_RANDOM;
-        mv = m_pureRandomGenerator.Generate();
+        mv = m_pureRandomGenerator.Generate(m_balancer);
     }
 
     if (mv == SG_NULLMOVE)
@@ -700,7 +704,7 @@ inline void GoUctPlayoutPolicy<BOARD>::GeneratePatternMove2(SgPoint p,
 template<class BOARD>
 inline bool GoUctPlayoutPolicy<BOARD>::GeneratePoint(SgPoint p) const
 {
-    return GoUctUtil::GeneratePoint(m_bd, p, m_bd.ToPlay());
+    return GoUctUtil::GeneratePoint(m_bd, m_balancer, p, m_bd.ToPlay());
 }
 
 template<class BOARD>
@@ -745,7 +749,8 @@ const GoUctPatterns<BOARD>& GoUctPlayoutPolicy<BOARD>::Patterns()
 template<class BOARD>
 inline SgPoint GoUctPlayoutPolicy<BOARD>::SelectRandom()
 {
-    return GoUctUtil::SelectRandom(m_bd, m_bd.ToPlay(), m_moves, m_random);
+    return GoUctUtil::SelectRandom(m_bd, m_bd.ToPlay(), m_moves, m_random, 
+                                   m_balancer);
 }
 
 template<class BOARD>

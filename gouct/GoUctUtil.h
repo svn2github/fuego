@@ -16,6 +16,7 @@
 #include "SgPoint.h"
 #include "SgRandom.h"
 #include "SgUctSearch.h"
+#include "SgUtil.h"
 
 class SgBWSet;
 template<typename T,int N> class SgSList;
@@ -33,7 +34,7 @@ namespace GoUctUtil
     /** reject random move if it was self atari */
     const bool REMOVE_SELF_ATARI = false;
     /** reject random move if it was both atari and self atari */
-    const bool REMOVE_MUTUAL_ATARI = false;
+    const bool REMOVE_MUTUAL_ATARI = true;
 
     const int SELF_ATARI_LIMIT = 8;
     const int MUTUAL_ATARI_LIMIT = 2;
@@ -97,7 +98,8 @@ namespace GoUctUtil
         end position can be scored with GoBoardUtil::ScoreSimpleEndPosition().
     */
     template<class BOARD>
-    bool GeneratePoint(const BOARD& bd, SgPoint p, SgBlackWhite toPlay);
+    bool GeneratePoint(const BOARD& bd, SgBalancer& balancer, SgPoint p, 
+                       SgBlackWhite toPlay);
 
     /** Print information about search as Gfx commands for GoGui.
         Can be used for GoGui live graphics during the search or GoGui
@@ -163,7 +165,8 @@ namespace GoUctUtil
 
     /** selfatari of a larger number of stones and also atari on opponent. */
     template<class BOARD>
-    bool IsMutualAtari(const BOARD& bd, SgPoint p, SgBlackWhite toPlay);
+    bool IsMutualAtari(const BOARD& bd, SgBalancer& balancer, SgPoint p, 
+                       SgBlackWhite toPlay);
                                  
     /** Save tree contained in a search as a Go SGF file.
         The SGF file is written directly without using SgGameWriter to avoid
@@ -195,7 +198,7 @@ namespace GoUctUtil
     template<class BOARD>
     SgPoint SelectRandom(const BOARD& bd, SgBlackWhite toPlay,
                          GoPointList& emptyPts,
-                         SgRandom& random);
+                         SgRandom& random, SgBalancer& balancer);
 
     /** Utility function used in DoClumpCorrection() */
     template<class BOARD>
@@ -372,8 +375,8 @@ bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
 }
 
 template<class BOARD>
-inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgPoint p,
-                                     SgBlackWhite toPlay)
+inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgBalancer& balancer, 
+                                     SgPoint p, SgBlackWhite toPlay)
 {
     int nuStones = 0;
     if (   GoBoardUtil::SelfAtari(bd, p, nuStones)
@@ -388,7 +391,7 @@ inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgPoint p,
         bool selfatari =
                 bd.HasNeighbors(p, opp) &&
                 GoBoardUtil::SelfAtariForColor(bd, p, opp);
-        if (selfatari)
+        if (selfatari && balancer.Play(toPlay))
         {
             /*
             static int count = 0;
@@ -403,8 +406,8 @@ inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgPoint p,
 }
 
 template<class BOARD>
-inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
-                                     SgBlackWhite toPlay)
+inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgBalancer& balancer,
+                                     SgPoint p, SgBlackWhite toPlay)
 {
     SG_ASSERT(bd.IsEmpty(p));
     SG_ASSERT(bd.ToPlay() == toPlay);
@@ -427,7 +430,7 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgPoint p,
         }
     }
     
-    if (REMOVE_MUTUAL_ATARI && IsMutualAtari(bd, p, toPlay))
+    if (REMOVE_MUTUAL_ATARI && IsMutualAtari(bd, balancer, p, toPlay))
         return false;
     return true;
 }
@@ -436,7 +439,8 @@ template<class BOARD>
 inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
                                        SgBlackWhite toPlay,
                                        GoPointList& emptyPts,
-                                       SgRandom& random)
+                                       SgRandom& random,
+                                       SgBalancer& balancer)
 {
     while (true)
     {
@@ -446,7 +450,7 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
         int index = random.Int(length);
         SgPoint p = emptyPts[index];
         SG_ASSERT(bd.IsEmpty(p));
-        if (GeneratePoint(bd, p, toPlay))
+        if (GeneratePoint(bd, balancer, p, toPlay))
             return p;
         emptyPts[index] = emptyPts[length - 1];
         emptyPts.PopBack();
