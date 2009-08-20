@@ -433,11 +433,12 @@ SgMove GoUctGlobalSearchState<POLICY>::GeneratePlayoutMove(
     if (move == SG_PASS)
     {
         const GoUctBoard& bd = UctBoard();
+	SgBalancer balancer(100); // FIXME: Could be quite slow!!
         for (GoUctBoard::Iterator it(bd); it; ++it)
             SG_ASSERT(   bd.Occupied(*it)
                      || m_safe.OneContains(*it)
                      || GoBoardUtil::SelfAtari(bd, *it)
-                     || ! GoUctUtil::GeneratePoint(bd, *it, bd.ToPlay()));
+                     || ! GoUctUtil::GeneratePoint(bd, balancer, *it, bd.ToPlay()));
     }
     else
         SG_ASSERT(! m_safe.OneContains(move));
