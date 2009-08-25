@@ -1351,35 +1351,17 @@ void GoGtpEngine::PlaceHandicap(const SgList<SgPoint>& stones)
     GoBoard& bd = Board();
     GoGame& game = GetGame();
     SgNode* node = game.CurrentNode();
-    bool newNodeCreated = false;
     if (node->HasSon())
-    {
         node = game.CurrentNode()->NewRightMostSon();
-        newNodeCreated = true;
-    }
-    // At present we need not only to add the addStone properties to the node,
-    // but also on the board, because GoGame::GotToNode does not work, if the
-    // node has not changed, but got new addStone properties. This will become
-    // unnecessary, once GoGame uses GoBoardUpdater, because then
-    // GoGame::GotToNode will work in this case
-    // TODO: check again (new implementation GoGame::GotToNode could work)
     SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
-    GoSetup setup;
-    setup.m_player = SG_WHITE;
     for (SgListIterator<SgPoint> it(stones); it; ++it)
-    {
         addBlack->Append(*it);
-        setup.AddBlack(*it);
-    }
     node->Add(addBlack);
     SgPropInt* handicap = new SgPropInt(SG_PROP_HANDICAP, stones.Length());
     node->Add(handicap);
     bd.Rules().SetHandicap(stones.Length());
     RulesChanged();
-    if (newNodeCreated)
-        game.GoToNode(node);
-    else
-        bd.Init(bd.Size(), setup);
+    game.GoToNode(node);
     BoardChanged();
 }
 
