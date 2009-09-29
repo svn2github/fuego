@@ -646,7 +646,8 @@ GtpCallbackBase::~GtpCallbackBase() throw()
 //----------------------------------------------------------------------------
 
 GtpEngine::GtpEngine(istream& in, ostream& out)
-    : m_in(in),
+    : m_quit(false),
+      m_in(in),
       m_out(out)
 {
     // Tying of input to output stream (like used by std::cin/cout) is not
