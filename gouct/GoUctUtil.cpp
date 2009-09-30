@@ -77,6 +77,13 @@ void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
 
 //----------------------------------------------------------------------------
 
+void GoUctUtil::ClearStatistics(SgPointArray<SgUctStatistics>& stats)
+{
+    for (SgPointArray<SgUctStatistics>::NonConstIterator
+             it(stats); it; ++it)
+        (*it).Clear();
+}
+
 void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
                             ostream& out)
 {

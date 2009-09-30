@@ -51,6 +51,8 @@ namespace GoUctUtil
     /** Used in clump correction. */
     const int LINE_2_OR_MORE_LIMIT = CONSERVATIVE_CLUMP ? 6 : 5;
 
+    void ClearStatistics(SgPointArray<SgUctStatistics>& stats);
+
     /** Check if move is self-atari and find other liberty, if yes.
         This can be applied as a filter in the playout policy, after a move
         was generated. It is a useful correction to the move generation using
