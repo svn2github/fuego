@@ -20,7 +20,7 @@ class GoUctSearch;
 namespace GoUctEstimatorStat
 {
     /** Get statistics for estimators.
-        First playes each move and performs a search with a large number of
+        First plays each move and performs a search with a large number of
         games to estimate the true value of the move. Then performs a search
         at the root node and saves a sample of the values and counts after
         each game in the search.
