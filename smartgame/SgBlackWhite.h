@@ -49,7 +49,7 @@ inline char SgBW(SgBlackWhite color)
 
     Usage example:
     @verbatim
-    for (BWIterator it; it; ++it)
+    for (SgBWIterator it; it; ++it)
     { 
         "this section will be executed twice:"
         "first with *it == SG_BLACK, then with *it == SG_WHITE"
