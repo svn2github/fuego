@@ -454,6 +454,22 @@ BOOST_AUTO_TEST_CASE(SgVectorTestSetTo_Array)
     BOOST_CHECK_EQUAL(a.Length(), 0);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestSort)
+{
+    SgVector<int> a;
+    a.PushBack(10);
+    a.PushBack(32);
+    a.PushBack(13);
+    a.PushBack(100);
+    a.PushBack(13);
+    a.PushBack(2);
+    a.PushBack(-3);
+    BOOST_CHECK(! a.IsSorted());
+    a.Sort();
+    BOOST_CHECK(a.IsSorted());
+    BOOST_CHECK_EQUAL(a.Length(), 7);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestSwapWith)
 {
     SgVector<int> a;

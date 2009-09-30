@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgVector.h
-    std::vector-based replacement for SgList.
+    std::vector-based replacement for previous SgList class.
 */
 //----------------------------------------------------------------------------
 #ifndef SG_VECTOR_H
@@ -73,6 +73,14 @@ public:
     {
         SG_ASSERT(NonEmpty());
         return m_vec.back();
+    }
+
+    T BackAndPop()
+    {
+        SG_ASSERT(NonEmpty());
+        T back = m_vec.back();
+        PopBack();
+        return back;
     }
 
     /** Remove all elements in this vector. */
@@ -246,6 +254,8 @@ public:
     */
     void SetTo(const T* array, int count);
 
+    void Sort();
+    
     /** Swap the entire contents of this vector with <code>*vector</code>. */
     void SwapWith(SgVector<T>* vector)
     {
@@ -470,12 +480,6 @@ public:
         : SgVectorIterator<void*>(static_cast<const SgVector<void*>&>(vector))
     { }
 
-#if UNUSED
-    void Reset()
-    {
-        SgVectorIterator<void*>::Reset();
-    }
-#endif
     void operator++()
     {
         SgVectorIterator<void*>::operator++();
@@ -683,6 +687,12 @@ void SgVector<T>::SetTo(const T* array, int count)
 }
 
 template<typename T>
+void SgVector<T>::Sort()
+{
+    sort(m_vec.begin(), m_vec.end());
+}
+
+template<typename T>
 void SgVector<T>::Union(const SgVector<T>& set)
 {
     for (SgVectorIterator<T> it(set); it; ++it)
@@ -779,5 +789,55 @@ bool SgVectorPairIterator<T>::NextPair(T& elt1, T& elt2)
 }
 
 //----------------------------------------------------------------------------
+/** Iterator for all possible pairs of ListOf<T> elements
+    Each pair is returned exactly once, i.e. with
+    <code>list = e1, e2,...en</code>
+    the returned pairs are (in order):
+    <code>(e1,e2), (e1,e3), ... (e1,en), (e2,e3),...(e(n-1),en)</code>
+*/
+template<class T>
+class SgVectorPairIteratorOf
+    : public SgVectorPairIterator<void*>
+{
+public:
+    /** Create an iterator to iterate through all possible
+        pairs of list elements.
+    */
+    SgVectorPairIteratorOf(const SgVectorOf<T>& list)
+        : SgVectorPairIterator<void*>
+          (static_cast<const SgVector<void*>&>(list))
+    { }
+
+    /** Find the next pair of data elements.
+        Return @c true and change @c elt1 and @c elt2 if not reached the end
+        of the list; return <code>false</code> and don't touch the parameters
+        if at the end of the list.
+    */
+    bool NextPair(T*& elt1, T*& elt2)
+    {
+        void* voidPtr1;
+        void* voidPtr2;
+        if (SgVectorPairIterator<void*>::NextPair(voidPtr1, voidPtr2))
+        {
+            elt1 = static_cast<T*>(voidPtr1);
+            elt2 = static_cast<T*>(voidPtr2);
+            return true;
+        }
+        return false;
+    }
+};
+
+//----------------------------------------------------------------------------
+/** This template is a partial replacement for the previous SgOwnerListOf
+    class. It must be called 'by hand', but the old SgOwnerListOf was
+    never 100% implemented anyway.
+*/
+template<typename T>
+void FreeAll(SgVectorOf<T>& objects)
+{
+    for (SgVectorIteratorOf<T> it(objects); it; ++it)
+        delete *it;
+    objects.Clear();
+}
 
 #endif // SG_VECTOR_H
