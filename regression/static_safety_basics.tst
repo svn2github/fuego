@@ -315,7 +315,7 @@ loadsgf sgf/safetytest/static-safety.8.sgf
 
 780 go_safe static
 #? [0]*
-# @todo can make seki - right now this is wrongly classified as static safe 
+# @todo can make seki - right now this is misclassified as statically safe 
 
 781 go_safe_dame_static
 #? []
@@ -403,3 +403,23 @@ loadsgf sgf/safetytest/nakade-2x3.sgf
 
 960 go_safe_dame_static
 #? []
+
+loadsgf sgf/safetytest/static-safety.10.sgf
+
+970 go_safe benson black
+#? [19 .*]
+
+971 go_safe benson white
+#? [28 .*]
+
+980 go_safe static black
+#? [19 .*]
+# @todo the next version should recognize the top as safe.
+
+981 go_safe static white
+#? [47 .*]
+
+990 go_safe_dame_static
+#? []
+
+

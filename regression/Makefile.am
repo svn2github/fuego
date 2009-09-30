@@ -352,6 +352,7 @@ sgf/safetytest/static-safety.6.sgf \
 sgf/safetytest/static-safety.7.sgf \
 sgf/safetytest/static-safety.8.sgf \
 sgf/safetytest/static-safety.9.sgf \
+sgf/safetytest/static-safety.10.sgf \
 sgf/seki/sheppard-seki.sgf \
 sgf/seki/sheppard-seki-2.sgf \
 sgf/seki/sheppard-seki-3.sgf \
