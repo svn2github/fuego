@@ -9,7 +9,6 @@
 
 #include "GoBoard.h"
 #include "GoGame.h"
-#include "SgList.h"
 #include "SgPointArray.h"
 
 //----------------------------------------------------------------------------
