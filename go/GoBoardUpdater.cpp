@@ -65,8 +65,8 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
             {
                 SgPropAddStone* prop =
                   dynamic_cast<SgPropAddStone*>(node->Get(SG_PROP_ADD_BLACK));
-                const SgList<SgPoint>& addBlack = prop->Value();
-                for (SgListIterator<SgPoint> it2(addBlack); it2; ++it2)
+                const SgVector<SgPoint>& addBlack = prop->Value();
+                for (SgVectorIterator<SgPoint> it2(addBlack); it2; ++it2)
                 {
                     SgPoint p = *it2;
                     setup.m_stones[SG_WHITE].Exclude(p);
@@ -78,8 +78,8 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
             {
                 SgPropAddStone* prop =
                   dynamic_cast<SgPropAddStone*>(node->Get(SG_PROP_ADD_WHITE));
-                const SgList<SgPoint>& addWhite = prop->Value();
-                for (SgListIterator<SgPoint> it2(addWhite); it2; ++it2)
+                const SgVector<SgPoint>& addWhite = prop->Value();
+                for (SgVectorIterator<SgPoint> it2(addWhite); it2; ++it2)
                 {
                     SgPoint p = *it2;
                     setup.m_stones[SG_BLACK].Exclude(p);
@@ -91,8 +91,8 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
             {
                 SgPropAddStone* prop =
                   dynamic_cast<SgPropAddStone*>(node->Get(SG_PROP_ADD_EMPTY));
-                const SgList<SgPoint>& addEmpty = prop->Value();
-                for (SgListIterator<SgPoint> it2(addEmpty); it2; ++it2)
+                const SgVector<SgPoint>& addEmpty = prop->Value();
+                for (SgVectorIterator<SgPoint> it2(addEmpty); it2; ++it2)
                 {
                     SgPoint p = *it2;
                     setup.m_stones[SG_BLACK].Exclude(p);

@@ -11,7 +11,7 @@
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoModBoard.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgStack.h"
 
 using namespace std;
@@ -51,7 +51,7 @@ void GoLadder::InitMaxMoveNumber()
 /** Marks all stones in the block p as part of the prey.
     If 'stones' is not 0, then append the stones to the existing list.
 */
-void GoLadder::MarkStonesAsPrey(SgPoint p, SgList<SgPoint>* stones)
+void GoLadder::MarkStonesAsPrey(SgPoint p, SgVector<SgPoint>* stones)
 {
     SG_ASSERT(m_bd->IsValidPoint(p));
     if (m_bd->Occupied(p))
@@ -61,7 +61,7 @@ void GoLadder::MarkStonesAsPrey(SgPoint p, SgList<SgPoint>* stones)
             SgPoint p = *it;
             m_partOfPrey.Include(p);
             if (stones)
-                stones->Append(p);
+                stones->PushBack(p);
         }
     }
 }
@@ -110,7 +110,7 @@ bool GoLadder::BlockIsAdjToPrey(SgPoint p, int numAdj)
 */
 int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
                              SgPoint lib2, const GoPointList& adjBlk,
-                             SgList<SgPoint>* sequence)
+                             SgVector<SgPoint>* sequence)
 {
     SG_ASSERT(move == lib1 || move == lib2);
     // TODO: only pass move and otherLib
@@ -141,7 +141,7 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
             lib1 = lib2;
         result = PreyLadder(depth + 1, lib1, newAdj, sequence);
         if (sequence)
-            sequence->Push(move);
+            sequence->PushBack(move);
         m_bd->Undo();
     }
     else
@@ -159,12 +159,12 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
 */
 int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
                            const GoPointList& adjBlk,
-                           SgList<SgPoint>* sequence)
+                           SgVector<SgPoint>* sequence)
 {
     int result = 0;
     GoPointList newAdj(adjBlk);
-    SgList<SgPoint> newLib;
-    SgList<SgPoint> newStones;
+    SgVector<SgPoint> newLib;
+    SgVector<SgPoint> newStones;
     SgVector<SgPoint> neighbors;
     if (move == lib1)
     {
@@ -189,7 +189,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         if (move == lib1)
         {
             NeighborsOfColor(*m_bd, move, SG_EMPTY, &neighbors);
-            for (SgListIterator<SgPoint> iter(newLib); iter; ++iter)
+            for (SgVectorIterator<SgPoint> iter(newLib); iter; ++iter)
             {
                 SgPoint point = *iter;
                 // Test for Empty is necessary because newLib will include
@@ -236,7 +236,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         FilterAdjacent(newAdj);
         result = HunterLadder(depth+1, numLib, lib1, lib2, newAdj, sequence);
         if (sequence)
-            sequence->Push(move);
+            sequence->PushBack(move);
         m_bd->Undo();
     }
     else
@@ -253,7 +253,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
 
 int GoLadder::PreyLadder(int depth, SgPoint lib1,
                          const GoPointList& adjBlk,
-                         SgList<SgPoint>* sequence)
+                         SgVector<SgPoint>* sequence)
 {
     if (CheckMoveOverflow())
         return GOOD_FOR_PREY;
@@ -279,7 +279,7 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
     {
         if (sequence)
         {
-            SgList<SgPoint> seq2;
+            SgVector<SgPoint> seq2;
             int result2 = PlayPreyMove(depth, lib1, lib1, adjBlk, &seq2);
             if (result < result2 || result == 0)
             {
@@ -299,7 +299,7 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
 
 int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
                            SgPoint lib2, const GoPointList& adjBlk,
-                           SgList<SgPoint>* sequence)
+                           SgVector<SgPoint>* sequence)
 {
     if (CheckMoveOverflow())
         return GOOD_FOR_PREY;
@@ -329,7 +329,7 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
                 m_bd->Play(lib1, m_hunterColor);
                 result = PreyLadder(depth + 1, lib2, adjBlk, sequence);
                 if (sequence)
-                    sequence->Push(lib1);
+                    sequence->PushBack(lib1);
                 m_bd->Undo();
             }
             else
@@ -346,7 +346,7 @@ int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
                 {
                     if (sequence)
                     {
-                        SgList<SgPoint> seq2;
+                        SgVector<SgPoint> seq2;
                         int result2 = PlayHunterMove(depth, lib2, lib1, lib2,
                                                      adjBlk, &seq2);
                         if (result2 < result)
@@ -408,7 +408,7 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
 
 /** Main ladder routine */
 int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
-                     SgList<SgPoint>* sequence, bool twoLibIsEscape)
+                     SgVector<SgPoint>* sequence, bool twoLibIsEscape)
 {
     GoModBoard modBoard(bd);
     m_bd = &modBoard.Board();
@@ -427,7 +427,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
         result = GOOD_FOR_PREY;
     else
     {
-        SgList<SgPoint> libs;
+        SgVector<SgPoint> libs;
         for (GoBoard::LibertyIterator it(*m_bd, prey); it; ++it)
             libs.Append(*it);
         SgPoint lib1 = libs.Pop();
@@ -493,7 +493,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                             > 0)
                         {
                             if (sequence)
-                                sequence->Append(*it);
+                                sequence->Push(*it); //add to front 
                             result = GOOD_FOR_PREY;
                         }
                         m_bd->Undo();
@@ -550,7 +550,7 @@ bool GoLadder::IsSnapback(SgPoint prey)
 
 bool GoLadderUtil::Ladder(const GoBoard& bd, SgPoint prey,
                           SgBlackWhite toPlay, bool twoLibIsEscape,
-                          SgList<SgPoint>* sequence)
+                          SgVector<SgPoint>* sequence)
 {
     SG_ASSERT(bd.IsValidPoint(prey));
     SG_ASSERT(bd.Occupied(prey));
@@ -586,12 +586,12 @@ GoLadderStatus GoLadderUtil::LadderStatus(const GoBoard& bd, SgPoint prey,
     // if prey plays first.
     GoLadder ladder;
     SgBlackWhite preyColor = bd.GetStone(prey);
-    SgList<SgPoint> captureSequence;
+    SgVector<SgPoint> captureSequence;
     GoLadderStatus status = GO_LADDER_ESCAPED;
     if (ladder.Ladder(bd, prey, SgOppBW(preyColor), &captureSequence,
                       twoLibIsEscape) < 0)
     {
-        SgList<SgPoint> escapeSequence;
+        SgVector<SgPoint> escapeSequence;
         if (ladder.Ladder(bd, prey, preyColor, &escapeSequence,
                           twoLibIsEscape) < 0)
             status = GO_LADDER_CAPTURED;
@@ -670,7 +670,7 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
             }
             else if (tryLadder)
             {
-                SgList<SgPoint> sequence;
+                SgVector<SgPoint> sequence;
                 // AR same?
                 // isProtected = (Ladder(liberty, sequence) >= SureValue);
                 isProtected = Ladder(bd, liberty, bd.ToPlay(), true,
@@ -696,13 +696,13 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
 SgPoint GoLadderUtil::TryLadder(const GoBoard& bd, SgPoint prey,
                                 SgBlackWhite firstPlayer)
 {
-    SgList<SgPoint> sequence;
+    SgVector<SgPoint> sequence;
     bool isCaptured = Ladder(bd, prey, firstPlayer, true, &sequence);
     // if move is same color as prey, we want to escape
     // else we want to capture.
     SgPoint p;
     if (isCaptured != (firstPlayer == bd.GetStone(prey)))
-        p = sequence.IsEmpty() ? SG_PASS : sequence.Top();
+        p = sequence.IsEmpty() ? SG_PASS : sequence.Back();
     else
         p = SG_NULLMOVE;
     return p;

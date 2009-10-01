@@ -60,7 +60,7 @@ private:
     /** Local variable in Get().
         Reused for efficiency.
     */
-    mutable SgList<SgPoint> m_ladderSequence;
+    mutable SgVector<SgPoint> m_ladderSequence;
 };
 
 inline bool GoUctDefaultRootFilter::CheckLadders() const

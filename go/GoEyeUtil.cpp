@@ -546,7 +546,7 @@ bool GoEyeUtil::NumberOfMoveToEye(const GoBoard& board, SgBlackWhite color,
 }
 
 bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p, 
-                                  SgBlackWhite color, SgList<SgPoint>& eyes)
+                                  SgBlackWhite color, SgVector<SgPoint>& eyes)
 {
     // Must be an empty point
     if (!board.IsColor(p, SG_EMPTY))
@@ -583,7 +583,7 @@ bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p,
 bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p, 
                                   SgBlackWhite color)
 {
-    SgList<SgPoint> emptylist;
+    SgVector<SgPoint> emptylist;
     return IsSinglePointEye2(board, p, color, emptylist);
 }
 
@@ -592,7 +592,8 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
 {
     nummoves = 0;
     bool capturing = false;
-    SgList<SgPoint> usedpoints(p);
+    SgVector<SgPoint> usedpoints;
+    usedpoints.PushBack(p);
     SgPointSet counted;
 
     // Can never turn own stone into an eye

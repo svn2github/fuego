@@ -14,7 +14,7 @@
 #include "GoRegion.h"
 #include "GoRegionBoard.h"
 #include "SgBWSet.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgPointSet.h"
 #include "SgPointSetUtil.h"
 #include "SgWrite.h"
@@ -23,6 +23,7 @@
 
 namespace {
 const bool DEBUG_SAFETY = false;
+const bool DEBUG_MIGHT_MAKE_LIFE = false;
 const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
 
 /** find 2 libs which would connect block to safe.
@@ -35,7 +36,7 @@ bool Find2Connections(const GoBoard& bd, SgPoint block, SgPointSet* libs,
     SG_ASSERT(libs->Disjoint(*usedLibs));
 
     int nuLibs(0);
-    SgList<SgPoint> blockLibs;
+    SgVector<SgPoint> blockLibs;
     for (GoBoard::LibertyIterator it(bd, block); it; ++it)
     {
         if (libs->Contains(*it))
@@ -52,7 +53,7 @@ bool Find2Connections(const GoBoard& bd, SgPoint block, SgPointSet* libs,
             safe->Include(*it);
         for (GoBoard::LibertyIterator it(bd, block); it; ++it)
             libs->Include(*it);
-        for (SgListIterator<SgPoint> it(blockLibs); it; ++it)
+        for (SgVectorIterator<SgPoint> it(blockLibs); it; ++it)
             usedLibs->Include(*it);
         *libs -= *usedLibs; // can never re-use such a lib.
     }
@@ -75,7 +76,7 @@ bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
         SgDebug() << "Find2ConnectionsForAll " << pts
                   << "safe points - input: " << inSafe;
     SgPointSet safe(inSafe);
-    SgList<SgPoint> unsafe;
+    SgVector<SgPoint> unsafe;
     const int size = bd.Size();
     GoSafetyUtil::ReduceToAnchors(bd, pts.Border(size) - safe, &unsafe);
     // AR sort by # empty nbs in pts
@@ -86,7 +87,7 @@ bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
     SgPointSet libs = pts & bd.AllEmpty() & safe.Border(size);
     SgPointSet interior = pts - libs;
     interior -= bd.All(SgOppBW(color)); // remove opp. stones.
-    SgList<SgPoint> unsafeInterior;
+    SgVector<SgPoint> unsafeInterior;
     GoSafetyUtil::ReduceToAnchors(bd, interior & bd.All(color),
                                   &unsafeInterior);
     unsafe.Concat(&unsafeInterior);
@@ -95,8 +96,8 @@ bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
     bool change = true;
     while (change && unsafe.NonEmpty() && libs.MinSetSize(2))
     {
-        SgList<SgPoint> newSafe;
-        for (SgListIterator<SgPoint> it(unsafe); it; ++it)
+        SgVector<SgPoint> newSafe;
+        for (SgVectorIterator<SgPoint> it(unsafe); it; ++it)
             if (Find2Connections(bd, *it, &libs, &usedLibs, &safe))
             {
                 newSafe.Append(*it);
@@ -145,7 +146,7 @@ bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
 }
 
 void TestLiberty(SgPoint lib, const SgPointSet& libs,
-                 SgList<SgPoint>* foundLibs,
+                 SgVector<SgPoint>* foundLibs,
                  int* nuLibs)
 {
     if (libs.Contains(lib))
@@ -202,14 +203,14 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
                                          const SgPointSet& safe,
                                          SgBlackWhite color)
 {
-    const GoRegion* r = 0;
+    const GoRegion* nakadeRegion = 0;
 
     if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
         SgDebug() << "ExtendedMightMakeLife for " << SgBW(color)
                   << " area " << area << '\n';
 
     // Check if region is a nakade shape that fills all potential eye space
-    for (SgListIteratorOf<GoRegion> it(regions->AllRegions(color)); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(regions->AllRegions(color)); it; ++it)
     {
         if (   area.SupersetOf((*it)->Points())
             && area.SupersetOf((*it)->BlocksPoints())
@@ -227,8 +228,8 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
                 // sets MaxPotEyes()
             if ((*it)->MaxPotEyes() > 1)
                 return true;
-            else if (r == 0)
-                r = *it;
+            else if (nakadeRegion == 0)
+                nakadeRegion = *it;
             else // at least 2 regions - might make eyes
                 return true;
         }
@@ -237,18 +238,19 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
     if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
         SgDebug() << "case 2\n";
     SgPointSet rest = area;
-    if (r == 0) // classical case. Call previous function
+    if (nakadeRegion == 0) // classical case. Call previous function
         return GoSafetyUtil::MightMakeLife(board, area, safe, color);
     else
     {
         if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
             SgDebug() << "ExtendedMightMakeLife for " << area
-                      << ": inside opp region " << *r << '\n';
-        if (r->MaxPotEyes() <= 1)
+                      << ": inside opp region " 
+                      << *nakadeRegion << '\n';
+        if (nakadeRegion->MaxPotEyes() <= 1)
         // what if 0 eyes??? Can allow 1 eye elsewhere?
         {
-            rest -= r->Points();
-            rest -= r->BlocksPoints();
+            rest -= nakadeRegion->Points();
+            rest -= nakadeRegion->BlocksPoints();
         }
     }
 
@@ -323,21 +325,31 @@ bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
     if (eyePts.MaxSetSize(1))
         return false;
 
-    SgPoint eye(SG_NULLPOINT), adjToEye(SG_NULLPOINT);
+    if (DEBUG_MIGHT_MAKE_LIFE)
+        SgDebug() << "GoSafetyUtil::MightMakeLife\n";
 
+    SgPoint eye(SG_NULLPOINT), adjToEye(SG_NULLPOINT);
     for (SgSetIterator it(eyePts); it; ++it)
     {
-        SgPoint p(*it);
+        const SgPoint p(*it);
         if (GoEyeUtil::CanBecomeSinglePointEye(board, p, safe))
         {
             if (eye == SG_NULLPOINT)
+            {
                 eye = p;
+                if (DEBUG_MIGHT_MAKE_LIFE)
+                    SgDebug() << "eye = " << SgWritePoint(eye) << "\n";
+            }
             else if (   adjToEye == SG_NULLPOINT
                      && SgPointUtil::AreAdjacent(eye, p)
                     )
                 adjToEye = p;
             else
-                /* */ return true; /* */
+            {
+                if (DEBUG_MIGHT_MAKE_LIFE)
+                    SgDebug() << "second eye = " << SgWritePoint(p) << "\n";
+               /* */ return true; /* */
+            }
         }
     }
 
@@ -347,7 +359,7 @@ bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
 bool GoSafetyUtil::Find2Libs(SgPoint p, SgPointSet* libs)
 {
     int nuLibs = 0;
-    SgList<SgPoint> foundLibs;
+    SgVector<SgPoint> foundLibs;
     TestLiberty(p + SG_NS, *libs, &foundLibs, &nuLibs);
     TestLiberty(p + SG_WE, *libs, &foundLibs, &nuLibs);
     if (nuLibs < 2)
@@ -370,7 +382,7 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
                                  SgPointSet interior, SgMiaiPair* miaiPair)
 {
     int nuLibs = 0;
-    SgList<SgPoint> allLibs; // liberties of point p
+    SgVector<SgPoint> allLibs; // liberties of point p
 
     TestLiberty(p + SG_NS, libs, &allLibs, &nuLibs);
     TestLiberty(p + SG_WE, libs, &allLibs, &nuLibs);
@@ -388,11 +400,11 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
     }
     else
     {
-        SgList<SgPoint> shared, not_shared;
+        SgVector<SgPoint> shared, not_shared;
         SgPointSet others = interior;
         others.Exclude(p);
 
-        for (SgListIterator<SgPoint> it(allLibs); it; ++it)
+        for (SgVectorIterator<SgPoint> it(allLibs); it; ++it)
         {
             bool share = false;
             for (SgSetIterator it2(others); it2; ++it2)
@@ -477,7 +489,7 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
 
 void GoSafetyUtil::ReduceToAnchors(const GoBoard& board,
                                    const SgPointSet& stones,
-                                   SgList<SgPoint>* anchors)
+                                   SgVector<SgPoint>* anchors)
 {
     SG_ASSERT(anchors->IsEmpty());
     for (SgSetIterator it(stones); it; ++it)
@@ -500,14 +512,14 @@ void GoSafetyUtil::WriteStatistics(const std::string& heading,
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(regions->AllRegions(color));
+        for (SgVectorIteratorOf<GoRegion> it(regions->AllRegions(color));
                                            it; ++it)
         {
             ++totalRegions;
             if ((*it)->Points().SubsetOf(allSafe))
                 ++safeRegions;
         }
-        for (SgListIteratorOf<GoBlock> it(regions->AllBlocks(color));
+        for (SgVectorIteratorOf<GoBlock> it(regions->AllBlocks(color));
                                         it; ++it)
         {
             ++totalBlocks;

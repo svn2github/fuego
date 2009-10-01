@@ -10,7 +10,6 @@
 #include <cstddef>
 #include "SgBlackWhite.h"
 #include "SgBoardColor.h"
-#include "SgList.h"
 #include "SgPoint.h"
 #include "SgVector.h"
 
@@ -40,7 +39,7 @@ namespace GoGtpCommandUtil
         @throws GtpFailure If handicap locations are not defined for this
         number and board size.
     */
-    SgList<SgPoint> GetHandicapStones(int size, int n);
+    SgVector<SgPoint> GetHandicapStones(int size, int n);
 
     SgMove MoveArg(const GtpCommand& cmd, std::size_t number,
                    const GoBoard& board);
@@ -62,11 +61,11 @@ namespace GoGtpCommandUtil
     /** Return point list argument starting a given argument number to the
         end of arguments.
     */
-    SgList<SgPoint> PointListArg(const GtpCommand& cmd, std::size_t number,
+    SgVector<SgPoint> PointListArg(const GtpCommand& cmd, std::size_t number,
                                  const GoBoard& board);
 
     /** Return point list argument using all arguments. */
-    SgList<SgPoint> PointListArg(const GtpCommand& cmd, const GoBoard& board);
+    SgVector<SgPoint> PointListArg(const GtpCommand& cmd, const GoBoard& board);
 
     void RespondNumberArray(GtpCommand& cmd, const SgPointArray<int>& array,
                             int scale, const GoBoard& board);
@@ -84,7 +83,7 @@ namespace GoGtpCommandUtil
                      const GoBoard& board);
 }
 
-inline SgList<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
+inline SgVector<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
                                                       const GoBoard& board)
 {
     return PointListArg(cmd, 0, board);

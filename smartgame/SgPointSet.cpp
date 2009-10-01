@@ -122,25 +122,18 @@ SgPointSet SgPointSet::ConnComp8(SgPoint p) const
     return out;
 }
 
-SgPointSet::SgPointSet(const SgList<SgPoint>& list)
+SgPointSet& SgPointSet::Exclude(const SgVector<SgPoint>& vector)
 {
-    Clear();
-    for (SgListIterator<SgPoint> it(list); it; ++it)
-        Include(*it);
+    for (SgVectorIterator<SgPoint> it(vector); it; ++it)
+        Exclude(*it);
+    return (*this);
 }
 
-SgPointSet::SgPointSet(const SgVector<SgPoint>& list)
+SgPointSet::SgPointSet(const SgVector<SgPoint>& vector)
 {
     Clear();
-    for (SgVectorIterator<SgPoint> it(list); it; ++it)
+    for (SgVectorIterator<SgPoint> it(vector); it; ++it)
         Include(*it);
-}
-
-void SgPointSet::ToList(SgList<SgPoint>* list) const
-{
-    list->Clear();
-    for (SgSetIterator si(*this); si; ++si)
-        list->PushBack(*si);
 }
 
 void SgPointSet::ToVector(SgVector<SgPoint>* list) const
@@ -194,7 +187,6 @@ void SgPointSet::Grow8(int boardSize)
     bd &= AllPoints(boardSize);
     *this |= bd;
 }
-
 
 SgPointSet SgPointSet::Border8(int boardSize) const
 {

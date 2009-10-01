@@ -249,7 +249,7 @@ enum SgUctMoveSelect
     instances of this class in different threads (after construction, the
     constructor does not need to be thread safe). Beware not to use classes
     that are not thread-safe, because they use global variables
-    (e.g. SgRandom::Global(), SgList)
+    (e.g. SgRandom::Global())
     @note Technically it is possible to use a non-thread safe implementation
     of subclasses, as long as the search is run with only one thread.
     @ingroup sguctgroup

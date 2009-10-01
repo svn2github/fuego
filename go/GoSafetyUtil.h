@@ -10,12 +10,12 @@
 #include "SgBlackWhite.h"
 #include "SgMiaiStrategy.h"
 #include "SgPoint.h"
+#include "SgVector.h"
 
 class GoBoard;
 class GoRegion;
 class GoRegionBoard;
 class SgBWSet;
-template<typename T> class SgList;
 class SgPointSet;
 
 //----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ namespace GoSafetyUtil
 
     /** Given set of stones, reduce to block anchors */
     void ReduceToAnchors(const GoBoard& board, const SgPointSet& stones,
-                         SgList<SgPoint>* anchors);
+                         SgVector<SgPoint>* anchors);
 
     /** Helper function for 1-vitality test.
         Try to find two matching liberties for point p, subtract them from

@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 #include "SgBlackWhite.h"
-#include "SgList.h"
 #include "SgPoint.h"
 #include "SgVector.h"
 
@@ -193,7 +192,7 @@ private:
     friend class SgPropListIterator;
 
     /** property list implemented as list of properties */
-    SgListOf<SgProp> m_list;
+    SgVectorOf<SgProp> m_list;
 
     /** not implemented */
     SgPropList(const SgPropList&);
@@ -223,7 +222,7 @@ public:
     operator bool() const;
 
 private:
-    SgListIteratorOf<SgProp> m_listIterator;
+    SgVectorIteratorOf<SgProp> m_listIterator;
 
     /** Not implemented */
     SgPropListIterator(const SgPropListIterator&);
@@ -763,76 +762,6 @@ inline bool SgPropMove::IsValue(SgPoint move) const
 
 //----------------------------------------------------------------------------
 
-/** Void pointer list property.
-    @deprecated Using void pointers is generally discouraged in C++.
-    This functionality is still used in lo/LoMath.
-*/
-class SgPropVoidList
-    : public SgProp
-{
-public:
-    explicit SgPropVoidList(SgPropID id);
-
-    SgPropVoidList(SgPropID id, const SgList<void*>& list);
-
-    virtual ~SgPropVoidList();
-
-    SgProp* Duplicate() const;
-
-    bool ToString(std::vector<std::string>& values, int boardSize,
-                  SgPropPointFmt fmt, int fileFormat) const;
-
-    bool FromString(const std::vector<std::string>& values,
-                    int boardSize, SgPropPointFmt fmt);
-
-    /** Return the list value of this property. */
-    const SgList<void*>& Value() const;
-
-    SgList<void*>& Value();
-
-    /** Set the list value of this property. */
-    void SetValue(const SgList<void*>& list);
-
-    void Append(void* elt);
-
-private:
-    SgList<void*> m_list;
-};
-
-inline SgPropVoidList::SgPropVoidList(SgPropID id)
-    : SgProp(id),
-      m_list()
-{
-}
-
-inline SgPropVoidList::SgPropVoidList(SgPropID id, const SgList<void*>& list)
-    : SgProp(id),
-      m_list(list)
-{
-}
-
-inline const SgList<void*>& SgPropVoidList::Value() const
-{
-    return m_list;
-}
-
-inline SgList<void*>& SgPropVoidList::Value()
-{
-    return m_list;
-}
-
-inline void SgPropVoidList::SetValue(const SgList<void*>& list)
-{
-    m_list = list;
-}
-
-inline void SgPropVoidList::Append(void* elt)
-{
-    m_list.Append(elt);
-}
-
-//----------------------------------------------------------------------------
-
 /** A property storing a list of points. */
 class SgPropPointList
     : public SgProp
@@ -840,22 +769,20 @@ class SgPropPointList
 public:
     explicit SgPropPointList(SgPropID id);
 
-    SgPropPointList(SgPropID id, const SgList<SgPoint>& list);
     SgPropPointList(SgPropID id, const SgVector<SgPoint>& list);
 
     virtual ~SgPropPointList();
 
     SgProp* Duplicate() const;
 
-    /** Return the list value of this property. */
-    const SgList<SgPoint>& Value() const;
+    /** Return the vector stored in this property. */
+    const SgVector<SgPoint>& Value() const;
+    SgVector<SgPoint>& Value();
 
-    SgList<SgPoint>& Value();
+    /** Set the vector of this property. */
+    void SetValue(const SgVector<SgPoint>& list);
 
-    /** Set the list value of this property. */
-    void SetValue(const SgList<SgPoint>& list);
-
-    void Append(SgPoint p);
+    void PushBack(SgPoint p);
 
     bool ToString(std::vector<std::string>& values, int boardSize,
                   SgPropPointFmt fmt, int fileFormat) const;
@@ -864,7 +791,7 @@ public:
                     int boardSize, SgPropPointFmt fmt);
 
 private:
-    SgList<SgPoint> m_list;
+    SgVector<SgPoint> m_list;
 };
 
 inline SgPropPointList::SgPropPointList(SgPropID id)
@@ -872,32 +799,24 @@ inline SgPropPointList::SgPropPointList(SgPropID id)
 {
 }
 
-inline SgPropPointList::SgPropPointList(SgPropID id,
-                                        const SgList<SgPoint>& list)
-    : SgProp(id),
-      m_list(list)
-{
-}
-
-
-inline const SgList<SgPoint>& SgPropPointList::Value() const
+inline const SgVector<SgPoint>& SgPropPointList::Value() const
 {
     return m_list;
 }
 
-inline SgList<SgPoint>& SgPropPointList::Value()
+inline SgVector<SgPoint>& SgPropPointList::Value()
 {
     return m_list;
 }
 
-inline void SgPropPointList::SetValue(const SgList<SgPoint>& list)
+inline void SgPropPointList::SetValue(const SgVector<SgPoint>& list)
 {
     m_list = list;
 }
 
-inline void SgPropPointList::Append(SgPoint p)
+inline void SgPropPointList::PushBack(SgPoint p)
 {
-    m_list.Append(p);
+    m_list.PushBack(p);
 }
 
 //----------------------------------------------------------------------------
@@ -1094,7 +1013,6 @@ class SgPropAddStone
 public:
     explicit SgPropAddStone(SgPropID id);
 
-    SgPropAddStone(SgPropID id, const SgList<SgPoint>& list);
     SgPropAddStone(SgPropID id, const SgVector<SgPoint>& list);
 
     virtual ~SgPropAddStone();
@@ -1104,12 +1022,6 @@ public:
 
 inline SgPropAddStone::SgPropAddStone(SgPropID id)
     : SgPropPointList(id)
-{
-}
-
-inline SgPropAddStone::SgPropAddStone(SgPropID id,
-                                      const SgList<SgPoint>& list)
-    : SgPropPointList(id, list)
 {
 }
 

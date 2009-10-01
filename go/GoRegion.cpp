@@ -18,7 +18,7 @@
 #include "GoSafetyUtil.h"
 #include "SgConnCompIterator.h"
 #include "SgDebug.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgNbIterator.h"
 #include "SgPointArray.h"
 #include "SgStrategy.h"
@@ -48,21 +48,21 @@ namespace {
     GoRegionUtil has an identical function taking a list of anchorss.
 */
 inline bool IsAdjacentToAll(const GoBoard& board, SgPoint p,
-                            const SgListOf<GoBlock>& blocks)
+                            const SgVectorOf<GoBlock>& blocks)
 {
-    for (SgListIteratorOf<GoBlock> it(blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(blocks); it; ++it)
         if (! board.IsLibertyOfBlock(p, (*it)->Anchor()))
             return false;
     return true;
 }
 
 /** Is p adjacent to all points? (not blocks) */
-inline bool AdjacentToAll(SgPoint p, const SgList<SgPoint>& points)
+inline bool AdjacentToAll(SgPoint p, const SgVector<SgPoint>& points)
 {
     if (points.IsEmpty())
         /* */ return true; /* */
 
-    for (SgListIterator<SgPoint> it(points); it; ++it)
+    for (SgVectorIterator<SgPoint> it(points); it; ++it)
         if (! SgPointUtil::AreAdjacent(p, *it))
             return false;
 
@@ -131,10 +131,10 @@ bool GoRegion::AllEmptyAreLibs() const
     return true;
 }
 
-SgListOf<GoBlock> GoRegion::InteriorBlocks() const
+SgVectorOf<GoBlock> GoRegion::InteriorBlocks() const
 {
-    SgListOf<GoBlock> interior;
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    SgVectorOf<GoBlock> interior;
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
         if (IsInteriorBlock(*it))
             interior.Append(*it);
     return interior;
@@ -158,13 +158,13 @@ bool GoRegion::IsInteriorBlock(const GoBlock* block) const
 SgPointSet GoRegion::PointsPlusInteriorBlocks() const
 {
     SgPointSet area = m_points;
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
         if (IsInteriorBlock(*it))
             area |= (*it)->Stones();
     return area;
 }
 
-void GoRegion::InteriorEmpty(SgList<SgPoint>* interiorEmpty, int maxNu) const
+void GoRegion::InteriorEmpty(SgVector<SgPoint>* interiorEmpty, int maxNu) const
 {
     for (SgSetIterator it(Points()); it; ++it)
     {
@@ -185,7 +185,7 @@ bool GoRegion::Has2SureLibs(SgMiaiStrategy* miaiStrategy) const
         return false;
 
     SG_ASSERT(!m_blocks.IsEmpty());
-    SgList<SgPoint> interiorEmpty;
+    SgVector<SgPoint> interiorEmpty;
     InteriorEmpty(&interiorEmpty, 3);
     SgMiaiPair ips;
     bool result1 = interiorEmpty.MaxLength(2)
@@ -200,25 +200,22 @@ bool GoRegion::Has2SureLibs(SgMiaiStrategy* miaiStrategy) const
     /** find all interior points connected to boundary
         recursively, that have 2 intersection points inside region
     */
-    SgList<SgPoint> interior;
-    AllInsideLibs().ToList(&interior);
-    SgList<SgPoint> usedLibs;
-
+    SgVector<SgPoint> usedLibs;
     bool result2 =    Find2ConnForAllInterior(miaiStrategy, usedLibs)
                    && Has2IntersectionPoints(usedLibs);
     return result2;
 }
 
-void GoRegion::InsideLibs(const GoBlock* b, SgList<SgPoint>* libs) const
+void GoRegion::InsideLibs(const GoBlock* b, SgVector<SgPoint>* libs) const
 {
     for (GoBoard::LibertyIterator it(m_bd, b->Anchor()); it; ++it)
         if (Points().Contains(*it))
-            libs->Append(*it);
+            libs->PushBack(*it);
 }
 
 bool GoRegion::HasLibForAllBlocks() const
 {
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
         if (! HasBlockLibs(*it))
             return false;
     return true;
@@ -226,8 +223,8 @@ bool GoRegion::HasLibForAllBlocks() const
 
 bool GoRegion::HasLibsForAllBlocks(int n) const
 {
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
-        if ( !(*it)->IsSafe() && !HasLibsForBlock(*it, n))
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
+        if (! (*it)->IsSafe() && ! HasLibsForBlock(*it, n))
             return false;
     return true;
 }
@@ -252,7 +249,7 @@ bool GoRegion::HasLibsForBlock(const GoBlock* b, int n) const
     return false;
 }
 
-void GoRegion::JointLibs(SgList<SgPoint>* libs) const
+void GoRegion::JointLibs(SgVector<SgPoint>* libs) const
 {
     GoBlock* first = m_blocks.Top();
     if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY))
@@ -266,11 +263,11 @@ void GoRegion::JointLibs(SgList<SgPoint>* libs) const
     GoBlock* minB = 0;
 
     // find smallest #libs block; stop immediately if less than 2
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
     {   int nu = (*it)->NuLiberties();
-        if (nu<2)
+        if (nu < 2)
             /* */ return; /* */
-        else if (nu<minLib)
+        else if (nu < minLib)
         {
             minLib = nu;
             minB = *it;
@@ -284,7 +281,7 @@ void GoRegion::JointLibs(SgList<SgPoint>* libs) const
         if (Points().Contains(lib))
         {
             bool joint = true;
-            for (SgListIteratorOf<GoBlock> itBlock(m_blocks); itBlock;
+            for (SgVectorIteratorOf<GoBlock> itBlock(m_blocks); itBlock;
                  ++itBlock)
             {
                 if (! (*itBlock)->HasLiberty(lib))
@@ -294,22 +291,22 @@ void GoRegion::JointLibs(SgList<SgPoint>* libs) const
                 }
             }
             if (joint)
-                libs->Append(*it);
+                libs->PushBack(*it);
         }
     }
 }
 
-bool GoRegion::Has2IPs(const SgList<SgPoint>& interiorEmpty,
+bool GoRegion::Has2IPs(const SgVector<SgPoint>& interiorEmpty,
                        SgMiaiPair* ips) const
 {
-    SgList<SgPoint> jointLibs;
+    SgVector<SgPoint> jointLibs;
     JointLibs(&jointLibs);
     if (jointLibs.MinLength(2))
     {
         // check if libs are intersection pts
         int nuIPs = 0;
         SgPoint ip1 = SG_NULLPOINT;
-        for (SgListIterator<SgPoint> it(jointLibs); it; ++it)
+        for (SgVectorIterator<SgPoint> it(jointLibs); it; ++it)
         {
             if (AdjacentToAll(*it, interiorEmpty) && IsSplitPt(*it, Points()))
             {
@@ -328,16 +325,16 @@ bool GoRegion::Has2IPs(const SgList<SgPoint>& interiorEmpty,
     return false;
 }
 
-bool GoRegion::Has2IntersectionPoints(const SgList<SgPoint> usedLibs) const
+bool GoRegion::Has2IntersectionPoints(const SgVector<SgPoint>& usedLibs) const
 {
-    SgList<SgPoint> jointLibs;
+    SgVector<SgPoint> jointLibs;
     JointLibs(&jointLibs);
     if (jointLibs.MinLength(2))
     {
         // check if libs are intersection pts
         int nuIPs = 0;
         // doesn't have to adjacent to all interior points! 2005/08
-        for (SgListIterator<SgPoint> it(jointLibs); it; ++it)
+        for (SgVectorIterator<SgPoint> it(jointLibs); it; ++it)
         {
             if (IsSplitPt(*it, Points()) && ! usedLibs.Contains(*it))
             {
@@ -349,28 +346,28 @@ bool GoRegion::Has2IntersectionPoints(const SgList<SgPoint> usedLibs) const
     return false;
 }
 
-void GoRegion::GetIPs(SgList<SgPoint>* ips) const
+void GoRegion::GetIPs(SgVector<SgPoint>* ips) const
 {
-    SgList<SgPoint> jointLibs;
+    SgVector<SgPoint> jointLibs;
     JointLibs(&jointLibs);
-    for (SgListIterator<SgPoint> it(jointLibs); it; ++it)
+    for (SgVectorIterator<SgPoint> it(jointLibs); it; ++it)
         if (IsSplitPt(*it, Points()))
             ips->Append(*it);
 }
 
 void GoRegion::GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const
 {
-    SgList<SgPoint> divPs;
+    SgVector<SgPoint> divPs;
 
-    for (SgListIteratorOf<GoBlock> it(Blocks()); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(Blocks()); it; ++it)
     {
-        SgList<SgPoint> libs, temp;
+        SgVector<SgPoint> libs, temp;
         InsideLibs(*it, &libs);
         SgMiaiPair p1;
         SgPoint a = -1;
 
         // only find miaipairs from libs (empty points)
-        for (SgListIterator<SgPoint> it2(libs); it2; ++it2)
+        for (SgVectorIterator<SgPoint> it2(libs); it2; ++it2)
         {
             if (IsSplitPt(*it2, Points()))
                 temp.Append(*it2);
@@ -378,7 +375,7 @@ void GoRegion::GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const
         temp.Sort();
         divPs.AppendList(temp);
 
-        for (SgListIterator<SgPoint> it2(temp); it2; ++it2)
+        for (SgVectorIterator<SgPoint> it2(temp); it2; ++it2)
         {
             if (a == -1)
                 a = (*it2);
@@ -452,7 +449,7 @@ bool GoRegion::Find2ConnForAll() const
 
 // improved by using recursive extension to find 2-conn paths.
 bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
-                                       SgList<SgPoint>& usedLibs) const
+                                       SgVector<SgPoint>& usedLibs) const
 {
     SgVector<SgMiaiPair> myStrategy;
     const int size = m_bd.Size();
@@ -475,9 +472,9 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
             changed = false;
             if (testSet.IsEmpty())
             {
-                SgList<SgPoint> jlibs;
+                SgVector<SgPoint> jlibs;
                 JointLibs(&jlibs);
-                SgList<SgPoint> ips;
+                SgVector<SgPoint> ips;
                 GetIPs(&ips);
                 SgVector<SgMiaiPair> updateStrg;
 
@@ -619,7 +616,7 @@ bool GoRegion::ReplaceChain(const GoChain* old, const GoChain* newChain)
 bool GoRegion::Find2Mergable(GoChain** c1, GoChain** c2) const
 {
     GoChain* test1; GoChain* test2;
-    for (SgListPairIteratorOf<GoChain> it(m_chains);
+    for (SgVectorPairIteratorOf<GoChain> it(m_chains);
          it.NextPair(test1, test2);)
     {
         if (Has2ConnForChains(test1, test2))
@@ -682,7 +679,7 @@ void GoRegion::Write(std::ostream& stream) const
     WriteID(stream);
     stream << ", "  << Points().Size()
            << " Points\nBlocks:" ;
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
     {
         (*it)->WriteID(stream);
         if ((*it)->ContainsHealthy(this))
@@ -690,13 +687,13 @@ void GoRegion::Write(std::ostream& stream) const
     }
 
     stream << "\nInterior Blocks: ";
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
     {
         if (IsInteriorBlock(*it))
             (*it)->WriteID(stream);
     }
     stream << "\nChains: ";
-    for (SgListIteratorOf<GoChain> it(m_chains); it; ++it)
+    for (SgVectorIteratorOf<GoChain> it(m_chains); it; ++it)
     {
         (*it)->WriteID(stream);
         if ((*it)->ContainsHealthy(this))
@@ -1089,7 +1086,7 @@ bool GoRegion::ProtectedCuts(const GoBoard& board) const
     SgPointSet allCuts;
     const int size = board.Size();
     GoBlock* block1, *block2;
-    for (SgListPairIteratorOf<GoBlock> it(m_blocks);
+    for (SgVectorPairIteratorOf<GoBlock> it(m_blocks);
          it.NextPair(block1, block2);)
     {
         SgPointSet lib1(block1->Stones().Border(size));
@@ -1116,7 +1113,7 @@ void GoRegion::FindBlocks(const GoRegionBoard& ra)
     const int size = m_bd.Size();
     SgPointSet area(Points().Border(size));
 
-    for (SgListIteratorOf<GoBlock> it(ra.AllBlocks(Color())); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(ra.AllBlocks(Color())); it; ++it)
     {
         if ((*it)->Stones().Overlaps(area))
             m_blocks.Append(*it);
@@ -1127,23 +1124,21 @@ void GoRegion::FindBlocks(const GoRegionBoard& ra)
 SgPointSet GoRegion::BlocksPoints() const
 {
     SgPointSet points;
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
         points |= (*it)->Stones();
     return points;
 }
 
-void GoRegion::SetBlocks(const SgListOf<GoBlock>& blocks)
+void GoRegion::SetBlocks(const SgVectorOf<GoBlock>& blocks)
 {
     SG_ASSERT(m_blocks.IsEmpty());
     SG_ASSERT(! blocks.IsEmpty());
     const int size = m_bd.Size();
     SgPointSet area(Points().Border(size));
-    for (SgListIteratorOf<GoBlock> it(blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(blocks); it; ++it)
     {
         if ((*it)->Stones().Overlaps(area))
-        {
-            m_blocks.Append(*it);
-        }
+            m_blocks.PushBack(*it);
     }
     m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
 }
@@ -1153,7 +1148,7 @@ void GoRegion::FindChains(const GoRegionBoard& ra)
     SG_ASSERT(m_chains.IsEmpty());
     const int size = m_bd.Size();
     SgPointSet area(Points().Border(size));
-    for (SgListIteratorOf<GoChain> it(ra.AllChains(Color())); it; ++it)
+    for (SgVectorIteratorOf<GoChain> it(ra.AllChains(Color())); it; ++it)
     {
         if ((*it)->Stones().Overlaps(area))
             m_chains.Append(*it);
@@ -1161,18 +1156,18 @@ void GoRegion::FindChains(const GoRegionBoard& ra)
     m_computedFlags.set(GO_REGION_COMPUTED_CHAINS);
 }
 
-bool GoRegion::IsSurrounded(const SgListOf<GoBlock>& blocks) const
+bool GoRegion::IsSurrounded(const SgVectorOf<GoBlock>& blocks) const
 {
     const int size = m_bd.Size();
     SgPointSet adj(Points().Border(size));
-    for (SgListIteratorOf<GoBlock> it(blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(blocks); it; ++it)
         adj -= (*it)->Stones();
     return adj.IsEmpty();
 }
 
-bool GoRegion::HealthyForSomeBlock(const SgListOf<GoBlock>& blocks) const
+bool GoRegion::HealthyForSomeBlock(const SgVectorOf<GoBlock>& blocks) const
 {
-    for (SgListIteratorOf<GoBlock> it(blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(blocks); it; ++it)
         if ((*it)->ContainsHealthy(this))
             /* */ return true; /* */
     return false;
@@ -1180,7 +1175,7 @@ bool GoRegion::HealthyForSomeBlock(const SgListOf<GoBlock>& blocks) const
 
 bool GoRegion::SomeBlockIsSafe() const
 {
-    for (SgListIteratorOf<GoBlock> it(Blocks()); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(Blocks()); it; ++it)
         if ((*it)->IsSafe())
             return true;
     return false;
@@ -1188,7 +1183,7 @@ bool GoRegion::SomeBlockIsSafe() const
 
 bool GoRegion::AllBlockIsSafe() const
 {
-    for (SgListIteratorOf<GoBlock> it(Blocks()); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(Blocks()); it; ++it)
         if (!(*it)->IsSafe())
             return false;
     return true;
@@ -1207,7 +1202,7 @@ void GoRegion::CheckConsistency() const
     SG_ASSERT(Points().Border(m_bd.Size()).SubsetOf(m_bd.All(Color())));
     SG_ASSERT(Points().IsConnected());
     SgPointSet blockPts;
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
     {
         SG_ASSERT(AdjacentToBlock((*it)->Anchor()));
         blockPts |= (*it)->Stones();
@@ -1224,9 +1219,9 @@ void GoRegion::RemoveBlock(const GoBlock* b)
     ResetNonBlockFlags();
 }
 
-bool GoRegion::AdjacentToSomeBlock(const SgList<SgPoint>& anchors) const
+bool GoRegion::AdjacentToSomeBlock(const SgVector<SgPoint>& anchors) const
 {
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
     {
         if (anchors.Contains((*it)->Anchor()))
             /* */ return true; /* */
@@ -1236,7 +1231,7 @@ bool GoRegion::AdjacentToSomeBlock(const SgList<SgPoint>& anchors) const
 
 bool GoRegion::AdjacentToBlock(SgPoint anchor) const
 {
-    for (SgListIteratorOf<GoBlock> it(m_blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
     {
         if ((*it)->Anchor() == anchor)
             /* */ return true; /* */

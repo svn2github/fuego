@@ -19,10 +19,10 @@ namespace {
 const bool DEBUG_MERGE_CHAINS = false;
 const bool DEBUG_SAFETY_SOLVER = false;
 
-bool HaveSharedUnsafe(const SgListOf<GoBlock>& list1,
-                      const SgListOf<GoBlock>& list2)
+bool HaveSharedUnsafe(const SgVectorOf<GoBlock>& list1,
+                      const SgVectorOf<GoBlock>& list2)
 {
-    for (SgListIteratorOf<GoBlock> it(list1); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(list1); it; ++it)
         if (! (*it)->IsSafe() && list2.Contains(*it))
             return true;
     return false;
@@ -35,7 +35,8 @@ void GoSafetySolver::FindHealthy()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion>
+             it(Regions()->AllRegions(color)); it; ++it)
             (*it)->ComputeFlag(GO_REGION_STATIC_1VITAL);
     }
    
@@ -46,24 +47,25 @@ void GoSafetySolver::FindHealthy()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion>
+             it(Regions()->AllRegions(color)); it; ++it)
         {
             GoRegion* r = *it;
-            for (SgListIteratorOf<GoChain> it2(r->Chains()); it2; ++it2)
+            for (SgVectorIteratorOf<GoChain> it2(r->Chains()); it2; ++it2)
             {
                 if (RegionHealthyForBlock(*r, **it2)) // virtual call
                     (*it2)->AddHealthy(r);
 }   }   }   }
 
-void GoSafetySolver::FindClosure(SgListOf<GoBlock>* blocks) const
+void GoSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
 {
-    SgListOf<GoBlock> toTest(*blocks);
+    SgVectorOf<GoBlock> toTest(*blocks);
     while (toTest.NonEmpty())
     {
         const GoBlock* b = toTest.Pop();
-        for (SgListIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
         {   GoRegion* r = *it;
-            for (SgListIteratorOf<GoChain> it(r->Chains()); it; ++it)
+            for (SgVectorIteratorOf<GoChain> it(r->Chains()); it; ++it)
             {   GoBlock* b2 = *it;
                 if (! blocks->Contains(b2) && b2->ContainsHealthy(r))
                 {
@@ -71,17 +73,18 @@ void GoSafetySolver::FindClosure(SgListOf<GoBlock>* blocks) const
                     toTest.Append(b2);
 }   }   }   }   }
 
-void GoSafetySolver::FindTestSets(SgListOf<SgListOf<GoBlock> >* sets,
+void GoSafetySolver::FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
                                   SgBlackWhite color) const
 {
     SG_ASSERT(sets->IsEmpty());
-    SgListOf<GoBlock> doneSoFar;
-    for (SgListIteratorOf<GoChain> it(AllChains(color)); it; ++it)
+    SgVectorOf<GoBlock> doneSoFar;
+    for (SgVectorIteratorOf<GoChain>
+         it(Regions()->AllChains(color)); it; ++it)
     {
         GoBlock* block = *it;
         if (! doneSoFar.Contains(block))
         {
-            SgListOf<GoBlock>* blocks = new SgListOf<GoBlock>;
+            SgVectorOf<GoBlock>* blocks = new SgVectorOf<GoBlock>;
             blocks->Append(block);
             
             FindClosure(blocks);
@@ -111,7 +114,8 @@ void GoSafetySolver::Find2VitalAreas(SgBWSet* safe)
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion>
+             it(Regions()->AllRegions(color)); it; ++it)
             if (   (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
                 && (*it)->Points().Disjoint((*safe)[SG_WHITE])
                )
@@ -134,7 +138,8 @@ void GoSafetySolver::FindSurroundedSafeAreas(SgBWSet* safe,
     {
         change = false;
         SgPointSet anySafe(safe->Both());
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion>
+             it(Regions()->AllRegions(color)); it; ++it)
         {
             GoRegion* r = *it;
             if (   ! r->GetFlag(GO_REGION_SAFE)
@@ -163,7 +168,8 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
                                   const SgPointSet& anySafe,
                                   const GoRegion* r1)
 {
-    for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+    for (SgVectorIteratorOf<GoRegion>
+         it(Regions()->AllRegions(color)); it; ++it)
     {
         GoRegion* r2 = *it;
         if (   r2 != r1
@@ -194,8 +200,10 @@ void GoSafetySolver::FindSurroundedRegionPairs(SgBWSet* safe,
     {
         change = false;
         SgPointSet anySafe(safe->Both());
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
-        {   GoRegion* r1 = *it;
+        for (SgVectorIteratorOf<GoRegion>
+             it(Regions()->AllRegions(color)); it; ++it)
+        {
+            GoRegion* r1 = *it;
             if (   ! r1->GetFlag(GO_REGION_SAFE)
                 && r1->SomeBlockIsSafe()
                 && ! r1->Points().Overlaps(anySafe)
@@ -260,14 +268,15 @@ void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
     GoChain* m = new GoChain(c1, c2, c);
 
     SgBlackWhite color = c1->Color();
-    bool found = AllChains(color).Exclude(c1);
+    bool found = Regions()->AllChains(color).Exclude(c1);
     SG_ASSERT(found);
-    found = AllChains(color).Exclude(c2);
+    found = Regions()->AllChains(color).Exclude(c2);
     SG_ASSERT(found);
-    AllChains(color).Include(m);
-    SG_ASSERT(AllChains(color).UniqueElements());
+    Regions()->AllChains(color).Include(m);
+    SG_ASSERT(Regions()->AllChains(color).UniqueElements());
 
-    for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+    for (SgVectorIteratorOf<GoRegion>
+         it(Regions()->AllRegions(color)); it; ++it)
     {
         GoRegion* r = *it;
         bool replace1 = r->ReplaceChain(c1, m);
@@ -307,7 +316,8 @@ void GoSafetySolver::GenBlocksRegions()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> 
+             it(Regions()->AllRegions(color)); it; ++it)
         {
             GoRegion* r = *it;
             r->ComputeFlag(GO_REGION_STATIC_1VITAL);
@@ -316,7 +326,8 @@ void GoSafetySolver::GenBlocksRegions()
         bool changed = true;
         while (changed)
         {   changed = false;
-            for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+            for (SgVectorIteratorOf<GoRegion> 
+                 it(Regions()->AllRegions(color)); it; ++it)
             {   GoRegion* r = *it;
                 if (   r->GetFlag(GO_REGION_STATIC_1VC)
                     && r->Chains().IsLength(2)

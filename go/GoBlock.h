@@ -12,8 +12,8 @@
 #include "GoBoardUtil.h"
 #include "SgBlackWhite.h"
 #include "SgDebug.h"
-#include "SgList.h"
 #include "SgPoint.h"
+#include "SgVector.h"
 
 class GoRegion;
 
@@ -160,7 +160,7 @@ public:
     }
 
     /** list of healthy regions */
-    const SgListOf<GoRegion>& Healthy() const
+    const SgVectorOf<GoRegion>& Healthy() const
     {
         return m_healthy;
     }
@@ -170,7 +170,7 @@ public:
 
 protected:
     /** list of healthy regions */
-    SgListOf<GoRegion> m_healthy;
+    SgVectorOf<GoRegion> m_healthy;
 
     /** does block have one eye? */
     bool m_has1Eye;
@@ -182,7 +182,7 @@ protected:
         Stones is set to the union of the merged chains.
     */
     GoBlock(const GoBlock* b, const SgPointSet& stones,
-           const SgListOf<GoRegion>& healthy)
+           const SgVectorOf<GoRegion>& healthy)
         : m_healthy(healthy),
           m_has1Eye(false),
           m_bd(b->m_bd),

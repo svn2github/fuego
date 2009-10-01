@@ -135,46 +135,6 @@ GoPointList GoBoardUtil::AdjacentStones(const GoBoard& bd, SgPoint point)
     return result;
 }
 
-void GoBoardUtil::AdjacentStones(const GoBoard& bd, SgPoint point,
-                                 SgList<SgPoint>* stones)
-{
-    SG_ASSERT(stones);
-    SG_ASSERT(bd.IsValidPoint(point));
-    SG_ASSERT(bd.Occupied(point));
-    const SgBlackWhite other = SgOppBW(bd.GetStone(point));
-    SgPoint a[SG_MAXPOINT];
-    int n = 0;
-    SgMarker& mark = bd.m_userMarker;
-    SgReserveMarker reserve(mark);
-    SG_UNUSED(reserve);
-    mark.Clear();
-    for (GoBoard::StoneIterator it(bd, point); it; ++it)
-    {
-        if (bd.NumNeighbors(*it, other) > 0)
-        {
-            SgPoint p = *it;
-            if (bd.IsColor(p - SG_NS, other) && mark.NewMark(p - SG_NS))
-                a[n++] = p - SG_NS;
-            if (bd.IsColor(p - SG_WE, other) && mark.NewMark(p - SG_WE))
-                a[n++] = p - SG_WE;
-            if (bd.IsColor(p + SG_WE, other) && mark.NewMark(p + SG_WE))
-                a[n++] = p + SG_WE;
-            if (bd.IsColor(p + SG_NS, other) && mark.NewMark(p + SG_NS))
-                a[n++] = p + SG_NS;
-        }
-    };
-    stones->SetTo(a, n);
-}
-
-void GoBoardUtil::AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
-                                 SgList<SgPoint>* blocks)
-{
-    SG_ASSERT(blocks);
-    SgPoint a[SG_MAXPOINT];
-    int n = bd.AdjacentBlocks(p, maxLib, a, SG_MAXPOINT);
-    blocks->SetTo(a, n);
-}
-
 void GoBoardUtil::AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
                                  SgVector<SgPoint>* blocks)
 {
@@ -185,7 +145,7 @@ void GoBoardUtil::AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
 }
 
 void GoBoardUtil::BlocksAdjacentToPoints(const GoBoard& bd,
-                                         const SgList<SgPoint>& points,
+                                         const SgVector<SgPoint>& points,
                                          SgBlackWhite c,
                                          SgVector<SgPoint>* blocks)
 {
@@ -194,12 +154,12 @@ void GoBoardUtil::BlocksAdjacentToPoints(const GoBoard& bd,
     SgReserveMarker reserve(mark);
     SG_UNUSED(reserve);
     mark.Clear();
-    for (SgListIterator<SgPoint> it1(points); it1; ++it1)
+    for (SgVectorIterator<SgPoint> it1(points); it1; ++it1)
         mark.Include(*it1);
     // Add the anchor of each adjacent block to the list of blocks.
     SgPoint a[SG_MAXPOINT];
     int n = 0;
-    for (SgListIterator<SgPoint> it2(points); it2; ++it2)
+    for (SgVectorIterator<SgPoint> it2(points); it2; ++it2)
     {
         SgPoint p = *it2;
         if (bd.NumNeighbors(p, c) > 0)
@@ -384,7 +344,7 @@ void GoBoardUtil::ExpandToBlocks(const GoBoard& board, SgPointSet& pointSet)
 }
 
 void GoBoardUtil::DiagonalsOfColor(const GoBoard& bd, SgPoint p, int c,
-                                   SgList<SgPoint>* diagonals)
+                                   SgVector<SgPoint>* diagonals)
 {
     diagonals->Clear();
     if (bd.IsColor(p - SG_NS - SG_WE, c))
@@ -635,17 +595,6 @@ bool GoBoardUtil::PlayIfLegal(GoBoard& bd, SgPoint p, SgBlackWhite player)
     return true;
 }
 
-void GoBoardUtil::ReduceToAnchors(const GoBoard& bd, SgList<SgPoint>* stones)
-{
-    SG_ASSERT(stones);
-    SgList<SgPoint> result;
-    for (SgListIterator<SgPoint> stone(*stones); stone; ++stone)
-        if (bd.Occupied(*stone))
-            result.Insert(bd.Anchor(*stone));
-    // Trick to avoid list copy needed by: *stones = result.
-    stones->SwapWith(&result);
-}
-
 void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
                                   SgVector<SgPoint>* stones)
 {
@@ -654,16 +603,15 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
     for (SgVectorIterator<SgPoint> stone(*stones); stone; ++stone)
         if (bd.Occupied(*stone))
             result.Insert(bd.Anchor(*stone));
-    // Trick to avoid copy needed by: *stones = result.
     stones->SwapWith(&result);
 }
 
 void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
-                                  const SgList<SgPoint>& stones,
+                                  const SgVector<SgPoint>& stones,
                                   SgSList<SgPoint,SG_MAXPOINT>& anchors)
 {
     anchors.Clear();
-    for (SgListIterator<SgPoint> it(stones); it; ++it)
+    for (SgVectorIterator<SgPoint> it(stones); it; ++it)
         if (bd.Occupied(*it))
             anchors.Include(bd.Anchor(*it));
 }
@@ -700,8 +648,10 @@ float GoBoardUtil::ScoreSimpleEndPosition(const GoBoard& bd, float komi,
     return (score - komi);
 }
 
-void GoBoardUtil::SharedLiberties(const GoBoard& bd, SgPoint block1,
-                                  SgPoint block2, SgList<SgPoint>* sharedLibs)
+void GoBoardUtil::SharedLiberties(const GoBoard& bd,
+                                  SgPoint block1,
+                                  SgPoint block2,
+                                  SgVector<SgPoint>* sharedLibs)
 {
     SG_ASSERT(sharedLibs);
     SG_ASSERT(bd.Occupied(block1));
@@ -798,10 +748,10 @@ void GoBoardUtil::TestForChain(GoBoard& bd, SgPoint block, SgPoint block2,
 }
 
 bool GoBoardUtil::HasStonesOfBothColors(const GoBoard& bd,
-                                        const SgList<SgPoint>& stones)
+                                        const SgVector<SgPoint>& stones)
 {
     SgBWArray<bool> has(false);
-    for (SgListIterator<SgPoint> it(stones); it; ++it)
+    for (SgVectorIterator<SgPoint> it(stones); it; ++it)
     {
         if (bd.Occupied(*it))
         {

@@ -39,16 +39,16 @@ GoChain::GoChain(const GoChain* c1, const GoChain* c2,
 
 void GoChain::TestFor1Eye(const GoRegionBoard* ra)
 {
-    SgListOf<GoBlock> blocks;
+    SgVectorOf<GoBlock> blocks;
     GetBlocks(ra, &blocks);
-    for (SgListIteratorOf<GoBlock> it(blocks); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(blocks); it; ++it)
         if ((*it)->Has1Eye())
         {
             m_has1Eye = true;
             /* */ return; /* */
         }
 
-    for (SgListIteratorOf<GoRegion> it(ra->AllRegions(Color())); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(ra->AllRegions(Color())); it; ++it)
         if ((*it)->GetFlag(GO_REGION_1VC) && (*it)->Chains().Contains(this))
         {
             m_has1Eye = true;
@@ -58,12 +58,19 @@ void GoChain::TestFor1Eye(const GoRegionBoard* ra)
     m_has1Eye = false; 
 }
 
+void GoChain::FreeChainConditions()
+{
+    for (SgVectorIteratorOf<GoChainCondition> it(m_chainConditions); it; ++it)
+        delete *it;
+    m_chainConditions.Clear();
+}
+
 void GoChain::GetBlocks(const GoRegionBoard* ra, 
-                        SgListOf<GoBlock>* blocks) const
+                        SgVectorOf<GoBlock>* blocks) const
 {
     SgBlackWhite color = Color();
     SgPointSet chainPts = Stones();
-    for (SgListIteratorOf<GoBlock> it(ra->AllBlocks(color)); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(ra->AllBlocks(color)); it; ++it)
         if (chainPts.Contains((*it)->Anchor()))
             blocks->Append(*it);
 }
@@ -88,7 +95,7 @@ void GoChain::Write(std::ostream& stream) const
 {
     GoBlock::Write(stream);
     stream << "Chain conditions: ";
-    for (SgListIteratorOf<GoChainCondition> it(ChainConditions()); it; ++it)
+    for (SgVectorIteratorOf<GoChainCondition> it(ChainConditions()); it; ++it)
         stream << **it;
     if (ChainConditions().IsEmpty())
         stream << "none";
@@ -121,10 +128,10 @@ bool GoChainCondition::Overlaps(const GoChainCondition& condition) const
           || m_lib2 == condition.m_lib2;
 }
 
-bool GoChainCondition::Overlaps(const SgListOf<GoChainCondition>& conditions)
+bool GoChainCondition::Overlaps(const SgVectorOf<GoChainCondition>& conditions)
     const
 {
-    for (SgListIteratorOf<GoChainCondition> it(conditions); it; ++it)
+    for (SgVectorIteratorOf<GoChainCondition> it(conditions); it; ++it)
     {
         if (Overlaps(**it))
             /* */ return true; /* */

@@ -16,10 +16,9 @@
 #include "SgNode.h"
 
 #include <sstream>
-#include "SgList.h"
-#include "SgListUtility.h"
 #include "SgPointSet.h"
 #include "SgProp.h"
+#include "SgVector.h"
 
 using namespace std;
 
@@ -129,25 +128,12 @@ void SgNode::LinkWithBrother(SgNode* node)
     node->m_brother = m_brother;
 }
 
-SgList<SgPoint> SgNode::ListProp(SgPropID prop) const
+SgVector<SgPoint> SgNode::VectorProp(SgPropID prop) const
 {
     SgPropPointList* lp = dynamic_cast<SgPropPointList*>(Get(prop));
     if (lp)
         return lp->Value();
-    return SgList<SgPoint>();
-}
-
-SgVector<SgPoint> SgNode::VectorProp(SgPropID prop) const
-{
-    return SgListUtility::ListToVector(ListProp(prop));
-}
-
-SgList<void*> SgNode::VoidListProp(SgPropID prop) const
-{
-    SgPropVoidList* lp = dynamic_cast<SgPropVoidList*>(Get(prop));
-    if (lp)
-        return lp->Value();
-    return SgList<void*>();
+    return SgVector<SgPoint>();
 }
 
 int SgNode::NumSons() const
@@ -523,11 +509,11 @@ SgNode* SgNode::NewRightMostSon()
         return NewLeftMostSon();
 }
 
-SgNode* SgNode::LinkTrees(const SgListOf<SgNode>& roots)
+SgNode* SgNode::LinkTrees(const SgVectorOf<SgNode>& roots)
 {
     SgNode* super = new SgNode();
     SgNode* previous = 0;
-    for (SgListIteratorOf<SgNode> iter(roots); iter; ++iter)
+    for (SgVectorIteratorOf<SgNode> iter(roots); iter; ++iter)
     {
         SgNode* root = *iter;
         SG_ASSERT(! root->HasFather());
@@ -670,18 +656,6 @@ void SgNode::SetStringProp(SgPropID id, const string& value)
 
 void SgNode::SetListProp(SgPropID id, const SgVector<SgPoint>& value)
 {
-    SetListProp(id, SgListUtility::VectorToList(value));
-}
-
-void SgNode::SetListProp(SgPropID id, const SgPointSet& value)
-{
-    SgList<SgPoint> valueList;
-    value.ToList(&valueList);
-    SetListProp(id, valueList);
-}
-
-void SgNode::SetListProp(SgPropID id, const SgList<SgPoint>& value)
-{
     SgPropPointList* prop = dynamic_cast<SgPropPointList*>(Get(id));
     if (prop)
         prop->SetValue(value);
@@ -693,17 +667,11 @@ void SgNode::SetListProp(SgPropID id, const SgList<SgPoint>& value)
     }
 }
 
-void SgNode::SetVoidListProp(SgPropID id, const SgList<void*>& value)
+void SgNode::SetListProp(SgPropID id, const SgPointSet& value)
 {
-    SgPropVoidList* prop = dynamic_cast<SgPropVoidList*>(Get(id));
-    if (prop)
-        prop->SetValue(value);
-    else
-    {
-        prop = static_cast<SgPropVoidList*>(SgProp::CreateProperty(id));
-        prop->SetValue(value);
-        Add(prop);
-    }
+    SgVector<SgPoint> valueList;
+    value.ToVector(&valueList);
+    SetListProp(id, valueList);
 }
 
 void SgNode::CopyAllPropsFrom(const SgNode& sourceNode)

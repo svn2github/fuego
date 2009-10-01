@@ -107,7 +107,7 @@ namespace GoEyeUtil
 
     /** As IsSinglePointEye2, but specifying points assumed to be eyes. */
     bool IsSinglePointEye2(const GoBoard& bd, SgPoint p,
-                           SgBlackWhite c, SgList<SgPoint>& eyes);
+                           SgBlackWhite c, SgVector<SgPoint>& eyes);
 
     /** p is in a 2 point eye surrounded by a single chain */
     template<class BOARD>

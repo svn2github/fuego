@@ -55,10 +55,10 @@ protected:
     virtual void GenBlocksRegions();
 
     /** Like @see GoStaticSafetySolver::FindClosure, but uses GoChain's */
-    virtual void FindClosure(SgListOf<GoBlock>* blocks) const;
+    virtual void FindClosure(SgVectorOf<GoBlock>* blocks) const;
 
     /** Like @see GoStaticSafetySolver::FindTestSets, but uses GoChain's */
-    virtual void FindTestSets(SgListOf<SgListOf<GoBlock> >* sets,
+    virtual void FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
                               SgBlackWhite color) const;
 
     /** static test if r is 2-vital. If yes add to safe set */

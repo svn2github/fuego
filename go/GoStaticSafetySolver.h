@@ -31,15 +31,6 @@ public:
     /** @name Accessors */
     // @{
 
-    /** See GoBoard::All */
-    const SgPointSet& All(SgBlackWhite color) const;
-
-    /** See GoBoard::AllEmpty */
-    const SgPointSet& AllEmpty() const;
-
-    /** See GoBoard::AllPoints */
-    const SgPointSet& AllPoints() const;
-
     /** our board */
     const GoBoard& Board() const;
 
@@ -55,27 +46,6 @@ public:
     /** our regions */
     const GoRegionBoard* Regions() const;
 
-    /** See GoRegionBoard::AllBlocks */
-    SgListOf<GoBlock>& AllBlocks(SgBlackWhite color);
-
-    /** See GoRegionBoard::AllBlocks */
-    const SgListOf<GoBlock>& AllBlocks(SgBlackWhite color) const;
-
-    /** See GoRegionBoard::AllChains */
-    SgListOf<GoChain>& AllChains(SgBlackWhite color);
-
-    /** See GoRegionBoard::AllChains */
-    const SgListOf<GoChain>& AllChains(SgBlackWhite color) const;
-
-    /** See GoRegionBoard::AllRegions */
-    SgListOf<GoRegion>& AllRegions(SgBlackWhite color);
-
-    /** See GoRegionBoard::AllRegions */
-    const SgListOf<GoRegion>& AllRegions(SgBlackWhite color) const;
-
-    /** See GoRegionBoard::GetBlock */
-    GoBlock* GetBlock(const SgPointSet& boundary, SgBlackWhite color) const;
-
     // @} // @name
 
 protected:
@@ -84,7 +54,7 @@ protected:
     GoRegionBoard* Regions();
 
     /** Main step of Benson's algorithm */
-    virtual void FindTestSets(SgListOf<SgListOf<GoBlock> >* sets,
+    virtual void FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
                               SgBlackWhite color) const;
 
     /** Compute closure of blocks set for Benson's algorithm.
@@ -92,7 +62,7 @@ protected:
         regions are in set.
         see [Benson] for explanation.
     */
-    virtual void FindClosure(SgListOf<GoBlock>* blocks) const;
+    virtual void FindClosure(SgVectorOf<GoBlock>* blocks) const;
 
     /** Compute all GoBlock's and GoRegion's on board*/
     virtual void GenBlocksRegions();
@@ -116,12 +86,12 @@ protected:
         A region provides one sure liberty if it is healthy and its
         boundary consists only of blocks in the list.
     */
-    void TestAlive(SgListOf<GoBlock>* blocks, SgBWSet* safe,
+    void TestAlive(SgVectorOf<GoBlock>* blocks, SgBWSet* safe,
                    SgBlackWhite color);
 
     /** Reduce regions: keep only if completely surrounded by blocks */
-    void TestAdjacent(SgListOf<GoRegion>* regions,
-                      const SgListOf<GoBlock>& blocks) const;
+    void TestAdjacent(SgVectorOf<GoRegion>* regions,
+                      const SgVectorOf<GoBlock>& blocks) const;
 
 private:
     /** The board we are computing on */
@@ -140,64 +110,10 @@ private:
     GoStaticSafetySolver& operator=(const GoStaticSafetySolver&);
 };
 
-inline const SgPointSet& GoStaticSafetySolver::All(SgBlackWhite color) const
-{
-    return m_board.All(color);
-}
-
-inline SgListOf<GoBlock>& GoStaticSafetySolver::AllBlocks(SgBlackWhite color)
-{
-    return Regions()->AllBlocks(color);
-}
-
-inline const SgListOf<GoBlock>&
-GoStaticSafetySolver::AllBlocks(SgBlackWhite color) const
-{
-    return Regions()->AllBlocks(color);
-}
-
-inline SgListOf<GoChain>& GoStaticSafetySolver::AllChains(SgBlackWhite color)
-{
-    return Regions()->AllChains(color);
-}
-
-inline const SgListOf<GoChain>&
-GoStaticSafetySolver::AllChains(SgBlackWhite color) const
-{
-    return Regions()->AllChains(color);
-}
-
-inline const SgPointSet& GoStaticSafetySolver::AllEmpty() const
-{
-    return m_board.AllEmpty();
-}
-
-inline SgListOf<GoRegion>&
-GoStaticSafetySolver::AllRegions(SgBlackWhite color)
-{
-    return Regions()->AllRegions(color);
-}
-
-inline const SgListOf<GoRegion>&
-GoStaticSafetySolver::AllRegions(SgBlackWhite color) const
-{
-    return Regions()->AllRegions(color);
-}
-
-inline const SgPointSet& GoStaticSafetySolver::AllPoints() const
-{
-    return m_board.AllPoints();
-}
 
 inline const GoBoard& GoStaticSafetySolver::Board() const
 {
     return m_board;
-}
-
-inline GoBlock* GoStaticSafetySolver::GetBlock(const SgPointSet& boundary,
-                                               SgBlackWhite color) const
-{
-    return Regions()->GetBlock(boundary, color);
 }
 
 inline GoRegionBoard* GoStaticSafetySolver::Regions()

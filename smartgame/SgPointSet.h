@@ -13,7 +13,6 @@
 #include <iosfwd>
 #include <memory>
 #include "SgArray.h"
-#include "SgList.h"
 #include "SgPoint.h"
 #include "SgRect.h"
 #include "SgVector.h"
@@ -31,8 +30,7 @@ public:
 
     ~SgPointSet();
 
-    explicit SgPointSet(const SgList<SgPoint>& list);
-    explicit SgPointSet(const SgVector<SgPoint>& list);
+    explicit SgPointSet(const SgVector<SgPoint>& vector);
 
     SgPointSet& operator-=(const SgPointSet& other);
 
@@ -125,7 +123,7 @@ public:
     
     SgPointSet& Exclude(SgPoint p);
 
-    SgPointSet& Exclude(const SgList<SgPoint>& list);
+    SgPointSet& Exclude(const SgVector<SgPoint>& vector);
 
     /** Include 4-neighbor points in set */
     void Grow(int boardSize);
@@ -137,8 +135,6 @@ public:
     void Grow8(int boardSize);
 
     SgPointSet& Include(SgPoint p);
-
-    SgPointSet& Include(const SgList<SgPoint>& list);
 
     /** Whether set is connected or not.
         @return True if connected or set is empty.
@@ -176,8 +172,6 @@ public:
     void Swap(SgPointSet& other) throw();
     
     SgPointSet& Toggle(SgPoint p);
-
-    void ToList(SgList<SgPoint>* list) const;
 
     void ToVector(SgVector<SgPoint>* vector) const;
 
@@ -368,20 +362,6 @@ inline bool SgPointSet::NonEmpty() const
     return ! IsEmpty();
 }
 
-inline SgPointSet& SgPointSet::Include(SgPoint p)
-{
-    SG_ASSERT_BOARDRANGE(p);
-    m_a.set(p);
-    return (*this);
-}
-
-inline SgPointSet& SgPointSet::Include(const SgList<SgPoint>& list)
-{
-    for (SgListIterator<SgPoint> iter(list); iter; ++iter)
-        Include(*iter);
-    return (*this);
-}
-
 inline SgPointSet& SgPointSet::Exclude(SgPoint p)
 {
     SG_ASSERT_BOARDRANGE(p);
@@ -389,10 +369,10 @@ inline SgPointSet& SgPointSet::Exclude(SgPoint p)
     return (*this);
 }
 
-inline SgPointSet& SgPointSet::Exclude(const SgList<SgPoint>& list)
+inline SgPointSet& SgPointSet::Include(SgPoint p)
 {
-    for (SgListIterator<SgPoint> iter(list); iter; ++iter)
-        Exclude(*iter);
+    SG_ASSERT_BOARDRANGE(p);
+    m_a.set(p);
     return (*this);
 }
 
@@ -548,13 +528,9 @@ class SgSimpleSet
 public:
     SgSimpleSet();
 
-    explicit SgSimpleSet(const SgList<SgPoint>& points);
-
     void Include(SgPoint p);
 
     void Exclude(SgPoint p);
-
-    void Include(const SgList<SgPoint>& points);
 
     bool Contains(SgPoint p) const;
 
@@ -565,8 +541,6 @@ public:
     bool NonEmpty() const;
 
     void GetPoints(SgPointSet* points) const;
-
-    void GetPoints(SgList<SgPoint>* points) const;
 
     bool NewMark(SgPoint p);
 
@@ -580,11 +554,6 @@ inline SgSimpleSet::SgSimpleSet()
     Clear();
 }
 
-inline SgSimpleSet::SgSimpleSet(const SgList<SgPoint>& points)
-{
-    Clear();
-    Include(points);
-}
 
 inline void SgSimpleSet::Include(SgPoint p)
 {
@@ -596,12 +565,6 @@ inline void SgSimpleSet::Exclude(SgPoint p)
 {
     SG_ASSERT_BOARDRANGE(p);
     m_mark[p] = false;
-}
-
-inline void SgSimpleSet::Include(const SgList<SgPoint>& points)
-{
-    for (SgListIterator<SgPoint> iter(points); iter; ++iter)
-        Include(*iter);
 }
 
 inline bool SgSimpleSet::Contains(SgPoint p) const
@@ -633,14 +596,6 @@ inline void SgSimpleSet::GetPoints(SgPointSet* points) const
     for (SgPoint p = 0; p < SG_MAXPOINT; ++p)
         if (Contains(p))
             points->Include(p);
-}
-
-inline void SgSimpleSet::GetPoints(SgList<SgPoint>* points) const
-{
-    points->Clear();
-    for (SgPoint p = 0; p < SG_MAXPOINT; ++p)
-        if (Contains(p))
-            points->Append(p);
 }
 
 inline bool SgSimpleSet::NewMark(SgPoint p)

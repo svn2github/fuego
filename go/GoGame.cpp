@@ -33,6 +33,25 @@ void AddStatisticsToNode(const SgSearchStatistics* stat, SgNode* node)
     node->Add(new SgPropInt(SG_PROP_MAX_DEPTH, stat->DepthReached()));
 }
 
+/** Append up to 4 handicap stones to '*stones', and reduce '*handicap'
+    by that amount.
+*/
+void AddHandicap(int size, int row, int col, int* handicap,
+                               SgVector<SgPoint>* stones)
+{
+    SG_ASSERT(2 <= *handicap);
+    stones->Append(SgPointUtil::Pt(size + 1 - col, row));
+    stones->Append(SgPointUtil::Pt(col, size + 1 - row));
+    if (2 < *handicap)
+        stones->Append(SgPointUtil::Pt(row, col));
+    if (3 < *handicap)
+        stones->Append(SgPointUtil::Pt(size + 1 - row, size + 1 - col));
+    if (*handicap < 4)
+        *handicap = 0;
+    else
+        *handicap -= 4;
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -58,21 +77,6 @@ GoGameRecord::~GoGameRecord()
         m_current->DeleteTree();
 }
 
-void GoGameRecord::AddHandicap(int size, int row, int col, int* handicap,
-                               SgList<SgPoint>* stones) const
-{
-    SG_ASSERT(2 <= *handicap);
-    stones->Append(SgPointUtil::Pt(size + 1 - col, row));
-    stones->Append(SgPointUtil::Pt(col, size + 1 - row));
-    if (2 < *handicap)
-        stones->Append(SgPointUtil::Pt(row, col));
-    if (3 < *handicap)
-        stones->Append(SgPointUtil::Pt(size + 1 - row, size + 1 - col));
-    if (*handicap < 4)
-        *handicap = 0;
-    else
-        *handicap -= 4;
-}
 
 SgNode* GoGameRecord::AddMove(SgMove move, SgBlackWhite player,
                               const SgSearchStatistics* stat)
@@ -293,7 +297,7 @@ void GoGameRecord::OnInitHandicap(const GoRules& rules, SgNode* root)
             {
                 int h = rules.Handicap();
                 int half = (m_board.Size()+1) / 2;
-                SgList<SgPoint> stones;
+                SgVector<SgPoint> stones;
                 if ((4 < h) && (h % 2 != 0))
                 {
                     stones.Append(SgPointUtil::Pt(half, half));

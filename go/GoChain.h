@@ -12,7 +12,7 @@
 #include "GoBoard.h"
 #include "SgBlackWhite.h"
 #include "SgPoint.h"
-#include "SgList.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ public:
     bool Overlaps(const GoChainCondition& condition) const;
     
     /** Is there a potential conflict between this and conditions? */
-    bool Overlaps(const SgListOf<GoChainCondition>& conditions) const;
+    bool Overlaps(const SgVectorOf<GoChainCondition>& conditions) const;
     
     /** Are liberties used? @todo make a base class without libs */
     bool UsesLibs() const {return m_type != GO_CHAIN_BY_SEARCH;}
@@ -115,6 +115,7 @@ public:
     /** Destructor */
     virtual ~GoChain()
     {
+        FreeChainConditions();
         ++s_free;
     }
 
@@ -143,18 +144,20 @@ public:
     const SgPointSet& FreeLiberties() const {return m_freeLiberties;}
 
     /** See m_chainConditions */
-    const SgListOf<GoChainCondition>& ChainConditions() const
+    const SgVectorOf<GoChainCondition>& ChainConditions() const
     {
         return m_chainConditions;
     }
     
     /** returns list of all blocks in chain */
     void GetBlocks(const GoRegionBoard* ra,
-                   SgListOf<GoBlock>* blocks) const;
+                   SgVectorOf<GoBlock>* blocks) const;
 
     /** class Finalization */
     static void Fini();
 private:
+    
+    void FreeChainConditions();
     
     /** Does the chain consist of a single block, or more than one?*/
     bool m_isSingleBlock;
@@ -163,7 +166,7 @@ private:
     SgPointSet m_freeLiberties; // .
     
     /** All conditions used to create chain */
-    SgOwnerListOf<GoChainCondition> m_chainConditions;
+    SgVectorOf<GoChainCondition> m_chainConditions;
     
     /** Used for debugging only */
     static int s_alloc, s_free;

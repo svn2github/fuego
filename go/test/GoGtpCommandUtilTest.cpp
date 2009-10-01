@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(GoGtpCommandUtilTest_GetHandicapStones)
             ostringstream buffer;
             buffer << "size=" << size << " n=" << n;
             string message = buffer.str();
-            SgList<SgPoint> stones;
+            SgVector<SgPoint> stones;
             bool didThrow = false;
             try
             {

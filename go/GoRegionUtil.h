@@ -8,11 +8,10 @@
 #define GO_REGIONUTIL_H
 
 #include "SgBlackWhite.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgPoint.h"
 
 class GoBoard;
-template<typename T> class SgList;
 class SgPointSet;
 
 //----------------------------------------------------------------------------
@@ -27,7 +26,7 @@ namespace GoRegionUtil
     /** Test if a point set is 2-vital for color */
     bool Has2SureLiberties(const GoBoard& board, const SgPointSet& pts,
                            SgBlackWhite color,
-                           const SgList<SgPoint>& boundaryAnchors);
+                           const SgVector<SgPoint>& boundaryAnchors);
 
     /** Test if pts has 2 IP or eyes.
         Has2IPorEyes is called after all interior points are 2conn proved.
@@ -36,7 +35,7 @@ namespace GoRegionUtil
     */
     bool Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
                       SgBlackWhite color,
-                      const SgList<SgPoint>& boundaryAnchors);
+                      const SgVector<SgPoint>& boundaryAnchors);
 
     /** Do pts belong to only one block?
         pts must be non-empty.
@@ -58,8 +57,8 @@ namespace GoRegionUtil
         some anchors may have changed by extending and/or merging of blocks.
     */
     void FindCurrentAnchors(const GoBoard& board,
-                            const SgList<SgPoint>& origAnchors,
-                            SgList<SgPoint>* currentAnchors);
+                            const SgVector<SgPoint>& origAnchors,
+                            SgVector<SgPoint>* currentAnchors);
 
 } // namespace GoRegionUtil
 

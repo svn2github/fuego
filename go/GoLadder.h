@@ -14,9 +14,9 @@
 #include "GoBoard.h"
 #include "SgBoardColor.h"
 #include "GoModBoard.h"
-#include "SgList.h"
 #include "SgPoint.h"
 #include "SgPointSet.h"
+#include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ public:
         for hunter.
     */
     int Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
-               SgList<SgPoint>* sequence, bool twoLibIsEscape = false);
+               SgVector<SgPoint>* sequence, bool twoLibIsEscape = false);
 
 private:
     /** Maximum number of moves in ladder.
@@ -77,23 +77,24 @@ private:
 
     bool BlockIsAdjToPrey(SgPoint p, int numAdj);
 
-    void MarkStonesAsPrey(SgPoint p, SgList<SgPoint>* stones = 0);
+    void MarkStonesAsPrey(SgPoint p, SgVector<SgPoint>* stones = 0);
 
     void FilterAdjacent(GoPointList& adjBlocks);
 
     int PlayHunterMove(int depth, SgPoint move, SgPoint lib1, SgPoint lib2,
-                       const GoPointList& adjBlk, SgList<SgPoint>* sequence);
+                       const GoPointList& adjBlk,
+                       SgVector<SgPoint>* sequence);
 
     int PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
-                     const GoPointList& adjBlk, SgList<SgPoint>* sequence);
+                     const GoPointList& adjBlk, SgVector<SgPoint>* sequence);
 
     bool IsSnapback(SgPoint prey);
 
     int PreyLadder(int depth, SgPoint lib1, const GoPointList& adjBlk,
-                   SgList<SgPoint>* sequence);
+                   SgVector<SgPoint>* sequence);
 
     int HunterLadder(int depth, int numLib, SgPoint lib1, SgPoint lib2,
-                     const GoPointList& adjBlk, SgList<SgPoint>* sequence);
+                     const GoPointList& adjBlk, SgVector<SgPoint>* sequence);
 
     void ReduceToBlocks(GoPointList& stones);
 };
@@ -112,7 +113,7 @@ namespace GoLadderUtil {
     back immediately (snapback), return that the prey cannot be captured.
 */
 bool Ladder(const GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
-            bool fTwoLibIsEscape = false, SgList<SgPoint>* sequence = 0);
+            bool fTwoLibIsEscape = false, SgVector<SgPoint>* sequence = 0);
 
 /** Return whether the block at 'prey' is captured, escaped, or unsettled
     with regards to capture in a ladder.

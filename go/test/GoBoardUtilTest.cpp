@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_1)
     setup.AddWhite(Pt(2, 2));
     setup.AddWhite(Pt(3, 2));
     GoBoard bd(19, setup);
-    SgList<SgPoint> blocks;
+    SgVector<SgPoint> blocks;
     AdjacentBlocks(bd, Pt(2, 1), 10, &blocks);
     BOOST_CHECK_EQUAL(blocks.Length(), 2);
     BOOST_CHECK(blocks.Contains(Pt(1, 2)));
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_2)
     setup.AddBlack(Pt(4, 1));
     setup.AddBlack(Pt(4, 2));
     GoBoard bd(19, setup);
-    SgList<SgPoint> blocks;
+    SgVector<SgPoint> blocks;
     AdjacentBlocks(bd, Pt(2, 1), 10, &blocks);
     BOOST_CHECK_EQUAL(blocks.Length(), 2);
     BOOST_CHECK(blocks.Contains(Pt(1, 2)));
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiagonalsOfColor)
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(1, 2));
     GoBoard bd(19, setup);
-    SgList<SgPoint> diags;
+    SgVector<SgPoint> diags;
     DiagonalsOfColor(bd, Pt(1, 1), SG_BLACK, &diags);
     BOOST_CHECK_EQUAL(diags.Length(), 0);
     DiagonalsOfColor(bd, Pt(1, 1), SG_WHITE, &diags);
@@ -236,7 +236,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
 
 
 /** Test GoBoardUtil::NeighborsOfColor (SgVector version) */
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgList)
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgVector)
 {
     GoSetup setup;
     setup.AddBlack(Pt(1, 1));
@@ -382,17 +382,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_ReduceToAnchors)
     BOOST_CHECK_EQUAL(black.Size(), 3);
     SgPointSet white = bd.All(SG_WHITE);
     BOOST_CHECK_EQUAL(white.Size(), 3);
-    
-    // SgList version
-    SgList<SgPoint> stones;
-    black.ToList(&stones);
-    GoBoardUtil::ReduceToAnchors(bd, &stones);
-    BOOST_CHECK_EQUAL(stones.Length(), 1);
-    stones.Clear();
-    white.ToList(&stones);
-    GoBoardUtil::ReduceToAnchors(bd, &stones);
-    BOOST_CHECK_EQUAL(stones.Length(), 2);
-    
+        
     // SgVector version
     {
     SgVector<SgPoint> stones;

@@ -315,7 +315,7 @@ void GoGtpEngine::CmdAllLegal(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgBlackWhite color = BlackWhiteArg(cmd, 0);
-    SgList<SgPoint> allLegal;
+    SgVector<SgPoint> allLegal;
     for (GoBoard::Iterator p(Board()); p; ++p)
         if (Board().IsLegal(*p, color))
             allLegal.Append(*p);
@@ -437,7 +437,7 @@ void GoGtpEngine::CmdFixedHandicap(GtpCommand& cmd)
 {
     int n = cmd.IntArg(0, 2);
     int size = Board().Size();
-    SgList<SgPoint> stones = GoGtpCommandUtil::GetHandicapStones(size, n);
+    SgVector<SgPoint> stones = GoGtpCommandUtil::GetHandicapStones(size, n);
     PlaceHandicap(stones);
 }
 
@@ -831,7 +831,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
     CheckBoardEmpty();
     int n = cmd.IntArg(0, 2);
     int size = Board().Size();
-    SgList<SgPoint> stones;
+    SgVector<SgPoint> stones;
     try
     {
         stones = GoGtpCommandUtil::GetHandicapStones(size, n);
@@ -850,7 +850,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
             stones = GoGtpCommandUtil::GetHandicapStones(size, 4);
         SgDebug() << "GoGtpEngine: Generating missing handicap\n";
         GoSetup setup;
-        for (SgListIterator<SgPoint> it(stones); it; ++it)
+        for (SgVectorIterator<SgPoint> it(stones); it; ++it)
             setup.AddBlack(*it);
         GoBoard& playerBd = m_player->Board();
         playerBd.Init(playerBd.Size(), setup);
@@ -919,7 +919,7 @@ void GoGtpEngine::CmdPointInfo(GtpCommand& cmd)
         << SgWriteLabel("Pos") << bd.Pos(p) << '\n';
     if (bd.Occupied(p))
     {
-        SgList<SgPoint> adjBlocks;
+        SgVector<SgPoint> adjBlocks;
         GoBoardUtil::AdjacentBlocks(bd, p, SG_MAXPOINT, &adjBlocks);
         cmd << "Block:\n"
             << SgWritePointList(adjBlocks, "AdjBlocks", true)
@@ -1050,7 +1050,7 @@ void GoGtpEngine::CmdSentinelFile(GtpCommand& cmd)
  */
 void GoGtpEngine::CmdSetFreeHandicap(GtpCommand& cmd)
 {
-    SgList<SgPoint> stones = PointListArg(cmd);
+    SgVector<SgPoint> stones = PointListArg(cmd);
     if (stones.RemoveDuplicates())
         throw GtpFailure("duplicate handicap stones not allowed");
     PlaceHandicap(stones);
@@ -1105,10 +1105,10 @@ void GoGtpEngine::CmdSetup(GtpCommand& cmd)
     SgPropAddStone* addWhite = new SgPropAddStone(SG_PROP_ADD_WHITE);
     for (SgSetIterator it(points[SG_BLACK]); it; ++it)
         if (bd.GetColor(*it) != SG_BLACK)
-            addBlack->Append(*it);
+            addBlack->PushBack(*it);
     for (SgSetIterator it(points[SG_WHITE]); it; ++it)
         if (bd.GetColor(*it) != SG_WHITE)
-            addWhite->Append(*it);
+            addWhite->PushBack(*it);
     GoGame& game = GetGame();
     SgNode* node = game.CurrentNode()->NewRightMostSon();
     node->Add(addBlack);
@@ -1345,7 +1345,7 @@ SgPoint GoGtpEngine::MoveArg(const GtpCommand& cmd, std::size_t number) const
     return GoGtpCommandUtil::MoveArg(cmd, number, Board());
 }
 
-void GoGtpEngine::PlaceHandicap(const SgList<SgPoint>& stones)
+void GoGtpEngine::PlaceHandicap(const SgVector<SgPoint>& stones)
 {
     CheckBoardEmpty();
     GoBoard& bd = Board();
@@ -1354,8 +1354,8 @@ void GoGtpEngine::PlaceHandicap(const SgList<SgPoint>& stones)
     if (node->HasSon())
         node = game.CurrentNode()->NewRightMostSon();
     SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
-    for (SgListIterator<SgPoint> it(stones); it; ++it)
-        addBlack->Append(*it);
+    for (SgVectorIterator<SgPoint> it(stones); it; ++it)
+        addBlack->PushBack(*it);
     node->Add(addBlack);
     SgPropInt* handicap = new SgPropInt(SG_PROP_HANDICAP, stones.Length());
     node->Add(handicap);
@@ -1395,13 +1395,13 @@ SgPoint GoGtpEngine::PointArg(const GtpCommand& cmd, std::size_t number) const
     return GoGtpCommandUtil::PointArg(cmd, number, Board());
 }
 
-SgList<SgPoint> GoGtpEngine::PointListArg(const GtpCommand& cmd,
+SgVector<SgPoint> GoGtpEngine::PointListArg(const GtpCommand& cmd,
                                           std::size_t number) const
 {
     return GoGtpCommandUtil::PointListArg(cmd, number, Board());
 }
 
-SgList<SgPoint> GoGtpEngine::PointListArg(const GtpCommand& cmd) const
+SgVector<SgPoint> GoGtpEngine::PointListArg(const GtpCommand& cmd) const
 {
     return GoGtpCommandUtil::PointListArg(cmd, Board());
 }

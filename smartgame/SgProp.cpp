@@ -15,8 +15,6 @@
 
 #include <iomanip>
 #include <sstream>
-#include "SgList.h"
-#include "SgListUtility.h"
 #include "SgRect.h"
 #include "SgUtil.h"
 #include "SgVector.h"
@@ -152,14 +150,14 @@ SgPropList::~SgPropList()
 
 void SgPropList::Clear()
 {
-    for (SgListIteratorOf<SgProp> iter(m_list); iter; ++iter)
+    for (SgVectorIteratorOf<SgProp> iter(m_list); iter; ++iter)
         delete *iter;
     m_list.Clear();
 }
 
 SgProp* SgPropList::Get(SgPropID id) const
 {
-    for (SgListIteratorOf<SgProp> iter(m_list); iter; ++iter)
+    for (SgVectorIteratorOf<SgProp> iter(m_list); iter; ++iter)
     {
         SgProp* prop = *iter;
         if (prop->MatchesID(id))
@@ -205,14 +203,14 @@ bool SgPropList::Remove(const SgProp* prop)
 
 void SgPropList::Remove(SgPropID id, const SgProp* protectProp)
 {
-    SgListOf<SgProp> toBeDeleted;
-    for (SgListIteratorOf<SgProp> iter(m_list); iter; ++iter)
+    SgVectorOf<SgProp> toBeDeleted;
+    for (SgVectorIteratorOf<SgProp> iter(m_list); iter; ++iter)
     {
         SgProp* prop = *iter;
         if (prop != protectProp && prop->MatchesID(id))
         {
             // Can't exclude while iterating over same list.
-            toBeDeleted.Append(prop);
+            toBeDeleted.PushBack(prop);
             delete prop;
         }
     }
@@ -240,7 +238,7 @@ bool SgPropList::AppendMoveAnnotation(string* s) const
 
 SgProp* SgPropList::GetPropContainingText(const string& findText) const
 {
-    for (SgListIteratorOf<SgProp> iter(m_list); iter; ++iter)
+    for (SgVectorIteratorOf<SgProp> iter(m_list); iter; ++iter)
     {
         SgProp* prop = *iter;
         if (prop->ContainsText(findText))
@@ -977,40 +975,10 @@ SgProp* SgPropMSec::Duplicate() const
 
 //----------------------------------------------------------------------------
 
-SgPropVoidList::~SgPropVoidList()
-{
-}
-
-SgProp* SgPropVoidList::Duplicate() const
-{
-    return new SgPropVoidList(m_id, m_list);
-}
-
-bool SgPropVoidList::ToString(std::vector<std::string>& values, int boardSize,
-                                  SgPropPointFmt fmt, int fileFormat) const
-{
-    SG_UNUSED(values);
-    SG_UNUSED(boardSize);
-    SG_UNUSED(fmt);
-    SG_UNUSED(fileFormat);
-    return false;
-}
-
-bool SgPropVoidList::FromString(const std::vector<std::string>& values,
-                                  int boardSize, SgPropPointFmt fmt)
-{
-    SG_UNUSED(values);
-    SG_UNUSED(boardSize);
-    SG_UNUSED(fmt);
-    return true;
-}
-
-//----------------------------------------------------------------------------
-
 SgPropPointList::SgPropPointList(SgPropID id,
                                 const SgVector<SgPoint>& vector)
     : SgProp(id),
-      m_list(SgListUtility::VectorToList(vector))
+      m_list(vector)
 {
 }
 
@@ -1031,7 +999,7 @@ bool SgPropPointList::ToString(std::vector<std::string>& values,
     if (Value().IsEmpty())
         return false;
     values.clear();
-    for (SgListIterator<SgPoint> it(Value()); it; ++it)
+    for (SgVectorIterator<SgPoint> it(Value()); it; ++it)
     {
         if (! SgIsSpecialMove(*it))
             values.push_back(PointToSgfString(*it, boardSize, fmt,
@@ -1058,7 +1026,7 @@ bool SgPropPointList::FromString(const std::vector<std::string>& values,
             {
                 SgRect rect(p1, p2);
                 for (SgRectIterator iter(rect); iter; ++iter)
-                    Value().Append(*iter);
+                    Value().PushBack(*iter);
             }
             else
             {
@@ -1071,7 +1039,7 @@ bool SgPropPointList::FromString(const std::vector<std::string>& values,
             SgPoint p = SgfStringToPoint(s, boardSize, fmt);
             if (InBoardRange(p) || p == SG_PASS)
                 // Pass needed for move sequence
-                Value().Append(p);
+                Value().PushBack(p);
             else
                 return false;
         }
@@ -1123,7 +1091,7 @@ SgPropTextList::SgPropTextList(SgPropID id, const SgVector<SgPoint>& points,
 {
     for (SgVectorIteratorOf<string> it(strings); it; ++it)
     {
-        m_strings.Append(new string(*(*it)));
+        m_strings.PushBack(new string(*(*it)));
     }
 }
 

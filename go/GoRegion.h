@@ -20,7 +20,7 @@
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeCount.h"
-#include "SgList.h"
+#include "SgVector.h"
 #include "SgIncrementalStack.h"
 #include "SgMiaiStrategy.h"
 #include "SgPointArray.h"
@@ -121,13 +121,13 @@ public:
     SgPointSet AllInsideLibs() const;
 
     /** Chains of region */
-    const SgListOf<GoChain>& Chains() const
+    const SgVectorOf<GoChain>& Chains() const
     {
         return m_chains;
     }
 
     /** Blocks of region */
-    const SgListOf<GoBlock>& Blocks() const
+    const SgVectorOf<GoBlock>& Blocks() const
     {
         return m_blocks;
     }
@@ -135,13 +135,13 @@ public:
     /** Blocks of region.
         Non const version used by GoRegionBoard.
     */
-    SgListOf<GoBlock>& BlocksNonConst()
+    SgVectorOf<GoBlock>& BlocksNonConst()
     {
         return m_blocks;
     }
 
     /** Interior blocks of region: all liberties are in m_points */
-    SgListOf<GoBlock> InteriorBlocks() const;
+    SgVectorOf<GoBlock> InteriorBlocks() const;
 
     /** Is block an interior block of this region? */
     bool IsInteriorBlock(const GoBlock* block) const;
@@ -240,10 +240,10 @@ public:
     bool Has2Conn() const;
 
     /** is this healthy for a block in list? */
-    bool HealthyForSomeBlock(const SgListOf<GoBlock>& blocks) const;
+    bool HealthyForSomeBlock(const SgVectorOf<GoBlock>& blocks) const;
 
     /** Is region completely surrounded by blocks? */
-    bool IsSurrounded(const SgListOf<GoBlock>& blocks) const;
+    bool IsSurrounded(const SgVectorOf<GoBlock>& blocks) const;
 
     /** did ExVital1Task have at least this search depth? */
     bool ComputedVitalForDepth(int depth) const;
@@ -258,7 +258,7 @@ public:
     bool AdjacentToBlock(SgPoint anchor) const;
 
     /** Is one of blocks given by anchors adjacent to region? */
-    bool AdjacentToSomeBlock(const SgList<SgPoint>& anchors) const;
+    bool AdjacentToSomeBlock(const SgVector<SgPoint>& anchors) const;
 
     /** For flat region: cuts not occupied is enough to make region 1-vital */
     bool Safe2Cuts(const GoBoard& board) const;
@@ -278,7 +278,7 @@ public:
     bool Has2SureLibs(SgMiaiStrategy* miaiStrategy) const;
 
     /** block liberties in this region */
-    void InsideLibs(const GoBlock* b, SgList<SgPoint>* libs) const;
+    void InsideLibs(const GoBlock* b, SgVector<SgPoint>* libs) const;
 
     /** Is a liberty of b in region? */
     bool HasBlockLibs(const GoBlock* b) const;
@@ -302,21 +302,21 @@ public:
         extension. Erik v.d.Werf's recursive extension to Find2ConnForAll.
     */
     bool Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
-                                 SgList<SgPoint>& usedLibs) const;
+                                 SgVector<SgPoint>& usedLibs) const;
 
     /** An IP divides a region into two eyes AND connects all surrounding
         blocks, this one defines that ip has to be adjancent to all interior
         points.
     */
-    bool Has2IPs(const SgList<SgPoint>& interiorEmpty, SgMiaiPair* ips) const;
+    bool Has2IPs(const SgVector<SgPoint>& interiorEmpty, SgMiaiPair* ips) const;
 
     /** whether there are 2 intersection points, doesn't have to be adjacent
         to all interior points.
     */
-    bool Has2IntersectionPoints(const SgList<SgPoint> usedLibs) const;
+    bool Has2IntersectionPoints(const SgVector<SgPoint>& usedLibs) const;
 
     /** Get all intersections points inside region */
-    void GetIPs(SgList<SgPoint>* ips) const;
+    void GetIPs(SgVector<SgPoint>* ips) const;
 
     /** Get all SgMiaiPairs that can divide the region. A dividing 
         SgMiaiPair has two adjacent points that are libs from the 
@@ -328,7 +328,7 @@ public:
     /** Compute joint liberties of all m_blocks. Since we need at least 2
         joint libs, we stop computing if we find that this is impossible.
     */
-    void JointLibs(SgList<SgPoint>* libs) const;
+    void JointLibs(SgVector<SgPoint>* libs) const;
 
     /** See ExEye::IsCorridor() */
     bool IsCorridor() const;
@@ -350,7 +350,7 @@ public:
     void FindBlocks(const GoRegionBoard& ra);
 
     /** Set blocks for this region from pre-found blocks list */
-    void SetBlocks(const SgListOf<GoBlock>& blocks);
+    void SetBlocks(const SgVectorOf<GoBlock>& blocks);
 
     /** Get chain of color in area.
             @todo There must be faster ways to do this.
@@ -391,10 +391,10 @@ private:
     SgBlackWhite m_color;
 
     /** Blocks of m_color adjacent to region. Some may be on inside */
-    SgListOf<GoBlock> m_blocks;
+    SgVectorOf<GoBlock> m_blocks;
 
     /** Chains of region */
-    SgListOf<GoChain> m_chains;  
+    SgVectorOf<GoChain> m_chains;  
 
     /** Number of eyes in region */
     GoEyeCount m_eyes;
@@ -440,7 +440,7 @@ private:
     /** compute at most maxNu empty points in the interior
         @todo does not test only for boundary block libs, but all libs.
     */
-    void InteriorEmpty(SgList<SgPoint>* interiorEmpty, int maxNu) const;
+    void InteriorEmpty(SgVector<SgPoint>* interiorEmpty, int maxNu) const;
 
 #ifndef NDEBUG
     /** debugging bookkeeping. */

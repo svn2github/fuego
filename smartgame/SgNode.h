@@ -66,15 +66,10 @@ public:
     /** Return a newly allocated copy of this node and its subtree. */
     SgNode* CopyTree() const;
 
-    /**  @todo: distinguish SgList<SgPoint>, SgList<int> etc. */
-    SgList<SgPoint> ListProp(SgPropID prop) const;
+    /**  @todo: distinguish SgVector<SgPoint>, SgVector<int> etc. */
+    // @todo add const& version when conversion is done.
+    // const SgVector<SgPoint>& VectorProp(SgPropID prop) const;
     SgVector<SgPoint> VectorProp(SgPropID prop) const;
-
-    /** Get a void pointer list property.
-        @deprecated Using void pointers is generally discouraged in C++.
-        This functionality is still used in lo/LoMath.
-    */
-    SgList<void*> VoidListProp(SgPropID prop) const;
 
     bool HasFather() const
     {
@@ -216,7 +211,7 @@ public:
     /** Add a new node and add all trees in 'roots' as subtrees of that
         node.
     */
-    static SgNode* LinkTrees(const SgListOf<SgNode>& roots);
+    static SgNode* LinkTrees(const SgVectorOf<SgNode>& roots);
 
     SgPropList& Props()
     {
@@ -310,15 +305,8 @@ public:
         Create such a property if it doesn't exist yet. The property must be
         of class SgPropPointList (or a derived class).
     */
-    void SetListProp(SgPropID id, const SgList<SgPoint>& value);
     void SetListProp(SgPropID id, const SgVector<SgPoint>& value);
     void SetListProp(SgPropID id, const SgPointSet& value);
-
-    /** Set a void pointer list property.
-        @deprecated Using void pointers is generally discouraged in C++.
-        This functionality is still used in lo/LoMath.
-    */
-    void SetVoidListProp(SgPropID id, const SgList<void*>& value);
 
     /** Add comment to existing SG_PROP_COMMENT of this node, or create a new
         SG_PROP_COMMENT with this text.

@@ -80,37 +80,37 @@ public:
     void OnUndoneMove();
 
     /** All GoBlock's of given color */
-    SgListOf<GoBlock>& AllBlocks(SgBlackWhite color)
+    SgVectorOf<GoBlock>& AllBlocks(SgBlackWhite color)
     {
         return m_allBlocks[color];
     }
 
     /** All GoBlock's of given color */
-    const SgListOf<GoBlock>& AllBlocks(SgBlackWhite color) const
+    const SgVectorOf<GoBlock>& AllBlocks(SgBlackWhite color) const
     {
         return m_allBlocks[color];
     }
 
     /** All GoChain's of given color */
-    SgListOf<GoChain>& AllChains(SgBlackWhite color)
+    SgVectorOf<GoChain>& AllChains(SgBlackWhite color)
     {
         return m_allChains[color];
     }
 
     /** All GoChain's of given color */
-    const SgListOf<GoChain>& AllChains(SgBlackWhite color) const
+    const SgVectorOf<GoChain>& AllChains(SgBlackWhite color) const
     {
         return m_allChains[color];
     }
 
     /** All GoRegion's of given color */
-    SgListOf<GoRegion>& AllRegions(SgBlackWhite color)
+    SgVectorOf<GoRegion>& AllRegions(SgBlackWhite color)
     {
         return m_allRegions[color];
     }
 
     /** All GoRegion's of given color */
-    const SgListOf<GoRegion>& AllRegions(SgBlackWhite color) const
+    const SgVectorOf<GoRegion>& AllRegions(SgBlackWhite color) const
     {
         return m_allRegions[color];
     }
@@ -182,19 +182,19 @@ public:
 
     /** Region of color in area */
     void RegionsAt(const SgPointSet& area, SgBlackWhite color,
-                            SgListOf<GoRegion>* regions) const;
+                            SgVectorOf<GoRegion>* regions) const;
 
     /** Region of color adjacent to points */
-    void AdjacentRegions(const SgList<SgPoint>& points, SgBlackWhite color,
-                            SgListOf<GoRegion>* regions) const;
+    void AdjacentRegions(const SgVector<SgPoint>& points, SgBlackWhite color,
+                            SgVectorOf<GoRegion>* regions) const;
 
     /** Return GoBlock's just captured on last move, before update.
         For incremental update.
         Can be called for any empty point.
         returns 0 if no previous block there.
     */
-    void PreviousBlocksAt(const SgList<SgPoint>& area, SgBlackWhite color,
-                            SgListOf<GoBlock>* captures) const;
+    void PreviousBlocksAt(const SgVector<SgPoint>& area, SgBlackWhite color,
+                            SgVectorOf<GoBlock>* captures) const;
 
     /** GoBlock at point p*/
     GoBlock* BlockAt(SgPoint p) const
@@ -265,7 +265,7 @@ private:
     void MergeAdjacentAndAddBlock(SgPoint move, SgBlackWhite capturedColor);
 
     /** Merge all regions and the captured area into new large region */
-    GoRegion* MergeAll(const SgListOf<GoRegion>& regions,
+    GoRegion* MergeAll(const SgVectorOf<GoRegion>& regions,
                       const SgPointSet& captured, SgBlackWhite color);
 
     // Undo move helpers
@@ -295,13 +295,13 @@ private:
     SgPointArray<GoBlock*> m_block;
 
     /** All blocks on board */
-    SgBWArray<SgListOf<GoBlock> > m_allBlocks;
+    SgBWArray<SgVectorOf<GoBlock> > m_allBlocks;
 
     /** All chains on board */
-    SgBWArray<SgListOf<GoChain> > m_allChains;
+    SgBWArray<SgVectorOf<GoChain> > m_allChains;
 
     /** All regions on board */
-    SgBWArray<SgListOf<GoRegion> > m_allRegions;
+    SgBWArray<SgVectorOf<GoRegion> > m_allRegions;
 
     /** Code for last time block and region information was computed */
     SgHashCode m_code;

@@ -9,8 +9,7 @@
 
 #include <iosfwd>
 #include <string>
-
-class SgPointSet;
+#include "SgPointSet.h"
 
 //----------------------------------------------------------------------------
 

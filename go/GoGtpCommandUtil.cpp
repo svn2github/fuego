@@ -77,9 +77,9 @@ SgPoint GoGtpCommandUtil::EmptyPointArg(const GtpCommand& cmd,
     return point;
 }
 
-SgList<SgPoint> GoGtpCommandUtil::GetHandicapStones(int size, int n)
+SgVector<SgPoint> GoGtpCommandUtil::GetHandicapStones(int size, int n)
 {
-    SgList<SgPoint> stones;
+    SgVector<SgPoint> stones;
     if (n == 0)
         return stones;
     // GTP locations are defined up to size 25, but SG_MAX_SIZE could be
@@ -182,13 +182,13 @@ SgPoint GoGtpCommandUtil::PointArg(const GtpCommand& cmd, std::size_t number,
     return p;
 }
 
-SgList<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
+SgVector<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
                                                std::size_t number,
                                                const GoBoard& board)
 {
-    SgList<SgPoint> result;
+    SgVector<SgPoint> result;
     for (size_t i = number; i < cmd.NuArg(); ++i)
-        result.Append(PointArg(cmd, i, board));
+        result.PushBack(PointArg(cmd, i, board));
     return result;
 }
 

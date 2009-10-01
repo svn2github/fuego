@@ -26,13 +26,6 @@ namespace SgListUtility
     /** Reverse order of elements in list */
     void Reverse(SgList<int>* list);
     
-    /** Utility function, as long as both SgList and SgVector used */
-    template<typename T>
-    void ListToVector(const SgList<T>& list, SgVector<T>& vec);
-    
-    template<typename T>
-    SgVector<T> ListToVector(const SgList<T>& list);
-
    /** Utility function, as long as both SgList and SgVector used */
     template<typename T>
     void VectorToList(const SgVector<T>& vec, SgList<T>& list);
@@ -56,23 +49,6 @@ namespace SgVectorUtility // @todo move to own file!!!
 }
 
 //----------------------------------------------------------------------------
-template<typename T>
-void SgListUtility::ListToVector(const SgList<T>& list, SgVector<T>& vec)
-{
-    SG_ASSERT(vec.IsEmpty());
-    for (SgListIterator<T> it(list); it; ++it)
-    {
-        vec.PushBack(*it);
-    }
-}
-
-template<typename T>
-SgVector<T> SgListUtility::ListToVector(const SgList<T>& list)
-{
-    SgVector<T> vec;
-    ListToVector(list, vec);
-    return vec;
-}
 
 template<typename T>
 void SgListUtility::VectorToList(const SgVector<T>& vec, SgList<T>& list)

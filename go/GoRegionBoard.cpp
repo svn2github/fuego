@@ -53,10 +53,10 @@ void GoRegionBoard::SetSafeFlags(const SgBWSet& safe)
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             if ((*it)->Points().Overlaps(safe[color]))
                 (*it)->SetToSafe();
-        for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
             if ((*it)->Stones().Overlaps(safe[color]))
                 (*it)->SetToSafe();
     }
@@ -91,11 +91,11 @@ void GoRegionBoard::Clear()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoBlock> it1(AllBlocks(color)); it1; ++it1)
+        for (SgVectorIteratorOf<GoBlock> it1(AllBlocks(color)); it1; ++it1)
             delete *it1;
-        for (SgListIteratorOf<GoRegion> it2(AllRegions(color)); it2; ++it2)
+        for (SgVectorIteratorOf<GoRegion> it2(AllRegions(color)); it2; ++it2)
             delete *it2;
-        for (SgListIteratorOf<GoChain> it3(AllChains(color)); it3; ++it3)
+        for (SgVectorIteratorOf<GoChain> it3(AllChains(color)); it3; ++it3)
             delete *it3;
     }
     m_allBlocks[SG_BLACK].Clear();
@@ -132,7 +132,7 @@ void GoRegionBoard::UpdateBlock(int move, SgBlackWhite moveColor)
     const int size = Board().Size();
     if (! Board().IsSingleStone(move)) // find old neighbor blocks
     {
-        SgListOf<GoBlock> old;
+        SgVectorOf<GoBlock> old;
         for (SgNb4Iterator it(move); it; ++it)
         {
             if (IsColor(*it, moveColor))
@@ -146,7 +146,7 @@ void GoRegionBoard::UpdateBlock(int move, SgBlackWhite moveColor)
         }
         else // delete old, recompute
         {
-            for (SgListIteratorOf<GoBlock> it(old); it; ++it)
+            for (SgVectorIteratorOf<GoBlock> it(old); it; ++it)
                 RemoveBlock(*it, true, true);
         }
     }
@@ -156,10 +156,10 @@ void GoRegionBoard::UpdateBlock(int move, SgBlackWhite moveColor)
         GoBlock* b = GenBlock(anchor, moveColor);
         SgPointSet area(b->Stones().Border(size));
         // link it to neighbor regions
-        SgListOf<GoRegion> regions;
+        SgVectorOf<GoRegion> regions;
         RegionsAt(area, moveColor, &regions);
-        for (SgListIteratorOf<GoRegion> it(regions); it; ++it)
-            (*it)->BlocksNonConst().Append(b);
+        for (SgVectorIteratorOf<GoRegion> it(regions); it; ++it)
+            (*it)->BlocksNonConst().PushBack(b);
     }
 }
 
@@ -239,7 +239,7 @@ void GoRegionBoard::OnExecutedUncodedMove(int move, SgBlackWhite moveColor)
         for (SgBWIterator it; it; ++it)
         {
             SgBlackWhite color(*it);
-            for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+            for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             {   GoRegion* r1 = *it;
                 if (! r1->IsValid())
                     r1->ComputeBasicFlags();
@@ -255,14 +255,14 @@ void GoRegionBoard::CheckConsistency() const
     {
         SgBlackWhite color(*it);
         SgPointSet blockArea, regionArea;
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         {
             SG_ASSERT((*it)->Points().Disjoint(regionArea));
             SG_ASSERT((*it)->Points().Disjoint(blockArea));
             (*it)->CheckConsistency();
             regionArea |= (*it)->Points();
         }
-        for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
         {
             SG_ASSERT((*it)->Stones().Disjoint(regionArea));
             SG_ASSERT((*it)->Stones().Disjoint(blockArea));
@@ -324,7 +324,7 @@ void GoRegionBoard::RemoveRegion(GoRegion* r, bool isExecute)
     SG_ASSERT(found);
 
     // remove from blocks.
-    for (SgListIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
         (*it)->RemoveRegion(r);
 
     if (isExecute)
@@ -356,11 +356,11 @@ void GoRegionBoard::RemoveBlock(GoBlock* b, bool isExecute,
     const int size = Board().Size();
     // remove from regions.
     SgPointSet area(b->Stones().Border(size));
-    SgListOf<GoRegion> regions;
+    SgVectorOf<GoRegion> regions;
     if (removeFromRegions)
     {
         RegionsAt(area, color, &regions);
-        for (SgListIteratorOf<GoRegion> it(regions); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(regions); it; ++it)
         {
             (*it)->RemoveBlock(b);
             if (isExecute)
@@ -394,13 +394,13 @@ GoBlock* GoRegionBoard::GenBlock(SgPoint anchor, SgBlackWhite color)
 }
 
 void
-GoRegionBoard::PreviousBlocksAt(const SgList<SgPoint>& area,
+GoRegionBoard::PreviousBlocksAt(const SgVector<SgPoint>& area,
                                 SgBlackWhite color,
-                                SgListOf<GoBlock>* captures) const
+                                SgVectorOf<GoBlock>* captures) const
 {
     SG_UNUSED(color);
 
-    for (SgListIterator<SgPoint> it(area); it; ++it)
+    for (SgVectorIterator<SgPoint> it(area); it; ++it)
     {
         GoBlock* b = m_block[*it];
         if (b)
@@ -421,46 +421,46 @@ void GoRegionBoard::FindNewNeighborRegions(SgPoint move,
                                                 BlackWhite moveColor)
 { // move was capture -> new region for each captured block.
 
-    SgList<SgPoint> nb;
+    SgVector<SgPoint> nb;
     for (Nb4Iterator it(move); it; ++it)
         if (Board().IsEmpty(*it))
             nb.Append(*it);
 
-    SgListOf<GoBlock> captures;
+    SgVectorOf<GoBlock> captures;
     PreviousBlocksAt(nb, OppBW(moveColor), &captures);
     SG_ASSERT(captures.NonEmpty());
 
-    for (SgListIteratorOf<GoBlock> it(captures); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(captures); it; ++it)
         BlockToRegion(*it);
 }
 #endif
 
 
 void GoRegionBoard::RegionsAt(const SgPointSet& area, SgBlackWhite color,
-                                   SgListOf<GoRegion>* regions) const
+                                   SgVectorOf<GoRegion>* regions) const
 {
-    for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         if ((*it)->Points().Overlaps(area))
             regions->Append(*it);
 }
 
-void GoRegionBoard::AdjacentRegions(const SgList<SgPoint>& anchors,
+void GoRegionBoard::AdjacentRegions(const SgVector<SgPoint>& anchors,
                                          SgBlackWhite color,
-                                         SgListOf<GoRegion>* regions) const
+                                         SgVectorOf<GoRegion>* regions) const
 {
-    for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         if ((*it)->AdjacentToSomeBlock(anchors))
             regions->Append(*it);
 }
 
-GoRegion* GoRegionBoard::MergeAll(const SgListOf<GoRegion>& regions,
+GoRegion* GoRegionBoard::MergeAll(const SgVectorOf<GoRegion>& regions,
                                        const SgPointSet& captured,
                                        SgBlackWhite color)
 {
     SgPointSet area(captured);
-    for (SgListIteratorOf<GoRegion> it(regions); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(regions); it; ++it)
         area |= (*it)->Points();
-    {for (SgListIteratorOf<GoRegion> it(regions); it; ++it)
+    {for (SgVectorIteratorOf<GoRegion> it(regions); it; ++it)
         RemoveRegion(*it);
     }
     GoRegion* r = GenRegion(area, color);
@@ -471,27 +471,27 @@ GoRegion* GoRegionBoard::MergeAll(const SgListOf<GoRegion>& regions,
 void GoRegionBoard::MergeAdjacentAndAddBlock(SgPoint move,
                                                   SgBlackWhite capturedColor)
 {
-    SgList<SgPoint> nb;
+    SgVector<SgPoint> nb;
     for (SgNb4Iterator it(move); it; ++it)
         if (Board().IsEmpty(*it))
             nb.Append(*it);
 
-    SgListOf<GoBlock> captures;
+    SgVectorOf<GoBlock> captures;
     PreviousBlocksAt(nb, capturedColor, &captures);
     SG_ASSERT(captures.NonEmpty());
 
     SgPointSet captured;
-    {for (SgListIteratorOf<GoBlock> it(captures); it; ++it)
+    {for (SgVectorIteratorOf<GoBlock> it(captures); it; ++it)
         captured |= (*it)->Stones();
     }
-    SgListOf<GoRegion> adj;
+    SgVectorOf<GoRegion> adj;
     const int size = Board().Size();
     RegionsAt(captured.Border(size), capturedColor, &adj);
     SG_ASSERT(adj.NonEmpty());
     GoRegion* r = MergeAll(adj, captured, capturedColor);
     SG_UNUSED(r);
 
-    for (SgListIteratorOf<GoBlock> it(captures); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(captures); it; ++it)
         RemoveBlock(*it, true, false);
         // don't remove from regions; already gone.
 }
@@ -505,7 +505,7 @@ void GoRegionBoard::OnUndoneMove()
         SgDebug() << "OnUndoneMove " << '\n';
 
     const bool kUndo = false;
-    SgListOf<GoRegion> changed;
+    SgVectorOf<GoRegion> changed;
 
     for (int val = m_stack.PopEvent(); val != SG_NEXTMOVE;
          val = m_stack.PopEvent())
@@ -562,7 +562,7 @@ void GoRegionBoard::OnUndoneMove()
         }
     }
 
-    for (SgListIteratorOf<GoRegion> it(changed); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(changed); it; ++it)
     {
         (*it)->ResetNonBlockFlags();
         (*it)->ComputeBasicFlags();
@@ -573,7 +573,7 @@ void GoRegionBoard::OnUndoneMove()
         for (SgBWIterator it; it; ++it)
         {
             SgBlackWhite color(*it);
-            for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+            for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             {
                 const GoRegion* r = *it;
                 SG_UNUSED(r);
@@ -594,9 +594,9 @@ void GoRegionBoard::ReInitializeBlocksRegions()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
             (*it)->ReInitialize();
-        for (SgListIteratorOf<GoRegion> it2(AllRegions(color)); it2; ++it2)
+        for (SgVectorIteratorOf<GoRegion> it2(AllRegions(color)); it2; ++it2)
             (*it2)->ReInitialize();
     }
 }
@@ -633,7 +633,7 @@ void GoRegionBoard::FindBlocksWithEye()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             if ((*it)->Blocks().IsLength(1))
             {
                 GoBlock* b = (*it)->Blocks().Top();
@@ -676,9 +676,9 @@ void GoRegionBoard::GenChains()
         SgBlackWhite color(*it);
         SG_ASSERT(AllChains(color).IsEmpty());
 
-        for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
             AllChains(color).Append(new GoChain(*it, Board()));
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             (*it)->FindChains(*this);
     }
     m_chainsCode = Board().GetHashCode();
@@ -689,7 +689,7 @@ void GoRegionBoard::WriteBlocks(std::ostream& stream) const
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
             stream << **it;
     }
 }
@@ -699,7 +699,7 @@ void GoRegionBoard::WriteRegions(std::ostream& stream) const
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             (*it)->Write(stream);
     }
 }
@@ -709,7 +709,7 @@ GoBlock* GoRegionBoard::GetBlock(const SgPointSet& boundary,
 {
     SG_ASSERT(UpToDate());
 
-    for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
     {   if (boundary.SubsetOf((*it)->Stones()))
         /* */ return *it; /* */
     }
@@ -718,7 +718,7 @@ GoBlock* GoRegionBoard::GetBlock(const SgPointSet& boundary,
     const int size = Board().Size();
     boundary.Write(SgDebug(), size);
     SgDebug() << "blocks:";
-    for (SgListIteratorOf<GoBlock> it(AllBlocks(color));it; ++it)
+    for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color));it; ++it)
         (*it)->Stones().Write(SgDebug(), size);
 
     SG_ASSERT(false);
@@ -730,7 +730,7 @@ GoChain* GoRegionBoard::ChainAt(SgPoint p) const
     SG_ASSERT(ChainsUpToDate());
     const SgBlackWhite color = Board().GetStone(p);
 
-    for (SgListIteratorOf<GoChain> it(AllChains(color));it; ++it)
+    for (SgVectorIteratorOf<GoChain> it(AllChains(color));it; ++it)
         if ((*it)->Stones().Contains(p))
             /* */ return *it; /* */
 
@@ -750,7 +750,7 @@ void GoRegionBoard::SetComputedFlagForAll(GoRegionFlag flag)
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             (*it)->SetComputedFlag(flag);
     }
 }

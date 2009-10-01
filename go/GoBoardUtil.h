@@ -52,17 +52,7 @@ namespace GoBoardUtil
     /** Get list of stones adjacent to a block. */
     GoPointList AdjacentStones(const GoBoard& bd, SgPoint point);
 
-    /** Get list of stones adjacent to a block (SgList version).
-        @note SgList is not thread-safe.
-    */
-    void AdjacentStones(const GoBoard& bd, SgPoint point,
-                        SgList<SgPoint>* stones);
-
-    /** SgList version of GoBoard::AdjacentBlocks
-        Note that SgList is not thread-safe.
-    */
-    void AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
-                        SgList<SgPoint>* blocks);
+    /** SgVector version of GoBoard::AdjacentBlocks */
     void AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
                         SgVector<SgPoint>* blocks);
 
@@ -82,7 +72,7 @@ namespace GoBoardUtil
                            const SgPointSet& walls);
 
     void BlocksAdjacentToPoints(const GoBoard& bd,
-                                const SgList<SgPoint>& points, SgBlackWhite c,
+                                const SgVector<SgPoint>& points, SgBlackWhite c,
                                 SgVector<SgPoint>* anchors);
 
     /** List the anchors of all blocks of color 'c' adjacent to the region
@@ -118,7 +108,7 @@ namespace GoBoardUtil
        adding the points.
     */
     void DiagonalsOfColor(const GoBoard& bd, SgPoint p, int c,
-                          SgList<SgPoint>* diagonals);
+                          SgVector<SgPoint>* diagonals);
 
     /** Write board including move history to stream.
         This function is intended for printing the current board state
@@ -170,7 +160,7 @@ namespace GoBoardUtil
     bool HasAdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib);
 
     bool HasStonesOfBothColors(const GoBoard& bd,
-                               const SgList<SgPoint>& stones);
+                               const SgVector<SgPoint>& stones);
 
     /** Return if point is surrounded by one color and no adjacent block is
         in atari.
@@ -235,13 +225,12 @@ namespace GoBoardUtil
     */
     SgSList<SgPoint,4> NeighborsOfColor(const GoBoard& bd, SgPoint p, int c);
 
-    /** Get adjacent points with a color (SgList version).
+    /** Get adjacent points with a color (SgVector version).
         @param bd The board.
         @param p The point.
         @param c The color.
         @param neighbors Resulting point list. Will be cleared before
         adding the points.
-        @note SgList is not thread-safe
     */
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgVector<SgPoint>* neighbors);
@@ -269,7 +258,6 @@ namespace GoBoardUtil
         contain duplicate stones; these will be thrown out. The returned list
         will be sorted by anchors.
     */
-    void ReduceToAnchors(const GoBoard& bd, SgList<SgPoint>* stones);
     void ReduceToAnchors(const GoBoard& bd, SgVector<SgPoint>* stones);
 
     /** Keep only the anchor of each block in the list.
@@ -277,7 +265,7 @@ namespace GoBoardUtil
         contain duplicate stones; these will be thrown out. The returned list
         will not be sorted by anchors.
     */
-    void ReduceToAnchors(const GoBoard& bd, const SgList<SgPoint>& stones,
+    void ReduceToAnchors(const GoBoard& bd, const SgVector<SgPoint>& stones,
                          SgSList<SgPoint,SG_MAXPOINT> &anchors);
 
     /** Compute the hash code for region of this board position. */
@@ -311,7 +299,7 @@ namespace GoBoardUtil
         Not defined for empty or border points.
     */
     void SharedLiberties(const GoBoard& bd, SgPoint block1, SgPoint block2,
-                         SgList<SgPoint>* sharedLibs);
+                         SgVector<SgPoint>* sharedLibs);
 
     void SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor, int maxLib,
                              SgVector<SgPoint>* blocks);

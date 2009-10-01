@@ -260,42 +260,6 @@ inline const SgPoint* SgBoardConst::CornerIterAddress() const
 
 //----------------------------------------------------------------------------
 
-/** Iterate through all connected components of a given set of points.
-    Differs from ConnCompIterator in set being passed in as a SgSimpleSet, and
-    in that no SgPointSet operations are required, making this class usually
-    more efficient.
-*/
-class SgComponentIterator
-{
-public:
-    /** Create an iterator to iterate through the connected components of
-        'points' on 'board'.
-    */
-    SgComponentIterator(const SgBoardConst& boardConst,
-                        const SgSimpleSet& points);
-
-    /** Find the next connected component in the set.
-        Return true and change '*component' if there is one, otherwise return
-        false.
-    */
-    bool Next(SgList<SgPoint>* component);
-
-private:
-    SgSimpleSet m_points;
-
-    SgPoint m_nextPoint;
-
-    const SgBoardConst& m_boardConst;
-
-    /** Not implemented. */
-    SgComponentIterator(const SgComponentIterator&);
-
-    /** Not implemented. */
-    SgComponentIterator& operator=(const SgComponentIterator&);
-};
-
-//----------------------------------------------------------------------------
-
 /** Iterate through all points on a specific line on the given board.
     e.g. all points on the third line.
 */

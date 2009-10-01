@@ -26,10 +26,10 @@ BOOST_AUTO_TEST_CASE(GoGameRecordTest_Setup)
     GoGameRecord game(bd);
     SgNode* node = game.CurrentNode()->NewRightMostSon();
     SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
-    addBlack->Append(Pt(1, 1));
+    addBlack->PushBack(Pt(1, 1));
     SgPropAddStone* addWhite = new SgPropAddStone(SG_PROP_ADD_WHITE);
-    addWhite->Append(Pt(2, 2));
-    addWhite->Append(Pt(3, 3));
+    addWhite->PushBack(Pt(2, 2));
+    addWhite->PushBack(Pt(3, 3));
     node->Add(addBlack);
     node->Add(addWhite);
     game.GoToNode(node);

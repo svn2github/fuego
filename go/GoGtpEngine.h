@@ -331,10 +331,10 @@ protected:
 
     SgPoint PointArg(const GtpCommand& cmd, std::size_t number) const;
 
-    SgList<SgPoint> PointListArg(const GtpCommand& cmd,
+    SgVector<SgPoint> PointListArg(const GtpCommand& cmd,
                                  std::size_t number) const;
 
-    SgList<SgPoint> PointListArg(const GtpCommand& cmd) const;
+    SgVector<SgPoint> PointListArg(const GtpCommand& cmd) const;
 
     SgPoint StoneArg(const GtpCommand& cmd, std::size_t number) const;
 
@@ -425,7 +425,7 @@ private:
 
     void InitStatistics();
 
-    void PlaceHandicap(const SgList<SgPoint>& stones);
+    void PlaceHandicap(const SgVector<SgPoint>& stones);
 
     void SaveGame(const std::string& fileName) const;
 

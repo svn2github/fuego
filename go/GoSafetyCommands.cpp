@@ -13,6 +13,7 @@
 #include "GoModBoard.h"
 #include "GoSafetyUtil.h"
 #include "GoSafetySolver.h"
+#include "SgList.h"
 #include "SgPointSet.h"
 
 using namespace std;
@@ -144,7 +145,7 @@ SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const string& type)
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite c = *it;
-        for (SgListIteratorOf<GoRegion> it(regionAttachment.AllRegions(c));
+        for (SgVectorIteratorOf<GoRegion> it(regionAttachment.AllRegions(c));
              it; ++it)
             if ((*it)->Points().SubsetOf(proved))
                 ++totalRegions;

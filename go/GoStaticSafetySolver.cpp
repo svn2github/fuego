@@ -63,10 +63,11 @@ void GoStaticSafetySolver::FindHealthy()
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        for (SgListIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
+        for (SgVectorIteratorOf<GoRegion>
+             it(Regions()->AllRegions(color)); it; ++it)
         {
             GoRegion* r = *it;
-            for (SgListIteratorOf<GoBlock> it2(r->Blocks()); it2; ++it2)
+            for (SgVectorIteratorOf<GoBlock> it2(r->Blocks()); it2; ++it2)
             {
                 if (RegionHealthyForBlock(*r, **it2)) // virtual call
                 {
@@ -78,37 +79,37 @@ void GoStaticSafetySolver::FindHealthy()
     Regions()->SetComputedHealthy();
 }
 
-void GoStaticSafetySolver::TestAdjacent(SgListOf<GoRegion>* regions,
-                               const SgListOf<GoBlock>& blocks) const
+void GoStaticSafetySolver::TestAdjacent(SgVectorOf<GoRegion>* regions,
+                               const SgVectorOf<GoBlock>& blocks) const
 {
-    SgListOf<GoRegion> newregions;
-    for (SgListIteratorOf<GoRegion> it(*regions); it; ++it)
+    SgVectorOf<GoRegion> newregions;
+    for (SgVectorIteratorOf<GoRegion> it(*regions); it; ++it)
         if ((*it)->IsSurrounded(blocks))
             newregions.Append(*it);
     *regions = newregions;
 }
 
-void GoStaticSafetySolver::TestAlive(SgListOf<GoBlock>* blocks,
+void GoStaticSafetySolver::TestAlive(SgVectorOf<GoBlock>* blocks,
                               SgBWSet* safe,
                               SgBlackWhite color)
 {
-    SgListOf<GoRegion> regions(AllRegions(color));
-    SgListOf<GoBlock> toDelete;
+    SgVectorOf<GoRegion> regions(Regions()->AllRegions(color));
+    SgVectorOf<GoBlock> toDelete;
 
     bool changed = true;
     while (changed)
     {
         TestAdjacent(&regions, *blocks);
         toDelete.Clear();
-        for (SgListIteratorOf<GoBlock> it(*blocks); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(*blocks); it; ++it)
         {
-            const SgListOf<GoRegion>& br = (*it)->Healthy();
+            const SgVectorOf<GoRegion>& br = (*it)->Healthy();
 
             bool has2 = br.MinLength(2);
             if (has2)
             {
                 int nuRegions = 0;
-                for (SgListIteratorOf<GoRegion> it(br); it; ++it)
+                for (SgVectorIteratorOf<GoRegion> it(br); it; ++it)
                 {
                     if (regions.Contains(*it))
                     {
@@ -126,10 +127,10 @@ void GoStaticSafetySolver::TestAlive(SgListOf<GoBlock>* blocks,
         changed = toDelete.NonEmpty();
         if (changed)
         {
-            for (SgListIteratorOf<GoBlock> it(toDelete); it; ++it)
+            for (SgVectorIteratorOf<GoBlock> it(toDelete); it; ++it)
             {
                 bool found = blocks->Exclude(*it);
-                SG_UNUSED(found);
+                SG_DEBUG_ONLY(found);
                 SG_ASSERT(found);
             }
         }
@@ -138,7 +139,7 @@ void GoStaticSafetySolver::TestAlive(SgListOf<GoBlock>* blocks,
     if (blocks->NonEmpty()) // found safe blocks
     {
         SgPointSet blockPoints;
-        for (SgListIteratorOf<GoBlock> it(*blocks); it; ++it)
+        for (SgVectorIteratorOf<GoBlock> it(*blocks); it; ++it)
         {
             blockPoints |= (*it)->Stones();
             (*it)->SetToSafe();
@@ -148,7 +149,7 @@ void GoStaticSafetySolver::TestAlive(SgListOf<GoBlock>* blocks,
         AddToSafe(m_board, blockPoints, color, safe,
                   "TestAlive-Blocks", 0, false);
 
-        for (SgListIteratorOf<GoRegion> it(regions); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(regions); it; ++it)
             if ((*it)->HealthyForSomeBlock(*blocks))
             {
                 (*it)->SetToSafe();
@@ -158,15 +159,15 @@ void GoStaticSafetySolver::TestAlive(SgListOf<GoBlock>* blocks,
     }
 }
 
-void GoStaticSafetySolver::FindClosure(SgListOf<GoBlock>* blocks) const
+void GoStaticSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
 {
-    SgListOf<GoBlock> toTest(*blocks);
+    SgVectorOf<GoBlock> toTest(*blocks);
     while (toTest.NonEmpty())
     {
         const GoBlock* b = toTest.Pop();
-        for (SgListIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
         {   GoRegion* r = *it;
-            for (SgListIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
+            for (SgVectorIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
             {   GoBlock* b2 = *it;
                 if (! blocks->Contains(b2) && b2->ContainsHealthy(r))
                 {
@@ -178,17 +179,18 @@ void GoStaticSafetySolver::FindClosure(SgListOf<GoBlock>* blocks) const
     }
 }
 
-void GoStaticSafetySolver::FindTestSets(SgListOf<SgListOf<GoBlock> >* sets,
+void GoStaticSafetySolver::FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
                                  SgBlackWhite color) const
 {
     SG_ASSERT(sets->IsEmpty());
-    SgListOf<GoBlock> doneSoFar;
-    for (SgListIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
+    SgVectorOf<GoBlock> doneSoFar;
+    for (SgVectorIteratorOf<GoBlock>
+         it(Regions()->AllBlocks(color)); it; ++it)
     {
         GoBlock* block = *it;
         if (! doneSoFar.Contains(block))
         {
-            SgListOf<GoBlock>* blocks = new SgListOf<GoBlock>;
+            SgVectorOf<GoBlock>* blocks = new SgVectorOf<GoBlock>;
             blocks->Append(block);
 
             FindClosure(blocks);
@@ -206,11 +208,11 @@ void GoStaticSafetySolver::FindSafePoints(SgBWSet* safe)
     for (SgBWIterator it; it; ++it)
     {
         SgBlackWhite color(*it);
-        SgListOf<SgListOf<GoBlock> > sets;
+        SgVectorOf<SgVectorOf<GoBlock> > sets;
         // find maximal sets for aliveness testing
         FindTestSets(&sets, color);
 
-        for (SgListIteratorOf<SgListOf<GoBlock> > it(sets); it; ++it)
+        for (SgVectorIteratorOf<SgVectorOf<GoBlock> > it(sets); it; ++it)
         {   TestAlive(*it, safe, color);
             // find safe subset within each maximal set
             delete *it;

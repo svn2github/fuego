@@ -16,7 +16,6 @@
 #include "GoBoard.h"
 #include "GoBoardUpdater.h"
 #include "GoBoardUtil.h"
-#include "SgList.h"
 #include "SgNode.h"
 #include "SgPoint.h"
 #include "SgTimeRecord.h"
@@ -191,12 +190,6 @@ private:
         in the tree.
     */
     void DeleteTreeAndInitState();
-
-    /** Append up to 4 handicap stones to '*stones', and reduce '*handicap'
-        by that amount.
-    */
-    void AddHandicap(int size, int row, int col,
-                     int* handicap, SgList<SgPoint>* stones) const;
 };
 
 inline GoBoard& GoGameRecord::Board()
