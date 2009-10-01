@@ -179,8 +179,9 @@ void GoStaticSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
     }
 }
 
-void GoStaticSafetySolver::FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
-                                 SgBlackWhite color) const
+void GoStaticSafetySolver::FindTestSets(
+                                     SgVectorOf<SgVectorOf<GoBlock> >* sets,
+                                     SgBlackWhite color) const
 {
     SG_ASSERT(sets->IsEmpty());
     SgVectorOf<GoBlock> doneSoFar;

@@ -128,8 +128,8 @@ bool GoChainCondition::Overlaps(const GoChainCondition& condition) const
           || m_lib2 == condition.m_lib2;
 }
 
-bool GoChainCondition::Overlaps(const SgVectorOf<GoChainCondition>& conditions)
-    const
+bool GoChainCondition::Overlaps(const SgVectorOf<GoChainCondition>& 
+                                conditions) const
 {
     for (SgVectorIteratorOf<GoChainCondition> it(conditions); it; ++it)
     {

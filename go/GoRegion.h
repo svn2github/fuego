@@ -308,7 +308,8 @@ public:
         blocks, this one defines that ip has to be adjancent to all interior
         points.
     */
-    bool Has2IPs(const SgVector<SgPoint>& interiorEmpty, SgMiaiPair* ips) const;
+    bool Has2IPs(const SgVector<SgPoint>& interiorEmpty, SgMiaiPair* ips)
+        const;
 
     /** whether there are 2 intersection points, doesn't have to be adjacent
         to all interior points.

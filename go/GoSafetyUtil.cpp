@@ -210,7 +210,8 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
                   << " area " << area << '\n';
 
     // Check if region is a nakade shape that fills all potential eye space
-    for (SgVectorIteratorOf<GoRegion> it(regions->AllRegions(color)); it; ++it)
+    for (SgVectorIteratorOf<GoRegion> it(regions->AllRegions(color));
+         it; ++it)
     {
         if (   area.SupersetOf((*it)->Points())
             && area.SupersetOf((*it)->BlocksPoints())

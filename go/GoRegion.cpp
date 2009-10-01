@@ -164,7 +164,8 @@ SgPointSet GoRegion::PointsPlusInteriorBlocks() const
     return area;
 }
 
-void GoRegion::InteriorEmpty(SgVector<SgPoint>* interiorEmpty, int maxNu) const
+void GoRegion::InteriorEmpty(SgVector<SgPoint>* interiorEmpty, 
+                             int maxNu) const
 {
     for (SgSetIterator it(Points()); it; ++it)
     {

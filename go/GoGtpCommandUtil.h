@@ -65,7 +65,8 @@ namespace GoGtpCommandUtil
                                  const GoBoard& board);
 
     /** Return point list argument using all arguments. */
-    SgVector<SgPoint> PointListArg(const GtpCommand& cmd, const GoBoard& board);
+    SgVector<SgPoint> PointListArg(const GtpCommand& cmd, 
+                                   const GoBoard& board);
 
     void RespondNumberArray(GtpCommand& cmd, const SgPointArray<int>& array,
                             int scale, const GoBoard& board);

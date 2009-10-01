@@ -72,7 +72,8 @@ namespace GoBoardUtil
                            const SgPointSet& walls);
 
     void BlocksAdjacentToPoints(const GoBoard& bd,
-                                const SgVector<SgPoint>& points, SgBlackWhite c,
+                                const SgVector<SgPoint>& points,
+                                SgBlackWhite c,
                                 SgVector<SgPoint>* anchors);
 
     /** List the anchors of all blocks of color 'c' adjacent to the region
