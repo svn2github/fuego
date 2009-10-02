@@ -227,7 +227,8 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_raveWeightFinal(20000),
       m_virtualLoss(false),
       m_logFileName("uctsearch.log"),
-      m_fastLog(10)
+      m_fastLog(10),
+      m_mpiSynchronizer(SgMpiNullSynchronizer::Create())
 {
     // Don't create thread states here, because the factory passes the search
     // (which is not fully constructed here, because the subclass constructors
@@ -251,21 +252,27 @@ void SgUctSearch::ApplyRootFilter(vector<SgMoveInfo>& moves)
     moves = filteredMoves;
 }
 
+size_t SgUctSearch::GamesPlayed() const
+{
+    return m_tree.Root().MoveCount() - m_startRootMoveCount;
+}
+
 bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
 {
+    size_t gamesPlayed = GamesPlayed();
     if (SgUserAbort())
     {
         Debug(state, "SgUctSearch: abort flag");
         return true;
     }
     const bool isEarlyAbort = CheckEarlyAbort();
-    if (m_numberGames >= m_maxGames)
+    if (gamesPlayed >= m_maxGames)
     {
         Debug(state, "SgUctSearch: max games reached");
         return true;
     }
     if (   isEarlyAbort
-        && m_earlyAbort->m_reductionFactor * m_numberGames >= m_maxGames
+        && m_earlyAbort->m_reductionFactor * gamesPlayed >= m_maxGames
        )
     {
         Debug(state, "SgUctSearch: max games reached (early abort)");
@@ -290,7 +297,7 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
         UpdateCheckTimeInterval(time);
         if (m_moveSelect == SG_UCTMOVESELECT_COUNT)
         {
-            double remainingGamesDouble = m_maxGames - m_numberGames - 1;
+            double remainingGamesDouble = m_maxGames - gamesPlayed - 1;
             // Use time based count abort, only if time > 1, otherwise
             // m_gamesPerSecond is unreliable
             if (time > 1.)
@@ -355,6 +362,8 @@ void SgUctSearch::CreateThreads()
     }
     m_tree.CreateAllocators(m_numberThreads);
     m_tree.SetMaxNodes(m_maxNodes);
+
+    m_searchLoopFinished.reset(new barrier(m_numberThreads));
 }
 
 /** Write a debugging line of text from within a thread.
@@ -382,10 +391,6 @@ void SgUctSearch::DeleteThreads()
     m_threads.clear();
 }
 
-void SgUctSearch::EndSearch()
-{
-}
-
 /** Expand a node.
     @param state The thread state with state.m_moves already computed.
     @param node The node to expand.
@@ -398,6 +403,8 @@ void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node)
         Debug(state, str(format("SgUctSearch: maximum tree size %1% reached")
                          % m_tree.MaxNodes()));
         state.m_isTreeOutOfMem = true;
+	m_isTreeOutOfMemory = true;
+	SgSynchronizeThreadMemory();
         return;
     }
     m_tree.CreateChildren(threadId, node, state.m_moves);
@@ -627,6 +634,8 @@ void SgUctSearch::CreateChildren(SgUctThreadState& state,
         Debug(state, str(format("SgUctSearch: maximum tree size %1% reached")
                          % m_tree.MaxNodes()));
         state.m_isTreeOutOfMem = true;
+	m_isTreeOutOfMemory = true;
+	SgSynchronizeThreadMemory();
         return;
     }
     m_tree.MergeChildren(threadId, node, state.m_moves, deleteChildTrees);
@@ -634,14 +643,59 @@ void SgUctSearch::CreateChildren(SgUctThreadState& state,
 
 void SgUctSearch::OnStartSearch()
 {
+    m_mpiSynchronizer->OnStartSearch(*this);
+}
+
+void SgUctSearch::OnEndSearch()
+{
+    m_mpiSynchronizer->OnEndSearch(*this);
 }
 
 void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
                                     const SgUctGameInfo& info)
 {
-    SG_UNUSED(gameNumber);
-    SG_UNUSED(threadId);
-    SG_UNUSED(info);
+    const int maxSeqPrintLen = 15;
+    const size_t minMoveCount = 10;
+    const int displayInterval = 5;
+
+    m_mpiSynchronizer->OnSearchIteration(*this, gameNumber, threadId, info);
+
+    size_t rootMoveCount = m_tree.Root().MoveCount();
+    float rootMean = m_tree.Root().Mean();
+
+    double currTime = m_timer.GetTime();
+
+    if (threadId == 0 && currTime - m_lastScoreDisplayTime > displayInterval)
+    {
+	ostringstream out;
+	const SgUctNode* current = &m_tree.Root();
+	out << fixed << setprecision(0) << SgTime::Format(currTime, true) << " | ";
+	out << fixed << setprecision(3) << rootMean << " ";
+	out << "| " << rootMoveCount << " ";
+	int i;
+	for(i = 0; i <= maxSeqPrintLen && current->HasChildren(); i++)
+	{
+	    current = FindBestChild(*current);
+	    if (current == 0 || current->MoveCount() < minMoveCount)
+	    {
+		break;
+	    }
+	    if (i == 0)
+	    {
+		out << "|";
+	    }
+	    if (i < maxSeqPrintLen)
+	    {
+		out << " " << SgWritePoint(current->Move());
+	    }
+	    else
+	    {
+		out << " *";
+	    }
+	}
+	SgDebug() << out.str() << endl;
+	m_lastScoreDisplayTime = currTime;
+    }
 }
 
 void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
@@ -822,7 +876,7 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     m_rootFilter = rootFilter;
     if (m_logGames)
     {
-        m_log.open(m_logFileName.c_str());
+	m_log.open(m_mpiSynchronizer->ToNodeFilename(m_logFileName).c_str());
         m_log << "StartSearch maxGames=" << maxGames << '\n';
     }
     m_maxGames = maxGames;
@@ -830,31 +884,37 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     m_earlyAbort.reset(0);
     if (earlyAbort != 0)
         m_earlyAbort.reset(new SgUctEarlyAbortParam(*earlyAbort));
+
+    for (size_t i = 0; i < m_threads.size(); ++i)
+    {
+	m_threads[i]->m_state->m_isSearchInitialized = false;
+    }
     StartSearch(rootFilter, initTree);
     size_t pruneMinCount = m_pruneMinCount;
     while (true)
     {
-        bool isTreeOutOfMem = false;
+	m_isTreeOutOfMemory = false;
+	SgSynchronizeThreadMemory();
         for (size_t i = 0; i < m_threads.size(); ++i)
-            m_threads[i]->StartPlay();
+	{
+	    m_threads[i]->StartPlay();
+	}
         for (size_t i = 0; i < m_threads.size(); ++i)
         {
-            m_threads[i]->WaitPlayFinished();
-            if (m_threads[i]->m_state->m_isTreeOutOfMem)
-                isTreeOutOfMem = true;
-        }
-        if (! isTreeOutOfMem || m_aborted || ! m_pruneFullTree)
-            break;
-        double startPruneTime = m_timer.GetTime();
-        SgDebug() << "SgUctSearch: pruning nodes with count < "
-                  << pruneMinCount << " (at time " << fixed << setprecision(1)
-                  << startPruneTime << ")\n";
-        SgUctTree& tempTree = GetTempTree();
-        m_tree.CopyPruneLowCount(tempTree, pruneMinCount, true);
-        if (SgUserAbort())
-            break;
-        else
-        {
+	    m_threads[i]->WaitPlayFinished();
+	}
+	if (m_aborted || !m_pruneFullTree)
+	{
+	    break;
+	}
+	else
+	{
+	    double startPruneTime = m_timer.GetTime();
+	    SgDebug() << "SgUctSearch: pruning nodes with count < "
+		      << pruneMinCount << " (at time " << fixed << setprecision(1)
+		      << startPruneTime << ")\n";
+	    SgUctTree& tempTree = GetTempTree();
+	    m_tree.CopyPruneLowCount(tempTree, pruneMinCount, true);
             int prunedSizePercentage =
                 static_cast<int>(tempTree.NuNodes() * 100 / m_tree.NuNodes());
             SgDebug() << "SgUctSearch: pruned size: " << tempTree.NuNodes()
@@ -865,40 +925,66 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
             m_tree.Swap(tempTree);
         }
     }
+    EndSearch();
     m_statistics.m_time = m_timer.GetTime();
     if (m_statistics.m_time > numeric_limits<double>::epsilon())
-        m_statistics.m_gamesPerSecond = m_numberGames / m_statistics.m_time;
+        m_statistics.m_gamesPerSecond = GamesPlayed() / m_statistics.m_time;
     if (m_logGames)
         m_log.close();
     FindBestSequence(sequence);
-    return m_tree.Root().Mean();
+    return (m_tree.Root().MoveCount() > 0) ? m_tree.Root().Mean() : 0.5;
 }
 
 /** Loop invoked by each thread for playing games. */
 void SgUctSearch::SearchLoop(SgUctThreadState& state, GlobalLock* lock)
 {
+    if (!state.m_isSearchInitialized)
+    {
+	OnThreadStartSearch(state);
+	state.m_isSearchInitialized = true;
+    }
+
     if (NumberThreads() == 1 || m_lockFree)
         lock = 0;
     if (lock != 0)
         lock->lock();
-    while (true)
+    state.m_isTreeOutOfMem = false;
+    while (!state.m_isTreeOutOfMem)
     {
         PlayGame(state, lock);
-        if (state.m_isTreeOutOfMem)
-            break;
         OnSearchIteration(m_numberGames + 1, state.m_threadId,
                           state.m_gameInfo);
         if (m_logGames)
             m_log << SummaryLine(state.m_gameInfo) << '\n';
         ++m_numberGames;
-        if (CheckAbortSearch(state))
+	if (m_isTreeOutOfMemory) {
+	    break;
+	}
+        if (m_aborted || CheckAbortSearch(state))
         {
             m_aborted = true;
+	    SgSynchronizeThreadMemory();
             break;
         }
     }
     if (lock != 0)
         lock->unlock();
+
+    m_searchLoopFinished->wait();
+    if (m_aborted || !m_pruneFullTree)
+    {
+	OnThreadEndSearch(state);
+    }
+}
+
+void SgUctSearch::OnThreadStartSearch(SgUctThreadState& state)
+{
+    m_mpiSynchronizer->OnThreadStartSearch(*this, state);
+}
+
+void SgUctSearch::OnThreadEndSearch(SgUctThreadState& state)
+{
+    m_mpiSynchronizer->OnThreadEndSearch(*this, state);
 }
 
 SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
@@ -1050,9 +1136,16 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
     m_wasEarlyAbort = false;
     m_checkTimeInterval = 1;
     m_numberGames = 0;
+    m_lastScoreDisplayTime = m_timer.GetTime();
     OnStartSearch();
+    m_startRootMoveCount = m_tree.Root().MoveCount();
     for (size_t i = 0; i < m_threads.size(); ++i)
         ThreadState(i).StartSearch();
+}
+
+void SgUctSearch::EndSearch()
+{
+    OnEndSearch();
 }
 
 string SgUctSearch::SummaryLine(const SgUctGameInfo& info) const
@@ -1084,7 +1177,7 @@ void SgUctSearch::UpdateCheckTimeInterval(double time)
         m_checkTimeInterval *= 2;
         return;
     }
-    m_statistics.m_gamesPerSecond = m_numberGames / time;
+    m_statistics.m_gamesPerSecond = GamesPlayed() / time;
     double gamesPerSecondPerThread =
         m_statistics.m_gamesPerSecond / m_numberThreads;
     m_checkTimeInterval =
@@ -1234,6 +1327,7 @@ void SgUctSearch::WriteStatistics(ostream& out) const
             << m_statistics.m_knowledge * 100.0 / m_tree.Root().MoveCount()
             << "%)\n";
     m_statistics.Write(out);
+    m_mpiSynchronizer->WriteStatistics(out);
 }
 
 //----------------------------------------------------------------------------

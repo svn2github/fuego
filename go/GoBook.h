@@ -35,6 +35,9 @@ class GoBoard;
     containing an error message with line number information of the
     duplicates.
 */
+
+class GoGtpEngine;
+
 class GoBook
 {
 public:
@@ -164,7 +167,7 @@ inline std::size_t GoBook::NuEntries() const
 class GoBookCommands
 {
 public:
-    GoBookCommands(const GoBoard& bd, GoBook& book);
+    GoBookCommands(GoGtpEngine &engine, const GoBoard& bd, GoBook& book);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -196,6 +199,8 @@ public:
     // @} // @name
 
 private:
+    GoGtpEngine &m_engine;
+
     const GoBoard& m_bd;
 
     GoBook& m_book;

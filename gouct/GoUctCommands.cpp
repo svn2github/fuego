@@ -735,15 +735,18 @@ void GoUctCommands::CmdRootFilter(GtpCommand& cmd)
 */
 void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
 {
-    cmd.CheckNuArgLessEqual(2);
-    string fileName = cmd.Arg(0);
-    int maxDepth = -1;
-    if (cmd.NuArg() == 2)
-        maxDepth = cmd.IntArg(1, 0);
-    ofstream out(fileName.c_str());
-    if (! out)
-        throw GtpFailure() << "Could not open " << fileName;
-    Search().SaveTree(out, maxDepth);
+    if (Search().MpiSynchronizer()->IsRootProcess())
+    {
+	cmd.CheckNuArgLessEqual(2);
+	string fileName = cmd.Arg(0);
+	int maxDepth = -1;
+	if (cmd.NuArg() == 2)
+	    maxDepth = cmd.IntArg(1, 0);
+	ofstream out(fileName.c_str());
+	if (! out)
+	    throw GtpFailure() << "Could not open " << fileName;
+	Search().SaveTree(out, maxDepth);
+    }
 }
 
 /** Save all random games.

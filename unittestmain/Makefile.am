@@ -74,6 +74,7 @@ fuego_unittest_LDADD = \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a \
 $(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
+$(BOOST_FILESYSTEM_LIB) \
 $(BOOST_THREAD_LIB)
 
 fuego_unittest_DEPENDENCIES = \

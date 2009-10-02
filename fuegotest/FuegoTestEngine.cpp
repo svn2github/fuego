@@ -28,7 +28,7 @@ using boost::trim_copy;
 
 //----------------------------------------------------------------------------
 
-FuegoTestEngine::FuegoTestEngine(istream& in, ostream& out,
+FuegoTestEngine::FuegoTestEngine(GtpInputStream& in, GtpOutputStream& out,
                                  int fixedBoardSize,
                                  const char* programPath,
                                  const string& player)

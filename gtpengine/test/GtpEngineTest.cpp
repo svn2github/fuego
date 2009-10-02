@@ -151,7 +151,9 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_Command)
 {
     istringstream in("version\n");
     ostringstream out;
-    GtpEngine engine(in, out);
+    GtpInputStream gin(in);
+    GtpOutputStream gout(out);
+    GtpEngine engine(gin, gout);
     engine.MainLoop();
     BOOST_CHECK_EQUAL(out.str(), "= \n\n");
 }
@@ -160,7 +162,9 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_CommandWithID)
 {
     istringstream in("10 version\n");
     ostringstream out;
-    GtpEngine engine(in, out);
+    GtpInputStream gin(in);
+    GtpOutputStream gout(out);
+    GtpEngine engine(gin, gout);
     engine.MainLoop();
     BOOST_CHECK_EQUAL(out.str(), "=10 \n\n");
 }
@@ -173,14 +177,15 @@ class InvalidResponseEngine
     : public GtpEngine
 {
 public:
-    InvalidResponseEngine(istream& in, ostream& out);
+    InvalidResponseEngine(GtpInputStream& in, GtpOutputStream& out);
 
     void CmdInvalidResponse(GtpCommand& cmd);
 
     void CmdInvalidResponse2(GtpCommand& cmd);
 };
 
-InvalidResponseEngine::InvalidResponseEngine(istream& in, ostream& out)
+InvalidResponseEngine::InvalidResponseEngine(GtpInputStream& in, 
+                                             GtpOutputStream& out)
     : GtpEngine(in, out)
 {
     typedef GtpCallback<InvalidResponseEngine> Callback;
@@ -210,7 +215,9 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_MainLoopEmptyLines)
 {
     istringstream in("invalid_response\n");
     ostringstream out;
-    InvalidResponseEngine engine(in, out);
+    GtpInputStream gin(in);
+    GtpOutputStream gout(out);
+    InvalidResponseEngine engine(gin, gout);
     engine.MainLoop();
     BOOST_CHECK_EQUAL(out.str(),
                       "= This response is invalid\n"
@@ -224,7 +231,9 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_MainLoopEmptyLines2)
 {
     istringstream in("invalid_response2\n");
     ostringstream out;
-    InvalidResponseEngine engine(in, out);
+    GtpInputStream gin(in);
+    GtpOutputStream gout(out);
+    InvalidResponseEngine engine(gin, gout);
     engine.MainLoop();
     BOOST_CHECK_EQUAL(out.str(),
                       "= This response is invalid\n"
@@ -238,7 +247,9 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_UnknownCommand)
 {
     istringstream in("unknowncommand\n");
     ostringstream out;
-    GtpEngine engine(in, out);
+    GtpInputStream gin(in);
+    GtpOutputStream gout(out);
+    GtpEngine engine(gin, gout);
     engine.MainLoop();
     BOOST_REQUIRE(out.str().size() >= 2);
     BOOST_CHECK_EQUAL(out.str().substr(0, 2), "? ");

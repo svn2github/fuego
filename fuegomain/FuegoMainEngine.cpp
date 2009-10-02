@@ -15,7 +15,7 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-FuegoMainEngine::FuegoMainEngine(istream& in, ostream& out,
+FuegoMainEngine::FuegoMainEngine(GtpInputStream& in, GtpOutputStream& out,
                                  int fixedBoardSize, const char* programPath,
                                  bool noHandicap)
     : GoGtpEngine(in, out, fixedBoardSize, programPath, false, noHandicap),

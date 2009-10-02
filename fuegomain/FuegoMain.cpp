@@ -59,7 +59,9 @@ path GetProgramDir(const char* programPath)
 
 void MainLoop()
 {
-    FuegoMainEngine engine(cin, cout, g_fixedBoardSize, g_programPath,
+    GtpInputStream gtpIn(cin);
+    GtpOutputStream gtpOut(cout);
+    FuegoMainEngine engine(gtpIn, gtpOut, g_fixedBoardSize, g_programPath,
                            g_noHandicap);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_maxGames >= 0)

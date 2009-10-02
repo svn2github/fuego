@@ -792,6 +792,7 @@ inline void SgUctTree::CreateChildren(std::size_t allocatorId,
     // m_firstChild is valid if m_nuChildren is greater zero
     nonConstNode.SetPosCount(parentCount);
     nonConstNode.SetFirstChild(firstChild);
+    SgSynchronizeThreadMemory();
     nonConstNode.SetNuChildren(nuChildren);
 }
 

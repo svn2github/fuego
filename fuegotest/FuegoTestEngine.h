@@ -27,7 +27,7 @@ public:
         @param programPath
         @param player Player ID as in CreatePlayer()
     */
-    FuegoTestEngine(std::istream& in, std::ostream& out,
+    FuegoTestEngine(GtpInputStream& in, GtpOutputStream& out,
                     int fixedBoardSize, const char* programPath = 0,
                     const std::string& player = "");
 

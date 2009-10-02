@@ -131,4 +131,19 @@ bool SgUserAbort();
 
 //----------------------------------------------------------------------------
 
+inline void SgSynchronizeThreadMemory()
+{
+#ifdef ENABLE_CACHE_SYNC
+
+#ifdef HAVE_SYNC_SYNCHRONIZE
+    __sync_synchronize();
+#else
+#error "Explicit cache synchronization requires __sync_synchronize() builtin"
+#endif
+
+#endif
+}
+
+//----------------------------------------------------------------------------
+
 #endif // SG_SYSTEM_H

@@ -61,13 +61,13 @@ bool IsCommandLine(const string& line)
     @param[out] cmd The command (reused for efficiency)
     @return @c false on end-of-stream or read error.
 */
-bool ReadCommand(GtpCommand& cmd, istream& in)
+bool ReadCommand(GtpCommand& cmd, GtpInputStream& in)
 {
     string line;
-    while (getline(in, line) && ! IsCommandLine(line))
+    while (in.GetLine(line) && ! IsCommandLine(line))
     {
     }
-    if (in.fail())
+    if (in.EndOfInput())
         return false;
     Trim(line);
     cmd.Init(line);
@@ -256,7 +256,7 @@ namespace {
 class ReadThread
 {
 public:
-    ReadThread(istream& in, GtpEngine& engine);
+    ReadThread(GtpInputStream& in, GtpEngine& engine);
 
     bool ReadCommand(GtpCommand& cmd);
 
@@ -278,7 +278,7 @@ private:
 
     friend class ReadThread::Function;
 
-    istream& m_in;
+    GtpInputStream& m_in;
 
     GtpEngine& m_engine;
 
@@ -315,11 +315,11 @@ void ReadThread::Function::operator()()
     mutex::scoped_lock lock(m_readThread.m_waitCommandMutex);
     m_readThread.m_threadReady.wait();
     GtpEngine& engine = m_readThread.m_engine;
-    istream& in = m_readThread.m_in;
+    GtpInputStream& in = m_readThread.m_in;
     string line;
     while (true)
     {
-        while (getline(in, line))
+        while (in.GetLine(line))
         {
             Trim(line);
             if (line == "# interrupt")
@@ -330,11 +330,11 @@ void ReadThread::Function::operator()()
                 break;
         }
         m_readThread.m_waitCommand.wait(lock);
-        m_readThread.m_isStreamGood = ! in.fail();
+        m_readThread.m_isStreamGood = ! in.EndOfInput();
         m_readThread.m_line = line;
         Notify(m_readThread.m_commandReceivedMutex,
                m_readThread.m_commandReceived);
-        if (in.fail())
+        if (in.EndOfInput())
             return;
         // See comment at GtpEngine::SetQuit
         GtpCommand cmd(line);
@@ -369,7 +369,7 @@ void ReadThread::JoinThread()
     m_thread.join();
 }
 
-ReadThread::ReadThread(istream& in, GtpEngine& engine)
+ReadThread::ReadThread(GtpInputStream& in, GtpEngine& engine)
     : m_in(in),
       m_engine(engine),
       m_threadReady(2),
@@ -645,16 +645,11 @@ GtpCallbackBase::~GtpCallbackBase() throw()
 
 //----------------------------------------------------------------------------
 
-GtpEngine::GtpEngine(istream& in, ostream& out)
+GtpEngine::GtpEngine(GtpInputStream& in, GtpOutputStream& out)
     : m_quit(false),
       m_in(in),
       m_out(out)
 {
-    // Tying of input to output stream (like used by std::cin/cout) is not
-    // needed by GtpEngine and potentially harmful if threads are enabled
-    // (see GTPENGINE_PONDER) and the standard library implementation does not
-    // support simultaneous writes to output stream by multiple threads
-    m_in.tie(0);
     Register("known_command", &GtpEngine::CmdKnownCommand, this);
     Register("list_commands", &GtpEngine::CmdListCommands, this);
     Register("name", &GtpEngine::CmdName, this);
@@ -738,7 +733,8 @@ string GtpEngine::ExecuteCommand(const string& cmdline, ostream& log)
     GtpCommand cmd;
     cmd.Init(cmdline);
     log << cmd.Line() << '\n';
-    bool status = HandleCommand(cmd, log);
+    GtpOutputStream gtpLog(log);
+    bool status = HandleCommand(cmd, gtpLog);
     string response = cmd.Response();
     if (! status)
         throw GtpFailure() << "Executing " << cmd.Line() << " failed";
@@ -752,19 +748,21 @@ void GtpEngine::ExecuteFile(const string& name, ostream& log)
         throw GtpFailure() << "Cannot read " << name;
     string line;
     GtpCommand cmd;
+    GtpOutputStream gtpLog(log);
     while (getline(in, line))
     {
         if (! IsCommandLine(line))
             continue;
         cmd.Init(line);
         log << cmd.Line() << '\n';
-        bool status = HandleCommand(cmd, log);
+
+        bool status = HandleCommand(cmd, gtpLog);
         if (! status)
             throw GtpFailure() << "Executing " << cmd.Line() << " failed";
     }
 }
 
-bool GtpEngine::HandleCommand(GtpCommand& cmd, ostream& out)
+bool GtpEngine::HandleCommand(GtpCommand& cmd, GtpOutputStream& out)
 {
     BeforeHandleCommand();
     bool status = true;
@@ -791,11 +789,14 @@ bool GtpEngine::HandleCommand(GtpCommand& cmd, ostream& out)
     }
     response = ReplaceEmptyLines(response);
     BeforeWritingResponse();
-    out << (status ? '=' : '?') << cmd.ID() << ' ' << response;
+    ostringstream ostr;
+    ostr << (status ? '=' : '?') << cmd.ID() << ' ' << response;
     size_t size = response.size();
     if (size == 0 || response[size - 1] != '\n')
-        out << '\n';
-    out << '\n' << flush;
+        ostr << '\n';
+    ostr << '\n' << flush;
+    out.Write(ostr.str());
+    out.Flush();
     return status;
 }
 

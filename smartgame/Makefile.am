@@ -33,6 +33,7 @@ SgSearch.cpp \
 SgSearchStatistics.cpp \
 SgStrategy.cpp \
 SgStringUtil.cpp \
+SgMpiSynchronizer.cpp \
 SgSystem.cpp \
 SgTime.cpp \
 SgTimeControl.cpp \
@@ -96,6 +97,7 @@ SgStack.h \
 SgStatistics.h \
 SgStrategy.h \
 SgStringUtil.h \
+SgMpiSynchronizer.h \
 SgSystem.h \
 SgTime.h \
 SgTimeControl.h \

@@ -103,6 +103,7 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
     nonConstNode.SetFirstChild(firstChild);
+    SgSynchronizeThreadMemory();
     nonConstNode.SetNuChildren(nuChildren);
 }
 
@@ -321,6 +322,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     {
         // Write order dependency
         nonConstNode.SetNuChildren(0);
+	SgSynchronizeThreadMemory();
         nonConstNode.SetFirstChild(0);
         return;
     }
@@ -365,11 +367,13 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     if (nonConstNode.NuChildren() < (int)nuNewChildren)
     {
         nonConstNode.SetFirstChild(newFirstChild);
+	SgSynchronizeThreadMemory();
         nonConstNode.SetNuChildren(nuNewChildren);
     }
     else
     {
         nonConstNode.SetNuChildren(nuNewChildren);
+	SgSynchronizeThreadMemory();
         nonConstNode.SetFirstChild(newFirstChild);
     }
 }

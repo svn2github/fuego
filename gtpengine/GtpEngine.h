@@ -32,6 +32,9 @@
 #include <string>
 #include <vector>
 
+#include "GtpInputStream.h"
+#include "GtpOutputStream.h"
+
 #ifndef GTPENGINE_PONDER
 /** Macro for enabling pondering.
     If this macro is enabled, GtpEngine has the additional functions
@@ -147,6 +150,8 @@ inline std::ostream& GtpFailure::ResponseStream()
 
 //----------------------------------------------------------------------------
 
+
+
 /** GTP command.
     GtpCommands are passed to command handlers.
     They can be queried for arguments and used for writing the response to.
@@ -159,6 +164,7 @@ inline std::ostream& GtpFailure::ResponseStream()
     it will be sanitized by GtpEngine before writing to form a valid
     GTP response (see @ref GtpEngine::MainLoop).
 */
+
 class GtpCommand
 {
 public:
@@ -540,7 +546,7 @@ public:
         @param in Input GTP stream
         @param out Output GTP stream
     */
-    GtpEngine(std::istream& in, std::ostream& out);
+    GtpEngine(GtpInputStream& in, GtpOutputStream& out);
 
     virtual ~GtpEngine();
 
@@ -675,9 +681,9 @@ private:
 
     bool m_quit;
 
-    std::istream& m_in;
+    GtpInputStream& m_in;
 
-    std::ostream& m_out;
+    GtpOutputStream& m_out;
 
     CallbackMap m_callbacks;
 
@@ -687,7 +693,7 @@ private:
     /** Not to be implemented. */
     GtpEngine& operator=(const GtpEngine& engine) const;
 
-    bool HandleCommand(GtpCommand& cmd, std::ostream& out);
+    bool HandleCommand(GtpCommand& cmd, GtpOutputStream& out);
 };
 
 template<class T>

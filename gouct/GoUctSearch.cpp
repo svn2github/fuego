@@ -255,11 +255,14 @@ void GoUctSearch::OnStartSearch()
 
 void GoUctSearch::SaveGames(const string& fileName) const
 {
-    if (m_root == 0)
-        throw SgException("No games to save");
-    ofstream out(fileName.c_str());
-    SgGameWriter writer(out);
-    writer.WriteGame(*m_root, true, 0, "", 1, 19);
+    if (MpiSynchronizer()->IsRootProcess())
+    {
+	if (m_root == 0)
+	    throw SgException("No games to save");
+	ofstream out(fileName.c_str());
+	SgGameWriter writer(out);
+	writer.WriteGame(*m_root, true, 0, "", 1, 19);
+    }
 }
 
 void GoUctSearch::SaveTree(std::ostream& out, int maxDepth) const

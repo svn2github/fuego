@@ -17,7 +17,7 @@ class FuegoMainEngine
     : public GoGtpEngine
 {
 public:
-    FuegoMainEngine(std::istream& in, std::ostream& out,
+    FuegoMainEngine(GtpInputStream& in, GtpOutputStream& out,
                     int fixedBoardSize, const char* programPath = 0,
                     bool noHandicap = false);
 

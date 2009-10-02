@@ -20,6 +20,7 @@
 #include "SgBWArray.h"
 #include "SgTimer.h"
 #include "SgUctTree.h"
+#include "SgMpiSynchronizer.h"
 
 #define SG_UCTFASTLOG 1
 #if SG_UCTFASTLOG
@@ -259,6 +260,8 @@ class SgUctThreadState
 public:
     /** Number of the thread between 0 and SgUctSearch::NumberThreads() - 1 */
     const std::size_t m_threadId;
+
+    bool m_isSearchInitialized;
 
     /** Flag indicating the a node could not be expanded, because the
         maximum tree size was reached.
@@ -526,10 +529,23 @@ public:
                                    const SgUctGameInfo& info);
 
     /** Hook function that will be called by StartSearch().
-        Default implementation does nothing.
+        Default implementation calls m_mpiSynchronizer.StartSearch().
         This function does not need to be thread-safe.
     */
     virtual void OnStartSearch();
+
+    /** Hook function that will be called when search
+	completes.  Default implementation calls
+	m_mpiSynchronizer.EndSearch().  This function
+	does not need to be thread-safe.
+    */
+    virtual void OnEndSearch();
+
+    virtual void OnThreadStartSearch(SgUctThreadState& state);
+
+    virtual void OnThreadEndSearch(SgUctThreadState& state);
+
+    virtual std::size_t GamesPlayed() const;
 
     // @} // name
 
@@ -836,6 +852,13 @@ public:
     /** See PruneFullTree() */
     void SetPruneMinCount(std::size_t n);
 
+
+    void SetMpiSynchronizer(const SgMpiSynchronizerHandle &synchronizerHandle);
+
+    SgMpiSynchronizerHandle MpiSynchronizer();
+
+    const SgMpiSynchronizerHandle MpiSynchronizer() const;
+
     // @} // name
 
 
@@ -950,7 +973,11 @@ private:
     /** Flag indicating that the search was terminated because the maximum
         time or number of games was reached.
     */
-    bool m_aborted;
+    volatile bool m_aborted;
+	
+    volatile bool m_isTreeOutOfMemory;
+
+    std::auto_ptr<boost::barrier> m_searchLoopFinished;
 
     /** See SgUctEarlyAbortParam. */
     bool m_wasEarlyAbort;
@@ -1005,6 +1032,8 @@ private:
     /** Number of games played in the current search. */
     std::size_t m_numberGames;
 
+    std::size_t m_startRootMoveCount;
+
     /** Interval in number of games in which to check time abort.
         Avoids that the potentially expensive SgTime::Get() is called after
         every game. The interval is updated dynamically according to the
@@ -1013,6 +1042,8 @@ private:
         per total maximum search time)
     */
     std::size_t m_checkTimeInterval;
+
+    double m_lastScoreDisplayTime;
 
     /** See BiasTermConstant() */
     float m_biasTermConstant;
@@ -1070,6 +1101,9 @@ private:
 #if SG_UCTFASTLOG
     SgFastLog m_fastLog;
 #endif
+
+    boost::shared_ptr<SgMpiSynchronizer> m_mpiSynchronizer;
+
 
     void ApplyRootFilter(std::vector<SgMoveInfo>& moves);
 
@@ -1300,6 +1334,22 @@ inline void SgUctSearch::SetPruneFullTree(bool enable)
 inline void SgUctSearch::SetPruneMinCount(std::size_t n)
 {
     m_pruneMinCount = n;
+}
+
+inline void SgUctSearch::SetMpiSynchronizer(const SgMpiSynchronizerHandle 
+                                            &synchronizerHandle)
+{
+    m_mpiSynchronizer = SgMpiSynchronizerHandle(synchronizerHandle);
+}
+
+inline SgMpiSynchronizerHandle SgUctSearch::MpiSynchronizer()
+{
+    return SgMpiSynchronizerHandle(m_mpiSynchronizer);
+}
+
+inline const SgMpiSynchronizerHandle SgUctSearch::MpiSynchronizer() const
+{
+    return SgMpiSynchronizerHandle(m_mpiSynchronizer);
 }
 
 inline int SgUctSearch::RandomizeRaveFrequency() const

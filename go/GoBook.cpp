@@ -12,6 +12,7 @@
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoGtpCommandUtil.h"
+#include "GoGtpEngine.h"
 #include "GoModBoard.h"
 #include "SgDebug.h"
 #include "SgException.h"
@@ -356,8 +357,9 @@ void GoBook::WriteInfo(ostream& out) const
 
 //----------------------------------------------------------------------------
 
-GoBookCommands::GoBookCommands(const GoBoard& bd, GoBook& book)
-    : m_bd(bd),
+GoBookCommands::GoBookCommands(GoGtpEngine &engine, const GoBoard& bd, GoBook& book)
+    : m_engine(engine),
+      m_bd(bd),
       m_book(book)
 {
 }
@@ -472,25 +474,33 @@ void GoBookCommands::CmdPosition(GtpCommand& cmd)
 
 void GoBookCommands::CmdSave(GtpCommand& cmd)
 {
-    cmd.CheckArgNone();
-    if (m_fileName == "")
-        throw GtpFailure("no filename associated with current book");
-    ofstream out(m_fileName.c_str());
-    m_book.Write(out);
-    if (! out)
-        throw GtpFailure() << "error writing to file '" << m_fileName << "'";
+    if (m_engine.MpiSynchronizer()->IsRootProcess())
+    {
+	cmd.CheckArgNone();
+	if (m_fileName == "")
+	    throw GtpFailure("no filename associated with current book");
+	ofstream out(m_fileName.c_str());
+	m_book.Write(out);
+	if (! out)
+	{
+	    throw GtpFailure() << "error writing to file '" << m_fileName << "'";
+	}
+    }
 }
 
 void GoBookCommands::CmdSaveAs(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    m_fileName = cmd.Arg(0);
-    ofstream out(m_fileName.c_str());
-    m_book.Write(out);
-    if (! out)
+    if (m_engine.MpiSynchronizer()->IsRootProcess())
     {
-        m_fileName = "";
-        throw GtpFailure("write error");
+	cmd.CheckNuArg(1);
+	m_fileName = cmd.Arg(0);
+	ofstream out(m_fileName.c_str());
+	m_book.Write(out);
+	if (! out)
+	{
+	    m_fileName = "";
+	    throw GtpFailure("write error");
+	}
     }
 }
 

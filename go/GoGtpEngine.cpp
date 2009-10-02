@@ -76,7 +76,7 @@ string KoRuleToString(GoRules::KoRule rule)
 
 //----------------------------------------------------------------------------
 
-GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
+GoGtpEngine::GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoardSize,
                          const char* programPath, bool noPlayer,
                          bool noHandicap)
     : GtpEngine(in, out),
@@ -95,7 +95,8 @@ GoGtpEngine::GoGtpEngine(istream& in, ostream& out, int fixedBoardSize,
       m_board(fixedBoardSize > 0 ? fixedBoardSize : GO_DEFAULT_SIZE),
       m_game(m_board),
       m_sgCommands(*this, programPath),
-      m_bookCommands(m_board, m_book)
+      m_bookCommands(*this, m_board, m_book),
+      m_mpiSynchronizer(SgMpiNullSynchronizer::Create())
 {
     Register("all_legal", &GoGtpEngine::CmdAllLegal, this);
     Register("boardsize", &GoGtpEngine::CmdBoardSize, this);
@@ -450,7 +451,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     auto_ptr<SgDebugToString> debugStrToString;
     if (m_debugToComment)
         debugStrToString.reset(new SgDebugToString(true));
-    SgPoint move = GenMove(color, false);
+    SgPoint move = GenMove(color, true);
     if (move == SG_RESIGN)
     {
         cmd << "resign";
@@ -1271,6 +1272,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     AddStatistics("MOVE", GetGame().CurrentMoveNumber() + 1);
     SgPoint move = SG_NULLMOVE;
     move = m_book.LookupMove(bd);
+    m_mpiSynchronizer->SynchronizeMove(move);
     if (move != SG_NULLMOVE)
     {
         SgDebug() << "GoGtpEngine: Using move from opening book\n";
@@ -1324,19 +1326,22 @@ void GoGtpEngine::InitStatistics()
                               " statistics slot '" + (*i) + "'");
         m_statisticsSlots.push_back(*i);
     }
-    ofstream out(m_statisticsFile.c_str(), ios::app);
-    // TODO: What to do with an existing file? We want a single file, if
-    // twogtp or Go server experiments are interrupted and restarted, but if
-    // the file is from different player, the format is not compatible.
-    // For now, we simple append to the file.
-    out << '#'; // Start header line with a comment character
-    for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+    if (MpiSynchronizer()->IsRootProcess())
     {
-        out << m_statisticsSlots[i];
-        if (i < m_statisticsSlots.size() - 1)
-            out << '\t';
-        else
-            out << '\n';
+	ofstream out(m_statisticsFile.c_str(), ios::app);
+	// TODO: What to do with an existing file? We want a single file, if
+	// twogtp or Go server experiments are interrupted and restarted, but if
+	// the file is from different player, the format is not compatible.
+	// For now, we simple append to the file.
+	out << '#'; // Start header line with a comment character
+	for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+	{
+	    out << m_statisticsSlots[i];
+	    if (i < m_statisticsSlots.size() - 1)
+		out << '\t';
+	    else
+		out << '\n';
+	}
     }
 }
 
@@ -1421,31 +1426,37 @@ void GoGtpEngine::RulesChanged()
 
 void GoGtpEngine::SaveGame(const std::string& fileName) const
 {
-    try
+    if (MpiSynchronizer()->IsRootProcess())
     {
-        ofstream out(fileName.c_str());
-        SgGameWriter writer(out);
-        writer.WriteGame(GetGame().Root(), true, 0, "", 1, 19);
-    }
-    catch (const SgException& e)
-    {
-        throw GtpFailure(e.what());
+	try
+	{
+	    ofstream out(fileName.c_str());
+	    SgGameWriter writer(out);
+	    writer.WriteGame(GetGame().Root(), true, 0, "", 1, 19);
+	}
+	catch (const SgException& e)
+	{
+	    throw GtpFailure(e.what());
+	}
     }
 }
 
 void GoGtpEngine::SaveStatistics()
 {
-    if (m_statisticsFile == "")
-        return;
-    SG_ASSERT(m_statisticsValues.size() == m_statisticsSlots.size());
-    ofstream out(m_statisticsFile.c_str(), ios::app);
-    for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+    if (MpiSynchronizer()->IsRootProcess())
     {
-        out << m_statisticsValues[i];
-        if (i < m_statisticsSlots.size() - 1)
-            out << '\t';
-        else
-            out << '\n';
+	if (m_statisticsFile == "")
+	    return;
+	SG_ASSERT(m_statisticsValues.size() == m_statisticsSlots.size());
+	ofstream out(m_statisticsFile.c_str(), ios::app);
+	for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+	{
+	    out << m_statisticsValues[i];
+	    if (i < m_statisticsSlots.size() - 1)
+		out << '\t';
+	    else
+		out << '\n';
+	}
     }
 }
 
@@ -1559,14 +1570,24 @@ void GoGtpEngine::Ponder()
     // short intervals between received commands
     boost::xtime time;
     boost::xtime_get(&time, boost::TIME_UTC);
+    bool aborted = false;
     for (int i = 0; i < 200; ++i)
     {
         if (SgUserAbort())
-            return;
+	{
+	    aborted = true;
+            break;
+	}
         time.nsec += 1000000; // 1 msec
         boost::thread::sleep(time);
     }
-    m_player->Ponder();
+    m_mpiSynchronizer->SynchronizeUserAbort(aborted);
+    if (!aborted)
+    {
+	m_mpiSynchronizer->OnStartPonder();
+	m_player->Ponder();
+	m_mpiSynchronizer->OnEndPonder();
+    }
 }
 
 void GoGtpEngine::StopPonder()
@@ -1589,6 +1610,22 @@ void GoGtpEngine::Interrupt()
 }
 
 #endif // GTPENGINE_INTERRUPT
+
+void GoGtpEngine::SetMpiSynchronizer(const SgMpiSynchronizerHandle &handle)
+{
+    m_mpiSynchronizer = SgMpiSynchronizerHandle(handle);
+}
+
+SgMpiSynchronizerHandle GoGtpEngine::MpiSynchronizer()
+{
+    return SgMpiSynchronizerHandle(m_mpiSynchronizer);
+}
+
+const SgMpiSynchronizerHandle GoGtpEngine::MpiSynchronizer() const
+{
+    return SgMpiSynchronizerHandle(m_mpiSynchronizer);
+}
+
 
 //----------------------------------------------------------------------------
 

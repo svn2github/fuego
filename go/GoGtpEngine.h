@@ -17,6 +17,7 @@
 #include "GtpEngine.h"
 #include "SgGtpCommands.h"
 #include "SgPointArray.h"
+#include "SgMpiSynchronizer.h"
 
 //----------------------------------------------------------------------------
 
@@ -133,7 +134,7 @@ public:
         @param noHandicap Don't register handicap commands (useful, to
         avoid accepting handicap games on KGS)
     */
-    GoGtpEngine(std::istream& in, std::ostream& out, int fixedBoardSize,
+    GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoardSize,
                 const char* programPath = 0, bool noPlayer = false,
                 bool noHandicap = false);
 
@@ -216,6 +217,12 @@ public:
     */
     void Interrupt();
 #endif // GTPENGINE_INTERRUPT
+
+    void SetMpiSynchronizer(const SgMpiSynchronizerHandle &m_handle);
+
+    SgMpiSynchronizerHandle MpiSynchronizer();
+
+    const SgMpiSynchronizerHandle MpiSynchronizer() const;
 
 protected:
     /** Current player.
@@ -409,6 +416,8 @@ private:
 
     /** See CreateStatisticsSlots() */
     std::vector<std::string> m_statisticsValues;
+
+    SgMpiSynchronizerHandle m_mpiSynchronizer;
 
     void AddPlayerProp(SgBlackWhite color, const std::string& name,
                        bool overwrite);
