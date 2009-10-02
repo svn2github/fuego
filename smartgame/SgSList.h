@@ -7,6 +7,8 @@
 #ifndef SG_SLIST_H
 #define SG_SLIST_H
 
+#include <algorithm>
+
 //----------------------------------------------------------------------------
 
 /** Static list not using dynamic memory allocation.

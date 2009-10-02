@@ -7,6 +7,7 @@
 #define SG_VECTOR_H
 
 #include <functional>
+#include <algorithm>
 #include <vector>
 
 using std::vector;
