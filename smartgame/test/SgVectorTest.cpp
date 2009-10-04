@@ -553,24 +553,54 @@ BOOST_AUTO_TEST_CASE(SgVectorIteratorOfTest)
     BOOST_CHECK_EQUAL(i, 10);
 }
 
-BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator)
+BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_EmptyVector)
+{
+    SgVector<int> a;                 
+    SgVectorPairIterator<int> it(a);
+    int e1, e2;
+    BOOST_CHECK(! it.NextPair(e1, e2));
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_OneElement)
+{
+    SgVector<int> a;                 
+    a.Append(1);
+    SgVectorPairIterator<int> it(a);
+    int e1, e2;
+    BOOST_CHECK(! it.NextPair(e1, e2));
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_TwoElements)
+{
+    SgVector<int> a;                 
+    a.Append(1);
+    a.Append(2);
+    SgVectorPairIterator<int> it(a);
+    int e1, e2;
+    BOOST_CHECK(it.NextPair(e1, e2));
+    BOOST_CHECK_EQUAL(e1, 1);
+    BOOST_CHECK_EQUAL(e2, 2);
+    BOOST_CHECK(! it.NextPair(e1, e2));
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_ThreeElements)
 {
     SgVector<int> a;                 
     a.Append(1);
     a.Append(2);
     a.Append(3);
-    SgVectorPairIterator<int> iter(a);
+    SgVectorPairIterator<int> it(a);
     int e1, e2;
-    BOOST_CHECK(iter.NextPair(e1, e2));
+    BOOST_CHECK(it.NextPair(e1, e2));
     BOOST_CHECK_EQUAL(e1, 1);
     BOOST_CHECK_EQUAL(e2, 2);
-    BOOST_CHECK(iter.NextPair(e1, e2));
+    BOOST_CHECK(it.NextPair(e1, e2));
     BOOST_CHECK_EQUAL(e1, 1);
     BOOST_CHECK_EQUAL(e2, 3);
-    BOOST_CHECK(iter.NextPair(e1, e2));
+    BOOST_CHECK(it.NextPair(e1, e2));
     BOOST_CHECK_EQUAL(e1, 2);
     BOOST_CHECK_EQUAL(e2, 3);
-    BOOST_CHECK(! iter.NextPair(e1, e2));
+    BOOST_CHECK(! it.NextPair(e1, e2));
     BOOST_CHECK_EQUAL(e1, 2);
     BOOST_CHECK_EQUAL(e2, 3);
 }

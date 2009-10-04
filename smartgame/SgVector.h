@@ -777,7 +777,7 @@ SgVectorPairIterator<T>::SgVectorPairIterator(const SgVector<T>& vector)
 template<typename T>
 bool SgVectorPairIterator<T>::NextPair(T& elt1, T& elt2)
 {
-    if (m_index1 == m_vector.Length() - 1)
+    if (m_index1 >= m_vector.Length() - 1)
         return false;
     elt1 = m_vector[m_index1];
     elt2 = m_vector[m_index2];
