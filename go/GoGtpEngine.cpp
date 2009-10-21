@@ -451,7 +451,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     auto_ptr<SgDebugToString> debugStrToString;
     if (m_debugToComment)
         debugStrToString.reset(new SgDebugToString(true));
-    SgPoint move = GenMove(color, true);
+    SgPoint move = GenMove(color, false);
     if (move == SG_RESIGN)
     {
         cmd << "resign";
