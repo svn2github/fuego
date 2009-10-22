@@ -63,6 +63,7 @@
     @see
     - @ref sguctsearchlockfree
     - @ref sguctsearchweights
+    - @ref sguctsearchproven
 */
 
 /** @page sguctsearchlockfree Lock-free mode in SgUctSearch
@@ -173,6 +174,37 @@ Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
     @f$ N_{\rm move} @f$.
     If no estimator has a sample count yet, the first-play-urgency parameter
     is used for the value estimate.
+*/
+
+/** @page sguctsearchproven Proven Nodes in SgUctSearch
+
+    When expanding a node (or computing knowledge at a node) it is
+    possible the derived class can prove that the state corresponding
+    to the node is a proven win or loss. Note this differs from a
+    terminal node since a terminal node by definition has no children,
+    whereas a proven node can have any number of children.
+
+    Any in-tree phase that encounters a proven node is immediately
+    terminated and the result passed back up the tree just as if a
+    playout (with the value corresponding to the proven value) had
+    been performed.
+
+    The existence of proven nodes in a SgUctTree does not change the
+    move selection in any way. For example: a node with both winning
+    and losing children will continue to select children without
+    regard to their proven value. This means losing children will not
+    be avoided and winning children will not be chosen except as a
+    result of the playouts recorded as those children are visisted
+    (the values of which would now be perfectly accurate).
+
+    Proven values are not currently passed up the tree like in a
+    min-max search. It would be possible to pass back winning moves,
+    that is, mark the parent of winning moves as winning, but it is
+    not possible mark a node as losing if all its moves are
+    losing. This is because it is possible progressive widening (or
+    other heuristics) are being used by the derived state and in such
+    a case it may not be true that all the current children being
+    losses implies the parent state is a loss.
 */
 
 //----------------------------------------------------------------------------
@@ -332,7 +364,8 @@ public:
         @param[out] moves The generated moves or empty list at end of game
     */
     virtual bool GenerateAllMoves(std::size_t count, 
-                                  std::vector<SgMoveInfo>& moves) = 0;
+                                  std::vector<SgMoveInfo>& moves,
+                                  SgProvenNodeType& provenType) = 0;
 
     /** Generate random move.
         Generate a random move in the play-out phase (outside the UCT tree).

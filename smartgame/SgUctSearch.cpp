@@ -486,7 +486,8 @@ void SgUctSearch::GenerateAllMoves(std::vector<SgMoveInfo>& moves)
     OnStartSearch();
     SgUctThreadState& state = ThreadState(0);
     state.StartSearch();
-    state.GenerateAllMoves(0, moves);
+    SgProvenNodeType type;
+    state.GenerateAllMoves(0, moves, type);
 }
 
 float SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
@@ -716,28 +717,47 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
         lock->unlock();
 
     size_t nuMovesInTree = info.m_inTreeSequence.size();
-    state.StartPlayouts();
-    for (size_t i = 0; i < m_numberPlayouts; ++i)
+
+    // Play some "fake" playouts if node is a proven node
+    if (!info.m_nodes.empty() && info.m_nodes.back()->IsProven())
     {
-        state.StartPlayout();
-        info.m_sequence[i] = info.m_inTreeSequence;
-        // skipRaveUpdate only used in playout phase
-        info.m_skipRaveUpdate[i].assign(nuMovesInTree, false);
-        bool abort = abortInTree || state.m_isTreeOutOfMem;
-        if (! abort && ! isTerminal)
-            abort = ! PlayoutGame(state, i);
-        float eval;
-        if (abort)
-            eval = UnknownEval();
-        else
-            eval = state.Evaluate();
-        size_t nuMoves = info.m_sequence[i].size();
-        if (nuMoves % 2 != 0)
-            eval = InverseEval(eval);
-        info.m_aborted[i] = abort;
-        info.m_eval[i] = eval;
-        state.EndPlayout();
-        state.TakeBackPlayout(nuMoves - nuMovesInTree);
+        for (size_t i = 0; i < m_numberPlayouts; ++i)
+        {
+            info.m_sequence[i] = info.m_inTreeSequence;
+            info.m_skipRaveUpdate[i].assign(nuMovesInTree, false);
+            float eval = info.m_nodes.back()->IsProvenWin() ? 1.0 : 0.0;
+            size_t nuMoves = info.m_sequence[i].size();
+            if (nuMoves % 2 != 0)
+                eval = InverseEval(eval);
+            info.m_aborted[i] = abortInTree || state.m_isTreeOutOfMem;
+            info.m_eval[i] = eval;
+        }
+    }
+    else 
+    {
+        state.StartPlayouts();
+        for (size_t i = 0; i < m_numberPlayouts; ++i)
+        {
+            state.StartPlayout();
+            info.m_sequence[i] = info.m_inTreeSequence;
+            // skipRaveUpdate only used in playout phase
+            info.m_skipRaveUpdate[i].assign(nuMovesInTree, false);
+            bool abort = abortInTree || state.m_isTreeOutOfMem;
+            if (! abort && ! isTerminal)
+                abort = ! PlayoutGame(state, i);
+            float eval;
+            if (abort)
+                eval = UnknownEval();
+            else
+                eval = state.Evaluate();
+            size_t nuMoves = info.m_sequence[i].size();
+            if (nuMoves % 2 != 0)
+                eval = InverseEval(eval);
+            info.m_aborted[i] = abort;
+            info.m_eval[i] = eval;
+            state.EndPlayout();
+            state.TakeBackPlayout(nuMoves - nuMovesInTree);
+        }
     }
     state.TakeBackInTree(nuMovesInTree);
 
@@ -775,12 +795,21 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     {
         if (sequence.size() == m_maxGameLength)
             return false;
+        if (current->IsProven())
+            break;
         if (! current->HasChildren())
         {
             state.m_moves.clear();
-            state.GenerateAllMoves(0, state.m_moves);
+            SgProvenNodeType provenType = SG_NOT_PROVEN;
+            state.GenerateAllMoves(0, state.m_moves, provenType);
             if (current == root)
                 ApplyRootFilter(state.m_moves);
+            if (provenType != SG_NOT_PROVEN)
+            {
+                SgUctNode* node = const_cast<SgUctNode*>(current);
+                node->SetProvenNodeType(provenType);
+                break;
+            }
             if (state.m_moves.empty())
             {
                 isTerminal = true;
@@ -814,11 +843,19 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             m_statistics.m_knowledge++;
 
             deepenTree = false;
+            SgProvenNodeType provenType = SG_NOT_PROVEN;
             bool truncate = state.GenerateAllMoves(current->MoveCount(), 
-                                                   state.m_moves);
+                                                   state.m_moves,
+                                                   provenType);
             if (current == root)
                 ApplyRootFilter(state.m_moves);
             CreateChildren(state, *current, truncate);
+            if (provenType != SG_NOT_PROVEN)
+            {
+                SgUctNode* node = const_cast<SgUctNode*>(current);
+                node->SetProvenNodeType(provenType);
+                break;
+            }
             if (state.m_moves.empty())
             {
                 isTerminal = true;
@@ -998,8 +1035,9 @@ SgPoint SgUctSearch::SearchOnePly(size_t maxGames, double maxTime,
     SgUctThreadState& state = ThreadState(0);
     state.StartSearch();
     vector<SgMoveInfo> moves;
+    SgProvenNodeType provenType;
     state.GameStart();
-    state.GenerateAllMoves(0, moves);
+    state.GenerateAllMoves(0, moves, provenType);
     vector<SgUctStatisticsBase> statistics(moves.size());
     size_t games = 0;
     m_timer.Start();

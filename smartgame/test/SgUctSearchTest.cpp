@@ -89,7 +89,8 @@ public:
 
     void ExecutePlayout(SgMove move);
 
-    bool GenerateAllMoves(std::size_t count, vector<SgMoveInfo>& moves);
+    bool GenerateAllMoves(std::size_t count, vector<SgMoveInfo>& moves,
+                          SgProvenNodeType& provenType);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -164,8 +165,10 @@ float TestThreadState::Evaluate()
 }
 
 bool TestThreadState::GenerateAllMoves(std::size_t count, 
-                                       vector<SgMoveInfo>& moves)
+                                       vector<SgMoveInfo>& moves,
+                                       SgProvenNodeType& provenType)
 {
+    SG_UNUSED(provenType);
     if (WRITE)
         SgDebug() << "TestUctSearch::Generate " << m_currentNode << ": ";
     size_t child = CurrentNode().m_child;
@@ -202,7 +205,8 @@ SgMove TestThreadState::GeneratePlayoutMove(bool& skipRaveUpdate)
     SG_UNUSED(skipRaveUpdate);
     // Search does not use randomness
     vector<SgMoveInfo> moves;
-    GenerateAllMoves(0, moves);
+    SgProvenNodeType provenType = SG_NOT_PROVEN;
+    GenerateAllMoves(0, moves, provenType);
     if (moves.empty())
         return SG_NULLMOVE;
     else

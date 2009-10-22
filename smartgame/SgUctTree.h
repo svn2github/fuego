@@ -85,6 +85,22 @@ inline SgMoveInfo::SgMoveInfo(SgMove move, float value, std::size_t count,
 
 //----------------------------------------------------------------------------
 
+/** Types of proven nodes. */
+typedef enum 
+{
+    /** Node is not a proven win or loss. */
+    SG_NOT_PROVEN,
+    
+    /** Node is a proven win. */
+    SG_PROVEN_WIN,
+
+    /** Node is a proven loss. */
+    SG_PROVEN_LOSS
+
+} SgProvenNodeType;
+
+//----------------------------------------------------------------------------
+
 /** Node used in SgUctTree.
     All data members are declared as volatile to avoid that the compiler
     re-orders writes, which can break assumptions made by SgUctSearch in
@@ -211,6 +227,17 @@ public:
     /** Set that knowledge has been computed at count. */
     void SetKnowledgeCount(std::size_t count);
 
+    /** Returns true if node is a proven node. */
+    bool IsProven() const;
+
+    bool IsProvenWin() const;
+
+    bool IsProvenLoss() const;
+
+    SgProvenNodeType ProvenNodeType() const;
+
+    void SetProvenNodeType(SgProvenNodeType type);
+
 private:
     SgStatisticsBase<volatile float,volatile std::size_t> m_statistics;
 
@@ -229,6 +256,8 @@ private:
     volatile std::size_t m_posCount;
 
     volatile std::size_t m_knowledgeCount;
+
+    volatile SgProvenNodeType m_provenType;
 };
 
 inline SgUctNode::SgUctNode(const SgMoveInfo& info)
@@ -237,7 +266,8 @@ inline SgUctNode::SgUctNode(const SgMoveInfo& info)
       m_move(info.m_move),
       m_raveValue(info.m_raveValue, info.m_raveCount),
       m_posCount(0),
-      m_knowledgeCount(0)
+      m_knowledgeCount(0),
+      m_provenType(SG_NOT_PROVEN)
 {
     // m_firstChild is not initialized, only defined if m_nuChildren > 0
 }
@@ -277,6 +307,7 @@ inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
     m_raveValue = node.m_raveValue;
     m_posCount = node.m_posCount;
     m_knowledgeCount = node.m_knowledgeCount;
+    m_provenType = node.m_provenType;
 }
 
 inline const SgUctNode* SgUctNode::FirstChild() const
@@ -380,6 +411,31 @@ inline std::size_t SgUctNode::KnowledgeCount() const
 inline void SgUctNode::SetKnowledgeCount(std::size_t count)
 {
     m_knowledgeCount = count;
+}
+
+inline bool SgUctNode::IsProven() const
+{
+    return m_provenType != SG_NOT_PROVEN;
+}
+
+inline bool SgUctNode::IsProvenWin() const
+{
+    return m_provenType == SG_PROVEN_WIN;
+}
+
+inline bool SgUctNode::IsProvenLoss() const
+{
+    return m_provenType == SG_PROVEN_WIN;
+}
+
+inline SgProvenNodeType SgUctNode::ProvenNodeType() const
+{
+    return m_provenType;
+}
+
+inline void SgUctNode::SetProvenNodeType(SgProvenNodeType type)
+{
+    m_provenType = type;
 }
 
 //----------------------------------------------------------------------------

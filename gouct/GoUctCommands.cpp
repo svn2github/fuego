@@ -662,7 +662,8 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
     vector<SgMoveInfo> moves;
-    state.GenerateAllMoves(count, moves);
+    SgProvenNodeType provenType;
+    state.GenerateAllMoves(count, moves, provenType);
 
     cmd << "INFLUENCE ";
     for (size_t i = 0; i < moves.size(); ++i) 
