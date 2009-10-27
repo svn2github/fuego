@@ -194,6 +194,7 @@ namespace GoUctUtil
         @param emptyPts The list of empty points (will potentially be modified
         in this function for efficiency reasons)
         @param random The random generator
+        @param balancer The balancer used in GeneratePoint()
         @return The move or SG_NULLMOVE if no empty point is a legal move that
         should be generated
     */
