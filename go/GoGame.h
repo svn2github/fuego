@@ -72,8 +72,6 @@ public:
 
     virtual void OnInitHandicap(const GoRules& rules, SgNode* root);
 
-    GoBoard& Board();
-
     /** Get the board associated with this game record. */
     const GoBoard& Board() const;
 
@@ -191,11 +189,6 @@ private:
     */
     void DeleteTreeAndInitState();
 };
-
-inline GoBoard& GoGameRecord::Board()
-{
-    return m_board;
-}
 
 inline const GoBoard& GoGameRecord::Board() const
 {
