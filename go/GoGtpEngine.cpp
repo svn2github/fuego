@@ -564,9 +564,8 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
         // FIXME: not fully supported yet!
         int mainTime = cmd.IntArg(1, 0);
         int byoYomiTime = cmd.IntArg(2, 0);
-        int byoYomiPeriods = cmd.IntArg(3, 0);
-        mainTime += byoYomiPeriods * byoYomiTime;
-        GoGtpTimeSettings timeSettings(mainTime, 0, 0);
+        //int byoYomiPeriods = cmd.IntArg(3, 0);
+        GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, 1);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
