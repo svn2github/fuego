@@ -13,6 +13,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoGtpCommandUtilTest.cpp \
 ../go/test/GoGtpTimeSettingsTest.cpp \
 ../go/test/GoKomiTest.cpp \
+../go/test/GoLadderTest.cpp \
 ../go/test/GoRegionTest.cpp \
 ../go/test/GoRegionBoardTest.cpp \
 ../go/test/GoSetupUtilTest.cpp \
@@ -75,6 +76,7 @@ fuego_unittest_LDADD = \
 ../gtpengine/libfuego_gtpengine.a \
 $(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
 $(BOOST_FILESYSTEM_LIB) \
+$(BOOST_SYSTEM_LIB) \
 $(BOOST_THREAD_LIB)
 
 fuego_unittest_DEPENDENCIES = \
