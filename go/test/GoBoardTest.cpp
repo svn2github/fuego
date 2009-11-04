@@ -73,7 +73,6 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor_2)
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(2, 1)), Pt(1, 1));
 }
 
-#include "SgDebug.h"
 BOOST_AUTO_TEST_CASE(GoBoardTest_CanCapture)
 {
     std::string s("XO..O.\n"
