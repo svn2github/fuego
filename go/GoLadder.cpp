@@ -493,7 +493,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                             > 0)
                         {
                             if (sequence)
-                                sequence->Push(*it); //add to front 
+                                sequence->PushBack(*it); 
                             result = GOOD_FOR_PREY;
                         }
                         m_bd->Undo();
@@ -523,6 +523,8 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
             }
         }
     }
+    if (sequence)
+    	sequence->Reverse(); // built as a stack, with first move at end.
     return result;
 }
 
@@ -604,10 +606,10 @@ GoLadderStatus GoLadderUtil::LadderStatus(const GoBoard& bd, SgPoint prey,
             // escapeSequence can be empty in 2 libs, prey to play case
             SG_ASSERT(twoLibIsEscape || escapeSequence.NonEmpty());
             if (toCapture)
-                *toCapture = captureSequence.Top();
+                *toCapture = captureSequence.Front();
             if (toEscape)
                 *toEscape = escapeSequence.IsEmpty() ? SG_PASS :
-                                                       escapeSequence.Top();
+                                                       escapeSequence.Front();
         }
     }
 #ifndef NDEBUG
@@ -670,11 +672,7 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
             }
             else if (tryLadder)
             {
-                SgVector<SgPoint> sequence;
-                // AR same?
-                // isProtected = (Ladder(liberty, sequence) >= SureValue);
-                isProtected = Ladder(bd, liberty, bd.ToPlay(), true,
-                                     &sequence);
+                isProtected = Ladder(bd, liberty, bd.ToPlay(), true);
                 if (isProtected)
                     byLadder = true;
             }
@@ -702,7 +700,7 @@ SgPoint GoLadderUtil::TryLadder(const GoBoard& bd, SgPoint prey,
     // else we want to capture.
     SgPoint p;
     if (isCaptured != (firstPlayer == bd.GetStone(prey)))
-        p = sequence.IsEmpty() ? SG_PASS : sequence.Back();
+        p = sequence.IsEmpty() ? SG_PASS : sequence.Front();
     else
         p = SG_NULLMOVE;
     return p;
