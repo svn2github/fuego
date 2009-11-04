@@ -56,6 +56,7 @@ public:
         - @link CmdSetupPlayer() @c gogui-setup_player @endlink
         - @link CmdIsLegal() @c is_legal @endlink
         - @link CmdGenMoveCleanup() @c kgs-genmove_cleanup @endlink
+        - @link CmdKgsTimeSettings() @c kgs-time_settings @endlink
         - @link CmdKomi() @c komi @endlink
         - @link CmdListStones() @c list_stones @endlink
         - @link CmdLoadSgf() @c loadsgf @endlink
@@ -90,6 +91,7 @@ public:
     virtual void CmdGGUndo(GtpCommand&);
     virtual void CmdInterrupt(GtpCommand&);
     virtual void CmdIsLegal(GtpCommand&);
+    virtual void CmdKgsTimeSettings(GtpCommand& cmd);
     virtual void CmdKomi(GtpCommand&);
     virtual void CmdListStones(GtpCommand&);
     virtual void CmdLoadSgf(GtpCommand&);

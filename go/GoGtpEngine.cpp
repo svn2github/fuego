@@ -120,6 +120,7 @@ GoGtpEngine::GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoar
     Register("gogui-setup_player", &GoGtpEngine::CmdSetupPlayer, this);
     Register("is_legal", &GoGtpEngine::CmdIsLegal, this);
     Register("kgs-genmove_cleanup", &GoGtpEngine::CmdGenMoveCleanup, this);
+    Register("kgs-time_settings", &GoGtpEngine::CmdKgsTimeSettings, this);
     Register("komi", &GoGtpEngine::CmdKomi, this);
     Register("list_stones", &GoGtpEngine::CmdListStones, this);
     Register("loadsgf", &GoGtpEngine::CmdLoadSgf, this);
@@ -526,6 +527,65 @@ void GoGtpEngine::CmdGGUndo(GtpCommand& cmd)
     cmd.CheckNuArgLessEqual(1);
     Undo(cmd.NuArg() == 0 ? 0 : cmd.IntArg(0, 0));
     BoardChanged();
+}
+
+/** Sets time settings on kgs.
+    Handles the four different kinds of time control on kgs, "none",
+    "absolute", "byoyomi" (which is not currently fully supported),
+    and "canadian".
+ */
+void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
+{
+    if (cmd.NuArg() < 1)
+        throw GtpFailure("Need at least one argument!");
+    if (Board().MoveNumber() > 0)
+        throw GtpFailure("cannot change time settings during game");
+    std::string type = cmd.Arg(0);
+    if (type == "none")
+    {
+        cmd.CheckNuArg(1);
+        // This will make m_timeSetings.NoTimeLimits() to true.
+        m_timeSettings = GoGtpTimeSettings(0, 1, 0);
+        SG_ASSERT(m_timeSettings.NoTimeLimits());
+    }
+    else if (type == "absolute")
+    {
+        cmd.CheckNuArg(2);
+        int mainTime = cmd.IntArg(1, 0);
+        GoGtpTimeSettings timeSettings(mainTime, 0, 0);
+        if (m_timeSettings == timeSettings)
+            return;
+        m_timeSettings = timeSettings;
+        ApplyTimeSettings();
+    }
+    else if (type == "byoyomi")
+    {
+        cmd.CheckNuArg(4);
+        // FIXME: not fully supported yet!
+        int mainTime = cmd.IntArg(1, 0);
+        int byoYomiTime = cmd.IntArg(2, 0);
+        int byoYomiPeriods = cmd.IntArg(3, 0);
+        mainTime += byoYomiPeriods * byoYomiTime;
+        GoGtpTimeSettings timeSettings(mainTime, 0, 0);
+        if (m_timeSettings == timeSettings)
+            return;
+        m_timeSettings = timeSettings;
+        ApplyTimeSettings();
+    }    
+    else if (type == "canadian")
+    {
+        cmd.CheckNuArg(4);
+        int mainTime = cmd.IntArg(1, 0);
+        int byoYomiTime = cmd.IntArg(2, 0);
+        int byoYomiStones = cmd.IntArg(3, 0);
+        GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, byoYomiStones);
+        if (m_timeSettings == timeSettings)
+            return;
+        m_timeSettings = timeSettings;
+        ApplyTimeSettings();
+    }
+    else
+        throw GtpFailure("Unknown type of time control");
 }
 
 /** This command indicates that commands can be interrupted using the GoGui
