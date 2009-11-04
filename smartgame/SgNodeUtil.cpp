@@ -48,9 +48,9 @@ void SgNodeUtil::UpdateTime(SgTimeRecord& time, const SgNode* node)
         if (node->HasProp(SG_PROP_OT_NU_MOVES))
             time.SetOTNumMoves(node->GetIntProp(SG_PROP_OT_NU_MOVES));
         if (node->HasProp(SG_PROP_OT_PERIOD))
-            time.SetOTPeriod(node->GetIntProp(SG_PROP_OT_PERIOD));
+            time.SetOTPeriod(node->GetRealProp(SG_PROP_OT_PERIOD));
         if (node->HasProp(SG_PROP_OVERHEAD))
-            time.SetOverhead(node->GetIntProp(SG_PROP_OVERHEAD));
+            time.SetOverhead(node->GetRealProp(SG_PROP_OVERHEAD));
     }
 }
 
