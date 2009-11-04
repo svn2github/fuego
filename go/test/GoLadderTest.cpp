@@ -145,7 +145,6 @@ BOOST_AUTO_TEST_CASE(GoLadderTest_TwoLib_1)
     bd.CheckConsistency();
     BOOST_CHECK_EQUAL(result1, true);
     BOOST_CHECK_EQUAL(sequence1.Length(), 5);
-    //SgDebug() << sequence1 << endl;
     BOOST_CHECK(sequence1[0] == Pt(1,2) || sequence1[0] == Pt(2,1));
 
     SgVector<SgPoint> sequence2;
@@ -155,6 +154,45 @@ BOOST_AUTO_TEST_CASE(GoLadderTest_TwoLib_1)
     BOOST_CHECK_EQUAL(result2, true); // true means it is captured.
 
     GoLadderStatus status = GoLadderUtil::LadderStatus(bd, Pt(1, 3),
+                            							false, 0, 0);
+    bd.CheckConsistency();
+    BOOST_CHECK_EQUAL(status, GO_LADDER_CAPTURED);
+}
+
+
+BOOST_AUTO_TEST_CASE(GoLadderTest_SnapBack_1)
+{
+    std::string s(".........\n"
+                  ".........\n"
+                  "..XXX....\n"
+                  "..O......\n"
+                  "..OX.....\n"
+                  "..XO.....\n"
+                  "..XOX....\n"
+                  "...X.....\n"
+                  ".........");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+
+    SgVector<SgPoint> sequence1;
+    bool result1 = GoLadderUtil::Ladder(bd, Pt(6,4), SG_BLACK, 
+    									false, &sequence1);
+    bd.CheckConsistency();
+    BOOST_CHECK_EQUAL(result1, true);
+    BOOST_CHECK_EQUAL(sequence1.Length(), 1);
+    BOOST_CHECK_EQUAL(sequence1[0], Pt(6,5));
+
+    SgVector<SgPoint> sequence2;
+    bool result2 = GoLadderUtil::Ladder(bd, Pt(6, 4), SG_WHITE, 
+    									false, &sequence2);
+    bd.CheckConsistency();
+    BOOST_CHECK_EQUAL(result2, true); // true means it is captured.
+    BOOST_CHECK(sequence2.Length() >= 14);
+    BOOST_CHECK_EQUAL(sequence2[0], Pt(6,5));
+
+    GoLadderStatus status = GoLadderUtil::LadderStatus(bd, Pt(6, 4),
                             							false, 0, 0);
     bd.CheckConsistency();
     BOOST_CHECK_EQUAL(status, GO_LADDER_CAPTURED);
