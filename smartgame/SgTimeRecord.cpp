@@ -134,13 +134,16 @@ void SgTimeRecord::UpdateTimeLeft()
         m_timeLeft[m_player] -= now - m_timeOfLastUpdate;
         if (outOfTime)
         {
+            SgDebug() << "SgTimeRecord: outOfTime\n";
             if (UseOvertime() && m_movesLeft[m_player] <= 0)
             {
+                SgDebug() << "SgTimeRecond: reseting overtime\n";
                 m_timeLeft[m_player] = OTPeriod();
                 m_movesLeft[m_player] = OTNumMoves();
             }
             else if (LoseOnTime())
             {
+                SgDebug() << "SgTimeRecord: lost on time\n";
                 SuspendClock();
             }
         }
@@ -177,6 +180,7 @@ void SgTimeRecord::PlayedMove(SgNode& node, SgBlackWhite player)
                 m_movesLeft[player]--;
                 if (m_movesLeft[player] == 0)
                 {
+                    SgDebug() << "SgTimeRecond: reseting overtime\n";
                     m_movesLeft[player] = OTNumMoves();
                     m_timeLeft[player] = OTPeriod();
                 }

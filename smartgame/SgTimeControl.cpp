@@ -85,6 +85,18 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
     remainingMoves = max(remainingMoves, 1.0);
 
     double timeLeft = time.TimeLeft(toPlay);
+
+    // Transition into overtime smoothly
+    if (useOvertime)
+    {
+        const double otTimeForMove = time.OTPeriod() / time.OTNumMoves();
+        if (otTimeForMove > timeLeft)
+        {
+            timeLeft += time.OTPeriod();
+            remainingMoves = time.OTNumMoves();
+        }
+    }
+
     double timeForMove = timeLeft / remainingMoves - time.Overhead();
 
     // Don't use quite as much time for the first few moves, makes no real
