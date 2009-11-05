@@ -263,13 +263,6 @@ public:
         std::swap(m_vec, vector->m_vec);
     }
 
-    /** @deprecated; use Back() instead */
-    const T& Tail() const
-    {
-        SG_ASSERT(NonEmpty());
-        return m_vec.back();
-    }
-
     /** Returns the Nth-last element of the vector. It must exist.
     */
     const T& TopNth(int index) const
@@ -447,11 +440,6 @@ public:
     T* Top() const
     {
         return static_cast<T*>(SgVector<void*>::Top());
-    }
-
-    T* Tail() const
-    {
-        return static_cast<T*>(SgVector<void*>::Tail());
     }
 
 #if UNUSED
@@ -640,7 +628,7 @@ void SgVector<T>::Merge(const SgVector<T>& vector)
         return;
     else if (IsEmpty())
         operator=(vector);
-    else if (vector.Top() > Tail())
+    else if (vector.Top() > Back())
         // all new elements come after all old elements, just concat lists
         AppendList(vector);
     else

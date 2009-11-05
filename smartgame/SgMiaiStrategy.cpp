@@ -153,7 +153,7 @@ SgPoint SgMiaiStrategy::OpenThreatMove() const
 {
     SG_ASSERT(m_openThreats.MaxLength(1));
     return m_openThreats.IsEmpty() ? SG_NULLPOINT : 
-                                     m_openThreats.Tail();
+                                     m_openThreats.Back();
 }
 
 void SgMiaiStrategy::UndoMove()

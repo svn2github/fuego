@@ -1048,7 +1048,7 @@ bool GoRegion::Has2Conn() const
 {
     SG_ASSERT(m_chains.IsLength(2));
     const GoChain* c1 = m_chains.Top();
-    const GoChain* c2 = m_chains.Tail();
+    const GoChain* c2 = m_chains.Back();
     return Has2ConnForChains(c1, c2);
 }
 
@@ -1066,7 +1066,7 @@ bool GoRegion::Safe2Cuts(const GoBoard& board) const
     SG_ASSERT(m_blocks.IsLength(2));
     const int size = board.Size();
     GoBlock* block1 = m_blocks.Top();
-    GoBlock* block2 = m_blocks.Tail();
+    GoBlock* block2 = m_blocks.Back();
     SgPointSet cuts(Points());
     cuts -= board.AllEmpty();
     if (cuts.IsEmpty())

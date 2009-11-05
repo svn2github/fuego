@@ -38,7 +38,7 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
                             const SgVector<SgPoint>& boundaryAnchors)
 {
     if (boundaryAnchors.IsLength(1)) // single block
-        return Has2IntersectionPoints(board, region, boundaryAnchors.Tail());
+        return Has2IntersectionPoints(board, region, boundaryAnchors.Back());
     else // compute joint liberties of all blocks in region.
     {
         SgVector<SgPoint> sharedLibs;

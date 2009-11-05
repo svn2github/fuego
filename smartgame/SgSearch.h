@@ -892,7 +892,7 @@ inline int SgSearch::IteratedSearch(int depthMin, int depthMax,
 
 inline SgMove SgSearch::PrevMove() const
 {
-    return m_moveStack.Tail();
+    return m_moveStack.Back();
 }
 
 inline SgMove SgSearch::PrevMove2() const

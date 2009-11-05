@@ -339,7 +339,7 @@ void GoSafetySolver::GenBlocksRegions()
                 // easy case of only 2 chains
                 {
                     GoChain* c1 = r->Chains().Top();
-                    GoChain* c2 = r->Chains().Tail();
+                    GoChain* c2 = r->Chains().Back();
                     Merge(c1, c2, r, false); // false = not by search
                     changed = true;
                     break; // to leave iteration
