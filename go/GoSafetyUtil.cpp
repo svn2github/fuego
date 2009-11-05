@@ -372,7 +372,7 @@ bool GoSafetyUtil::Find2Libs(SgPoint p, SgPointSet* libs)
     if (nuLibs >= 2)
     {
         SG_ASSERT(nuLibs == 2 && foundLibs.IsLength(2));
-        libs->Exclude(foundLibs.Top());
+        libs->Exclude(foundLibs.Front());
         libs->Exclude(foundLibs.Back());
     }
 
@@ -395,7 +395,7 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
     else if (allLibs.IsLength(2))
     {
         SG_ASSERT(nuLibs == 2 && allLibs.IsLength(2));
-        miaiPair->first = allLibs.Top();
+        miaiPair->first = allLibs.Front();
         miaiPair->second = allLibs.Back();
         /* */ return true; /* */
     }

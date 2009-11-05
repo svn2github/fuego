@@ -42,7 +42,7 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
     else // compute joint liberties of all blocks in region.
     {
         SgVector<SgPoint> sharedLibs;
-        for (GoBoard::LibertyIterator it(board, boundaryAnchors.Top()); it;
+        for (GoBoard::LibertyIterator it(board, boundaryAnchors.Front()); it;
              ++it)
             if (region.Contains(*it))
                 sharedLibs.Append(*it);

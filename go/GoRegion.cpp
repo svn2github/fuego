@@ -252,7 +252,7 @@ bool GoRegion::HasLibsForBlock(const GoBlock* b, int n) const
 
 void GoRegion::JointLibs(SgVector<SgPoint>* libs) const
 {
-    GoBlock* first = m_blocks.Top();
+    GoBlock* first = m_blocks.Front();
     if (GetFlag(GO_REGION_SINGLE_BLOCK_BOUNDARY))
     {
         InsideLibs(first, libs);
@@ -434,7 +434,7 @@ bool GoRegion::Find2ConnForAll() const
     {
         // is1Vital = false;
         // try to connect everything together with the first block.
-        GoBlock* first = Blocks().Top();
+        GoBlock* first = Blocks().Front();
         if (Find2ConnForAll(m_bd, Points(), first->Stones(), Color()))
             twoLibs = true;
         else
@@ -1047,7 +1047,7 @@ void GoRegion::ComputeBasicFlags()
 bool GoRegion::Has2Conn() const
 {
     SG_ASSERT(m_chains.IsLength(2));
-    const GoChain* c1 = m_chains.Top();
+    const GoChain* c1 = m_chains.Front();
     const GoChain* c2 = m_chains.Back();
     return Has2ConnForChains(c1, c2);
 }
@@ -1065,7 +1065,7 @@ bool GoRegion::Safe2Cuts(const GoBoard& board) const
 {
     SG_ASSERT(m_blocks.IsLength(2));
     const int size = board.Size();
-    GoBlock* block1 = m_blocks.Top();
+    GoBlock* block1 = m_blocks.Front();
     GoBlock* block2 = m_blocks.Back();
     SgPointSet cuts(Points());
     cuts -= board.AllEmpty();

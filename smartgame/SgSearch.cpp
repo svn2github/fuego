@@ -616,7 +616,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                            bool lastNullMove)
 {
     SG_ASSERT(sequence);
-    SG_ASSERT(sequence->IsEmpty() || sequence->Top() != SG_NULLMOVE);
+    SG_ASSERT(sequence->IsEmpty() || sequence->Front() != SG_NULLMOVE);
     SG_ASSERT(alpha < beta);
 
     // Only place we check whether the search has been newly aborted. In all
@@ -745,7 +745,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 }
                 if (sequence->NonEmpty())
                 {
-                    opponentBest = sequence->Top();
+                    opponentBest = sequence->Front();
                     SG_ASSERT(opponentBest != SG_NULLMOVE);
                 }
                 sequence->Push(tryFirst);
@@ -867,7 +867,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
 #ifndef NDEBUG
         if (fHasMove && sequence->NonEmpty() && ! m_aborted)
         {
-            SgMove bestMove = sequence->Top();
+            SgMove bestMove = sequence->Front();
             SG_ASSERT(bestMove != SG_NULLMOVE);
             SG_ASSERT(bestMove == tryFirst || moves.Contains(bestMove));
         }
@@ -901,7 +901,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
             SgMove bestMove = SG_NULLMOVE;
             if (sequence->NonEmpty())
             {
-                bestMove = sequence->Top();
+                bestMove = sequence->Front();
                 SG_ASSERT(bestMove != SG_NULLMOVE);
             }
             SG_ASSERT(alpha <= beta);
@@ -921,7 +921,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     *isExactValue = isSolved;
     if (m_traceNode)
         TraceValue(loValue, 0, *isExactValue);
-    SG_ASSERT(sequence->IsEmpty() || sequence->Top() != SG_NULLMOVE);
+    SG_ASSERT(sequence->IsEmpty() || sequence->Front() != SG_NULLMOVE);
     return loValue;
 }
 

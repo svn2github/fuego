@@ -273,12 +273,6 @@ public:
         return m_vec[m_vec.size() - index];
     }
 
-    /** @deprecated; use Front() instead */
-    const T& Top() const
-    {
-        return Front();
-    }
-
     /** Include all elements from <code>set</code> into this vector.
         Appends new elements at the end of this vector.
     */
@@ -415,6 +409,11 @@ public:
         SgVector<void*>::Exclude(vector);
     }
 
+    T* Front() const
+    {
+        return static_cast<T*>(SgVector<void*>::Front());
+    }
+
     bool Insert(const T* element)
     {
         return SgVector<void*>::Insert(GetVoidPtr(element));
@@ -435,11 +434,6 @@ public:
     T* Pop()
     {
         return static_cast<T*>(SgVector<void*>::Pop());
-    }
-
-    T* Top() const
-    {
-        return static_cast<T*>(SgVector<void*>::Top());
     }
 
 #if UNUSED
@@ -628,7 +622,7 @@ void SgVector<T>::Merge(const SgVector<T>& vector)
         return;
     else if (IsEmpty())
         operator=(vector);
-    else if (vector.Top() > Back())
+    else if (vector.Front() > Back())
         // all new elements come after all old elements, just concat lists
         AppendList(vector);
     else
@@ -642,7 +636,7 @@ template<typename T>
 T SgVector<T>::Pop()
 {
     SG_ASSERT(NonEmpty());
-    T elt = Top();
+    T elt = Front();
     m_vec.erase(m_vec.begin());
     return elt;
 }

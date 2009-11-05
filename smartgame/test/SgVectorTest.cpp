@@ -41,11 +41,11 @@ BOOST_AUTO_TEST_CASE(SgVectorTestAppend)
     SgVector<int> a;
     a.Append(123);
     BOOST_CHECK_EQUAL(a.Length(), 1);
-    BOOST_CHECK_EQUAL(a.Top(), 123);
+    BOOST_CHECK_EQUAL(a.Front(), 123);
     BOOST_CHECK_EQUAL(a.Back(), 123);
     a.Append(456);
     BOOST_CHECK_EQUAL(a.Length(), 2);
-    BOOST_CHECK_EQUAL(a.Top(), 123);
+    BOOST_CHECK_EQUAL(a.Front(), 123);
     BOOST_CHECK_EQUAL(a.Back(), 456);
 }
 
@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPop)
     int x = a.Pop();
     BOOST_CHECK_EQUAL(x, 123);
     BOOST_CHECK_EQUAL(a.Length(), 1);
-    BOOST_CHECK_EQUAL(a.Top(), 456);
+    BOOST_CHECK_EQUAL(a.Front(), 456);
     BOOST_CHECK_EQUAL(a.Back(), 456);
     a.PushBack(x);
     BOOST_CHECK_EQUAL(a.Length(), 2);

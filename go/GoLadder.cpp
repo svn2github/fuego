@@ -473,7 +473,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                 }
 
                 // Liberties of blocks.
-                SgPoint lib2 = libs.Top();
+                SgPoint lib2 = libs.Front();
                 movesToTry.Append(lib1);
                 movesToTry.Append(lib2);
 
@@ -517,7 +517,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
             else
             {
                 // AR: split HunterLadder into two methods (1 vs 2 libs)
-                SgPoint lib2 = libs.IsEmpty() ? SG_NULLMOVE : libs.Top();
+                SgPoint lib2 = libs.IsEmpty() ? SG_NULLMOVE : libs.Front();
                 result = HunterLadder(0, numLib, lib1, lib2, adjBlk,
                                       sequence);
             }

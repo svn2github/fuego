@@ -145,7 +145,7 @@ void GoStaticSafetySolver::TestAlive(SgVectorOf<GoBlock>* blocks,
             (*it)->SetToSafe();
         }
 
-        color = blocks->Top()->Color();
+        color = blocks->Front()->Color();
         AddToSafe(m_board, blockPoints, color, safe,
                   "TestAlive-Blocks", 0, false);
 

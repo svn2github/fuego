@@ -140,7 +140,7 @@ void GoRegionBoard::UpdateBlock(int move, SgBlackWhite moveColor)
         }
         if (old.IsLength(1)) // append to single neighbor block
         {
-            GoBlock* b = old.Top();
+            GoBlock* b = old.Front();
             AppendStone(b, move);
             done = true;
         }
@@ -636,7 +636,7 @@ void GoRegionBoard::FindBlocksWithEye()
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             if ((*it)->Blocks().IsLength(1))
             {
-                GoBlock* b = (*it)->Blocks().Top();
+                GoBlock* b = (*it)->Blocks().Front();
                 (b)->TestFor1Eye(*it);
             }
     }
