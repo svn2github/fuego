@@ -392,6 +392,11 @@ public:
         SgVector<void*>::Append(GetVoidPtr(element));
     }
     
+    T* Back() const
+    {
+        return static_cast<T*>(SgVector<void*>::Back());
+    }
+
     bool Contains(const T* element) const
     {
         SG_ASSERT(element);
@@ -426,6 +431,12 @@ public:
     {
         SG_ASSERT(element);
         SgVector<void*>::Push(GetVoidPtr(element));
+    }
+
+    void PushBack(const T* element)
+    {
+        SG_ASSERT(element);
+        SgVector<void*>::PushBack(GetVoidPtr(element));
     }
 
     T* Pop()
