@@ -203,11 +203,11 @@ void GoGtpEngine::ApplyTimeSettings()
     SgTimeRecord& time = game.Time();
     SgNode& node = *game.CurrentNode();
     int mainTime = m_timeSettings.MainTime();
-    time.SetClock(node, SG_BLACK, mainTime);
-    time.SetClock(node, SG_WHITE, mainTime);
-    time.SetOverhead(m_overhead);
     time.SetOTPeriod(m_timeSettings.ByoYomiTime());
     time.SetOTNumMoves(m_timeSettings.ByoYomiStones());
+    time.SetOverhead(m_overhead);
+    time.SetClock(node, SG_BLACK, mainTime);
+    time.SetClock(node, SG_WHITE, mainTime);
     SgNode& root = game.Root();
     if (mainTime > 0)
         root.Add(new SgPropTime(SG_PROP_TIME, mainTime));

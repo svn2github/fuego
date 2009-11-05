@@ -123,6 +123,11 @@ void SgTimeRecord::SetClock(SgNode& node, SgBlackWhite player, double time)
     m_timeLeft[player] = time;
     if (player == m_player)
         m_timeOfLastUpdate = SgTime::Get();
+    if (m_timeLeft[player] <= 0.0001)
+    {
+        m_timeLeft[player] = OTPeriod();
+        m_movesLeft[player] = OTNumMoves();
+    }
 }
 
 void SgTimeRecord::UpdateTimeLeft()
