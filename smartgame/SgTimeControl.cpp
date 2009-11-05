@@ -72,32 +72,29 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
     GetPositionInfo(toPlay, movesPlayed, estimatedRemainingMoves);
     const bool useOvertime = time.UseOvertime();
     const bool isInOvertime = (useOvertime && time.MovesLeft(toPlay) > 0);
-    double remainingMoves = 0;
+    double remainingMoves = 0.0;
+    double timeForMove = 0.0;
+    double timeLeft = time.TimeLeft(toPlay);
     if (isInOvertime)
+    {
         remainingMoves = time.MovesLeft(toPlay);
+        timeForMove = timeLeft / remainingMoves - time.Overhead();
+    }
     else
     {
         double estimatedTotalMoves = movesPlayed + estimatedRemainingMoves;
         remainingMoves = m_remainingConstant * estimatedTotalMoves;
         if (useOvertime && remainingMoves > estimatedRemainingMoves)
             remainingMoves = estimatedRemainingMoves;
-    }
-    remainingMoves = max(remainingMoves, 1.0);
-
-    double timeLeft = time.TimeLeft(toPlay);
-
-    // Transition into overtime smoothly
-    if (useOvertime)
-    {
-        const double otTimeForMove = time.OTPeriod() / time.OTNumMoves();
-        if (otTimeForMove > timeLeft)
+        remainingMoves = max(remainingMoves, 1.0);
+        timeForMove = time.TimeLeft(toPlay) / remainingMoves - time.Overhead();
+        if (useOvertime)
         {
-            timeLeft += time.OTPeriod();
-            remainingMoves = time.OTNumMoves();
+            double firstOvertimeMove = time.OTPeriod() / time.OTNumMoves();
+            if (timeForMove < firstOvertimeMove)
+                timeForMove = firstOvertimeMove;
         }
     }
-
-    double timeForMove = timeLeft / remainingMoves - time.Overhead();
 
     // Don't use quite as much time for the first few moves, makes no real
     // difference in the quality of the moves.
