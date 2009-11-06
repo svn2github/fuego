@@ -20,7 +20,7 @@ void SgListUtility::Intersection(SgList<int>* list, const SgList<int>& list2)
      {
          // @todo speed up by hash tags, if used in time-critical code
          if (list2.Contains(*it))
-             newList.Append(*it);
+             newList.PushBack(*it);
      }
      newList.SwapWith(list);
 }
@@ -62,7 +62,7 @@ void SgVectorUtility::Intersection(SgVector<int>* vector,
      {
          // @todo speed up by hash tags, if used in time-critical code
          if (vector2.Contains(*it))
-             newVector.Append(*it);
+             newVector.PushBack(*it);
      }
      newVector.SwapWith(vector);
 }

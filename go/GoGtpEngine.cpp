@@ -322,7 +322,7 @@ void GoGtpEngine::CmdAllLegal(GtpCommand& cmd)
     SgVector<SgPoint> allLegal;
     for (GoBoard::Iterator p(Board()); p; ++p)
         if (Board().IsLegal(*p, color))
-            allLegal.Append(*p);
+            allLegal.PushBack(*p);
     cmd << SgWritePointList(allLegal, "", false);
 }
 
@@ -924,7 +924,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
             if (p == SG_PASS)
                 break;
             playerBd.Play(p, SG_BLACK);
-            stones.Append(p);
+            stones.PushBack(p);
         }
     }
     SG_ASSERT(stones.Length() <= n); // less than n is allowed by GTP standard

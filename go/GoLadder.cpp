@@ -82,7 +82,7 @@ void GoLadder::FilterAdjacent(GoPointList& adjBlocks)
         if (m_bd->IsColor(block, m_hunterColor)
             && m_bd->InAtari(block)
             && BlockIsAdjToPrey(block, 1))
-            temp.Append(block);
+            temp.PushBack(block);
     }
     ReduceToBlocks(temp);
     adjBlocks = temp;
@@ -127,14 +127,14 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
         // need to check again.
         GoPointList newAdj;
         if (m_bd->InAtari(move))
-            newAdj.Append(move);
+            newAdj.PushBack(move);
         for (GoPointList::Iterator it(adjBlk); it; ++it)
         {
             SgPoint block = *it;
             if (! m_bd->AreInSameBlock(block, move))
             {
                 if (! m_bd->CapturingMove() || m_bd->InAtari(block))
-                    newAdj.Append(block);
+                    newAdj.PushBack(block);
             }
         }
         if (move == lib1)
@@ -177,7 +177,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
                 MarkStonesAsPrey(block, &newStones);
                 GoPointList temp =
                     GoBoardUtil::AdjacentStones(*m_bd, block);
-                newAdj.Append(temp);
+                newAdj.PushBackList(temp);
                 for (GoBoard::LibertyIterator it(*m_bd, block); it; ++it)
                     newLib.Include(*it);
             }
@@ -200,7 +200,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         }
         else
         {
-            neighbors.Append(lib1);
+            neighbors.PushBack(lib1);
         }
         if (m_bd->CapturingMove())
         {   // Add the points at the captured stones that are adjacent to the
@@ -232,7 +232,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
 
         SgSList<SgPoint,4> temp =
             NeighborsOfColor(*m_bd, move, m_hunterColor);
-        newAdj.Append(temp);
+        newAdj.PushBackList(temp);
         FilterAdjacent(newAdj);
         result = HunterLadder(depth+1, numLib, lib1, lib2, newAdj, sequence);
         if (sequence)
@@ -397,9 +397,9 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
             SgPoint stone = *it;
             if (m_bd->Occupied(stone) && ! visited.Contains(stone))
             {
-                result.Append(stone);
+                result.PushBack(stone);
                 for (GoBoard::StoneIterator it(*m_bd, stone); it; ++it)
-                    visited.Append(*it);
+                    visited.PushBack(*it);
             }
         }
         stones = result;
@@ -429,7 +429,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
     {
         SgVector<SgPoint> libs;
         for (GoBoard::LibertyIterator it(*m_bd, prey); it; ++it)
-            libs.Append(*it);
+            libs.PushBack(*it);
         SgPoint lib1 = libs.Pop();
         m_partOfPrey.Clear();
         MarkStonesAsPrey(prey);
@@ -469,13 +469,13 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                     if (m_bd->NumLiberties(block) <= 2)
                         for (GoBoard::LibertyIterator it(*m_bd, block); it;
                              ++it)
-                            movesToTry.Append(*it);
+                            movesToTry.PushBack(*it);
                 }
 
                 // Liberties of blocks.
                 SgPoint lib2 = libs.Front();
-                movesToTry.Append(lib1);
-                movesToTry.Append(lib2);
+                movesToTry.PushBack(lib1);
+                movesToTry.PushBack(lib2);
 
                 // Moves one away from liberties.
                 SgVector<SgPoint> neighbors;

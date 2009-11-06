@@ -31,7 +31,7 @@ void UpdateChanges(SgPoint p, SgSList<SgPoint,SG_MAXPOINT>& changes,
                    int& nuChanges)
 {
     if (! changes.Exclude(p))
-        changes.Append(p);
+        changes.PushBack(p);
     ++nuChanges;
 }
 
@@ -117,14 +117,14 @@ void GoBoard::CheckConsistencyBlock(SgPoint point) const
             continue;
         if (GetColor(p) == color)
         {
-            stones.Append(p);
+            stones.PushBack(p);
             stack.Push(p - SG_NS);
             stack.Push(p - SG_WE);
             stack.Push(p + SG_WE);
             stack.Push(p + SG_NS);
         }
         else if (GetColor(p) == SG_EMPTY)
-            liberties.Append(p);
+            liberties.PushBack(p);
     }
     const Block* block = m_state.m_block[point];
     SG_DEBUG_ONLY(block);
@@ -197,22 +197,22 @@ void GoBoard::AddStoneToBlock(SgPoint p, SgBlackWhite c, Block* block,
     if (IsEmpty(p - SG_NS) && ! IsAdjacentTo(p - SG_NS, block))
     {
         block->AppendLiberty(p - SG_NS);
-        entry.m_newLibs.Append(p - SG_NS);
+        entry.m_newLibs.PushBack(p - SG_NS);
     }
     if (IsEmpty(p - SG_WE) && ! IsAdjacentTo(p - SG_WE, block))
     {
         block->AppendLiberty(p - SG_WE);
-        entry.m_newLibs.Append(p - SG_WE);
+        entry.m_newLibs.PushBack(p - SG_WE);
     }
     if (IsEmpty(p + SG_WE) && ! IsAdjacentTo(p + SG_WE, block))
     {
         block->AppendLiberty(p + SG_WE);
-        entry.m_newLibs.Append(p + SG_WE);
+        entry.m_newLibs.PushBack(p + SG_WE);
     }
     if (IsEmpty(p + SG_NS) && ! IsAdjacentTo(p + SG_NS, block))
     {
         block->AppendLiberty(p + SG_NS);
-        entry.m_newLibs.Append(p + SG_NS);
+        entry.m_newLibs.PushBack(p + SG_NS);
     }
     entry.m_oldAnchor = block->Anchor();
     block->UpdateAnchor(p);
@@ -252,16 +252,16 @@ SgSList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p) const
     {
         Block* block;
         if ((block = m_state.m_block[p - SG_NS]) != 0)
-            result.Append(block);
+            result.PushBack(block);
         if ((block = m_state.m_block[p - SG_WE]) != 0
             && ! result.Contains(block))
-            result.Append(block);
+            result.PushBack(block);
         if ((block = m_state.m_block[p + SG_WE]) != 0
             && ! result.Contains(block))
-            result.Append(block);
+            result.PushBack(block);
         if ((block = m_state.m_block[p + SG_NS]) != 0
             && ! result.Contains(block))
-            result.Append(block);
+            result.PushBack(block);
     }
     return result;
 }
@@ -274,16 +274,16 @@ SgSList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p,
     {
         Block* block;
         if (IsColor(p - SG_NS, c))
-            result.Append(m_state.m_block[p - SG_NS]);
+            result.PushBack(m_state.m_block[p - SG_NS]);
         if (IsColor(p - SG_WE, c)
             && ! result.Contains((block = m_state.m_block[p - SG_WE])))
-            result.Append(block);
+            result.PushBack(block);
         if (IsColor(p + SG_WE, c)
             && ! result.Contains((block = m_state.m_block[p + SG_WE])))
-            result.Append(block);
+            result.PushBack(block);
         if (IsColor(p + SG_NS, c)
             && ! result.Contains((block = m_state.m_block[p + SG_NS])))
-            result.Append(block);
+            result.PushBack(block);
     }
     return result;
 }
@@ -515,11 +515,11 @@ void GoBoard::InitBlock(GoBoard::Block& block, SgBlackWhite c, SgPoint anchor)
         if (m_state.m_color[p] == SG_EMPTY)
         {
             if (! liberties.Contains(p))
-                liberties.Append(p);
+                liberties.PushBack(p);
         }
         else if (m_state.m_color[p] == c)
         {
-            stones.Append(p);
+            stones.PushBack(p);
             m_state.m_block[p] = &block;
             for (SgNb4Iterator it(p); it; ++it)
                 if (! m_isBorder[*it] && m_marker.NewMark(*it))
@@ -693,7 +693,7 @@ void GoBoard::KillBlock(const Block* block)
         SgPoint stn = *it;
         AddLibToAdjBlocks(stn, opp);
         RemoveStoneForUndo(stn);
-        m_capturedStones.Append(stn);
+        m_capturedStones.PushBack(stn);
         m_state.m_block[stn] = 0;
     }
     int nuStones = block->Stones().Length();
@@ -853,7 +853,7 @@ void GoBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
         b->ExcludeLiberty(p);
         if (b->Color() == opp && b->NumLiberties() == 0)
         {
-            entry.m_killed.Append(b);
+            entry.m_killed.PushBack(b);
             KillBlock(b);
         }
     }

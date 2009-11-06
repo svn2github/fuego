@@ -26,7 +26,7 @@ void SgEvaluatedMoves::AddMove(SgPoint move, int value)
             m_moveList.Clear();
         }
         if (value >= m_bestValue)
-            m_moveList.Append(move);
+            m_moveList.PushBack(move);
     }
 }
 
@@ -107,7 +107,7 @@ void SgEvaluatedMovesArray::BestMoves(SgVector<SgPoint>& best, int nuMoves)
     while (--nuMoves >= 0)
     {
         int nextBest = SelectNextBest(best);
-        best.Append(nextBest);
+        best.PushBack(nextBest);
     }
 }
 

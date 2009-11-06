@@ -212,7 +212,7 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
         {
             if (anchors.Length() > 1)
                 return false;
-            anchors.Append(nbAnchor);
+            anchors.PushBack(nbAnchor);
         }
     }
     if (anchors.Length() == 1)
@@ -241,7 +241,7 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
                 break;
             }
             if (! foundAnchors.Contains(nbAnchor))
-                foundAnchors.Append(nbAnchor);
+                foundAnchors.PushBack(nbAnchor);
         }
         if (isSecondSharedEye && foundAnchors.Length() == 2)
             return true;

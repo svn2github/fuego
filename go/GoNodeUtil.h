@@ -48,7 +48,7 @@ SgNode* GoNodeUtil::CreateRoot(const BOARD& board)
     for (typename BOARD::Iterator it(board); it; ++it)
     {
         if (board.Occupied(*it))
-            pointList[board.GetColor(*it)].Append(*it);
+            pointList[board.GetColor(*it)].PushBack(*it);
     }
     return CreatePosition(board.Size(), board.ToPlay(),
                 pointList[SG_BLACK], pointList[SG_WHITE]);

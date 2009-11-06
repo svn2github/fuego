@@ -92,7 +92,7 @@ void GoUctBoard::CheckConsistencyBlock(SgPoint point) const
             continue;
         if (GetColor(p) == color)
         {
-            stones.Append(p);
+            stones.PushBack(p);
             if (p == block->m_anchor)
                 anchorFound = true;
             stack.Push(p - SG_NS);
@@ -101,7 +101,7 @@ void GoUctBoard::CheckConsistencyBlock(SgPoint point) const
             stack.Push(p + SG_NS);
         }
         else if (GetColor(p) == SG_EMPTY)
-            liberties.Append(p);
+            liberties.PushBack(p);
     }
     SG_ASSERT(anchorFound);
     SG_ASSERT(color == block->m_color);
@@ -120,32 +120,32 @@ void GoUctBoard::AddLibToAdjBlocks(SgPoint p, SgBlackWhite c)
     if (m_color[p - SG_NS] == c && (b = m_block[p - SG_NS]) != 0)
     {
         m_marker2.Include(b->m_anchor);
-        b->m_liberties.Append(p);
+        b->m_liberties.PushBack(p);
     }
     if (m_color[p + SG_NS] == c && (b = m_block[p + SG_NS]) != 0
         && m_marker2.NewMark(b->m_anchor))
-        b->m_liberties.Append(p);
+        b->m_liberties.PushBack(p);
     if (m_color[p - SG_WE] == c && (b = m_block[p - SG_WE]) != 0
         && m_marker2.NewMark(b->m_anchor))
-        b->m_liberties.Append(p);
+        b->m_liberties.PushBack(p);
     if (m_color[p + SG_WE] == c && (b = m_block[p + SG_WE]) != 0
         && ! m_marker2.Contains(b->m_anchor))
-        b->m_liberties.Append(p);
+        b->m_liberties.PushBack(p);
 }
 
 void GoUctBoard::AddStoneToBlock(SgPoint p, Block* block)
 {
     // Stone already placed
     SG_ASSERT(IsColor(p, block->m_color));
-    block->m_stones.Append(p);
+    block->m_stones.PushBack(p);
     if (IsEmpty(p - SG_NS) && ! IsAdjacentTo(p - SG_NS, block))
-        block->m_liberties.Append(p - SG_NS);
+        block->m_liberties.PushBack(p - SG_NS);
     if (IsEmpty(p - SG_WE) && ! IsAdjacentTo(p - SG_WE, block))
-        block->m_liberties.Append(p - SG_WE);
+        block->m_liberties.PushBack(p - SG_WE);
     if (IsEmpty(p + SG_WE) && ! IsAdjacentTo(p + SG_WE, block))
-        block->m_liberties.Append(p + SG_WE);
+        block->m_liberties.PushBack(p + SG_WE);
     if (IsEmpty(p + SG_NS) && ! IsAdjacentTo(p + SG_NS, block))
-        block->m_liberties.Append(p + SG_NS);
+        block->m_liberties.PushBack(p + SG_NS);
     m_block[p] = block;
 }
 
@@ -157,13 +157,13 @@ void GoUctBoard::CreateSingleStoneBlock(SgPoint p, SgBlackWhite c)
     Block& block = m_blockArray[p];
     block.InitSingleStoneBlock(c, p);
     if (IsEmpty(p - SG_NS))
-        block.m_liberties.Append(p - SG_NS);
+        block.m_liberties.PushBack(p - SG_NS);
     if (IsEmpty(p - SG_WE))
-        block.m_liberties.Append(p - SG_WE);
+        block.m_liberties.PushBack(p - SG_WE);
     if (IsEmpty(p + SG_WE))
-        block.m_liberties.Append(p + SG_WE);
+        block.m_liberties.PushBack(p + SG_WE);
     if (IsEmpty(p + SG_NS))
-        block.m_liberties.Append(p + SG_NS);
+        block.m_liberties.PushBack(p + SG_NS);
     m_block[p] = &block;
 }
 
@@ -193,7 +193,7 @@ void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
             largestBlock = adjBlock;
         }
     }
-    largestBlock->m_stones.Append(p);
+    largestBlock->m_stones.PushBack(p);
     SgReserveMarker reserve(m_marker);
     m_marker.Clear();
     for (Block::LibertyIterator lib(largestBlock->m_liberties); lib; ++lib)
@@ -205,22 +205,22 @@ void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
             continue;
         for (Block::StoneIterator stn(adjBlock->m_stones); stn; ++stn)
         {
-            largestBlock->m_stones.Append(*stn);
+            largestBlock->m_stones.PushBack(*stn);
             m_block[*stn] = largestBlock;
         }
         for (Block::LibertyIterator lib(adjBlock->m_liberties); lib; ++lib)
             if (m_marker.NewMark(*lib))
-                largestBlock->m_liberties.Append(*lib);
+                largestBlock->m_liberties.PushBack(*lib);
     }
     m_block[p] = largestBlock;
     if (IsEmpty(p - SG_NS) && m_marker.NewMark(p - SG_NS))
-        largestBlock->m_liberties.Append(p - SG_NS);
+        largestBlock->m_liberties.PushBack(p - SG_NS);
     if (IsEmpty(p - SG_WE) && m_marker.NewMark(p - SG_WE))
-        largestBlock->m_liberties.Append(p - SG_WE);
+        largestBlock->m_liberties.PushBack(p - SG_WE);
     if (IsEmpty(p + SG_WE) && m_marker.NewMark(p + SG_WE))
-        largestBlock->m_liberties.Append(p + SG_WE);
+        largestBlock->m_liberties.PushBack(p + SG_WE);
     if (IsEmpty(p + SG_NS) && m_marker.NewMark(p + SG_NS))
-        largestBlock->m_liberties.Append(p + SG_NS);
+        largestBlock->m_liberties.PushBack(p + SG_NS);
 }
 
 void GoUctBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
@@ -267,11 +267,11 @@ void GoUctBoard::Init(const GoBoard& bd)
             block.InitNewBlock(c, p);
             for (GoBoard::StoneIterator it2(bd, p); it2; ++it2)
             {
-                block.m_stones.Append(*it2);
+                block.m_stones.PushBack(*it2);
                 m_block[*it2] = &block;
             }
             for (GoBoard::LibertyIterator it2(bd, p); it2; ++it2)
-                block.m_liberties.Append(*it2);
+                block.m_liberties.PushBack(*it2);
         }
     }
     CheckConsistency();
@@ -356,7 +356,7 @@ void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                 KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(b);
+            ownAdjBlocks.PushBack(b);
     }
     if ((b = m_block[p - SG_WE]) != 0 && m_marker.NewMark(b->m_anchor))
     {
@@ -367,7 +367,7 @@ void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                 KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(b);
+            ownAdjBlocks.PushBack(b);
     }
     if ((b = m_block[p + SG_WE]) != 0 && m_marker.NewMark(b->m_anchor))
     {
@@ -378,7 +378,7 @@ void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                 KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(b);
+            ownAdjBlocks.PushBack(b);
     }
     if ((b = m_block[p + SG_NS]) != 0 && ! m_marker.Contains(b->m_anchor))
     {
@@ -389,7 +389,7 @@ void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                 KillBlock(b);
         }
         else
-            ownAdjBlocks.Append(b);
+            ownAdjBlocks.PushBack(b);
     }
 }
 
@@ -411,7 +411,7 @@ void GoUctBoard::KillBlock(const Block* block)
         --nuNeighbors[p - SG_WE];
         --nuNeighbors[p + SG_WE];
         --nuNeighbors[p + SG_NS];
-        m_capturedStones.Append(p);
+        m_capturedStones.PushBack(p);
         m_block[p] = 0;
     }
     int nuStones = block->m_stones.Length();

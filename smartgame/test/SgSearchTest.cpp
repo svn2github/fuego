@@ -176,7 +176,7 @@ void TestSearch::Generate(SgVector<SgMove>* moves, int depth)
     {
         if (m_write)
             SgDebug() << Node(child).m_move << ' ';
-        moves->Append(Node(child).m_move);
+        moves->PushBack(Node(child).m_move);
         child = Node(child).m_sibling;
     }
     if (m_write)

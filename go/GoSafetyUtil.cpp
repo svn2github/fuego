@@ -41,7 +41,7 @@ bool Find2Connections(const GoBoard& bd, SgPoint block, SgPointSet* libs,
     {
         if (libs->Contains(*it))
         {
-            blockLibs.Append(*it);
+            blockLibs.PushBack(*it);
             ++nuLibs;
             if (nuLibs >= 2)
                 break;
@@ -100,7 +100,7 @@ bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
         for (SgVectorIterator<SgPoint> it(unsafe); it; ++it)
             if (Find2Connections(bd, *it, &libs, &usedLibs, &safe))
             {
-                newSafe.Append(*it);
+                newSafe.PushBack(*it);
             }
 
         unsafe.Exclude(newSafe);
@@ -151,7 +151,7 @@ void TestLiberty(SgPoint lib, const SgPointSet& libs,
 {
     if (libs.Contains(lib))
     {
-        foundLibs->Append(lib);
+        foundLibs->PushBack(lib);
         ++(*nuLibs);
     }
 }
@@ -417,10 +417,10 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
                 }
             }
             if (share)
-                shared.Append(*it);
+                shared.PushBack(*it);
                 // this lib is shared with other interior points
             else
-                not_shared.Append(*it);
+                not_shared.PushBack(*it);
         }
         // if has >= 3 not_shared libs, then try to find 2 original libs (not
         // new-created libs (because the new one might be ip points)

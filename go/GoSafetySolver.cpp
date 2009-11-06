@@ -69,8 +69,8 @@ void GoSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
             {   GoBlock* b2 = *it;
                 if (! blocks->Contains(b2) && b2->ContainsHealthy(r))
                 {
-                    blocks->Append(b2);
-                    toTest.Append(b2);
+                    blocks->PushBack(b2);
+                    toTest.PushBack(b2);
 }   }   }   }   }
 
 void GoSafetySolver::FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
@@ -85,11 +85,11 @@ void GoSafetySolver::FindTestSets(SgVectorOf<SgVectorOf<GoBlock> >* sets,
         if (! doneSoFar.Contains(block))
         {
             SgVectorOf<GoBlock>* blocks = new SgVectorOf<GoBlock>;
-            blocks->Append(block);
+            blocks->PushBack(block);
             
             FindClosure(blocks);
-            doneSoFar.AppendList(*blocks);
-            sets->Append(blocks);
+            doneSoFar.PushBackList(*blocks);
+            sets->PushBack(blocks);
         }
     }
 }

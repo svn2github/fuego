@@ -22,7 +22,7 @@ void AddToList(int from, int to, SgList<int>& list)
 void AddToVector(int from, int to, SgVector<int>& vector)
 {
     for (int i = from; i <= to; ++i)
-        vector.Append(i);
+        vector.PushBack(i);
 }
 
 BOOST_AUTO_TEST_CASE(SgListUtilityTestIntersection)

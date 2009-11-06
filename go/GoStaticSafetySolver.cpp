@@ -85,7 +85,7 @@ void GoStaticSafetySolver::TestAdjacent(SgVectorOf<GoRegion>* regions,
     SgVectorOf<GoRegion> newregions;
     for (SgVectorIteratorOf<GoRegion> it(*regions); it; ++it)
         if ((*it)->IsSurrounded(blocks))
-            newregions.Append(*it);
+            newregions.PushBack(*it);
     *regions = newregions;
 }
 
@@ -121,7 +121,7 @@ void GoStaticSafetySolver::TestAlive(SgVectorOf<GoBlock>* blocks,
                 has2 = (nuRegions >= 2);
             }
             if (! has2)
-                toDelete.Append(*it);
+                toDelete.PushBack(*it);
         }
 
         changed = toDelete.NonEmpty();
@@ -171,8 +171,8 @@ void GoStaticSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
             {   GoBlock* b2 = *it;
                 if (! blocks->Contains(b2) && b2->ContainsHealthy(r))
                 {
-                    blocks->Append(b2);
-                    toTest.Append(b2);
+                    blocks->PushBack(b2);
+                    toTest.PushBack(b2);
                 }
             }
         }
@@ -192,11 +192,11 @@ void GoStaticSafetySolver::FindTestSets(
         if (! doneSoFar.Contains(block))
         {
             SgVectorOf<GoBlock>* blocks = new SgVectorOf<GoBlock>;
-            blocks->Append(block);
+            blocks->PushBack(block);
 
             FindClosure(blocks);
-            doneSoFar.AppendList(*blocks);
-            sets->Append(blocks);
+            doneSoFar.PushBackList(*blocks);
+            sets->PushBack(blocks);
         }
     }
 }

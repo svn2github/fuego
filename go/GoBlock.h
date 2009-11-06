@@ -136,7 +136,7 @@ public:
     void AddHealthy(GoRegion* r)
     {
         if (! m_healthy.Contains(r))
-            m_healthy.Append(r);
+            m_healthy.PushBack(r);
 #ifndef NDEBUG
         else
             // @todo debug me! see case 1540-1550 in uct_move.tst

@@ -772,7 +772,7 @@ float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi,
         SG_ASSERT(c == SG_EMPTY);
         stack.Push(*it);
         mark.Include(*it);
-        list.Append(*it);
+        list.PushBack(*it);
         SgBWArray<bool> adjacent(false);
         int size = 0;
         while (! stack.IsEmpty())
@@ -790,7 +790,7 @@ float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi,
                 {
                     stack.Push(*it2);
                     mark.Include(*it2);
-                    list.Append(*it2);
+                    list.PushBack(*it2);
                 }
         }
         if (adjacent[SG_BLACK] && ! adjacent[SG_WHITE])

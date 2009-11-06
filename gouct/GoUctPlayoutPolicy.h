@@ -351,7 +351,7 @@ void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::Generate(GoPointList& moves)
             continue;
         }
         if (m_bd.GetColor(p) == opp)
-            moves.Append(m_bd.TheLiberty(p));
+            moves.PushBack(m_bd.TheLiberty(p));
     }
 }
 
@@ -409,7 +409,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
     if (m_bd.InAtari(m_lastMove))
     {
         SgMove mv = m_bd.TheLiberty(m_lastMove);
-        m_moves.Append(mv);
+        m_moves.PushBack(mv);
         return true;
     }
     return false;
@@ -431,12 +431,12 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
         SgPoint anchor = m_bd.Anchor(*it);
         if (anchorList.Contains(anchor))
             continue;
-        anchorList.Append(anchor);
+        anchorList.PushBack(anchor);
 
         // Check if move on last liberty would escape the atari
         SgPoint theLiberty = m_bd.TheLiberty(anchor);
         if (! GoBoardUtil::SelfAtari(m_bd, theLiberty))
-            m_moves.Append(theLiberty);
+            m_moves.PushBack(theLiberty);
 
         // Capture adjacent blocks
         for (GoAdjBlockIterator<BOARD> it2(m_bd, anchor, 1); it2; ++it2)
@@ -449,7 +449,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
             // GoBoardUtil::SelfAtari(theLiberty), if the move escapes the
             // atari
             if (oppLiberty != theLiberty)
-                m_moves.Append(oppLiberty);
+                m_moves.PushBack(oppLiberty);
         }
     }
     return ! m_moves.IsEmpty();
@@ -464,7 +464,7 @@ void GoUctPlayoutPolicy<BOARD>::PlayGoodLiberties(SgPoint block)
             if (  GoUctUtil::GainsLiberties(m_bd, block, *it)
                && ! GoBoardUtil::SelfAtari(m_bd, *it)
                )
-                m_moves.Append(*it);
+                m_moves.PushBack(*it);
 }
 
 template<class BOARD>
@@ -493,7 +493,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
                 const SgPoint anchor = m_bd.Anchor(*it);
                 if (! anchorList.Contains(anchor))
                 {
-                    anchorList.Append(anchor);
+                    anchorList.PushBack(anchor);
                     PlayGoodLiberties(anchor);
                 }
             }
@@ -621,7 +621,7 @@ void GoUctPlayoutPolicy<BOARD>::GenerateNakadeMove(SgPoint p)
                     if (++n > 2)
                         break;
                 }
-            m_moves.Append(p);
+            m_moves.PushBack(p);
         }
         else if (numEmptyNeighbors == 1)
         {
@@ -636,7 +636,7 @@ void GoUctPlayoutPolicy<BOARD>::GenerateNakadeMove(SgPoint p)
                         {
                             if (m_bd.NumEmptyNeighbors(*it2) == 1
                                 && m_bd.NumNeighbors(*it2, toPlay) == 0)
-                                m_moves.Append(*it);
+                                m_moves.PushBack(*it);
                             break;
                         }
                     break;
@@ -687,7 +687,7 @@ inline void GoUctPlayoutPolicy<BOARD>::GeneratePatternMove(SgPoint p)
     if (m_bd.IsEmpty(p)
         && m_patterns.MatchAny(p)
         && ! GoBoardUtil::SelfAtari(m_bd, p))
-        m_moves.Append(p);
+        m_moves.PushBack(p);
 }
 
 template<class BOARD>
@@ -698,7 +698,7 @@ inline void GoUctPlayoutPolicy<BOARD>::GeneratePatternMove2(SgPoint p,
         && ! SgPointUtil::In8Neighborhood(lastMove, p)
         && m_patterns.MatchAny(p)
         && ! GoBoardUtil::SelfAtari(m_bd, p))
-        m_moves.Append(p);
+        m_moves.PushBack(p);
 }
 
 template<class BOARD>
@@ -715,12 +715,12 @@ GoPointList GoUctPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
     {
         for (typename BOARD::Iterator it(m_bd); it; ++it)
             if (m_bd.IsEmpty(*it) && GeneratePoint(*it))
-                result.Append(*it);
+                result.PushBack(*it);
     }
     // Move in m_moves are not checked yet, if legal etc.
     for (GoPointList::Iterator it(m_moves); it; ++it)
         if (m_checked || GeneratePoint(*it))
-            result.Append(*it);
+            result.PushBack(*it);
     return result;
 }
 

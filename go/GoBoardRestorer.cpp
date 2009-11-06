@@ -19,7 +19,7 @@ GoBoardRestorer::GoBoardRestorer(GoBoard& bd)
       m_rules(bd.Rules())
 {
     for (int i = 0; i < bd.MoveNumber(); ++i)
-        m_moves.Append(bd.Move(i));
+        m_moves.PushBack(bd.Move(i));
 }
 
 GoBoardRestorer::~GoBoardRestorer()

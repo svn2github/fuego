@@ -18,7 +18,7 @@ void GoBoardHistory::SetFromBoard(const GoBoard& bd)
     m_setup = bd.Setup();
     m_moves.Clear();
     for (int i = 0; i < bd.MoveNumber(); ++i)
-        m_moves.Append(bd.Move(i));
+        m_moves.PushBack(bd.Move(i));
     m_toPlay = bd.ToPlay();
 }
 

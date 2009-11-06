@@ -379,7 +379,7 @@ void GoRegionBoard::RemoveBlock(GoBlock* b, bool isExecute,
 void GoRegionBoard::AddBlock(GoBlock* b, bool isExecute)
 {
     SgBlackWhite color = b->Color();
-    AllBlocks(color).Append(b);
+    AllBlocks(color).PushBack(b);
     for (GoBoard::StoneIterator it(Board(), b->Anchor()); it; ++it)
         m_block[*it] = b;
     if (isExecute)
@@ -424,7 +424,7 @@ void GoRegionBoard::FindNewNeighborRegions(SgPoint move,
     SgVector<SgPoint> nb;
     for (Nb4Iterator it(move); it; ++it)
         if (Board().IsEmpty(*it))
-            nb.Append(*it);
+            nb.PushBack(*it);
 
     SgVectorOf<GoBlock> captures;
     PreviousBlocksAt(nb, OppBW(moveColor), &captures);
@@ -441,7 +441,7 @@ void GoRegionBoard::RegionsAt(const SgPointSet& area, SgBlackWhite color,
 {
     for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         if ((*it)->Points().Overlaps(area))
-            regions->Append(*it);
+            regions->PushBack(*it);
 }
 
 void GoRegionBoard::AdjacentRegions(const SgVector<SgPoint>& anchors,
@@ -450,7 +450,7 @@ void GoRegionBoard::AdjacentRegions(const SgVector<SgPoint>& anchors,
 {
     for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         if ((*it)->AdjacentToSomeBlock(anchors))
-            regions->Append(*it);
+            regions->PushBack(*it);
 }
 
 GoRegion* GoRegionBoard::MergeAll(const SgVectorOf<GoRegion>& regions,
@@ -474,7 +474,7 @@ void GoRegionBoard::MergeAdjacentAndAddBlock(SgPoint move,
     SgVector<SgPoint> nb;
     for (SgNb4Iterator it(move); it; ++it)
         if (Board().IsEmpty(*it))
-            nb.Append(*it);
+            nb.PushBack(*it);
 
     SgVectorOf<GoBlock> captures;
     PreviousBlocksAt(nb, capturedColor, &captures);
@@ -532,7 +532,7 @@ void GoRegionBoard::OnUndoneMove()
                     GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
                     if (CHECK)
                         SG_ASSERT(! r->Blocks().Contains(b));
-                    r->BlocksNonConst().Append(b);
+                    r->BlocksNonConst().PushBack(b);
                     changed.Insert(r);
                 }
             }
@@ -622,7 +622,7 @@ void GoRegionBoard::AddRegion(GoRegion* r, bool isExecute)
     SgBlackWhite color = r->Color();
     if (HEAVYCHECK)
         SG_ASSERT(! AllRegions(color).Contains(r));
-    AllRegions(color).Append(r);
+    AllRegions(color).PushBack(r);
 
     if (isExecute)
         PushRegion(kAddRegion, r);
@@ -677,7 +677,7 @@ void GoRegionBoard::GenChains()
         SG_ASSERT(AllChains(color).IsEmpty());
 
         for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
-            AllChains(color).Append(new GoChain(*it, Board()));
+            AllChains(color).PushBack(new GoChain(*it, Board()));
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             (*it)->FindChains(*this);
     }

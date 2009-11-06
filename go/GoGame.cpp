@@ -40,12 +40,12 @@ void AddHandicap(int size, int row, int col, int* handicap,
                                SgVector<SgPoint>* stones)
 {
     SG_ASSERT(2 <= *handicap);
-    stones->Append(SgPointUtil::Pt(size + 1 - col, row));
-    stones->Append(SgPointUtil::Pt(col, size + 1 - row));
+    stones->PushBack(SgPointUtil::Pt(size + 1 - col, row));
+    stones->PushBack(SgPointUtil::Pt(col, size + 1 - row));
     if (2 < *handicap)
-        stones->Append(SgPointUtil::Pt(row, col));
+        stones->PushBack(SgPointUtil::Pt(row, col));
     if (3 < *handicap)
-        stones->Append(SgPointUtil::Pt(size + 1 - row, size + 1 - col));
+        stones->PushBack(SgPointUtil::Pt(size + 1 - row, size + 1 - col));
     if (*handicap < 4)
         *handicap = 0;
     else
@@ -300,7 +300,7 @@ void GoGameRecord::OnInitHandicap(const GoRules& rules, SgNode* root)
                 SgVector<SgPoint> stones;
                 if ((4 < h) && (h % 2 != 0))
                 {
-                    stones.Append(SgPointUtil::Pt(half, half));
+                    stones.PushBack(SgPointUtil::Pt(half, half));
                     --h;
                 }
                 if (13 <= m_board.Size())

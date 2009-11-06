@@ -55,18 +55,7 @@ public:
     {
         return ! (*this == rhs);
     }
-    
-    /** Add a single element at the end of the vector.
-        @deprecated use PushBack instead.
-    */
-    void Append(const T& elt)
-    {
-        PushBack(elt);
-    }
-    
-    /** Append all elements from <code>vector</code> to end of this vector. */
-    void AppendList(const SgVector<T>& vector);
-    
+            
     /** Returns the last element of the vector.
         Asserts if the vector is empty.
     */
@@ -227,6 +216,9 @@ public:
         m_vec.push_back(elt);
     }
 
+    /** Append all elements from <code>vector</code> to end of this vector. */
+    void PushBackList(const SgVector<T>& vector);
+
     /** Removes all but the first copy of each element from the vector.
         After calling @c RemoveDuplicates(), @c UniqueElements() is @c true.
         @return true, if at least one duplicate was removed
@@ -373,12 +365,6 @@ public:
         return static_cast<T*>(SgVector<void*>::operator[](index));
     }
 
-    void Append(const T* element)
-    {
-        SG_ASSERT(element);
-        SgVector<void*>::Append(GetVoidPtr(element));
-    }
-    
     T* Back() const
     {
         return static_cast<T*>(SgVector<void*>::Back());
@@ -396,7 +382,7 @@ public:
     {
         SG_ASSERT(element);
         if (! Contains(element))
-            Append(element);
+            PushBack(element);
     }
 
     bool Exclude(const T* element)
@@ -497,13 +483,13 @@ SgVector<T>& SgVector<T>::operator=(const SgVector<T>& v)
     if (this != &v)
     {
         Clear();
-        AppendList(v);
+        PushBackList(v);
     }
     return *this;
 }
 
 template<typename T>
-void SgVector<T>::AppendList(const SgVector<T>& v)
+void SgVector<T>::PushBackList(const SgVector<T>& v)
 {
     copy(v.m_vec.begin(), v.m_vec.end(), back_inserter(m_vec));
 }
@@ -511,7 +497,7 @@ void SgVector<T>::AppendList(const SgVector<T>& v)
 template<typename T>
 void SgVector<T>::Concat(SgVector<T>* tail)
 {
-    AppendList(*tail);
+    PushBackList(*tail);
     tail->Clear();
 }
 
@@ -624,7 +610,7 @@ void SgVector<T>::Merge(const SgVector<T>& vector)
         operator=(vector);
     else if (vector.Front() > Back())
         // all new elements come after all old elements, just concat lists
-        AppendList(vector);
+        PushBackList(vector);
     else
     { // @todo: optimize as in SgList. Walk both vectors for O(n) time
         for (SgVectorIterator<T> it(vector); it; ++it)

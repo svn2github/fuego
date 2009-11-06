@@ -73,16 +73,6 @@ public:
 
     const T& operator[](int index) const;
 
-    void Append(const T& val);
-
-    /** Append all elements of another list.
-        Works with lists of different maximum sizes.
-        Requires: Total resulting number of elements will fit into the target
-        list.
-    */
-    template<int SIZE2>
-    void Append(const SgSList<T,SIZE2>& list);
-
     void Clear();
 
     bool Contains(const T& val) const;
@@ -95,7 +85,7 @@ public:
     */
     bool Exclude(const T& val);
 
-    /** Append value at the end of the list if it's not already in the
+    /** PushBack value at the end of the list if it's not already in the
         list.
     */
     void Include(const T& val);
@@ -118,6 +108,16 @@ public:
         element, use Last() before calling PopBack().
     */
     void PopBack();
+
+    void PushBack(const T& val);
+
+    /** Push back all elements of another list.
+        Works with lists of different maximum sizes.
+        Requires: Total resulting number of elements will fit into the target
+        list.
+    */
+    template<int SIZE2>
+    void PushBackList(const SgSList<T,SIZE2>& list);
 
     /** Remove first occurence of a value.
         Preserves order of remaining elements.
@@ -270,21 +270,6 @@ inline const T& SgSList<T,SIZE>::operator[](int index) const
 }
 
 template<typename T, int SIZE>
-inline void SgSList<T,SIZE>::Append(const T& val)
-{
-    SG_ASSERT(m_len < SIZE);
-    m_array[m_len++] = val;
-}
-
-template<typename T, int SIZE>
-template<int SIZE2>
-inline void SgSList<T,SIZE>::Append(const SgSList<T,SIZE2>& list)
-{
-    for (typename SgSList<T,SIZE2>::Iterator it(list); it; ++it)
-        Append(*it);
-}
-
-template<typename T, int SIZE>
 inline void SgSList<T,SIZE>::Clear()
 {
     m_len = 0;
@@ -322,7 +307,7 @@ template<typename T, int SIZE>
 void SgSList<T,SIZE>::Include(const T& val)
 {
     if (! Contains(val))
-        Append(val);
+        PushBack(val);
 }
 
 template<typename T, int SIZE>
@@ -335,7 +320,7 @@ SgSList<T,SIZE> SgSList<T,SIZE>::Intersect(const SgSList<T,SIZE>& list)
         if (list.Contains(*t))
         {
             SG_ASSERT(! result.Contains(*t));
-            result.Append(*t);
+            result.PushBack(*t);
         }
     return result;
 }
@@ -371,6 +356,21 @@ inline void SgSList<T,SIZE>::PopBack()
 {
     SG_ASSERT(m_len > 0);
     --m_len;
+}
+
+template<typename T, int SIZE>
+inline void SgSList<T,SIZE>::PushBack(const T& val)
+{
+    SG_ASSERT(m_len < SIZE);
+    m_array[m_len++] = val;
+}
+
+template<typename T, int SIZE>
+template<int SIZE2>
+inline void SgSList<T,SIZE>::PushBackList(const SgSList<T,SIZE2>& list)
+{
+    for (typename SgSList<T,SIZE2>::Iterator it(list); it; ++it)
+        PushBack(*it);
 }
 
 template<typename T, int SIZE>

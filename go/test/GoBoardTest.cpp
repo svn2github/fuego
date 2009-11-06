@@ -1032,7 +1032,7 @@ void GoBoardIteratorTest_AtSize(int size)
     GoBoard bd(size);
     SgSList<SgPoint,SG_MAXPOINT> points;
     for (GoBoard::Iterator it(bd); it; ++it)
-        points.Append(*it);
+        points.PushBack(*it);
     BOOST_CHECK_EQUAL(points.Length(), size * size);
     for (int x = 1; x <= size; ++x)
         for (int y = 1; y <= size; ++y)
@@ -1063,14 +1063,14 @@ BOOST_AUTO_TEST_CASE(GoBoardLibertyIteratorTest)
     bd.Play(Pt(1, 2), SG_BLACK);
     SgSList<SgPoint,SG_MAXPOINT> libs;
     for (GoBoard::LibertyIterator it(bd, Pt(1, 2)); it; ++it)
-        libs.Append(*it);
+        libs.PushBack(*it);
     BOOST_CHECK_EQUAL(libs.Length(), 3);
     BOOST_CHECK(libs.Contains(Pt(1, 1)));
     BOOST_CHECK(libs.Contains(Pt(1, 4)));
     BOOST_CHECK(libs.Contains(Pt(2, 3)));
     libs.Clear();
     for (GoBoard::LibertyIterator it(bd, Pt(2, 2)); it; ++it)
-        libs.Append(*it);
+        libs.PushBack(*it);
     BOOST_CHECK_EQUAL(libs.Length(), 3);
     BOOST_CHECK(libs.Contains(Pt(2, 1)));
     BOOST_CHECK(libs.Contains(Pt(2, 3)));
@@ -1093,7 +1093,7 @@ BOOST_AUTO_TEST_CASE(GoBoardStoneIteratorTest)
     bd.Play(Pt(2, 2), SG_BLACK);
     SgSList<SgPoint,SG_MAXPOINT> stones;
     for (GoBoard::StoneIterator it(bd, Pt(2, 2)); it; ++it)
-        stones.Append(*it);
+        stones.PushBack(*it);
     BOOST_CHECK_EQUAL(stones.Length(), 4);
     BOOST_CHECK(stones.Contains(Pt(1, 1)));
     BOOST_CHECK(stones.Contains(Pt(1, 2)));
@@ -1101,12 +1101,12 @@ BOOST_AUTO_TEST_CASE(GoBoardStoneIteratorTest)
     BOOST_CHECK(stones.Contains(Pt(3, 2)));
     stones.Clear();
     for (GoBoard::StoneIterator it(bd, Pt(4, 3)); it; ++it)
-        stones.Append(*it);
+        stones.PushBack(*it);
     BOOST_CHECK_EQUAL(stones.Length(), 1);
     BOOST_CHECK(stones.Contains(Pt(4, 3)));
     stones.Clear();
     for (GoBoard::StoneIterator it(bd, Pt(1, 3)); it; ++it)
-        stones.Append(*it);
+        stones.PushBack(*it);
     BOOST_CHECK_EQUAL(stones.Length(), 3);
     BOOST_CHECK(stones.Contains(Pt(1, 3)));
     BOOST_CHECK(stones.Contains(Pt(2, 3)));

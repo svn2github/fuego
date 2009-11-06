@@ -136,7 +136,7 @@ SgVectorOf<GoBlock> GoRegion::InteriorBlocks() const
     SgVectorOf<GoBlock> interior;
     for (SgVectorIteratorOf<GoBlock> it(m_blocks); it; ++it)
         if (IsInteriorBlock(*it))
-            interior.Append(*it);
+            interior.PushBack(*it);
     return interior;
 }
 
@@ -353,7 +353,7 @@ void GoRegion::GetIPs(SgVector<SgPoint>* ips) const
     JointLibs(&jointLibs);
     for (SgVectorIterator<SgPoint> it(jointLibs); it; ++it)
         if (IsSplitPt(*it, Points()))
-            ips->Append(*it);
+            ips->PushBack(*it);
 }
 
 void GoRegion::GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const
@@ -371,10 +371,10 @@ void GoRegion::GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const
         for (SgVectorIterator<SgPoint> it2(libs); it2; ++it2)
         {
             if (IsSplitPt(*it2, Points()))
-                temp.Append(*it2);
+                temp.PushBack(*it2);
         }
         temp.Sort();
-        divPs.AppendList(temp);
+        divPs.PushBackList(temp);
 
         for (SgVectorIterator<SgPoint> it2(temp); it2; ++it2)
         {
@@ -386,7 +386,7 @@ void GoRegion::GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const
                 {
                     p1.first = a;
                     p1.second = *it2;
-                    pairs.Append(p1);
+                    pairs.PushBack(p1);
                 }
                 a = *it2;
             }
@@ -537,9 +537,9 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                         Points().Write(SgDebug(), size);
                         SG_ASSERT(false);
                     }
-                    myStrategy.Append(miaiPair);
-                    usedLibs.Append(miaiPair.first);
-                    usedLibs.Append(miaiPair.second);
+                    myStrategy.PushBack(miaiPair);
+                    usedLibs.PushBack(miaiPair.first);
+                    usedLibs.PushBack(miaiPair.second);
                     updateLibs.Exclude(miaiPair.first);
                     updateLibs.Exclude(miaiPair.second);
                     updateLibs.Include(*it);
@@ -1117,7 +1117,7 @@ void GoRegion::FindBlocks(const GoRegionBoard& ra)
     for (SgVectorIteratorOf<GoBlock> it(ra.AllBlocks(Color())); it; ++it)
     {
         if ((*it)->Stones().Overlaps(area))
-            m_blocks.Append(*it);
+            m_blocks.PushBack(*it);
     }
     m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
 }
@@ -1152,7 +1152,7 @@ void GoRegion::FindChains(const GoRegionBoard& ra)
     for (SgVectorIteratorOf<GoChain> it(ra.AllChains(Color())); it; ++it)
     {
         if ((*it)->Stones().Overlaps(area))
-            m_chains.Append(*it);
+            m_chains.PushBack(*it);
     }
     m_computedFlags.set(GO_REGION_COMPUTED_CHAINS);
 }

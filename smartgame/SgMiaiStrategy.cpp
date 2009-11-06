@@ -43,7 +43,7 @@ void SgMiaiStrategy::AddPair(const SgMiaiPair& m)
     SG_ASSERT(SgPointUtil::InBoardRange(m.first));
     SG_ASSERT(SgPointUtil::InBoardRange(m.second));
 #endif
-    m_miaiStrategies.Append(m);
+    m_miaiStrategies.PushBack(m);
 }
 
 
@@ -96,7 +96,7 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
         if (p == *it)
         {
             if (player == Player())
-                fixedThreats.Append(*it);
+                fixedThreats.PushBack(*it);
             else
             {
                 StrategyFailed();
@@ -112,7 +112,7 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
     SgVector<SgMiaiPair> toChange;
     for (SgVectorIterator<SgMiaiPair> it(m_miaiStrategies); it; ++it)
         if (p == (*it).first || p == (*it).second)
-            toChange.Append(*it);
+            toChange.PushBack(*it);
 
     m_miaiStrategies.Exclude(toChange);
     if (player == Player())
@@ -124,7 +124,7 @@ void SgMiaiStrategy::ExecuteMove(const SgPoint p, SgBlackWhite player)
         // move other endpoint of toChange to open threats
     for (SgVectorIterator<SgMiaiPair> it(toChange); it; ++it)
     {
-        m_openThreats.Append(SgMiaiPairUtil::Other(*it, p));
+        m_openThreats.PushBack(SgMiaiPairUtil::Other(*it, p));
     }
 }
 

@@ -24,9 +24,9 @@ BOOST_AUTO_TEST_CASE(SgVectorTestConstructor)
 BOOST_AUTO_TEST_CASE(SgVectorTestOperator_Equal)
 {
     SgVector<int> a;
-    a.Append(123);
-    a.Append(444);
-    a.Append(789);
+    a.PushBack(123);
+    a.PushBack(444);
+    a.PushBack(789);
     SgVector<int> b;
     b = a;
     BOOST_CHECK_EQUAL(b.Length(), 3);
@@ -35,33 +35,19 @@ BOOST_AUTO_TEST_CASE(SgVectorTestOperator_Equal)
     BOOST_CHECK_EQUAL(a.Length(), 3);
 }
 
-
-BOOST_AUTO_TEST_CASE(SgVectorTestAppend)
-{
-    SgVector<int> a;
-    a.Append(123);
-    BOOST_CHECK_EQUAL(a.Length(), 1);
-    BOOST_CHECK_EQUAL(a.Front(), 123);
-    BOOST_CHECK_EQUAL(a.Back(), 123);
-    a.Append(456);
-    BOOST_CHECK_EQUAL(a.Length(), 2);
-    BOOST_CHECK_EQUAL(a.Front(), 123);
-    BOOST_CHECK_EQUAL(a.Back(), 456);
-}
-
 BOOST_AUTO_TEST_CASE(SgVectorTestAssign)
 {
     SgVector<int> a;
-    a.Append(123);
-    a.Append(444);
-    a.Append(789);
+    a.PushBack(123);
+    a.PushBack(444);
+    a.PushBack(789);
     SgVector<int> b;
     b = a;
     BOOST_CHECK_EQUAL(b[0], 123);
     BOOST_CHECK_EQUAL(b[1], 444);
     BOOST_CHECK_EQUAL(b[2], 789);
     BOOST_CHECK(a == b);
-    b.Append(0);
+    b.PushBack(0);
     BOOST_CHECK(! (a == b));
     BOOST_CHECK(a != b);
 }
@@ -69,8 +55,8 @@ BOOST_AUTO_TEST_CASE(SgVectorTestAssign)
 BOOST_AUTO_TEST_CASE(SgVectorTestAssignElement)
 {
     SgVector<int> a;
-    a.Append(0);
-    a.Append(789);
+    a.PushBack(0);
+    a.PushBack(789);
     BOOST_CHECK_EQUAL(a[1], 789);
     a[1] = 444;
     BOOST_CHECK_EQUAL(a[1], 444);
@@ -84,7 +70,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestClear)
     BOOST_CHECK(a.IsEmpty());
     BOOST_CHECK(! a.NonEmpty());
     BOOST_CHECK_EQUAL(a.Length(), 0);
-    a.Append(123);
+    a.PushBack(123);
     BOOST_CHECK(! a.IsEmpty());
     BOOST_CHECK(a.NonEmpty());
     BOOST_CHECK_EQUAL(a.Length(), 1);
@@ -92,25 +78,25 @@ BOOST_AUTO_TEST_CASE(SgVectorTestClear)
     BOOST_CHECK(a.IsEmpty());
     BOOST_CHECK(! a.NonEmpty());
     BOOST_CHECK_EQUAL(a.Length(), 0);
-    a.Append(0);
-    a.Append(789);
-    a.Append(123);
+    a.PushBack(0);
+    a.PushBack(789);
+    a.PushBack(123);
     BOOST_CHECK_EQUAL(a.Length(), 3);
     a.Clear();
     SG_ASSERT(a.IsEmpty());
 }
 
-BOOST_AUTO_TEST_CASE(SgVectorTestAppendList)
+BOOST_AUTO_TEST_CASE(SgVectorTestPushBackList)
 {
     SgVector<int> a;
-    a.Append(1);
-    a.Append(2);
-    a.Append(3);
+    a.PushBack(1);
+    a.PushBack(2);
+    a.PushBack(3);
     SgVector<int> b;
-    b.Append(30);
-    b.Append(20);
-    b.Append(10);
-    a.AppendList(b);
+    b.PushBack(30);
+    b.PushBack(20);
+    b.PushBack(10);
+    a.PushBackList(b);
     BOOST_CHECK(b.IsLength(3));
     BOOST_CHECK(a.IsLength(6));
     BOOST_CHECK_EQUAL(a[0], 1);
@@ -127,13 +113,13 @@ BOOST_AUTO_TEST_CASE(SgVectorTestAppendList)
 BOOST_AUTO_TEST_CASE(SgVectorTestConcat)
 {
     SgVector<int> a;
-    a.Append(1);
-    a.Append(2);
-    a.Append(3);
+    a.PushBack(1);
+    a.PushBack(2);
+    a.PushBack(3);
     SgVector<int> b;
-    b.Append(3);
-    b.Append(2);
-    b.Append(1);
+    b.PushBack(3);
+    b.PushBack(2);
+    b.PushBack(1);
     a.Concat(&b);
     BOOST_CHECK(b.IsEmpty());
     BOOST_CHECK(a.IsLength(6));
@@ -266,7 +252,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestIterator)
 {
     SgVector<int> a;                 
     for (int i = 0; i < 10; ++i)
-        a.Append(i);
+        a.PushBack(i);
     int count = 0;
     for (SgVectorIterator<int> it(a); it; ++it)
     {
@@ -382,11 +368,16 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPush)
 BOOST_AUTO_TEST_CASE(SgVectorTestPushBack)
 {
     SgVector<int> a;
-    a.PushBack(0);
-    a.PushBack(1);
-    BOOST_CHECK_EQUAL(a[0], 0);
-    BOOST_CHECK_EQUAL(a[1], 1);
+    a.PushBack(123);
+    BOOST_CHECK_EQUAL(a.Length(), 1);
+    BOOST_CHECK_EQUAL(a.Front(), 123);
+    BOOST_CHECK_EQUAL(a.Back(), 123);
+    a.PushBack(456);
     BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(a.Front(), 123);
+    BOOST_CHECK_EQUAL(a.Back(), 456);
+    BOOST_CHECK_EQUAL(a[0], 123);
+    BOOST_CHECK_EQUAL(a[1], 456);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestRemoveDuplicates)
@@ -512,10 +503,10 @@ void MakeTestVector(SgVector<int>& a, SgVectorOf<int>& pa)
     for (int i = 0; i < 10; ++i)
         a.PushBack(i);
     for (int i = 0; i < 10; ++i)
-        pa.Append(&a[i]);
+        pa.PushBack(&a[i]);
 }
 
-BOOST_AUTO_TEST_CASE(SgVectorOfTestAppend)
+BOOST_AUTO_TEST_CASE(SgVectorOfTestPushBack)
 {
     SgVector<int> a;
     SgVectorOf<int> pa;
@@ -564,7 +555,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_EmptyVector)
 BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_OneElement)
 {
     SgVector<int> a;                 
-    a.Append(1);
+    a.PushBack(1);
     SgVectorPairIterator<int> it(a);
     int e1, e2;
     BOOST_CHECK(! it.NextPair(e1, e2));
@@ -573,8 +564,8 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_OneElement)
 BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_TwoElements)
 {
     SgVector<int> a;                 
-    a.Append(1);
-    a.Append(2);
+    a.PushBack(1);
+    a.PushBack(2);
     SgVectorPairIterator<int> it(a);
     int e1, e2;
     BOOST_CHECK(it.NextPair(e1, e2));
@@ -586,9 +577,9 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_TwoElements)
 BOOST_AUTO_TEST_CASE(SgVectorTestPairIterator_ThreeElements)
 {
     SgVector<int> a;                 
-    a.Append(1);
-    a.Append(2);
-    a.Append(3);
+    a.PushBack(1);
+    a.PushBack(2);
+    a.PushBack(3);
     SgVectorPairIterator<int> it(a);
     int e1, e2;
     BOOST_CHECK(it.NextPair(e1, e2));

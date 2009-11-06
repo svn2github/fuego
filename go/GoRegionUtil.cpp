@@ -45,7 +45,7 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
         for (GoBoard::LibertyIterator it(board, boundaryAnchors.Front()); it;
              ++it)
             if (region.Contains(*it))
-                sharedLibs.Append(*it);
+                sharedLibs.PushBack(*it);
 
         if (sharedLibs.MaxLength(1))
             return false;
@@ -60,7 +60,7 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
                 const SgPoint block = *it;
                 for (GoBoard::LibertyIterator it(board, block); it; ++it)
                     if (sharedLibs.Contains(*it))
-                        newShared.Append(*it);
+                        newShared.PushBack(*it);
                 if (newShared.MaxLength(1))
                     return false;
                 else

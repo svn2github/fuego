@@ -26,7 +26,7 @@ GoChain::GoChain(const GoChain* c1, const GoChain* c2,
     SG_ASSERT(c1 != c2);
     m_healthy.Union(c2->Healthy());
     SG_ASSERT(! cond->Overlaps(m_chainConditions));
-    m_chainConditions.Append(cond);
+    m_chainConditions.PushBack(cond);
 
     if (cond->UsesLibs())
     {
@@ -72,7 +72,7 @@ void GoChain::GetBlocks(const GoRegionBoard* ra,
     SgPointSet chainPts = Stones();
     for (SgVectorIteratorOf<GoBlock> it(ra->AllBlocks(color)); it; ++it)
         if (chainPts.Contains((*it)->Anchor()))
-            blocks->Append(*it);
+            blocks->PushBack(*it);
 }
 
 bool GoChain::AllEmptyAreLiberties(const SgPointSet& area) const

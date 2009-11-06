@@ -129,7 +129,7 @@ void SgGameReader::ReadGames(SgVectorOf<SgNode>* rootList)
     {
         SgNode* root = ReadGame(false);
         if (root)
-            rootList->Append(root);
+            rootList->PushBack(root);
         else
             break;
     }

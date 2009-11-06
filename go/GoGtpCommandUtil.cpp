@@ -104,26 +104,26 @@ SgVector<SgPoint> GoGtpCommandUtil::GetHandicapStones(int size, int n)
     if (line1 < 0 || n == 1 || n > 9 || (n > 4 && line2 < 0))
         throw GtpFailure("no standard handicap locations defined");
     if (n >= 1)
-        stones.Append(Pt(line1, line1));
+        stones.PushBack(Pt(line1, line1));
     if (n >= 2)
-        stones.Append(Pt(line3, line3));
+        stones.PushBack(Pt(line3, line3));
     if (n >= 3)
-        stones.Append(Pt(line1, line3));
+        stones.PushBack(Pt(line1, line3));
     if (n >= 4)
-        stones.Append(Pt(line3, line1));
+        stones.PushBack(Pt(line3, line1));
     if (n >= 5 && n % 2 != 0)
     {
-        stones.Append(Pt(line2, line2));
+        stones.PushBack(Pt(line2, line2));
         --n;
     }
     if (n >= 5)
-        stones.Append(Pt(line1, line2));
+        stones.PushBack(Pt(line1, line2));
     if (n >= 6)
-        stones.Append(Pt(line3, line2));
+        stones.PushBack(Pt(line3, line2));
     if (n >= 7)
-        stones.Append(Pt(line2, line1));
+        stones.PushBack(Pt(line2, line1));
     if (n >= 8)
-        stones.Append(Pt(line2, line3));
+        stones.PushBack(Pt(line2, line3));
     return stones;
 }
 
@@ -146,14 +146,14 @@ void GoGtpCommandUtil::ParseMultiStoneArgument(GtpCommand& cmd,
     SgPoint point = GoGtpCommandUtil::StoneArg(cmd, 1, board);
     defender = board.GetColor(point);
     SG_ASSERT(defender == SG_BLACK || defender == SG_WHITE);
-    crucial.Append(point);
+    crucial.PushBack(point);
     for (size_t i = 2; i < cmd.NuArg(); ++i)
     {
         SgPoint p = GoGtpCommandUtil::StoneArg(cmd, i, board);
         if (board.GetColor(p) != defender)
             throw GtpFailure("Crucial stones must be same color");
         else
-            crucial.Append(p);
+            crucial.PushBack(p);
     }
 }
 

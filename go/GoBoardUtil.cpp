@@ -37,7 +37,7 @@ void CfgDistanceCheck(const GoBoard& bd, SgPointArray<int>& array,
         if (array[p] == numeric_limits<int>::max())
         {
             array[p] = d;
-            pointList.Append(p);
+            pointList.PushBack(p);
         }
     }
 }
@@ -123,13 +123,13 @@ GoPointList GoBoardUtil::AdjacentStones(const GoBoard& bd, SgPoint point)
         {
             SgPoint p = *it;
             if (bd.IsColor(p - SG_NS, other) && mark.NewMark(p - SG_NS))
-                result.Append(p - SG_NS);
+                result.PushBack(p - SG_NS);
             if (bd.IsColor(p - SG_WE, other) && mark.NewMark(p - SG_WE))
-                result.Append(p - SG_WE);
+                result.PushBack(p - SG_WE);
             if (bd.IsColor(p + SG_WE, other) && mark.NewMark(p + SG_WE))
-                result.Append(p + SG_WE);
+                result.PushBack(p + SG_WE);
             if (bd.IsColor(p + SG_NS, other) && mark.NewMark(p + SG_NS))
-                result.Append(p + SG_NS);
+                result.PushBack(p + SG_NS);
         }
     };
     return result;
@@ -242,7 +242,7 @@ SgPointArray<int> GoBoardUtil::CfgDistance(const GoBoard& bd, SgPoint p,
     GoPointList pointList;
     if (bd.Occupied(p))
         p = bd.Anchor(p);
-    pointList.Append(p);
+    pointList.PushBack(p);
     int begin = 0;
     int end = 1;
     int d = 0;
@@ -348,13 +348,13 @@ void GoBoardUtil::DiagonalsOfColor(const GoBoard& bd, SgPoint p, int c,
 {
     diagonals->Clear();
     if (bd.IsColor(p - SG_NS - SG_WE, c))
-        diagonals->Append(p - SG_NS - SG_WE);
+        diagonals->PushBack(p - SG_NS - SG_WE);
     if (bd.IsColor(p - SG_NS + SG_WE, c))
-        diagonals->Append(p - SG_NS + SG_WE);
+        diagonals->PushBack(p - SG_NS + SG_WE);
     if (bd.IsColor(p + SG_NS - SG_WE, c))
-        diagonals->Append(p + SG_NS - SG_WE);
+        diagonals->PushBack(p + SG_NS - SG_WE);
     if (bd.IsColor(p + SG_NS + SG_WE, c))
-        diagonals->Append(p + SG_NS + SG_WE);
+        diagonals->PushBack(p + SG_NS + SG_WE);
 }
 
 bool GoBoardUtil::EndOfGame(const GoBoard& bd)
@@ -536,13 +536,13 @@ SgSList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p,
 {
     SgSList<SgPoint,4> result;
     if (bd.IsColor(p - SG_NS, c))
-        result.Append(p - SG_NS);
+        result.PushBack(p - SG_NS);
     if (bd.IsColor(p - SG_WE, c))
-        result.Append(p - SG_WE);
+        result.PushBack(p - SG_WE);
     if (bd.IsColor(p + SG_WE, c))
-        result.Append(p + SG_WE);
+        result.PushBack(p + SG_WE);
     if (bd.IsColor(p + SG_NS, c))
-        result.Append(p + SG_NS);
+        result.PushBack(p + SG_NS);
     return result;
 }
 
@@ -551,13 +551,13 @@ void GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
 {
     neighbors->Clear();
     if (bd.IsColor(p - SG_NS, c))
-        neighbors->Append(p - SG_NS);
+        neighbors->PushBack(p - SG_NS);
     if (bd.IsColor(p - SG_WE, c))
-        neighbors->Append(p - SG_WE);
+        neighbors->PushBack(p - SG_WE);
     if (bd.IsColor(p + SG_WE, c))
-        neighbors->Append(p + SG_WE);
+        neighbors->PushBack(p + SG_WE);
     if (bd.IsColor(p + SG_NS, c))
-        neighbors->Append(p + SG_NS);
+        neighbors->PushBack(p + SG_NS);
 }
 
 bool GoBoardUtil::PassWins(const GoBoard& bd, SgBlackWhite toPlay)
@@ -663,7 +663,7 @@ void GoBoardUtil::SharedLiberties(const GoBoard& bd,
     {
         SgPoint lib = *libIter;
         if (bd.IsLibertyOfBlock(lib, block2))
-            sharedLibs->Append(lib);
+            sharedLibs->PushBack(lib);
     }
 }
 
@@ -693,16 +693,16 @@ void GoBoardUtil::SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor,
         {
             if (bd.IsColor(p - SG_NS, c) && mark.NewMark(bd.Anchor(p - SG_NS))
                 && bd.AtMostNumLibs(p - SG_NS, maxLib))
-                blocks->Append(bd.Anchor(p - SG_NS));
+                blocks->PushBack(bd.Anchor(p - SG_NS));
             if (bd.IsColor(p - SG_WE, c) && mark.NewMark(bd.Anchor(p - SG_WE))
                 && bd.AtMostNumLibs(p - SG_WE, maxLib))
-                blocks->Append(bd.Anchor(p - SG_WE));
+                blocks->PushBack(bd.Anchor(p - SG_WE));
             if (bd.IsColor(p + SG_WE, c) && mark.NewMark(bd.Anchor(p + SG_WE))
                 && bd.AtMostNumLibs(p + SG_WE, maxLib))
-                blocks->Append(bd.Anchor(p + SG_WE));
+                blocks->PushBack(bd.Anchor(p + SG_WE));
             if (bd.IsColor(p + SG_NS, c) && mark.NewMark(bd.Anchor(p + SG_NS))
                 && bd.AtMostNumLibs(p + SG_NS, maxLib))
-                blocks->Append(bd.Anchor(p + SG_NS));
+                blocks->PushBack(bd.Anchor(p + SG_NS));
         }
     }
 }
@@ -737,13 +737,13 @@ void GoBoardUtil::TestForChain(GoBoard& bd, SgPoint block, SgPoint block2,
                                SgPoint lib, SgVector<SgPoint>* extended)
 {
     if (AtLeastTwoSharedLibs(bd, block, block2))
-        extended->Append(block);
+        extended->PushBack(block);
     else // protected lib.
     {
         GoRestoreToPlay r(bd);
         bd.SetToPlay(SgOppBW(bd.GetStone(block)));
         if (MoveNotLegalOrAtari(bd, lib))
-            extended->Append(block);
+            extended->PushBack(block);
     }
 }
 

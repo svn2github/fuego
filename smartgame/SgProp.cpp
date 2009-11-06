@@ -1122,8 +1122,8 @@ bool SgPropTextList::GetStringAtPoint(SgPoint p, string* s) const
 void SgPropTextList::AddStringAtPoint(SgPoint p, const string& s)
 {
     ClearStringAtPoint(p);
-    m_points.Append(p);
-    m_strings.Append(new string(s));
+    m_points.PushBack(p);
+    m_strings.PushBack(new string(s));
 }
 
 void SgPropTextList::AppendToStringAtPoint(SgPoint p, const string& s)

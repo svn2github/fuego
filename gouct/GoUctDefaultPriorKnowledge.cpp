@@ -137,7 +137,7 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
     for (GoBoard::Iterator it(m_bd); it; ++it)
         if (m_bd.IsEmpty(*it))
         {
-            empty.Append(*it);
+            empty.PushBack(*it);
             if (patterns.MatchAny(*it))
             {
                 pattern.Include(*it);

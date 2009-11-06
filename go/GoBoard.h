@@ -576,9 +576,9 @@ private:
 
         void UpdateAnchor(SgPoint p) { if (p < m_anchor) m_anchor = p; }
 
-        void AppendLiberty(SgPoint p) { m_liberties.Append(p); }
+        void AppendLiberty(SgPoint p) { m_liberties.PushBack(p); }
 
-        void AppendStone(SgPoint p) { m_stones.Append(p); }
+        void AppendStone(SgPoint p) { m_stones.PushBack(p); }
 
         SgBlackWhite Color() const { return m_color; }
 
