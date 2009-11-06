@@ -79,8 +79,10 @@ public:
         m_vec.clear();
     }
 
-    /** Append <code>*tail</code> at the end of this vector,
-        and empty the <code>*tail</code> vector.
+    /** Push all of <code>*tail</code> to the back of this vector,
+        and clear the <code>*tail</code> vector.
+        Remark: this operation used to be efficient for lists.
+        With vectors, PushBackList may be more meaningful in most cases.
     */
     void Concat(SgVector<T>* tail);
 
@@ -119,8 +121,8 @@ public:
     */
     int Index(const T& elt) const;
 
-    /** Append <code>elt</code> at the end of the vector
-        if it's not already in the vector.
+    /** Push <code>elt</code> to the back of the vector only
+        if it is not included yet.
     */
     void Include(const T& elt)
     {
@@ -216,7 +218,7 @@ public:
         m_vec.push_back(elt);
     }
 
-    /** Append all elements from <code>vector</code> to end of this vector. */
+    /** Push all elements from <code>vector</code> to the back of this. */
     void PushBackList(const SgVector<T>& vector);
 
     /** Removes all but the first copy of each element from the vector.
@@ -376,8 +378,8 @@ public:
         return SgVector<void*>::Contains(GetVoidPtr(element));
     }
 
-    /** Append <code>elt</code> at the end of the vector if it's not
-        already in the vector. */
+    /** Push <code>elt</code> to the back of the vector unless it is
+        already included. */
     void Include(const T* element)
     {
         SG_ASSERT(element);

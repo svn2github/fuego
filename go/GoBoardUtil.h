@@ -24,7 +24,7 @@
 */
 namespace GoBoardUtil
 {
-    /** Append anchors of neighbor blocks to list. */
+    /** Add anchors of neighbor blocks to list. */
     void AddNeighborBlocksOfColor(const GoBoard& bd,
                                   SgPoint p,
                                   SgBlackWhite color,

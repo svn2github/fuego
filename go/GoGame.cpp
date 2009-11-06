@@ -33,7 +33,7 @@ void AddStatisticsToNode(const SgSearchStatistics* stat, SgNode* node)
     node->Add(new SgPropInt(SG_PROP_MAX_DEPTH, stat->DepthReached()));
 }
 
-/** Append up to 4 handicap stones to '*stones', and reduce '*handicap'
+/** Add up to 4 handicap stones to '*stones', and reduce '*handicap'
     by that amount.
 */
 void AddHandicap(int size, int row, int col, int* handicap,
