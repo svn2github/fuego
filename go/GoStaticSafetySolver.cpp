@@ -164,11 +164,14 @@ void GoStaticSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
     SgVectorOf<GoBlock> toTest(*blocks);
     while (toTest.NonEmpty())
     {
-        const GoBlock* b = toTest.Pop();
+        const GoBlock* b = toTest.Back();
+        toTest.PopBack();
         for (SgVectorIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
-        {   GoRegion* r = *it;
+        {
+            const GoRegion* r = *it;
             for (SgVectorIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
-            {   GoBlock* b2 = *it;
+            {
+                const GoBlock* b2 = *it;
                 if (! blocks->Contains(b2) && b2->ContainsHealthy(r))
                 {
                     blocks->PushBack(b2);

@@ -565,14 +565,14 @@ bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p,
     for (SgNb4DiagIterator it(p); it; ++it)
     {
         if (board.IsColor(*it, opp))
-            baddiags++;
-        if (board.IsColor(*it, SG_EMPTY) && !eyes.Contains(*it))
+            ++baddiags;
+        if (board.IsColor(*it, SG_EMPTY) && ! eyes.Contains(*it))
         {
             // Assume this point is an eye and recurse
-            eyes.Push(p);
-            if (!IsSinglePointEye2(board, *it, color, eyes))
-                baddiags++;
-            eyes.Pop();
+            eyes.PushBack(p);
+            if (! IsSinglePointEye2(board, *it, color, eyes))
+                ++baddiags;
+            eyes.PopBack();
         }
         if (baddiags > maxbaddiags)
             return false;

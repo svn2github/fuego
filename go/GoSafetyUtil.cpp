@@ -395,8 +395,8 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
     else if (allLibs.IsLength(2))
     {
         SG_ASSERT(nuLibs == 2 && allLibs.IsLength(2));
-        miaiPair->first = allLibs.Front();
-        miaiPair->second = allLibs.Back();
+        miaiPair->first = allLibs[0];
+        miaiPair->second = allLibs[1];
         /* */ return true; /* */
     }
     else
@@ -422,30 +422,24 @@ bool GoSafetyUtil::Find2BestLibs(SgPoint p, const SgPointSet& libs,
             else
                 not_shared.PushBack(*it);
         }
-        // if has >= 3 not_shared libs, then try to find 2 original libs (not
+        // if has >= 2 not_shared libs, then try to find 2 original libs (not
         // new-created libs (because the new one might be ip points)
         if (not_shared.MinLength(2))
         {
-            miaiPair->first = not_shared.Pop();
-            miaiPair->second = not_shared.Pop();
+            miaiPair->first = not_shared[0];
+            miaiPair->second = not_shared[1];
         }
-        /*
-        else if (not_shared.IsLength(2))
-        {
-
-        }
-        */
         // if only 1 not_shared lib, use this first, then another shared lib
         else if (not_shared.IsLength(1))
         {
-            miaiPair->first = not_shared.Pop();
-            miaiPair->second = shared.Pop();
+            miaiPair->first = not_shared[0];
+            miaiPair->second = shared[0];
         }
         // zero not_shared libs, then use two shared libs
         else
         {
-            miaiPair->first = shared.Pop();
-            miaiPair->second = shared.Pop();
+            miaiPair->first = shared[0];
+            miaiPair->second = shared[1];
         }
         return true;
     }

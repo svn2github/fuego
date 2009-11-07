@@ -62,7 +62,8 @@ void GoSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
     SgVectorOf<GoBlock> toTest(*blocks);
     while (toTest.NonEmpty())
     {
-        const GoBlock* b = toTest.Pop();
+        const GoBlock* b = toTest.Back();
+        toTest.PopBack();
         for (SgVectorIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
         {   GoRegion* r = *it;
             for (SgVectorIteratorOf<GoChain> it(r->Chains()); it; ++it)

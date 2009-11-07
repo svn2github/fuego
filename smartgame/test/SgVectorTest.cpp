@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPop)
     SgVector<int> a;
     a.PushBack(123);
     a.PushBack(456);
-    int x = a.Pop();
+    int x = a.PopFront();
     BOOST_CHECK_EQUAL(x, 123);
     BOOST_CHECK_EQUAL(a.Length(), 1);
     BOOST_CHECK_EQUAL(a.Front(), 456);

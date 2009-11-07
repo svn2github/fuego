@@ -81,8 +81,9 @@ public:
 
     /** Push all of <code>*tail</code> to the back of this vector,
         and clear the <code>*tail</code> vector.
-        Remark: this operation used to be efficient for lists.
-        With vectors, PushBackList may be more meaningful in most cases.
+        Remark: this operation is efficient for lists but not so
+        meaningful for vectors.
+        PushBackList may be more appropriate in most cases.
     */
     void Concat(SgVector<T>* tail);
 
@@ -193,13 +194,13 @@ public:
         return ! IsEmpty();
     }
 
-    /** Remove the head of the vector.
+    /** Remove element[0] of the vector.
         The vector must not be empty.
-        @return The head of the vector.
+        @return The element[0] of the original vector before removal.
         @deprecated Don't use this function; it is slow. 
         Only exists for SgList compatibility.
     */
-    T Pop();
+    T PopFront();
 
     /** Remove the last element of the vector.
         The vector must not be empty.
@@ -419,9 +420,9 @@ public:
         SgVector<void*>::PushBack(GetVoidPtr(element));
     }
 
-    T* Pop()
+    T* PopFront()
     {
-        return static_cast<T*>(SgVector<void*>::Pop());
+        return static_cast<T*>(SgVector<void*>::PopFront());
     }
 
 #if UNUSED
@@ -621,7 +622,7 @@ void SgVector<T>::Merge(const SgVector<T>& vector)
 }
 
 template<typename T>
-T SgVector<T>::Pop()
+T SgVector<T>::PopFront()
 {
     SG_ASSERT(NonEmpty());
     T elt = Front();

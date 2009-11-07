@@ -214,7 +214,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
             }
         }
         SG_ASSERT(! neighbors.IsEmpty());
-        lib1 = neighbors.Pop();
+        lib1 = neighbors.PopFront();
         SG_ASSERT(m_bd->IsEmpty(lib1));
         SgPoint lib2;
         int numLib;
@@ -225,7 +225,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         }
         else
         {
-            lib2 = neighbors.Pop();
+            lib2 = neighbors.PopFront();
             numLib = neighbors.IsEmpty() ? 2 : 3 /* or more */;
             SG_ASSERT(m_bd->IsEmpty(lib2));
         }
@@ -430,7 +430,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
         SgVector<SgPoint> libs;
         for (GoBoard::LibertyIterator it(*m_bd, prey); it; ++it)
             libs.PushBack(*it);
-        SgPoint lib1 = libs.Pop();
+        SgPoint lib1 = libs.PopFront();
         m_partOfPrey.Clear();
         MarkStonesAsPrey(prey);
         GoPointList adjBlk = GoBoardUtil::AdjacentStones(*m_bd, prey);
