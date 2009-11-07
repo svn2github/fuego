@@ -211,7 +211,7 @@ public:
         @deprecated Don't use this function; it is slow.
         Only exists for SgList compatibility.
     */
-    void Push(const T& elt);
+    void PushFront(const T& elt);
 
     /** Add a single element at the end of the vector. */
     void PushBack(const T& elt)
@@ -408,10 +408,10 @@ public:
         return SgVector<void*>::Insert(GetVoidPtr(element));
     }
 
-    void Push(const T* element)
+    void PushFront(const T* element)
     {
         SG_ASSERT(element);
-        SgVector<void*>::Push(GetVoidPtr(element));
+        SgVector<void*>::PushFront(GetVoidPtr(element));
     }
 
     void PushBack(const T* element)
@@ -638,7 +638,7 @@ void SgVector<T>::PopBack()
 }
 
 template<typename T>
-void SgVector<T>::Push(const T& elt)
+void SgVector<T>::PushFront(const T& elt)
 {
     m_vec.insert(m_vec.begin(), elt);
 }

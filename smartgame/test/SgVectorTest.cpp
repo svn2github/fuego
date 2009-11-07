@@ -358,8 +358,8 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
 BOOST_AUTO_TEST_CASE(SgVectorTestPush)
 {
     SgVector<int> a;
-    a.Push(0);
-    a.Push(1);
+    a.PushFront(0);
+    a.PushFront(1);
     BOOST_CHECK_EQUAL(a[0], 1);
     BOOST_CHECK_EQUAL(a[1], 0);
     BOOST_CHECK_EQUAL(a.Length(), 2);

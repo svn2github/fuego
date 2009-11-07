@@ -191,7 +191,7 @@ void SgPropList::MoveToFront(SgPropID id)
 {
     SgProp* prop = Get(id);
     if (prop && m_list.Exclude(prop))
-        m_list.Push(prop);
+        m_list.PushFront(prop);
 }
 
 bool SgPropList::Remove(const SgProp* prop)

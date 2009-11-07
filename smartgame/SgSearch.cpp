@@ -225,13 +225,13 @@ void SgSearch::MoveKillersToFront(SgVector<SgMove>& moves)
         if (killer2 != SG_NULLMOVE)
         {
             moves.Exclude(killer2);
-            moves.Push(killer2);
+            moves.PushFront(killer2);
         }
         SgMove killer1 = m_killers[m_currentDepth].GetKiller1();
         if (killer1 != SG_NULLMOVE)
         {
             moves.Exclude(killer1);
-            moves.Push(killer1);
+            moves.PushFront(killer1);
         }
     }
 }
@@ -748,7 +748,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     opponentBest = sequence->Front();
                     SG_ASSERT(opponentBest != SG_NULLMOVE);
                 }
-                sequence->Push(tryFirst);
+                sequence->PushFront(tryFirst);
                 if (! childIsExact)
                    allExact = false;
                 if (loValue >= beta)
@@ -787,7 +787,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         if (m_useOpponentBest && opponentBest != SG_NULLMOVE)
         {
             moves.Exclude(opponentBest);
-            moves.Push(opponentBest);
+            moves.PushFront(opponentBest);
         }
 
         // Don't execute 'tryFirst' again.
@@ -835,7 +835,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                         hiValue = max(loValue, alpha) + 1;
                     }
                     sequence->SwapWith(&newSeq);
-                    sequence->Push(move);
+                    sequence->PushFront(move);
                     SG_ASSERT(move != SG_NULLMOVE);
                     if (m_currentDepth == 1 && ! m_aborted)
                         m_foundNewBest = true;
