@@ -143,7 +143,9 @@ void SgTimeRecord::UpdateTimeLeft()
             if (UseOvertime() && m_movesLeft[m_player] <= 0)
             {
                 SgDebug() << "SgTimeRecond: reseting overtime\n";
-                m_timeLeft[m_player] = OTPeriod();
+                m_timeLeft[m_player] += OTPeriod();
+                if (m_timeLeft[m_player] > OTPeriod())
+                    m_timeLeft[m_player] = OTPeriod();
                 m_movesLeft[m_player] = OTNumMoves();
             }
             else if (LoseOnTime())
