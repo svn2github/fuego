@@ -305,7 +305,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestLimitListLength)
     BOOST_CHECK_EQUAL(a.Length(), 5);
 }
 
-BOOST_AUTO_TEST_CASE(SgVectorTestPop)
+BOOST_AUTO_TEST_CASE(SgVectorTestPopFront)
 {
     SgVector<int> a;
     a.PushBack(123);
@@ -355,14 +355,16 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
     BOOST_CHECK(a.IsEmpty());
 }
 
-BOOST_AUTO_TEST_CASE(SgVectorTestPush)
+BOOST_AUTO_TEST_CASE(SgVectorTestPushFront)
 {
     SgVector<int> a;
+    for (int i = 10; i < 20; ++i)
+        a.PushBack(i);
     a.PushFront(0);
     a.PushFront(1);
     BOOST_CHECK_EQUAL(a[0], 1);
     BOOST_CHECK_EQUAL(a[1], 0);
-    BOOST_CHECK_EQUAL(a.Length(), 2);
+    BOOST_CHECK_EQUAL(a.Length(), 12);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestPushBack)
@@ -409,7 +411,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestReverse)
         a.PushBack(i);
     a.Reverse();
     for (int i = 0; i < 10; ++i)
-        BOOST_CHECK_EQUAL(a[i], 9-i);
+        BOOST_CHECK_EQUAL(a[i], 9 - i);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestSetTo_Element)

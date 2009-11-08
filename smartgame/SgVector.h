@@ -556,7 +556,7 @@ bool SgVector<T>::Insert(const T& elt)
 {
     SG_ASSERT(IsSorted());
     typename vector<T>::iterator location = 
-    lower_bound( m_vec.begin(), m_vec.end(), elt);
+    lower_bound(m_vec.begin(), m_vec.end(), elt);
 
     if (   location != m_vec.end()
         && *location == elt
@@ -704,12 +704,10 @@ bool SgVector<T>::UniqueElements() const
         if (IsSorted())
             return IsSortedAndUnique();
         else
-            for (int i=0; i < Length() - 1; ++i)
-            for (int j= i+1; j < Length(); ++j)
-            {
-                if (m_vec[i] == m_vec[j])
-                    return false;
-            }
+            for (int i = 0; i < Length() - 1; ++i)
+                for (int j = i + 1; j < Length(); ++j)
+                    if (m_vec[i] == m_vec[j])
+                        return false;
     }
     return true;
 }
