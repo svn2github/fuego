@@ -609,16 +609,10 @@ void SgVector<T>::Merge(const SgVector<T>& vector)
     SG_ASSERT(vector.IsSortedAndUnique());
     if ((this == &vector) || vector.IsEmpty())
         return;
-    else if (IsEmpty())
-        operator=(vector);
-    else if (vector.Front() > Back())
-        // all new elements come after all old elements, just concat lists
-        PushBackList(vector);
-    else
-    { // @todo: optimize as in SgList. Walk both vectors for O(n) time
-        for (SgVectorIterator<T> it(vector); it; ++it)
-            Insert(*it);
-    }
+    const int oldSize = Length();
+    PushBackList(vector);
+    inplace_merge(m_vec.begin(), m_vec.begin() + oldSize, m_vec.end());
+    SG_ASSERT(IsSortedAndUnique());
 }
 
 template<typename T>

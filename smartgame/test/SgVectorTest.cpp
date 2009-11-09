@@ -333,12 +333,45 @@ BOOST_AUTO_TEST_CASE(SgVectorTestMerge)
     b.PushBack(11);
     b.PushBack(12);
     a.Merge(b);
+    BOOST_CHECK_EQUAL(b.Length(), 5);
     BOOST_CHECK_EQUAL(a.Length(), 10);
     BOOST_CHECK_EQUAL(a[0], 0);
     BOOST_CHECK_EQUAL(a[1], 1);
     BOOST_CHECK_EQUAL(a[2], 2);
     BOOST_CHECK_EQUAL(a[7], 8);
     BOOST_CHECK_EQUAL(a[9], 12);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestMerge_2)
+{
+    SgVector<int> a;
+    for (int i = 0; i < 10; i+=2) // 0,2,4,6,8
+        a.PushBack(i);
+    SgVector<int> b;
+    b.PushBack(-10);
+    b.PushBack(-5);
+    b.PushBack(-2);
+    b.PushBack(-1);
+    a.Merge(b);
+    BOOST_CHECK_EQUAL(b.Length(), 4);
+    BOOST_CHECK_EQUAL(a.Length(), 9);
+    BOOST_CHECK_EQUAL(a[0], -10);
+    BOOST_CHECK_EQUAL(a[1], -5);
+    BOOST_CHECK_EQUAL(a[4], 0);
+    BOOST_CHECK_EQUAL(a[8], 8);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestMerge_3)
+{
+    SgVector<int> a;
+    SgVector<int> b;
+    for (int i = 0; i < 10; i+=2) // 0,2,4,6,8
+        b.PushBack(i);
+    a.Merge(b);
+    BOOST_CHECK_EQUAL(a.Length(), 5);
+    BOOST_CHECK_EQUAL(a[0], 0);
+    BOOST_CHECK_EQUAL(a[1], 2);
+    BOOST_CHECK_EQUAL(a[4], 8);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
