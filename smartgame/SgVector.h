@@ -252,6 +252,9 @@ public:
 
     void Sort();
     
+    /** remove duplicates in a sorted vector */
+    void SortedRemoveDuplicates();
+
     /** Swap the entire contents of this vector with <code>*vector</code>. */
     void SwapWith(SgVector<T>* vector)
     {
@@ -609,9 +612,16 @@ void SgVector<T>::Merge(const SgVector<T>& vector)
     SG_ASSERT(vector.IsSortedAndUnique());
     if ((this == &vector) || vector.IsEmpty())
         return;
-    const int oldSize = Length();
-    PushBackList(vector);
-    inplace_merge(m_vec.begin(), m_vec.begin() + oldSize, m_vec.end());
+    else if (IsEmpty() || vector.Front() > Back())
+        // all new elements come after all old elements, just push them back
+        PushBackList(vector);
+    else
+    {
+        const int oldSize = Length();
+        PushBackList(vector);
+        inplace_merge(m_vec.begin(), m_vec.begin() + oldSize, m_vec.end());
+        SortedRemoveDuplicates();
+    }
     SG_ASSERT(IsSortedAndUnique());
 }
 
@@ -687,6 +697,29 @@ bool SgVector<T>::RemoveDuplicates()
     SwapWith(&uniqueVector); // avoid copying
     SG_ASSERT(UniqueElements());
     return uniqueVector.Length() != Length();
+}
+
+template<typename T>
+void SgVector<T>::SortedRemoveDuplicates()
+{
+    SG_ASSERT(IsSorted());
+    if (IsEmpty())
+    	return;
+    int prev=0;
+    bool shifted = false;
+    for (int i=1; i<Length(); ++i)
+    {
+    	if (m_vec[i] != m_vec[prev])
+        {
+        	++prev;
+            if (shifted)
+            	m_vec[prev] = m_vec[i];
+        }
+        else shifted = true;
+    }
+    if (shifted)
+    	LimitListLength(prev+1);
+    SG_ASSERT(IsSortedAndUnique());
 }
 
 template<typename T>

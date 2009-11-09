@@ -374,6 +374,24 @@ BOOST_AUTO_TEST_CASE(SgVectorTestMerge_3)
     BOOST_CHECK_EQUAL(a[4], 8);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestMerge_4)
+{
+    SgVector<int> a;
+    a.PushBack(3);
+    a.PushBack(4);
+    SgVector<int> b;
+    for (int i = 0; i < 10; i+=2) // 0,2,4,6,8
+        b.PushBack(i);
+    a.Merge(b);
+    BOOST_CHECK_EQUAL(a.Length(), 6);
+    BOOST_CHECK_EQUAL(a[0], 0);
+    BOOST_CHECK_EQUAL(a[1], 2);
+    BOOST_CHECK_EQUAL(a[2], 3);
+    BOOST_CHECK_EQUAL(a[3], 4);
+    BOOST_CHECK_EQUAL(a[4], 6);
+    BOOST_CHECK_EQUAL(a[5], 8);
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestPopBack)
 {
     SgVector<int> a;
@@ -494,6 +512,26 @@ BOOST_AUTO_TEST_CASE(SgVectorTestSort)
     a.Sort();
     BOOST_CHECK(a.IsSorted());
     BOOST_CHECK_EQUAL(a.Length(), 7);
+}
+
+BOOST_AUTO_TEST_CASE(SgVectorTestSortedRemoveDuplicates)
+{
+    SgVector<int> a;
+    for (int i = 0; i < 10; i+=2) // 0,2,4,6,8
+    {
+        a.PushBack(i);
+        a.PushBack(i);
+    }
+    a.SortedRemoveDuplicates();
+    BOOST_CHECK_EQUAL(a.Length(), 5);
+    BOOST_CHECK_EQUAL(a[0], 0);
+    BOOST_CHECK_EQUAL(a[1], 2);
+    BOOST_CHECK_EQUAL(a[4], 8);
+    a.SortedRemoveDuplicates();
+    BOOST_CHECK_EQUAL(a.Length(), 5);
+    a.PushBack(8);
+    a.SortedRemoveDuplicates();
+    BOOST_CHECK_EQUAL(a.Length(), 5);
 }
 
 BOOST_AUTO_TEST_CASE(SgVectorTestSwapWith)
