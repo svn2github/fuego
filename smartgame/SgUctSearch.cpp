@@ -448,7 +448,7 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             value = GetBound(m_rave, node, child);
             break;
         case SG_UCTMOVESELECT_ESTIMATE:
-            value = GetValueEstimate(child);
+            value = GetValueEstimate(m_rave, child);
             break;
         default:
             SG_ASSERT(false);
@@ -504,7 +504,7 @@ float SgUctSearch::GetBound(bool useRave, float logPosCount,
     if (useRave)
         value = GetValueEstimateRave(child);
     else
-        value = GetValueEstimate(child);
+        value = GetValueEstimate(false, child);
     if (m_noBiasTerm)
         return value;
     else
@@ -529,7 +529,7 @@ SgUctTree& SgUctSearch::GetTempTree()
     return m_tempTree;
 }
 
-float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
+float SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) const
 {
     float value = 0.f;
     float weightSum = 0.f;
@@ -541,22 +541,20 @@ float SgUctSearch::GetValueEstimate(const SgUctNode& child) const
         weightSum += weight;
         hasValue = true;
     }
-    if (m_rave)
+    if (useRave && child.HasRaveValue())
     {
-        if (child.HasRaveValue())
-        {
-            float raveCount = child.RaveCount();
-            float weight =
+        float raveCount = child.RaveCount();
+        float weight =
                 raveCount
-                / (m_raveWeightParam1
-                   + m_raveWeightParam2 * raveCount);
-            value += weight * child.RaveValue();
-            weightSum += weight;
-            hasValue = true;
-        }
+              / (  m_raveWeightParam1
+                 + m_raveWeightParam2 * raveCount
+                );
+        value += weight * child.RaveValue();
+        weightSum += weight;
+        hasValue = true;
     }
     if (hasValue)
-        return (value / weightSum);
+        return value / weightSum;
     else
         return m_firstPlayUrgency;
 }
@@ -601,7 +599,7 @@ float SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     else
         value = m_firstPlayUrgency;
     SG_ASSERT(m_numberThreads > 1
-              || fabs(value - GetValueEstimate(child)) < 1e-3/*epsilon*/);
+              || fabs(value - GetValueEstimate(m_rave, child)) < 1e-3/*epsilon*/);
     return value;
 }
 

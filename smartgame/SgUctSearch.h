@@ -1159,7 +1159,7 @@ private:
     float GetBound(bool useRave, float logPosCount, 
                    const SgUctNode& child) const;
 
-    float GetValueEstimate(const SgUctNode& child) const;
+    float GetValueEstimate(bool useRave, const SgUctNode& child) const;
 
     float GetValueEstimateRave(const SgUctNode& child) const;
 
