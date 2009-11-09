@@ -472,7 +472,6 @@ inline void SgSearchHashData::AgeData()
     subclasses.
     @todo Remove m_depth, pass as argument to Evaluate instead
     @todo Use best-response as move ordering heuristic
-    @todo remove sequence parameter from Evaluate
 */
 class SgSearch
 {
@@ -644,16 +643,12 @@ public:
 
     /** The returned value reflects the value of the position, with
         positive values being good for the current player (ToPlay).
-        @param sequence Return value. Should contain the move (or move
-        sequence) that leads to the evaluation, if the evaluation function
-        does more than a static evaluation.
         @param isExact Return value, if set, the value is exact, even if it is
         not a terminal positions and Generate would generate moves.
         @param depth See SgSearch::Generate()
         @return The evaluation of the current position.
     */
-    virtual int Evaluate(SgVector<SgMove>* sequence, bool* isExact,
-                         int depth) = 0;
+    virtual int Evaluate(bool* isExact, int depth) = 0;
 
     /** Return true if the move was executed, false if it was illegal
         and could not be played.
@@ -829,8 +824,7 @@ private:
     void AddSequenceToHash(const SgVector<SgMove>& sequence, int depth);
 
     /** Evaluate current position; possibly write debug output */
-    int CallEvaluate(int depth, int alpha, int beta,
-                     SgVector<SgMove>* sequence, bool* isExact);
+    int CallEvaluate(int depth, bool* isExact);
 
     /** Execute move; update m_moveStack, m_currentDepth and statistics */
     bool CallExecute(SgMove move, int* delta, int depth);

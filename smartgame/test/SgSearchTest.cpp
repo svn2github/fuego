@@ -50,7 +50,7 @@ public:
 
     void Generate(SgVector<SgMove>* moves, int depth);
 
-    int Evaluate(SgVector<SgMove>* sequence, bool* isExact, int depth);
+    int Evaluate(bool* isExact, int depth);
 
     bool Execute(SgMove move, int* delta, int depth);
 
@@ -183,9 +183,8 @@ void TestSearch::Generate(SgVector<SgMove>* moves, int depth)
         SgDebug() << '\n';
 }
 
-int TestSearch::Evaluate(SgVector<SgMove>* sequence, bool* isExact, int depth)
+int TestSearch::Evaluate(bool* isExact, int depth)
 {
-    SG_UNUSED(sequence);
     SG_UNUSED(depth);
     *isExact = false;
     if (m_write)

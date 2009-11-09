@@ -402,13 +402,9 @@ int SgSearch::NumNodes() const
     return m_stat.NumNodes();
 }
 
-int SgSearch::CallEvaluate(int depth, int alpha, int beta,
-                           SgVector<SgMove>* sequence, bool* isExact)
+int SgSearch::CallEvaluate(int depth, bool* isExact)
 {
-    // Alpha, beta could be needed in Evaluate. Not implemented yet.
-    SG_UNUSED(alpha);
-    SG_UNUSED(beta);
-    int v = Evaluate(sequence, isExact, depth);
+    int v = Evaluate(isExact, depth);
     if (DEBUG_SEARCH)
         SgDebug() << "SgSearch::CallEvaluate d=" << depth << ", v=" << v
                   << '\n';
@@ -884,8 +880,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         {
             m_stat.IncNumEvals();
             sequence->Clear();
-            loValue = CallEvaluate(depth, alpha, beta, sequence,
-                                   &solvedByEval);
+            loValue = CallEvaluate(depth, &solvedByEval);
         }
 
         // Save data about current position in the hash table.
