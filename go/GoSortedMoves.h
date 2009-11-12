@@ -6,8 +6,8 @@
     have the usual operations Insert, Delete, etc.
 */
 //----------------------------------------------------------------------------
-#ifndef GOSORTEDMOVES_H
-#define GOSORTEDMOVES_H
+#ifndef GO_SORTEDMOVES_H
+#define GO_SORTEDMOVES_H
 
 #include "SgMove.h"
 #include "SgSortedMoves.h"
@@ -40,5 +40,5 @@ public:
     }
 };
 
-#endif // GOSORTEDMOVES_H
+#endif // GO_SORTEDMOVES_H
 

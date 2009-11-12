@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GTP_INPUT_STREAM_H_
-#define GTP_INPUT_STREAM_H_
+#ifndef GTP_INPUTSTREAM_H
+#define GTP_INPUTSTREAM_H
 
 #include <iostream>
 #include <string>
@@ -31,4 +31,4 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GTP_INPUT_STREAM_H_
+#endif // GTP_INPUTSTREAM_H

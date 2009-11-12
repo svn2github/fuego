@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef SG_SYNCHRONIZER_H_
-#define SG_SYNCHRONIZER_H_
+#ifndef SG_MPISYNCHRONIZER_H
+#define SG_MPISYNCHRONIZER_H
 
 #include <iostream>
 #include <string>
@@ -123,4 +123,4 @@ public:
 
 //----------------------------------------------------------------------------
 
-#endif // SG_SYNCHRONIZER_H_
+#endif // SG_MPISYNCHRONIZER_H

@@ -3,8 +3,8 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GTP_OUTPUT_STREAM_H_
-#define GTP_OUTPUT_STREAM_H_
+#ifndef GTP_OUTPUTSTREAM_H
+#define GTP_OUTPUTSTREAM_H
 
 #include <iostream>
 #include <string>
@@ -31,5 +31,5 @@ private:
 
 //----------------------------------------------------------------------------
 
-#endif // GTP_OUTPUT_STREAM_H_
+#endif // GTP_OUTPUTSTREAM_H
 
