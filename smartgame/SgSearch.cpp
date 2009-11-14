@@ -17,6 +17,7 @@
 #include "SgVector.h"
 #include "SgMath.h"
 #include "SgNode.h"
+#include "SgSearchValue.h"
 #include "SgTime.h"
 #include "SgWrite.h"
 
@@ -26,56 +27,6 @@ using namespace std;
 
 const bool DEBUG_SEARCH = false;
 const bool DEBUG_SEARCH_ITERATIONS = false;
-
-//----------------------------------------------------------------------------
-
-/** Set '*s' to the string for this value.
-    e.g. "B+3.5", "W+20", or "W+(ko)[12]". The value is divided by
-    'unitPerPoint' to determine the number of points.
-*/
-string SgValue::ToString(int unitPerPoint) const
-{
-    if (m_value == 0)
-        return "0";
-    ostringstream o;
-    o << (m_value > 0 ? "B+" : "W+");
-    if (IsEstimate())
-    {
-        if (unitPerPoint == 1)
-            o << (abs(m_value) / unitPerPoint);
-        else
-            o << setprecision(1)
-              << (static_cast<float>(abs(m_value)) / unitPerPoint);
-    }
-    else
-    {
-        if (KoLevel() != 0)
-            o << "(ko)";
-        if (Depth() != 0)
-        {
-            o << " (" << Depth() << " moves)";
-        }
-    }
-    return o.str();
-}
-
-bool SgValue::FromString(const string& s)
-{
-    SG_UNUSED(s);
-    SG_ASSERT(false); // AR: not yet implemented
-    return false;
-}
-
-int SgValue::KoLevel() const
-{
-    if (IsEstimate())
-        return 0;
-    else
-    {
-        int level = (abs(m_value) - 1) / MAX_DEPTH;
-        return (MAX_LEVEL - 1) - level;
-    }
-}
 
 //----------------------------------------------------------------------------
 
@@ -752,8 +703,8 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     if (m_traceNode)
                         TraceValue(loValue);
                     // store in hash table. Known to be exact only if
-                    // SgValue::MAX_VALUE reached for one player.
-                    bool isExact = (abs(loValue) == SgValue::MAX_VALUE);
+                    // solved for one player.
+                    bool isExact = SgSearchValue::IsSolved(loValue);
                     StoreHash(depth, loValue, tryFirst,
                               (loValue <= alpha) /*isUpperBound*/,
                               (beta <= loValue) /*isLowerBound*/, isExact);
@@ -885,7 +836,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
 
         // Save data about current position in the hash table.
         isSolved = solvedByEval
-            || (abs(loValue) == SgValue::MAX_VALUE)
+            || SgSearchValue::IsSolved(loValue)
             || (fHasMove && allExact);
         // || EndOfGame(); bug: cannot store exact score after two passes.
         if (   m_hash

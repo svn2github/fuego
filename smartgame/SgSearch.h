@@ -23,171 +23,6 @@ class SgSearchControl;
 
 //----------------------------------------------------------------------------
 
-/** Value used in class SgSearch.
-    There's a range of values that indicate that the problem has been
-    solved (at a certain depth), a range of values for solutions that involve
-    ko, and a range of values for problems that have not been solved yet.
-    Value is always stored with positive values being good for black, negative
-    values being good for white.
-    <pre>
-    int v = Board().ToPlay() == SG_WHITE ? -value : +value;
-    </pre>
-*/
-class SgValue
-{
-public:
-    enum {
-        /** @todo: could make it 512 if deep ladder search a problem */
-        MAX_DEPTH = 256,
-
-        MAX_LEVEL = 125,
-
-        /** == 32000 */
-        MAX_VALUE = MAX_LEVEL * MAX_DEPTH,
-
-        MAX_KO_LEVEL = 3,
-
-        KO_VALUE = MAX_VALUE - MAX_DEPTH,
-
-        MAX_ESTIMATE = KO_VALUE - MAX_KO_LEVEL * MAX_DEPTH
-    };
-
-    SgValue();
-
-    explicit SgValue(int v);
-
-    SgValue(SgBlackWhite goodForPlayer, int depth);
-
-    SgValue(SgBlackWhite goodForPlayer, int depth, int koLevel);
-
-    /** Return current value as an integer. */
-    operator int() const;
-
-    int Depth() const;
-
-    /** Convert 'string' to a value and set this value.
-        Return true if the string could be converted to a valid value,
-        otherwise false.
-    */
-    bool FromString(const std::string& s);
-
-    bool IsEstimate() const;
-
-    bool IsKoValue() const;
-
-    bool IsPositive() const;
-
-    bool IsSureValue() const;
-
-    int KoLevel() const;
-
-    void SetValueForPlayer(SgBlackWhite player);
-
-    int ValueForBlack() const;
-
-    int ValueForPlayer(SgBlackWhite player) const;
-
-    int ValueForWhite() const;
-
-    /** Set '*s' to the string for this value, e.g. "B+3.5", "W+20",
-        or "W+(ko)[12]". The value is divided by 'unitPerPoint' to determine
-        the number of points.
-    */
-    std::string ToString(int unitPerPoint = 1) const;
-
-private:
-    int m_value;
-};
-
-inline SgValue::SgValue()
-    : m_value(0)
-{ }
-
-inline SgValue::SgValue(int v)
-    : m_value(v)
-{
-    SG_ASSERT(-MAX_VALUE <= v && v <= MAX_VALUE);
-}
-
-inline SgValue::SgValue(SgBlackWhite goodForPlayer, int depth)
-    : m_value(MAX_VALUE - depth)
-{
-    SG_ASSERT_BW(goodForPlayer);
-    SG_ASSERT(0 <= depth && depth < MAX_DEPTH);
-    SetValueForPlayer(goodForPlayer);
-    // Make sure value gets encoded/decoded consistently.
-    SG_ASSERT(KoLevel() == 0);
-    SG_ASSERT(Depth() == depth);
-}
-
-inline SgValue::SgValue(SgBlackWhite goodForPlayer, int depth, int koLevel)
-    : m_value(MAX_VALUE - depth - koLevel * MAX_DEPTH)
-{
-    SG_ASSERT_BW(goodForPlayer);
-    SG_ASSERT(0 <= depth && depth < MAX_DEPTH);
-    SG_ASSERT(0 <= koLevel && koLevel <= MAX_KO_LEVEL);
-    SetValueForPlayer(goodForPlayer);
-    // Make sure value gets encoded/decoded consistently.
-    SG_ASSERT(KoLevel() == koLevel);
-    SG_ASSERT(Depth() == depth);
-}
-
-inline SgValue::operator int() const
-{
-    return m_value;
-}
-
-inline int SgValue::Depth() const
-{
-    if (IsEstimate())
-        return 0;
-    else return (MAX_DEPTH - 1) - (std::abs(m_value)-1) % MAX_DEPTH;
-}
-
-inline bool SgValue::IsEstimate() const
-{
-    return -MAX_ESTIMATE < m_value && m_value < MAX_ESTIMATE;
-}
-
-inline bool SgValue::IsKoValue() const
-{
-    return IsSureValue() && -KO_VALUE < m_value && m_value < KO_VALUE;
-}
-
-inline bool SgValue::IsPositive() const
-{
-    return 0 <= m_value;
-}
-
-inline bool SgValue::IsSureValue() const
-{
-    return m_value <= -MAX_ESTIMATE || MAX_ESTIMATE <= m_value;
-}
-
-inline void SgValue::SetValueForPlayer(SgBlackWhite player)
-{
-    if (player == SG_WHITE)
-        m_value = -m_value;
-}
-
-inline int SgValue::ValueForBlack() const
-{
-    return +m_value;
-}
-
-inline int SgValue::ValueForPlayer(SgBlackWhite player) const
-{
-    SG_ASSERT_BW(player);
-    return player == SG_WHITE ? -m_value : +m_value;
-}
-
-inline int SgValue::ValueForWhite() const
-{
-    return -m_value;
-}
-
-//----------------------------------------------------------------------------
-
 class SgProbCut
 {
 public:
@@ -476,9 +311,18 @@ inline void SgSearchHashData::AgeData()
 class SgSearch
 {
 public:
+    /** One DEPTH_UNIT corresponds to the default search depth for one move,
+    	in the internal representation of search. Used for fractional ply
+        extensions. E.g. extending from atari in Go may count as only
+        1/8 ply = DEPTH_UNIT/8. This way forced lines can be searched
+        much deeper at a low nominal search depth.
+    */
     static const int DEPTH_UNIT = 100;
 
-    /** Infinity for windowed searches.
+    /** Remark: could make it 512 if deep ladder search a problem */
+    static const int MAX_DEPTH = 256;
+
+   /** Infinity for windowed searches.
         Needs prefix SG_ even if not in global namespace, because there is a
         conflict with a global macro INFINITY.
     */
@@ -1106,41 +950,6 @@ inline SgRelaxedSearchControl::SgRelaxedSearchControl(double maxTime)
     : m_maxTime(maxTime)
 {
 }
-
-//----------------------------------------------------------------------------
-
-const int MaxSearchDepth = 256;
-
-/** The best possible search result - highest possible value.
-    A win in n ply is encoded with a value of PosValue - n.
-    
-    A loss is encoded as -value if the win would be encoded as value.
-    PosValue==31743. @todo: make them nicer numbers
-*/
-const int PosValue = MaxSearchDepth * 124 - 1;
-
-/** The worst possible search result. 
-    All search results are in the range [NegValue..PosValue].
-*/
-const int NegValue = -PosValue;
-
-/** KoValue is the result for win by ko.
-    Similarly with PosValue, a win by Ko in n ply is encoded as KoValue - n.
-    KoValue==31488.
-*/
-const int KoValue = PosValue - (MaxSearchDepth - 1);
-
-/** The maximum number of Ko recaptures allowed. */
-const int MaxNuKo = 3;
-
-/** SureValue is the lowest possible score that indicates a proven win.
-    1. values in the range [NegValue..-SureValue] are proven losses 
-       (possibly by ko).
-    2. values in the range [-SureValue+1..SureValue-1] are heuristic scores.
-    3. values in range [SureValue..PosValue] are proven wins (possibly by ko).
-    SureValue==30719.
-*/
-const int SureValue = PosValue - (MaxNuKo + 1) * MaxSearchDepth;
 
 //----------------------------------------------------------------------------
 

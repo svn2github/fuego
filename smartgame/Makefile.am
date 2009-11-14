@@ -31,6 +31,7 @@ SgRandom.cpp \
 SgRect.cpp \
 SgSearch.cpp \
 SgSearchStatistics.cpp \
+SgSearchValue.cpp \
 SgStrategy.cpp \
 SgStringUtil.cpp \
 SgMpiSynchronizer.cpp \
@@ -91,6 +92,7 @@ SgRestorer.h \
 SgSList.h \
 SgSearch.h \
 SgSearchStatistics.h \
+SgSearchValue.h \
 SgSortedArray.h \
 SgSortedMoves.h \
 SgStack.h \
