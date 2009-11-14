@@ -442,17 +442,8 @@ public:
 
     void SetNullMoveDepth(int depth);
 
-    /** Get the current statistics.
-        Can be called during search.
-        Override for derived search and statistics.
-    */
-    virtual void GetStatistics(SgSearchStatistics* stat);
-
-    /** Add the statistics to the given statistics.
-        Can only be called after the search.
-        Override for derived search and statistics.
-    */
-    virtual void AddStatisticsTo(SgSearchStatistics* stat);
+    /** Get the current statistics. Can be called during search. */
+    void GetStatistics(SgSearchStatistics* stat);
 
     /** Return the number of nodes since starting the search. */
     int NumNodes() const;

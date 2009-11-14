@@ -323,13 +323,6 @@ void SgSearch::GetStatistics(SgSearchStatistics* stat)
     *stat = m_stat;
 }
 
-void SgSearch::AddStatisticsTo(SgSearchStatistics* stat)
-{
-    SG_ASSERT(m_timer.IsStopped());
-    m_stat.SetTimeUsed(m_timer.GetTime());
-    *stat += m_stat;
-}
-
 void SgSearch::StartTime()
 {
     if (m_timerLevel++ == 0)
