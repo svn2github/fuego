@@ -541,8 +541,6 @@ public:
     */
     void InitSearch(int startDepth = 0);
 
-    void UpdateTime();
-
     /** Current node in tracing; set to 0 if not tracing */
     SgNode* m_traceNode;
 
