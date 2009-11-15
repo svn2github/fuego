@@ -230,7 +230,8 @@ bool SgSearch::AbortSearch()
             return false;
 
         m_aborted =
-            (m_control && m_control->Abort(m_timer.GetTime(), NumNodes()));
+               m_control 
+            && m_control->Abort(m_timer.GetTime(), m_stat.NumNodes());
         if (! m_aborted)
         {
             if (SgUserAbort())
@@ -339,11 +340,6 @@ void SgSearch::StopTime()
         if (! m_timer.IsStopped())
             m_timer.Stop();
     }
-}
-
-int SgSearch::NumNodes() const
-{
-    return m_stat.NumNodes();
 }
 
 int SgSearch::CallEvaluate(int depth, bool* isExact)
@@ -497,7 +493,8 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
     {
         if (m_control != 0
             && ! m_control->StartNextIteration(m_depthLimit,
-                                               m_timer.GetTime(), NumNodes()))
+                                               m_timer.GetTime(), 
+                                               m_stat.NumNodes()))
             SetAbortSearch();
         if (m_aborted)
             break;

@@ -338,7 +338,7 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_IncompleteIteration)
     SgVector<SgMove> sequence;
     int value = search.IteratedSearch(1, 10, -1000, 1000, &sequence, true, 0);
     BOOST_CHECK_EQUAL(search.LastEvaluated(), 3u);
-    BOOST_CHECK_EQUAL(search.NumNodes(), 6);
+    BOOST_CHECK_EQUAL(search.Statistics().NumNodes(), 6);
     BOOST_CHECK_EQUAL(value, 5);
     BOOST_CHECK_EQUAL(sequence.Length(), 1);
     BOOST_CHECK_EQUAL(sequence[0], 2);
@@ -375,7 +375,7 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_NewBestInIncompleteIteration)
     SgVector<SgMove> sequence;
     int value = search.IteratedSearch(1, 10, -1000, 1000, &sequence, true, 0);
     BOOST_CHECK_EQUAL(search.LastEvaluated(), 6u);
-    BOOST_CHECK_EQUAL(search.NumNodes(), 11);
+    BOOST_CHECK_EQUAL(search.Statistics().NumNodes(), 11);
     BOOST_CHECK_EQUAL(value, 3);
     BOOST_CHECK_EQUAL(sequence.Length(), 2);
     BOOST_CHECK_EQUAL(sequence[0], 1);

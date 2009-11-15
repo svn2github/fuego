@@ -445,9 +445,11 @@ public:
     /** Get the current statistics. Can be called during search. */
     void GetStatistics(SgSearchStatistics* stat);
 
-    /** Return the number of nodes since starting the search. */
-    int NumNodes() const;
-
+    const SgSearchStatistics& Statistics() const
+    {
+    	return m_stat;
+	}
+    
     /** Starts the clock and clears the statistics.
         Can be nested; only the outermost call actually does anything.
     */
