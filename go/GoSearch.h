@@ -22,8 +22,6 @@ class GoSearch
 public:
     GoSearch(GoBoard& board, SgSearchHashTable* hash);
 
-    void AddMoveProp(SgNode* node, SgMove move, SgBlackWhite player);
-
     GoBoard& Board();
 
     const GoBoard& Board() const;
@@ -38,7 +36,6 @@ public:
 
     /** Default implementation of SgSearch::Execute() for Go searches.
         Executes the move is legal.
-        Updates the trace node (this should be done in SgSearch::CallExecute!)
     */
     bool Execute(SgMove move, int* delta, int depth);
 
@@ -58,7 +55,6 @@ public:
 
     /** Default implementation of SgSearch::TakeBack() for Go searches.
         Takes back the move on the board.
-        Updates the trace node (this should be done in SgSearch::CallExecute!)
     */
     void TakeBack();
 

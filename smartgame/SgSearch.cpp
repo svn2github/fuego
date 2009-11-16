@@ -105,8 +105,8 @@ void PrintPV(const SgSearch& search, int depth, int value,
 const int SgSearch::SG_INFINITY = numeric_limits<int>::max();
 
 SgSearch::SgSearch(SgSearchHashTable* hash)
-    : m_traceNode(0),
-      m_hash(hash),
+    : m_hash(hash),
+      m_tracer(0),
       m_currentDepth(0),
       m_useScout(false),
       m_useKillers(false),
@@ -217,7 +217,7 @@ void SgSearch::StoreHash(int depth, int value, SgMove move,
 
 bool SgSearch::TraceIsOn() const
 {
-    return false;
+    return m_tracer && m_tracer->TraceIsOn();
 }
 
 bool SgSearch::AbortSearch()
@@ -237,8 +237,8 @@ bool SgSearch::AbortSearch()
             if (SgUserAbort())
                 m_aborted = true;
         }
-        if (m_aborted && m_traceNode)
-            TraceComment("aborted");
+        if (m_aborted && TraceIsOn())
+            m_tracer->TraceComment("aborted");
     }
     return m_aborted;
 }
@@ -310,8 +310,8 @@ bool SgSearch::NullMovePrune(int depth, int delta, int beta)
         CallTakeBack();
         if (nullvalue >= beta)
         {
-            if (m_traceNode)
-                TraceComment("null-move-cut");
+            if (m_tracer)
+                m_tracer->TraceComment("null-move-cut");
             return true;
         }
     }
@@ -353,9 +353,10 @@ int SgSearch::CallEvaluate(int depth, bool* isExact)
 
 bool SgSearch::CallExecute(SgMove move, int* delta, int depth)
 {
+    const SgBlackWhite toPlay = GetToPlay();
     if (DEBUG_SEARCH)
         SgDebug() << "SgSearch::CallExecute: d=" << depth << ' '
-                  << SgBW(GetToPlay()) << ' ' << MoveString(move) << '\n';
+                  << SgBW(toPlay) << ' ' << MoveString(move) << '\n';
     if (Execute(move, delta, depth))
     {
         m_stat.IncNumMoves();
@@ -363,6 +364,8 @@ bool SgSearch::CallExecute(SgMove move, int* delta, int depth)
             m_stat.IncNumPassMoves();
         m_moveStack.PushBack(move);
         ++m_currentDepth;
+    	if (TraceIsOn())
+        	m_tracer->AddTraceNode(move, toPlay);
         return true;
     }
     return false;
@@ -373,8 +376,15 @@ void SgSearch::CallTakeBack()
     if (DEBUG_SEARCH)
         SgDebug() << "SgSearch::CallTakeBack\n";
     TakeBack();
+    if (TraceIsOn())
+        m_tracer->TakeBackTraceNode();
     m_moveStack.PopBack();
     --m_currentDepth;
+}
+
+void SgSearch::CreateTracer()
+{
+	m_tracer = new SgSearchTracer(0);
 }
 
 void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
@@ -432,14 +442,14 @@ int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
 {
     SG_ASSERT(sequence);
     OnStartSearch();
-    if (! m_traceNode && traceNode)
+    if (m_tracer && traceNode)
     {
-        m_traceNode = traceNode->NewRightMostSon();
-        TraceComment("DFS tree");
+        SG_ASSERT(m_tracer->TraceNode() == 0);
+        SG_ASSERT(m_tracer->TraceIsOn());
+        m_tracer->InitTracing("DFS tree");
     }
 
     StartTime();
-
     // Clear the hash table before a new search, because don't know
     // whether the goal and evaluation is still the same as for the
     // last time it was called.
@@ -456,6 +466,8 @@ int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
     int value = DFS(0, depthLimit, boundLo, boundHi, sequence, &isExactValue);
     StopTime();
 
+	if (m_tracer && traceNode)
+    	m_tracer->AppendTrace(traceNode);
     return value;
 }
 
@@ -465,8 +477,12 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
 {
     SG_ASSERT(sequence);
     OnStartSearch();
-    if (! m_traceNode && traceNode)
-        m_traceNode = traceNode;
+    if (m_tracer && traceNode)
+    {
+        SG_ASSERT(m_tracer->TraceNode() == 0);
+        SG_ASSERT(m_tracer->TraceIsOn());
+        m_tracer->InitTracing("Iterated search");
+    }
     StartTime();
 
     // Clear the hash table before a new search, because don't know
@@ -544,7 +560,8 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
              && (! CheckDepthLimitReached() || m_reachedDepthLimit));
 
     StopTime();
-
+	if (m_tracer && traceNode)
+    	m_tracer->AppendTrace(traceNode);
     return value;
 }
 
@@ -598,8 +615,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 sequence->Clear();
             else
                 sequence->SetTo(data.BestMove());
-            if (m_traceNode)
-                TraceValue(data.Value(), "exact-hash", true);
+            if (m_tracer)
+                m_tracer->TraceValue(data.Value(), GetToPlay(),
+                					 "exact-hash", true);
             return data.Value();
         }
     }
@@ -654,9 +672,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                             sequence->Clear();
                         else
                             sequence->SetTo(tryFirst);
-                        if (m_traceNode)
-                            TraceValue(data.Value(), "Hash hit",
-                                       *isExactValue);
+                        if (m_tracer)
+                            m_tracer->TraceValue(data.Value(), GetToPlay(),
+                                           "Hash hit", *isExactValue);
                         return data.Value();
                     }
                 }
@@ -669,14 +687,14 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 bool childIsExact = true;
                 loValue = -SearchEngine(depth-delta, -beta, -alpha, sequence,
                                         &childIsExact);
-                if (m_traceNode)
-                    TraceComment("tryFirst");
+                if (m_tracer)
+                    m_tracer->TraceComment("tryFirst");
                 CallTakeBack();
                 fHasMove = true;
                 if (m_aborted)
                 {
-                    if (m_traceNode)
-                        TraceComment("aborted");
+                    if (m_tracer)
+                        m_tracer->TraceComment("aborted");
                     *isExactValue = false;
                     return (1 < m_currentDepth) ? alpha : loValue;
                 }
@@ -690,8 +708,8 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                    allExact = false;
                 if (loValue >= beta)
                 {
-                    if (m_traceNode)
-                        TraceValue(loValue);
+                    if (m_tracer)
+                        m_tracer->TraceValue(loValue, GetToPlay());
                     // store in hash table. Known to be exact only if
                     // solved for one player.
                     bool isExact = SgSearchValue::IsSolved(loValue);
@@ -699,8 +717,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                               (loValue <= alpha) /*isUpperBound*/,
                               (beta <= loValue) /*isLowerBound*/, isExact);
                     *isExactValue = isExact;
-                    if (m_traceNode)
-                        TraceValue(loValue, "b-cut", isExact);
+                    if (m_tracer)
+                        m_tracer->TraceValue(loValue, GetToPlay(),
+                        					 "b-cut", isExact);
                     return loValue;
                 }
             }
@@ -782,8 +801,8 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 CallTakeBack();
                 if (m_aborted)
                 {
-                    if (m_traceNode)
-                        TraceComment("ABORTED");
+                    if (m_tracer)
+                        m_tracer->TraceComment("ABORTED");
                     *isExactValue = false;
                     return (1 < m_currentDepth) ? alpha : loValue;
                 }
@@ -793,8 +812,8 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     // killers.
                     if (m_useKillers && m_currentDepth <= MAX_KILLER_DEPTH)
                         m_killers[m_currentDepth].MarkKiller(move);
-                    if (m_traceNode)
-                        TraceComment("b-cut");
+                    if (m_tracer)
+                        m_tracer->TraceComment("b-cut");
                     break;
                 }
             }
@@ -855,106 +874,21 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         loValue = alpha;
 
     *isExactValue = isSolved;
-    if (m_traceNode)
-        TraceValue(loValue, 0, *isExactValue);
+    if (m_tracer)
+        m_tracer->TraceValue(loValue, GetToPlay(), 0, *isExactValue);
     SG_ASSERT(sequence->IsEmpty() || sequence->Front() != SG_NULLMOVE);
     return loValue;
 }
 
-void SgSearch::StartOfDepth(int depthLimit)
+void SgSearch::StartOfDepth(int depth)
 {
     if (DEBUG_SEARCH)
-        SgDebug() << "SgSearch::StartOfDepth: " << depthLimit << '\n';
+        SgDebug() << "SgSearch::StartOfDepth: " << depth << '\n';
     // add another separate search tree. We are either at the root of the
-    // previous depth tree or, if depthLimit==0, one level higher at the
+    // previous depth tree or, if depth==0, one level higher at the
     // linking node.
-    if (m_traceNode && ! m_aborted)
-    {
-        if (depthLimit > 0 && m_traceNode->HasFather())
-        {
-            // true for each depth except the very first
-            // AR: the 0 should really be the depthMin parameter of iterated
-            // search. this will break if depthMin != 0 and generate strange
-            // trace trees.
-            m_traceNode = m_traceNode->Father();
-            // go from root of previous level to root
-        }
-        m_traceNode = m_traceNode->NewRightMostSon();
-        SG_ASSERT(m_traceNode);
-        m_traceNode->SetIntProp(SG_PROP_MAX_DEPTH, depthLimit);
-        ostringstream o;
-        o << "Iteration d=" << depthLimit << ' ';
-        m_traceNode->AddComment(o.str());
-
-        // @todo would be interesting to know time used for each depth,
-        // create SG_PROP_TIME_USED property at EndOfDepth (doesn't exist yet)
-    }
-}
-
-void SgSearch::TraceValue(int value) const
-{
-    // The value needs to be recorded in absolute terms, not relative to
-    // the current player.
-    int v = (GetToPlay() == SG_WHITE) ? -value : +value;
-    m_traceNode->Add(new SgPropValue(SG_PROP_VALUE, v));
-    ostringstream comment;
-    comment << "v=" << value;
-    TraceComment(comment.str().c_str());
-}
-
-void SgSearch::TraceValue(int value, const char* comment, bool isExact) const
-{
-    TraceValue(value);
-    if (comment != 0)
-        TraceComment(comment);
-    if (isExact)
-    {
-        m_traceNode->Add(new SgPropMultiple(SG_PROP_CHECK, 1));
-        TraceComment("exact");
-    }
-}
-
-void SgSearch::TraceComment(const char* comment) const
-{
-    if (m_traceNode)
-    {
-        m_traceNode->AddComment(comment);
-        m_traceNode->AddComment("\n");
-    }
-}
-
-void SgSearch::AddTraceNode(SgMove move, SgBlackWhite player)
-{
-    if (m_traceNode)
-    {
-        m_traceNode = m_traceNode->NewRightMostSon();
-        AddMoveProp(m_traceNode, move, player);
-    }
-}
-
-void SgSearch::TakeBackTraceNode()
-{
-    if (m_traceNode)
-        m_traceNode = m_traceNode->Father();
-}
-
-void SgSearch::InitTracing(const string& type)
-{
-    SG_ASSERT(! m_traceNode);
-    if (TraceIsOn())
-    {
-        m_traceNode = new SgNode();
-        m_traceNode->Add(new SgPropText(SG_PROP_COMMENT, type));
-    }
-}
-
-void SgSearch::AppendTrace(SgNode* toNode)
-{
-    if (m_traceNode)
-    {
-        m_traceNode->Root()->AppendTo(toNode);
-        m_traceNode = 0;
-    }
+    if (m_tracer && ! m_aborted)
+        m_tracer->StartOfDepth(depth);
 }
 
 //----------------------------------------------------------------------------

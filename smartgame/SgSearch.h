@@ -14,6 +14,7 @@
 #include "SgHash.h"
 #include "SgMove.h"
 #include "SgSearchStatistics.h"
+#include "SgSearchTracer.h"
 #include "SgTimer.h"
 #include "SgVector.h"
 
@@ -335,10 +336,6 @@ public:
 
     virtual ~SgSearch();
 
-    /** Add move property to node (game-dependent). */
-    virtual void AddMoveProp(SgNode* node, SgMove move,
-                             SgBlackWhite player) = 0;
-
     /** Stop search if depth limit was not reached in current iteration.
         Usually this should return true, but it depends on the move generation
         in the subclass. For example, if the move generation prunes some
@@ -460,9 +457,6 @@ public:
     */
     void StopTime();
 
-    /** 0 if not tracing */
-    SgNode* TraceNode() const;
-
     /** Generate moves.
         @param moves The returned list is the set of moves to be tried.
         These moves will be tested for legality, so illegal moves can also be
@@ -541,45 +535,24 @@ public:
     */
     void InitSearch(int startDepth = 0);
 
-    /** Current node in tracing; set to 0 if not tracing */
-    SgNode* m_traceNode;
-
-    /** Add comment to current tracenode */
-    void TraceComment(const char* comment) const;
-    
-    /** Add value as a comment to current tracenode */
-    void TraceValue(int value) const;
-
-    /** Add value and text as a comment to current tracenode */
-    void TraceValue(int value, const char* comment, bool isExact) const;
-
-    /** Add the given move as a new node to the trace tree and go to that
-        node.
-        Don't do anything if m_traceNode is 0. To be called from the
-        client's Execute method.
-    */
-    void AddTraceNode(SgMove move, SgBlackWhite player);
-
-    /** Go one move up in the trace tree.
-        Don't do anything if m_traceNode is null.
-        To be called from the client's TakeBack method.
-    */
-    void TakeBackTraceNode();
-
     /** Is tracing currently active?*/
-    virtual bool TraceIsOn() const;
+    bool TraceIsOn() const;
 
-    /** Creates a new root node for tracing */
-    void InitTracing(const std::string& type);
-
-    /** Move trace tree to a subtree of toNode, and set m_traceNode = 0 */
-    void AppendTrace(SgNode* toNode);
-
+	/** Default creates a SgSearchTracer; override for specific traces */
+    virtual void CreateTracer();
+    
+    /** Set tracer object. Search object assumes ownership */
+    void SetTracer(SgSearchTracer* tracer);
+    
+	SgSearchTracer* Tracer() const;
+    
     void SetAbortFrequency(int value);
 
 private:
     /** Hash table */
     SgSearchHashTable* m_hash;
+
+	SgSearchTracer* m_tracer;
 
     int m_currentDepth;
 
@@ -610,7 +583,7 @@ private:
     bool m_reachedDepthLimit;
 
     SgSearchStatistics m_stat;
-
+    
     SgTimer m_timer;
 
     int m_timerLevel;
@@ -734,6 +707,11 @@ inline const SgSearchControl* SgSearch::SearchControl() const
     return m_control;
 }
 
+inline void SgSearch::SetAbortFrequency(int value)
+{
+    m_abortFrequency = value;
+}
+
 inline void SgSearch::SetAbortSearch(bool fAborted)
 {
     m_aborted = fAborted;
@@ -742,11 +720,6 @@ inline void SgSearch::SetAbortSearch(bool fAborted)
 inline void SgSearch::SetKillers(bool flag)
 {
     m_useKillers = flag;
-}
-
-inline void SgSearch::SetOpponentBest(bool flag)
-{
-    m_useOpponentBest = flag;
 }
 
 inline void SgSearch::SetNullMove(bool flag)
@@ -759,21 +732,29 @@ inline void SgSearch::SetNullMoveDepth(int depth)
     m_nullMoveDepth = depth;
 }
 
+inline void SgSearch::SetOpponentBest(bool flag)
+{
+    m_useOpponentBest = flag;
+}
+
 inline void SgSearch::SetScout(bool flag)
 {
     m_useScout = flag;
 }
 
-inline SgNode* SgSearch::TraceNode() const
+inline void SgSearch::SetTracer(SgSearchTracer* tracer)
 {
-    return m_traceNode;
+	// check that an existing tracer is not overwritten.
+    // This can potentially be allowed in the future if needed. 
+    SG_ASSERT(! m_tracer || ! tracer);
+    m_tracer = tracer;
 }
 
-inline void SgSearch::SetAbortFrequency(int value)
+inline SgSearchTracer* SgSearch::Tracer() const
 {
-    m_abortFrequency = value;
+    return m_tracer;
 }
-
+    
 //----------------------------------------------------------------------------
 
 /** Resource control used in class SgSearch. */

@@ -39,7 +39,6 @@ public:
 
     ~TestSearch();
 
-    void AddMoveProp(SgNode* node, SgMove move, SgBlackWhite player);
 
     /** Add node to test tree.
         @param father Index of father node, NO_NODE if root node.
@@ -118,13 +117,6 @@ TestSearch::~TestSearch()
 {
 }
 
-void TestSearch::AddMoveProp(SgNode* node, SgMove move, SgBlackWhite player)
-{
-    // Do nothing; trace trees not supported
-    SG_UNUSED(node);
-    SG_UNUSED(move);
-    SG_UNUSED(player);
-}
 
 void TestSearch::AddNode(size_t father, SgMove move, int eval)
 {

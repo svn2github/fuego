@@ -31,6 +31,7 @@ SgRandom.cpp \
 SgRect.cpp \
 SgSearch.cpp \
 SgSearchStatistics.cpp \
+SgSearchTracer.cpp \
 SgSearchValue.cpp \
 SgStrategy.cpp \
 SgStringUtil.cpp \

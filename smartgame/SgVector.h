@@ -704,7 +704,7 @@ void SgVector<T>::SortedRemoveDuplicates()
 {
     SG_ASSERT(IsSorted());
     if (IsEmpty())
-    	return;
+        return;
     int prev=0;
     bool shifted = false;
     for (int i=1; i<Length(); ++i)
