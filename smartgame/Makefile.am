@@ -30,6 +30,7 @@ SgProp.cpp \
 SgRandom.cpp \
 SgRect.cpp \
 SgSearch.cpp \
+SgSearchControl.cpp \
 SgSearchStatistics.cpp \
 SgSearchTracer.cpp \
 SgSearchValue.cpp \

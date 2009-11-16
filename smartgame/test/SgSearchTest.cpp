@@ -12,6 +12,7 @@
 #include "SgDebug.h"
 #include "SgHashTable.h"
 #include "SgSearch.h"
+#include "SgSearchControl.h"
 #include "SgVector.h"
 
 using namespace std;

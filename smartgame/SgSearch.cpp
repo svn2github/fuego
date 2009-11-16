@@ -17,6 +17,7 @@
 #include "SgVector.h"
 #include "SgMath.h"
 #include "SgNode.h"
+#include "SgSearchControl.h"
 #include "SgSearchValue.h"
 #include "SgTime.h"
 #include "SgWrite.h"
@@ -889,77 +890,6 @@ void SgSearch::StartOfDepth(int depth)
     // linking node.
     if (m_tracer && ! m_aborted)
         m_tracer->StartOfDepth(depth);
-}
-
-//----------------------------------------------------------------------------
-
-SgSearchControl::~SgSearchControl()
-{
-}
-
-bool SgSearchControl::StartNextIteration(int depth, double elapsedTime,
-                                         int numNodes)
-{
-    SG_UNUSED(depth);
-    SG_UNUSED(elapsedTime);
-    SG_UNUSED(numNodes);
-    return true;
-}
-
-//----------------------------------------------------------------------------
-
-SgTimeSearchControl::SgTimeSearchControl(double maxTime)
-    : m_maxTime(maxTime)
-{
-}
-
-SgTimeSearchControl::~SgTimeSearchControl()
-{
-}
-
-bool SgTimeSearchControl::Abort(double elapsedTime, int numNodes)
-{
-    SG_UNUSED(numNodes);
-    return elapsedTime >= m_maxTime;
-}
-
-//----------------------------------------------------------------------------
-
-SgNodeSearchControl::SgNodeSearchControl(int maxNumNodes)
-    : m_maxNumNodes(maxNumNodes)
-{ }
-
-SgNodeSearchControl::~SgNodeSearchControl()
-{
-}
-
-bool SgNodeSearchControl::Abort(double elapsedTime, int numNodes)
-{
-    SG_UNUSED(elapsedTime);
-    return numNodes >= m_maxNumNodes;
-}
-
-//----------------------------------------------------------------------------
-
-SgCombinedSearchControl::~SgCombinedSearchControl()
-{
-}
-
-bool SgCombinedSearchControl::Abort(double elapsedTime, int numNodes)
-{
-    return (numNodes >= m_maxNumNodes || elapsedTime >= m_maxTime);
-}
-
-//----------------------------------------------------------------------------
-
-SgRelaxedSearchControl::~SgRelaxedSearchControl()
-{
-}
-
-bool SgRelaxedSearchControl::Abort(double elapsedTime, int numNodes)
-{
-    return (elapsedTime >= m_maxTime
-            && numNodes >= MIN_NODES_PER_SECOND * m_maxTime);
 }
 
 //----------------------------------------------------------------------------
