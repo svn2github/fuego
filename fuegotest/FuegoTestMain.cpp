@@ -65,7 +65,7 @@ void ParseOptions(int argc, char** argv)
             "               starting main command loop\n"
             "  -help        display this help and exit\n"
             "  -player      player (average|capture|dumbtactic|greedy\n"
-            "                |greedy|influence|ladder|liberty|maxeye|minlib\n"
+            "                |influence|ladder|liberty|maxeye|minlib\n"
             "                |no-search|random|safe)\n"
             "  -quiet       don't print debug messages\n"
             "  -srand       set random seed (-1:none, 0:time(0))\n";
