@@ -43,9 +43,9 @@ void GoLadder::InitMaxMoveNumber()
 {
     // reserve is the maximum number of moves played before recursion
     // 5 is an optimistic bound
-    const int reserve = 5;
+    const int RESERVE = 5;
     m_maxMoveNumber = min(m_bd->MoveNumber() + MAX_LADDER_MOVES,
-                          GO_MAX_NUM_MOVES - reserve);
+                          GO_MAX_NUM_MOVES - RESERVE);
 }
 
 /** Marks all stones in the block p as part of the prey.

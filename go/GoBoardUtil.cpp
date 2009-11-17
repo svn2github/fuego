@@ -511,7 +511,7 @@ bool GoBoardUtil::ManySecondaryLibs(const GoBoard& bd, SgPoint block)
     // one liberty can have 3 new secondary, total of 4 which are taken by
     // opp. move.
     // current value is just a guess, experiment.
-    const int limit = 9;
+    const int LIBERTY_LIMIT = 9;
     static SgMarker m;
     m.Clear();
     int nu = 0;
@@ -519,16 +519,16 @@ bool GoBoardUtil::ManySecondaryLibs(const GoBoard& bd, SgPoint block)
     {
         SgPoint p(*it);
         if (m.NewMark(p))
-            if (++nu >= limit)
+            if (++nu >= LIBERTY_LIMIT)
                 return true;
         for (SgNb4Iterator itn(p); itn; ++itn)
         {
             if (bd.IsEmpty(*itn) && m.NewMark(*itn))
-                if (++nu >= limit)
+                if (++nu >= LIBERTY_LIMIT)
                     return true;
         }
     }
-    return (nu >= limit);
+    return (nu >= LIBERTY_LIMIT);
 }
 
 SgSList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p,

@@ -236,13 +236,13 @@ bool SgPointSet::AdjacentOnlyTo(const SgPointSet& s, int boardSize) const
 
 bool SgPointSet::IsCloseTo(SgPoint p) const
 {
-    const int maxCloseDist = 3;
+    const int MAX_CLOSE_DISTANCE = 3;
     if (Contains(p))
         return true;
     
     for (SgSetIterator it(*this); it; ++it)
     {
-        if (MaxDistance(*it, p) <= maxCloseDist)
+        if (MaxDistance(*it, p) <= MAX_CLOSE_DISTANCE)
             return true;
     }
     return false;

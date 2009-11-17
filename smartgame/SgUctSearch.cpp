@@ -653,9 +653,9 @@ void SgUctSearch::OnEndSearch()
 void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
                                     const SgUctGameInfo& info)
 {
-    const int maxSeqPrintLen = 15;
-    const size_t minMoveCount = 10;
-    const int displayInterval = 5;
+    const int MAX_SEQ_PRINT_LENGTH = 15;
+    const size_t MIN_MOVE_COUNT = 10;
+    const int DISPLAY_INTERVAL = 5;
 
     m_mpiSynchronizer->OnSearchIteration(*this, gameNumber, threadId, info);
 
@@ -664,7 +664,7 @@ void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
 
     double currTime = m_timer.GetTime();
 
-    if (threadId == 0 && currTime - m_lastScoreDisplayTime > displayInterval)
+    if (threadId == 0 && currTime - m_lastScoreDisplayTime > DISPLAY_INTERVAL)
     {
 	ostringstream out;
 	const SgUctNode* current = &m_tree.Root();
@@ -672,10 +672,10 @@ void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
 	out << fixed << setprecision(3) << rootMean << " ";
 	out << "| " << rootMoveCount << " ";
 	int i;
-	for(i = 0; i <= maxSeqPrintLen && current->HasChildren(); i++)
+	for(i = 0; i <= MAX_SEQ_PRINT_LENGTH && current->HasChildren(); i++)
 	{
 	    current = FindBestChild(*current);
-	    if (current == 0 || current->MoveCount() < minMoveCount)
+	    if (current == 0 || current->MoveCount() < MIN_MOVE_COUNT)
 	    {
 		break;
 	    }
@@ -683,7 +683,7 @@ void SgUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
 	    {
 		out << "|";
 	    }
-	    if (i < maxSeqPrintLen)
+	    if (i < MAX_SEQ_PRINT_LENGTH)
 	    {
 		out << " " << SgWritePoint(current->Move());
 	    }

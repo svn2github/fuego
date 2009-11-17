@@ -1251,8 +1251,8 @@ void GoGtpEngine::CmdUndo(GtpCommand& cmd)
 
 void GoGtpEngine::CheckMoveStackOverflow() const
 {
-    const int reserve = 50;
-    if (Board().MoveNumber() >= GO_MAX_NUM_MOVES - reserve)
+    const int RESERVE = 50;
+    if (Board().MoveNumber() >= GO_MAX_NUM_MOVES - RESERVE)
         throw GtpFailure("too many moves");
     if (Board().StackOverflowLikely())
         throw GtpFailure("move stack overflow");

@@ -24,12 +24,13 @@ static const bool HEAVYCHECK = SG_HEAVYCHECK && CHECK && false;
 
 static const bool DEBUG_REGION_BOARD = false;
 
-const int   kRemoveRegion = 2000,
-            kAddRegion = 2001,
-            kRemoveBlock = 2002,
-            kAddBlock = 2003,
-            kAddStoneToRegion = 2004,
-            kAddStoneToBlock = 2005;
+const int REGION_CODE_BASE = 2000;
+const int REGION_REMOVE = REGION_CODE_BASE + 0;
+const int REGION_ADD = REGION_CODE_BASE + 1;
+const int REGION_REMOVE_BLOCK = REGION_CODE_BASE + 2;
+const int REGION_ADD_BLOCK = REGION_CODE_BASE + 3;
+const int REGION_ADD_STONE = REGION_CODE_BASE + 4;
+const int REGION_ADD_STONE_TO_BLOCK = REGION_CODE_BASE + 5;
 //----------------------------------------------------------------------------
 
 bool GoRegionBoard::IsSafeBlock(SgPoint p) const
@@ -168,7 +169,7 @@ void GoRegionBoard::AppendStone(GoBlock* b, SgPoint move)
     m_block[move] = b;
     b->AddStone(move);
     m_stack.PushInt(move);
-    m_stack.PushPtrEvent(kAddStoneToBlock, b);
+    m_stack.PushPtrEvent(REGION_ADD_STONE_TO_BLOCK, b);
 }
 
 
@@ -306,7 +307,7 @@ void GoRegionBoard::PushBlock(int type, GoBlock* b)
 void GoRegionBoard::PushStone(GoRegion* r, SgPoint move)
 {
     m_stack.PushInt(move);
-    m_stack.PushPtrEvent(kAddStoneToRegion, r);
+    m_stack.PushPtrEvent(REGION_ADD_STONE, r);
     m_region[r->Color()][move] = 0;
 }
 
@@ -328,7 +329,7 @@ void GoRegionBoard::RemoveRegion(GoRegion* r, bool isExecute)
         (*it)->RemoveRegion(r);
 
     if (isExecute)
-        PushRegion(kRemoveRegion, r);
+        PushRegion(REGION_REMOVE, r);
     else // undo
         delete r;
 }
@@ -370,7 +371,7 @@ void GoRegionBoard::RemoveBlock(GoBlock* b, bool isExecute,
     if (isExecute)
     {
         m_stack.PushInt(regions.Length()); // 0 if ! removeFromRegions
-        PushBlock(kRemoveBlock, b);
+        PushBlock(REGION_REMOVE_BLOCK, b);
     }
     else
         delete b;
@@ -383,7 +384,7 @@ void GoRegionBoard::AddBlock(GoBlock* b, bool isExecute)
     for (GoBoard::StoneIterator it(Board(), b->Anchor()); it; ++it)
         m_block[*it] = b;
     if (isExecute)
-        PushBlock(kAddBlock, b);
+        PushBlock(REGION_ADD_BLOCK, b);
 }
 
 GoBlock* GoRegionBoard::GenBlock(SgPoint anchor, SgBlackWhite color)
@@ -513,18 +514,18 @@ void GoRegionBoard::OnUndoneMove()
 
         switch (val)
         {
-            case kRemoveRegion:
+            case REGION_REMOVE:
             {   GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
                 AddRegion(r, IS_UNDO);
                 changed.Insert(r);
             }
             break;
-            case kAddRegion:
+            case REGION_ADD:
             {   GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
                 RemoveRegion(r, IS_UNDO);
             }
             break;
-            case kRemoveBlock:
+            case REGION_REMOVE_BLOCK:
             {   GoBlock* b = static_cast<GoBlock*>(m_stack.PopPtr());
                 AddBlock(b, IS_UNDO);
                 for (int nu = m_stack.PopInt(); nu > 0; --nu)
@@ -537,12 +538,12 @@ void GoRegionBoard::OnUndoneMove()
                 }
             }
             break;
-            case kAddBlock:
+            case REGION_ADD_BLOCK:
             {   GoBlock* b = static_cast<GoBlock*>(m_stack.PopPtr());
                 RemoveBlock(b, IS_UNDO, true);
             }
             break;
-            case kAddStoneToRegion:
+            case REGION_ADD_STONE:
             {   GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
                 SgPoint p = m_stack.PopInt();
                 r->OnRemoveStone(p);
@@ -550,7 +551,7 @@ void GoRegionBoard::OnUndoneMove()
                 changed.Insert(r);
             }
             break;
-            case kAddStoneToBlock:
+            case REGION_ADD_STONE_TO_BLOCK:
             {   GoBlock* b = static_cast<GoBlock*>(m_stack.PopPtr());
                 SgPoint p = m_stack.PopInt();
                 b->RemoveStone(p);
@@ -625,7 +626,7 @@ void GoRegionBoard::AddRegion(GoRegion* r, bool isExecute)
     AllRegions(color).PushBack(r);
 
     if (isExecute)
-        PushRegion(kAddRegion, r);
+        PushRegion(REGION_ADD, r);
 }
 
 void GoRegionBoard::FindBlocksWithEye()

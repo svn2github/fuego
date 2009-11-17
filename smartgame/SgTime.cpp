@@ -116,9 +116,9 @@ string SgTime::TodaysDate()
 {
     time_t systime = time(0);
     struct tm* currtime = localtime(&systime);
-    const int bufSize = 14;
-    char buf[bufSize];
-    strftime(buf, bufSize - 1, "%Y-%m-%d", currtime);
+    const int BUF_SIZE = 14;
+    char buf[BUF_SIZE];
+    strftime(buf, BUF_SIZE - 1, "%Y-%m-%d", currtime);
     return string(buf);
 }
 

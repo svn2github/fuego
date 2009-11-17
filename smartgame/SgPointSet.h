@@ -178,7 +178,7 @@ public:
     void Write(std::ostream& out, int boardSize) const;
     
     /** Return whether point 'p' is close to a point in set.
-        in impl: const int maxCloseDist = 3;
+        in implementation: const int MAX_CLOSE_DISTANCE = 3;
     */
     bool IsCloseTo(SgPoint p) const;
     
