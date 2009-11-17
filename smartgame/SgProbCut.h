@@ -14,6 +14,9 @@
 #include "SgArray.h"
 #include "SgBlackWhite.h"
 #include "SgMove.h"
+#include "SgVector.h"
+
+class SgSearch;
 
 //----------------------------------------------------------------------------
 
@@ -35,13 +38,17 @@ public:
 
     bool GetCutoff(int deep, int index, Cutoff &cutoff);
 
-    void SetThreshold(float t);
-
     float GetThreshold() const;
+
+    bool IsEnabled() const;
+
+    bool ProbCut(SgSearch& search, int depth, int alpha, int beta, 
+    			 SgVector<SgMove>* sequence,
+                 bool* isExactValue, int* value);
 
     void SetEnabled(bool flag);
 
-    bool IsEnabled() const;
+    void SetThreshold(float t);
 
 private:
     float m_threshold;

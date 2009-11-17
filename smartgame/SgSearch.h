@@ -471,6 +471,12 @@ public:
     
     void SetAbortFrequency(int value);
 
+    /** Core Alpha-beta search. Usually not called directly -
+    	call DepthFirstSearch or IteratedSearch instead. */
+    int SearchEngine(int depth, int alpha, int beta,
+                     SgVector<SgMove>* sequence,
+                     bool* isExactValue, bool lastNullMove = false);
+
 private:
     /** Hash table */
     SgSearchHashTable* m_hash;
@@ -536,14 +542,6 @@ private:
     bool LookupHash(SgSearchHashData& data) const;
 
     void MoveKillersToFront(SgVector<SgMove>& moves);
-
-    /** Alpha-beta search */
-    int SearchEngine(int depth, int alpha, int beta,
-                     SgVector<SgMove>* sequence,
-                     bool* isExactValue, bool lastNullMove = false);
-
-    bool ProbCut(int depth, int alpha, int beta, SgVector<SgMove>* sequence,
-                 bool* isExactValue, int* value);
 
     bool NullMovePrune(int depth, int delta, int beta);
 

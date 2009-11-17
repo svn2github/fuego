@@ -25,6 +25,7 @@ SgNodeUtil.cpp \
 SgPoint.cpp \
 SgPointSet.cpp \
 SgPointSetUtil.cpp \
+SgProbCut.cpp \
 SgProcess.cpp \
 SgProp.cpp \
 SgRandom.cpp \
