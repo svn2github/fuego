@@ -86,6 +86,7 @@ SgPointArray.h \
 SgPointIterator.h \
 SgPointSet.h \
 SgPointSetUtil.h \
+SgProbCut.h \
 SgProcess.h \
 SgProp.h \
 SgRandom.h \
@@ -93,6 +94,7 @@ SgRect.h \
 SgRestorer.h \
 SgSList.h \
 SgSearch.h \
+SgSearchControl.h \
 SgSearchStatistics.h \
 SgSearchValue.h \
 SgSortedArray.h \
