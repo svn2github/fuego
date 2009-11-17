@@ -504,7 +504,7 @@ void GoRegionBoard::OnUndoneMove()
     if (DEBUG_REGION_BOARD)
         SgDebug() << "OnUndoneMove " << '\n';
 
-    const bool kUndo = false;
+    const bool IS_UNDO = false;
     SgVectorOf<GoRegion> changed;
 
     for (int val = m_stack.PopEvent(); val != SG_NEXTMOVE;
@@ -515,18 +515,18 @@ void GoRegionBoard::OnUndoneMove()
         {
             case kRemoveRegion:
             {   GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
-                AddRegion(r, kUndo);
+                AddRegion(r, IS_UNDO);
                 changed.Insert(r);
             }
             break;
             case kAddRegion:
             {   GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
-                RemoveRegion(r, kUndo);
+                RemoveRegion(r, IS_UNDO);
             }
             break;
             case kRemoveBlock:
             {   GoBlock* b = static_cast<GoBlock*>(m_stack.PopPtr());
-                AddBlock(b, kUndo);
+                AddBlock(b, IS_UNDO);
                 for (int nu = m_stack.PopInt(); nu > 0; --nu)
                 {
                     GoRegion* r = static_cast<GoRegion*>(m_stack.PopPtr());
@@ -539,7 +539,7 @@ void GoRegionBoard::OnUndoneMove()
             break;
             case kAddBlock:
             {   GoBlock* b = static_cast<GoBlock*>(m_stack.PopPtr());
-                RemoveBlock(b, kUndo, true);
+                RemoveBlock(b, IS_UNDO, true);
             }
             break;
             case kAddStoneToRegion:
