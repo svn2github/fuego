@@ -112,7 +112,7 @@ void SgSearchTracer::TraceValue(int value, SgBlackWhite toPlay) const
 }
 
 void SgSearchTracer::TraceValue(int value, SgBlackWhite toPlay,
-								const char* comment, bool isExact) const
+                                const char* comment, bool isExact) const
 {
     TraceValue(value, toPlay);
     if (comment != 0)

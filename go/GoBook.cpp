@@ -476,15 +476,15 @@ void GoBookCommands::CmdSave(GtpCommand& cmd)
 {
     if (m_engine.MpiSynchronizer()->IsRootProcess())
     {
-	cmd.CheckArgNone();
-	if (m_fileName == "")
-	    throw GtpFailure("no filename associated with current book");
-	ofstream out(m_fileName.c_str());
-	m_book.Write(out);
-	if (! out)
-	{
-	    throw GtpFailure() << "error writing to file '" << m_fileName << "'";
-	}
+    cmd.CheckArgNone();
+    if (m_fileName == "")
+        throw GtpFailure("no filename associated with current book");
+    ofstream out(m_fileName.c_str());
+    m_book.Write(out);
+    if (! out)
+    {
+        throw GtpFailure() << "error writing to file '" << m_fileName << "'";
+    }
     }
 }
 
@@ -492,15 +492,15 @@ void GoBookCommands::CmdSaveAs(GtpCommand& cmd)
 {
     if (m_engine.MpiSynchronizer()->IsRootProcess())
     {
-	cmd.CheckNuArg(1);
-	m_fileName = cmd.Arg(0);
-	ofstream out(m_fileName.c_str());
-	m_book.Write(out);
-	if (! out)
-	{
-	    m_fileName = "";
-	    throw GtpFailure("write error");
-	}
+    cmd.CheckNuArg(1);
+    m_fileName = cmd.Arg(0);
+    ofstream out(m_fileName.c_str());
+    m_book.Write(out);
+    if (! out)
+    {
+        m_fileName = "";
+        throw GtpFailure("write error");
+    }
     }
 }
 

@@ -568,9 +568,9 @@ public:
     virtual void OnStartSearch();
 
     /** Hook function that will be called when search
-	completes.  Default implementation calls
-	m_mpiSynchronizer.EndSearch().  This function
-	does not need to be thread-safe.
+    completes.  Default implementation calls
+    m_mpiSynchronizer.EndSearch().  This function
+    does not need to be thread-safe.
     */
     virtual void OnEndSearch();
 
@@ -1007,7 +1007,7 @@ private:
         time or number of games was reached.
     */
     volatile bool m_aborted;
-	
+    
     volatile bool m_isTreeOutOfMemory;
 
     std::auto_ptr<boost::barrier> m_searchLoopFinished;

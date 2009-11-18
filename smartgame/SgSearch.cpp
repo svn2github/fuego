@@ -311,8 +311,8 @@ bool SgSearch::CallExecute(SgMove move, int* delta, int depth)
             m_stat.IncNumPassMoves();
         m_moveStack.PushBack(move);
         ++m_currentDepth;
-    	if (TraceIsOn())
-        	m_tracer->AddTraceNode(move, toPlay);
+        if (TraceIsOn())
+            m_tracer->AddTraceNode(move, toPlay);
         return true;
     }
     return false;
@@ -331,7 +331,7 @@ void SgSearch::CallTakeBack()
 
 void SgSearch::CreateTracer()
 {
-	m_tracer = new SgSearchTracer(0);
+    m_tracer = new SgSearchTracer(0);
 }
 
 void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
@@ -413,8 +413,8 @@ int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
     int value = DFS(0, depthLimit, boundLo, boundHi, sequence, &isExactValue);
     StopTime();
 
-	if (m_tracer && traceNode)
-    	m_tracer->AppendTrace(traceNode);
+    if (m_tracer && traceNode)
+        m_tracer->AppendTrace(traceNode);
     return value;
 }
 
@@ -507,8 +507,8 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
              && (! CheckDepthLimitReached() || m_reachedDepthLimit));
 
     StopTime();
-	if (m_tracer && traceNode)
-    	m_tracer->AppendTrace(traceNode);
+    if (m_tracer && traceNode)
+        m_tracer->AppendTrace(traceNode);
     return value;
 }
 
@@ -543,7 +543,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     {
         int probCutVal;
         if (m_probcut->ProbCut(*this, depth, alpha, beta, sequence, 
-        					   isExactValue, &probCutVal)
+                               isExactValue, &probCutVal)
            )
             return probCutVal;
     }
@@ -566,7 +566,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 sequence->SetTo(data.BestMove());
             if (m_tracer)
                 m_tracer->TraceValue(data.Value(), GetToPlay(),
-                					 "exact-hash", true);
+                                     "exact-hash", true);
             return data.Value();
         }
     }
@@ -668,7 +668,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     *isExactValue = isExact;
                     if (m_tracer)
                         m_tracer->TraceValue(loValue, GetToPlay(),
-                        					 "b-cut", isExact);
+                                             "b-cut", isExact);
                     return loValue;
                 }
             }

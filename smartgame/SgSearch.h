@@ -236,7 +236,7 @@ class SgSearch
 {
 public:
     /** One DEPTH_UNIT corresponds to the default search depth for one move,
-    	in the internal representation of search. Used for fractional ply
+        in the internal representation of search. Used for fractional ply
         extensions. E.g. extending from atari in Go may count as only
         1/8 ply = DEPTH_UNIT/8. This way forced lines can be searched
         much deeper at a low nominal search depth.
@@ -367,8 +367,8 @@ public:
 
     const SgSearchStatistics& Statistics() const
     {
-    	return m_stat;
-	}
+        return m_stat;
+    }
     
     /** Starts the clock and clears the statistics.
         Can be nested; only the outermost call actually does anything.
@@ -461,18 +461,18 @@ public:
     /** Is tracing currently active?*/
     bool TraceIsOn() const;
 
-	/** Default creates a SgSearchTracer; override for specific traces */
+    /** Default creates a SgSearchTracer; override for specific traces */
     virtual void CreateTracer();
     
     /** Set tracer object. Search object assumes ownership */
     void SetTracer(SgSearchTracer* tracer);
     
-	SgSearchTracer* Tracer() const;
+    SgSearchTracer* Tracer() const;
     
     void SetAbortFrequency(int value);
 
     /** Core Alpha-beta search. Usually not called directly -
-    	call DepthFirstSearch or IteratedSearch instead. */
+        call DepthFirstSearch or IteratedSearch instead. */
     int SearchEngine(int depth, int alpha, int beta,
                      SgVector<SgMove>* sequence,
                      bool* isExactValue, bool lastNullMove = false);
@@ -481,7 +481,7 @@ private:
     /** Hash table */
     SgSearchHashTable* m_hash;
 
-	SgSearchTracer* m_tracer;
+    SgSearchTracer* m_tracer;
 
     int m_currentDepth;
 
@@ -665,7 +665,7 @@ inline void SgSearch::SetScout(bool flag)
 
 inline void SgSearch::SetTracer(SgSearchTracer* tracer)
 {
-	// check that an existing tracer is not overwritten.
+    // check that an existing tracer is not overwritten.
     // This can potentially be allowed in the future if needed. 
     SG_ASSERT(! m_tracer || ! tracer);
     m_tracer = tracer;

@@ -322,7 +322,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     {
         // Write order dependency
         nonConstNode.SetNuChildren(0);
-	SgSynchronizeThreadMemory();
+        SgSynchronizeThreadMemory();
         nonConstNode.SetFirstChild(0);
         return;
     }
@@ -367,13 +367,13 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     if (nonConstNode.NuChildren() < (int)nuNewChildren)
     {
         nonConstNode.SetFirstChild(newFirstChild);
-	SgSynchronizeThreadMemory();
+    SgSynchronizeThreadMemory();
         nonConstNode.SetNuChildren(nuNewChildren);
     }
     else
     {
         nonConstNode.SetNuChildren(nuNewChildren);
-	SgSynchronizeThreadMemory();
+    SgSynchronizeThreadMemory();
         nonConstNode.SetFirstChild(newFirstChild);
     }
 }

@@ -257,11 +257,11 @@ void GoUctSearch::SaveGames(const string& fileName) const
 {
     if (MpiSynchronizer()->IsRootProcess())
     {
-	if (m_root == 0)
-	    throw SgException("No games to save");
-	ofstream out(fileName.c_str());
-	SgGameWriter writer(out);
-	writer.WriteGame(*m_root, true, 0, "", 1, 19);
+    if (m_root == 0)
+        throw SgException("No games to save");
+    ofstream out(fileName.c_str());
+    SgGameWriter writer(out);
+    writer.WriteGame(*m_root, true, 0, "", 1, 19);
     }
 }
 

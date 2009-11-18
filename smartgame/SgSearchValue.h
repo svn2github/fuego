@@ -61,7 +61,7 @@ public:
             3. values in range [MIN_PROVEN_VALUE..MAX_VALUE] 
                are proven wins (possibly by ko).
         */
-    	MIN_PROVEN_VALUE = MAX_VALUE
+        MIN_PROVEN_VALUE = MAX_VALUE
                                - (MAX_KO_LEVEL + 1) * SgSearch::MAX_DEPTH
     };
 
@@ -90,10 +90,10 @@ public:
 
     bool IsPositive() const;
 
-	/** is value == +MAX_VALUE or -MAX_VALUE? */
+    /** is value == +MAX_VALUE or -MAX_VALUE? */
     static inline bool IsSolved(int value);
 
-	/** return +MAX_VALUE for win,  -MAX_VALUE for loss */
+    /** return +MAX_VALUE for win,  -MAX_VALUE for loss */
     static inline bool SolvedValue(bool isWin);
     
     bool IsSureValue() const;
@@ -186,12 +186,12 @@ inline bool SgSearchValue::IsSureValue() const
 
 inline bool SgSearchValue::IsSolved(int value)
 {
-	return abs(value) == MAX_VALUE;
+    return abs(value) == MAX_VALUE;
 }
 
 inline bool SgSearchValue::SolvedValue(bool isWin)
 {
-	return isWin ? +MAX_VALUE : -MAX_VALUE;
+    return isWin ? +MAX_VALUE : -MAX_VALUE;
 }
 
 inline void SgSearchValue::SetValueForPlayer(SgBlackWhite player)

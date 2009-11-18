@@ -709,16 +709,16 @@ void SgVector<T>::SortedRemoveDuplicates()
     bool shifted = false;
     for (int i=1; i<Length(); ++i)
     {
-    	if (m_vec[i] != m_vec[prev])
+        if (m_vec[i] != m_vec[prev])
         {
-        	++prev;
+            ++prev;
             if (shifted)
-            	m_vec[prev] = m_vec[i];
+                m_vec[prev] = m_vec[i];
         }
         else shifted = true;
     }
     if (shifted)
-    	LimitListLength(prev+1);
+        LimitListLength(prev+1);
     SG_ASSERT(IsSortedAndUnique());
 }
 

@@ -22,7 +22,7 @@ public:
     SgSearchTracer(SgNode* root);
     
      /** Add move property to node (game-dependent). 
-     	The default implementation stores the move in a SgMoveProp.
+        The default implementation stores the move in a SgMoveProp.
         Override this method for other games.
      */
     virtual void AddMoveProp(SgNode* node, SgMove move,
@@ -48,7 +48,7 @@ public:
 
     /** Add value and text as a comment to current tracenode */
     void TraceValue(int value, SgBlackWhite toPlay,
-    				const char* comment, bool isExact) const;
+                    const char* comment, bool isExact) const;
 
     /** Go one move up in the trace tree.
         Don't do anything if m_traceNode is null.

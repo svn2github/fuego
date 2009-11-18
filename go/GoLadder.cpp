@@ -524,7 +524,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
         }
     }
     if (sequence)
-    	sequence->Reverse(); // built as a stack, with first move at end.
+        sequence->Reverse(); // built as a stack, with first move at end.
     return result;
 }
 

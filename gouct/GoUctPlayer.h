@@ -569,78 +569,78 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(size_t maxGames,
     move = SG_PASS;
     THREAD& threadState = dynamic_cast<THREAD&>(m_search.ThreadState(0));
     SgPointArray<SgUctStatistics> territory =
-	threadState.m_territoryStatistics;
+    threadState.m_territoryStatistics;
     if (earlyPassPossible)
     {
-	for (GoBoard::Iterator it(bd); it; ++it)
-	    if (territory[*it].Count() == 0)
-	    {
-		// No statistics, maybe all simulations aborted due to
-		// max length or mercy rule.
-		SgDebug() << "GoUctPlayer: no early pass possible (no stat)\n";
-		earlyPassPossible = false;
-		break;
-	    }
+    for (GoBoard::Iterator it(bd); it; ++it)
+        if (territory[*it].Count() == 0)
+        {
+        // No statistics, maybe all simulations aborted due to
+        // max length or mercy rule.
+        SgDebug() << "GoUctPlayer: no early pass possible (no stat)\n";
+        earlyPassPossible = false;
+        break;
+        }
     }
 
     if (earlyPassPossible)
     {
-	const float threshold = 0.2; // Safety threshold
-	for (GoBoard::Iterator it(bd); it; ++it)
-	{
-	    float mean = territory[*it].Mean();
-	    if (mean > threshold && mean < 1 - threshold)
-	    {
-		// Check if neutral point
-		bool isSafeToPlayAdj = false;
-		bool isSafeOppAdj = false;
-		for (SgNb4Iterator it2(*it); it2; ++it2)
-		    if (! bd.IsBorder(*it2))
-		    {
-			float mean = territory[*it2].Mean();
-			if (mean < threshold)
-			    isSafeToPlayAdj = true;
-			if (mean > 1 - threshold)
-			    isSafeOppAdj = true;
-		    }
-		if (isSafeToPlayAdj && isSafeOppAdj)
-		{
-		    if (bd.IsLegal(*it) && ! GoBoardUtil::SelfAtari(bd, *it))
-			move = *it;
-		    else
-		    {
-			SgDebug() <<
-			    "GoUctPlayer: no early pass possible"
-			    " (neutral illegal or self-atari)\n";
-			earlyPassPossible = false;
-			break;
-		    }
-		}
-		else
-		{
-		    SgDebug()
-			<< "GoUctPlayer: no early pass possible (unsafe point)\n";
-		    earlyPassPossible = false;
-		    break;
-		}
-	    }
-	}
+    const float threshold = 0.2; // Safety threshold
+    for (GoBoard::Iterator it(bd); it; ++it)
+    {
+        float mean = territory[*it].Mean();
+        if (mean > threshold && mean < 1 - threshold)
+        {
+        // Check if neutral point
+        bool isSafeToPlayAdj = false;
+        bool isSafeOppAdj = false;
+        for (SgNb4Iterator it2(*it); it2; ++it2)
+            if (! bd.IsBorder(*it2))
+            {
+            float mean = territory[*it2].Mean();
+            if (mean < threshold)
+                isSafeToPlayAdj = true;
+            if (mean > 1 - threshold)
+                isSafeOppAdj = true;
+            }
+        if (isSafeToPlayAdj && isSafeOppAdj)
+        {
+            if (bd.IsLegal(*it) && ! GoBoardUtil::SelfAtari(bd, *it))
+            move = *it;
+            else
+            {
+            SgDebug() <<
+                "GoUctPlayer: no early pass possible"
+                " (neutral illegal or self-atari)\n";
+            earlyPassPossible = false;
+            break;
+            }
+        }
+        else
+        {
+            SgDebug()
+            << "GoUctPlayer: no early pass possible (unsafe point)\n";
+            earlyPassPossible = false;
+            break;
+        }
+        }
+    }
     }
 
     m_mpiSynchronizer->SynchronizeEarlyPassPossible(earlyPassPossible);
     if (!earlyPassPossible)
     {
-	return false;
+    return false;
     }
     m_mpiSynchronizer->SynchronizeMove(move);
     if (move == SG_PASS)
-	SgDebug() << "GoUctPlayer: early pass is possible\n";
+    SgDebug() << "GoUctPlayer: early pass is possible\n";
     else if (VerifyNeutralMove(maxGames, maxTime, move))
-	SgDebug() << "GoUctPlayer: generate play on neutral point\n";
+    SgDebug() << "GoUctPlayer: generate play on neutral point\n";
     else
     {
-	SgDebug() << "GoUctPlayer: neutral move failed to verify\n";
-	return false;
+    SgDebug() << "GoUctPlayer: neutral move failed to verify\n";
+    return false;
     }
 
     return true;
@@ -669,18 +669,18 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay,
         timeInitTree = -timer.GetTime();
         FindInitTree(*initTree, toPlay, maxTime);
         timeInitTree += timer.GetTime();
-	if (isDuringPondering)
-	{
-	    bool aborted = SgUserAbort();
-	    m_mpiSynchronizer->SynchronizeUserAbort(aborted);
-	    if (aborted)
-		// If abort occurs during pondering, better don't start a search
-		// with a truncated init tree. The search would be aborted after
-		// one game anyway, because it also checks SgUserAbort(). There is
-		// a higher chance to reuse a larger part of the current tree in
-		// the next regular move search.
-		return SG_NULLMOVE;
-	}
+    if (isDuringPondering)
+    {
+        bool aborted = SgUserAbort();
+        m_mpiSynchronizer->SynchronizeUserAbort(aborted);
+        if (aborted)
+        // If abort occurs during pondering, better don't start a search
+        // with a truncated init tree. The search would be aborted after
+        // one game anyway, because it also checks SgUserAbort(). There is
+        // a higher chance to reuse a larger part of the current tree in
+        // the next regular move search.
+        return SG_NULLMOVE;
+    }
     }
     std::vector<SgMove> rootFilter;
     double timeRootFilter = 0;

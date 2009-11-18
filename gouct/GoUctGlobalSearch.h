@@ -436,7 +436,7 @@ SgMove GoUctGlobalSearchState<POLICY>::GeneratePlayoutMove(
     if (move == SG_PASS)
     {
         const GoUctBoard& bd = UctBoard();
-	SgBalancer balancer(100); // FIXME: Could be quite slow!!
+    SgBalancer balancer(100); // FIXME: Could be quite slow!!
         for (GoUctBoard::Iterator it(bd); it; ++it)
             SG_ASSERT(  bd.Occupied(*it)
                      || m_safe.OneContains(*it)
