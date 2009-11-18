@@ -1,8 +1,7 @@
 #!/bin/bash
-# Script for playing Fuego in a tournament on 19x19 KGS on a machine with
-# 8 cores / 8 GB
+# Script for playing Fuego on 19x19 KGS on a machine with 8 cores / 8 GB
 
-FUEGO="../../fuegomain/fuego"
+FUEGO="../../build/autotools/release/fuegomain/fuego"
 NAME=Fuego
 DESCRIPTION=""
 

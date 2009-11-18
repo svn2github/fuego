@@ -2,7 +2,7 @@
 # Script for playing Fuego9 in a tournament on 9x9 KGS on a machine with
 # 8 cores / 8 GB
 
-FUEGO="../../fuegomain/fuego"
+FUEGO="../../build/autotools/release/fuegomain/fuego"
 NAME=Fuego9
 
 usage() {
