@@ -33,9 +33,9 @@ SgTimeSearchControl::~SgTimeSearchControl()
 {
 }
 
-bool SgTimeSearchControl::Abort(double elapsedTime, int numNodes)
+bool SgTimeSearchControl::Abort(double elapsedTime, int ignoreNumNodes)
 {
-    SG_UNUSED(numNodes);
+    SG_UNUSED(ignoreNumNodes);
     return elapsedTime >= m_maxTime;
 }
 
@@ -49,9 +49,9 @@ SgNodeSearchControl::~SgNodeSearchControl()
 {
 }
 
-bool SgNodeSearchControl::Abort(double elapsedTime, int numNodes)
+bool SgNodeSearchControl::Abort(double ignoreElapsedTime, int numNodes)
 {
-    SG_UNUSED(elapsedTime);
+    SG_UNUSED(ignoreElapsedTime);
     return numNodes >= m_maxNumNodes;
 }
 

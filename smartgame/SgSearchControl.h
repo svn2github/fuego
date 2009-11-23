@@ -59,7 +59,7 @@ public:
 
     virtual ~SgTimeSearchControl();
 
-    virtual bool Abort(double elapsedTime, int numNodes);
+    virtual bool Abort(double elapsedTime, int ignoreNumNodes);
 
     double GetMaxTime() const;
 
@@ -98,7 +98,7 @@ public:
 
     virtual ~SgNodeSearchControl();
 
-    virtual bool Abort(double elapsedTime, int numNodes);
+    virtual bool Abort(double ignoreElapsedTime, int numNodes);
 
     void SetMaxNumNodes(int maxNumNodes);
 
