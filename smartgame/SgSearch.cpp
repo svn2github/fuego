@@ -79,7 +79,19 @@ bool SgSearchHashData::IsBetterThan(const SgSearchHashData& data) const
 
 //----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
+
 namespace {
+
+void WriteSgSearchHashData(std::ostream& str, const SgSearch& search, 
+						   const SgSearchHashData& data)
+{
+	str << "move = " << search.MoveString(data.BestMove()) 
+    	<< " exact = " << data.IsExactValue()
+        << " value = " << data.Value() 
+        << '\n';
+}
+
 
 void WriteMoves(const SgSearch& search, const SgVector<SgMove>& sequence)
 {
@@ -160,9 +172,10 @@ bool SgSearch::LookupHash(SgSearchHashData& data) const
     if (m_hash == 0 || ! m_hash->Lookup(GetHashCode(), &data))
         return false;
     if (DEBUG_SEARCH)
-        SgDebug() << "SgSearch::LookupHash: " << GetHashCode() << ' '
-                  << MoveString(data.BestMove()) << " exact="
-                  << data.IsExactValue() << ", v=" << data.Value() << '\n';
+    {
+        SgDebug() << "SgSearch::LookupHash: " << GetHashCode() << ' ';
+        WriteSgSearchHashData(SgDebug(), *this, data);
+    }
     return true;
 }
 
@@ -210,9 +223,11 @@ void SgSearch::StoreHash(int depth, int value, SgMove move,
     SgSearchHashData data(depth, value, move, isUpperBound, isLowerBound,
                           isExact);
     if (DEBUG_SEARCH)
-        SgDebug() << "SgSearch::StoreHash: " << GetHashCode() << ": move="
-                  << MoveString(move) << " exact=" << isExact << " v="
-                  << value << '\n';
+    {
+        SgDebug() << "SgSearch::StoreHash: " << GetHashCode() 
+                  << ": ";
+        WriteSgSearchHashData(SgDebug(), *this, data);
+    }
     m_hash->Store(GetHashCode(), data);
 }
 
@@ -348,7 +363,7 @@ void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
             // Store move with position before the move is played.
             CallTakeBack();
 
-            // Move is only relevant data we're seeding the hash table with.
+            // Move is the only relevant data for seeding the hash table.
             SgSearchHashData data(0, 0, move);
             SG_ASSERT(move != SG_NULLMOVE);
             m_hash->Store(GetHashCode(), data);
