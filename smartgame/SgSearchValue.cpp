@@ -25,26 +25,26 @@ string SgSearchValue::ToString(int unitPerPoint) const
 {
     if (m_value == 0)
         return "0";
-    ostringstream o;
-    o << (m_value > 0 ? "B+" : "W+");
+    ostringstream stream;
+    stream << (m_value > 0 ? "B+" : "W+");
     if (IsEstimate())
     {
         if (unitPerPoint == 1)
-            o << (abs(m_value) / unitPerPoint);
+            stream << (abs(m_value) / unitPerPoint);
         else
-            o << setprecision(1)
+            stream << setprecision(1)
               << (static_cast<float>(abs(m_value)) / unitPerPoint);
     }
     else
     {
         if (KoLevel() != 0)
-            o << "(ko)";
+            stream << "(ko)";
         if (Depth() != 0)
         {
-            o << " (" << Depth() << " moves)";
+            stream << " (" << Depth() << " moves)";
         }
     }
-    return o.str();
+    return stream.str();
 }
 
 bool SgSearchValue::FromString(const string& s)
