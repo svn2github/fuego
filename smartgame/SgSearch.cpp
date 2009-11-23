@@ -38,7 +38,7 @@ void SgKiller::MarkKiller(SgMove killer)
     else if (killer == m_killer2)
     {
         ++m_count2;
-        if (m_count1 <= m_count2)
+        if (m_count1 < m_count2)
         {
             swap(m_killer1, m_killer2);
             swap(m_count1, m_count2);
