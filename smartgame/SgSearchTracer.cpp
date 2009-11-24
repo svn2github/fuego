@@ -79,9 +79,10 @@ void SgSearchTracer::StartOfDepth(int depth)
     m_traceNode = m_traceNode->NewRightMostSon();
     SG_ASSERT(m_traceNode);
     m_traceNode->SetIntProp(SG_PROP_MAX_DEPTH, depth);
-    ostringstream o;
-    o << "Iteration d=" << depth << ' ';
-    m_traceNode->AddComment(o.str());
+    ostringstream stream;
+    stream << "Iteration d = " << depth << ' ';
+    // @todo: trace search.TimeUsed()
+    m_traceNode->AddComment(stream.str());
 
     // @todo would be interesting to know time used for each depth,
     // create SG_PROP_TIME_USED property at EndOfDepth (doesn't exist yet)
@@ -110,7 +111,7 @@ void SgSearchTracer::TraceValue(int value, SgBlackWhite toPlay) const
     int v = (toPlay == SG_WHITE) ? -value : +value;
     m_traceNode->Add(new SgPropValue(SG_PROP_VALUE, v));
     ostringstream comment;
-    comment << "v=" << v;
+    comment << "value = " << v;
     TraceComment(comment.str().c_str());
 }
 

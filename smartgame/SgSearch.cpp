@@ -88,7 +88,7 @@ void ReverseCopyStack(const SgSearchStack& moveStack, SgVector<SgMove>* sequence
 	if (sequence)
     {
     	sequence->Clear();
-        for (int i = moveStack.Size() - 1; i>=0; --i)
+        for (int i = moveStack.Size() - 1; i >= 0; --i)
         sequence->PushBack(moveStack[i]);
     }
 }
@@ -417,26 +417,18 @@ int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
     {
         SG_ASSERT(m_tracer->TraceNode() == 0);
         SG_ASSERT(m_tracer->TraceIsOn());
-        m_tracer->InitTracing("DFS tree");
+        m_tracer->InitTracing("DepthFirstSearch");
     }
-
     StartTime();
-    // Clear the hash table before a new search, because don't know
-    // whether the goal and evaluation is still the same as for the
-    // last time it was called.
     if (clearHash && m_hash)
     {
         m_hash->Clear();
         AddSequenceToHash(*sequence, 0);
     }
-
-    // IteratedSearchDepthLimit checked to decide on aborting.
     m_depthLimit = 0;
-
     bool isExactValue = true;
     int value = DFS(0, depthLimit, boundLo, boundHi, sequence, &isExactValue);
     StopTime();
-
     if (m_tracer && traceNode)
         m_tracer->AppendTrace(traceNode);
     return value;
@@ -452,13 +444,9 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
     {
         SG_ASSERT(m_tracer->TraceNode() == 0);
         SG_ASSERT(m_tracer->TraceIsOn());
-        m_tracer->InitTracing("Iterated search");
+        m_tracer->InitTracing("IteratedSearch");
     }
     StartTime();
-
-    // Clear the hash table before a new search, because don't know
-    // whether the goal and evaluation is still the same as for the
-    // last time it was called.
     if (clearHash && m_hash)
     {
         m_hash->Clear();
@@ -496,7 +484,7 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
         isExactValue = true;
         m_foundNewBest = false;
 
-        // Depth-first search.
+        // Fixed-depth search.
         value = DFS(0, m_depthLimit, boundLo, boundHi, sequence,
                     &isExactValue);
 
@@ -505,7 +493,6 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
         {
             if (m_prevSequence.NonEmpty() && ! m_foundNewBest)
             {
-                // save depth 1 move.
                 value = m_prevValue;
                 *sequence = m_prevSequence;
             }
@@ -525,10 +512,11 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
 
         ++m_depthLimit;
 
-    } while (m_depthLimit <= depthMax
-             && ! isExactValue
-             && ! m_aborted
-             && (! CheckDepthLimitReached() || m_reachedDepthLimit));
+    } while (  m_depthLimit <= depthMax
+            && ! isExactValue
+            && ! m_aborted
+            && (! CheckDepthLimitReached() || m_reachedDepthLimit)
+            );
 
     StopTime();
     if (m_tracer && traceNode)
@@ -554,8 +542,11 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     }
 
     // Null move pruning
-    if (m_useNullMove && depth > 0 && !lastNullMove
-        && NullMovePrune(depth, DEPTH_UNIT * (1 + m_nullMoveDepth), beta))
+    if (  m_useNullMove
+       && depth > 0
+       && ! lastNullMove
+       && NullMovePrune(depth, DEPTH_UNIT * (1 + m_nullMoveDepth), beta)
+       )
     {
         *isExactValue = false;
         return beta;
@@ -564,15 +555,15 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     // ProbCut
     if (m_probcut && m_probcut->IsEnabled())
     {
-        int probCutVal;
+        int probCutValue;
         if (m_probcut->ProbCut(*this, depth, alpha, beta, stack, 
-                               isExactValue, &probCutVal)
+                               isExactValue, &probCutValue)
            )
-            return probCutVal;
+            return probCutValue;
     }
 
     m_stat.IncNumNodes();
-    bool fHasMove = false; // true if a move has been executed at this level
+    bool hasMove = false; // true if a move has been executed at this level
     int loValue = -(SG_INFINITY - 1);
     m_reachedDepthLimit = m_reachedDepthLimit || (depth <= 0);
 
@@ -607,9 +598,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 SG_ASSERT(tryFirst != SG_NULLMOVE);
             }
 
-            // If data returned from hash table is based on deeper search
-            // than what we plan to do right now, just use that data. The
-            // hash table may have deeper data for the current position
+            // If data returned from hash table is based on equal or deeper 
+            // search than what we plan to do right now, just use that data. 
+            // The hash table may have deeper data for the current position
             // since the same number of moves may result in more 'depth'
             // left if the 'delta' for the moves has been smaller, which
             // will happen when most moves came from the cache.
@@ -619,8 +610,8 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 // current position. In Go, it can happen that the move is
                 // not legal (ko recapture)
                 int delta = DEPTH_UNIT/2;
-                bool fCanExecute = CallExecute(tryFirst, &delta, depth);
-                if (fCanExecute)
+                bool canExecute = CallExecute(tryFirst, &delta, depth);
+                if (canExecute)
                     CallTakeBack();
                 else
                 {
@@ -651,8 +642,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
             }
 
             int delta = DEPTH_UNIT;
-            if (tryFirst != SG_NULLMOVE
-                && CallExecute(tryFirst, &delta, depth))
+            if (   tryFirst != SG_NULLMOVE
+                && CallExecute(tryFirst, &delta, depth)
+               )
             {
                 bool childIsExact = true;
                 loValue = -SearchEngine(depth-delta, -beta, -alpha, stack,
@@ -660,7 +652,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 if (m_tracer)
                     m_tracer->TraceComment("tryFirst");
                 CallTakeBack();
-                fHasMove = true;
+                hasMove = true;
                 if (m_aborted)
                 {
                     if (m_tracer)
@@ -684,8 +676,8 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     // solved for one player.
                     bool isExact = SgSearchValue::IsSolved(loValue);
                     StoreHash(depth, loValue, tryFirst,
-                              (loValue <= alpha) /*isUpperBound*/,
-                              (beta <= loValue) /*isLowerBound*/, isExact);
+                              false /*isUpperBound*/,
+                              true /*isLowerBound*/, isExact);
                     *isExactValue = isExact;
                     if (m_tracer)
                         m_tracer->TraceValue(loValue, GetToPlay(),
@@ -704,7 +696,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
            // would get generated, then evaluate position rather than using
            // the outcome of that wrongly generated move.
            if (moves.IsEmpty())
-               fHasMove = false;
+               hasMove = false;
         }
 
         MoveKillersToFront(moves);
@@ -723,7 +715,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         // 'hiValue' is equal to 'beta' for alpha-beta algorithm, and gets set
         // to alpha+1 for Scout, except for the first move.
         int hiValue =
-            (fHasMove && m_useScout) ? max(loValue, alpha) + 1 : beta;
+            (hasMove && m_useScout) ? max(loValue, alpha) + 1 : beta;
 
         SgSearchStack newStack;
         // Iterate through all the moves to find the best move and
@@ -734,15 +726,15 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
             int delta = DEPTH_UNIT;
             if (CallExecute(move, &delta, depth))
             {
-                fHasMove = true;
+                hasMove = true;
                 bool childIsExact = true;
                 int merit = -SearchEngine(depth-delta, -hiValue,
                                           -max(loValue, alpha), newStack,
                                           &childIsExact);
-                if (loValue < merit && ! m_aborted)
+                if (loValue < merit && ! m_aborted) // new best move
                 {
                     loValue = merit;
-                    if (m_useScout && ! m_aborted)
+                    if (m_useScout)
                     {
                         // If getting a move that's better than what we have
                         // so far, not good enough to cause a cutoff, was
@@ -750,8 +742,10 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                         // immediately lead to a terminal node, then search
                         // again with a wide window to get a more precise
                         // value.
-                        if (alpha < merit && merit < beta && fHasMove
-                            && delta < depth)
+                        if (  alpha < merit
+                           && merit < beta
+                           && delta < depth
+                           )
                         {
                             childIsExact = true;
                             loValue = -SearchEngine(depth-delta, -beta,
@@ -791,7 +785,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
 
         // Make sure the move added to the hash table really got generated.
 #ifndef NDEBUG
-        if (fHasMove && stack.NonEmpty() && ! m_aborted)
+        if (hasMove && stack.NonEmpty() && ! m_aborted)
         {
             SgMove bestMove = stack.Top();
             SG_ASSERT(bestMove != SG_NULLMOVE);
@@ -806,7 +800,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         // Evaluate position if terminal node (either no moves generated, or
         // none of the generated moves were legal).
         bool solvedByEval = false;
-        if (! fHasMove)
+        if (! hasMove)
         {
             m_stat.IncNumEvals();
             stack.Clear();
@@ -816,7 +810,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         // Save data about current position in the hash table.
         isSolved = solvedByEval
                 || SgSearchValue::IsSolved(loValue)
-                || (fHasMove && allExact);
+                || (hasMove && allExact);
         // || EndOfGame(); bug: cannot store exact score after two passes.
         if (  m_hash
            && ! m_aborted
@@ -845,7 +839,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
 
     *isExactValue = isSolved;
     if (m_tracer)
-        m_tracer->TraceValue(loValue, GetToPlay(), 0, *isExactValue);
+        m_tracer->TraceValue(loValue, GetToPlay(), 0, isSolved);
     SG_ASSERT(stack.IsEmpty() || stack.Top() != SG_NULLMOVE);
     return loValue;
 }
