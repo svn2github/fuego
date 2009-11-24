@@ -609,21 +609,17 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 // Rely on value returned from hash table to be for the
                 // current position. In Go, it can happen that the move is
                 // not legal (ko recapture)
-                int delta = DEPTH_UNIT/2;
+                int delta = DEPTH_UNIT;
                 bool canExecute = CallExecute(tryFirst, &delta, depth);
                 if (canExecute)
                     CallTakeBack();
                 else
-                {
-                    //SG_ASSERT(false);
                     tryFirst = SG_NULLMOVE;
-                }
                 if (tryFirst != SG_NULLMOVE || data.IsExactValue())
                 {
                     // getting a deep enough hash hit or an exact value
                     // is as good as reaching the depth limit by search.
                     m_reachedDepthLimit = true;
-
                     // Update bounds with data from cache.
                     data.AdjustBounds(&alpha, &beta);
 
