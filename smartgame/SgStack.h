@@ -7,10 +7,14 @@
 #ifndef SG_STACK_H
 #define SG_STACK_H
 
+#include <algorithm>
+
 //----------------------------------------------------------------------------
 
-/** Stack with up to size objects of class T */
-template <class T, int size>
+/** Stack with up to size objects of class T. stack does not assume ownership.
+	Memory management of objects on stack is the user's responsibility.
+*/
+template <class T, int SIZE>
 class SgStack
 {
 public:
@@ -20,9 +24,14 @@ public:
 
     ~SgStack() {}
 
+    void Clear()
+    {
+        m_sp = 0;
+    }
+    
     void Push(T data)
     {
-        SG_ASSERT(m_sp < size - 1);
+        SG_ASSERT(m_sp < SIZE);
         m_stack[m_sp++] = data;
     }
 
@@ -47,6 +56,15 @@ public:
         return m_sp;
     }
 
+    /** Make this stack a copy of other*/
+    void CopyFrom(const SgStack<T,SIZE>& other);
+    
+    /** Push all elements from other stack onto this stack */
+    void PushAll(const SgStack<T,SIZE>& other);
+    
+    /** Exchange contents of this and other stack */
+    void SwapWith(SgStack<T,SIZE>& other);
+    
     const T& Top() const
     {
         SG_ASSERT(0 < m_sp);
@@ -55,6 +73,7 @@ public:
 
     const T& operator[](int index) const
     {
+        SG_ASSERT(index >= 0);
         SG_ASSERT(index < m_sp);
         return m_stack[index];
     }
@@ -62,7 +81,7 @@ public:
 private:
     int m_sp;
 
-    T m_stack[size];
+    T m_stack[SIZE];
 
     /** not implemented */
     SgStack(const SgStack&);
@@ -71,6 +90,37 @@ private:
     SgStack& operator=(const SgStack&);
 };
 
+//----------------------------------------------------------------------------
+
+template<typename T, int SIZE>
+void SgStack<T,SIZE>::CopyFrom(const SgStack<T,SIZE>& other)
+{
+    for(int i=0; i < other.Size(); ++i)
+    	m_stack[i] = other.m_stack[i];
+    m_sp = other.m_sp;
+}
+
+template<typename T, int SIZE>
+void SgStack<T,SIZE>::PushAll(const SgStack<T,SIZE>& other)
+{
+    for(int i=0; i < other.Size(); ++i)
+    	Push(other.m_stack[i]);
+}
+
+template<typename T, int SIZE>
+void SgStack<T,SIZE>::SgStack::SwapWith(SgStack<T,SIZE>& other)
+{
+	int nuSwap = std::min(Size(), other.Size());
+    for(int i = 0; i < nuSwap; ++i)
+    	std::swap(m_stack[i], other.m_stack[i]);
+    if (Size() < other.Size())
+    	for(int i = Size(); i < other.Size(); ++i)
+        	m_stack[i] = other.m_stack[i];
+    else if (other.Size() < Size())
+    	for(int i = other.Size(); i < Size(); ++i)
+        	other.m_stack[i] = m_stack[i];
+    std::swap(m_sp, other.m_sp);
+}
 //----------------------------------------------------------------------------
 
 #endif // SG_STACK_H

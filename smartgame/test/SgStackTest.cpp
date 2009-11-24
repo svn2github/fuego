@@ -52,6 +52,89 @@ BOOST_AUTO_TEST_CASE(SgStackTestPushPop)
     BOOST_CHECK(s.Size() == 0);
 }
 
+BOOST_AUTO_TEST_CASE(SgStackTestCopyFrom)
+{
+    SgStack<int, 5> s1;
+    SgStack<int, 5> s2;
+    s1.Push(1);
+    s1.Push(2);
+    s1.Push(3);
+    s2.Push(4);
+    s2.Push(5);
+    BOOST_CHECK_EQUAL(s1.Size(), 3);
+    BOOST_CHECK_EQUAL(s2.Size(), 2);
+    s1.CopyFrom(s2);
+    BOOST_CHECK_EQUAL(s1.Size(), 2);
+    BOOST_CHECK_EQUAL(s1[0],  4);
+    BOOST_CHECK_EQUAL(s1[1],  5);
+}
+
+BOOST_AUTO_TEST_CASE(SgStackTestPushAll)
+{
+    SgStack<int, 5> s1;
+    SgStack<int, 5> s2;
+    s1.Push(1);
+    s1.Push(2);
+    s1.Push(3);
+    s2.Push(4);
+    s2.Push(5);
+    BOOST_CHECK_EQUAL(s1.Size(), 3);
+    BOOST_CHECK_EQUAL(s2.Size(), 2);
+    s1.PushAll(s2);
+    BOOST_CHECK_EQUAL(s1.Size(), 5);
+    BOOST_CHECK_EQUAL(s1[0],  1);
+    BOOST_CHECK_EQUAL(s1[1],  2);
+    BOOST_CHECK_EQUAL(s1[2],  3);
+    BOOST_CHECK_EQUAL(s1[3],  4);
+    BOOST_CHECK_EQUAL(s1[4],  5);
+}
+
+BOOST_AUTO_TEST_CASE(SgStackTestSwapWith)
+{
+    SgStack<int, 5> s1;
+    SgStack<int, 5> s2;
+    s1.Push(1);
+    s1.Push(2);
+    s1.Push(3);
+    s2.Push(4);
+    s2.Push(5);
+    BOOST_CHECK_EQUAL(s1.Size(), 3);
+    BOOST_CHECK_EQUAL(s2.Size(), 2);
+    s1.SwapWith(s2);
+    BOOST_CHECK_EQUAL(s1.Size(), 2);
+    BOOST_CHECK_EQUAL(s2.Size(), 3);
+    BOOST_CHECK_EQUAL(s1[0],  4);
+    BOOST_CHECK_EQUAL(s1[1],  5);
+    BOOST_CHECK_EQUAL(s2[0],  1);
+    BOOST_CHECK_EQUAL(s2[1],  2);
+    BOOST_CHECK_EQUAL(s2[2],  3);
+    s1.SwapWith(s2);
+    BOOST_CHECK_EQUAL(s2.Size(), 2);
+    BOOST_CHECK_EQUAL(s1.Size(), 3);
+    BOOST_CHECK_EQUAL(s2[0],  4);
+    BOOST_CHECK_EQUAL(s2[1],  5);
+    BOOST_CHECK_EQUAL(s1[0],  1);
+    BOOST_CHECK_EQUAL(s1[1],  2);
+    BOOST_CHECK_EQUAL(s1[2],  3);
+    s2.SwapWith(s1);
+    BOOST_CHECK_EQUAL(s1.Size(), 2);
+    BOOST_CHECK_EQUAL(s2.Size(), 3);
+    BOOST_CHECK_EQUAL(s1[0],  4);
+    BOOST_CHECK_EQUAL(s1[1],  5);
+    BOOST_CHECK_EQUAL(s2[0],  1);
+    BOOST_CHECK_EQUAL(s2[1],  2);
+    BOOST_CHECK_EQUAL(s2[2],  3);
+    s2.SwapWith(s1);
+    BOOST_CHECK_EQUAL(s2.Size(), 2);
+    BOOST_CHECK_EQUAL(s1.Size(), 3);
+    BOOST_CHECK_EQUAL(s2[0],  4);
+    BOOST_CHECK_EQUAL(s2[1],  5);
+    BOOST_CHECK_EQUAL(s1[0],  1);
+    BOOST_CHECK_EQUAL(s1[1],  2);
+    BOOST_CHECK_EQUAL(s1[2],  3);
+}
+
+
 } // namespace
 
 //----------------------------------------------------------------------------
