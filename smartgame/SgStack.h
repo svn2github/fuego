@@ -11,7 +11,7 @@
 
 //----------------------------------------------------------------------------
 
-/** Stack with up to size objects of class T. stack does not assume ownership.
+/** Stack with up to size objects of class T. Stack does not assume ownership.
 	Memory management of objects on stack is the user's responsibility.
 */
 template <class T, int SIZE>
@@ -24,59 +24,33 @@ public:
 
     ~SgStack() {}
 
-    void Clear()
-    {
-        m_sp = 0;
-    }
-    
-    void Push(T data)
-    {
-        SG_ASSERT(m_sp < SIZE);
-        m_stack[m_sp++] = data;
-    }
-
-    T Pop()
-    {
-        SG_ASSERT(0 < m_sp);
-        return m_stack[--m_sp];
-    }
-
-    bool IsEmpty() const
-    {
-        return m_sp == 0;
-    }
-
-    bool NonEmpty() const
-    {
-        return m_sp != 0;
-    }
-
-    int Size() const
-    {
-        return m_sp;
-    }
-
+    /** Empty the stack */
+    void Clear();
+        
     /** Make this stack a copy of other*/
     void CopyFrom(const SgStack<T,SIZE>& other);
     
+    bool IsEmpty() const;
+
+    bool NonEmpty() const;
+
+    /** remove and return top element. Must be NonEmpty. */
+    T Pop();
+
+    void Push(T data);
+
     /** Push all elements from other stack onto this stack */
     void PushAll(const SgStack<T,SIZE>& other);
     
+    /** Number of elements on stack */
+    int Size() const;
+
     /** Exchange contents of this and other stack */
     void SwapWith(SgStack<T,SIZE>& other);
     
-    const T& Top() const
-    {
-        SG_ASSERT(0 < m_sp);
-        return m_stack[m_sp-1];
-    }
+    const T& Top() const;
 
-    const T& operator[](int index) const
-    {
-        SG_ASSERT(index >= 0);
-        SG_ASSERT(index < m_sp);
-        return m_stack[index];
-    }
+    const T& operator[](int index) const;
 
 private:
     int m_sp;
@@ -93,6 +67,12 @@ private:
 //----------------------------------------------------------------------------
 
 template<typename T, int SIZE>
+void SgStack<T,SIZE>::Clear()
+{
+    m_sp = 0;
+}
+
+template<typename T, int SIZE>
 void SgStack<T,SIZE>::CopyFrom(const SgStack<T,SIZE>& other)
 {
     for(int i=0; i < other.Size(); ++i)
@@ -101,10 +81,42 @@ void SgStack<T,SIZE>::CopyFrom(const SgStack<T,SIZE>& other)
 }
 
 template<typename T, int SIZE>
+bool SgStack<T,SIZE>::IsEmpty() const
+{
+    return m_sp == 0;
+}
+
+template<typename T, int SIZE>
+bool SgStack<T,SIZE>::NonEmpty() const
+{
+    return m_sp != 0;
+}
+
+template<typename T, int SIZE>
+T SgStack<T,SIZE>::Pop()
+{
+    SG_ASSERT(0 < m_sp);
+    return m_stack[--m_sp];
+}
+
+template<typename T, int SIZE>
+void SgStack<T,SIZE>::Push(T data)
+{
+    SG_ASSERT(m_sp < SIZE);
+    m_stack[m_sp++] = data;
+}
+
+template<typename T, int SIZE>
 void SgStack<T,SIZE>::PushAll(const SgStack<T,SIZE>& other)
 {
     for(int i=0; i < other.Size(); ++i)
     	Push(other.m_stack[i]);
+}
+
+template<typename T, int SIZE>
+int SgStack<T,SIZE>::Size() const
+{
+    return m_sp;
 }
 
 template<typename T, int SIZE>
@@ -121,6 +133,22 @@ void SgStack<T,SIZE>::SgStack::SwapWith(SgStack<T,SIZE>& other)
         	other.m_stack[i] = m_stack[i];
     std::swap(m_sp, other.m_sp);
 }
+
+template<typename T, int SIZE>
+const T& SgStack<T,SIZE>::Top() const
+{
+    SG_ASSERT(0 < m_sp);
+    return m_stack[m_sp-1];
+}
+
+template<typename T, int SIZE>
+const T& SgStack<T,SIZE>::operator[](int index) const
+{
+    SG_ASSERT(index >= 0);
+    SG_ASSERT(index < m_sp);
+    return m_stack[index];
+}
+
 //----------------------------------------------------------------------------
 
 #endif // SG_STACK_H
