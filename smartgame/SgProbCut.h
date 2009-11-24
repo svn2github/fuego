@@ -14,9 +14,9 @@
 #include "SgArray.h"
 #include "SgBlackWhite.h"
 #include "SgMove.h"
+#include "SgSearch.h"
+#include "SgStack.h"
 #include "SgVector.h"
-
-class SgSearch;
 
 //----------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ public:
     bool IsEnabled() const;
 
     bool ProbCut(SgSearch& search, int depth, int alpha, int beta, 
-    			 SgVector<SgMove>* sequence,
+    			 SgSearchStack& moveStack,
                  bool* isExactValue, int* value);
 
     void SetEnabled(bool flag);

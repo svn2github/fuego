@@ -14,12 +14,13 @@
 #include <math.h>
 #include "SgDebug.h"
 #include "SgHashTable.h"
-#include "SgVector.h"
 #include "SgMath.h"
 #include "SgNode.h"
+#include "SgProbCut.h"
 #include "SgSearchControl.h"
 #include "SgSearchValue.h"
 #include "SgTime.h"
+#include "SgVector.h"
 #include "SgWrite.h"
 
 using namespace std;
@@ -79,9 +80,18 @@ bool SgSearchHashData::IsBetterThan(const SgSearchHashData& data) const
 
 //----------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------
-
 namespace {
+
+/** copy stack onto sequence, starting with Top() */
+void ReverseCopyStack(const SgSearchStack& moveStack, SgVector<SgMove>* sequence)
+{
+	if (sequence)
+    {
+    	sequence->Clear();
+        for (int i = moveStack.Size() - 1; i>=0; --i)
+        sequence->PushBack(moveStack[i]);
+    }
+}
 
 void WriteSgSearchHashData(std::ostream& str, const SgSearch& search, 
 						   const SgSearchHashData& data)
@@ -240,19 +250,15 @@ bool SgSearch::AbortSearch()
 {
     if (! m_aborted)
     {
-        // Abortion checking is potentially expensive
-        // Only check for abort every m_abortFrequency nodes
+        // Checking abort is potentially expensive, involves system call.
+        // Only check every m_abortFrequency nodes
         if (m_stat.NumNodes() % m_abortFrequency != 0)
             return false;
-
         m_aborted =
                m_control 
             && m_control->Abort(m_timer.GetTime(), m_stat.NumNodes());
-        if (! m_aborted)
-        {
-            if (SgUserAbort())
-                m_aborted = true;
-        }
+        if (! m_aborted && SgUserAbort())
+            m_aborted = true;
         if (m_aborted && TraceIsOn())
             m_tracer->TraceComment("aborted");
     }
@@ -261,14 +267,14 @@ bool SgSearch::AbortSearch()
 
 bool SgSearch::NullMovePrune(int depth, int delta, int beta)
 {
-    SgVector<SgMove> nullSeq;
+    SgSearchStack ignoreStack;
     bool childIsExact = true;
     if (beta >= SG_INFINITY - 1)
         return false;
     if (CallExecute(SG_PASS, &delta, depth))
     {
         float nullvalue = -SearchEngine(depth - delta,
-            -beta, -beta + 1, &nullSeq, &childIsExact, true);
+            -beta, -beta + 1, ignoreStack, &childIsExact, true);
         CallTakeBack();
         if (nullvalue >= beta)
         {
@@ -288,7 +294,7 @@ void SgSearch::GetStatistics(SgSearchStatistics* stat)
 
 void SgSearch::StartTime()
 {
-    if (m_timerLevel++ == 0)
+    if (++m_timerLevel == 1)
     {
         m_stat.Clear();
         m_timer.Start();
@@ -297,18 +303,16 @@ void SgSearch::StartTime()
 
 void SgSearch::StopTime()
 {
-    if (--m_timerLevel == 0)
-    {
-        if (! m_timer.IsStopped())
-            m_timer.Stop();
-    }
+    if (--m_timerLevel == 0 && ! m_timer.IsStopped())
+        m_timer.Stop();
 }
 
 int SgSearch::CallEvaluate(int depth, bool* isExact)
 {
     int v = Evaluate(isExact, depth);
     if (DEBUG_SEARCH)
-        SgDebug() << "SgSearch::CallEvaluate d=" << depth << ", v=" << v
+        SgDebug() << "SgSearch::CallEvaluate d = " << depth 
+                  << ", v = " << v
                   << '\n';
     return v;
 }
@@ -317,7 +321,7 @@ bool SgSearch::CallExecute(SgMove move, int* delta, int depth)
 {
     const SgBlackWhite toPlay = GetToPlay();
     if (DEBUG_SEARCH)
-        SgDebug() << "SgSearch::CallExecute: d=" << depth << ' '
+        SgDebug() << "SgSearch::CallExecute: d = " << depth << ' '
                   << SgBW(toPlay) << ' ' << MoveString(move) << '\n';
     if (Execute(move, delta, depth))
     {
@@ -374,13 +378,15 @@ void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
             int delta = DEPTH_UNIT;
             if (CallExecute(move, &delta, depth))
                 ++numMovesToUndo;
+            else // it just worked, should not fail now.
+            	SG_ASSERT(false);
         }
         else
             break;
     }
 
     // Restore the original position.
-    for (int i = 1; i <= numMovesToUndo; ++i)
+    while (--numMovesToUndo >= 0)
         CallTakeBack();
 }
 
@@ -392,11 +398,14 @@ int SgSearch::DFS(int startDepth, int depthLimit,
     SG_ASSERT(m_currentDepth == startDepth);
     m_aborted = false;
     m_foundNewBest = false;
-    int value = 0;
-    value = SearchEngine(depthLimit * DEPTH_UNIT, boundLo, boundHi, sequence,
-                         isExactValue);
+    SgSearchStack moveStack;
+    int value = SearchEngine(depthLimit * DEPTH_UNIT, 
+    						 boundLo, boundHi, moveStack,
+                         	 isExactValue);
+    ReverseCopyStack(moveStack, sequence);
     return value;
 }
+
 
 int SgSearch::DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
                                SgVector<SgMove>* sequence, bool clearHash,
@@ -528,11 +537,10 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
 }
 
 int SgSearch::SearchEngine(int depth, int alpha, int beta,
-                           SgVector<SgMove>* sequence, bool* isExactValue,
+                           SgSearchStack& stack, bool* isExactValue,
                            bool lastNullMove)
 {
-    SG_ASSERT(sequence);
-    SG_ASSERT(sequence->IsEmpty() || sequence->Front() != SG_NULLMOVE);
+    SG_ASSERT(stack.IsEmpty() || stack.Top() != SG_NULLMOVE);
     SG_ASSERT(alpha < beta);
 
     // Only place we check whether the search has been newly aborted. In all
@@ -557,7 +565,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     if (m_probcut && m_probcut->IsEnabled())
     {
         int probCutVal;
-        if (m_probcut->ProbCut(*this, depth, alpha, beta, sequence, 
+        if (m_probcut->ProbCut(*this, depth, alpha, beta, stack, 
                                isExactValue, &probCutVal)
            )
             return probCutVal;
@@ -575,10 +583,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         if (data.IsExactValue()) // exact value: stop search
         {
             *isExactValue = true;
-            if (data.BestMove() == SG_NULLMOVE)
-                sequence->Clear();
-            else
-                sequence->SetTo(data.BestMove());
+            stack.Clear();
+            if (data.BestMove() != SG_NULLMOVE)
+                stack.Push(data.BestMove());
             if (m_tracer)
                 m_tracer->TraceValue(data.Value(), GetToPlay(),
                                      "exact-hash", true);
@@ -632,10 +639,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     if (alpha >= beta)
                     {
                         *isExactValue = data.IsExactValue();
-                        if (tryFirst == SG_NULLMOVE)
-                            sequence->Clear();
-                        else
-                            sequence->SetTo(tryFirst);
+                        stack.Clear();
+                        if (tryFirst != SG_NULLMOVE)
+                            stack.Push(tryFirst);
                         if (m_tracer)
                             m_tracer->TraceValue(data.Value(), GetToPlay(),
                                            "Hash hit", *isExactValue);
@@ -649,7 +655,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 && CallExecute(tryFirst, &delta, depth))
             {
                 bool childIsExact = true;
-                loValue = -SearchEngine(depth-delta, -beta, -alpha, sequence,
+                loValue = -SearchEngine(depth-delta, -beta, -alpha, stack,
                                         &childIsExact);
                 if (m_tracer)
                     m_tracer->TraceComment("tryFirst");
@@ -662,12 +668,12 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                     *isExactValue = false;
                     return (1 < m_currentDepth) ? alpha : loValue;
                 }
-                if (sequence->NonEmpty())
+                if (stack.NonEmpty())
                 {
-                    opponentBest = sequence->Front();
+                    opponentBest = stack.Top();
                     SG_ASSERT(opponentBest != SG_NULLMOVE);
                 }
-                sequence->PushFront(tryFirst);
+                stack.Push(tryFirst);
                 if (! childIsExact)
                    allExact = false;
                 if (loValue >= beta)
@@ -719,7 +725,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         int hiValue =
             (fHasMove && m_useScout) ? max(loValue, alpha) + 1 : beta;
 
-        SgVector<SgMove> newSeq;
+        SgSearchStack newStack;
         // Iterate through all the moves to find the best move and
         // correct value for this position.
         for (SgVectorIterator<SgMove> it(moves); it; ++it)
@@ -731,7 +737,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                 fHasMove = true;
                 bool childIsExact = true;
                 int merit = -SearchEngine(depth-delta, -hiValue,
-                                          -max(loValue, alpha), &newSeq,
+                                          -max(loValue, alpha), newStack,
                                           &childIsExact);
                 if (loValue < merit && ! m_aborted)
                 {
@@ -749,13 +755,13 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                         {
                             childIsExact = true;
                             loValue = -SearchEngine(depth-delta, -beta,
-                                                    -merit, &newSeq,
+                                                    -merit, newStack,
                                                     &childIsExact);
                         }
                         hiValue = max(loValue, alpha) + 1;
                     }
-                    sequence->SwapWith(&newSeq);
-                    sequence->PushFront(move);
+                    stack.CopyFrom(newStack);
+                    stack.Push(move);
                     SG_ASSERT(move != SG_NULLMOVE);
                     if (m_currentDepth == 1 && ! m_aborted)
                         m_foundNewBest = true;
@@ -785,9 +791,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
 
         // Make sure the move added to the hash table really got generated.
 #ifndef NDEBUG
-        if (fHasMove && sequence->NonEmpty() && ! m_aborted)
+        if (fHasMove && stack.NonEmpty() && ! m_aborted)
         {
-            SgMove bestMove = sequence->Front();
+            SgMove bestMove = stack.Top();
             SG_ASSERT(bestMove != SG_NULLMOVE);
             SG_ASSERT(bestMove == tryFirst || moves.Contains(bestMove));
         }
@@ -803,24 +809,24 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         if (! fHasMove)
         {
             m_stat.IncNumEvals();
-            sequence->Clear();
+            stack.Clear();
             loValue = CallEvaluate(depth, &solvedByEval);
         }
 
         // Save data about current position in the hash table.
         isSolved = solvedByEval
-            || SgSearchValue::IsSolved(loValue)
-            || (fHasMove && allExact);
+                || SgSearchValue::IsSolved(loValue)
+                || (fHasMove && allExact);
         // || EndOfGame(); bug: cannot store exact score after two passes.
-        if (   m_hash
-            && ! m_aborted
-            && (isSolved || sequence->NonEmpty())
+        if (  m_hash
+           && ! m_aborted
+           && (isSolved || stack.NonEmpty())
            )
         {
             SgMove bestMove = SG_NULLMOVE;
-            if (sequence->NonEmpty())
+            if (stack.NonEmpty())
             {
-                bestMove = sequence->Front();
+                bestMove = stack.Top();
                 SG_ASSERT(bestMove != SG_NULLMOVE);
             }
             SG_ASSERT(alpha <= beta);
@@ -840,7 +846,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     *isExactValue = isSolved;
     if (m_tracer)
         m_tracer->TraceValue(loValue, GetToPlay(), 0, *isExactValue);
-    SG_ASSERT(sequence->IsEmpty() || sequence->Front() != SG_NULLMOVE);
+    SG_ASSERT(stack.IsEmpty() || stack.Top() != SG_NULLMOVE);
     return loValue;
 }
 

@@ -13,14 +13,15 @@
 #include "SgBlackWhite.h"
 #include "SgHash.h"
 #include "SgMove.h"
-#include "SgProbCut.h"
 #include "SgSearchStatistics.h"
 #include "SgSearchTracer.h"
+#include "SgStack.h"
 #include "SgTimer.h"
 #include "SgVector.h"
 
 template <class DATA> class SgHashTable;
 class SgNode;
+class SgProbCut;
 class SgSearchControl;
 
 //----------------------------------------------------------------------------
@@ -474,19 +475,22 @@ public:
     /** Core Alpha-beta search. Usually not called directly -
         call DepthFirstSearch or IteratedSearch instead. */
     int SearchEngine(int depth, int alpha, int beta,
-                     SgVector<SgMove>* sequence,
+                     SgStack<SgMove, SgSearch::MAX_DEPTH>& stack,
                      bool* isExactValue, bool lastNullMove = false);
 
 private:
     /** Hash table */
     SgSearchHashTable* m_hash;
 
+    /** Used to build a trace tree of the search for debugging */
     SgSearchTracer* m_tracer;
 
+    /** The depth of the current position - number of moves from start */
     int m_currentDepth;
 
     int m_depthLimit;
 
+    /** Stack of all moves executed in search. Used by PrevMove() */
     SgVector<SgMove> m_moveStack;
 
     bool m_useScout;
@@ -676,6 +680,10 @@ inline SgSearchTracer* SgSearch::Tracer() const
     return m_tracer;
 }
     
+//----------------------------------------------------------------------------
+
+typedef SgStack<SgMove, SgSearch::MAX_DEPTH> SgSearchStack;
+
 //----------------------------------------------------------------------------
 
 #endif // SG_SEARCH_H
