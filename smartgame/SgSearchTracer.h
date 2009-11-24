@@ -21,6 +21,8 @@ class SgSearchTracer
 public:
     SgSearchTracer(SgNode* root);
     
+    virtual ~SgSearchTracer();
+    
      /** Add move property to node (game-dependent). 
         The default implementation stores the move in a SgMoveProp.
         Override this method for other games.
