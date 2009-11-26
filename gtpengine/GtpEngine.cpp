@@ -579,10 +579,19 @@ void GtpCommand::SetResponseBool(bool value)
 
 std::size_t GtpCommand::SizeTypeArg(std::size_t number) const
 {
-    istringstream in(Arg(number));
+    string arg = Arg(number);
+    // Workaround for bug in standard library of some GCC versions (e.g. GCC
+    // 4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
+    // size_t, which should be unsigned
+    bool fail = (! arg.empty() && arg[0] == '-');
     std::size_t result;
-    in >> result;
-    if (! in)
+    if (! fail)
+    {
+        istringstream in(arg);
+        in >> result;
+        fail = ! in;
+    }
+    if (fail)
         throw GtpFailure() << "argument " << (number + 1)
                            << " must be a number";
     return result;
