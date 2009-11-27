@@ -214,19 +214,19 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
             }
         }
         SG_ASSERT(! neighbors.IsEmpty());
-        lib1 = neighbors.PopFront();
+        lib1 = neighbors[0];
         SG_ASSERT(m_bd->IsEmpty(lib1));
         SgPoint lib2;
         int numLib;
-        if (neighbors.IsEmpty())
+        if (neighbors.Length() == 1)
         {
             numLib = 1;
             lib2 = 0;
         }
         else
         {
-            lib2 = neighbors.PopFront();
-            numLib = neighbors.IsEmpty() ? 2 : 3 /* or more */;
+            lib2 = neighbors[1];
+            numLib = (neighbors.Length() == 2) ? 2 : 3 /* or more */;
             SG_ASSERT(m_bd->IsEmpty(lib2));
         }
 
@@ -427,10 +427,8 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
         result = GOOD_FOR_PREY;
     else
     {
-        SgVector<SgPoint> libs;
-        for (GoBoard::LibertyIterator it(*m_bd, prey); it; ++it)
-            libs.PushBack(*it);
-        SgPoint lib1 = libs.PopFront();
+        GoBoard::LibertyIterator libit(*m_bd, prey);
+        SgPoint lib1 = *libit;
         m_partOfPrey.Clear();
         MarkStonesAsPrey(prey);
         GoPointList adjBlk = GoBoardUtil::AdjacentStones(*m_bd, prey);
@@ -473,7 +471,8 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                 }
 
                 // Liberties of blocks.
-                SgPoint lib2 = libs.Front();
+                ++libit;
+                SgPoint lib2 = *libit;
                 movesToTry.PushBack(lib1);
                 movesToTry.PushBack(lib2);
 
@@ -517,7 +516,8 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
             else
             {
                 // AR: split HunterLadder into two methods (1 vs 2 libs)
-                SgPoint lib2 = libs.IsEmpty() ? SG_NULLMOVE : libs.Front();
+                ++libit;
+                SgPoint lib2 = libit ? *libit : SG_NULLMOVE;
                 result = HunterLadder(0, numLib, lib1, lib2, adjBlk,
                                       sequence);
             }
