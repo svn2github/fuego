@@ -172,13 +172,13 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSimpleChain_1)
     GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
     GoBoard bd(boardSize, setup);
     SgPoint other;
-    BOOST_CHECK(IsSimpleChain(bd, Pt(1, 1), other));
-    BOOST_CHECK_EQUAL(Pt(2, 2), other);
-    BOOST_CHECK(IsSimpleChain(bd, Pt(1, 6), other));
-    BOOST_CHECK_EQUAL(Pt(3, 6), other);
-    BOOST_CHECK(! IsSimpleChain(bd, Pt(6, 3), other));
-    BOOST_CHECK(IsSimpleChain(bd, Pt(6, 7), other));
-    BOOST_CHECK_EQUAL(Pt(8, 7), other);
+    BOOST_CHECK(IsSimpleChain(bd, Pt(1, 9), other));
+    BOOST_CHECK_EQUAL(Pt(2, 8), other);
+    BOOST_CHECK(IsSimpleChain(bd, Pt(6, 9), other));
+    BOOST_CHECK_EQUAL(Pt(6, 7), other);
+    BOOST_CHECK(! IsSimpleChain(bd, Pt(3, 4), other));
+    BOOST_CHECK(IsSimpleChain(bd, Pt(7, 4), other));
+    BOOST_CHECK_EQUAL(Pt(7, 2), other);
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSnapback_1)

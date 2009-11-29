@@ -41,18 +41,18 @@ BOOST_AUTO_TEST_CASE(GoRegionTest_IsInteriorBlock)
     BOOST_CHECK_EQUAL(rbd.AllRegions(SG_BLACK).Length(), 4);
     BOOST_CHECK_EQUAL(rbd.AllRegions(SG_WHITE).Length(), 8);
     
-    GoRegion* r = rbd.RegionAt(Pt(5,5), SG_WHITE);
-    GoBlock* b = rbd.BlockAt(Pt(4,5));
+    GoRegion* r = rbd.RegionAt(Pt(5, 5), SG_WHITE);
+    GoBlock* b = rbd.BlockAt(Pt(5, 6));
     BOOST_CHECK_EQUAL(r->IsInteriorBlock(b), false);
-    b = rbd.BlockAt(Pt(5,1));
+    b = rbd.BlockAt(Pt(1, 5));
     BOOST_CHECK_EQUAL(r->IsInteriorBlock(b), false);
-    b = rbd.BlockAt(Pt(5,8));
+    b = rbd.BlockAt(Pt(8, 5));
     BOOST_CHECK_EQUAL(r->IsInteriorBlock(b), false);
     
-    r = rbd.RegionAt(Pt(9,1), SG_BLACK);
-    b = rbd.BlockAt(Pt(9,2));
+    r = rbd.RegionAt(Pt(1, 1), SG_BLACK);
+    b = rbd.BlockAt(Pt(2, 1));
     BOOST_CHECK_EQUAL(r->IsInteriorBlock(b), true);
-    b = rbd.BlockAt(Pt(4,1));
+    b = rbd.BlockAt(Pt(1, 6));
     BOOST_CHECK_EQUAL(r->IsInteriorBlock(b), false);
 }
 

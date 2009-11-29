@@ -96,12 +96,12 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_4)
     setup.m_player = SG_BLACK;
     GoBoard bd(boardSize, setup);
     // single stone capture is not replaced
-    SgPoint p = Pt(1, 1);
+    SgPoint p = Pt(1, 4);
     DoSelfAtariCorrection(bd, p);
-    BOOST_CHECK_EQUAL(p, Pt(1, 1));
-    p = Pt(4, 1); // extension replaced by capture
+    BOOST_CHECK_EQUAL(p, Pt(1, 4));
+    p = Pt(1, 1); // extension replaced by capture
     DoSelfAtariCorrection(bd, p);
-    BOOST_CHECK_EQUAL(p, Pt(4, 2));
+    BOOST_CHECK_EQUAL(p, Pt(2, 1));
 }
 
 /** Test GoUctUtil::DoSelfAtariCorrection (single stone and capture) */
@@ -118,9 +118,9 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_5)
     setup.m_player = SG_BLACK;
     GoBoard bd(boardSize, setup);
     // replace single stone selfatari by capture
-    SgPoint p = Pt(1, 4);
+    SgPoint p = Pt(4, 6);
     DoSelfAtariCorrection(bd, p);
-    BOOST_CHECK_EQUAL(p, Pt(1, 3));
+    BOOST_CHECK_EQUAL(p, Pt(3, 6));
 }
 
 //----------------------------------------------------------------------------

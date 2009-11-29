@@ -85,13 +85,13 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_CanCapture)
     GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
     setup.m_player = SG_BLACK;
     GoBoard bd(boardSize, setup);
-    BOOST_CHECK(bd.IsColor(Pt(1, 1), SG_BLACK));
-    BOOST_CHECK(bd.IsColor(Pt(1, 2), SG_WHITE));
-    BOOST_CHECK(bd.CanCapture(Pt(1, 3), SG_BLACK));
-    BOOST_CHECK(! bd.CanCapture(Pt(1, 3), SG_WHITE));
-    BOOST_CHECK(! bd.CanCapture(Pt(1, 4), SG_BLACK));
-    BOOST_CHECK(! bd.CanCapture(Pt(2, 1), SG_BLACK));
-    BOOST_CHECK(bd.CanCapture(Pt(2, 1), SG_WHITE));
+    BOOST_CHECK(bd.IsColor(Pt(1, 6), SG_BLACK));
+    BOOST_CHECK(bd.IsColor(Pt(2, 6), SG_WHITE));
+    BOOST_CHECK(bd.CanCapture(Pt(3, 6), SG_BLACK));
+    BOOST_CHECK(! bd.CanCapture(Pt(3, 6), SG_WHITE));
+    BOOST_CHECK(! bd.CanCapture(Pt(4, 6), SG_BLACK));
+    BOOST_CHECK(! bd.CanCapture(Pt(1, 5), SG_BLACK));
+    BOOST_CHECK(bd.CanCapture(Pt(1, 5), SG_WHITE));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_CanUndo)

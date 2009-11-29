@@ -49,7 +49,7 @@ bool ReadLine(std::streambuf& in, GoSetup& setup, int row, int& currLength)
         else if (! IsIgnoreChar(c))
             throw SgException("bad input data for ReadLine");
 
-        SgPoint p = Pt(row, col);
+        SgPoint p = Pt(col, row);
         if (IsBlackChar(c))
         {
             setup.m_stones[SG_BLACK].Include(p);
@@ -86,6 +86,10 @@ GoSetup GoSetupUtil::CreateSetupFromStream(std::streambuf& in, int& boardSize)
             break;
     }
 
+    // The standard display format has rows in decreasing order, so flip rows
+    // from top to bottom.
+    SgPointSetUtil::Rotate(2, setup.m_stones[SG_BLACK], boardSize);
+    SgPointSetUtil::Rotate(2, setup.m_stones[SG_WHITE], boardSize);
     return setup;
 }
 

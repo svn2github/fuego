@@ -118,26 +118,26 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsTwoPointEye)
     int boardSize;
     GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
     GoBoard bd(boardSize, setup);
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,1), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,2), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,4), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,5), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,7), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(1,9), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(2,7), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(2,9), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,1), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,2), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,5), SG_WHITE));
-    BOOST_CHECK(IsTwoPointEye(bd, Pt(3,6), SG_WHITE));
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(4,3), SG_WHITE)); // 3 blocks
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(4,4), SG_WHITE));
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5,1), SG_WHITE)); // only 1 shared lib
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(6,1), SG_WHITE)); // only 1 shared lib
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5,5), SG_WHITE));
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5,9), SG_WHITE));
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(6,9), SG_WHITE));
-    BOOST_CHECK(! IsTwoPointEye(bd, Pt(9,1), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1, 9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(2, 9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(4, 9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(5, 9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(7, 9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(9, 9), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(7, 8), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(9, 8), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(1, 7), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(2, 7), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(5, 7), SG_WHITE));
+    BOOST_CHECK(IsTwoPointEye(bd, Pt(6, 7), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(3, 6), SG_WHITE)); // 3 blocks
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(4, 6), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(1, 5), SG_WHITE)); // only 1 shared lib
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(1, 4), SG_WHITE)); // only 1 shared lib
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(5, 5), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(9, 5), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(9, 4), SG_WHITE));
+    BOOST_CHECK(! IsTwoPointEye(bd, Pt(1, 1), SG_WHITE));
 }
 
 BOOST_AUTO_TEST_CASE(GoEyeUtilTest_MakesNakadeShape)
