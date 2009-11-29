@@ -117,3 +117,13 @@ istream& operator>>(istream& in, SgPointSet& pointSet)
 }
 
 //----------------------------------------------------------------------------
+/* This function could probably be optimized if used in time-critical code */
+void SgPointSetUtil::Rotate(int rotation, SgPointSet& pointSet, int boardSize)
+{
+    SgPointSet newSet;
+    for (SgSetIterator it(pointSet); it; ++it)
+        newSet.Include(SgPointUtil::Rotate(rotation, *it, boardSize));
+    pointSet = newSet;
+}
+    
+//----------------------------------------------------------------------------

@@ -75,4 +75,11 @@ std::istream& operator>>(std::istream& in, SgPointSet& pointSet);
 
 //----------------------------------------------------------------------------
 
+namespace SgPointSetUtil
+{
+    /** Rotate coordinates - see SgPointUtil::Rotate */
+    void Rotate(int rotation, SgPointSet& pointSet, int boardSize);
+}
+//----------------------------------------------------------------------------
+
 #endif // SG_POINTSETUTIL_H
