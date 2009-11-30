@@ -189,28 +189,6 @@ bool SgSearch::LookupHash(SgSearchHashData& data) const
     return true;
 }
 
-/** Move killer moves to the front.
-    Add them to the list of moves if they were not otherwise generated.
-*/
-void SgSearch::MoveKillersToFront(SgVector<SgMove>& moves)
-{
-    if (m_useKillers && m_currentDepth <= MAX_KILLER_DEPTH)
-    {
-        SgMove killer2 = m_killers[m_currentDepth].GetKiller2();
-        if (killer2 != SG_NULLMOVE)
-        {
-            moves.Exclude(killer2);
-            moves.PushFront(killer2);
-        }
-        SgMove killer1 = m_killers[m_currentDepth].GetKiller1();
-        if (killer1 != SG_NULLMOVE)
-        {
-            moves.Exclude(killer1);
-            moves.PushFront(killer1);
-        }
-    }
-}
-
 void SgSearch::OnStartSearch()
 {
     // Default implementation does nothing
@@ -524,7 +502,91 @@ int SgSearch::IteratedSearch(int depthMin, int depthMax, int boundLo,
     return value;
 }
 
-int SgSearch::SearchEngine(int depth, int alpha, int beta,
+bool SgSearch::TryMove(SgMove move, const SgVector<SgMove>& specialMoves,
+                       const int depth,
+                       const int alpha, const int beta,
+                       int& loValue, int& hiValue,
+                       SgSearchStack& stack,
+                       bool& allExact,
+                       bool& isCutoff)
+{
+	if (specialMoves.Contains(move)) // already tried move before
+    	return false;
+
+    int delta = DEPTH_UNIT;
+    if (! CallExecute(move, &delta, depth))
+    	return false;
+
+    bool childIsExact = true;
+    SgSearchStack newStack;
+    int merit = -SearchEngine(depth - delta, -hiValue,
+                              -max(loValue, alpha), newStack,
+                              &childIsExact);
+    if (loValue < merit && ! m_aborted) // new best move
+    {
+        loValue = merit;
+        if (m_useScout)
+        {
+            // If getting a move that's better than what we have
+            // so far, not good enough to cause a cutoff, was
+            // searched with a narrow window, and doesn't
+            // immediately lead to a terminal node, then search
+            // again with a wide window to get a more precise
+            // value.
+            if (  alpha < merit
+               && merit < beta
+               && delta < depth
+               )
+            {
+                childIsExact = true;
+                loValue = -SearchEngine(depth-delta, -beta,
+                                        -merit, newStack,
+                                        &childIsExact);
+            }
+            hiValue = max(loValue, alpha) + 1;
+        }
+        stack.CopyFrom(newStack);
+        stack.Push(move);
+        SG_ASSERT(move != SG_NULLMOVE);
+        if (m_currentDepth == 1 && ! m_aborted)
+            m_foundNewBest = true;
+    }
+    if (! childIsExact)
+        allExact = false;
+    CallTakeBack();
+    if (loValue >= beta)
+    {
+        // Move generated a cutoff: add this move to the list of
+        // killers.
+        if (m_useKillers && m_currentDepth <= MAX_KILLER_DEPTH)
+            m_killers[m_currentDepth].MarkKiller(move);
+        if (m_tracer)
+            m_tracer->TraceComment("b-cut");
+        isCutoff = true;
+    }
+    return true;
+}
+
+bool SgSearch::TrySpecialMove(SgMove move, SgVector<SgMove>& specialMoves,
+                       const int depth,
+                       const int alpha, const int beta,
+                       int& loValue, int& hiValue,
+                       SgSearchStack& stack,
+                       bool& allExact,
+                       bool& isCutoff)
+
+{
+	if (specialMoves.Contains(move))
+    	return false;
+    bool executed = TryMove(move, specialMoves,
+                             depth, alpha, beta,
+                       		 loValue, hiValue, stack,
+                             allExact, isCutoff);
+    specialMoves.PushBack(move);
+    return executed;
+}
+
+int SgSearch::SearchEngine(const int depth, int alpha, int beta,
                            SgSearchStack& stack, bool* isExactValue,
                            bool lastNullMove)
 {
@@ -683,98 +745,72 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
             }
         }
 
-        // Generate the moves for this position.
-        SgVector<SgMove> moves;
-        if (! m_aborted)
-        {
-            CallGenerate(&moves, depth);
-           // If hash table suggested a move for a position where no move
-           // would get generated, then evaluate position rather than using
-           // the outcome of that wrongly generated move.
-           if (moves.IsEmpty())
-               hasMove = false;
-        }
-
-        MoveKillersToFront(moves);
-
-        // Heuristic: "a good move for my opponent is a good move for me"
-        if (m_useOpponentBest && opponentBest != SG_NULLMOVE)
-        {
-            moves.Exclude(opponentBest);
-            moves.PushFront(opponentBest);
-        }
-
-        // Don't execute 'tryFirst' again.
-        if (tryFirst != SG_NULLMOVE && moves.NonEmpty())
-            moves.Exclude(tryFirst);
-
         // 'hiValue' is equal to 'beta' for alpha-beta algorithm, and gets set
         // to alpha+1 for Scout, except for the first move.
         int hiValue =
             (hasMove && m_useScout) ? max(loValue, alpha) + 1 : beta;
-
-        SgSearchStack newStack;
-        // Iterate through all the moves to find the best move and
-        // correct value for this position.
-        for (SgVectorIterator<SgMove> it(moves); it; ++it)
+        bool foundCutoff = false;
+        SgVector<SgMove> specialMoves;
+         // Don't execute 'tryFirst' again.
+        if (tryFirst != SG_NULLMOVE)
+            specialMoves.PushBack(tryFirst);
+ 
+        // Heuristic: "a good move for my opponent is a good move for me"
+        if (  ! foundCutoff
+           && m_useOpponentBest
+           && opponentBest != SG_NULLMOVE
+           && TrySpecialMove(opponentBest, specialMoves,
+                       		 depth, alpha, beta,
+                       		 loValue, hiValue, stack,
+                             allExact, foundCutoff)
+           )
+            hasMove = true;
+           
+        if (  ! foundCutoff 
+           && m_useKillers
+           && m_currentDepth <= MAX_KILLER_DEPTH
+           )
         {
-            SgMove move = *it;
-            int delta = DEPTH_UNIT;
-            if (CallExecute(move, &delta, depth))
-            {
+            SgMove killer1 = m_killers[m_currentDepth].GetKiller1();
+            if (  killer1 != SG_NULLMOVE
+               && TrySpecialMove(killer1, specialMoves,
+                       		 depth, alpha, beta,
+                       		 loValue, hiValue, stack,
+                             allExact, foundCutoff)
+               )
                 hasMove = true;
-                bool childIsExact = true;
-                int merit = -SearchEngine(depth-delta, -hiValue,
-                                          -max(loValue, alpha), newStack,
-                                          &childIsExact);
-                if (loValue < merit && ! m_aborted) // new best move
-                {
-                    loValue = merit;
-                    if (m_useScout)
-                    {
-                        // If getting a move that's better than what we have
-                        // so far, not good enough to cause a cutoff, was
-                        // searched with a narrow window, and doesn't
-                        // immediately lead to a terminal node, then search
-                        // again with a wide window to get a more precise
-                        // value.
-                        if (  alpha < merit
-                           && merit < beta
-                           && delta < depth
-                           )
-                        {
-                            childIsExact = true;
-                            loValue = -SearchEngine(depth-delta, -beta,
-                                                    -merit, newStack,
-                                                    &childIsExact);
-                        }
-                        hiValue = max(loValue, alpha) + 1;
-                    }
-                    stack.CopyFrom(newStack);
-                    stack.Push(move);
-                    SG_ASSERT(move != SG_NULLMOVE);
-                    if (m_currentDepth == 1 && ! m_aborted)
-                        m_foundNewBest = true;
-                }
-                if (! childIsExact)
-                    allExact = false;
-                CallTakeBack();
-                if (m_aborted)
+            SgMove killer2 = m_killers[m_currentDepth].GetKiller2();
+            if (  ! foundCutoff 
+               && killer2 != SG_NULLMOVE
+               && TrySpecialMove(killer2, specialMoves,
+                       		 depth, alpha, beta,
+                       		 loValue, hiValue, stack,
+                             allExact, foundCutoff)
+               )
+                hasMove = true;
+        }
+
+        // Generate the moves for this position.
+        SgVector<SgMove> moves;
+        if (! foundCutoff && ! m_aborted)
+        {
+            CallGenerate(&moves, depth);
+            // Iterate through all the moves to find the best move and
+            // correct value for this position.
+            for (SgVectorIterator<SgMove> it(moves); it && ! foundCutoff; ++it)
+            {
+                if (TryMove(*it, specialMoves,
+                       		 depth, alpha, beta,
+                       		 loValue, hiValue, stack,
+                             allExact, foundCutoff)
+                   )
+                     hasMove = true;
+                if (! foundCutoff && m_aborted)
                 {
                     if (m_tracer)
                         m_tracer->TraceComment("ABORTED");
                     *isExactValue = false;
                     return (1 < m_currentDepth) ? alpha : loValue;
-                }
-                if (loValue >= beta)
-                {
-                    // Move generated a cutoff: add this move to the list of
-                    // killers.
-                    if (m_useKillers && m_currentDepth <= MAX_KILLER_DEPTH)
-                        m_killers[m_currentDepth].MarkKiller(move);
-                    if (m_tracer)
-                        m_tracer->TraceComment("b-cut");
-                    break;
                 }
             }
         }
@@ -785,7 +821,9 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         {
             SgMove bestMove = stack.Top();
             SG_ASSERT(bestMove != SG_NULLMOVE);
-            SG_ASSERT(bestMove == tryFirst || moves.Contains(bestMove));
+            SG_ASSERT(  specialMoves.Contains(bestMove)
+                     || moves.Contains(bestMove)
+                     );
         }
 #endif
     }

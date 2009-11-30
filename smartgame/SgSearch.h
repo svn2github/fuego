@@ -216,6 +216,12 @@ inline void SgSearchHashData::AgeData()
 }
 
 //----------------------------------------------------------------------------
+namespace SgSearchLimit {
+    static const int MAX_DEPTH = 256;
+}
+
+typedef SgStack<SgMove, SgSearchLimit::MAX_DEPTH> SgSearchStack;
+//----------------------------------------------------------------------------
 
 /** Alpha-beta search.
     The problem-specific part of the search is isolated in five methods:
@@ -228,8 +234,6 @@ inline void SgSearchHashData::AgeData()
 
     @todo Why does AmaSearch::Evaluate need the hash table, shouldn't that be
     done in SgSearch?
-    @todo Implement construction of and navigation in trace tree here, not in
-    subclasses.
     @todo Remove m_depth, pass as argument to Evaluate instead
     @todo Use best-response as move ordering heuristic
 */
@@ -545,8 +549,6 @@ private:
     /** Try to find current position in m_hash */
     bool LookupHash(SgSearchHashData& data) const;
 
-    void MoveKillersToFront(SgVector<SgMove>& moves);
-
     bool NullMovePrune(int depth, int delta, int beta);
 
     /** Store current position in hash table */
@@ -567,6 +569,22 @@ private:
 
     /** Take back move; update m_moveStack and m_currentDepth */
     void CallTakeBack();
+
+    bool TryMove(SgMove move, const SgVector<SgMove>& specialMoves,
+                       const int depth,
+                       const int alpha, const int beta,
+                       int& loValue, int& hiValue,
+                       SgSearchStack& stack,
+                       bool& allExact,
+                       bool& isCutoff);
+
+    bool TrySpecialMove(SgMove move, SgVector<SgMove>& specialMoves,
+                       const int depth,
+                       const int alpha, const int beta,
+                       int& loValue, int& hiValue,
+                       SgSearchStack& stack,
+                       bool& allExact,
+                       bool& isCutoff);
 
     /** Not implemented */
     SgSearch(const SgSearch&);
@@ -680,10 +698,6 @@ inline SgSearchTracer* SgSearch::Tracer() const
     return m_tracer;
 }
     
-//----------------------------------------------------------------------------
-
-typedef SgStack<SgMove, SgSearch::MAX_DEPTH> SgSearchStack;
-
 //----------------------------------------------------------------------------
 
 #endif // SG_SEARCH_H
