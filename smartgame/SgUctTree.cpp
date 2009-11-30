@@ -66,8 +66,8 @@ void SgUctTree::AddVirtualLoss(const std::vector<const SgUctNode*>& nodes)
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
-        AddGameResult(*nodes[i], father, 0.0);
-        AddRaveValue(*nodes[i], 0.0, 1.0);
+        AddGameResult(*nodes[i], father, 1.0); // loss for us = win for child
+        AddRaveValue(*nodes[i], 0.0, 1.0); // loss for us
     }
 }
 
@@ -391,7 +391,7 @@ void SgUctTree::RemoveVirtualLoss(const std::vector<const SgUctNode*>& nodes)
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
-        RemoveGameResult(*nodes[i], father, 0.0);
+        RemoveGameResult(*nodes[i], father, 1.0); // see AddVirtualLoss()
         RemoveRaveValue(*nodes[i], 0.0, 1.0);
     }
 }
