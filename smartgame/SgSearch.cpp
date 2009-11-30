@@ -83,14 +83,11 @@ bool SgSearchHashData::IsBetterThan(const SgSearchHashData& data) const
 namespace {
 
 /** copy stack onto sequence, starting with Top() */
-void ReverseCopyStack(const SgSearchStack& moveStack, SgVector<SgMove>* sequence)
+void ReverseCopyStack(const SgSearchStack& moveStack, SgVector<SgMove>& sequence)
 {
-	if (sequence)
-    {
-    	sequence->Clear();
-        for (int i = moveStack.Size() - 1; i >= 0; --i)
-        sequence->PushBack(moveStack[i]);
-    }
+    sequence.Clear();
+    for (int i = moveStack.Size() - 1; i >= 0; --i)
+    	sequence.PushBack(moveStack[i]);
 }
 
 void WriteSgSearchHashData(std::ostream& str, const SgSearch& search, 
@@ -374,13 +371,14 @@ int SgSearch::DFS(int startDepth, int depthLimit,
 {
     InitSearch(startDepth);
     SG_ASSERT(m_currentDepth == startDepth);
+    SG_ASSERT(sequence);
     m_aborted = false;
     m_foundNewBest = false;
     SgSearchStack moveStack;
     int value = SearchEngine(depthLimit * DEPTH_UNIT, 
     						 boundLo, boundHi, moveStack,
                          	 isExactValue);
-    ReverseCopyStack(moveStack, sequence);
+    ReverseCopyStack(moveStack, *sequence);
     return value;
 }
 
