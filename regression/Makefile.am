@@ -332,6 +332,8 @@ sgf/safetytest-whole-board/q6.sgf \
 sgf/safetytest-whole-board/q7.sgf \
 sgf/safetytest-whole-board/q8.sgf \
 sgf/safetytest-whole-board/q9.sgf \
+sgf/safetytest-whole-board/static-safety.1.sgf \
+sgf/safetytest-whole-board/static-safety.2.sgf \
 sgf/safetytest/benson_safe1.sgf \
 sgf/safetytest/benson_safe2.sgf \
 sgf/safetytest/benson_safe3.sgf \
