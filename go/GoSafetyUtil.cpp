@@ -451,6 +451,7 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
                                        const SgPointSet& safe,
                                        SgBlackWhite color)
 {
+    SG_ASSERT(! pts.Overlaps(safe));
     const int size = board.Size();
     SgPointSet boundary(pts.Border(size));
     if (boundary.SubsetOf(safe))
@@ -466,6 +467,7 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
 bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
                                const SgPointSet& safe, SgBlackWhite color)
 {
+    SG_ASSERT(! pts.Overlaps(safe));
     const int size = board.Size();
     SgPointSet boundary(pts.Border(size));
     if (boundary.SubsetOf(safe))

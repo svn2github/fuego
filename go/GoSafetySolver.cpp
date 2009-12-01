@@ -127,41 +127,20 @@ void GoSafetySolver::Find2VitalAreas(SgBWSet* safe)
     }
 }
 
+
 void GoSafetySolver::FindSurroundedSafeAreas(SgBWSet* safe,
                                              SgBlackWhite color)
 {
     // AR keep this always up to date earlier.
     Regions()->SetSafeFlags(*safe); 
         
-    // try to find single region that becomes safe.
-    bool change = true;
-    while (change)
-    {
-        change = false;
-        SgPointSet anySafe(safe->Both());
-        for (SgVectorIteratorOf<GoRegion>
-             it(Regions()->AllRegions(color)); it; ++it)
-        {
-            GoRegion* r = *it;
-            if (   ! r->GetFlag(GO_REGION_SAFE)
-                && r->SomeBlockIsSafe()
-                && ! r->Points().Overlaps(anySafe)
-                && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
-                                       r->PointsPlusInteriorBlocks(),
-                                       (*safe)[color],
-                                       color)
-               )
-            {
-                GoSafetyUtil::AddToSafe(Board(), r->Points(), color, safe,
-                          "surr-safe-1", 0, true);
-                Regions()->SetSafeFlags(*safe); 
-                anySafe = safe->Both();
-                change = true;
-                break;
-            }
-        }
-    }
-    FindSurroundedRegionPairs(safe, color);
+    // try to find single regions that become safe.
+    while (FindSurroundedSingleRegion(safe, color))
+    { }
+    while (FindSurroundedRegionPair(safe, color))
+    	// if found new pair, re-run single region algorithm - it is faster
+        while (FindSurroundedSingleRegion(safe, color))
+        { }
 }
 
 bool GoSafetySolver::FindSafePair(SgBWSet* safe,
@@ -172,7 +151,7 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
     for (SgVectorIteratorOf<GoRegion>
          it(Regions()->AllRegions(color)); it; ++it)
     {
-        GoRegion* r2 = *it;
+        const GoRegion* r2 = *it;
         if (   r2 != r1
             && ! r2->Points().Overlaps(anySafe)
             && HaveSharedUnsafe(r1->Blocks(), r2->Blocks())
@@ -193,29 +172,48 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
     return false;
 }
 
-void GoSafetySolver::FindSurroundedRegionPairs(SgBWSet* safe,
+bool GoSafetySolver::FindSurroundedRegionPair(SgBWSet* safe,
                                                SgBlackWhite color)
 {
-    bool change = true;
-    while (change)
+    SgPointSet anySafe(safe->Both());
+    for (SgVectorIteratorOf<GoRegion>
+         it(Regions()->AllRegions(color)); it; ++it)
     {
-        change = false;
-        SgPointSet anySafe(safe->Both());
-        for (SgVectorIteratorOf<GoRegion>
-             it(Regions()->AllRegions(color)); it; ++it)
+        GoRegion* r1 = *it;
+        if (   ! r1->GetFlag(GO_REGION_SAFE)
+            && r1->SomeBlockIsSafe()
+            && ! r1->Points().Overlaps(anySafe)
+            && FindSafePair(safe, color, anySafe, r1)
+           )
+            return true;
+    }
+    return false;
+}
+
+bool GoSafetySolver::FindSurroundedSingleRegion(SgBWSet* safe,
+                                             SgBlackWhite color)
+{
+    SgPointSet anySafe(safe->Both());
+    for (SgVectorIteratorOf<GoRegion>
+         it(Regions()->AllRegions(color)); it; ++it)
+    {
+        GoRegion* r = *it;
+        if (   ! r->GetFlag(GO_REGION_SAFE)
+            && r->SomeBlockIsSafe()
+            && ! r->Points().Overlaps(anySafe)
+            && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
+                                   r->PointsPlusInteriorBlocks(),
+                                   (*safe)[color],
+                                   color)
+           )
         {
-            GoRegion* r1 = *it;
-            if (   ! r1->GetFlag(GO_REGION_SAFE)
-                && r1->SomeBlockIsSafe()
-                && ! r1->Points().Overlaps(anySafe)
-                && FindSafePair(safe, color, anySafe, r1)
-               )
-            {
-                change = true;
-                break;
-            }
+            GoSafetyUtil::AddToSafe(Board(), r->Points(), color, safe,
+                      "surr-safe-1", 0, true);
+            Regions()->SetSafeFlags(*safe); 
+            return true;
         }
     }
+    return false;
 }
 
 void GoSafetySolver::FindSafePoints(SgBWSet* safe)

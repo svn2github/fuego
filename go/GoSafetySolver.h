@@ -78,8 +78,11 @@ protected:
 
 private:
     /** find pairs of regions that are safe together. */
-    void FindSurroundedRegionPairs(SgBWSet* safe, SgBlackWhite color);
+    bool FindSurroundedRegionPair(SgBWSet* safe, SgBlackWhite color);
 
+    /** Find new safe region */
+    bool FindSurroundedSingleRegion(SgBWSet* safe, SgBlackWhite color);
+    
     /** for chain info */
     SgHashCode m_code;
 };
