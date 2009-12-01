@@ -42,13 +42,14 @@ loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 31
 
 loadsgf sgf/games/2008/KGS/7/26/Newou-Fuego9.sgf 35
 250 reg_genmove b
-#? [D4]*
+#? [D4]
 # already is seki, F4 is bad attack and loses the game.
 
 loadsgf sgf/games/2008/KGS/7/25/PaperTiger-Fuego.sgf 163
 280 reg_genmove b
-#? [Q13]
+#? [Q13]*
 # Q13 is the only way to attack. O12 leads to seki.
+# new FAIL 2009-12-01
 
 loadsgf sgf/games/2008/KGS/7/28/dege-Fuego9.sgf 31
 310 reg_genmove b
@@ -81,19 +82,19 @@ loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 9
 
 loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 11
 380 reg_genmove b
-#? [A8]*
+#? [A8]
 
 loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 13
 390 reg_genmove b
-#? [A5]*
+#? [A5]
 
 loadsgf sgf/games/2008/CGOS/Fuego-640-8c-20081113151939.sgf 59
 450 reg_genmove b
-#? [E9]*
+#? [E9]
 # E9 wins the endgame. Because of seki misevaluation, B plays 'safe'
 # and loses this game.
 
 loadsgf sgf/seki/sheppard-seki-2.sgf
 470 reg_genmove b
-#? [J3]*
-# program plays A1 which is silly but not fatal.
+#? [J3]
+# program played A1 which is silly but not fatal.
