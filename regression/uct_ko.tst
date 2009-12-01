@@ -94,3 +94,9 @@ loadsgf sgf/games/2009/MM-Fuego20090124-variation.sgf 54
 190 reg_genmove w
 #? [J7]*
 # Ko threat, often not generated because of prior knowledge
+
+loadsgf sgf/ko/remove-ko-threat.1.sgf 2
+200 reg_genmove w
+#? [H7]
+# Eliminate ko threat.
+

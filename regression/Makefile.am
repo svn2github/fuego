@@ -217,6 +217,7 @@ sgf/gnugo-games/seki14.sgf \
 sgf/gnugo-games/seki15.sgf \
 sgf/gnugo-games/seki_nakade1.sgf \
 sgf/gnugo-games/seki_nakade2.sgf \
+sgf/ko/remove-ko-threat.1.sgf \
 sgf/ladder/adjacent-blocks.sgf \
 sgf/ladder/ladder-breaker-2.sgf \
 sgf/ladder/ladder-breaker.sgf \
