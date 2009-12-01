@@ -1,11 +1,11 @@
 #-----------------------------------------------------------------------------
-# Static safety test for fullboard positions
+# Static safety test for fullboard positions.
 # 1~31 (q1-q31 from set1)
 # 32~58 (CZD professional games from set2)
 # 59~94   (korean professional players' games from set3)
-# Total: 94*3 = 282 tests
-# All results are based on improved static function (recursively finding
-# 2-path for all interior points.
+# All results are based on the improved static safety recognition
+# that recursively finds
+# two disjoint connections for all interior points.
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/safetytest-whole-board/q1.sgf
@@ -613,13 +613,13 @@ loadsgf sgf/safetytest-whole-board/CZD_34.sgf
 loadsgf sgf/safetytest-whole-board/CZD_35.sgf
 
 440 go_safe static
-#? [127 .*]
+#? [128 .*]
 
 441 go_safe static black
 #? [0]
 
 442 go_safe static white
-#? [127 .*]
+#? [128 .*]
 
 443 go_safe_dame_static
 #? []
@@ -1310,4 +1310,31 @@ loadsgf sgf/safetytest-whole-board/k35.sgf
 933 go_safe_dame_static
 #? []
 
+loadsgf sgf/safetytest-whole-board/static-safety.1.sgf
+
+940 go_safe static
+#? [227 .*]
+
+941 go_safe static black
+#? [161 .*]
+
+942 go_safe static white
+#? [66 .*]
+
+943 go_safe_dame_static
+#? []
+
+loadsgf sgf/safetytest-whole-board/static-safety.2.sgf
+
+950 go_safe static
+#? [313 .*]
+
+951 go_safe static black
+#? [161 .*]
+
+952 go_safe static white
+#? [152 .*]
+
+953 go_safe_dame_static
+#? []
 

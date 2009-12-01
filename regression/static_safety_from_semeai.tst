@@ -29,7 +29,7 @@ loadsgf sgf/semeai-exact/FS2-solution-white.sgf 21
 loadsgf sgf/semeai-exact/FS2-solution-white.sgf 78
 
 70 go_safe static black
-#? [133 .*]*
+#? [133 .*]
 
 80 go_safe static white
 #? [182 .*]*
