@@ -26,10 +26,8 @@ cat <<EOF >config-9-1c.gtp
 go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
 
-# A node size is currently 56 bytes on a 64-bit machine, so a main memory
-# of 1.6 GB can contain two trees (of the search and the init tree used for
-# reuse_subtree) of about 14.000.000 nodes each
-uct_param_search max_nodes 14000000
+# Use 1.6 GB for two trees (search and the init tree used for reuse_subtree)
+uct_param_search max_memory 1600000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
 

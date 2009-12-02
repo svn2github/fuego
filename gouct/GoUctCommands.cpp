@@ -514,9 +514,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c live_gfx @c none|counts|sequence See GoUctSearch::LiveGfx
     @arg @c live_gfx_interval See GoUctSearch::LiveGfxInterval
     @arg @c max_memory Sets maximum memory used by search in SgUctSearch.
-            Sets max nodes in tree assuming two trees, see 
-            SgUctSearch::MaxNodes
-    @arg @c max_nodes See SgUctSearch::MaxNodes
+            Since there are two search trees, each gets half.
     @arg @c move_select @c value|count|bound|rave See SgUctSearch::MoveSelect
     @arg @c number_threads See SgUctSearch::NumberThreads
     @arg @c number_playouts See SgUctSearch::NumberPlayouts
@@ -550,7 +548,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
             << "[string] max_memory " 
             << s.MaxNodes() * sizeof(SgUctNode) * 2 << '\n'
-            << "[string] max_nodes " << s.MaxNodes() << '\n'
             << "[list/value/count/bound/estimate] move_select "
             << MoveSelectToString(s.MoveSelect()) << '\n'
             << "[string] number_threads " << s.NumberThreads() << '\n'
@@ -598,8 +595,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetLiveGfxInterval(cmd.IntArg(1, 1));
         else if (name == "max_memory")
             s.SetMaxNodes(cmd.SizeTypeArg(1, 1) / sizeof(SgUctNode) / 2);
-        else if (name == "max_nodes")
-            s.SetMaxNodes(cmd.SizeTypeArg(1, 1));
         else if (name == "move_select")
             s.SetMoveSelect(MoveSelectArg(cmd, 1));
         else if (name == "number_threads")

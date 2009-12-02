@@ -90,14 +90,6 @@ territory statistics.
 Useful functionality
 =============================================================================
 
-Tree memory GTP command
------------------------
-
-Write a convenience GTP command uct_tree_memory for config files used by end
-users that is given the total memory for the trees in bytes and computes and
-sets the value for uct_param_search max_nodes (memory divides by 2, because
-two trees exist, divided by sizeof(SgUctNode), which is platform dependent)
-
 Native Windows port
 -------------------
 
