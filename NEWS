@@ -8,6 +8,22 @@ history.
 Current development version
 ===========================
 
+* Replaced linked list SgList and related functions by SgVector - a wrapper
+  around std:vector with the same interface as SgList.
+* Added hooks for supporting MPI distributed memory implementations
+* Add small opening book for 5x5
+* Improved 9x9 opening book
+* Added link to optional big 19x19 opening books at Ben Lambrechts' site
+* Fixed several bugs in static safety solver
+* Updated to compile with gcc 4.4.0
+* Implemented SgBalancer to achieve roughly equal number of Black and White 
+  moves of a specific type in playouts
+* Implemented randomized use of RAVE for SelectChild
+* Support for proven nodes in SgUctSearch
+* Support for kgs-time_settings and different KGS overtime modes
+* Refactored SgSearch, reduce size of huge functions. 
+* In SgSearch::SearchEngine, use a stack instead of a vector for efficiency.
+* New max_memory option to uct_param_search makes Fuego easier to configure
 
 Version 0.4 - 2009 May 22
 =========================
