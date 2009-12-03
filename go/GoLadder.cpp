@@ -216,25 +216,25 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         SG_ASSERT(! neighbors.IsEmpty());
         lib1 = neighbors[0];
         SG_ASSERT(m_bd->IsEmpty(lib1));
-        SgPoint lib2;
-        int numLib;
-        if (neighbors.Length() == 1)
-        {
-            numLib = 1;
-            lib2 = 0;
-        }
-        else
-        {
-            lib2 = neighbors[1];
-            numLib = (neighbors.Length() == 2) ? 2 : 3 /* or more */;
-            SG_ASSERT(m_bd->IsEmpty(lib2));
-        }
-
         SgSList<SgPoint,4> temp =
             NeighborsOfColor(*m_bd, move, m_hunterColor);
         newAdj.PushBackList(temp);
         FilterAdjacent(newAdj);
-        result = HunterLadder(depth+1, numLib, lib1, lib2, newAdj, sequence);
+
+        if (neighbors.Length() == 1)
+            result = HunterLadder(depth + 1, lib1, newAdj, sequence);
+        else if (neighbors.Length() == 2)
+        {
+            SgPoint lib2 = neighbors[1];
+            SG_ASSERT(m_bd->IsEmpty(lib2));
+            result = HunterLadder(depth + 1, lib1, lib2, newAdj, sequence);
+        } 
+        else // 3 <= numLib
+        {
+            if (sequence)
+                sequence->Clear();
+            result = GOOD_FOR_PREY - (depth + 1);
+        }
         if (sequence)
             sequence->PushBack(move);
         m_bd->Undo();
@@ -297,80 +297,70 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
     return result;
 }
 
-int GoLadder::HunterLadder(int depth, int numLib, SgPoint lib1,
-                           SgPoint lib2, const GoPointList& adjBlk,
+int GoLadder::HunterLadder(int depth, SgPoint lib1, const GoPointList& adjBlk,
+                           SgVector<SgPoint>* sequence)
+{
+    SG_UNUSED(adjBlk);
+    if (CheckMoveOverflow())
+        return GOOD_FOR_PREY;
+    if (sequence)
+        sequence->SetTo(lib1);
+    // TODO: should probably test for IsSnapback here, but don't have
+    // the right information available.
+    return GOOD_FOR_HUNTER + depth;
+}
+
+int GoLadder::HunterLadder(int depth, SgPoint lib1, SgPoint lib2, 
+                           const GoPointList& adjBlk,
                            SgVector<SgPoint>* sequence)
 {
     if (CheckMoveOverflow())
         return GOOD_FOR_PREY;
     int result = 0;
-    switch (numLib)
+    if (m_bd->NumEmptyNeighbors(lib1) < m_bd->NumEmptyNeighbors(lib2))
     {
-    case 1:
+        swap(lib1, lib2);
+    }
+    if (m_bd->NumEmptyNeighbors(lib1) == 3
+        && ! SgPointUtil::AreAdjacent(lib1, lib2))
+    {
+        // If not playing at lib1, then prey will play at lib1 and
+        // get three liberties; little to update in this case.
+        m_bd->Play(lib1, m_hunterColor);
+        result = PreyLadder(depth + 1, lib2, adjBlk, sequence);
+        if (sequence)
+            sequence->PushBack(lib1);
+        m_bd->Undo();
+    }
+    else
+    {
+        // Two liberties, hunter to play, but not standard case.
+        if (! adjBlk.IsEmpty()
+            && *GoBoard::LibertyIterator(*m_bd, adjBlk[0]) == lib2)
+        {
+            swap(lib1, lib2); // protect hunter blocks in atari
+        }
+        result = PlayHunterMove(depth, lib1, lib1, lib2,
+                                adjBlk, sequence);
+        if (0 <= result) // escaped
         {
             if (sequence)
-                sequence->SetTo(lib1);
-            // TODO: should probably test for IsSnapback here, but don't have
-            // the right information available.
-            result = GOOD_FOR_HUNTER + depth;
-            break;
-        }
-    case 2:
-        {
-            if (m_bd->NumEmptyNeighbors(lib1) < m_bd->NumEmptyNeighbors(lib2))
             {
-                swap(lib1, lib2);
-            }
-            if (m_bd->NumEmptyNeighbors(lib1) == 3
-                && ! SgPointUtil::AreAdjacent(lib1, lib2))
-            {
-                // If not playing at lib1, then prey will play at lib1 and
-                // get three liberties; little to update in this case.
-                m_bd->Play(lib1, m_hunterColor);
-                result = PreyLadder(depth + 1, lib2, adjBlk, sequence);
-                if (sequence)
-                    sequence->PushBack(lib1);
-                m_bd->Undo();
+                SgVector<SgPoint> seq2;
+                int result2 = PlayHunterMove(depth, lib2, lib1, lib2,
+                                             adjBlk, &seq2);
+                if (result2 < result)
+                {   result = result2;
+                    sequence->SwapWith(&seq2);
+                }
             }
             else
             {
-                // Two liberties, hunter to play, but not standard case.
-                if (! adjBlk.IsEmpty()
-                    && *GoBoard::LibertyIterator(*m_bd, adjBlk[0]) == lib2)
-                {
-                    swap(lib1, lib2); // protect hunter blocks in atari
-                }
-                result = PlayHunterMove(depth, lib1, lib1, lib2,
-                                        adjBlk, sequence);
-                if (0 <= result) // escaped
-                {
-                    if (sequence)
-                    {
-                        SgVector<SgPoint> seq2;
-                        int result2 = PlayHunterMove(depth, lib2, lib1, lib2,
-                                                     adjBlk, &seq2);
-                        if (result2 < result)
-                        {   result = result2;
-                            sequence->SwapWith(&seq2);
-                        }
-                    }
-                    else
-                    {
-                        int result2 = PlayHunterMove(depth, lib2, lib1, lib2,
-                                                     adjBlk, 0);
-                        if (result2 < result)
-                            result = result2;
-                    }
-                }
+                int result2 = PlayHunterMove(depth, lib2, lib1, lib2,
+                                             adjBlk, 0);
+                if (result2 < result)
+                    result = result2;
             }
-            break;
-        }
-    default: // 3 <= numLib
-        {
-            if (sequence)
-                sequence->Clear();
-            result = GOOD_FOR_PREY - depth;
-            break;
         }
     }
     return result;
@@ -515,11 +505,11 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                 result = GOOD_FOR_PREY;
             else
             {
-                // AR: split HunterLadder into two methods (1 vs 2 libs)
                 ++libit;
-                SgPoint lib2 = libit ? *libit : SG_NULLMOVE;
-                result = HunterLadder(0, numLib, lib1, lib2, adjBlk,
-                                      sequence);
+                if (libit) // two liberties
+                    result = HunterLadder(0, lib1, *libit, adjBlk, sequence);
+                else // one liberty
+                    result = HunterLadder(0, lib1, adjBlk, sequence);
             }
         }
     }

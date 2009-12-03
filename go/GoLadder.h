@@ -93,7 +93,10 @@ private:
     int PreyLadder(int depth, SgPoint lib1, const GoPointList& adjBlk,
                    SgVector<SgPoint>* sequence);
 
-    int HunterLadder(int depth, int numLib, SgPoint lib1, SgPoint lib2,
+    int HunterLadder(int depth, SgPoint lib1, const GoPointList& adjBlk, 
+                     SgVector<SgPoint>* sequence);
+
+    int HunterLadder(int depth, SgPoint lib1, SgPoint lib2,
                      const GoPointList& adjBlk, SgVector<SgPoint>* sequence);
 
     void ReduceToBlocks(GoPointList& stones);
