@@ -368,6 +368,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     Parameters:
     @arg @c auto_param See GoUctPlayer::AutoParam
     @arg @c early_pass See GoUctPlayer::EarlyPass
+    @arg @c forced_opening_moves See GoUctPlayer::ForcedOpeningMoves
     @arg @c ignore_clock See GoUctPlayer::IgnoreClock
     @arg @c reuse_subtree See GoUctPlayer::ReuseSubtree
     @arg @c use_root_filter See GoUctPlayer::UseRootFilter
@@ -386,6 +387,7 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         // dialog, alphabetically otherwise
         cmd << "[bool] auto_param " << p.AutoParam() << '\n'
             << "[bool] early_pass " << p.EarlyPass() << '\n'
+            << "[bool] forced_opening_moves " << p.ForcedOpeningMoves() << '\n'
             << "[bool] ignore_clock " << p.IgnoreClock() << '\n'
             << "[bool] ponder " << p.EnablePonder() << '\n'
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
@@ -403,6 +405,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetAutoParam(cmd.BoolArg(1));
         else if (name == "early_pass")
             p.SetEarlyPass(cmd.BoolArg(1));
+        else if (name == "forced_opening_moves")
+            p.SetForcedOpeningMoves(cmd.BoolArg(1));
         else if (name == "ignore_clock")
             p.SetIgnoreClock(cmd.BoolArg(1));
         else if (name == "ponder")

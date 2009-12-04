@@ -92,6 +92,23 @@ namespace GoUctUtil
     template<class BOARD>
     bool GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib);
 
+    /** Generate a forced opening move.
+        This function can be used to generate opening moves instead of doing a
+        Monte-Carlo tree search, which often returns random looking moves in
+        the opening on large boards. Experiments showed also an improvement in
+        playing strength if this function is used. The function currently
+        generates a move on the 4-4 point of an empty corner under the
+        following conditions:
+        # The board size is 15 or larger
+        # There are no more than 5 stones of each color on the board (avoids
+          that the move generation triggers in positions containing lots of
+          setup stones)
+        # All points in the corner up to and including the 5th row are empty
+        @return A randomly selected move that fulfills the conditions or
+        SG_NULLPOINT if no such move exists.
+    */
+    SgPoint GenForcedOpeningMove(const GoBoard& bd);
+
     /** Filter for generating moves in random phase.
         Checks if a point (must be empty) is a legal move and
         GoBoardUtil::IsCompletelySurrounded() returns false.

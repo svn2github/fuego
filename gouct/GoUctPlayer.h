@@ -12,12 +12,12 @@
 #include "GoBoard.h"
 #include "GoBoardRestorer.h"
 #include "GoPlayer.h"
+#include "GoTimeControl.h"
 #include "GoUctDefaultRootFilter.h"
-#include "GoUctPlayoutPolicy.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctObjectWithSearch.h"
+#include "GoUctPlayoutPolicy.h"
 #include "GoUctRootFilter.h"
-#include "GoTimeControl.h"
 #include "SgDebug.h"
 #include "SgNbIterator.h"
 #include "SgNode.h"
@@ -148,6 +148,14 @@ public:
     /** See EarlyPass() */
     void SetEarlyPass(bool enable);
 
+    /** Enforce opening moves in the corner on large boards.
+        See GoUctUtil::GenForcedOpeningMove. Default is true.
+    */
+    bool ForcedOpeningMoves() const;
+
+    /** See ForcedOpeningMoves() */
+    void SetForcedOpeningMoves(bool enable);
+
     /** Ignore time settings of the game.
         Ignore time record given to GenMove() and only obeys maximum
         number of games and maximum time. Default is true.
@@ -247,6 +255,9 @@ public:
     /** See AutoParam() */
     bool m_autoParam;
 
+    /** See ForcedOpeningMoves() */
+    bool m_forcedOpeningMoves;
+
     /** See IgnoreClock() */
     bool m_ignoreClock;
 
@@ -333,6 +344,12 @@ inline bool GoUctPlayer<SEARCH, THREAD>::EnablePonder() const
 }
 
 template <class SEARCH, class THREAD>
+inline bool GoUctPlayer<SEARCH, THREAD>::ForcedOpeningMoves() const
+{
+    return m_forcedOpeningMoves;
+}
+
+template <class SEARCH, class THREAD>
 inline bool GoUctPlayer<SEARCH, THREAD>::IgnoreClock() const
 {
     return m_ignoreClock;
@@ -399,6 +416,12 @@ inline void GoUctPlayer<SEARCH, THREAD>::SetEnablePonder(bool enable)
 }
 
 template <class SEARCH, class THREAD>
+inline void GoUctPlayer<SEARCH, THREAD>::SetForcedOpeningMoves(bool enable)
+{
+    m_forcedOpeningMoves = enable;
+}
+
+template <class SEARCH, class THREAD>
 inline void GoUctPlayer<SEARCH, THREAD>::SetIgnoreClock(bool enable)
 {
     m_ignoreClock = enable;
@@ -456,9 +479,6 @@ GoUctPlayer<SEARCH, THREAD>::GetMpiSynchronizer()
     return SgMpiSynchronizerHandle(m_mpiSynchronizer);
 }
 
-
-//----------------------------------------------------------------------------
-
 template <class SEARCH, class THREAD>
 GoUctPlayer<SEARCH, THREAD>::Statistics::Statistics()
 {
@@ -485,13 +505,12 @@ void GoUctPlayer<SEARCH, THREAD>::Statistics::Write(std::ostream& out) const
     out << '\n';
 }
 
-//----------------------------------------------------------------------------
-
 template <class SEARCH, class THREAD>
 GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(GoBoard& bd)
     : GoPlayer(bd),
       m_searchMode(GOUCT_SEARCHMODE_UCT),
       m_autoParam(true),
+      m_forcedOpeningMoves(true),
       m_ignoreClock(false),
       m_enablePonder(false),
       m_useRootFilter(true),
@@ -804,19 +823,29 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
 }
 
 template <class SEARCH, class THREAD>
-SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time, 
+SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
                                              SgBlackWhite toPlay)
 {
     ++m_statistics.m_nuGenMove;
     if (m_searchMode == GOUCT_SEARCHMODE_PLAYOUTPOLICY)
         return GenMovePlayoutPolicy(toPlay);
+    const GoBoard& bd = Board();
     SgMove move = SG_NULLMOVE;
-    if (GoBoardUtil::PassWins(Board(), toPlay))
+    if (m_forcedOpeningMoves)
     {
-        move = SG_PASS;
-        SgDebug() << "GoUctPlayer: Pass wins (Tromp-Taylor rules)\n";
+        move = GoUctUtil::GenForcedOpeningMove(bd);
+        if (move != SG_NULLMOVE)
+            SgDebug() << "GoUctPlayer: Forced opening move\n";
     }
-    else
+    if (move == SG_NULLMOVE)
+    {
+        if (GoBoardUtil::PassWins(bd, toPlay))
+        {
+            move = SG_PASS;
+            SgDebug() << "GoUctPlayer: Pass wins (Tromp-Taylor rules)\n";
+        }
+    }
+    if (move == SG_NULLMOVE)
     {
         double maxTime;
         if (m_ignoreClock)

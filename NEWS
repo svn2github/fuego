@@ -24,6 +24,7 @@ Current development version
 * Refactored SgSearch, reduce size of huge functions. 
 * In SgSearch::SearchEngine, use a stack instead of a vector for efficiency.
 * New max_memory option to uct_param_search makes Fuego easier to configure
+* Implement forced opening moves in GoUctPlayer
 
 Version 0.4 - 2009 May 22
 =========================

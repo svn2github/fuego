@@ -16,11 +16,20 @@
 
 using namespace std;
 using boost::io::ios_all_saver;
+using SgPointUtil::Pt;
 using SgPropUtil::PointToSgfString;
 
 //----------------------------------------------------------------------------
 
 namespace {
+
+bool IsRectEmpty(const GoBoard& bd, int left, int right, int top, int bottom)
+{
+    for (SgRectIterator it(SgRect(left, right, top, bottom)); it; ++it)
+        if (! bd.IsEmpty(*it))
+            return false;
+    return true;
+}
 
 /** Recursive function to save the UCT tree in SGF format. */
 void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
@@ -82,6 +91,26 @@ void GoUctUtil::ClearStatistics(SgPointArray<SgUctStatistics>& stats)
     for (SgPointArray<SgUctStatistics>::NonConstIterator
              it(stats); it; ++it)
         (*it).Clear();
+}
+
+SgPoint GoUctUtil::GenForcedOpeningMove(const GoBoard& bd)
+{
+    int sz = bd.Size();
+    if (sz < 15 || bd.TotalNumStones(SG_BLACK) > 5
+        || bd.TotalNumStones(SG_WHITE) > 5)
+        return SG_NULLMOVE;
+    SgSList<SgPoint,4> moves;
+    if (IsRectEmpty(bd, 1, 5, 1, 5))
+        moves.PushBack(Pt(4, 4));
+    if (IsRectEmpty(bd, 1, 5, sz - 4, sz))
+        moves.PushBack(Pt(4, sz - 3));
+    if (IsRectEmpty(bd, sz - 4, sz, 1, 5))
+        moves.PushBack(Pt(sz - 3, 4));
+    if (IsRectEmpty(bd, sz - 4, sz, sz - 4, sz))
+        moves.PushBack(Pt(sz - 3, sz - 3));
+    if (moves.IsEmpty())
+        return SG_NULLMOVE;
+    return moves[SgRandom::Global().Int(moves.Length())];
 }
 
 void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
