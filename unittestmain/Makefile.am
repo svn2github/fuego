@@ -36,8 +36,6 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgGameReaderTest.cpp \
 ../smartgame/test/SgGtpUtilTest.cpp \
 ../smartgame/test/SgHashTest.cpp \
-../smartgame/test/SgListTest.cpp \
-../smartgame/test/SgListUtilityTest.cpp \
 ../smartgame/test/SgMarkerTest.cpp \
 ../smartgame/test/SgMathTest.cpp \
 ../smartgame/test/SgMiaiMapTest.cpp \
@@ -63,6 +61,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgUctTreeUtilTest.cpp \
 ../smartgame/test/SgUtilTest.cpp \
 ../smartgame/test/SgVectorTest.cpp \
+../smartgame/test/SgVectorUtilityTest.cpp \
 ../smartgame/test/SgWriteTest.cpp \
 ../unittestmain/UnitTestMain.cpp
 

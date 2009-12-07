@@ -15,7 +15,6 @@ SgGtpCommands.cpp \
 SgGtpUtil.cpp \
 SgIncrementalStack.cpp \
 SgInit.cpp \
-SgListUtility.cpp \
 SgMemCheck.cpp \
 SgMiaiMap.cpp \
 SgMiaiStrategy.cpp \
@@ -46,6 +45,7 @@ SgUctSearch.cpp \
 SgUctTree.cpp \
 SgUctTreeUtil.cpp \
 SgUtil.cpp \
+SgVectorUtility.cpp \
 SgWrite.cpp
 
 noinst_HEADERS = \
@@ -71,8 +71,6 @@ SgHash.h \
 SgHashTable.h \
 SgIncrementalStack.h \
 SgInit.h \
-SgList.h \
-SgListUtility.h \
 SgMarker.h \
 SgMath.h \
 SgMemCheck.h \
@@ -115,6 +113,7 @@ SgUctTree.h \
 SgUctTreeUtil.h \
 SgUtil.h \
 SgVector.h \
+SgVectorUtility.h \
 SgWrite.h
 
 libfuego_smartgame_a_CPPFLAGS = \
