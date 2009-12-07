@@ -13,7 +13,6 @@
 #include "GoModBoard.h"
 #include "GoSafetyUtil.h"
 #include "GoSafetySolver.h"
-#include "SgList.h"
 #include "SgPointSet.h"
 
 using namespace std;
