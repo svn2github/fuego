@@ -44,7 +44,7 @@ go_param auto_save $GAMES_DIR/$NAME-
 go_sentinel_file stop-9-2c
 
 # Use 1.6 GB for two trees (search and the init tree used for reuse_subtree)
-uct_param_search max_memory 1600000000
+uct_max_memory 1600000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
 

@@ -44,6 +44,7 @@ public:
         - @link CmdDefaultPolicy() @c uct_default_policy @endlink
         - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
+        - @link CmdMaxMemory() @c uct_max_memory @endlink
         - @link CmdMoves() @c uct_moves @endlink
         - @link CmdParamGlobalSearch() @c uct_param_globalsearch @endlink
         - @link CmdParamPolicy() @c uct_param_policy @endlink
@@ -77,6 +78,7 @@ public:
     void CmdFinalScore(GtpCommand&);
     void CmdFinalStatusList(GtpCommand&);
     void CmdGfx(GtpCommand& cmd);
+    void CmdMaxMemory(GtpCommand& cmd);
     void CmdMoves(GtpCommand& cmd);
     void CmdParamGlobalSearch(GtpCommand& cmd);
     void CmdParamPolicy(GtpCommand& cmd);

@@ -43,7 +43,7 @@ file:
 <pre>
 uct_param_search number_threads 4
 uct_param_search lock_free 1
-uct_param_search max_memory 6000000000
+uct_max_memory 6000000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
 </pre>
@@ -75,7 +75,7 @@ The maximum number of threads that can be used without a decrease of
 performance, if the lock-free mode is not used, depends on the board size.
 </dd>
 
-<dt><tt>uct_param_search max_memory</tt></dt>
+<dt><tt>uct_max_memory</tt></dt>
 <dd>
 Determines the maximum amount of memory in the search tree, and thus the
 maximum memory to use.
