@@ -9,7 +9,8 @@ Current development version
 ===========================
 
 * Replaced linked list SgList and related functions by SgVector - a wrapper
-  around std:vector with the same interface as SgList.
+  around std:vector with the same interface as SgList. Changed implementations
+  that added or removed from front of list for efficiency.
 * Added hooks for supporting MPI distributed memory implementations
 * Add small opening book for 5x5
 * Improved 9x9 opening book
