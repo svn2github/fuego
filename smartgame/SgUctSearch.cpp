@@ -206,7 +206,6 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
     : m_threadStateFactory(threadStateFactory),
       m_logGames(false),
       m_rave(false),
-      m_noBiasTerm(false),
       m_knowledgeThreshold(0),
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
@@ -505,7 +504,7 @@ float SgUctSearch::GetBound(bool useRave, float logPosCount,
         value = GetValueEstimateRave(child);
     else
         value = GetValueEstimate(false, child);
-    if (m_noBiasTerm)
+    if (m_biasTermConstant == 0.0)
         return value;
     else
     {

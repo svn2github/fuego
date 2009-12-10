@@ -525,7 +525,6 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c keep_games See GoUctSearch::KeepGames
     @arg @c lock_free See SgUctSearch::LockFree
     @arg @c log_games See SgUctSearch::LogGames
-    @arg @c no_bias_term See SgUctSearch::NoBiasTerm
     @arg @c prune_full_tree See SgUctSearch::PruneFullTree
     @arg @c rave See SgUctSearch::Rave
     @arg @c weight_rave_updates SgUctSearch::WeightRaveUpdates
@@ -554,7 +553,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         cmd << "[bool] keep_games " << s.KeepGames() << '\n'
             << "[bool] lock_free " << s.LockFree() << '\n'
             << "[bool] log_games " << s.LogGames() << '\n'
-            << "[bool] no_bias_term " << s.NoBiasTerm() << '\n'
             << "[bool] prune_full_tree " << s.PruneFullTree() << '\n'
             << "[bool] rave " << s.Rave() << '\n'
             << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
@@ -591,8 +589,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetLockFree(cmd.BoolArg(1));
         else if (name == "log_games")
             s.SetLogGames(cmd.BoolArg(1));
-        else if (name == "no_bias_term")
-            s.SetNoBiasTerm(cmd.BoolArg(1));
         else if (name == "prune_full_tree")
             s.SetPruneFullTree(cmd.BoolArg(1));
         else if (name == "randomize_rave_frequency")
