@@ -121,6 +121,9 @@ public:
     */
     void AddGameResult(float eval);
 
+    /** Adds a game result count times. */
+    void AddGameResults(float eval, std::size_t count);
+
     /** Add other nodes results to this node's. */
     void MergeResults(const SgUctNode& node);
 
@@ -128,6 +131,9 @@ public:
         @param eval The game result (e.g. score or 0/1 for win loss)
     */
     void RemoveGameResult(float eval);
+
+    /** Removes a game result count times. */
+    void RemoveGameResults(float eval, std::size_t count);
 
     /** Number of times this node was visited.
         This corresponds to the sum of MoveCount() of all children.
@@ -279,6 +285,11 @@ inline void SgUctNode::AddGameResult(float eval)
     m_statistics.Add(eval);
 }
 
+inline void SgUctNode::AddGameResults(float eval, std::size_t count)
+{
+    m_statistics.Add(eval, count);
+}
+
 inline void SgUctNode::MergeResults(const SgUctNode& node)
 {
     if (node.m_statistics.IsDefined())
@@ -290,6 +301,11 @@ inline void SgUctNode::MergeResults(const SgUctNode& node)
 inline void SgUctNode::RemoveGameResult(float eval)
 {
     m_statistics.Remove(eval);
+}
+
+inline void SgUctNode::RemoveGameResults(float eval, std::size_t count)
+{
+    m_statistics.Remove(eval, count);
 }
 
 inline void SgUctNode::AddRaveValue(float value, float weight)
@@ -627,6 +643,9 @@ public:
     void AddGameResult(const SgUctNode& node, const SgUctNode* father,
                        float eval);
 
+    /** Adds a game result count times. */
+    void AddGameResults(const SgUctNode& node, const SgUctNode* father,
+                        float eval, std::size_t count);
 
     /** Removes a game result.
         @param node The node.
@@ -635,6 +654,10 @@ public:
     */
     void RemoveGameResult(const SgUctNode& node, const SgUctNode* father,
                           float eval);
+
+    /** Removes a game result count times. */
+    void RemoveGameResults(const SgUctNode& node, const SgUctNode* father,
+                           float eval, std::size_t count);
 
     /** Adds a virtual loss to the given nodes. */
     void AddVirtualLoss(const std::vector<const SgUctNode*>& nodes);
@@ -829,6 +852,20 @@ inline void SgUctTree::AddGameResult(const SgUctNode& node,
     const_cast<SgUctNode&>(node).AddGameResult(eval);
 }
 
+inline void SgUctTree::AddGameResults(const SgUctNode& node,
+                                      const SgUctNode* father, float eval,
+                                      std::size_t count)
+{
+
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    if (father != 0)
+        const_cast<SgUctNode*>(father)->SetPosCount(father->PosCount() 
+                                                    + count);
+    const_cast<SgUctNode&>(node).AddGameResults(eval, count);
+}
+
 inline void SgUctTree::CreateChildren(std::size_t allocatorId,
                                       const SgUctNode& node,
                                       const std::vector<SgMoveInfo>& moves)
@@ -868,6 +905,19 @@ inline void SgUctTree::RemoveGameResult(const SgUctNode& node,
     if (father != 0)
         const_cast<SgUctNode*>(father)->DecPosCount();
     const_cast<SgUctNode&>(node).RemoveGameResult(eval);
+}
+
+inline void SgUctTree::RemoveGameResults(const SgUctNode& node,
+                                         const SgUctNode* father, float eval,
+                                         std::size_t count)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes 
+    if (father != 0)
+        const_cast<SgUctNode*>(father)->SetPosCount(father->PosCount() 
+                                                    - count);
+    const_cast<SgUctNode&>(node).RemoveGameResults(eval, count);
 }
 
 inline void SgUctTree::AddRaveValue(const SgUctNode& node, float value,
