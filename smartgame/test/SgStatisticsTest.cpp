@@ -18,13 +18,35 @@ namespace {
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_AddWeighted)
+BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_CheckAddRemoveCount)
 {
     SgStatisticsBase<double,double> statistics;
-    statistics.AddWeighted(2., 1.);
+    statistics.Add(2., 1.);
     BOOST_CHECK_CLOSE(statistics.Mean(), 2., 0.1);
-    statistics.AddWeighted(5., 0.5);
+    statistics.Add(5., 0.5);
     BOOST_CHECK_CLOSE(statistics.Mean(), 3., 0.1);
+    statistics.Add(1., 1.5);
+    BOOST_CHECK_CLOSE(statistics.Mean(), 2., 0.1);
+    statistics.Remove(0.5, 2.0);
+    BOOST_CHECK_CLOSE(statistics.Mean(), 5., 0.1);
+
+    SgStatisticsBase<double,std::size_t> stat;
+    stat.Add(0.0, 1);
+    stat.Add(1.0, 2);
+    stat.Add(0.5, 4);
+    BOOST_CHECK_EQUAL(stat.Count(), 7u);
+    BOOST_CHECK_CLOSE(stat.Mean(), 4.0 / 7.0, 0.001);
+
+    stat.Remove(1.5, 2);
+    BOOST_CHECK_EQUAL(stat.Count(), 5u);
+    BOOST_CHECK_CLOSE(stat.Mean(), 1.0 / 5.0, 0.001);
+    
+    stat.Remove(0.1, 3);
+    BOOST_CHECK_EQUAL(stat.Count(), 2u);
+    BOOST_CHECK_CLOSE(stat.Mean(), 0.7 / 2, 0.001);
+
+    stat.Remove(0.35, 2);
+    BOOST_CHECK(!stat.IsDefined());
 }
 
 BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_CheckRemove)

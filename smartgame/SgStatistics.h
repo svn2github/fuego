@@ -52,11 +52,8 @@ public:
     /** Add a value n times */
     void Add(VALUE val, COUNT n);
 
-    /** Add a weighted value.
-        This function can only be used with floating point count types,
-        because it will add a fractional count.
-    */
-    void AddWeighted(VALUE val, VALUE weight);
+    /** Remove a value n times. */
+    void Remove(VALUE val, COUNT n);
 
     void Clear();
 
@@ -146,6 +143,27 @@ void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val)
 }
 
 template<typename VALUE, typename COUNT>
+void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val, COUNT n)
+{
+    SG_ASSERT(m_count >= n);
+    // Write order dependency: at least on class (SgUctSearch in lock-free
+    // mode) uses SgStatisticsBase concurrently without locking and assumes
+    // that m_mean is valid, if m_count is greater zero
+    if (m_count > n) 
+    {
+        COUNT count = m_count;
+        count -= n;
+        m_mean += n * (m_mean - val) / count;
+        m_count = count;
+    }
+    else
+    {
+        m_mean = 0.0;
+        m_count = 0;
+    }
+}
+
+template<typename VALUE, typename COUNT>
 void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val, COUNT n)
 {
     // Write order dependency: at least one class (SgUctSearch in lock-free
@@ -157,20 +175,6 @@ void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val, COUNT n)
               || count > 0); // overflow
     val -= m_mean;
     m_mean +=  n * val / count;
-    m_count = count;
-}
-
-template<typename VALUE, typename COUNT>
-void SgStatisticsBase<VALUE,COUNT>::AddWeighted(VALUE val, VALUE weight)
-{
-    SG_ASSERT(! std::numeric_limits<COUNT>::is_exact);
-    // Write order dependency: at least one class (SgUctSearch in lock-free
-    // mode) uses SgStatisticsBase concurrently without locking and assumes
-    // that m_mean is valid, if m_count is greater zero
-    COUNT count = m_count;
-    count += weight;
-    val -= m_mean;
-    m_mean +=  weight * val / count;
     m_count = count;
 }
 

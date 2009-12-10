@@ -218,6 +218,8 @@ public:
     /** Removes a rave result. */
     void RemoveRaveValue(float value);
 
+    void RemoveRaveValue(float value, float weight);
+
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(float value, float count);
 
@@ -292,12 +294,17 @@ inline void SgUctNode::RemoveGameResult(float eval)
 
 inline void SgUctNode::AddRaveValue(float value, float weight)
 {
-    m_raveValue.AddWeighted(value, weight);
+    m_raveValue.Add(value, weight);
 }
 
 inline void SgUctNode::RemoveRaveValue(float value)
 {
     m_raveValue.Remove(value);
+}
+
+inline void SgUctNode::RemoveRaveValue(float value, float weight)
+{
+    m_raveValue.Remove(value, weight);
 }
 
 inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
@@ -879,7 +886,7 @@ inline void SgUctTree::RemoveRaveValue(const SgUctNode& node, float value,
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
-    const_cast<SgUctNode&>(node).RemoveRaveValue(value);
+    const_cast<SgUctNode&>(node).RemoveRaveValue(value, weight);
 }
 
 inline SgUctAllocator& SgUctTree::Allocator(std::size_t i)
