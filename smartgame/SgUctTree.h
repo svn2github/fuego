@@ -448,7 +448,7 @@ inline bool SgUctNode::IsProvenWin() const
 
 inline bool SgUctNode::IsProvenLoss() const
 {
-    return m_provenType == SG_PROVEN_WIN;
+    return m_provenType == SG_PROVEN_LOSS;
 }
 
 inline SgProvenNodeType SgUctNode::ProvenNodeType() const
