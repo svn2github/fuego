@@ -58,7 +58,7 @@ void GoRules::SetNamedRules(const std::string& namedRules)
         SetAllowSuicide(false);
         SetJapaneseHandicap(false);
         SetJapaneseScoring(false);
-        SetKoRule(SUPERKO);
+        SetKoRule(POS_SUPERKO);
         SetCaptureDead(false);
         SetExtraHandicapKomi(false);
     }

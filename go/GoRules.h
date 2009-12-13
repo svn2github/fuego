@@ -126,7 +126,7 @@ public:
         <td>no</td>
         <td>no</td>
         <td>no</td>
-        <td>superko</td>
+        <td>positional superko</td>
         <td>no</td>
         <td>no</td>
         </tr>
