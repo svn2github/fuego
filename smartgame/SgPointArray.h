@@ -56,7 +56,7 @@ inline SgPointArray<T>::SgPointArray(const SgPointArray& pointArray)
 
 /** Write a point array.
     Computes the maximum string representation length of each element in the
-    array to write out aligned columns with minumum space in between.
+    array to write out aligned columns with minimum space in between.
 */
 template<typename T>
 class SgWritePointArray
