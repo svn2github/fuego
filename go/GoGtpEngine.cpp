@@ -1343,6 +1343,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
         AddStatistics("BOOK", 0);
     if (move == SG_NULLMOVE)
         move = player.GenMove(time, color);
+    m_mpiSynchronizer->SynchronizeMove(move);
     m_timeLastMove = SgTime::Get() - startTime;
     AddStatistics("TIME", m_timeLastMove);
     if (move == SG_NULLMOVE)
