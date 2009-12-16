@@ -135,8 +135,6 @@ public:
 
     int NumDiagonals(SgPoint p, SgBoardColor c) const;
 
-    bool HasEmptyDiagonals(SgPoint p) const;
-
     int NumEmptyDiagonals(SgPoint p) const;
 
     bool HasNeighborsOrDiags(SgPoint p, SgBlackWhite c) const;
@@ -649,11 +647,6 @@ inline bool GoUctBoard::HasDiagonals(SgPoint p, SgBoardColor c) const
             || IsColor(p - SG_NS + SG_WE, c)
             || IsColor(p + SG_NS - SG_WE, c)
             || IsColor(p + SG_NS + SG_WE, c));
-}
-
-inline bool GoUctBoard::HasEmptyDiagonals(SgPoint p) const
-{
-    return HasDiagonals(p, SG_EMPTY);
 }
 
 inline bool GoUctBoard::HasEmptyNeighbors(SgPoint p) const
