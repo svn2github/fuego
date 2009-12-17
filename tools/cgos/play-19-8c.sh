@@ -31,8 +31,6 @@ uct_max_memory 7300000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
 
-uct_param_search virtual_loss 1
-
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos
 

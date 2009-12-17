@@ -715,6 +715,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetMoveSelect(SG_UCTMOVESELECT_COUNT);
     SetRave(true);
     SetExpandThreshold(1);
+    SetVirtualLoss(true);
     if (boardSize < 15)
     {
         // These parameters were mainly tested on 9x9
