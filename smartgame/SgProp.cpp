@@ -526,9 +526,10 @@ bool SgProp::MatchesID(SgPropID id) const
 SgPropID SgProp::ConvertFindTextToPropID(const string& findText)
 {
     size_t length = findText.size();
-    if (   (3 <= length && findText[1] == ' ' && findText[2] == '<')
-        || (2 <= length && findText[1] == '<')
-        ||  1 == length)
+    if (  (3 <= length && findText[1] == ' ' && findText[2] == '<')
+       || (2 <= length && findText[1] == '<')
+       ||  1 == length
+       )
     {
         switch (findText[0])
         {
@@ -823,7 +824,7 @@ bool SgPropUnknown::ToString(std::vector<std::string>& values, int boardSize,
     values.clear();
     for (vector<string>::const_iterator it = m_values.begin();
          it != m_values.end(); ++it)
-        values.push_back( EscapeSpecialCharacters(*it, false));
+        values.push_back(EscapeSpecialCharacters(*it, false));
     return true;
 }
 

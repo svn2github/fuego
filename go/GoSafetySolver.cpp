@@ -117,8 +117,8 @@ void GoSafetySolver::Find2VitalAreas(SgBWSet* safe)
         SgBlackWhite color(*it);
         for (SgVectorIteratorOf<GoRegion>
              it(Regions()->AllRegions(color)); it; ++it)
-            if (   (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
-                && (*it)->Points().Disjoint((*safe)[SG_WHITE])
+            if (  (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
+               && (*it)->Points().Disjoint((*safe)[SG_WHITE])
                )
             {
                 Test2Vital(*it, safe);
@@ -152,9 +152,9 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
          it(Regions()->AllRegions(color)); it; ++it)
     {
         const GoRegion* r2 = *it;
-        if (   r2 != r1
-            && ! r2->Points().Overlaps(anySafe)
-            && HaveSharedUnsafe(r1->Blocks(), r2->Blocks())
+        if (  r2 != r1
+           && ! r2->Points().Overlaps(anySafe)
+           && HaveSharedUnsafe(r1->Blocks(), r2->Blocks())
            )
         {
             const SgPointSet unionSet(r1->Points() | r2->Points());
@@ -180,10 +180,10 @@ bool GoSafetySolver::FindSurroundedRegionPair(SgBWSet* safe,
          it(Regions()->AllRegions(color)); it; ++it)
     {
         GoRegion* r1 = *it;
-        if (   ! r1->GetFlag(GO_REGION_SAFE)
-            && r1->SomeBlockIsSafe()
-            && ! r1->Points().Overlaps(anySafe)
-            && FindSafePair(safe, color, anySafe, r1)
+        if (  ! r1->GetFlag(GO_REGION_SAFE)
+           && r1->SomeBlockIsSafe()
+           && ! r1->Points().Overlaps(anySafe)
+           && FindSafePair(safe, color, anySafe, r1)
            )
             return true;
     }
@@ -198,10 +198,10 @@ bool GoSafetySolver::FindSurroundedSingleRegion(SgBWSet* safe,
          it(Regions()->AllRegions(color)); it; ++it)
     {
         GoRegion* r = *it;
-        if (   ! r->GetFlag(GO_REGION_SAFE)
-            && r->SomeBlockIsSafe()
-            && ! r->Points().Overlaps(anySafe)
-            && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
+        if (  ! r->GetFlag(GO_REGION_SAFE)
+           && r->SomeBlockIsSafe()
+           && ! r->Points().Overlaps(anySafe)
+           && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
                                    r->PointsPlusInteriorBlocks(),
                                    (*safe)[color],
                                    color)
@@ -328,9 +328,9 @@ void GoSafetySolver::GenBlocksRegions()
             for (SgVectorIteratorOf<GoRegion> 
                  it(Regions()->AllRegions(color)); it; ++it)
             {   GoRegion* r = *it;
-                if (   r->GetFlag(GO_REGION_STATIC_1VC)
-                    && r->Chains().IsLength(2)
-                    && r->Has2Conn() 
+                if (  r->GetFlag(GO_REGION_STATIC_1VC)
+                   && r->Chains().IsLength(2)
+                   && r->Has2Conn() 
                         //  || r->Safe2Cuts(Board()) changed from && to ||
                         // @todo does not work if blocks are already chains???
                         // must explicitly keep chain libs info.

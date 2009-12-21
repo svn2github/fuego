@@ -22,7 +22,7 @@ float SpMaxEyeMoveGenerator::Heuristic(SgPoint p, SgBlackWhite colour)
         GoEyeUtil::NumberOfMoveToEye2(m_board, colour, p, nummoves);
 
     // Impossible eyes are not urgent
-    if (!eyepossible)
+    if (! eyepossible)
         return 0.0f;
 
     // Otherwise the fewer moves to completion, the more urgent to play

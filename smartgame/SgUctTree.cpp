@@ -137,7 +137,7 @@ void SgUctTree::SetChildren(std::size_t allocatorId, const SgUctNode& node,
                 break;
             }
         }
-        if (!found)
+        if (! found)
         {
             allocator.CreateOne(moves[i]);
             ++nuChildren;
@@ -344,7 +344,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
             {
                 newChild->MergeResults(oldChild);
                 newChild->SetKnowledgeCount(oldChild.KnowledgeCount());
-                if (!deleteChildTrees)
+                if (! deleteChildTrees)
                 {
                     newChild->SetPosCount(oldChild.PosCount());
                     parentCount += oldChild.MoveCount();

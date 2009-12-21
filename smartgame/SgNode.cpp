@@ -812,7 +812,7 @@ bool SgNodeIterator::Next()
             }
             else
             {
-                SG_ASSERT( m_nextNode->HasFather() );
+                SG_ASSERT(m_nextNode->HasFather());
                 m_nextNode = m_nextNode->Father();
             }
         }
@@ -844,7 +844,7 @@ bool SgNodeConstIterator::Next()
             }
             else
             {
-                SG_ASSERT( m_nextNode->HasFather() );
+                SG_ASSERT(m_nextNode->HasFather());
                 m_nextNode = m_nextNode->Father();
             }
         }

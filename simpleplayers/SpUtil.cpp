@@ -36,8 +36,8 @@ SgPointSet SpUtil::GetRelevantMoves(GoBoard& bd, SgBlackWhite toPlay,
         const bool isSafe = safe[toPlay].Contains(p);
         const bool isSafeOpp = safe[opp].Contains(p);
         const bool hasOppNeighbors = bd.HasNeighbors(p, opp);
-        if (   (! isSafe && ! isSafeOpp)
-            || (isSafe && captureDead && hasOppNeighbors)
+        if (  (! isSafe && ! isSafeOpp)
+           || (isSafe && captureDead && hasOppNeighbors)
            // || (isSafeOpp && ! japaneseScoring)
            )
             moves.Include(p);

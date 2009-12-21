@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_CheckAddRemoveCount)
     BOOST_CHECK_CLOSE(stat.Mean(), 0.7 / 2, 0.001);
 
     stat.Remove(0.35, 2);
-    BOOST_CHECK(!stat.IsDefined());
+    BOOST_CHECK(! stat.IsDefined());
 }
 
 BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_CheckRemove)
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(SgStatisticsBaseTest_CheckRemove)
     SgStatisticsBase<double,std::size_t> stat;
     stat.Add(2.0);
     stat.Remove(2.0);
-    BOOST_CHECK(!stat.IsDefined());
+    BOOST_CHECK(! stat.IsDefined());
 
     stat.Add(2.0);
     stat.Add(1.0);

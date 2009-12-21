@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_PositionalSuperko)
 
     // White (2, 9) is positional superko only
     bd.Rules().SetKoRule(GoRules::POS_SUPERKO);
-    BOOST_CHECK(!bd.IsLegal(Pt(2, 9), SG_WHITE));
+    BOOST_CHECK(! bd.IsLegal(Pt(2, 9), SG_WHITE));
     bd.Rules().SetKoRule(GoRules::SUPERKO);
     BOOST_CHECK(bd.IsLegal(Pt(2, 9), SG_WHITE));
     bd.Rules().SetKoRule(GoRules::SIMPLEKO);

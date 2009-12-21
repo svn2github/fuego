@@ -46,10 +46,10 @@ void GoBlock::RemoveStone(SgPoint stone)
 
 bool GoBlock::AllEmptyAreLiberties(const SgPointSet& area) const
 {
-    SgPoint anchor = Anchor();
+    const SgPoint anchor = Anchor();
     for (SgSetIterator it(area); it; ++it)
-        if (   m_bd.IsEmpty(*it)
-            && ! m_bd.IsLibertyOfBlock(*it, anchor)
+        if (  m_bd.IsEmpty(*it)
+           && ! m_bd.IsLibertyOfBlock(*it, anchor)
            )
             return false;
     return true;

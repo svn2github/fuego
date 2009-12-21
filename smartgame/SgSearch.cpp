@@ -698,8 +698,8 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
             }
 
             int delta = DEPTH_UNIT;
-            if (   tryFirst != SG_NULLMOVE
-                && CallExecute(tryFirst, &delta, depth)
+            if (  tryFirst != SG_NULLMOVE
+               && CallExecute(tryFirst, &delta, depth)
                )
             {
                 bool childIsExact = true;

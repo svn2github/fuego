@@ -55,7 +55,7 @@ void SpDumbTacticalMoveGenerator::GenerateDefendMoves(SgEvaluatedMoves& eval)
             continue;
 
         // Try to save blocks in atari
-        if (!m_board.InAtari(*anchorit))
+        if (! m_board.InAtari(*anchorit))
             continue;
         
         // Don't waste saving blocks that will be laddered to death anyway

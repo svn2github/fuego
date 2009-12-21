@@ -270,11 +270,11 @@ void SgSortedMoves<MOVE, VALUE, SIZE>::Insert(const MOVE& m, VALUE val)
 
     if (m_nuMoves > m_maxNuMoves)
         // throw out the Max-weakest moves
-        while  (       m_value[m_nuMoves - 1] < m_lowerBound
-                    || (   m_nuMoves > m_maxNuMoves
-                        && ! m_considerEqual
-                        && m_value[m_nuMoves - 1] == m_lowerBound
-                       )
+        while  (  m_value[m_nuMoves - 1] < m_lowerBound
+               || (  m_nuMoves > m_maxNuMoves
+                  && ! m_considerEqual
+                  && m_value[m_nuMoves - 1] == m_lowerBound
+                  )
                )
             --m_nuMoves; // same effect as: Delete(m_nuMoves - 1);
 
@@ -366,24 +366,20 @@ void SgSortedMoves<MOVE, VALUE, SIZE>::SetMaxMoves(int nu)
 {
     SetMaxNuMoves(nu);
 
-    if (   (m_nuMoves >= m_maxNuMoves)
-        && (m_value[m_maxNuMoves - 1] > m_lowerBound)
+    if (  m_nuMoves >= m_maxNuMoves
+       && m_value[m_maxNuMoves - 1] > m_lowerBound
        )
-    {
         m_lowerBound = m_value[m_maxNuMoves - 1];
-    }
     if (m_nuMoves > m_maxNuMoves)
     {
         // throw out weakest moves
-        while ( m_value[m_nuMoves - 1] < m_lowerBound
-                || (   m_nuMoves > m_maxNuMoves
-                     && ! m_considerEqual
-                     && m_value[m_nuMoves - 1] == m_lowerBound
-                    )
-                )
-        {
+        while (  m_value[m_nuMoves - 1] < m_lowerBound
+              || (  m_nuMoves > m_maxNuMoves
+                 && ! m_considerEqual
+                 && m_value[m_nuMoves - 1] == m_lowerBound
+                 )
+              )
             --m_nuMoves; // same as: Delete(m_nuMoves - 1);
-        }
     }
 }
 

@@ -213,8 +213,8 @@ bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
     for (SgVectorIteratorOf<GoRegion> it(regions->AllRegions(color));
          it; ++it)
     {
-        if (   area.SupersetOf((*it)->Points())
-            && area.SupersetOf((*it)->BlocksPoints())
+        if (  area.SupersetOf((*it)->Points())
+           && area.SupersetOf((*it)->BlocksPoints())
            )
         {
             if (DEBUG_EXTENDED_MIGHT_MAKE_LIFE)
@@ -341,8 +341,8 @@ bool GoSafetyUtil::MightMakeLife(const GoBoard& board,
                 if (DEBUG_MIGHT_MAKE_LIFE)
                     SgDebug() << "eye = " << SgWritePoint(eye) << "\n";
             }
-            else if (   adjToEye == SG_NULLPOINT
-                     && SgPointUtil::AreAdjacent(eye, p)
+            else if (  adjToEye == SG_NULLPOINT
+                    && SgPointUtil::AreAdjacent(eye, p)
                     )
                 adjToEye = p;
             else
@@ -477,8 +477,8 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
             /* */ return true; /* */
     }
 
-    if (   boundary.SubsetOf(board.All(color))
-        && Find2ConnectionsForAll(board, pts, safe, color, 1)
+    if (  boundary.SubsetOf(board.All(color))
+       && Find2ConnectionsForAll(board, pts, safe, color, 1)
        )
        /* */ return true; /* */
     return false;

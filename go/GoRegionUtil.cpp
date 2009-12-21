@@ -24,9 +24,9 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
     int nuIPs = 0;
     for (GoBoard::LibertyIterator it(board, boundaryAnchor); it; ++it)
     {
-        if (   region.Contains(*it)
-            && GoEyeUtil::IsSplitPt(*it, region)
-            && ++nuIPs >= 2
+        if (  region.Contains(*it)
+           && GoEyeUtil::IsSplitPt(*it, region)
+           && ++nuIPs >= 2
            )
             return true;
     }
@@ -73,8 +73,8 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
         int nuIPs = 0;
         for (SgVectorIterator<SgPoint> it(sharedLibs); it; ++it)
         {
-            if (   GoEyeUtil::IsSplitPt(*it, region)
-                && ++nuIPs >= 2
+            if (  GoEyeUtil::IsSplitPt(*it, region)
+               && ++nuIPs >= 2
                )
                     /* */ return true; /* */
         }
@@ -143,9 +143,9 @@ bool GoRegionUtil::Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
                                 const SgVector<SgPoint>& boundaryAnchors)
 {
     return     Has2IntersectionPoints(board, pts, boundaryAnchors) 
-            || (   boundaryAnchors.IsLength(1) 
-                && pts.Disjoint(board.All(color)) 
-                && ! pts.IsConnected()
+            || (  boundaryAnchors.IsLength(1) 
+               && pts.Disjoint(board.All(color)) 
+               && ! pts.IsConnected()
                );
 }
 
@@ -168,10 +168,10 @@ bool GoRegionUtil::Has2SureLiberties(const GoBoard& board,
     // Cond 1: all empty points are in liberties of some boundary block
     // Cond 2: two intersection points
     
-    if (     (pts & board.AllEmpty()).SubsetOf(boundary.Border(size))
-          && (   Has2IntersectionPoints(board, pts, boundaryAnchors)
-              || TwoSeparateEyes(board, pts, boundary, color)
-             )
+    if (  (pts & board.AllEmpty()).SubsetOf(boundary.Border(size))
+       && (  Has2IntersectionPoints(board, pts, boundaryAnchors)
+          || TwoSeparateEyes(board, pts, boundary, color)
+          )
        )
         /* */ return true; /* */
     

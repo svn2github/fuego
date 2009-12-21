@@ -407,8 +407,9 @@ GoGame::~GoGame()
 
 bool GoGame::CanPlayHumanMove(SgMove move, SgBlackWhite player) const
 {
-    return    (   m_player[player] == 0
-               || ! ClockIsRunning())
+    return    (  m_player[player] == 0
+              || ! ClockIsRunning()
+              )
            && Board().IsLegal(move, player);
 }
 

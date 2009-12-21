@@ -185,12 +185,12 @@ bool GoRegion::Has2SureLibs(SgMiaiStrategy* miaiStrategy) const
     if (m_blocks.IsEmpty())
         return false;
 
-    SG_ASSERT(!m_blocks.IsEmpty());
+    SG_ASSERT(! m_blocks.IsEmpty());
     SgVector<SgPoint> interiorEmpty;
     InteriorEmpty(&interiorEmpty, 3);
     SgMiaiPair ips;
-    bool result1 = interiorEmpty.MaxLength(2)
-        && Has2IPs(interiorEmpty, &ips);
+    bool    result1 = interiorEmpty.MaxLength(2)
+         && Has2IPs(interiorEmpty, &ips);
 
     if (result1)
     {
@@ -485,7 +485,7 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                     SgPointSet s1;
                     s1.Include(p);
                     SgPointSet rest = s1.Border(size) & updateLibs;
-                    if (!rest.IsEmpty())
+                    if (! rest.IsEmpty())
                     {
                         for (SgVectorIterator<SgMiaiPair> it2(myStrategy);
                              it2; ++it2)
@@ -505,7 +505,9 @@ bool GoRegion::Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                                     rest.Exclude(t);
                                     usedLibs.Include(t);
                                 }
-                                if (ips.Contains(x.second) && !rest.IsEmpty())
+                                if (  ips.Contains(x.second)
+                                   && ! rest.IsEmpty()
+                                   )
                                 {
                                     updateLibs.Include(x.second);
                                     usedLibs.Exclude(x.second);

@@ -549,7 +549,7 @@ bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p,
                                   SgBlackWhite color, SgVector<SgPoint>& eyes)
 {
     // Must be an empty point
-    if (!board.IsColor(p, SG_EMPTY))
+    if (! board.IsColor(p, SG_EMPTY))
         return false;
     // All adjacent neighbours must be friendly
     SgBoardColor opp = SgOppBW(color);
@@ -645,8 +645,8 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
             SgPoint diag = *nbd;
             int cost = 0;
 
-            if (board.IsColor(diag, SG_EMPTY)
-                && !IsSinglePointEye2(board, diag, color, usedpoints))
+            if (  board.IsColor(diag, SG_EMPTY)
+               && ! IsSinglePointEye2(board, diag, color, usedpoints))
             {
                 cost = 1;
             }
@@ -676,8 +676,8 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
             continue;
         
         // Empty points must be filled (unless they are eyes)
-        if (board.IsColor(diag, SG_EMPTY)
-            && !IsSinglePointEye2(board, diag, color, usedpoints))
+        if (  board.IsColor(diag, SG_EMPTY)
+           && ! IsSinglePointEye2(board, diag, color, usedpoints))
         {
             counted.Include(diag);
         }
@@ -703,7 +703,7 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
 
 int GoEyeUtil::CountSinglePointEyes2(const GoBoard& board, SgPoint p)
 {
-    if (!board.Occupied(p))
+    if (! board.Occupied(p))
         return 0;
 
     SgBlackWhite color = board.GetColor(p);

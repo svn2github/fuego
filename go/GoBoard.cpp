@@ -290,10 +290,10 @@ SgSList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p,
 
 bool GoBoard::IsAdjacentTo(SgPoint p, const GoBoard::Block* block) const
 {
-    return (   m_state.m_block[p - SG_NS] == block
-            || m_state.m_block[p - SG_WE] == block
-            || m_state.m_block[p + SG_WE] == block
-            || m_state.m_block[p + SG_NS] == block);
+    return   m_state.m_block[p - SG_NS] == block
+          || m_state.m_block[p - SG_WE] == block
+          || m_state.m_block[p + SG_WE] == block
+          || m_state.m_block[p + SG_NS] == block;
 }
 
 void GoBoard::MergeBlocks(SgPoint p, SgBlackWhite c,

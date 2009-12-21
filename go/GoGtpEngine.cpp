@@ -1636,19 +1636,19 @@ void GoGtpEngine::Ponder()
     for (int i = 0; i < 200; ++i)
     {
         if (SgUserAbort())
-    {
-        aborted = true;
-            break;
-    }
+        {
+            aborted = true;
+                break;
+        }
         time.nsec += 1000000; // 1 msec
         boost::thread::sleep(time);
     }
     m_mpiSynchronizer->SynchronizeUserAbort(aborted);
-    if (!aborted)
+    if (! aborted)
     {
-    m_mpiSynchronizer->OnStartPonder();
-    m_player->Ponder();
-    m_mpiSynchronizer->OnEndPonder();
+        m_mpiSynchronizer->OnStartPonder();
+        m_player->Ponder();
+        m_mpiSynchronizer->OnEndPonder();
     }
 }
 

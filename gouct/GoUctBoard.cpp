@@ -170,10 +170,10 @@ void GoUctBoard::CreateSingleStoneBlock(SgPoint p, SgBlackWhite c)
 bool GoUctBoard::IsAdjacentTo(SgPoint p,
                               const GoUctBoard::Block* block) const
 {
-    return (   m_block[p - SG_NS] == block
-            || m_block[p - SG_WE] == block
-            || m_block[p + SG_WE] == block
-            || m_block[p + SG_NS] == block);
+    return   m_block[p - SG_NS] == block
+          || m_block[p - SG_WE] == block
+          || m_block[p + SG_WE] == block
+          || m_block[p + SG_NS] == block;
 }
 
 void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)

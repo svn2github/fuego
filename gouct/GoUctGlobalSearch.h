@@ -413,7 +413,7 @@ bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(std::size_t count,
     provenType = SG_NOT_PROVEN;
     moves.clear();  // FIXME: needed?
     GenerateLegalMoves(moves);
-    if (!moves.empty())
+    if (! moves.empty())
     {
         if (count == 0)
             m_priorKnowledge.ProcessPosition(moves);

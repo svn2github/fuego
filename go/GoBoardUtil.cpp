@@ -225,10 +225,10 @@ bool GoBoardUtil::BlockIsAdjacentTo(const GoBoard& bd, SgPoint block,
 {
     for (GoBoard::StoneIterator it(bd, block); it; ++it)
     {
-        if (   walls.Contains((*it) + SG_NS)
-            || walls.Contains((*it) - SG_NS)
-            || walls.Contains((*it) + SG_WE)
-            || walls.Contains((*it) - SG_WE)
+        if (  walls.Contains((*it) + SG_NS)
+           || walls.Contains((*it) - SG_NS)
+           || walls.Contains((*it) + SG_WE)
+           || walls.Contains((*it) - SG_WE)
            )
             return true;
     }
@@ -494,9 +494,9 @@ bool GoBoardUtil::IsSnapback(const GoBoard& constBd, SgPoint p)
         GoBoard& bd = mbd.Board();
         const bool isLegal =
             GoBoardUtil::PlayIfLegal(bd, lib, SgOppBW(bd.GetStone(p)));
-        if (   isLegal
-            && bd.InAtari(lib)
-            && ! bd.IsSingleStone(lib)
+        if (  isLegal
+           && bd.InAtari(lib)
+           && ! bd.IsSingleStone(lib)
            )
             snapback = true;
         if (isLegal)
@@ -847,9 +847,10 @@ bool GoBoardUtil::TwoPasses(const GoBoard& bd)
     GoPlayerMove passToPlay(toPlay, SG_PASS);
     GoPlayerMove passOpp(SgOppBW(toPlay), SG_PASS);
     int moveNumber = bd.MoveNumber();
-    return (   moveNumber >= 2
-            && bd.Move(moveNumber - 1) == passOpp
-            && bd.Move(moveNumber - 2) == passToPlay);
+    return (  moveNumber >= 2
+           && bd.Move(moveNumber - 1) == passOpp
+           && bd.Move(moveNumber - 2) == passToPlay
+           );
 }
 
 SgPointSet GoBoardUtil::Lines(const GoBoard& bd, SgGrid from, SgGrid to)

@@ -682,7 +682,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
         BOOST_CHECK_CLOSE(1.f, GetNode(tree, 1)->Mean(), 1e-3f);
         BOOST_CHECK_EQUAL(3u, GetNode(tree, 2)->MoveCount());
         BOOST_CHECK_CLOSE(0.33333333f, GetNode(tree, 2)->Mean(), 1e-3f);
-        BOOST_CHECK(!GetNode(tree, 3));
+        BOOST_CHECK(! GetNode(tree, 3));
         BOOST_CHECK_EQUAL(10u, GetNode(tree, 100)->MoveCount());
         BOOST_CHECK_CLOSE(1.f, GetNode(tree, 100)->Mean(), 1e-3f);
     }
