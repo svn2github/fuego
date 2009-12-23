@@ -716,11 +716,11 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetRave(true);
     SetExpandThreshold(1);
     SetVirtualLoss(true);
+	SetBiasTermConstant(0.0);
     if (boardSize < 15)
     {
         // These parameters were mainly tested on 9x9
         // using GoUctPlayoutPolicy and GoUctDefaultPriorKnowledge
-        SetBiasTermConstant(0.02);
         SetRaveWeightInitial(1.0);
         SetRaveWeightFinal(5000);
         m_param.m_lengthModification = 0;
@@ -729,7 +729,6 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     {
         // These parameters were mainly tested on 19x19
         // using GoUctPlayoutPolicy and GoUctDefaultPriorKnowledge
-        SetBiasTermConstant(0.0);
         SetRaveWeightInitial(0.9);
         SetRaveWeightFinal(5000);
         m_param.m_lengthModification = 0.00028;
