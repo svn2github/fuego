@@ -95,6 +95,7 @@ SgSList.h \
 SgSearch.h \
 SgSearchControl.h \
 SgSearchStatistics.h \
+SgSearchTracer.h \
 SgSearchValue.h \
 SgSortedArray.h \
 SgSortedMoves.h \
