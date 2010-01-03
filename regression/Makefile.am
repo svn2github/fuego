@@ -15,6 +15,7 @@ book_moves.tst \
 escape_capture_19.tst \
 eval_life_and_death.tst \
 eval_seki.tst \
+final_moves.tst \
 ladder.tst \
 performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
@@ -198,6 +199,7 @@ sgf/games/2009/CGOS/702960.sgf \
 sgf/games/2009/CGOS/703006.sgf \
 sgf/games/2009/May/Fuego9-Fuego-27.sgf \
 sgf/games/2009/MM-Fuego20090124-variation.sgf \
+sgf/games/2010/CGOS/1005347.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
