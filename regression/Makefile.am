@@ -16,6 +16,7 @@ escape_capture_19.tst \
 eval_life_and_death.tst \
 eval_seki.tst \
 final_moves.tst \
+free_handicap.tst \
 ladder.tst \
 performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
@@ -69,6 +70,8 @@ sgf/evaluation/miseval.1.sgf \
 sgf/eyes/1.5/make-nakade.1.sgf \
 sgf/eyes/1.5/make-nakade.2.sgf \
 sgf/eyes/1/nakade.1.sgf \
+sgf/final_moves/play-in-benson-safe.1.sgf \
+sgf/final_moves/play-in-benson-safe.2.sgf \
 sgf/games/2007/194557.variation.sgf \
 sgf/games/2007/CGOS/107433.sgf \
 sgf/games/2007/CGOS/107439.sgf \
