@@ -67,6 +67,7 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
 SgUctThreadState::SgUctThreadState(size_t threadId, int moveRange)
     : m_threadId(threadId),
       m_isSearchInitialized(false),
+      m_isTreeOutOfMem(false),
       m_randomizeCounter(0)
 {
     if (moveRange > 0)
