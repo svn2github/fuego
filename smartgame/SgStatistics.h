@@ -484,7 +484,7 @@ inline VALUE SgStatisticsExt<VALUE,COUNT>::Min() const
 template<typename VALUE, typename COUNT>
 inline VALUE SgStatisticsExt<VALUE,COUNT>::Variance() const
 {
-    return m_statistics.Deviation();
+    return m_statistics.Variance();
 }
 
 template<typename VALUE, typename COUNT>
