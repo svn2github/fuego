@@ -253,7 +253,7 @@ bool SgSearch::NullMovePrune(int depth, int delta, int beta)
         CallTakeBack();
         if (nullvalue >= beta)
         {
-            if (m_tracer)
+            if (TraceIsOn())
                 m_tracer->TraceComment("null-move-cut");
             return true;
         }
@@ -558,7 +558,7 @@ bool SgSearch::TryMove(SgMove move, const SgVector<SgMove>& specialMoves,
         // killers.
         if (m_useKillers && m_currentDepth <= MAX_KILLER_DEPTH)
             m_killers[m_currentDepth].MarkKiller(move);
-        if (m_tracer)
+        if (TraceIsOn())
             m_tracer->TraceComment("b-cut");
         isCutoff = true;
     }
@@ -637,7 +637,7 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
             stack.Clear();
             if (data.BestMove() != SG_NULLMOVE)
                 stack.Push(data.BestMove());
-            if (m_tracer)
+            if (TraceIsOn())
                 m_tracer->TraceValue(data.Value(), GetToPlay(),
                                      "exact-hash", true);
             return data.Value();
@@ -689,7 +689,7 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
                         stack.Clear();
                         if (tryFirst != SG_NULLMOVE)
                             stack.Push(tryFirst);
-                        if (m_tracer)
+                        if (TraceIsOn())
                             m_tracer->TraceValue(data.Value(), GetToPlay(),
                                            "Hash hit", *isExactValue);
                         return data.Value();
@@ -705,13 +705,13 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
                 bool childIsExact = true;
                 loValue = -SearchEngine(depth-delta, -beta, -alpha, stack,
                                         &childIsExact);
-                if (m_tracer)
+                if (TraceIsOn())
                     m_tracer->TraceComment("tryFirst");
                 CallTakeBack();
                 hasMove = true;
                 if (m_aborted)
                 {
-                    if (m_tracer)
+                    if (TraceIsOn())
                         m_tracer->TraceComment("aborted");
                     *isExactValue = false;
                     return (1 < m_currentDepth) ? alpha : loValue;
@@ -726,7 +726,7 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
                    allExact = false;
                 if (loValue >= beta)
                 {
-                    if (m_tracer)
+                    if (TraceIsOn())
                         m_tracer->TraceValue(loValue, GetToPlay());
                     // store in hash table. Known to be exact only if
                     // solved for one player.
@@ -735,7 +735,7 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
                               false /*isUpperBound*/,
                               true /*isLowerBound*/, isExact);
                     *isExactValue = isExact;
-                    if (m_tracer)
+                    if (TraceIsOn())
                         m_tracer->TraceValue(loValue, GetToPlay(),
                                              "b-cut", isExact);
                     return loValue;
@@ -805,7 +805,7 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
                      hasMove = true;
                 if (! foundCutoff && m_aborted)
                 {
-                    if (m_tracer)
+                    if (TraceIsOn())
                         m_tracer->TraceComment("ABORTED");
                     *isExactValue = false;
                     return (1 < m_currentDepth) ? alpha : loValue;
@@ -870,7 +870,7 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
         loValue = alpha;
 
     *isExactValue = isSolved;
-    if (m_tracer)
+    if (TraceIsOn())
         m_tracer->TraceValue(loValue, GetToPlay(), 0, isSolved);
     SG_ASSERT(stack.IsEmpty() || stack.Top() != SG_NULLMOVE);
     return loValue;

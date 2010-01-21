@@ -24,21 +24,25 @@
 using namespace std;
 
 //----------------------------------------------------------------------------
-SgSearchTracer::SgSearchTracer(SgNode* root) : m_traceNode(root)
-{ }
+
+SgSearchTracer::SgSearchTracer(SgNode* root) 
+    : m_traceNode(root)
+{
+}
 
 SgSearchTracer::~SgSearchTracer()
-{ }
-
-void SgSearchTracer::AddMoveProp(SgNode* node, SgMove move, SgBlackWhite player)
 {
-    // GoSearch uses SgPropMove
+}
+
+void SgSearchTracer::AddMoveProp(SgNode* node, SgMove move, 
+                                 SgBlackWhite player)
+{
     node->AddMoveProp(move, player);
 }
 
 void SgSearchTracer::AddTraceNode(SgMove move, SgBlackWhite player)
 {
-    if (m_traceNode)
+    if (m_traceNode != 0)
     {
         m_traceNode = m_traceNode->NewRightMostSon();
         AddMoveProp(m_traceNode, move, player);
@@ -47,7 +51,7 @@ void SgSearchTracer::AddTraceNode(SgMove move, SgBlackWhite player)
 
 void SgSearchTracer::AppendTrace(SgNode* toNode)
 {
-    if (m_traceNode)
+    if (m_traceNode != 0)
     {
         m_traceNode->Root()->AppendTo(toNode);
         m_traceNode = 0;
@@ -57,16 +61,13 @@ void SgSearchTracer::AppendTrace(SgNode* toNode)
 void SgSearchTracer::InitTracing(const string& type)
 {
     SG_ASSERT(! m_traceNode);
-    if (TraceIsOn())
-    {
-        m_traceNode = new SgNode();
-        m_traceNode->Add(new SgPropText(SG_PROP_COMMENT, type));
-    }
+    m_traceNode = new SgNode();
+    m_traceNode->Add(new SgPropText(SG_PROP_COMMENT, type));
 }
 
 void SgSearchTracer::StartOfDepth(int depth)
 {
-    SG_ASSERT(m_traceNode);
+    SG_ASSERT(m_traceNode != 0);
     if (depth > 0 && m_traceNode->HasFather())
     {
         // true for each depth except the very first
@@ -77,7 +78,7 @@ void SgSearchTracer::StartOfDepth(int depth)
         // go from root of previous level to root
     }
     m_traceNode = m_traceNode->NewRightMostSon();
-    SG_ASSERT(m_traceNode);
+    SG_ASSERT(m_traceNode != 0);
     m_traceNode->SetIntProp(SG_PROP_MAX_DEPTH, depth);
     ostringstream stream;
     stream << "Iteration d = " << depth << ' ';
@@ -90,14 +91,13 @@ void SgSearchTracer::StartOfDepth(int depth)
 
 void SgSearchTracer::TakeBackTraceNode()
 {
-    SG_ASSERT(m_traceNode);
-    if (m_traceNode)
+    if (m_traceNode != 0)
         m_traceNode = m_traceNode->Father();
 }
 
 void SgSearchTracer::TraceComment(const char* comment) const
 {
-    if (m_traceNode)
+    if (m_traceNode != 0)
     {
         m_traceNode->AddComment(comment);
         m_traceNode->AddComment("\n");
@@ -106,13 +106,11 @@ void SgSearchTracer::TraceComment(const char* comment) const
 
 void SgSearchTracer::TraceValue(int value, SgBlackWhite toPlay) const
 {
+    SG_ASSERT(m_traceNode != 0);
     // The value needs to be recorded in absolute terms, not relative to
     // the current player.
     int v = (toPlay == SG_WHITE) ? -value : +value;
     m_traceNode->Add(new SgPropValue(SG_PROP_VALUE, v));
-    ostringstream comment;
-    comment << "value = " << v;
-    TraceComment(comment.str().c_str());
 }
 
 void SgSearchTracer::TraceValue(int value, SgBlackWhite toPlay,

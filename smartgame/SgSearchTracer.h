@@ -13,37 +13,34 @@
 #include "SgMove.h"
 #include "SgNode.h"
 
+//----------------------------------------------------------------------------
 
-/** 
-*/
+/** Traces a search. */
 class SgSearchTracer
 {
 public:
     SgSearchTracer(SgNode* root);
     
     virtual ~SgSearchTracer();
-    
-     /** Add move property to node (game-dependent). 
-        The default implementation stores the move in a SgMoveProp.
-        Override this method for other games.
-     */
-    virtual void AddMoveProp(SgNode* node, SgMove move,
-                             SgBlackWhite player);
 
-   /** Add the given move as a new node to the trace tree and go to that
-        node.
-        Don't do anything if m_traceNode is 0. To be called from the
-        client's Execute method.
-    */
+    /** Adds the given move as a new node to the trace tree and goes
+        to that node. Doesn't do anything if m_traceNode is 0. */
     void AddTraceNode(SgMove move, SgBlackWhite player);
 
-    /** current node */
+    /** Current node */
     SgNode* TraceNode() const;
 
     /** Add comment to current tracenode */
     void TraceComment(const char* comment) const;
     
     void StartOfDepth(int depth);
+
+     /** Adds move property to node (game-dependent). 
+         The default implementation stores the move in a SgMoveProp.
+         Override this method for other games.
+     */
+    virtual void AddMoveProp(SgNode* node, SgMove move,
+                             SgBlackWhite player);
     
     /** Add value as a comment to current tracenode */
     void TraceValue(int value, SgBlackWhite toPlay) const;
@@ -58,7 +55,7 @@ public:
     */
     void TakeBackTraceNode();
 
-    /** Is tracing currently active?*/
+    /** Is tracing on? Default implementation always returns true. */
     virtual bool TraceIsOn() const;
 
     /** Creates a new root node for tracing. Override to add information */
@@ -67,10 +64,11 @@ public:
     /** Move trace tree to a subtree of toNode, and set m_traceNode = 0 */
     void AppendTrace(SgNode* toNode);
 
-private:
-    /** Current node in tracing; set to 0 if not tracing */
+protected:
+    /** Current node in tracing. */
     SgNode* m_traceNode;
 
+private:
     /** Not implemented */
     SgSearchTracer(const SgSearchTracer&);
 
@@ -85,7 +83,7 @@ inline SgNode* SgSearchTracer::TraceNode() const
 
 inline bool SgSearchTracer::TraceIsOn() const
 {
-    return m_traceNode != 0;
+    return true;
 }
 
 //----------------------------------------------------------------------------
