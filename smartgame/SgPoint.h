@@ -17,11 +17,11 @@
     The board is represented as a one-dimensional array.
     Neighbors of a point can be computed with offsets <tt>WE</tt> and
     <tt>NS</tt>, so that the four neighbors of point <tt>p</tt> are:
-    @verbatim
+    <pre>
                p + SG_NS
     p - SG_WE      p      p + SG_WE
                p - SG_NS
-    @endverbatim
+    </pre>
     The board is surrounded by one line of border points (if size is
     SG_MAX_SIZE) in all directions; also diagonally out from the corners.
 
@@ -38,7 +38,7 @@
     <code>SG_MAX_SIZE = 19</code> (which is used in the default version of
     SgPoint.h).
 
-    @verbatim
+<pre>
 19|381 382 383 384 385 386 387 388 389 390 391 392 393 394 395 396 397 398 399
 18|361 362 363 364 365 366 367 368 369 370 371 372 373 374 375 376 377 378 379
 17|341 342 343 344 345 346 347 348 349 350 351 352 353 354 355 356 357 358 359
@@ -59,7 +59,7 @@
  2| 41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59
  1| 21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39
    [A] [B] [C] [D] [E] [F] [G] [H] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T]
-    @endverbatim
+</pre>
 */
 //----------------------------------------------------------------------------
 
