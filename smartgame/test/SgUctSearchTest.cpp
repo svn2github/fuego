@@ -408,7 +408,6 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
 {
     TestUctSearch search;
     search.SetExpandThreshold(1);
-    search.SetKnowledgeThreshold(0);
     //search.m_write = true;
 
     // Add nodes. Parameters: father, move (=target node), [eval]
@@ -558,7 +557,8 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
 {
     TestUctSearch search;
     search.SetExpandThreshold(1);
-    search.SetKnowledgeThreshold(4);
+    std::vector<std::size_t> thresholds(1, 4);
+    search.SetKnowledgeThreshold(thresholds);
     //search.m_write = true;
 
     // Add nodes. Parameters: father, move (=target node), [eval]
