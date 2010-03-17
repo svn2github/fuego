@@ -208,7 +208,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
     : m_threadStateFactory(threadStateFactory),
       m_logGames(false),
       m_rave(false),
-      m_knowledgeThreshold(0),
+      m_knowledgeThreshold(),
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
       m_randomizeRaveFrequency(20),
@@ -646,6 +646,31 @@ void SgUctSearch::CreateChildren(SgUctThreadState& state,
     m_tree.MergeChildren(threadId, node, state.m_moves, deleteChildTrees);
 }
 
+bool SgUctSearch::NeedToComputeKnowledge(const SgUctNode* current)
+{
+    if (m_knowledgeThreshold.empty())
+        return false;
+    for (std::size_t i = 0; i < m_knowledgeThreshold.size(); ++i)
+    {
+        const std::size_t threshold = m_knowledgeThreshold[i];
+        if (current->KnowledgeCount() < threshold)
+        {
+            if (current->MoveCount() >= threshold)
+            {
+                // Mark knowledge computed immediately so other
+                // threads fall through and do not waste time
+                // re-computing this knowledge.
+                SgUctNode* node = const_cast<SgUctNode*>(current);
+                node->SetKnowledgeCount(threshold);
+                SG_ASSERT(current->MoveCount());
+                return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
 void SgUctSearch::OnStartSearch()
 {
     m_mpiSynchronizer->OnStartSearch(*this);
@@ -829,22 +854,12 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             else
                 break;
         }
-        else if (  current->KnowledgeCount() < m_knowledgeThreshold
-                && current->MoveCount() >= m_knowledgeThreshold
-                )
+        else if (NeedToComputeKnowledge(current))
         {
-            {
-                // Mark knowledge computed immediately so other threads
-                // fall through and do not waste time re-computing this
-                // knowledge.
-                SgUctNode* node = const_cast<SgUctNode*>(current);
-                node->SetKnowledgeCount(m_knowledgeThreshold);
-            }
-        	SG_ASSERT(current->MoveCount());
             m_statistics.m_knowledge++;
             deepenTree = false;
             SgProvenNodeType provenType = SG_NOT_PROVEN;
-            bool truncate = state.GenerateAllMoves(current->MoveCount(), 
+            bool truncate = state.GenerateAllMoves(current->KnowledgeCount(), 
                                                    state.m_moves,
                                                    provenType);
             if (current == root)
@@ -1348,7 +1363,7 @@ void SgUctSearch::WriteStatistics(ostream& out) const
 {
     out << SgWriteLabel("Count") << m_tree.Root().MoveCount() << '\n'
         << SgWriteLabel("Nodes") << m_tree.NuNodes() << '\n';
-    if (m_knowledgeThreshold)
+    if (!m_knowledgeThreshold.empty())
         out << SgWriteLabel("Knowledge") 
             << m_statistics.m_knowledge << " (" << fixed << setprecision(1) 
             << m_statistics.m_knowledge * 100.0 / m_tree.Root().MoveCount()
