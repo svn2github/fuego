@@ -66,7 +66,7 @@ rules=chinese
 rules.boardSize=19
 rules.time=30:00+15/1:00
 verbose=t
-engine=$FUEGO -size 19 -config config-19-8c.gtp $MAXGAMES_OPTION
+engine=$FUEGO --size 19 --config config-19-8c.gtp $MAXGAMES_OPTION
 reconnect=t
 EOF
 java -jar kgsGtp.jar tmp.cfg && rm -f tmp.cfg

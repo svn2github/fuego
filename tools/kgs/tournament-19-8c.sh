@@ -59,7 +59,7 @@ password=$PASSWORD
 room=Computer Go
 mode=tournament
 verbose=t
-engine=$FUEGO -size 19 -config config-tournament-19-8c.gtp
+engine=$FUEGO --size 19 --config config-tournament-19-8c.gtp
 reconnect=t
 EOF
 java -jar kgsGtp.jar tmp.cfg && rm -f tmp.cfg

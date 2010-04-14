@@ -9,12 +9,18 @@
 #include <iostream>
 #include "FuegoTestEngine.h"
 #include "GoInit.h"
-#include "SgCmdLineOpt.h"
 #include "SgDebug.h"
 #include "SgException.h"
 #include "SgInit.h"
 
+#include <boost/utility.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/cmdline.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/parsers.hpp>
+
 using namespace std;
+namespace po = boost::program_options;
 
 //----------------------------------------------------------------------------
 
@@ -45,37 +51,42 @@ void MainLoop()
     engine.MainLoop();
 }
 
+void Help(po::options_description& desc)
+{
+    cout << "Options:\n" << desc << '\n';
+    exit(1);
+}
+
 void ParseOptions(int argc, char** argv)
 {
-    SgCmdLineOpt opt;
-    vector<string> specs;
-    specs.push_back("config:");
-    specs.push_back("help");
-    specs.push_back("player:");
-    specs.push_back("quiet");
-    specs.push_back("srand:");
-    opt.Parse(argc, argv, specs);
-    if (opt.GetArguments().size() > 0)
-        throw SgException("No arguments allowed");
-    if (opt.Contains("help"))
-    {
-        cout <<
-            "Options:\n"
-            "  -config file execute GTP commands from file before\n"
-            "               starting main command loop\n"
-            "  -help        display this help and exit\n"
-            "  -player      player (average|capture|dumbtactic|greedy\n"
-            "                |influence|ladder|liberty|maxeye|minlib\n"
-            "                |no-search|random|safe)\n"
-            "  -quiet       don't print debug messages\n"
-            "  -srand       set random seed (-1:none, 0:time(0))\n";
-        exit(0);
+    int srand;
+    po::options_description options_desc;
+    options_desc.add_options()
+        ("config", 
+         po::value<std::string>(&g_config)->default_value(""),
+         "execuate GTP commands from file before starting main command loop")
+        ("help", "displays this help and exit")
+        ("player", 
+         po::value<std::string>(&g_player)->default_value(""),
+         "player (average|ladder|liberty|maxeye|minlib|no-search|random|safe")
+        ("quiet", "don't print debug messages")
+        ("srand", 
+         po::value<int>(&srand)->default_value(0),
+         "set random seed (-1:none, 0:time(0))");
+    po::variables_map vm;
+    try {
+        po::store(po::parse_command_line(argc, argv, options_desc), vm);
+        po::notify(vm);
     }
-    g_config = opt.GetString("config", "");
-    g_player = opt.GetString("player", "");
-    g_quiet = opt.Contains("quiet");
-    if (opt.Contains("srand"))
-        SgRandom::SetSeed(opt.GetInteger("srand"));
+    catch(...) {
+        Help(options_desc);
+    }
+    if (vm.count("help"))
+        Help(options_desc);
+    if (vm.count("quiet"))
+        g_quiet = true;
+    if (vm.count("srand"))
+        SgRandom::SetSeed(srand);
 }
 
 } // namespace

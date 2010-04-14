@@ -15,6 +15,7 @@ fuego_test_LDADD = \
 ../go/libfuego_go.a \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a \
+$(BOOST_PROGRAM_OPTIONS_LIB) \
 $(BOOST_SYSTEM_LIB) \
 $(BOOST_FILESYSTEM_LIB) \
 $(BOOST_THREAD_LIB)
