@@ -12,11 +12,13 @@ blunder_rave.tst \
 blunder_selfatari_19.tst \
 blunder_short_ladder_19.tst \
 book_moves.tst \
+cleanup_japanese_rules.tst \
 escape_capture_19.tst \
 eval_life_and_death.tst \
 eval_seki.tst \
 final_moves.tst \
 free_handicap.tst \
+kgs-genmove_cleanup.tst \
 ladder.tst \
 performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
@@ -31,7 +33,6 @@ uct_basics.tst \
 uct_blunder.tst \
 uct_blunder_19.tst \
 uct_book.tst \
-uct_cleanup.tst \
 uct_connection.tst \
 uct_direction_of_play.tst \
 uct_endgame.tst \
@@ -203,6 +204,8 @@ sgf/games/2009/CGOS/703006.sgf \
 sgf/games/2009/May/Fuego9-Fuego-27.sgf \
 sgf/games/2009/MM-Fuego20090124-variation.sgf \
 sgf/games/2010/CGOS/1005347.sgf \
+sgf/games/2010/LittleGolem/1173624.sgf \
+sgf/games/2010/LittleGolem/1177582.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
