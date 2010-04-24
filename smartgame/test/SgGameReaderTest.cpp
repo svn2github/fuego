@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(SgGameReaderTest_NoWarnings)
     root->DeleteTree();
 }
 
-/** Test that points are interpretetd correctly if SZ comes after point
+/** Test that points are interpreted correctly if SZ comes after point
     values.
     Allowed by the SGF standard (?); used by some programs.
 */
