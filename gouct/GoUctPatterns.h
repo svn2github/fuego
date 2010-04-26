@@ -14,18 +14,6 @@
 
 //----------------------------------------------------------------------------
 
-/** Used only internally by GoUctPatterns. */
-static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
-
-/** Used only internally by GoUctPatterns. */
-static const int GOUCT_POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
-
-/** Used only internally by GoUctPatterns. */
-typedef SgArray<int,GOUCT_POWER3_5> GoUctEdgePatternTable;
-
-/** Used only internally by GoUctPatterns. */
-typedef SgArray<int,GOUCT_POWER3_8> GoUctPatternTable;
-
 /** Some hard-coded pattern matching routines to match patterns used by MoGo.
     See <a href="http://hal.inria.fr/docs/00/11/72/66/PDF/MoGoReport.pdf">
     Modification of UCT with Patterns in Monte-Carlo Go</a>.
@@ -80,10 +68,24 @@ public:
     bool MatchAny(SgPoint p) const;
 
 private:
+    /** 3^5 = size of edge pattern table */
+    static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
+
+    /** 3^8 = size of center pattern table. */
+    static const int GOUCT_POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
+
+    /** See m_edgeTable. */
+    typedef SgArray<bool, GOUCT_POWER3_5> GoUctEdgePatternTable;
+
+    /** See m_table. */
+    typedef SgArray<bool, GOUCT_POWER3_8> GoUctPatternTable;
+
     const BOARD& m_bd;
 
+    /** lookup table for 8-neighborhood of a move candidate */
     SgBWArray<GoUctPatternTable> m_table;
 
+    /** lookup table on the edge of board */
     SgBWArray<GoUctEdgePatternTable> m_edgeTable;
 
     static bool CheckCut1(const GoBoard& bd, SgPoint p, SgBlackWhite c,
@@ -118,7 +120,7 @@ private:
     static bool MatchHane(const GoBoard& bd, SgPoint p, const int nuBlack,
                           const int nuWhite);
 
-    static bool OldMatchAny(const GoBoard& bd, SgPoint p);
+    static bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
 
     static int OtherDir(int dir);
 
@@ -276,7 +278,7 @@ void GoUctPatterns<BOARD>::InitEdgePatternTable(
         for(SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            edgeTable[*it][i] = OldMatchAny(bd, p) ? 1 : 0;
+            edgeTable[*it][i] = MatchAnyPattern(bd, p) ? 1 : 0;
         }
         while (count-- > 0)
             bd.Undo();
@@ -295,7 +297,7 @@ void GoUctPatterns<BOARD>::InitCenterPatternTable(
         for(SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            table[*it][i] = OldMatchAny(bd, p) ? 1 : 0;
+            table[*it][i] = MatchAnyPattern(bd, p) ? 1 : 0;
         }
         while (count-- > 0)
             bd.Undo();
@@ -521,7 +523,7 @@ inline bool GoUctPatterns<BOARD>::MatchAny(SgPoint p) const
 
 /** Procedural matching function - used to initialize the table. */
 template<class BOARD>
-bool GoUctPatterns<BOARD>::OldMatchAny(const GoBoard& bd, SgPoint p)
+bool GoUctPatterns<BOARD>::MatchAnyPattern(const GoBoard& bd, SgPoint p)
 {
     SG_ASSERT(bd.IsEmpty(p));
     const int nuBlack = bd.NumNeighbors(p, SG_BLACK);
