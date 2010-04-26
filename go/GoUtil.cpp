@@ -19,7 +19,7 @@ std::string GoUtil::ScoreToString(float score)
 {
     bool blackWin = (score > 0);
     score = fabs(score);
-    const float epsilon = 0.01;
+    const float epsilon = 0.01f;
     if (score < epsilon)
         return "0";
     ostringstream out;

@@ -92,7 +92,7 @@ private:
     SgGameReader& operator=(const SgGameReader&);
 
     static bool GetIntProp(const RawProperties& properties,
-                           std::string label, int& value);
+                           const std::string& label, int& value);
 
     void HandleProperties(SgNode* node, const RawProperties& properties,
                           int& boardSize, SgPropPointFmt& fmt);

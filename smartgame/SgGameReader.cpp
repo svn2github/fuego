@@ -41,7 +41,7 @@ SgGameReader::SgGameReader(istream& in, int defaultSize)
 }
 
 bool SgGameReader::GetIntProp(const SgGameReader::RawProperties& properties,
-                              string label, int& value)
+                              const string& label, int& value)
 {
     RawProperties::const_iterator it = properties.find(label);
     if (it == properties.end() || it->second.size() == 0)

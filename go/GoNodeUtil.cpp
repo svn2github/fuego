@@ -34,7 +34,8 @@ GoKomi GoNodeUtil::GetKomi(const SgNode* node)
         {
             try
             {
-                return GoKomi(node->GetRealProp(SG_PROP_KOMI));
+                return GoKomi(static_cast<float>
+                              (node->GetRealProp(SG_PROP_KOMI)));
             }
             catch (const GoKomi::InvalidKomi&)
             {

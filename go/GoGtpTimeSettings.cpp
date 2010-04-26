@@ -7,8 +7,6 @@
 #include "SgSystem.h"
 #include "GoGtpTimeSettings.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoGtpTimeSettings::GoGtpTimeSettings()
