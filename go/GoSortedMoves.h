@@ -12,29 +12,33 @@
 #include "SgMove.h"
 #include "SgSortedMoves.h"
 
-#define normalRange 3
-#define maxMoveRange 20
+#define GO_SORTED_MOVES_DEFAULT 3
+#define GO_SORTED_MOVES_MAX 20
 
-/** Specialization of SgSortedMoves for Go: move = SgMove, value = int */
-class GoSortedMoves : public SgSortedMoves<SgMove, int, maxMoveRange>
+/** Specialization of SgSortedMoves for Go: move = SgMove, value = int 
+	@todo make maxNuMoves a template parameter, use instead 
+    of GO_SORTED_MOVES_MAX
+*/
+class GoSortedMoves : 
+	public SgSortedMoves<SgMove, int, GO_SORTED_MOVES_MAX>
 {
 public:
-    GoSortedMoves() :
-        SgSortedMoves<SgMove, int, maxMoveRange>(normalRange)
-    {
-        SetInitLowerBound(1);
-        SetLowerBound(1);
-    }
     explicit GoSortedMoves(int maxNuMoves) : 
-        SgSortedMoves<SgMove, int, maxMoveRange>(maxNuMoves)
+        SgSortedMoves<SgMove, int, GO_SORTED_MOVES_MAX>(maxNuMoves)
     {
-        SetInitLowerBound(1);
-        SetLowerBound(1);
+        Clear();
+    }
+    
+    GoSortedMoves() : 
+        SgSortedMoves<SgMove, int, 
+                      GO_SORTED_MOVES_MAX>(GO_SORTED_MOVES_DEFAULT)
+    {
+        Clear();
     }
     
     void Clear()
     {
-        SgSortedMoves<SgMove, int, maxMoveRange>::Clear();
+        SgSortedMoves<SgMove, int, GO_SORTED_MOVES_MAX>::Clear();
         SetInitLowerBound(1);
         SetLowerBound(1);
     }
