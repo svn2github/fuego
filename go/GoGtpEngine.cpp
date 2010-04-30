@@ -15,6 +15,7 @@
 #include <limits>
 #include <time.h>
 #include <boost/filesystem/operations.hpp>
+#include "GoEyeUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoNodeUtil.h"
 #include "GoPlayer.h"
@@ -996,7 +997,24 @@ void GoGtpEngine::CmdPointInfo(GtpCommand& cmd)
             << SgWriteLabel("IsFirst") << bd.IsFirst(p) << '\n'
             << SgWriteLabel("IsLegal/B") << bd.IsLegal(p, SG_BLACK) << '\n'
             << SgWriteLabel("IsLegal/W") << bd.IsLegal(p, SG_WHITE) << '\n'
-            << SgWriteLabel("IsSuicide") << bd.IsSuicide(p) << '\n';
+            << SgWriteLabel("IsSuicide") << bd.IsSuicide(p) << '\n'
+            << SgWriteLabel("MakesNakadeShape/B") 
+            << GoEyeUtil::MakesNakadeShape(bd, p, SG_BLACK) << '\n'
+            << SgWriteLabel("MakesNakadeShape/W") 
+            << GoEyeUtil::MakesNakadeShape(bd, p, SG_WHITE) << '\n'
+            << SgWriteLabel("IsSimpleEye/B") 
+            << GoEyeUtil::IsSimpleEye(bd, p, SG_BLACK) << '\n'
+            << SgWriteLabel("IsSimpleEye/W") 
+            << GoEyeUtil::IsSimpleEye(bd, p, SG_WHITE) << '\n'
+            << SgWriteLabel("IsSinglePointEye/B") 
+            << GoEyeUtil::IsSinglePointEye(bd, p, SG_BLACK) << '\n'
+            << SgWriteLabel("IsSinglePointEye/W") 
+            << GoEyeUtil::IsSinglePointEye(bd, p, SG_WHITE) << '\n'
+            << SgWriteLabel("IsPossibleEye/B") 
+            << GoEyeUtil::IsPossibleEye(bd, SG_BLACK, p) << '\n'
+            << SgWriteLabel("IsPossibleEye/W") 
+            << GoEyeUtil::IsPossibleEye(bd, SG_WHITE, p) << '\n'
+            ;
 }
 
 /** Print some information about player board.
