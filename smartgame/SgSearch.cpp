@@ -27,9 +27,10 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-const bool DEBUG_SEARCH = false;
-const bool DEBUG_SEARCH_ITERATIONS = false;
-
+namespace{
+    const bool DEBUG_SEARCH = false;
+    const bool DEBUG_SEARCH_ITERATIONS = false;
+}
 //----------------------------------------------------------------------------
 
 void SgKiller::MarkKiller(SgMove killer)

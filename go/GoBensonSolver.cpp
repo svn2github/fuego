@@ -11,7 +11,11 @@
 #include "GoSafetyUtil.h"
 #include "SgDebug.h"
 
-const bool DEBUG_BENSON = false;
+namespace {
+
+	const bool DEBUG_BENSON = false;
+    
+}
 
 //----------------------------------------------------------------------------
  

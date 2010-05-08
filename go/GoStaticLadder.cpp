@@ -13,12 +13,6 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-namespace {
-
-} // namespace
-
-//----------------------------------------------------------------------------
-
 bool GoStaticLadder::IsEdgeLadder(const GoBoard& bd, SgPoint target,
                                   SgBlackWhite toPlay)
 {
