@@ -68,6 +68,7 @@ sgf/book_test/book.8.sgf \
 sgf/book_test/book.9.sgf \
 sgf/book_test/book.10.sgf \
 sgf/book_test/book.11.sgf \
+sgf/book_test/book.12.sgf \
 sgf/evaluation/miseval.1.sgf \
 sgf/eyes/1.5/make-nakade.1.sgf \
 sgf/eyes/1.5/make-nakade.2.sgf \
@@ -205,6 +206,9 @@ sgf/games/2009/CGOS/703006.sgf \
 sgf/games/2009/May/Fuego9-Fuego-27.sgf \
 sgf/games/2009/MM-Fuego20090124-variation.sgf \
 sgf/games/2010/CGOS/1005347.sgf \
+sgf/games/2010/CGOS/1072936.sgf \
+sgf/games/2010/CGOS/1072936-variation.sgf \
+sgf/games/2010/CGOS/1072936-variation2.sgf \
 sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
 sgf/games/pro-9x9/mz1.sgf \
