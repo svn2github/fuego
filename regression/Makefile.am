@@ -22,6 +22,7 @@ kgs-genmove_cleanup.tst \
 ladder.tst \
 performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
+performance_middlegame_hard_9x9.tst \
 performance_pro_9x9.tst \
 repetition.tst \
 simpleplayers.tst \
