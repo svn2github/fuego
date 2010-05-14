@@ -1,4 +1,5 @@
 backfill.tst
+book_moves.tst
 cleanup_japanese_rules.tst
 eval_life_and_death.tst
 eval_seki.tst
