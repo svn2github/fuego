@@ -99,3 +99,7 @@ loadsgf sgf/book_test/book.10.sgf
 loadsgf sgf/book_test/book.11.sgf
 230 book_moves
 #? [F6]
+loadsgf sgf/book_test/book.12.sgf
+240 book_moves
+#? [F5]
+# recommended by Yu Ping.
