@@ -74,7 +74,7 @@ loadsgf sgf/book_test/book.2.sgf
 
 loadsgf sgf/book_test/book.3.sgf
 150 book_moves
-#? [D4]
+#? [C4]
 loadsgf sgf/book_test/book.4.sgf
 160 book_moves
 #? [D3]
