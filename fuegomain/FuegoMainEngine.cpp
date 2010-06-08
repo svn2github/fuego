@@ -20,16 +20,14 @@ FuegoMainEngine::FuegoMainEngine(GtpInputStream& in, GtpOutputStream& out,
                                  bool noHandicap)
     : GoGtpEngine(in, out, fixedBoardSize, programPath, false, noHandicap),
       m_uctCommands(Board(), m_player),
+      m_autoBookCommands(Board(), m_player),
       m_safetyCommands(Board())
 {
     m_uctCommands.Register(*this);
     m_safetyCommands.Register(*this);
+    m_autoBookCommands.Register(*this);
     Register("fuego-license", &FuegoMainEngine::CmdLicense, this);
-    SetPlayer(new
-              GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
-              GoUctPlayoutPolicyFactory<GoUctBoard> >,
-              GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >
-              (Board()));
+    SetPlayer(new PlayerType(Board()));
 }
 
 FuegoMainEngine::~FuegoMainEngine()
@@ -41,6 +39,7 @@ void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     GoGtpEngine::CmdAnalyzeCommands(cmd);
     m_uctCommands.AddGoGuiAnalyzeCommands(cmd);
     m_safetyCommands.AddGoGuiAnalyzeCommands(cmd);
+    m_autoBookCommands.AddGoGuiAnalyzeCommands(cmd);
     cmd << "string/Fuego License/fuego-license\n";
     string response = cmd.Response();
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));

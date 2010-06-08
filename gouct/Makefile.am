@@ -15,6 +15,8 @@ GoUctUtil.cpp
 
 noinst_HEADERS = \
 GoUctBoard.h \
+GoUctBookBuilder.h \
+GoUctBookBuilderCommands.h \
 GoUctCommands.h \
 GoUctDefaultPriorKnowledge.h \
 GoUctDefaultRootFilter.h \

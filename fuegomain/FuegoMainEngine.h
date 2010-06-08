@@ -9,6 +9,7 @@
 #include "GoGtpEngine.h"
 #include "GoSafetyCommands.h"
 #include "GoUctCommands.h"
+#include "GoUctBookBuilderCommands.h"
 
 //----------------------------------------------------------------------------
 
@@ -30,6 +31,13 @@ public:
 
 private:
     GoUctCommands m_uctCommands;
+
+    typedef GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
+                    GoUctPlayoutPolicyFactory<GoUctBoard> >,
+                    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >
+    PlayerType;
+
+    GoUctBookBuilderCommands<PlayerType> m_autoBookCommands;
 
     GoSafetyCommands m_safetyCommands;
 };
