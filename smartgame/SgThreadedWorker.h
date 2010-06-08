@@ -139,7 +139,7 @@ void SgThreadedWorker<I,O,W>::Thread::operator()()
         m_boss.m_startWork.wait();
         if (m_boss.m_quit) 
             break;
-        SgDebug() << "[" << m_id << "]: starting..."  << '\n';
+        //SgDebug() << "[" << m_id << "]: starting..."  << '\n';
         while (true)
         {
             bool finished = false;
@@ -160,7 +160,7 @@ void SgThreadedWorker<I,O,W>::Thread::operator()()
                     ->push_back(std::make_pair(*currentWork, answer));
             }
         }
-        SgDebug() << "[" << m_id << "]: finished." << '\n';
+        //SgDebug() << "[" << m_id << "]: finished." << '\n';
         m_boss.m_workFinished.wait();
     }
 }
