@@ -439,6 +439,7 @@ void GoUctBookBuilder<PLAYER>::CreateWorkers()
         newPlayer->Search().SetMoveSelect(SG_UCTMOVESELECT_ESTIMATE);
         // Should be enough for a 100k search. Needs 10GB 8 threaded.
         newPlayer->Search().SetMaxNodes(8500000);
+        newPlayer->SetWriteDebugOutput(false);
 
         m_players.push_back(newPlayer);
         m_workers.push_back(Worker(i, *m_players[i]));
@@ -487,13 +488,10 @@ float GoUctBookBuilder<PLAYER>::Worker::operator()(const SgMove& move)
     m_player->UpdateSubscriber();
     if (move >= 0)
         m_player->Board().Play(move);
-    SgDebug() << "\nEvaluating: " << m_player->Board() << '\n';
-
     m_player->GenMove(SgTimeRecord(true, 9999), m_player->Board().ToPlay());
     GoUctSearch& search 
         = dynamic_cast<GoUctSearch&>(m_player->Search());
     float score = search.Tree().Root().Mean();
-    SgDebug() << "***Score=" << score << '\n';
     return score;
 }
 
@@ -584,6 +582,7 @@ void GoUctBookBuilder<PLAYER>::EnsureRootExists()
     if (!GetNode(root))
     {
         BeforeEvaluateChildren();
+        PrintMessage("Creating root node...\n");
         float value = m_workers[0](SG_NULLMOVE);
         WriteNode(SgBookNode(value));
     }
@@ -597,6 +596,7 @@ bool GoUctBookBuilder<PLAYER>::GenerateMoves(std::vector<SgMove>& moves,
     SG_UNUSED(value);
 
     // Search for a few seconds.
+    SgDebug() << m_state.Board() << '\n';
     m_players[0]->SetMaxGames(m_numGamesPerSort);
     m_workers[0](SG_NULLMOVE);
     std::vector<std::pair<int, SgMove> > ordered;
@@ -619,11 +619,7 @@ bool GoUctBookBuilder<PLAYER>::GenerateMoves(std::vector<SgMove>& moves,
     // Sort moves based on count of this search. 
     std::stable_sort(ordered.begin(), ordered.end());
     for (std::size_t i = 0; i < ordered.size(); ++i)
-    {
-        SgDebug() << "(" << -ordered[i].first << ", "
-                  << SgWritePoint(ordered[i].second) << ") ";
         moves.push_back(ordered[i].second);
-    }
     SgDebug() << '\n';
     return false;
 }
@@ -640,6 +636,10 @@ void GoUctBookBuilder<PLAYER>
 ::EvaluateChildren(const std::vector<SgMove>& childrenToDo,
                    std::vector<std::pair<SgMove, float> >& scores)
 {
+    SgDebug() << "Evaluating children:";
+    for (std::size_t i = 0; i < childrenToDo.size(); ++i)
+        SgDebug() << ' ' << SgWritePoint(childrenToDo[i]);
+    SgDebug() << '\n';
     m_threadedWorker->DoWork(childrenToDo, scores);
 }
 

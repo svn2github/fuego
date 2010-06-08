@@ -220,6 +220,12 @@ public:
     /** See GoUctGlobalSearchMode */
     void SetSearchMode(GoUctGlobalSearchMode mode);
 
+    /** Print output of GoUctSearch. */
+    bool WriteDebugOutput() const;
+
+    /** See WriteDebugOutput() */
+    void SetWriteDebugOutput(bool flag);
+
     // @} // @name
 
 
@@ -296,6 +302,8 @@ public:
     boost::scoped_ptr<GoUctPlayoutPolicy<GoBoard> > m_playoutPolicy;
 
     SgMpiSynchronizerHandle m_mpiSynchronizer;
+
+    bool m_writeDebugOutput;
 
     SgMove GenMovePlayoutPolicy(SgBlackWhite toPlay);
 
@@ -494,6 +502,18 @@ void GoUctPlayer<SEARCH, THREAD>::Statistics::Clear()
 }
 
 template <class SEARCH, class THREAD>
+bool GoUctPlayer<SEARCH, THREAD>::WriteDebugOutput() const
+{
+    return m_writeDebugOutput;
+}
+
+template <class SEARCH, class THREAD>
+void GoUctPlayer<SEARCH, THREAD>::SetWriteDebugOutput(bool flag)
+{
+    m_writeDebugOutput = flag;
+}
+
+template <class SEARCH, class THREAD>
 void GoUctPlayer<SEARCH, THREAD>::Statistics::Write(std::ostream& out) const
 {
     out << SgWriteLabel("NuGenMove") << m_nuGenMove << '\n'
@@ -526,7 +546,8 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(GoBoard& bd)
       
       m_timeControl(Board()),
       m_rootFilter(new GoUctDefaultRootFilter(Board())),
-      m_mpiSynchronizer(SgMpiNullSynchronizer::Create())
+      m_mpiSynchronizer(SgMpiNullSynchronizer::Create()),
+      m_writeDebugOutput(true)
 {
     SetDefaultParameters(Board().Size());
     m_search.SetMpiSynchronizer(m_mpiSynchronizer);
@@ -721,20 +742,23 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay,
     std::size_t rootMoveCount = m_search.Tree().Root().MoveCount();
     m_mpiSynchronizer->SynchronizeSearchStatus(value, wasEarlyAbort, rootMoveCount);
 
-    // Write debug output to a string stream first to avoid intermingling
-    // of debug output with response in GoGui GTP shell
-    std::ostringstream out;
-    m_search.WriteStatistics(out);
-    out << SgWriteLabel("Value") << std::fixed << std::setprecision(2) 
-        << value << '\n' << SgWriteLabel("Sequence") 
-        << SgWritePointList(sequence, "", false);
-    if (m_reuseSubtree)
-        out << SgWriteLabel("TimeInitTree") << std::fixed 
-            << std::setprecision(2) << timeInitTree << '\n';
-    if (m_useRootFilter)
-        out << SgWriteLabel("TimeRootFilter") << std::fixed 
-            << std::setprecision(2) << timeRootFilter << '\n';
-    SgDebug() << out.str();
+    if (m_writeDebugOutput)
+    {
+        // Write debug output to a string stream first to avoid intermingling
+        // of debug output with response in GoGui GTP shell
+        std::ostringstream out;
+        m_search.WriteStatistics(out);
+        out << SgWriteLabel("Value") << std::fixed << std::setprecision(2) 
+            << value << '\n' << SgWriteLabel("Sequence") 
+            << SgWritePointList(sequence, "", false);
+        if (m_reuseSubtree)
+            out << SgWriteLabel("TimeInitTree") << std::fixed 
+                << std::setprecision(2) << timeInitTree << '\n';
+        if (m_useRootFilter)
+            out << SgWriteLabel("TimeRootFilter") << std::fixed 
+                << std::setprecision(2) << timeRootFilter << '\n';
+        SgDebug() << out.str();
+    }
 
     if (  value < m_resignThreshold
        && rootMoveCount > m_resignMinGames
@@ -844,7 +868,8 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
         if (m_ignoreClock)
             maxTime = std::numeric_limits<double>::max();
         else
-            maxTime = m_timeControl.TimeForCurrentMove(time);
+            maxTime = m_timeControl.TimeForCurrentMove(time,
+                                                       !m_writeDebugOutput);
         float value;
         if (m_searchMode == GOUCT_SEARCHMODE_ONEPLY)
         {
