@@ -43,6 +43,8 @@ public:
         - @link CmdRefresh() @c autobook_refresh @endlink
         - @link CmdParam()  @c autobook_param @endlink
         - @link CmdScores() @c autobook_scores @endlink
+        - @link CmdCounts() @c autobook_counts @endlink
+        - @link CmdPriority() @c autobook_priority @endlink
     */
     /** @name Command Callbacks */
     // @{
@@ -52,6 +54,8 @@ public:
     void CmdRefresh(GtpCommand& cmd);
     void CmdParam(GtpCommand& cmd);
     void CmdScores(GtpCommand& cmd);
+    void CmdCounts(GtpCommand& cmd);
+    void CmdPriority(GtpCommand& cmd);
     // @} // @name
 
     void Register(GtpEngine& engine);
@@ -69,6 +73,8 @@ private:
 
     void Register(GtpEngine& e, const std::string& command,
                 typename GtpCallback<GoUctBookBuilderCommands>::Method method);
+
+    void ShowInfluence(GtpCommand& cmd, GoBookState& state);
 };
 
 //----------------------------------------------------------------------------
@@ -92,17 +98,23 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/AutoBook Open/autobook_open %r\n"
         "param/AutoBook Param/autobook_param\n"
         "none/AutoBook Refresh/autobook_refresh\n"
-        "gfx/AutoBook Scores/autobook_scores\n";
+        "gfx/AutoBook Scores/autobook_scores\n"
+        "gfx/AutoBook Counts/autobook_counts\n"
+        "gfx/AutoBook Priority/autobook_priority\n";
 }
 
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
 {
     Register(e, "autobook_close", &GoUctBookBuilderCommands<PLAYER>::CmdClose);
+    Register(e, "autobook_counts", 
+             &GoUctBookBuilderCommands<PLAYER>::CmdCounts);
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
     Register(e, "autobook_open", &GoUctBookBuilderCommands<PLAYER>::CmdOpen);
     Register(e, "autobook_param", &GoUctBookBuilderCommands<PLAYER>::CmdParam);
+    Register(e, "autobook_priority", 
+             &GoUctBookBuilderCommands<PLAYER>::CmdPriority);
     Register(e, "autobook_refresh", 
              &GoUctBookBuilderCommands<PLAYER>::CmdRefresh);
     Register(e, "autobook_scores", 
@@ -132,6 +144,34 @@ PLAYER& GoUctBookBuilderCommands<PLAYER>::Player()
         throw GtpFailure("player not of right type!");
     }
 }
+
+//----------------------------------------------------------------------------
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::ShowInfluence(GtpCommand& cmd,
+                                                     GoBookState& state)
+{
+    cmd << "INFLUENCE ";
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+    {
+        if (m_bd.IsLegal(*it))
+        {
+            state.Play(*it);
+            SgBookNode node;
+            if (m_book->Get(state, node))
+            {
+                float value 
+                    = m_bookBuilder.InverseEval(m_bookBuilder.Value(node));
+                float scaledValue = (value * 2 - 1);
+                if (m_bd.ToPlay() != SG_BLACK)
+                    scaledValue *= -1;
+                cmd << ' ' << SgWritePoint(*it) << ' ' << scaledValue;
+            }
+            state.Undo();
+        }
+    }
+}
+
 //----------------------------------------------------------------------------
 
 template<class PLAYER>
@@ -220,7 +260,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
     cmd.CheckArgNone();
     GoBookState state(m_bd);
     state.Synchronize();
-    cmd << "INFLUENCE ";
+    ShowInfluence(cmd, state);
+    cmd << "\nLABEL ";
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
         if (m_bd.IsLegal(*it))
@@ -231,14 +272,22 @@ void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
             {
                 float value 
                     = m_bookBuilder.InverseEval(m_bookBuilder.Value(node));
-                float scaledValue = (value * 2 - 1);
-                if (m_bd.ToPlay() != SG_BLACK)
-                    scaledValue *= -1;
-                cmd << ' ' << SgWritePoint(*it) << ' ' << scaledValue;
+                cmd << ' ' << SgWritePoint(*it) 
+                    << ' ' << std::fixed << std::setprecision(3) << value;
             }
             state.Undo();
         }
     }
+    cmd << '\n';
+}
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdCounts(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    GoBookState state(m_bd);
+    state.Synchronize();
+    ShowInfluence(cmd, state);
     cmd << "\nLABEL ";
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
@@ -248,6 +297,36 @@ void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
             SgBookNode node;
             if (m_book->Get(state, node))
                 cmd << ' ' << SgWritePoint(*it) << ' ' << node.m_count;
+            state.Undo();
+        }
+    }
+    cmd << '\n';
+}
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    GoBookState state(m_bd);
+    state.Synchronize();
+    SgBookNode parent;
+    if (!m_book->Get(state, parent))
+        throw GtpFailure("Current state not in book!");
+    ShowInfluence(cmd, state);
+    cmd << "\nLABEL ";
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+    {
+        if (m_bd.IsLegal(*it))
+        {
+            state.Play(*it);
+            SgBookNode child;
+            if (m_book->Get(state, child))
+            {
+                float priority = m_bookBuilder.ComputePriority
+                    (parent, child.m_value, child.m_priority);
+                cmd << ' ' << SgWritePoint(*it) << ' ' 
+                    << std::fixed << std::setprecision(1) << priority;
+            }
             state.Undo();
         }
     }
