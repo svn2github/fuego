@@ -192,7 +192,7 @@ template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
-        throw GtpFailure() << "No opened auto-book!\n";
+        throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckNuArg(1);
     int numExpansions = cmd.IntArg(0, 1);
     m_bookBuilder.SetPlayer(Player());
@@ -204,7 +204,7 @@ template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
-        throw GtpFailure() << "No opened auto-book!\n";
+        throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
@@ -257,6 +257,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
 {
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
     GoBookState state(m_bd);
     state.Synchronize();
@@ -284,6 +286,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdCounts(GtpCommand& cmd)
 {
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
     GoBookState state(m_bd);
     state.Synchronize();
@@ -306,6 +310,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCounts(GtpCommand& cmd)
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
 {
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
     GoBookState state(m_bd);
     state.Synchronize();
