@@ -74,7 +74,7 @@ private:
     void Register(GtpEngine& e, const std::string& command,
                 typename GtpCallback<GoUctBookBuilderCommands>::Method method);
 
-    void ShowInfluence(GtpCommand& cmd, GoBookState& state);
+    void ShowInfluence(GtpCommand& cmd, GoAutoBookState& state);
 };
 
 //----------------------------------------------------------------------------
@@ -149,7 +149,7 @@ PLAYER& GoUctBookBuilderCommands<PLAYER>::Player()
 
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::ShowInfluence(GtpCommand& cmd,
-                                                     GoBookState& state)
+                                                     GoAutoBookState& state)
 {
     cmd << "INFLUENCE ";
     for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -260,7 +260,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
-    GoBookState state(m_bd);
+    GoAutoBookState state(m_bd);
     state.Synchronize();
     ShowInfluence(cmd, state);
     cmd << "\nLABEL ";
@@ -289,7 +289,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCounts(GtpCommand& cmd)
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
-    GoBookState state(m_bd);
+    GoAutoBookState state(m_bd);
     state.Synchronize();
     ShowInfluence(cmd, state);
     cmd << "\nLABEL ";
@@ -313,7 +313,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckArgNone();
-    GoBookState state(m_bd);
+    GoAutoBookState state(m_bd);
     state.Synchronize();
     SgBookNode parent;
     if (!m_book->Get(state, parent))
