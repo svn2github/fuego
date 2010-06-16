@@ -1343,7 +1343,6 @@ void SgUctSearch::UpdateStatistics(const SgUctGameInfo& info)
 
 void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
 {
-    // We count all playouts as one result
     float eval = 0;
     for (size_t i = 0; i < m_numberPlayouts; ++i)
         eval += info.m_eval[i];
@@ -1355,7 +1354,7 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     {
         const SgUctNode& node = *nodes[i];
         const SgUctNode* father = (i > 0 ? nodes[i - 1] : 0);
-        m_tree.AddGameResult(node, father, i % 2 == 0 ? eval : inverseEval);
+        m_tree.AddGameResults(node, father, i % 2 == 0 ? eval : inverseEval, m_numberPlayouts);
     }
 }
 
