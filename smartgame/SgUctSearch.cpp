@@ -529,9 +529,14 @@ SgUctTree& SgUctSearch::GetTempTree()
     // m_tree.MaxNodes()), because of the delayed thread (and thereby
     // allocator) creation in SgUctSearch
     if (m_tempTree.NuAllocators() != NumberThreads())
+    {
         m_tempTree.CreateAllocators(NumberThreads());
-    if (m_tempTree.MaxNodes() != MaxNodes())
         m_tempTree.SetMaxNodes(MaxNodes());
+    }
+    else if (m_tempTree.MaxNodes() != MaxNodes())
+    {
+    	m_tempTree.SetMaxNodes(MaxNodes());
+    }
     return m_tempTree;
 }
 
