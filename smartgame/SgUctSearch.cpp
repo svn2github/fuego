@@ -972,6 +972,8 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
                       << (m_timer.GetTime() - startPruneTime) << "\n";
             if (prunedSizePercentage > 50)
                 pruneMinCount *= 2;
+            else
+             	pruneMinCount = m_pruneMinCount; 
             m_tree.Swap(tempTree);
         }
     }
