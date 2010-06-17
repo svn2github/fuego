@@ -891,6 +891,7 @@ inline void SgUctTree::CreateChildren(std::size_t allocatorId,
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
     nonConstNode.SetPosCount(parentCount);
+    SgSynchronizeThreadMemory();
     nonConstNode.SetFirstChild(firstChild);
     SgSynchronizeThreadMemory();
     nonConstNode.SetNuChildren(nuChildren);

@@ -102,6 +102,7 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
+    SgSynchronizeThreadMemory();
     nonConstNode.SetFirstChild(firstChild);
     SgSynchronizeThreadMemory();
     nonConstNode.SetNuChildren(nuChildren);
@@ -148,7 +149,9 @@ void SgUctTree::SetChildren(std::size_t allocatorId, const SgUctNode& node,
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
+    SgSynchronizeThreadMemory();
     nonConstNode.SetFirstChild(firstChild);
+    SgSynchronizeThreadMemory();
     nonConstNode.SetNuChildren(nuChildren);
 }
 
@@ -364,16 +367,17 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     // run past the end of a node's children, which can happen if one
     // is created between the two statements below. We modify node in
     // such a way so as to avoid that.
+    SgSynchronizeThreadMemory();
     if (nonConstNode.NuChildren() < (int)nuNewChildren)
     {
         nonConstNode.SetFirstChild(newFirstChild);
-    SgSynchronizeThreadMemory();
+        SgSynchronizeThreadMemory();
         nonConstNode.SetNuChildren(nuNewChildren);
     }
     else
     {
         nonConstNode.SetNuChildren(nuNewChildren);
-    SgSynchronizeThreadMemory();
+        SgSynchronizeThreadMemory();
         nonConstNode.SetFirstChild(newFirstChild);
     }
 }
