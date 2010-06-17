@@ -102,9 +102,9 @@ GoAutoBook::~GoAutoBook()
 {
 }
 
-bool GoAutoBook::Get(const GoAutoBookState& state, SgBookNode& node)
+bool GoAutoBook::Get(const GoAutoBookState& state, SgBookNode& node) const
 {
-    Map::iterator it = m_data.find(state.GetHashCode());
+    Map::const_iterator it = m_data.find(state.GetHashCode());
     if (it != m_data.end())
     {
         node = it->second;
@@ -132,6 +132,41 @@ void GoAutoBook::Save(const std::string& filename) const
             << it->second.ToString() << '\n';
     }
     out.close();
+}
+
+SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
+{
+    std::size_t bestCount = 0;
+    SgMove bestMove = SG_NULLMOVE;
+    SgBookNode node;
+    if (!Get(state, node))
+        return SG_NULLMOVE;
+    if (node.IsLeaf())
+        return SG_NULLMOVE;
+    for (GoBoard::Iterator it(state.Board()); it; ++it)
+    {
+        if (state.Board().IsLegal(*it))
+        {
+            state.Play(*it);
+            if (Get(state, node) && !node.IsLeaf() && !node.IsTerminal())
+            {
+                if (node.m_count > bestCount)
+                {
+                    bestCount = node.m_count;
+                    bestMove = *it;
+                }
+            }
+            state.Undo();
+        }
+    }
+    return bestMove;
+}
+
+SgMove GoAutoBook::LookupMove(const GoBoard& brd) const
+{
+    GoAutoBookState state(brd);
+    state.Synchronize();
+    return FindBestChild(state);
 }
 
 //----------------------------------------------------------------------------

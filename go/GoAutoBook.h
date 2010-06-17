@@ -67,13 +67,17 @@ public:
 
     ~GoAutoBook();
 
-    bool Get(const GoAutoBookState& state, SgBookNode& node);
+    bool Get(const GoAutoBookState& state, SgBookNode& node) const;
 
     void Put(const GoAutoBookState& state, const SgBookNode& node);
 
     void Flush();
 
     void Save(const std::string& filename) const;
+
+    SgMove LookupMove(const GoBoard& brd) const;
+
+    SgMove FindBestChild(GoAutoBookState& state) const;
 
 private:
     typedef std::map<SgHashCode, SgBookNode> Map;
