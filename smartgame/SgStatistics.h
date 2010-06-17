@@ -128,18 +128,15 @@ void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val)
     // Write order dependency: at least on class (SgUctSearch in lock-free
     // mode) uses SgStatisticsBase concurrently without locking and assumes
     // that m_mean is valid, if m_count is greater zero
-    if (m_count > 1) 
+    COUNT count = m_count;
+    if (count > 1) 
     {
-        COUNT count = m_count;
         --count;
         m_mean += (m_mean - val) / count;
         m_count = count;
     }
     else
-    {
-        m_mean = 0.0;
-        m_count = 0;
-    }
+        Clear();
 }
 
 template<typename VALUE, typename COUNT>
@@ -149,18 +146,15 @@ void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val, COUNT n)
     // Write order dependency: at least on class (SgUctSearch in lock-free
     // mode) uses SgStatisticsBase concurrently without locking and assumes
     // that m_mean is valid, if m_count is greater zero
-    if (m_count > n) 
+    COUNT count = m_count;
+    if (count > n) 
     {
-        COUNT count = m_count;
         count -= n;
         m_mean += n * (m_mean - val) / count;
         m_count = count;
     }
     else
-    {
-        m_mean = 0.0;
-        m_count = 0;
-    }
+        Clear();
 }
 
 template<typename VALUE, typename COUNT>
