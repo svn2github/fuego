@@ -9,8 +9,10 @@
 
 #include <sstream>
 #include <boost/filesystem/path.hpp>
+#include <boost/scoped_ptr.hpp>
 #include "GoBoard.h"
 #include "GoBook.h"
+#include "GoAutoBook.h"
 #include "GoGame.h"
 #include "GoGtpTimeSettings.h"
 #include "GoStaticLadder.h"
@@ -236,6 +238,8 @@ protected:
         They have to check first, that the current player is the expected one.
     */
     GoPlayer* m_player;
+
+    boost::scoped_ptr<GoAutoBook> m_autoBook;
 
     /** Hook function to be executed before each command.
         Resets user abort flag. Lengthy functions should poll SgUserAbort but

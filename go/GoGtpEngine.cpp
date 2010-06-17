@@ -82,6 +82,7 @@ GoGtpEngine::GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoar
                          bool noHandicap)
     : GtpEngine(in, out),
       m_player(0),
+      m_autoBook(0),
       m_noPlayer(noPlayer),
       m_acceptIllegal(false),
       m_autoSave(false),
@@ -1350,7 +1351,13 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     AddStatistics("GAME", m_autoSaveFileName);
     AddStatistics("MOVE", GetGame().CurrentMoveNumber() + 1);
     SgPoint move = SG_NULLMOVE;
-    move = m_book.LookupMove(bd);
+    if (m_autoBook.get() != 0)
+    {
+        SgDebug() << "GoGtpEngine: Checking AutoBook instead of book\n";
+        move = m_autoBook->LookupMove(bd);
+    }
+    else 
+        move = m_book.LookupMove(bd);
     m_mpiSynchronizer->SynchronizeMove(move);
     if (move != SG_NULLMOVE)
     {

@@ -20,7 +20,7 @@ FuegoMainEngine::FuegoMainEngine(GtpInputStream& in, GtpOutputStream& out,
                                  bool noHandicap)
     : GoGtpEngine(in, out, fixedBoardSize, programPath, false, noHandicap),
       m_uctCommands(Board(), m_player),
-      m_autoBookCommands(Board(), m_player),
+      m_autoBookCommands(Board(), m_player, m_autoBook),
       m_safetyCommands(Board())
 {
     m_uctCommands.Register(*this);

@@ -32,7 +32,8 @@ public:
         need a GoUctPlayer will fail, if the current player is not a
         PLAYER.
     */
-    GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player);
+    GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player,
+                             boost::scoped_ptr<GoAutoBook>& book);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -65,7 +66,7 @@ private:
 
     GoPlayer*& m_player;
 
-    boost::scoped_ptr<GoAutoBook> m_book;
+    boost::scoped_ptr<GoAutoBook>& m_book;
 
     GoUctBookBuilder<PLAYER> m_bookBuilder;
 
@@ -81,10 +82,11 @@ private:
 
 template<class PLAYER>
 GoUctBookBuilderCommands<PLAYER>
-::GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player)
+::GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player, 
+                           boost::scoped_ptr<GoAutoBook>& book)
     : m_bd(bd),
       m_player(player),
-      m_book(0),
+      m_book(book),
       m_bookBuilder(bd)
 {
 }
