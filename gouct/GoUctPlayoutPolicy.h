@@ -472,6 +472,8 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
 {
     SG_ASSERT(! SgIsSpecialMove(lastMove));
     SG_ASSERT(! m_bd.IsEmpty(lastMove));
+    SG_ASSERT(m_moves.IsEmpty());
+    
     const SgBlackWhite toPlay = m_bd.ToPlay();
 
     // take liberty of last move
@@ -484,16 +486,16 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     if (m_bd.NumNeighbors(lastMove, toPlay) != 0)
     {
         // play liberties of neighbor blocks
-        SgSList<SgPoint,4> anchorList;
+        SgSList<SgPoint,4> ourLowLibBlocks;
         for (SgNb4Iterator it(lastMove); it; ++it)
         {
             if (m_bd.GetColor(*it) == toPlay
                 && m_bd.NumLiberties(*it) == 2)
             {
                 const SgPoint anchor = m_bd.Anchor(*it);
-                if (! anchorList.Contains(anchor))
+                if (! ourLowLibBlocks.Contains(anchor))
                 {
-                    anchorList.PushBack(anchor);
+                    ourLowLibBlocks.PushBack(anchor);
                     PlayGoodLiberties(anchor);
                 }
             }
