@@ -879,7 +879,10 @@ void GoUctCommands::CmdStatPolicy(GtpCommand& cmd)
     cmd.CheckArgNone();
     if (! Player().m_playoutPolicyParam.m_statisticsEnabled)
         SgWarning() << "statistics not enabled in policy parameters\n";
-    Policy(0).Statistics().Write(cmd);
+    cmd << "Black Statistics:\n";
+    Policy(0).Statistics(SG_BLACK).Write(cmd);
+    cmd << "\nWhite Statistics:\n";
+    Policy(0).Statistics(SG_WHITE).Write(cmd);
 }
 
 /** Clear statistics of GoUctPlayoutPolicy
