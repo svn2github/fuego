@@ -99,7 +99,7 @@ namespace GoUctUtil
         playing strength if this function is used. The function currently
         generates a move on the 4-4 point of an empty corner under the
         following conditions:
-        # The board size is 15 or larger
+        # The board size is 13 or larger
         # There are no more than 5 stones of each color on the board (avoids
           that the move generation triggers in positions containing lots of
           setup stones)

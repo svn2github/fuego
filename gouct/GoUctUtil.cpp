@@ -96,7 +96,7 @@ void GoUctUtil::ClearStatistics(SgPointArray<SgUctStatistics>& stats)
 SgPoint GoUctUtil::GenForcedOpeningMove(const GoBoard& bd)
 {
     int sz = bd.Size();
-    if (sz < 15 || bd.TotalNumStones(SG_BLACK) > 5
+    if (sz < 13 || bd.TotalNumStones(SG_BLACK) > 5
         || bd.TotalNumStones(SG_WHITE) > 5)
         return SG_NULLMOVE;
     SgSList<SgPoint,4> moves;

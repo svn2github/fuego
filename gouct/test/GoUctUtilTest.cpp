@@ -221,10 +221,10 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_OneEmptyCorner)
     BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), Pt(4, 4));
 }
 
-/** Test that no moves are generated on a board smaller than size 15. */
+/** Test that no moves are generated on a board smaller than size 13. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SmallBoard)
 {
-    GoBoard bd(14);
+    GoBoard bd(12);
     BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
 }
 
