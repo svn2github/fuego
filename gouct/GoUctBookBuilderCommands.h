@@ -40,10 +40,14 @@ public:
     /** @page gouctbookbuildergtpcommands GoUctBookBuilderCommands Commands
         - @link CmdOpen() @c autobook_open @endlink
         - @link CmdClose() @c autobook_close @endlink
+        - @link CmdSave() @c autobook_save @endlink
         - @link CmdExpand() @c autobook_expand @endlink
+        - @link CmdCover() @c autobook_cover @endlink
         - @link CmdRefresh() @c autobook_refresh @endlink
+        - @link CmdMerge() @c autobook_merge @endlink
         - @link CmdParam()  @c autobook_param @endlink
         - @link CmdScores() @c autobook_scores @endlink
+        - @link CmdStateInfo() @c autobook_state_info @endlink
         - @link CmdCounts() @c autobook_counts @endlink
         - @link CmdPriority() @c autobook_priority @endlink
     */
@@ -51,10 +55,14 @@ public:
     // @{
     void CmdOpen(GtpCommand& cmd);
     void CmdClose(GtpCommand& cmd);
+    void CmdSave(GtpCommand& cmd);
     void CmdExpand(GtpCommand& cmd);
+    void CmdCover(GtpCommand& cmd);
     void CmdRefresh(GtpCommand& cmd);
+    void CmdMerge(GtpCommand& cmd);
     void CmdParam(GtpCommand& cmd);
     void CmdScores(GtpCommand& cmd);
+    void CmdStateInfo(GtpCommand& cmd);
     void CmdCounts(GtpCommand& cmd);
     void CmdPriority(GtpCommand& cmd);
     // @} // @name
@@ -96,13 +104,18 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd << 
         "none/AutoBook Close/autobook_close\n"
+        "none/AutoBook Cover/autobook_cover\n"
         "none/AutoBook Expand/autobook_expand\n"
         "none/AutoBook Open/autobook_open %r\n"
-        "param/AutoBook Param/autobook_param\n"
+        "none/AutoBook Save/autobook_save\n"
         "none/AutoBook Refresh/autobook_refresh\n"
+        "none/AutoBook Merge/autobook_merge %r\n"
+        "param/AutoBook Param/autobook_param\n"
+        "string/AutoBook State Info/autobook_state_info\n"
         "gfx/AutoBook Scores/autobook_scores\n"
         "gfx/AutoBook Counts/autobook_counts\n"
         "gfx/AutoBook Priority/autobook_priority\n";
+      
 }
 
 template<class PLAYER>
@@ -111,16 +124,24 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
     Register(e, "autobook_close", &GoUctBookBuilderCommands<PLAYER>::CmdClose);
     Register(e, "autobook_counts", 
              &GoUctBookBuilderCommands<PLAYER>::CmdCounts);
+    Register(e, "autobook_cover",
+             &GoUctBookBuilderCommands<PLAYER>::CmdCover);             
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
     Register(e, "autobook_open", &GoUctBookBuilderCommands<PLAYER>::CmdOpen);
+    Register(e, "autobook_merge", 
+             &GoUctBookBuilderCommands<PLAYER>::CmdMerge);
     Register(e, "autobook_param", &GoUctBookBuilderCommands<PLAYER>::CmdParam);
     Register(e, "autobook_priority", 
              &GoUctBookBuilderCommands<PLAYER>::CmdPriority);
     Register(e, "autobook_refresh", 
              &GoUctBookBuilderCommands<PLAYER>::CmdRefresh);
+    Register(e, "autobook_save",
+             &GoUctBookBuilderCommands<PLAYER>::CmdSave);
     Register(e, "autobook_scores", 
              &GoUctBookBuilderCommands<PLAYER>::CmdScores);
+    Register(e, "autobook_state_info", 
+             &GoUctBookBuilderCommands<PLAYER>::CmdStateInfo);
 }
 
 template<class PLAYER>
@@ -191,6 +212,29 @@ void GoUctBookBuilderCommands<PLAYER>::CmdClose(GtpCommand& cmd)
 }
 
 template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdSave(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckArgNone();
+    m_book->Flush();
+}
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdStateInfo(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckArgNone();
+    GoAutoBookState state(m_bd);
+    state.Synchronize();
+    SgBookNode node;
+    if (!m_book->Get(state, node))
+        throw GtpFailure() << "State not in autobook.\n";
+    cmd << node;
+}
+
+template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
@@ -202,6 +246,29 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
     m_bookBuilder.Expand(numExpansions);
 }
 
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArg(2);
+    std::vector< std::vector<SgMove> > workList;
+    {
+        std::string filename = cmd.Arg(0);
+        std::ifstream in(filename.c_str());
+        if (!in)
+            throw GtpFailure() << "Could not open '" << filename << "'\n";
+        workList = GoAutoBook::ParseWorkList(in);
+        if (workList.empty())
+            throw GtpFailure() << "Empty worklist! No action performed";
+    }
+    int expansionsRequired = cmd.IntArg(1, 1);
+    m_bookBuilder.SetPlayer(Player());
+    m_bookBuilder.SetState(*m_book);
+    m_bookBuilder.Cover(expansionsRequired, workList);
+}
+
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
 {
@@ -211,6 +278,16 @@ void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
     m_bookBuilder.Refresh();
+}
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArg(1);
+    GoAutoBook other(cmd.Arg(0));
+    m_book->Merge(other);
 }
 
 template<class PLAYER>

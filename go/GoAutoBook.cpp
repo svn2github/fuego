@@ -134,10 +134,69 @@ void GoAutoBook::Save(const std::string& filename) const
     out.close();
 }
 
+void GoAutoBook::Merge(const GoAutoBook& other)
+{
+    SgDebug() << "GoAutoBook::Merge()\n";
+    std::size_t newLeafs = 0;
+    std::size_t newInternal = 0;
+    std::size_t leafsInCommon = 0;
+    std::size_t internalInCommon = 0;
+    std::size_t leafToInternal = 0;
+    for (Map::const_iterator it = other.m_data.begin();
+         it != other.m_data.end(); ++it)
+    {
+        Map::iterator mine = m_data.find(it->first);
+        SgBookNode newNode(it->second);
+        if (mine == m_data.end())
+        {
+            m_data[it->first] = it->second;
+            if (newNode.IsLeaf())
+                newLeafs++;
+            else
+                newInternal++;
+        }
+        else
+        {
+            SgBookNode oldNode(mine->second);
+            if (newNode.IsLeaf() && oldNode.IsLeaf())
+            {
+                newNode.m_heurValue = 0.5 * (newNode.m_heurValue 
+                                             + oldNode.m_heurValue);
+                m_data[it->first] = newNode;
+                leafsInCommon++;
+            }
+            else if (!newNode.IsLeaf())
+            {
+                // Take the max of the count; can't just add them
+                // together because then merging a book with itself
+                // doubles the counts of everything, which doesn't
+                // make sense. Need the parent of these books and do a
+                // three-way merge if we want the counts to be
+                // accurate after the merge.  I don't think it matters
+                // that much.
+                newNode.m_count = std::max(newNode.m_count, oldNode.m_count);
+                m_data[it->first] = newNode;
+                if (!oldNode.IsLeaf())
+                    internalInCommon++;
+                else 
+                    leafToInternal++;
+            }
+        }
+    }
+    SgDebug() << "Statistics\n"
+              << "New Leafs        " << newLeafs << '\n'
+              << "New Internal     " << newInternal << '\n'
+              << "Common Leafs     " << leafsInCommon << '\n'
+              << "Common Internal  " << internalInCommon << '\n'
+              << "Leaf to Internal " << leafToInternal << '\n';
+}
+
 SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
 {
+    int selectType = 1;
     std::size_t bestCount = 0;
     SgMove bestMove = SG_NULLMOVE;
+    float bestScore = 100.0f;
     SgBookNode node;
     if (!Get(state, node))
         return SG_NULLMOVE;
@@ -148,12 +207,37 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
         if (state.Board().IsLegal(*it))
         {
             state.Play(*it);
-            if (Get(state, node) && !node.IsLeaf() && !node.IsTerminal())
+            // NOTE: Terminal nodes aren't supported at this time, so 
+            // we ignore them here.
+            if (Get(state, node) && !node.IsTerminal())
             {
-                if (node.m_count > bestCount)
+                if (selectType == 0) // BY COUNT
                 {
-                    bestCount = node.m_count;
-                    bestMove = *it;
+                    // Select by count, tiebreak by value.
+                    if (node.m_count > bestCount)
+                    {
+                        bestCount = node.m_count;
+                        bestMove = *it;
+                        bestScore = node.m_value;
+                    }
+                    // NOTE: do not have access to inverse function,
+                    // so we're minimizing here as a temporary solution. 
+                    else if (node.m_count == bestCount
+                             && node.m_value < bestScore)
+                    {
+                        bestMove = *it;
+                        bestScore = node.m_value;
+                    }
+                }
+                else if (selectType == 1) // BY VALUE
+                {
+                    // NOTE: do not have access to inverse function,
+                    // so we're minimizing here as a temporary solution. 
+                    if (node.m_value < bestScore)
+                    {
+                        bestMove = *it;
+                        bestScore = node.m_value;
+                    }
                 }
             }
             state.Undo();
@@ -167,6 +251,39 @@ SgMove GoAutoBook::LookupMove(const GoBoard& brd) const
     GoAutoBookState state(brd);
     state.Synchronize();
     return FindBestChild(state);
+}
+
+//----------------------------------------------------------------------------
+
+std::vector< std::vector<SgMove> > GoAutoBook::ParseWorkList(std::istream& in)
+{
+    std::vector< std::vector<SgMove> > ret;
+    while (in)
+    {
+        std::string line;
+        std::getline(in, line);
+        if (line == "")
+            continue;
+        std::vector<SgMove> var;
+        std::istringstream in2(line);
+        while (true)
+        {
+            std::string s;
+            in2 >> s;
+            if (! in2 || s == "|")
+                break;
+            std::istringstream in3(s);
+            SgPoint p;
+            in3 >> SgReadPoint(p);
+            if (! in3)
+                throw SgException("Invalid point");
+            var.push_back(p);
+        }
+        ret.push_back(var);
+    }
+    SgDebug() << "GoAutoBook::ParseWorkList: Read " << ret.size() 
+              << " variations.\n";
+    return ret;
 }
 
 //----------------------------------------------------------------------------

@@ -79,6 +79,11 @@ public:
 
     SgMove FindBestChild(GoAutoBookState& state) const;
 
+    void Merge(const GoAutoBook& other);
+
+    /** Parses a worklist from a stream. */
+    static std::vector< std::vector<SgMove> > ParseWorkList(std::istream& in);
+
 private:
     typedef std::map<SgHashCode, SgBookNode> Map;
 

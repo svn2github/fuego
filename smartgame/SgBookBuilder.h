@@ -151,6 +151,11 @@ public:
     /** Expands the book by expanding numExpansions leaves. */
     void Expand(int numExpansions);
 
+    /** Ensures each node in each line has at least the given number
+        of expansions. */
+    void Cover(int requiredExpansions,
+               const std::vector< std::vector<SgMove> >& lines);
+
     /** Propagates leaf values up through the entire tree.  
         @ref bookrefresh. */
     void Refresh();
@@ -268,7 +273,7 @@ protected:
 
     /** Hook function: called at start of iteration.
         Default implementation does nothing. */
-    virtual void StartIteration(int interation);
+    virtual void StartIteration();
     
     /** Hook function: called at end of iteration. 
         Default implementation does nothing. */

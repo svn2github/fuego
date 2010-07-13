@@ -65,9 +65,8 @@ SgBookBuilder::~SgBookBuilder()
 
 //----------------------------------------------------------------------------
 
-void SgBookBuilder::StartIteration(int iteration)
+void SgBookBuilder::StartIteration()
 {
-    SG_UNUSED(iteration);
     // DEFAULT IMPLEMENTATION DOES NOTHING
 }
 
@@ -107,9 +106,11 @@ void SgBookBuilder::Expand(int numExpansions)
     int num = 0;
     for (; num < numExpansions; ++num) 
     {
-        StartIteration(num);
-	// If root position becomes a known win or loss, then there's
-	// no point in continuing to expand the opening book.
+        {
+            std::ostringstream os;
+            os << "\n--Iteration " << num << "--\n";
+            PrintMessage(os.str());
+        }
         {
             SgBookNode root;
             GetNode(root);
@@ -119,10 +120,11 @@ void SgBookBuilder::Expand(int numExpansions)
                 break;
             }
         }
+        StartIteration();
         std::vector<SgMove> pv;
         DoExpansion(pv);
         EndIteration();
-        // Flush the book if we've performed enough iterations
+
         if (num && (num % m_flush_iterations) == 0) 
             FlushBook();
     }
@@ -141,6 +143,81 @@ void SgBookBuilder::Expand(int numExpansions)
        << std::fixed << std::setprecision(2)
        << " (" << (m_num_evals / elapsed) << "/s)\n"
        << "Widenings      " << m_num_widenings << '\n';
+    PrintMessage(os.str());
+}
+
+/** TODO: handle terminal states! */
+void SgBookBuilder::Cover(int requiredExpansions,
+                          const std::vector< std::vector<SgMove> >& lines)
+{
+    m_num_evals = 0;
+    m_num_widenings = 0;
+    std::size_t newLines = 0;
+    SgTimer timer;
+    Init();
+    int num = 0;
+    for (std::size_t i = 0; i < lines.size(); ++i)
+    {
+        const std::size_t size = lines[i].size();
+        for (std::size_t j = 0; j <= size; ++j)
+        {
+            int expansionsToDo = requiredExpansions;
+            SgBookNode node;
+            if (GetNode(node))
+                expansionsToDo = requiredExpansions - node.m_count;
+            else
+            {
+                EnsureRootExists();
+                newLines++;
+            }
+            for (int k = 0; k < expansionsToDo; ++k)
+            {
+                {
+                    std::ostringstream os;
+                    os << "\n--Iteration " << num << ": " 
+                       << (i + 1) << '/' << lines.size() << ' '
+                       << (j + 1) << '/' << (size + 1) << ' '
+                       << (k + 1) << '/' << expansionsToDo << "--\n";
+                    PrintMessage(os.str());
+                }
+
+                StartIteration();
+                std::vector<SgMove> pv;
+                DoExpansion(pv);
+                EndIteration();
+
+                num++;
+                if (num % m_flush_iterations == 0)
+                    FlushBook();
+            }
+            if (j < lines[i].size())
+                PlayMove(lines[i][j]);
+        }
+        for (std::size_t j = 0; j < size; ++j)
+        {
+            UndoMove(lines[i][size - 1 - j]);
+            SgBookNode node;
+            GetNode(node);
+            UpdateValue(node);
+            UpdatePriority(node);
+        }
+    }
+    FlushBook();
+    Fini();
+    timer.Stop();
+    double elapsed = timer.GetTime();
+    std::ostringstream os;
+    os << '\n'
+       << "Statistics\n"
+       << "Total Time     " << elapsed << '\n'
+       << "Expansions     " << num 
+       << std::fixed << std::setprecision(2) 
+       << " (" << (num / elapsed) << "/s)\n"
+       << "Evaluations    " << m_num_evals 
+       << std::fixed << std::setprecision(2)
+       << " (" << (m_num_evals / elapsed) << "/s)\n"
+       << "Widenings      " << m_num_widenings << '\n'
+       << "New Lines      " << newLines << '\n';
     PrintMessage(os.str());
 }
 

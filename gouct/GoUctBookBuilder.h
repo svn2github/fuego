@@ -94,7 +94,7 @@ protected:
                           std::vector<std::pair<SgMove, float> >& scores);
     void Init();
 
-    void StartIteration(int iteration);
+    void StartIteration();
 
     void EndIteration();
 
@@ -458,15 +458,13 @@ void GoUctBookBuilder<PLAYER>::AfterEvaluateChildren()
 }
 
 template<class PLAYER>
-void GoUctBookBuilder<PLAYER>::StartIteration(int iteration)
+void GoUctBookBuilder<PLAYER>::StartIteration()
 {
-    SgDebug() << "\n--Iteration " << iteration << "--\n";
 }
 
 template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::EndIteration()
 {
-    // DO NOTHING FOR NOW
 }
 
 template<class PLAYER>
