@@ -81,6 +81,8 @@ public:
 
     void Merge(const GoAutoBook& other);
 
+    void AddDisabledLines(const std::set<SgHashCode>& disabled);
+
     /** Parses a worklist from a stream. */
     static std::vector< std::vector<SgMove> > ParseWorkList(std::istream& in);
 
@@ -89,8 +91,16 @@ private:
 
     Map m_data;
 
+    std::set<SgHashCode> m_disabled;
+
     std::string m_filename;
 };
+
+inline void GoAutoBook::AddDisabledLines(const std::set<SgHashCode>& disabled)
+{
+    m_disabled.insert(disabled.begin(), disabled.end());
+    SgDebug() << "Disabled " << disabled.size() << " lines.\n";
+}
 
 //----------------------------------------------------------------------------
 

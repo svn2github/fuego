@@ -50,6 +50,7 @@ public:
         - @link CmdStateInfo() @c autobook_state_info @endlink
         - @link CmdCounts() @c autobook_counts @endlink
         - @link CmdPriority() @c autobook_priority @endlink
+        - @link CmdLoadDisabled() @c autobook_load_disabled_lines @endlink
     */
     /** @name Command Callbacks */
     // @{
@@ -65,6 +66,7 @@ public:
     void CmdStateInfo(GtpCommand& cmd);
     void CmdCounts(GtpCommand& cmd);
     void CmdPriority(GtpCommand& cmd);
+    void CmdLoadDisabled(GtpCommand& cmd);
     // @} // @name
 
     void Register(GtpEngine& engine);
@@ -110,6 +112,7 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/AutoBook Save/autobook_save\n"
         "none/AutoBook Refresh/autobook_refresh\n"
         "none/AutoBook Merge/autobook_merge %r\n"
+        "none/AutoBook Load Disabled Lines/autobook_load_disabled_lines %r\n"
         "param/AutoBook Param/autobook_param\n"
         "string/AutoBook State Info/autobook_state_info\n"
         "gfx/AutoBook Scores/autobook_scores\n"
@@ -129,6 +132,8 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
     Register(e, "autobook_open", &GoUctBookBuilderCommands<PLAYER>::CmdOpen);
+    Register(e, "autobook_load_disabled_lines",
+             &GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled);
     Register(e, "autobook_merge", 
              &GoUctBookBuilderCommands<PLAYER>::CmdMerge);
     Register(e, "autobook_param", &GoUctBookBuilderCommands<PLAYER>::CmdParam);
@@ -331,6 +336,36 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
     }
     else
         throw GtpFailure() << "Expected 0 or 2 arguments!\n";
+}
+
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArg(1);
+    std::vector< std::vector<SgMove> > workList;
+    {
+        std::string filename = cmd.Arg(0);
+        std::ifstream in(filename.c_str());
+        if (!in)
+            throw GtpFailure() << "Could not open '" << filename << "'\n";
+        workList = GoAutoBook::ParseWorkList(in);
+    }
+    GoBoard brd(m_bd.Size());
+    GoAutoBookState state(brd);
+    state.Synchronize();
+    std::set<SgHashCode> disabled;
+    for (std::size_t i = 0; i < workList.size(); ++i)
+    {
+        for (std::size_t j = 0; j < workList[i].size(); ++j)
+            state.Play(workList[i][j]);
+        disabled.insert(state.GetHashCode());
+        for (std::size_t j = 0; j < workList[i].size(); ++j)
+            state.Undo();
+    }
+    m_book->AddDisabledLines(disabled);
 }
 
 template<class PLAYER>

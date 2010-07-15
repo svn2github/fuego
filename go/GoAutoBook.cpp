@@ -207,9 +207,12 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
         if (state.Board().IsLegal(*it))
         {
             state.Play(*it);
+            if (m_disabled.count(state.GetHashCode()) > 0)
+                SgDebug() << "Ignoring disabled move " 
+                          << SgWritePoint(*it) << '\n';
             // NOTE: Terminal nodes aren't supported at this time, so 
             // we ignore them here.
-            if (Get(state, node) && !node.IsTerminal())
+            else if (Get(state, node) && !node.IsTerminal())
             {
                 if (selectType == 0) // BY COUNT
                 {
