@@ -68,7 +68,8 @@ void GoAutoBookState::ComputeHashCode()
 //----------------------------------------------------------------------------
 
 GoAutoBookParam::GoAutoBookParam()
-    : m_usageCountThreshold(0)
+    : m_usageCountThreshold(0),
+      m_selectType(GO_AUTOBOOK_SELECT_VALUE)
 {
 }
 
@@ -202,7 +203,6 @@ void GoAutoBook::Merge(const GoAutoBook& other)
 
 SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
 {
-    int selectType = 1;
     std::size_t bestCount = 0;
     SgMove bestMove = SG_NULLMOVE;
     float bestScore = 100.0f;
@@ -225,7 +225,7 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
                      && !node.IsTerminal() 
                      && node.m_count >= m_param.m_usageCountThreshold)
             {
-                if (selectType == 0) // BY COUNT
+                if (m_param.m_selectType == GO_AUTOBOOK_SELECT_COUNT)
                 {
                     // Select by count, tiebreak by value.
                     if (node.m_count > bestCount)
@@ -243,7 +243,7 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
                         bestScore = node.m_value;
                     }
                 }
-                else if (selectType == 1) // BY VALUE
+                else if (m_param.m_selectType == GO_AUTOBOOK_SELECT_VALUE)
                 {
                     // NOTE: do not have access to inverse function,
                     // so we're minimizing here as a temporary solution. 

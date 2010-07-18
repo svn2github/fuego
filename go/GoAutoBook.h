@@ -60,11 +60,23 @@ inline const GoBoard& GoAutoBookState::Board() const
 
 //----------------------------------------------------------------------------
 
+typedef enum 
+{
+    /** Select move with highest count. */
+    GO_AUTOBOOK_SELECT_COUNT,
+
+    /** Select move with highest value. */
+    GO_AUTOBOOK_SELECT_VALUE
+
+} GoAutoBookMoveSelectType;
+
 struct GoAutoBookParam
 {
     /** Required 'count' before it can be used by the player when
         generating moves. */
     std::size_t m_usageCountThreshold;
+
+    GoAutoBookMoveSelectType m_selectType;
 
     GoAutoBookParam();        
 };

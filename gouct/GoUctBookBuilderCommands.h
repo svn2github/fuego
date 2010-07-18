@@ -88,6 +88,11 @@ private:
                 typename GtpCallback<GoUctBookBuilderCommands>::Method method);
 
     void ShowInfluence(GtpCommand& cmd, GoAutoBookState& state);
+
+    GoAutoBookMoveSelectType MoveSelectArg(const GtpCommand& cmd, 
+                                           std::size_t number);
+
+    std::string MoveSelectToString(GoAutoBookMoveSelectType moveSelect);
 };
 
 //----------------------------------------------------------------------------
@@ -173,6 +178,34 @@ PLAYER& GoUctBookBuilderCommands<PLAYER>::Player()
     catch (const std::bad_cast&)
     {
         throw GtpFailure("player not of right type!");
+    }
+}
+
+template<class PLAYER>
+GoAutoBookMoveSelectType GoUctBookBuilderCommands<PLAYER>
+::MoveSelectArg(const GtpCommand& cmd, std::size_t number)
+{
+    std::string arg = cmd.ArgToLower(number);
+    if (arg == "value")
+        return GO_AUTOBOOK_SELECT_VALUE;
+    if (arg == "count")
+        return GO_AUTOBOOK_SELECT_COUNT;
+    throw GtpFailure() << "unknown move select argument \"" << arg << '"';
+}
+
+template<class PLAYER>
+std::string GoUctBookBuilderCommands<PLAYER>::
+MoveSelectToString(GoAutoBookMoveSelectType moveSelect)
+{
+    switch (moveSelect)
+    {
+    case GO_AUTOBOOK_SELECT_VALUE:
+        return "value";
+    case GO_AUTOBOOK_SELECT_COUNT:
+        return "count";
+    default:
+        SG_ASSERT(false);
+        return "?";
     }
 }
 
@@ -314,7 +347,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             << "[string] num_games_per_sort "
             << m_bookBuilder.NumGamesPerSort() << '\n'
             << "[string] usage_count " 
-            << m_param.m_usageCountThreshold << '\n';
+            << m_param.m_usageCountThreshold << '\n'
+            << "[list/value/count] move_select "
+            << MoveSelectToString(m_param.m_selectType) << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
@@ -333,6 +368,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             m_bookBuilder.SetExpandThreshold(cmd.IntArg(1, 1));
         else if (name == "usage_count")
             m_param.m_usageCountThreshold = cmd.SizeTypeArg(1, 0);
+        else if (name == "move_select")
+            m_param.m_selectType = MoveSelectArg(cmd, 1);
         else if (name == "alpha")
         {
             float alpha = cmd.FloatArg(1);
