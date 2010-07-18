@@ -60,10 +60,22 @@ inline const GoBoard& GoAutoBookState::Board() const
 
 //----------------------------------------------------------------------------
 
+struct GoAutoBookParam
+{
+    /** Required 'count' before it can be used by the player when
+        generating moves. */
+    std::size_t m_usageCountThreshold;
+
+    GoAutoBookParam();        
+};
+
+//----------------------------------------------------------------------------
+
 class GoAutoBook
 {
 public:
-    GoAutoBook(const std::string& filename) throw();
+    GoAutoBook(const std::string& filename,
+               const GoAutoBookParam& param) throw();
 
     ~GoAutoBook();
 
@@ -90,6 +102,8 @@ private:
     typedef std::map<SgHashCode, SgBookNode> Map;
 
     Map m_data;
+
+    const GoAutoBookParam& m_param;
 
     std::set<SgHashCode> m_disabled;
 

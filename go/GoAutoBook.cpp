@@ -67,8 +67,17 @@ void GoAutoBookState::ComputeHashCode()
 
 //----------------------------------------------------------------------------
 
-GoAutoBook::GoAutoBook(const std::string& filename) throw()
-    : m_filename(filename)
+GoAutoBookParam::GoAutoBookParam()
+    : m_usageCountThreshold(0)
+{
+}
+
+//----------------------------------------------------------------------------
+
+GoAutoBook::GoAutoBook(const std::string& filename,
+                       const GoAutoBookParam& param) throw()
+    : m_param(param), 
+      m_filename(filename)
 {
     std::ifstream is(filename.c_str());
     if (!is)
@@ -212,7 +221,9 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
                           << SgWritePoint(*it) << '\n';
             // NOTE: Terminal nodes aren't supported at this time, so 
             // we ignore them here.
-            else if (Get(state, node) && !node.IsTerminal())
+            else if (Get(state, node) 
+                     && !node.IsTerminal() 
+                     && node.m_count >= m_param.m_usageCountThreshold)
             {
                 if (selectType == 0) // BY COUNT
                 {

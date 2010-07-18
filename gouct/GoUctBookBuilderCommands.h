@@ -80,6 +80,8 @@ private:
 
     GoUctBookBuilder<PLAYER> m_bookBuilder;
 
+    GoAutoBookParam m_param;
+    
     PLAYER& Player();
 
     void Register(GtpEngine& e, const std::string& command,
@@ -94,10 +96,11 @@ template<class PLAYER>
 GoUctBookBuilderCommands<PLAYER>
 ::GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player, 
                            boost::scoped_ptr<GoAutoBook>& book)
-    : m_bd(bd),
-      m_player(player),
-      m_book(book),
-      m_bookBuilder(bd)
+: m_bd(bd),
+    m_player(player),
+    m_book(book),
+    m_bookBuilder(bd),
+    m_param()
 {
 }
 
@@ -206,7 +209,7 @@ template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdOpen(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
-    m_book.reset(new GoAutoBook(cmd.Arg(0)));
+    m_book.reset(new GoAutoBook(cmd.Arg(0), m_param));
 }
 
 template<class PLAYER>
@@ -291,7 +294,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckNuArg(1);
-    GoAutoBook other(cmd.Arg(0));
+    GoAutoBook other(cmd.Arg(0), m_param);
     m_book->Merge(other);
 }
 
@@ -309,7 +312,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             << "[string] num_games_per_evaluation " 
             << m_bookBuilder.NumGamesPerEvaluation() << '\n'
             << "[string] num_games_per_sort "
-            << m_bookBuilder.NumGamesPerSort() << '\n';
+            << m_bookBuilder.NumGamesPerSort() << '\n'
+            << "[string] usage_count " 
+            << m_param.m_usageCountThreshold << '\n';
     }
     else if (cmd.NuArg() == 2)
     {
@@ -326,6 +331,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             m_bookBuilder.SetExpandWidth(cmd.IntArg(1, 1));
         else if (name == "expand_threshold")
             m_bookBuilder.SetExpandThreshold(cmd.IntArg(1, 1));
+        else if (name == "usage_count")
+            m_param.m_usageCountThreshold = cmd.SizeTypeArg(1, 0);
         else if (name == "alpha")
         {
             float alpha = cmd.FloatArg(1);
