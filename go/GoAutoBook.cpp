@@ -201,6 +201,51 @@ void GoAutoBook::Merge(const GoAutoBook& other)
               << "Leaf to Internal " << leafToInternal << '\n';
 }
 
+//----------------------------------------------------------------------------
+
+void GoAutoBook::TruncateByDepth(int depth, GoAutoBookState& state,
+                                 GoAutoBook& other) const
+{
+    std::set<SgHashCode> seen;
+    TruncateByDepth(depth, state, other, seen);
+}
+
+void GoAutoBook::TruncateByDepth(int depth, GoAutoBookState& state, 
+                                 GoAutoBook& other, 
+                                 std::set<SgHashCode>& seen) const
+{
+    if (seen.count(state.GetHashCode()))
+        return;
+    SgBookNode node;
+    if (!Get(state, node))
+        return;
+    seen.insert(state.GetHashCode());
+    if (depth == 0)
+    {
+        // Set this node to be a leaf: copy its heuristic value into
+        // its propagated value and set count to 0.
+        node.m_count = 0;
+        node.m_priority = SgBookNode::LEAF_PRIORITY;
+        node.m_value = node.m_heurValue;
+        other.Put(state, node);
+        return;
+    }
+    other.Put(state, node);
+    if (node.IsLeaf() || node.IsTerminal())
+        return;
+    for (GoBoard::Iterator it(state.Board()); it; ++it)
+    {
+        if (state.Board().IsLegal(*it))
+        {
+            state.Play(*it);
+            TruncateByDepth(depth - 1, state, other, seen);
+            state.Undo();
+        }
+    }
+}
+
+//----------------------------------------------------------------------------
+
 SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
 {
     std::size_t bestCount = 0;

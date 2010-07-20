@@ -107,6 +107,10 @@ public:
 
     void AddDisabledLines(const std::set<SgHashCode>& disabled);
 
+    /** Copies a truncated version of the book into other. */
+    void TruncateByDepth(int depth, GoAutoBookState& state,
+                         GoAutoBook& other) const;
+
     /** Parses a worklist from a stream. */
     static std::vector< std::vector<SgMove> > ParseWorkList(std::istream& in);
 
@@ -120,6 +124,10 @@ private:
     std::set<SgHashCode> m_disabled;
 
     std::string m_filename;
+
+    void TruncateByDepth(int depth, GoAutoBookState& state, 
+                         GoAutoBook& other, 
+                         std::set<SgHashCode>& seen) const;
 };
 
 inline void GoAutoBook::AddDisabledLines(const std::set<SgHashCode>& disabled)
