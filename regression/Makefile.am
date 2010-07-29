@@ -20,6 +20,7 @@ final_moves.tst \
 free_handicap.tst \
 kgs-genmove_cleanup.tst \
 ladder.tst \
+performance_barcelona2010.tst \
 performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
 performance_middlegame_hard_9x9.tst \
@@ -209,6 +210,12 @@ sgf/games/2010/CGOS/1005347.sgf \
 sgf/games/2010/CGOS/1072936.sgf \
 sgf/games/2010/CGOS/1072936-variation.sgf \
 sgf/games/2010/CGOS/1072936-variation2.sgf \
+sgf/games/2010/FuegoGB-Barcelona/Chou4p-FuegoGB.sgf \
+sgf/games/2010/FuegoGB-Barcelona/Chou9p-FuegoGB.sgf \
+sgf/games/2010/FuegoGB-Barcelona/FuegoGB-Chou4p.sgf \
+sgf/games/2010/FuegoGB-Barcelona/FuegoGB-Chou9p.sgf \
+sgf/games/2010/FuegoGB-Barcelona/Tsai-FuegoGB.sgf \
+sgf/games/2010/FuegoGB-Barcelona/Yen-FuegoGB.sgf \
 sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
 sgf/games/pro-9x9/mz1.sgf \
