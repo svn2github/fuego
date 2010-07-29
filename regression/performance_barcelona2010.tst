@@ -6,7 +6,7 @@
 
 loadsgf sgf/games/2010/FuegoGB-Barcelona/Tsai-FuegoGB.sgf 24
 10 reg_genmove b
-#? [L10]
+#? [L10]*
 # joseki, must block after 3-3 invasion
 
 #-----------------------------------------------------------------------------
@@ -18,21 +18,21 @@ loadsgf sgf/games/2010/FuegoGB-Barcelona/Chou4p-FuegoGB.sgf 5
 #-----------------------------------------------------------------------------
 loadsgf sgf/games/2010/FuegoGB-Barcelona/FuegoGB-Chou4p.sgf 24
 2010 reg_genmove w
-#? [G7]
+#? [G7]*
 
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/games/2010/FuegoGB-Barcelona/Chou9p-FuegoGB.sgf 8
 3010 reg_genmove w
-#? [F7]
+#? [F7]*
 
 #-----------------------------------------------------------------------------
 loadsgf sgf/games/2010/FuegoGB-Barcelona/FuegoGB-Chou9p.sgf 40
 4010 reg_genmove w
-#? [J5]
+#? [J5]*
 
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/games/2010/FuegoGB-Barcelona/Yen-FuegoGB.sgf 14
 5010 reg_genmove b
-#? [C10]
+#? [C10]*
