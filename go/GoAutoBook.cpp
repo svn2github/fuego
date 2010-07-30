@@ -246,6 +246,37 @@ void GoAutoBook::TruncateByDepth(int depth, GoAutoBookState& state,
 
 //----------------------------------------------------------------------------
 
+void GoAutoBook::ImportHashValuePairs(std::istream& in)
+{
+    std::size_t count = 0;
+    while (in)
+    {
+        SgHashCode hash;
+        std::string hashStr;
+        in >> hashStr;
+        hash.FromString(hashStr);
+        float value;
+        if (!in) 
+            break;
+        in >> value;
+        if (m_data.count(hash) == 0)
+        {
+            std::ostringstream os;
+            os << "Unknown hash: " << hash << '\n';
+            throw SgException(os.str());
+        }
+        SgBookNode node(m_data[hash]);
+        node.m_heurValue = value;
+        node.m_value = value;
+        m_data[hash] = node;
+        count++;
+    }
+    SgDebug() << "GoAutoBook::ImportHashValue: imported " 
+              << count << " values.\n";
+}
+
+//----------------------------------------------------------------------------
+
 SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
 {
     std::size_t bestCount = 0;

@@ -111,6 +111,10 @@ public:
     void TruncateByDepth(int depth, GoAutoBookState& state,
                          GoAutoBook& other) const;
 
+    /** Overwrites values in book by reading stream of (hash, value)
+        pairs. */
+    void ImportHashValuePairs(std::istream& in);
+
     /** Parses a worklist from a stream. */
     static std::vector< std::vector<SgMove> > ParseWorkList(std::istream& in);
 

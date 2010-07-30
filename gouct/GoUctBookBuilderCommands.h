@@ -52,6 +52,7 @@ public:
         - @link CmdPriority() @c autobook_priority @endlink
         - @link CmdLoadDisabled() @c autobook_load_disabled_lines @endlink
         - @link CmdTruncateByDepth() @c autobook_truncate_by_depth @endlink
+        - @link CmdImport() @c autobook_import @endlink
     */
     /** @name Command Callbacks */
     // @{
@@ -69,6 +70,7 @@ public:
     void CmdPriority(GtpCommand& cmd);
     void CmdLoadDisabled(GtpCommand& cmd);
     void CmdTruncateByDepth(GtpCommand& cmd);
+    void CmdImport(GtpCommand& cmd);
     // @} // @name
 
     void Register(GtpEngine& engine);
@@ -124,6 +126,7 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/AutoBook Merge/autobook_merge %r\n"
         "none/AutoBook Load Disabled Lines/autobook_load_disabled_lines %r\n"
         "none/AutoBook Truncate By Depth/autobook_truncate_by_depth\n"
+        "none/AutoBook Import/autobook_import\n"
         "param/AutoBook Param/autobook_param\n"
         "string/AutoBook State Info/autobook_state_info\n"
         "gfx/AutoBook Scores/autobook_scores\n"
@@ -142,6 +145,8 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
              &GoUctBookBuilderCommands<PLAYER>::CmdCover);             
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
+    Register(e, "autobook_import",
+             &GoUctBookBuilderCommands<PLAYER>::CmdImport);             
     Register(e, "autobook_open", &GoUctBookBuilderCommands<PLAYER>::CmdOpen);
     Register(e, "autobook_load_disabled_lines",
              &GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled);
@@ -334,6 +339,19 @@ void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
     cmd.CheckNuArg(1);
     GoAutoBook other(cmd.Arg(0), m_param);
     m_book->Merge(other);
+}
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArg(1);
+    std::string filename = cmd.Arg(0);
+    std::ifstream in(filename.c_str());
+    if (!in)
+        throw GtpFailure() << "Could not open '" << filename << "'\n";
+    m_book->ImportHashValuePairs(in);
 }
 
 template<class PLAYER>
