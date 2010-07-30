@@ -814,7 +814,7 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
                                   maxTime);
     size_t initTreeNodes = initTree.NuNodes();
     size_t oldTreeNodes = m_search.Tree().NuNodes();
-    if (oldTreeNodes > 1 && initTreeNodes > 1)
+    if (oldTreeNodes > 1 && initTreeNodes >= 1)
     {
         float reuse = static_cast<float>(initTreeNodes) / oldTreeNodes;
         int reusePercent = static_cast<int>(100 * reuse);
@@ -831,15 +831,18 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
     }
 
     // Check consistency
-    for (SgUctChildIterator it(initTree, initTree.Root()); it; ++it)
-        if (! Board().IsLegal((*it).Move()))
-        {
-            SgWarning() <<
-                "GoUctPlayer: illegal move in root child of init tree\n";
-            initTree.Clear();
-            // Should not happen, if no bugs
-            SG_ASSERT(false);
-        }
+    if (initTree.Root().HasChildren())
+    {
+        for (SgUctChildIterator it(initTree, initTree.Root()); it; ++it)
+            if (! Board().IsLegal((*it).Move()))
+            {
+                SgWarning() <<
+                    "GoUctPlayer: illegal move in root child of init tree\n";
+                initTree.Clear();
+                // Should not happen, if no bugs
+                SG_ASSERT(false);
+            }
+    }
 }
 
 template <class SEARCH, class THREAD>
