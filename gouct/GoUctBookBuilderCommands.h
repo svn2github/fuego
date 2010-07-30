@@ -53,6 +53,7 @@ public:
         - @link CmdLoadDisabled() @c autobook_load_disabled_lines @endlink
         - @link CmdTruncateByDepth() @c autobook_truncate_by_depth @endlink
         - @link CmdImport() @c autobook_import @endlink
+        - @link CmdMainLine() @c autobook_mainline @endlink
     */
     /** @name Command Callbacks */
     // @{
@@ -71,6 +72,7 @@ public:
     void CmdLoadDisabled(GtpCommand& cmd);
     void CmdTruncateByDepth(GtpCommand& cmd);
     void CmdImport(GtpCommand& cmd);
+    void CmdMainLine(GtpCommand& cmd);
     // @} // @name
 
     void Register(GtpEngine& engine);
@@ -131,8 +133,8 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "string/AutoBook State Info/autobook_state_info\n"
         "gfx/AutoBook Scores/autobook_scores\n"
         "gfx/AutoBook Counts/autobook_counts\n"
+        "gfx/AutoBook Main Line/autobook_mainline\n"
         "gfx/AutoBook Priority/autobook_priority\n";
-      
 }
 
 template<class PLAYER>
@@ -150,6 +152,8 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
     Register(e, "autobook_open", &GoUctBookBuilderCommands<PLAYER>::CmdOpen);
     Register(e, "autobook_load_disabled_lines",
              &GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled);
+    Register(e, "autobook_mainline",
+             &GoUctBookBuilderCommands<PLAYER>::CmdMainLine);
     Register(e, "autobook_merge", 
              &GoUctBookBuilderCommands<PLAYER>::CmdMerge);
     Register(e, "autobook_param", &GoUctBookBuilderCommands<PLAYER>::CmdParam);
@@ -530,6 +534,28 @@ void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
             }
             state.Undo();
         }
+    }
+    cmd << '\n';
+}
+
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdMainLine(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckArgNone();
+    GoAutoBookState state(m_bd);
+    state.Synchronize();
+    cmd << "VAR";
+    SgBookNode node;
+    while(true)
+    {
+        SgMove move = m_book->FindBestChild(state);
+        if (move == SG_NULLMOVE)
+            break;
+        cmd << (state.Board().ToPlay() == SG_BLACK ? " B ": " W ")
+            << SgWritePoint(move);
+        state.Play(move);
     }
     cmd << '\n';
 }
