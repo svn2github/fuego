@@ -21,6 +21,9 @@ class GoUctSearch;
 
 //----------------------------------------------------------------------------
 
+/** Commands for autobook. 
+    @ingroup openingbook
+*/
 template<class PLAYER>
 class GoUctBookBuilderCommands
 {
@@ -252,6 +255,9 @@ void GoUctBookBuilderCommands<PLAYER>::ShowInfluence(GtpCommand& cmd,
 
 //----------------------------------------------------------------------------
 
+/** Opens a autobook.
+    Closes any previously opened book.
+*/
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdOpen(GtpCommand& cmd)
 {
@@ -259,6 +265,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdOpen(GtpCommand& cmd)
     m_book.reset(new GoAutoBook(cmd.Arg(0), m_param));
 }
 
+/** Closes the current autobook. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdClose(GtpCommand& cmd)
 {
@@ -266,6 +273,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdClose(GtpCommand& cmd)
     m_book.reset(0);
 }
 
+/** Saves the current book to its file. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdSave(GtpCommand& cmd)
 {
@@ -275,6 +283,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdSave(GtpCommand& cmd)
     m_book->Flush();
 }
 
+/** Returns info on current state. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdStateInfo(GtpCommand& cmd)
 {
@@ -289,6 +298,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdStateInfo(GtpCommand& cmd)
     cmd << node;
 }
 
+/** Expands book from current state using the current player.  */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
 {
@@ -301,7 +311,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
     m_bookBuilder.Expand(numExpansions);
 }
 
-
+/** Covers the given set of lines in the current book.
+    @ref bookcover
+*/
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
 {
@@ -324,6 +336,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
     m_bookBuilder.Cover(expansionsRequired, workList);
 }
 
+/** Refreshes the current book.
+    @ref bookrefresh
+*/
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
 {
@@ -335,6 +350,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
     m_bookBuilder.Refresh();
 }
 
+/** Merges the current book with the given book.
+    See GoAutoBook::Merge().
+ */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
 {
@@ -345,6 +363,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
     m_book->Merge(other);
 }
 
+/** Import values directly into the current book.
+    File format is (hash, value) pairs, one per line.
+ */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
 {
@@ -358,6 +379,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
     m_book->ImportHashValuePairs(in);
 }
 
+/** Truncates the book to the given depth.
+    Internal nodes that become leaves have their counts set to 0. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdTruncateByDepth(GtpCommand& cmd)
 {
@@ -423,7 +446,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
         throw GtpFailure() << "Expected 0 or 2 arguments!\n";
 }
 
-
+/** Load a list of disabled lines.
+    See GoAutoBook::AddDisabledLines().
+*/
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled(GtpCommand& cmd)
 {
@@ -453,6 +478,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled(GtpCommand& cmd)
     m_book->AddDisabledLines(disabled);
 }
 
+/** Displays scores for all children. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
 {
@@ -482,6 +508,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdScores(GtpCommand& cmd)
     cmd << '\n';
 }
 
+/** Displays counts for all children. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdCounts(GtpCommand& cmd)
 {
@@ -506,6 +533,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCounts(GtpCommand& cmd)
     cmd << '\n';
 }
 
+/** Displays expansion priority for all children. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
 {
@@ -538,6 +566,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
     cmd << '\n';
 }
 
+/** Displays the mainline according to the current selection type.  */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdMainLine(GtpCommand& cmd)
 {

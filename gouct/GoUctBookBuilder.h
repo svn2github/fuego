@@ -35,19 +35,15 @@ public:
     ~GoUctBookBuilder();
 
     //---------------------------------------------------------------------
-    
+
+    /** Sets the player to use. Settings are copied from this player
+        to the players used for each thread.
+        @todo Currently not used! Since it is not clear how to copy
+        settings from one player to another nicely. */
     void SetPlayer(PLAYER& player);
 
     /** Sets the state to start work from. */
     void SetState(GoAutoBook& book);
-
-    //---------------------------------------------------------------------    
-
-    float InverseEval(float eval) const;
-
-    bool IsLoss(float eval) const;
-
-    float Value(const SgBookNode& node) const;
 
     //---------------------------------------------------------------------    
 
@@ -62,7 +58,7 @@ public:
     /** Number of games to play when evaluation a state. */
     std::size_t NumGamesPerEvaluation() const;
 
-    /** See NumGamesPerEvaluation. */
+    /** See NumGamesPerEvaluation(). */
     void SetNumGamesPerEvaluation(std::size_t num);
 
     /** Number of games to play when sorting children. */
@@ -70,6 +66,14 @@ public:
 
     /** See NumGamesForSort() */
     void SetNumGamesPerSort(std::size_t num);
+
+    //---------------------------------------------------------------------    
+
+    float InverseEval(float eval) const;
+
+    bool IsLoss(float eval) const;
+
+    float Value(const SgBookNode& node) const;
 
 protected:
     void PrintMessage(std::string msg);
@@ -137,8 +141,10 @@ private:
     /** See NumberThreads() */
     std::size_t m_numThreads;
 
+    /** See NumGamesPerEvaluation. */
     std::size_t m_numGamesPerEvaluation;
 
+    /** See NumGamesForSort() */
     std::size_t m_numGamesPerSort;
 
     std::size_t m_num_evals;
@@ -158,6 +164,7 @@ private:
     /** Players for each thread. */
     std::vector<PLAYER*> m_players;
 
+    /** Workers for each thread. */
     std::vector<Worker> m_workers;
 
     SgThreadedWorker<SgMove,float,Worker>* m_threadedWorker;

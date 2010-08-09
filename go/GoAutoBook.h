@@ -72,10 +72,11 @@ typedef enum
 
 struct GoAutoBookParam
 {
-    /** Required 'count' before it can be used by the player when
+    /** Requires 'count' before it can be used by the player when
         generating moves. */
     std::size_t m_usageCountThreshold;
 
+    /** Move selection type. */
     GoAutoBookMoveSelectType m_selectType;
 
     GoAutoBookParam();        
@@ -83,6 +84,9 @@ struct GoAutoBookParam
 
 //----------------------------------------------------------------------------
 
+/** Simple text-based book format.
+    Entire book is loaded into memory.
+*/
 class GoAutoBook
 {
 public:
@@ -91,20 +95,42 @@ public:
 
     ~GoAutoBook();
 
+    /** Read the node at the given state. Returns true if node exists
+        in the book, and false otherwise. */
     bool Get(const GoAutoBookState& state, SgBookNode& node) const;
 
+    /** Store the node in the given state. */
     void Put(const GoAutoBookState& state, const SgBookNode& node);
 
+    /** Since there is no cache, same as Save(). */
     void Flush();
 
+    /** Writes book to disk. */
     void Save(const std::string& filename) const;
 
+    /** Helper function: calls FindBestChild() on the given board.*/
     SgMove LookupMove(const GoBoard& brd) const;
 
+    /** Returns the move leading to the best child state. 
+        The best child state depends on the move selection criteria.
+        See GoAutoBookParam.
+    */
     SgMove FindBestChild(GoAutoBookState& state) const;
 
+    /** Merge this book with given book. 
+        Internal nodes in either book become internal nodes in merged
+        book, counts are clobbered (max is taken). Leafs in both books
+        are leafs in merged book, value is the set to be the average.
+
+        @todo Handle counts properly? Would need to know the original
+        book the two books we are merging derived from.
+     */
     void Merge(const GoAutoBook& other);
 
+    /** Add states to be disabled. 
+        These states will not be considered for selection in
+        FindBestChild() from the parent state. 
+    */
     void AddDisabledLines(const std::set<SgHashCode>& disabled);
 
     /** Copies a truncated version of the book into other. */

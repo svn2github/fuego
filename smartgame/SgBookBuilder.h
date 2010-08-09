@@ -67,8 +67,11 @@ public:
 
     SgBookNode();
 
+    /** Creates a leaf with the given heuristic value. */
     SgBookNode(float heuristicValue);
 
+    /** Creates a node from data in string. Uses same format as
+        ToString(). */
     SgBookNode(const std::string& str);
 
     /** Returns true if this node is a leaf in the opening book, ie,
@@ -133,6 +136,22 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
     if it has children in the book (ie, children from transpositions)
 */
 
+/** @page bookcover Book Cover
+    @ingroup openingbook
+
+    The book cover operation ensures that a given set of lines is
+    covered with the required number of expansions. When completed,
+    each position in each line will have had at least the required
+    number of expansions performed from it. 
+    
+    For each line, each position is processed in order. Expansions are
+    performed until the required number are obtained (nothing is done
+    if it already has enough). Then the next position in the line is
+    processed.  
+
+    A book refresh should be performed after this operation.
+*/
+
 //----------------------------------------------------------------------------
 
 /** Base class for automated book building.
@@ -152,7 +171,8 @@ public:
     void Expand(int numExpansions);
 
     /** Ensures each node in each line has at least the given number
-        of expansions. */
+        of expansions. 
+        @ref bookcover. */
     void Cover(int requiredExpansions,
                const std::vector< std::vector<SgMove> >& lines);
 
@@ -169,21 +189,6 @@ public:
         Does not propagate values up tree, run Refresh() afterwards to
         do so. */
     void IncreaseWidth();
-
-    //---------------------------------------------------------------------    
-
-    float ComputePriority(const SgBookNode& parent, const float childValue,
-                          const float childPriority) const;
-
-    /** Returns the evaluation from other player's perspective. */
-    virtual float InverseEval(float eval) const = 0;
-
-    /** Returns true if the eval is a loss. */
-    virtual bool IsLoss(float eval) const = 0;
-
-    /** Returns the value of the state according this node.
-        Ie, takes into account swap moves, etc. */
-    virtual float Value(const SgBookNode& node) const = 0;
 
     //---------------------------------------------------------------------    
 
@@ -215,6 +220,25 @@ public:
     /** See UseWidening() */
     void SetExpandThreshold(std::size_t threshold);
 
+    //---------------------------------------------------------------------    
+
+    /** Computes the expansion priority for the child using Alpha(),
+        the value of the parent, and the provided values of child. */
+    float ComputePriority(const SgBookNode& parent, const float childValue,
+                          const float childPriority) const;
+
+    //---------------------------------------------------------------------    
+
+    /** Returns the evaluation from other player's perspective. */
+    virtual float InverseEval(float eval) const = 0;
+
+    /** Returns true if the eval is a loss. */
+    virtual bool IsLoss(float eval) const = 0;
+
+    /** Returns the value of the state according this node.
+        Ie, takes into account swap moves, etc. */
+    virtual float Value(const SgBookNode& node) const = 0;
+
 protected:
     /** See Alpha() */
     float m_alpha;
@@ -233,10 +257,13 @@ protected:
 
     //------------------------------------------------------------------------
 
+    /** Print a message to a log/debug stream. */
     virtual void PrintMessage(std::string msg) = 0;
 
+    /** Plays a move. */
     virtual void PlayMove(SgMove move) = 0;
 
+    /** Undo last move. */
     virtual void UndoMove(SgMove move) = 0;
 
     /** Reads node. Returns false if node does not exist. */
@@ -245,6 +272,7 @@ protected:
     /** Writes node. */
     virtual void WriteNode(const SgBookNode& node) = 0;
 
+    /** Save the book. */
     virtual void FlushBook() = 0;
 
     /** If current state does not exist, evaluate it and store in the
