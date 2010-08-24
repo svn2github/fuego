@@ -21,6 +21,23 @@ BOOST_AUTO_TEST_CASE(SgVectorTestConstructor)
     BOOST_CHECK_EQUAL(a.Length(), 0);
 }
 
+BOOST_AUTO_TEST_CASE(SgVectorTestOperator_Equal_Empty)
+{
+    SgVector<int> a;
+    SgVector<int> b;
+    b = a;
+    BOOST_CHECK(a.IsEmpty());
+    BOOST_CHECK(b.IsEmpty());
+    BOOST_CHECK(a == b);
+    a = a;
+    BOOST_CHECK(a.IsEmpty());
+    b.PushBack(3);
+    BOOST_CHECK_EQUAL(b.Length(), 1);
+    b = a;
+    BOOST_CHECK(a.IsEmpty());
+    BOOST_CHECK(b.IsEmpty());
+}
+
 BOOST_AUTO_TEST_CASE(SgVectorTestOperator_Equal)
 {
     SgVector<int> a;
