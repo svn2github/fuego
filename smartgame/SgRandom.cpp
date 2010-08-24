@@ -7,11 +7,9 @@
 #include "SgSystem.h"
 #include "SgRandom.h"
 
-#include <cstdlib>
+#include <ctime>
 #include <functional>
 #include "SgDebug.h"
-
-using namespace std;
 
 //----------------------------------------------------------------------------
 
@@ -66,13 +64,13 @@ void SgRandom::SetSeed(int seed)
         return;
     }
     if (seed == 0)
-        GetGlobalData().m_seed = time(0);
+        GetGlobalData().m_seed = std::time(0);
     else
         GetGlobalData().m_seed = seed;
     SgDebug() << "SgRandom::SetSeed: " << GetGlobalData().m_seed << '\n';
     for_each(GetGlobalData().m_allGenerators.begin(),
              GetGlobalData().m_allGenerators.end(),
-             mem_fun(&SgRandom::SetSeed));
+             std::mem_fun(&SgRandom::SetSeed));
     srand(GetGlobalData().m_seed);
 }
 
