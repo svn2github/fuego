@@ -56,6 +56,7 @@ public:
         - @link CmdLoadDisabled() @c autobook_load_disabled_lines @endlink
         - @link CmdTruncateByDepth() @c autobook_truncate_by_depth @endlink
         - @link CmdImport() @c autobook_import @endlink
+        - @link CmdExport() @c autobook_export @endlink
         - @link CmdMainLine() @c autobook_mainline @endlink
     */
     /** @name Command Callbacks */
@@ -75,6 +76,7 @@ public:
     void CmdLoadDisabled(GtpCommand& cmd);
     void CmdTruncateByDepth(GtpCommand& cmd);
     void CmdImport(GtpCommand& cmd);
+    void CmdExport(GtpCommand& cmd);
     void CmdMainLine(GtpCommand& cmd);
     // @} // @name
 
@@ -132,6 +134,7 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/AutoBook Load Disabled Lines/autobook_load_disabled_lines %r\n"
         "none/AutoBook Truncate By Depth/autobook_truncate_by_depth\n"
         "none/AutoBook Import/autobook_import\n"
+        "none/AutoBook Export/autobook_export\n"
         "param/AutoBook Param/autobook_param\n"
         "string/AutoBook State Info/autobook_state_info\n"
         "gfx/AutoBook Scores/autobook_scores\n"
@@ -150,6 +153,8 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
              &GoUctBookBuilderCommands<PLAYER>::CmdCover);             
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
+    Register(e, "autobook_export",
+             &GoUctBookBuilderCommands<PLAYER>::CmdExport);       
     Register(e, "autobook_import",
              &GoUctBookBuilderCommands<PLAYER>::CmdImport);             
     Register(e, "autobook_open", &GoUctBookBuilderCommands<PLAYER>::CmdOpen);
@@ -377,6 +382,22 @@ void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
     if (!in)
         throw GtpFailure() << "Could not open '" << filename << "'\n";
     m_book->ImportHashValuePairs(in);
+}
+
+/** Exports book to old book format. */
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdExport(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArg(1);
+    std::string filename = cmd.Arg(0);
+    std::ofstream of(filename.c_str());
+    if (!of)
+        throw GtpFailure() << "Could not open '" << filename << "'\n";
+    GoAutoBookState state(m_bd);
+    state.Synchronize();
+    m_book->ExportToOldFormat(state, of);
 }
 
 /** Truncates the book to the given depth.

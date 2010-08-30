@@ -345,6 +345,45 @@ SgMove GoAutoBook::LookupMove(const GoBoard& brd) const
 
 //----------------------------------------------------------------------------
 
+void GoAutoBook::ExportToOldFormat(GoAutoBookState& state, std::ostream& out,
+                                   std::set<SgHashCode>& seen) const
+{
+    if (seen.count(state.GetHashCode()))
+        return;
+    SgBookNode node;
+    if (!Get(state, node))
+        return;
+    if (node.IsTerminal() || node.IsLeaf())
+        return;
+    seen.insert(state.GetHashCode());
+    SgPoint move = FindBestChild(state);
+    // If no move to play here, do not include it in the book
+    if (move == SG_NULLMOVE)
+        return;
+    const GoBoard& brd = state.Board();
+    out << brd.Size() << ' ';
+    for (int i = 0; i < brd.MoveNumber(); ++i)
+        out << ' ' << SgWritePoint(brd.Move(i).Point());
+    out << " | " << SgWritePoint(move);
+    out << '\n';
+    for (GoBoard::Iterator it(brd); it; ++it)
+        if (brd.IsLegal(*it))
+        {
+            state.Play(*it);
+            ExportToOldFormat(state, out, seen);
+            state.Undo();
+        }
+}
+
+void GoAutoBook::ExportToOldFormat(GoAutoBookState& state, 
+                                   std::ostream& os) const
+{
+    std::set<SgHashCode> seen;
+    ExportToOldFormat(state, os, seen);
+}
+
+//----------------------------------------------------------------------------
+
 std::vector< std::vector<SgMove> > GoAutoBook::ParseWorkList(std::istream& in)
 {
     std::vector< std::vector<SgMove> > ret;

@@ -117,6 +117,8 @@ public:
     */
     SgMove FindBestChild(GoAutoBookState& state) const;
 
+    //----------------------------------------------------------------------
+
     /** Merge this book with given book. 
         Internal nodes in either book become internal nodes in merged
         book, counts are clobbered (max is taken). Leafs in both books
@@ -141,6 +143,13 @@ public:
         pairs. */
     void ImportHashValuePairs(std::istream& in);
 
+    /** Exports book states under the given state in GoBook format to
+        the given stream. Only the move that would be selected with
+        FindBestMove() is given as an option in each state. */
+    void ExportToOldFormat(GoAutoBookState& state, std::ostream& os) const;
+
+    //----------------------------------------------------------------------
+
     /** Parses a worklist from a stream. */
     static std::vector< std::vector<SgMove> > ParseWorkList(std::istream& in);
 
@@ -158,6 +167,10 @@ private:
     void TruncateByDepth(int depth, GoAutoBookState& state, 
                          GoAutoBook& other, 
                          std::set<SgHashCode>& seen) const;
+
+    void ExportToOldFormat(GoAutoBookState& state, std::ostream& out,
+                           std::set<SgHashCode>& seen) const;
+
 };
 
 inline void GoAutoBook::AddDisabledLines(const std::set<SgHashCode>& disabled)
