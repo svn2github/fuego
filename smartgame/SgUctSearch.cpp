@@ -272,6 +272,14 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
         Debug(state, "SgUctSearch: max games reached");
         return true;
     }
+    if (m_tree.Root().IsProven())
+    {
+        if (m_tree.Root().IsProvenWin())
+            Debug(state, "SgUctSearch: root is proven win!");
+        else 
+            Debug(state, "SgUctSearch: root is proven loss!");
+        return true;
+    }
     if (   isEarlyAbort
         && m_earlyAbort->m_reductionFactor * gamesPlayed >= m_maxGames
        )
@@ -439,6 +447,11 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
                 )
             )
             continue;
+        if (child.IsProvenLoss()) // Always choose winning move!
+        {
+            bestChild = &child;
+            break;
+        }
         float moveValue = InverseEval(child.Mean());
         size_t moveCount = child.MoveCount();
         float value;
@@ -805,6 +818,37 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     UpdateStatistics(info);
 }
 
+/** Backs up proven information. Last node of nodes is the newly
+    proven node. */
+void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
+{
+    if (nodes.size() <= 1) 
+        return;
+    for (int i = nodes.size() - 2; i >= 0; --i)
+    {
+        const SgUctNode& parent = *nodes[i];
+        SgProvenNodeType type = SG_PROVEN_LOSS;
+        for (SgUctChildIterator it(m_tree, parent); it; ++it)
+        {
+            const SgUctNode& child = *it;
+            if (!child.IsProven())
+                type = SG_NOT_PROVEN;
+            else if (child.IsProvenLoss())
+            {
+                type = SG_PROVEN_WIN;
+                break;
+            }
+        }
+        if (type == SG_NOT_PROVEN)
+            break;
+        else
+        {
+            SgUctNode* node = const_cast<SgUctNode*>(&parent);
+            node->SetProvenNodeType(type);
+        }
+    }
+}
+
 /** Play game until it leaves the tree.
     @param state
     @param[out] isTerminal Was the sequence terminated because of a real
@@ -838,6 +882,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             {
                 SgUctNode* node = const_cast<SgUctNode*>(current);
                 node->SetProvenNodeType(provenType);
+                PropagateProvenStatus(nodes);
                 break;
             }
             if (state.m_moves.empty())
@@ -874,6 +919,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             {
                 SgUctNode* node = const_cast<SgUctNode*>(current);
                 node->SetProvenNodeType(provenType);
+                PropagateProvenStatus(nodes);
                 break;
             }
             if (state.m_moves.empty())
@@ -1117,15 +1163,23 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
-        float bound = GetBound(useRave, logPosCount, child);
-        if (bestChild == 0 || bound > bestUpperBound)
+        if (!child.IsProvenWin()) // Avoid losing moves
         {
-            bestChild = &child;
-            bestUpperBound = bound;
+            float bound = GetBound(useRave, logPosCount, child);
+            if (bestChild == 0 || bound > bestUpperBound)
+            {
+                bestChild = &child;
+                bestUpperBound = bound;
+            }
         }
     }
-    SG_ASSERT(bestChild != 0);
-    return *bestChild;
+    if (bestChild != 0)
+        return *bestChild;
+    // It can happen with multiple threads that all children are losing
+    // in this state but this thread got in here before that information
+    // was propagated up the tree. So just return the first child
+    // in this case.
+    return *node.FirstChild();
 }
 
 void SgUctSearch::SetNumberThreads(std::size_t n)
