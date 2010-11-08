@@ -146,7 +146,6 @@ void SgBookBuilder::Expand(int numExpansions)
     PrintMessage(os.str());
 }
 
-/** TODO: handle terminal states! */
 void SgBookBuilder::Cover(int requiredExpansions,
                           const std::vector< std::vector<SgMove> >& lines)
 {
@@ -159,6 +158,7 @@ void SgBookBuilder::Cover(int requiredExpansions,
     for (std::size_t i = 0; i < lines.size(); ++i)
     {
         const std::size_t size = lines[i].size();
+        std::vector<SgMove> played;
         for (std::size_t j = 0; j <= size; ++j)
         {
             int expansionsToDo = requiredExpansions;
@@ -168,8 +168,11 @@ void SgBookBuilder::Cover(int requiredExpansions,
             else
             {
                 EnsureRootExists();
+                GetNode(node);
                 newLines++;
             }
+            if (node.IsTerminal())
+                break;
             for (int k = 0; k < expansionsToDo; ++k)
             {
                 {
@@ -191,11 +194,14 @@ void SgBookBuilder::Cover(int requiredExpansions,
                     FlushBook();
             }
             if (j < lines[i].size())
+            {
                 PlayMove(lines[i][j]);
+                played.push_back(lines[i][j]);
+            }
         }
-        for (std::size_t j = 0; j < size; ++j)
+        for (std::size_t j = 0; j < played.size(); ++j)
         {
-            UndoMove(lines[i][size - 1 - j]);
+            UndoMove(played[played.size() - 1 - j]);
             SgBookNode node;
             GetNode(node);
             UpdateValue(node);
