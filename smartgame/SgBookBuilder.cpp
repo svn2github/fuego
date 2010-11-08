@@ -146,7 +146,7 @@ void SgBookBuilder::Expand(int numExpansions)
     PrintMessage(os.str());
 }
 
-void SgBookBuilder::Cover(int requiredExpansions,
+void SgBookBuilder::Cover(int requiredExpansions, bool additive, 
                           const std::vector< std::vector<SgMove> >& lines)
 {
     m_num_evals = 0;
@@ -164,7 +164,10 @@ void SgBookBuilder::Cover(int requiredExpansions,
             int expansionsToDo = requiredExpansions;
             SgBookNode node;
             if (GetNode(node))
-                expansionsToDo = requiredExpansions - node.m_count;
+            {
+                if (!additive)
+                    expansionsToDo = requiredExpansions - node.m_count;
+            }
             else
             {
                 EnsureRootExists();

@@ -46,6 +46,7 @@ public:
         - @link CmdSave() @c autobook_save @endlink
         - @link CmdExpand() @c autobook_expand @endlink
         - @link CmdCover() @c autobook_cover @endlink
+        - @link CmdAdditiveCover() @c autobook_additive_cover @endlink
         - @link CmdRefresh() @c autobook_refresh @endlink
         - @link CmdMerge() @c autobook_merge @endlink
         - @link CmdParam()  @c autobook_param @endlink
@@ -66,6 +67,7 @@ public:
     void CmdSave(GtpCommand& cmd);
     void CmdExpand(GtpCommand& cmd);
     void CmdCover(GtpCommand& cmd);
+    void CmdAdditiveCover(GtpCommand& cmd);
     void CmdRefresh(GtpCommand& cmd);
     void CmdMerge(GtpCommand& cmd);
     void CmdParam(GtpCommand& cmd);
@@ -124,6 +126,7 @@ template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd << 
+        "none/AutoBook Additive Cover/autobook_additive_cover\n"
         "none/AutoBook Close/autobook_close\n"
         "none/AutoBook Cover/autobook_cover\n"
         "none/AutoBook Expand/autobook_expand\n"
@@ -151,6 +154,8 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
              &GoUctBookBuilderCommands<PLAYER>::CmdCounts);
     Register(e, "autobook_cover",
              &GoUctBookBuilderCommands<PLAYER>::CmdCover);             
+    Register(e, "autobook_additive_cover",
+             &GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover);             
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
     Register(e, "autobook_export",
@@ -338,7 +343,32 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
     int expansionsRequired = cmd.IntArg(1, 1);
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
-    m_bookBuilder.Cover(expansionsRequired, workList);
+    m_bookBuilder.Cover(expansionsRequired, false, workList);
+}
+
+/** Covers the given set of lines in the current book.
+    @ref bookcover
+*/
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArg(2);
+    std::vector< std::vector<SgMove> > workList;
+    {
+        std::string filename = cmd.Arg(0);
+        std::ifstream in(filename.c_str());
+        if (!in)
+            throw GtpFailure() << "Could not open '" << filename << "'\n";
+        workList = GoAutoBook::ParseWorkList(in);
+        if (workList.empty())
+            throw GtpFailure() << "Empty worklist! No action performed";
+    }
+    int expansionsRequired = cmd.IntArg(1, 1);
+    m_bookBuilder.SetPlayer(Player());
+    m_bookBuilder.SetState(*m_book);
+    m_bookBuilder.Cover(expansionsRequired, true, workList);
 }
 
 /** Refreshes the current book.

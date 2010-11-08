@@ -149,6 +149,10 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
     if it already has enough). Then the next position in the line is
     processed.  
 
+    If the additive flag is true, then the given number of expansions
+    are added to the node no matter how many expansions it has already
+    received.
+
     A book refresh should be performed after this operation.
 */
 
@@ -173,7 +177,7 @@ public:
     /** Ensures each node in each line has at least the given number
         of expansions. 
         @ref bookcover. */
-    void Cover(int requiredExpansions,
+    void Cover(int requiredExpansions, bool additive, 
                const std::vector< std::vector<SgMove> >& lines);
 
     /** Propagates leaf values up through the entire tree.  
