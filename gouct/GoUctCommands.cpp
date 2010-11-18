@@ -928,7 +928,7 @@ void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
         if (territoryStatistics[*it].Count() == 0)
-            throw GtpFailure("no statistics available");
+            throw GtpFailure("no statistics available: enable them and run search first");
         array[*it] = territoryStatistics[*it].Mean() * 2 - 1;
     }
     cmd << '\n'
