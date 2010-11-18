@@ -8,6 +8,10 @@ history.
 Current development version
 ===========================
 
+* Game-independent autobook builder to generate opening books
+* Support for propagating proven wins and losses in the UCT tree
+* Initial support for static win/loss detection in Go
+
 Version 0.4.1 - 2009 Dec 23
 ===========================
 
