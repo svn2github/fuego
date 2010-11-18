@@ -30,6 +30,7 @@ simpleplayers.tst \
 static_safety_basics.tst \
 static_safety_from_semeai.tst \
 static_safety_fullboard.tst \
+static_winner.tst \
 tactics_19.tst \
 uct_basics.tst \
 uct_blunder.tst \
@@ -401,6 +402,7 @@ sgf/simpleplayers/simpleplayers.1.sgf \
 sgf/simpleplayers/simpleplayers.2.sgf \
 sgf/simpleplayers/simpleplayers.3.sgf \
 sgf/simpleplayers/test-pass.sgf \
+sgf/static-winner/static-winner.1.sgf \
 sgf/uct/capture.1.sgf \
 sgf/uct/mogo-slides-2006.sgf \
 sgf/uct/mogo-tr6062-fig4-right.sgf \
