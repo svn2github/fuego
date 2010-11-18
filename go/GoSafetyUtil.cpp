@@ -7,12 +7,16 @@
 #include "SgSystem.h"
 #include "GoSafetyUtil.h"
 
+#include <math.h>
 #include "GoBlock.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeUtil.h"
+#include "GoModBoard.h"
 #include "GoRegion.h"
 #include "GoRegionBoard.h"
+#include "GoSafetySolver.h"
+#include "SgBoardColor.h"
 #include "SgBWSet.h"
 #include "SgVector.h"
 #include "SgPointSet.h"
@@ -462,6 +466,54 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
     }
 
     return IsTerritory(board, pts, safe, color);
+}
+
+SgEmptyBlackWhite GoSafetyUtil::GetWinner(int bdSize, 
+										  const SgBWSet& safe, 
+                                          const SgPointSet& unsurroundable, 
+                                          float komi)
+{
+	
+    const float EPSILON = 0.1f; // avoid judging draws as wins with integer komi
+    const int nuPoints = bdSize * bdSize;
+    const int bMargin = ceil((nuPoints + komi + EPSILON)/2);
+    // both sides can get half of unsurroundable points
+    const int extra = unsurroundable.Size()/2; 
+    // @todo: could round up for color to play
+    
+    int bSafe = safe[SG_BLACK].Size();
+    bSafe += extra;
+    if (bSafe >= bMargin)
+    	return SG_BLACK;
+
+    const int wMargin = ceil((nuPoints - komi + EPSILON)/2);
+    int wSafe = safe[SG_WHITE].Size();
+    wSafe += extra;
+    if (wSafe >= wMargin)
+    	return SG_WHITE;
+
+    // todo draws:
+    if (bSafe + wSafe == nuPoints)
+    	SgDebug() << "draw: B = " << bSafe << ", W= " << wSafe << std::endl;
+        
+    return SG_EMPTY;
+}
+
+SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
+{
+    GoModBoard modBoard(constBd); 
+    // todo: safety solvers should take const board.
+    GoBoard& bd = modBoard.Board();
+    GoRegionBoard regionAttachment(bd);
+    GoSafetySolver solver(bd, &regionAttachment);
+    SgBWSet safe;
+    solver.FindSafePoints(&safe);
+    SgPointSet dame;
+    SgPointSet unsurroundable;
+    FindDameAndUnsurroundablePoints(
+        bd, bd.AllEmpty(), safe, &dame, &unsurroundable);
+    const float komi = bd.Rules().Komi().ToFloat();
+    return GoSafetyUtil::GetWinner(bd.Size(), safe, unsurroundable, komi);
 }
 
 bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,

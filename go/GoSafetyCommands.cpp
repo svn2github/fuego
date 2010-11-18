@@ -11,8 +11,8 @@
 #include "GoBoard.h"
 #include "GoGtpCommandUtil.h"
 #include "GoModBoard.h"
-#include "GoSafetyUtil.h"
 #include "GoSafetySolver.h"
+#include "GoSafetyUtil.h"
 #include "SgPointSet.h"
 
 using namespace std;
@@ -28,9 +28,11 @@ GoSafetyCommands::GoSafetyCommands(const GoBoard& bd)
 void GoSafetyCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
+        "plist/Go Safe Dame Static/go_safe_dame_static\n"
         "gfx/Go Safe Benson/go_safe_gfx benson\n"
         "gfx/Go Safe Static/go_safe_gfx static\n"
-        "plist/Go Safe Dame Static/go_safe_dame_static\n";
+        "gfx/Go Safe Winner/go_safe_winner\n"
+        ;
 }
 
 /** Return dame points after running static safety algorithm. */
@@ -122,6 +124,18 @@ void GoSafetyCommands::CmdSafe(GtpCommand& cmd)
         cmd << ' ' << SgWritePoint(*it);
 }
 
+void GoSafetyCommands::CmdWinner(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    const SgEmptyBlackWhite winner = GoSafetyUtil::GetWinner(m_bd);
+    if (winner == SG_BLACK)
+        cmd << "black";
+    else if (winner == SG_WHITE)
+        cmd << "white";
+	else
+        cmd << "unknown";
+}
+
 SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const string& type)
 {
     GoModBoard modBoard(m_bd);
@@ -155,8 +169,9 @@ SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const string& type)
 void GoSafetyCommands::Register(GtpEngine& e)
 {
     Register(e, "go_safe", &GoSafetyCommands::CmdSafe);
-    Register(e, "go_safe_gfx", &GoSafetyCommands::CmdGfx);
     Register(e, "go_safe_dame_static", &GoSafetyCommands::CmdDameStatic);
+    Register(e, "go_safe_gfx", &GoSafetyCommands::CmdGfx);
+    Register(e, "go_safe_winner", &GoSafetyCommands::CmdWinner);
 }
 
 void GoSafetyCommands::Register(GtpEngine& engine,

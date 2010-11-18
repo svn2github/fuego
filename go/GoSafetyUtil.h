@@ -8,6 +8,7 @@
 #define GO_SAFETYUTIL_H
 
 #include "SgBlackWhite.h"
+#include "SgBoardColor.h"
 #include "SgMiaiStrategy.h"
 #include "SgPoint.h"
 #include "SgVector.h"
@@ -57,7 +58,16 @@ namespace GoSafetyUtil
                                          SgPointSet* dame,
                                          SgPointSet* unsurroundable);
 
-    /** Simple static territory check for surrounded area */
+    /** Check if one player has already won */
+	SgEmptyBlackWhite GetWinner(const GoBoard& constBd);
+    
+    /** Check if one player has already won */
+    SgEmptyBlackWhite GetWinner(int bdSize, 
+                                const SgBWSet& safe, 
+                                const SgPointSet& unsurroundable, 
+                                float komi);
+
+   /** Simple static territory check for surrounded area */
     bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
                      const SgPointSet& safe, SgBlackWhite color);
 

@@ -26,8 +26,9 @@ public:
 
     /** @page gosafetycommands GoSafetyCommands Commands
         - @link CmdDameStatic() @c go_safe_dame_static @endlink
-        - @link CmdSafe() @c go_safe @endlink
         - @link CmdGfx() @c go_safe_gfx @endlink
+        - @link CmdSafe() @c go_safe @endlink
+        - @link CmdWinner() @c go_safe_winner @endlink
     */
     /** @name Command Callbacks */
     // @{
@@ -35,6 +36,7 @@ public:
     void CmdDameStatic(GtpCommand& cmd);
     void CmdGfx(GtpCommand& cmd);
     void CmdSafe(GtpCommand& cmd);
+    void CmdWinner(GtpCommand& cmd);
     // @} // @name
 
     void Register(GtpEngine& engine);
