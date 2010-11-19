@@ -30,6 +30,41 @@ const bool DEBUG_SAFETY = false;
 const bool DEBUG_MIGHT_MAKE_LIFE = false;
 const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
 
+/** Players can fill half the outside liberties of safe stones.
+	Can round up for ToPlay(), must round down for opponent.
+*/
+void AddLibertiesAsMoves(const GoBoard& bd,
+                                 const SgBWSet& safe,
+                                 SgBWArray<int>& nuSafe)
+{
+    // add half the adjacent empty points to safe points.
+    // @todo: is that safe even for seki???
+    // are there seki where a lot of of dame needs to stay 
+    // unoccupied?
+    for (SgBWIterator it; it; ++it)
+    {
+        const SgPointSet adj = safe[*it].BorderNoClip() & bd.AllEmpty();
+        SG_ASSERT(adj.Disjoint(safe.Both()));
+        int nu = adj.Size();
+        if (bd.ToPlay() == *it) // can round up for first player
+            ++nu;
+        nuSafe[*it] += nu / 2;
+    }
+    // todo: add reachable blocks.
+    // todo: recursive reachability, as in safety solver.
+}
+
+/** Check if one player has enough safe points to win */
+inline SgEmptyBlackWhite CheckWinner(
+						const SgBWArray<int>& winThreshold, 
+                        const SgBWArray<int>& nuSafe)
+{
+    for (SgBWIterator it; it; ++it)
+		if (nuSafe[*it] >= winThreshold[*it])
+        	return *it;
+    return SG_EMPTY;
+}
+
 /** find 2 libs which would connect block to safe.
     if found, update libs and safe to indicate that the block is safe now:
     add block to safe, add block libs to libs, remove the two libs.
@@ -147,6 +182,38 @@ bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
     }
 
     return true;
+}
+
+SgEmptyBlackWhite GetWinner(const GoBoard& bd, 
+                            const SgBWSet& safe, 
+                            float komi)
+{
+	
+    const float EPSILON = 0.1f; // avoid judging draws as wins with integer komi
+    const int nuPoints = bd.Size() * bd.Size();
+    const SgBWArray<int> winThreshold (ceil((nuPoints + komi + EPSILON)/2),
+    								   ceil((nuPoints - komi + EPSILON)/2));
+
+    SgBWArray<int> nuSafe;
+    for (SgBWIterator it; it; ++it)
+        nuSafe[*it] = safe[*it].Size();
+
+    SgEmptyBlackWhite winner = CheckWinner(winThreshold, nuSafe);
+    if (winner != SG_EMPTY)
+    	return winner;
+    
+    AddLibertiesAsMoves(bd, safe, nuSafe);
+    winner = CheckWinner(winThreshold, nuSafe);
+    if (winner != SG_EMPTY)
+    	return winner;
+
+    // @todo: check for draw and return draw value.
+    if (nuSafe[SG_BLACK] + nuSafe[SG_WHITE] == nuPoints)
+    	SgDebug() << "draw: B = " << nuSafe[SG_BLACK] 
+                      << ", W = " << nuSafe[SG_WHITE]
+                      << std::endl;
+        
+    return SG_EMPTY;
 }
 
 void TestLiberty(SgPoint lib, const SgPointSet& libs,
@@ -467,38 +534,7 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
 
     return IsTerritory(board, pts, safe, color);
 }
-
-SgEmptyBlackWhite GoSafetyUtil::GetWinner(int bdSize, 
-										  const SgBWSet& safe, 
-                                          const SgPointSet& unsurroundable, 
-                                          float komi)
-{
-	
-    const float EPSILON = 0.1f; // avoid judging draws as wins with integer komi
-    const int nuPoints = bdSize * bdSize;
-    const int bMargin = ceil((nuPoints + komi + EPSILON)/2);
-    // both sides can get half of unsurroundable points
-    const int extra = unsurroundable.Size()/2; 
-    // @todo: could round up for color to play
-    
-    int bSafe = safe[SG_BLACK].Size();
-    bSafe += extra;
-    if (bSafe >= bMargin)
-    	return SG_BLACK;
-
-    const int wMargin = ceil((nuPoints - komi + EPSILON)/2);
-    int wSafe = safe[SG_WHITE].Size();
-    wSafe += extra;
-    if (wSafe >= wMargin)
-    	return SG_WHITE;
-
-    // todo draws:
-    if (bSafe + wSafe == nuPoints)
-    	SgDebug() << "draw: B = " << bSafe << ", W= " << wSafe << std::endl;
-        
-    return SG_EMPTY;
-}
-
+                        
 SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
 {
     GoModBoard modBoard(constBd); 
@@ -508,12 +544,8 @@ SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
     GoSafetySolver solver(bd, &regionAttachment);
     SgBWSet safe;
     solver.FindSafePoints(&safe);
-    SgPointSet dame;
-    SgPointSet unsurroundable;
-    FindDameAndUnsurroundablePoints(
-        bd, bd.AllEmpty(), safe, &dame, &unsurroundable);
     const float komi = bd.Rules().Komi().ToFloat();
-    return GoSafetyUtil::GetWinner(bd.Size(), safe, unsurroundable, komi);
+    return ::GetWinner(bd, safe, komi);
 }
 
 bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
