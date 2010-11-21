@@ -30,6 +30,7 @@ simpleplayers.tst \
 static_safety_basics.tst \
 static_safety_from_semeai.tst \
 static_safety_fullboard.tst \
+static_safety_seki.tst \
 static_winner.tst \
 tactics_19.tst \
 uct_basics.tst \
@@ -377,9 +378,14 @@ sgf/safetytest/static-safety.7.sgf \
 sgf/safetytest/static-safety.8.sgf \
 sgf/safetytest/static-safety.9.sgf \
 sgf/safetytest/static-safety.10.sgf \
+sgf/safetytest/static-safety.11.sgf \
+sgf/safetytest/static-safety-bug.2.sgf \
+sgf/seki/seki-eye-vs-eye.1.sgf \
+sgf/seki/seki-eye-vs-no-eye.1.sgf \
 sgf/seki/sheppard-seki.sgf \
 sgf/seki/sheppard-seki-2.sgf \
 sgf/seki/sheppard-seki-3.sgf \
+sgf/seki/static-safety-seki-bug.sgf \
 sgf/semeai-exact/FS1-solution-white.sgf \
 sgf/semeai-exact/FS2-solution-black.sgf \
 sgf/semeai-exact/FS2-solution-white.sgf \

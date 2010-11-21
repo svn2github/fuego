@@ -422,4 +422,37 @@ loadsgf sgf/safetytest/static-safety.10.sgf
 990 go_safe_dame_static
 #? []
 
+loadsgf sgf/safetytest/static-safety.11.sgf
 
+1000 go_safe benson black
+#? [26 .*]
+
+1001 go_safe benson white
+#? [0]
+
+1010 go_safe static black
+#? [36 .*]
+# recognize miai-connection to top
+
+1011 go_safe static white
+#? [0]
+
+1012 go_safe_dame_static
+#? []
+
+loadsgf sgf/safetytest/static-safety-bug.2.sgf
+1020 go_safe benson black
+#? [41 .*]
+
+1021 go_safe benson white
+#? [0]
+
+1030 go_safe static black
+#? [46 .*]*
+# bottom right should be recognized by expand-safe
+
+1031 go_safe static white
+#? [0]
+
+1032 go_safe_dame_static
+#? []
