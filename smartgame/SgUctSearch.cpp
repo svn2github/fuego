@@ -548,7 +548,7 @@ SgUctTree& SgUctSearch::GetTempTree()
     }
     else if (m_tempTree.MaxNodes() != MaxNodes())
     {
-    	m_tempTree.SetMaxNodes(MaxNodes());
+        m_tempTree.SetMaxNodes(MaxNodes());
     }
     return m_tempTree;
 }
@@ -978,7 +978,7 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
     m_rootFilter = rootFilter;
     if (m_logGames)
     {
-    	m_log.open(m_mpiSynchronizer->ToNodeFilename(m_logFileName).c_str());
+        m_log.open(m_mpiSynchronizer->ToNodeFilename(m_logFileName).c_str());
         m_log << "StartSearch maxGames=" << maxGames << '\n';
     }
     m_maxGames = maxGames;
@@ -1019,7 +1019,7 @@ float SgUctSearch::Search(std::size_t maxGames, double maxTime,
             if (prunedSizePercentage > 50)
                 pruneMinCount *= 2;
             else
-             	pruneMinCount = m_pruneMinCount; 
+                 pruneMinCount = m_pruneMinCount; 
             m_tree.Swap(tempTree);
         }
     }
@@ -1060,7 +1060,7 @@ void SgUctSearch::SearchLoop(SgUctThreadState& state, GlobalLock* lock)
         if (m_aborted || CheckAbortSearch(state))
         {
             m_aborted = true;
-        	SgSynchronizeThreadMemory();
+            SgSynchronizeThreadMemory();
             break;
         }
     }

@@ -88,14 +88,14 @@ void ReverseCopyStack(const SgSearchStack& moveStack, SgVector<SgMove>& sequence
 {
     sequence.Clear();
     for (int i = moveStack.Size() - 1; i >= 0; --i)
-    	sequence.PushBack(moveStack[i]);
+        sequence.PushBack(moveStack[i]);
 }
 
 void WriteSgSearchHashData(std::ostream& str, const SgSearch& search, 
-						   const SgSearchHashData& data)
+                           const SgSearchHashData& data)
 {
-	str << "move = " << search.MoveString(data.BestMove()) 
-    	<< " exact = " << data.IsExactValue()
+    str << "move = " << search.MoveString(data.BestMove()) 
+        << " exact = " << data.IsExactValue()
         << " value = " << data.Value() 
         << '\n';
 }
@@ -355,7 +355,7 @@ void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
             if (CallExecute(move, &delta, depth))
                 ++numMovesToUndo;
             else // it just worked, should not fail now.
-            	SG_ASSERT(false);
+                SG_ASSERT(false);
         }
         else
             break;
@@ -377,8 +377,8 @@ int SgSearch::DFS(int startDepth, int depthLimit,
     m_foundNewBest = false;
     SgSearchStack moveStack;
     int value = SearchEngine(depthLimit * DEPTH_UNIT, 
-    						 boundLo, boundHi, moveStack,
-                         	 isExactValue);
+                             boundLo, boundHi, moveStack,
+                              isExactValue);
     ReverseCopyStack(moveStack, *sequence);
     return value;
 }
@@ -509,12 +509,12 @@ bool SgSearch::TryMove(SgMove move, const SgVector<SgMove>& specialMoves,
                        bool& allExact,
                        bool& isCutoff)
 {
-	if (specialMoves.Contains(move)) // already tried move before
-    	return false;
+    if (specialMoves.Contains(move)) // already tried move before
+        return false;
 
     int delta = DEPTH_UNIT;
     if (! CallExecute(move, &delta, depth))
-    	return false;
+        return false;
 
     bool childIsExact = true;
     SgSearchStack newStack;
@@ -575,11 +575,11 @@ bool SgSearch::TrySpecialMove(SgMove move, SgVector<SgMove>& specialMoves,
                        bool& isCutoff)
 
 {
-	if (specialMoves.Contains(move))
-    	return false;
+    if (specialMoves.Contains(move))
+        return false;
     bool executed = TryMove(move, specialMoves,
                              depth, alpha, beta,
-                       		 loValue, hiValue, stack,
+                                loValue, hiValue, stack,
                              allExact, isCutoff);
     specialMoves.PushBack(move);
     return executed;
@@ -759,8 +759,8 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
            && m_useOpponentBest
            && opponentBest != SG_NULLMOVE
            && TrySpecialMove(opponentBest, specialMoves,
-                       		 depth, alpha, beta,
-                       		 loValue, hiValue, stack,
+                                depth, alpha, beta,
+                                loValue, hiValue, stack,
                              allExact, foundCutoff)
            )
             hasMove = true;
@@ -773,8 +773,8 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
             SgMove killer1 = m_killers[m_currentDepth].GetKiller1();
             if (  killer1 != SG_NULLMOVE
                && TrySpecialMove(killer1, specialMoves,
-                       		 depth, alpha, beta,
-                       		 loValue, hiValue, stack,
+                                depth, alpha, beta,
+                                loValue, hiValue, stack,
                              allExact, foundCutoff)
                )
                 hasMove = true;
@@ -782,8 +782,8 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
             if (  ! foundCutoff 
                && killer2 != SG_NULLMOVE
                && TrySpecialMove(killer2, specialMoves,
-                       		 depth, alpha, beta,
-                       		 loValue, hiValue, stack,
+                                depth, alpha, beta,
+                                loValue, hiValue, stack,
                              allExact, foundCutoff)
                )
                 hasMove = true;
@@ -799,8 +799,8 @@ int SgSearch::SearchEngine(const int depth, int alpha, int beta,
             for (SgVectorIterator<SgMove> it(moves); it && ! foundCutoff; ++it)
             {
                 if (TryMove(*it, specialMoves,
-                       		 depth, alpha, beta,
-                       		 loValue, hiValue, stack,
+                                depth, alpha, beta,
+                                loValue, hiValue, stack,
                              allExact, foundCutoff)
                    )
                      hasMove = true;

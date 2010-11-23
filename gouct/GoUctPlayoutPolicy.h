@@ -151,8 +151,7 @@ public:
         The statistics are only collected, if enabled with
         EnableStatistics().
     */
-    //const GoUctPlayoutPolicyStat& Statistics() const;
-	const GoUctPlayoutPolicyStat& Statistics(SgBlackWhite color) const;
+    const GoUctPlayoutPolicyStat& Statistics(SgBlackWhite color) const;
 
     void ClearStatistics();
 
@@ -367,7 +366,7 @@ GoUctPlayoutPolicy<BOARD>::GoUctPlayoutPolicy(const BOARD& bd,
       m_captureGenerator(bd),
       m_pureRandomGenerator(bd, m_random)
 {
-	ClearStatistics();
+    ClearStatistics();
 }
 
 template<class BOARD>

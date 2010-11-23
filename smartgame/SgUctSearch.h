@@ -1166,7 +1166,7 @@ private:
 
     bool PlayoutGame(SgUctThreadState& state, std::size_t playout);
 
-	void PrintSearchProgress(double currTime) const;
+    void PrintSearchProgress(double currTime) const;
     
     void SearchLoop(SgUctThreadState& state, GlobalLock* lock);
 

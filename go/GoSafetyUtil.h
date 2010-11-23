@@ -59,7 +59,7 @@ namespace GoSafetyUtil
                                          SgPointSet* unsurroundable);
 
     /** Check if one player has already won */
-	SgEmptyBlackWhite GetWinner(const GoBoard& bd);
+    SgEmptyBlackWhite GetWinner(const GoBoard& bd);
     
    /** Simple static territory check for surrounded area */
     bool IsTerritory(const GoBoard& board, const SgPointSet& pts,

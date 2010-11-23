@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------
 
 /** Stack with up to size objects of class T. Stack does not assume ownership.
-	Memory management of objects on stack is the user's responsibility.
+    Memory management of objects on stack is the user's responsibility.
 */
 template <class T, int SIZE>
 class SgStack
@@ -76,7 +76,7 @@ template<typename T, int SIZE>
 void SgStack<T,SIZE>::CopyFrom(const SgStack<T,SIZE>& other)
 {
     for(int i=0; i < other.Size(); ++i)
-    	m_stack[i] = other.m_stack[i];
+        m_stack[i] = other.m_stack[i];
     m_sp = other.m_sp;
 }
 
@@ -110,7 +110,7 @@ template<typename T, int SIZE>
 void SgStack<T,SIZE>::PushAll(const SgStack<T,SIZE>& other)
 {
     for(int i=0; i < other.Size(); ++i)
-    	Push(other.m_stack[i]);
+        Push(other.m_stack[i]);
 }
 
 template<typename T, int SIZE>
@@ -122,15 +122,15 @@ int SgStack<T,SIZE>::Size() const
 template<typename T, int SIZE>
 void SgStack<T,SIZE>::SgStack::SwapWith(SgStack<T,SIZE>& other)
 {
-	int nuSwap = std::min(Size(), other.Size());
+    int nuSwap = std::min(Size(), other.Size());
     for(int i = 0; i < nuSwap; ++i)
-    	std::swap(m_stack[i], other.m_stack[i]);
+        std::swap(m_stack[i], other.m_stack[i]);
     if (Size() < other.Size())
-    	for(int i = Size(); i < other.Size(); ++i)
-        	m_stack[i] = other.m_stack[i];
+        for(int i = Size(); i < other.Size(); ++i)
+            m_stack[i] = other.m_stack[i];
     else if (other.Size() < Size())
-    	for(int i = other.Size(); i < Size(); ++i)
-        	other.m_stack[i] = m_stack[i];
+        for(int i = other.Size(); i < Size(); ++i)
+            other.m_stack[i] = m_stack[i];
     std::swap(m_sp, other.m_sp);
 }
 

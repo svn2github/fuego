@@ -43,7 +43,7 @@ public:
     bool IsEnabled() const;
 
     bool ProbCut(SgSearch& search, int depth, int alpha, int beta, 
-    			 SgSearchStack& moveStack,
+                 SgSearchStack& moveStack,
                  bool* isExactValue, int* value);
 
     void SetEnabled(bool flag);

@@ -351,8 +351,8 @@ std::size_t SgBookBuilder::NumChildren(const std::vector<SgMove>& legal)
     std::size_t num = 0;
     for (size_t i = 0; i < legal.size(); ++i) 
     {
-	PlayMove(legal[i]);
-	SgBookNode child;
+    PlayMove(legal[i]);
+    SgBookNode child;
         if (GetNode(child))
             ++num;
         UndoMove(legal[i]);
@@ -367,14 +367,14 @@ void SgBookBuilder::UpdateValue(SgBookNode& node,
     float bestValue = boost::numeric::bounds<float>::lowest();
     for (std::size_t i = 0; i < legal.size(); ++i)
     {
-	PlayMove(legal[i]);
-	SgBookNode child;
+    PlayMove(legal[i]);
+    SgBookNode child;
         if (GetNode(child))
         {
             hasChild = true;
             float value = InverseEval(Value(child));
             if (value > bestValue)
-		bestValue = value;
+        bestValue = value;
         }
         UndoMove(legal[i]);
     }
@@ -432,8 +432,8 @@ SgMove SgBookBuilder::UpdatePriority(SgBookNode& node)
     GetAllLegalMoves(legal);
     for (std::size_t i = 0; i < legal.size(); ++i)
     {
-	PlayMove(legal[i]);
-	SgBookNode child;
+    PlayMove(legal[i]);
+    SgBookNode child;
         if (GetNode(child))
         {
             hasChild = true;

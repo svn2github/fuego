@@ -12,9 +12,7 @@
 #include "SgDebug.h"
 
 namespace {
-
-	const bool DEBUG_BENSON = false;
-    
+    const bool DEBUG_BENSON = false;
 }
 
 //----------------------------------------------------------------------------

@@ -16,11 +16,11 @@
 #define GO_SORTED_MOVES_MAX 20
 
 /** Specialization of SgSortedMoves for Go: move = SgMove, value = int 
-	@todo make maxNuMoves a template parameter, use instead 
+    @todo make maxNuMoves a template parameter, use instead 
     of GO_SORTED_MOVES_MAX
 */
 class GoSortedMoves : 
-	public SgSortedMoves<SgMove, int, GO_SORTED_MOVES_MAX>
+    public SgSortedMoves<SgMove, int, GO_SORTED_MOVES_MAX>
 {
 public:
     explicit GoSortedMoves(int maxNuMoves) : 

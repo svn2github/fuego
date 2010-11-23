@@ -138,7 +138,7 @@ void GoSafetySolver::FindSurroundedSafeAreas(SgBWSet* safe,
     while (FindSurroundedSingleRegion(safe, color))
     { }
     while (FindSurroundedRegionPair(safe, color))
-    	// if found new pair, re-run single region algorithm - it is faster
+        // if found new pair, re-run single region algorithm - it is faster
         while (FindSurroundedSingleRegion(safe, color))
         { }
 }

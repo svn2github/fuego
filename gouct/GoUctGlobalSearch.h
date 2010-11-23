@@ -716,7 +716,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetRave(true);
     SetExpandThreshold(1);
     SetVirtualLoss(true);
-	SetBiasTermConstant(0.0);
+    SetBiasTermConstant(0.0);
     if (boardSize < 15)
     {
         // These parameters were mainly tested on 9x9

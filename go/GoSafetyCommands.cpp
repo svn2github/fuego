@@ -132,7 +132,7 @@ void GoSafetyCommands::CmdWinner(GtpCommand& cmd)
         cmd << "black";
     else if (winner == SG_WHITE)
         cmd << "white";
-	else
+    else
         cmd << "unknown";
 }
 

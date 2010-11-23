@@ -618,7 +618,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(size_t maxGames,
                 // No statistics, maybe all simulations aborted due to
                 // max length or mercy rule.
                 SgDebug() 
-                	<< "GoUctPlayer: no early pass possible (no stat)\n";
+                    << "GoUctPlayer: no early pass possible (no stat)\n";
                 earlyPassPossible = false;
                 break;
             }
@@ -670,12 +670,12 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(size_t maxGames,
 
     m_mpiSynchronizer->SynchronizeEarlyPassPossible(earlyPassPossible);
     if (! earlyPassPossible)
-    	return false;
+        return false;
     m_mpiSynchronizer->SynchronizeMove(move);
     if (move == SG_PASS)
-    	SgDebug() << "GoUctPlayer: early pass is possible\n";
+        SgDebug() << "GoUctPlayer: early pass is possible\n";
     else if (VerifyNeutralMove(maxGames, maxTime, move))
-    	SgDebug() << "GoUctPlayer: generate play on neutral point\n";
+        SgDebug() << "GoUctPlayer: generate play on neutral point\n";
     else
     {
         SgDebug() << "GoUctPlayer: neutral move failed to verify\n";

@@ -31,7 +31,7 @@ const bool DEBUG_MIGHT_MAKE_LIFE = false;
 const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
 
 /** Players can fill half the outside liberties of safe stones.
-	Can round up for ToPlay(), must round down for opponent.
+    Can round up for ToPlay(), must round down for opponent.
 */
 void AddLibertiesAsMoves(const GoBoard& bd,
                                  const SgBWSet& safe,
@@ -56,12 +56,12 @@ void AddLibertiesAsMoves(const GoBoard& bd,
 
 /** Check if one player has enough safe points to win */
 inline SgEmptyBlackWhite CheckWinner(
-						const SgBWArray<int>& winThreshold, 
+                        const SgBWArray<int>& winThreshold, 
                         const SgBWArray<int>& nuSafe)
 {
     for (SgBWIterator it; it; ++it)
-		if (nuSafe[*it] >= winThreshold[*it])
-        	return *it;
+        if (nuSafe[*it] >= winThreshold[*it])
+            return *it;
     return SG_EMPTY;
 }
 
@@ -188,11 +188,11 @@ SgEmptyBlackWhite GetWinner(const GoBoard& bd,
                             const SgBWSet& safe, 
                             float komi)
 {
-	
+    
     const float EPSILON = 0.1f; // avoid judging draws as wins with integer komi
     const int nuPoints = bd.Size() * bd.Size();
     const SgBWArray<int> winThreshold (ceil((nuPoints + komi + EPSILON)/2),
-    								   ceil((nuPoints - komi + EPSILON)/2));
+                                       ceil((nuPoints - komi + EPSILON)/2));
 
     SgBWArray<int> nuSafe;
     for (SgBWIterator it; it; ++it)
@@ -200,16 +200,16 @@ SgEmptyBlackWhite GetWinner(const GoBoard& bd,
 
     SgEmptyBlackWhite winner = CheckWinner(winThreshold, nuSafe);
     if (winner != SG_EMPTY)
-    	return winner;
+        return winner;
     
     AddLibertiesAsMoves(bd, safe, nuSafe);
     winner = CheckWinner(winThreshold, nuSafe);
     if (winner != SG_EMPTY)
-    	return winner;
+        return winner;
 
     // @todo: check for draw and return draw value.
     if (nuSafe[SG_BLACK] + nuSafe[SG_WHITE] == nuPoints)
-    	SgDebug() << "draw: B = " << nuSafe[SG_BLACK] 
+        SgDebug() << "draw: B = " << nuSafe[SG_BLACK] 
                       << ", W = " << nuSafe[SG_WHITE]
                       << std::endl;
         
