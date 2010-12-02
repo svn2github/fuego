@@ -11,6 +11,9 @@ Current development version
 * Game-independent autobook builder to generate opening books
 * Support for propagating proven wins and losses in the UCT tree
 * Initial support for static win/loss detection in Go
+* New configure parameter --enable-max-size. The parameter --enable-optimize
+  is no longer supported. The new script setup-build.sh can be used to set up
+  some commonly used build configurations.
 
 Version 0.4.1 - 2009 Dec 23
 ===========================

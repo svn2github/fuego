@@ -70,6 +70,7 @@
 #include <cstdlib>
 #include <iosfwd>
 #include <string>
+#include <boost/static_assert.hpp>
 #include "SgArray.h"
 #include "SgMove.h"
 #include "SgUtil.h"
@@ -79,8 +80,21 @@
 /** Minimum board size. */
 const int SG_MIN_SIZE = 2;
 
-/** Maximum board size. */
-const int SG_MAX_SIZE = 19;
+#ifndef SG_DEFINE_MAX_SIZE
+    /** Maximum board size.
+        The default value is 19, but the code can be compiled using the
+        predefined macro SG_DEFINE_MAX_SIZE to specify a different value for
+        better space efficiency (and speed) if only small boards are used or
+        to support larger boards. Currently, only maximum sizes up to 25 are
+        supported, because of limitations of the string representation of
+        points.
+    */
+    const int SG_MAX_SIZE = 19;
+#else
+    BOOST_STATIC_ASSERT(SG_DEFINE_MAX_SIZE >= SG_MIN_SIZE);
+    BOOST_STATIC_ASSERT(SG_DEFINE_MAX_SIZE <= 25);
+    const int SG_MAX_SIZE = SG_DEFINE_MAX_SIZE;
+#endif
 
 /** Point or SG_PASS. */
 typedef int SgPoint;

@@ -2,7 +2,7 @@
 
 # Script for playing Fuego on 9x9 CGOS on a machine with 1 core / 100 playouts
 
-FUEGO="../../build/autotools/release/fuegomain/fuego"
+FUEGO="../../build/opt-9/fuegomain/fuego"
 VERSION=$(cd ../..; svnversion) || exit 1
 DEFAULT_NAME=Fuego-$VERSION-100sim
 

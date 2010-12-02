@@ -7,9 +7,22 @@
 make
 @endverbatim
 
-Interesting options to configure are @c --enable-assert for enabling
-assertions or @c --enable-optimize=no for switching off optimizations.
 <tt>./configure --help</tt> returns a full list of options.
+If the GCC compiler is used, the optimization level 3 makes Fuego faster
+(the default CXXFLAGS on GCC-based systems are usually "-g -O2"). Therefore,
+a recommended build configuration would be:
+
+@verbatim
+env CXXFLAGS="-g -O3" ./configure
+make
+@endverbatim
+
+To compile for debugging (no optimization, assertions enabled), use
+
+@verbatim
+env CXXFLAGS="-g" ./configure --enable-assert=yes
+make
+@endverbatim
 
 @section generalautotoolssvn Building a development version checked out from SVN
 
@@ -20,17 +33,26 @@ autoreconf -i
 @endverbatim
 
 The above commands need to be run only initially. Then the compilation works
-as in the previous section.
+as in the previous section. After adding or removing files or doing other
+changes to <tt>configure.ac</tt> or a <tt>Makefile.am</tt>, you need to run
+<tt>autoreconf</tt> again before doing a make. A better way is to configure
+your makefiles with <tt>./configure --enable-maintainer-mode</tt>. Then a
+make will automatically check, if <tt>configure.ac</tt> or a
+<tt>Makefile.am</tt> have changed and recreate the makefiles before the
+compilation if necessary.
 
-After adding or removing files or doing other changes to
-<tt>configure.ac</tt> or a <tt>Makefile.am</tt>, you need to run
-<tt>autoreconf</tt> again before doing a make.
-A better way is to configure your makefiles with
-<tt>./configure --enable-maintainer-mode</tt>. Then a make will automatically
-check, if <tt>configure.ac</tt> or a <tt>Makefile.am</tt> have changed and
-recreate the makefiles before the compilation if necessary.
+There is also a script <tt>setup-build.sh</tt> in the root directory that
+sets up some commonly used build targets in the subdirectory fuego/build,
+such that they can be used in parallel without recreating the build
+configuration (using so-called VPATH builds). Simply type <tt>make</tt> in the
+according subdirectory. This script can also be used to recreate the makefiles
+after changes to <tt>configure.ac</tt> or a <tt>Makefile.am</tt>.
 
 @section generalautotoolsinstall Installing Fuego
+
+After building, the executable is in fuegomain/fuego. It is a GTP engine
+that can be used with GUIs like GoGui. Fuego can also be installed on
+the system with the following command:
 
 @verbatim
 sudo make install

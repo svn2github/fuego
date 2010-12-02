@@ -16,6 +16,16 @@ AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
 
+AC_ARG_ENABLE(max-size,
+  [  --enable-max-size=n     define maximum board size (2..25, default 19)])
+
+AH_TEMPLATE([SG_DEFINE_MAX_SIZE],
+[Maximum board size for class SgPoint and related classes (2..25, default 19)])
+if test "$enable_max_size" ; then
+   AC_DEFINE_UNQUOTED(SG_DEFINE_MAX_SIZE, $enable_max_size)
+fi
+
+
 dnl Check for __sync_synchronize
 dnl
 AC_MSG_CHECKING([for __sync_synchronize])
@@ -29,17 +39,6 @@ then
 	AC_DEFINE(HAVE_SYNC_SYNCHRONIZE,1,"define if __sync_synchronize() is available")
 fi
 
-
-dnl TODO: Find a better (more portable) way to enable more optimizations by
-dnl default.
-AC_ARG_ENABLE([optimize],
-	      AS_HELP_STRING([--enable-optimize], [set CXXFLAGS to -O3 -g (default is yes)]),
-	      [optimize=$enableval],
-	      [optimize=yes])
-if test "x$optimize" = "xyes"
-then
-	CXXFLAGS="-O3 -g"
-fi
 
 AC_ARG_ENABLE([assert],
 	      AS_HELP_STRING([--enable-assert], [enable assertions (default is no)]),

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script for playing Fuego on 19x19 KGS on a machine with 8 cores / 8 GB
 
-FUEGO="../../build/autotools/release/fuegomain/fuego"
+FUEGO="../../build/opt/fuegomain/fuego"
 NAME=Fuego
 DESCRIPTION=""
 
