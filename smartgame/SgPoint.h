@@ -87,12 +87,16 @@ const int SG_MIN_SIZE = 2;
         better space efficiency (and speed) if only small boards are used or
         to support larger boards. Currently, only maximum sizes up to 25 are
         supported, because of limitations of the string representation of
-        points.
+        points. Note that if SG_DEFINE_MAX_SIZE is used, external projects
+        using the SmartGame library must also compiled with the same definition
+        for SG_DEFINE_MAX_SIZE, otherwise run-time crashes will occur because
+        of a disagreement on array sizes.
     */
     const int SG_MAX_SIZE = 19;
 #else
     BOOST_STATIC_ASSERT(SG_DEFINE_MAX_SIZE >= SG_MIN_SIZE);
     BOOST_STATIC_ASSERT(SG_DEFINE_MAX_SIZE <= 25);
+
     const int SG_MAX_SIZE = SG_DEFINE_MAX_SIZE;
 #endif
 
