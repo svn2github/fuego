@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT
+AC_INIT([fuego], [0.4.1.SVN])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([go/GoBoard.cpp])
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE([fuego], [0.4.1.SVN])
+AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AC_PROG_CXX
 AC_PROG_RANLIB
