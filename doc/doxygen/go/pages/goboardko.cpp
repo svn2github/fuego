@@ -5,13 +5,13 @@
 By default moves violating the Ko rule are illegal.
 That means that GoBoard::IsLegal will return false.
 If they are played anyway, GoBoard::LastMoveInfo will return true
-for ::isIllegal and ::isRepetition.
+for ::GO_MOVEFLAG_ILLEGAL and ::GO_MOVEFLAG_REPETITION.
 
 @section goboardkoallow Allowing Ko Moves
 
 During searches, Ko moves can be made legal with GoBoard::AllowKoRepetition.
 In addition, a ko loser has to be set with GoBoard::SetKoLoser.
-Then, Ko moves are legal (the ::isRepetition flag is still set).
+Then, Ko moves are legal (the ::GO_MOVEFLAG_REPETITION flag is still set).
 GoBoard::KoLevel returns the number of (now legal) Ko moves played by the
 Ko winner so far.
 If GoBoard::KoModifiesHash is true, only up to GoBoard::MAX_KOLEVEL Ko

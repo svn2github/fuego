@@ -124,7 +124,7 @@ public:
         construction; but then a policy has to be set with SetPolicy(), before
         the search is used.
         @param param Parameters. Stores a reference to the argument.
-        @param policy_param. Stores a reference to the argument.
+        @param policyParam. Stores a reference to the argument.
         @param safe Safety information. Stores a reference to the argument.
         @param allSafe Safety information. Stores a reference to the argument.
     */
@@ -532,6 +532,7 @@ public:
     /** Constructor.
         @param bd
         @param playoutPolicyFactory Factory for playout policies.
+        @param policyParam
         Stores a reference. Lifetime of parameter must exceed the lifetime of
         this instance.
         @param safe

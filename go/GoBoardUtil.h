@@ -898,8 +898,7 @@ inline std::ostream& operator<<(std::ostream& out, const GoBoard& bd)
 
 //----------------------------------------------------------------------------
 
-/** Used to restore GoBoard::Rules()::GetKoRule() to its current value in an
-    exception-safe way.
+/** Used to restore the ko rule to its current value in an exception-safe way.
     To use it, just declare a variable of this type on the stack for the
     desired scope.
 */
