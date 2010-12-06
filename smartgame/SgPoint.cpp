@@ -121,7 +121,7 @@ void SgReadPoint::Read(std::istream& in) const
     }
     char c = s[0];
     if (c >= 'A' && c <= 'Z')
-        c = c - 'A' + 'a';
+        c = char(c - 'A' + 'a');
     else if (c < 'a' || c > 'z')
     {
         in.setstate(ios::failbit);

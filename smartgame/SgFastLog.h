@@ -56,7 +56,7 @@ inline float SgFastLog::Log(float val) const
     int logTwo = ((x.m_int >> MAX_MANTISSA_BITS) & 255) - 127;
     x.m_int &= 0x7FFFFF;
     x.m_int >>= m_mantissaBitsDiff;
-    return ((m_lookupTable[x.m_int] + logTwo) * 0.69314718f);
+    return ((m_lookupTable[x.m_int] + float(logTwo)) * 0.69314718f);
 }
 
 //----------------------------------------------------------------------------

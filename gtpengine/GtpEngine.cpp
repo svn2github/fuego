@@ -451,7 +451,7 @@ string GtpCommand::ArgToLower(std::size_t number) const
 {
     string value = Arg(number);
     for (size_t i = 0; i < value.length(); ++i)
-        value[i] = tolower(value[i]);
+        value[i] = char(tolower(value[i]));
     return value;
 }
 

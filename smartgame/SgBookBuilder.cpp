@@ -141,7 +141,7 @@ void SgBookBuilder::Expand(int numExpansions)
        << " (" << (num / elapsed) << "/s)\n"
        << "Evaluations    " << m_num_evals 
        << std::fixed << std::setprecision(2)
-       << " (" << (m_num_evals / elapsed) << "/s)\n"
+       << " (" << (double(m_num_evals) / elapsed) << "/s)\n"
        << "Widenings      " << m_num_widenings << '\n';
     PrintMessage(os.str());
 }
@@ -224,7 +224,7 @@ void SgBookBuilder::Cover(int requiredExpansions, bool additive,
        << " (" << (num / elapsed) << "/s)\n"
        << "Evaluations    " << m_num_evals 
        << std::fixed << std::setprecision(2)
-       << " (" << (m_num_evals / elapsed) << "/s)\n"
+       << " (" << (double(m_num_evals) / elapsed) << "/s)\n"
        << "Widenings      " << m_num_widenings << '\n'
        << "New Lines      " << newLines << '\n';
     PrintMessage(os.str());
@@ -260,7 +260,7 @@ void SgBookBuilder::Refresh()
        << "Leaf Nodes       " << m_leaf_nodes << '\n'
        << "Evaluations      " << m_num_evals 
        << std::fixed << std::setprecision(2)
-       << " (" << (m_num_evals / elapsed) << "/s)\n"
+       << " (" << (double(m_num_evals) / elapsed) << "/s)\n"
        << "Widenings        " << m_num_widenings << '\n';
     PrintMessage(os.str());
 }
@@ -292,7 +292,7 @@ void SgBookBuilder::IncreaseWidth()
        << "Widenings      " << m_num_widenings << '\n'
        << "Evaluations    " << m_num_evals 
        << std::fixed << std::setprecision(2)
-       << " (" << (m_num_evals / elapsed) << "/s)\n";
+       << " (" << (double(m_num_evals) / elapsed) << "/s)\n";
     PrintMessage(os.str());
 }
 
