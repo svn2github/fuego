@@ -319,7 +319,8 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
-    size_t nuNewChildren = moves.size();
+    SG_ASSERT(moves.size() <= std::size_t(std::numeric_limits<int>::max()));
+    int nuNewChildren = int(moves.size());
 
     if (nuNewChildren == 0)
     {
@@ -368,7 +369,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     // is created between the two statements below. We modify node in
     // such a way so as to avoid that.
     SgSynchronizeThreadMemory();
-    if (nonConstNode.NuChildren() < (int)nuNewChildren)
+    if (nonConstNode.NuChildren() < nuNewChildren)
     {
         nonConstNode.SetFirstChild(newFirstChild);
         SgSynchronizeThreadMemory();

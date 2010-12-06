@@ -7,6 +7,7 @@
 #ifndef SG_UCTTREE_H
 #define SG_UCTTREE_H
 
+#include <limits>
 #include <stack>
 #include <boost/shared_ptr.hpp>
 #include "SgMove.h"
@@ -874,7 +875,8 @@ inline void SgUctTree::CreateChildren(std::size_t allocatorId,
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     SgUctNode& nonConstNode = const_cast<SgUctNode&>(node);
-    size_t nuChildren = moves.size();
+    SG_ASSERT(moves.size() <= std::size_t(std::numeric_limits<int>::max()));
+    int nuChildren = int(moves.size());
     SG_ASSERT(nuChildren > 0);
     SgUctAllocator& allocator = Allocator(allocatorId);
     SG_ASSERT(allocator.HasCapacity(nuChildren));
