@@ -555,7 +555,7 @@ int SgVector<T>::Index(const T& elt) const
     if (pos == end)
         return -1;
     else
-        return pos - m_vec.begin();
+        return int(pos - m_vec.begin());
 }
 
 template<typename T>

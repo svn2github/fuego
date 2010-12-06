@@ -118,7 +118,7 @@ void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val)
     SG_ASSERT(! std::numeric_limits<COUNT>::is_exact
               || count > 0); // overflow
     val -= m_mean;
-    m_mean +=  val / count;
+    m_mean +=  val / VALUE(count);
     m_count = count;
 }
 
@@ -132,7 +132,7 @@ void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val)
     if (count > 1) 
     {
         --count;
-        m_mean += (m_mean - val) / count;
+        m_mean += (m_mean - val) / VALUE(count);
         m_count = count;
     }
     else
@@ -150,7 +150,7 @@ void SgStatisticsBase<VALUE,COUNT>::Remove(VALUE val, COUNT n)
     if (count > n) 
     {
         count -= n;
-        m_mean += n * (m_mean - val) / count;
+        m_mean += VALUE(n) * (m_mean - val) / VALUE(count);
         m_count = count;
     }
     else
@@ -168,7 +168,7 @@ void SgStatisticsBase<VALUE,COUNT>::Add(VALUE val, COUNT n)
     SG_ASSERT(! std::numeric_limits<COUNT>::is_exact
               || count > 0); // overflow
     val -= m_mean;
-    m_mean +=  n * val / count;
+    m_mean +=  VALUE(n) * val / VALUE(count);
     m_count = count;
 }
 
@@ -304,8 +304,8 @@ void SgStatistics<VALUE,COUNT>::Add(VALUE val)
         m_statisticsBase.Add(val);
         VALUE mean = Mean();
         COUNT count = Count();
-        m_variance = (countOld * (m_variance + meanOld * meanOld)
-                      + val * val) / count  - mean * mean;
+        m_variance = (VALUE(countOld) * (m_variance + meanOld * meanOld)
+                      + val * val) / VALUE(count)  - mean * mean;
     }
     else
     {
