@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <limits>
 #include <vector>
 
 using std::vector;
@@ -163,7 +164,7 @@ public:
     /** Return the number of elements in this vector. */
     int Length() const
     {
-        return m_vec.size();
+        return static_cast<int>(m_vec.size());
     }
     
     /** Cut off vector after at most <code>length</code> elements. */
@@ -217,6 +218,8 @@ public:
     /** Add a single element at the end of the vector. */
     void PushBack(const T& elt)
     {
+        // Interface of SgVector supports only a vector length of type int
+        SG_ASSERT(Length() < std::numeric_limits<int>::max());
         m_vec.push_back(elt);
     }
 
