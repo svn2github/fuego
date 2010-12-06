@@ -221,7 +221,8 @@ namespace SgPointUtil {
 
 inline char Letter(int coord)
 {
-    return 'A' + static_cast<char>(coord - (coord >= 9 ? 0 : 1));
+    SG_ASSERT_GRIDRANGE(coord);
+    return char('A' + (coord - (coord >= 9 ? 0 : 1)));
 }
 
 std::string PointToString(SgPoint p);
