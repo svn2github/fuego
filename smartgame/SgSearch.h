@@ -141,12 +141,14 @@ inline SgSearchHashData::SgSearchHashData(int depth, signed value,
                                           bool isOnlyUpperBound,
                                           bool isOnlyLowerBound,
                                           bool isExactValue)
-    : m_depth(depth),
+    : // Mask depth to 12-bit to avoid GCC warning with -Wconversion
+      m_depth(depth & ((1 << 12) - 1)),
       m_isUpperBound(isOnlyUpperBound),
       m_isLowerBound(isOnlyLowerBound),
       m_isValid(true),
       m_isExactValue(isExactValue),
-      m_value(value),
+      // Mask value to 16-bit to avoid GCC warning with -Wconversion
+      m_value((short int)(value) & (short int)((1 << 16) - 1)),
       m_bestMove(bestMove)
 {
     // Ensure value fits in 16 bits
