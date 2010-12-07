@@ -161,7 +161,8 @@ template<class BOARD>
 inline SgPoint GoUctPureRandomGenerator<BOARD>::GenerateFillboardMove(
                                                               int numberTries)
 {
-    float effectiveTries = numberTries * m_nuEmptyFloat * m_invNuPoints;
+    float effectiveTries
+        = float(numberTries) * m_nuEmptyFloat * m_invNuPoints;
     size_t i = m_candidates.size();
     while (effectiveTries > 1.f)
     {
@@ -246,7 +247,7 @@ inline void GoUctPureRandomGenerator<BOARD>::Start()
             Insert(*it);
             m_nuEmptyFloat += 1.f;
         }
-    m_invNuPoints = 1.f / (m_bd.Size() * m_bd.Size());
+    m_invNuPoints = 1.f / float(m_bd.Size() * m_bd.Size());
     CheckConsistency();
 }
 

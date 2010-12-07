@@ -795,12 +795,12 @@ float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi,
         }
         if (adjacent[SG_BLACK] && ! adjacent[SG_WHITE])
         {
-            score += size;
+            score += float(size);
             c = SG_BLACK;
         }
         else if (! adjacent[SG_BLACK] && adjacent[SG_WHITE])
         {
-            score -= size;
+            score -= float(size);
             c = SG_WHITE;
         }
         else
