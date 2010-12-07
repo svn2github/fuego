@@ -59,7 +59,7 @@ void SgUctTreeStatistics::Write(ostream& out) const
     {
         ostringstream label;
         label << "MoveCount[" << i << ']';
-        int percent = m_moveCounts[i] * 100 / m_nuNodes;
+        size_t percent = m_moveCounts[i] * 100 / m_nuNodes;
         out << SgWriteLabel(label.str()) << setw(2) << right << percent
             << "%\n";
     }

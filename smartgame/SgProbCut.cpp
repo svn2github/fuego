@@ -29,7 +29,7 @@ bool SgProbCut::ProbCut(SgSearch& search, int depth, int alpha, int beta,
 
         if (beta < SgSearch::SG_INFINITY-1)
         {
-            float b = (+threshold * c.sigma + beta - c.b) / c.a;
+            float b = (+threshold * c.sigma + float(beta) - c.b) / c.a;
             int bound = SgMath::RoundToInt(b);
             int res = search.SearchEngine(c.shallow * SgSearch::DEPTH_UNIT,
                                    bound-1, bound, newStack, &isExact);
@@ -46,7 +46,7 @@ bool SgProbCut::ProbCut(SgSearch& search, int depth, int alpha, int beta,
 
         if (alpha > -SgSearch::SG_INFINITY + 1)
         {
-            float b = (-threshold * c.sigma + alpha - c.b) / c.a;
+            float b = (-threshold * c.sigma + float(alpha) - c.b) / c.a;
             int bound = SgMath::RoundToInt(b);
             int res = search.SearchEngine(c.shallow * SgSearch::DEPTH_UNIT,
                                    bound, bound+1, newStack, &isExact);

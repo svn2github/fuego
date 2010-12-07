@@ -183,7 +183,7 @@ template<int N>
 unsigned int SgHash<N>::GetWord() const
 {
     static const std::bitset<N> mask(0xffffffffUL);
-    return (m_code & mask).to_ulong();
+    return (unsigned int)((m_code & mask).to_ulong());
 }
 
 template<int N>

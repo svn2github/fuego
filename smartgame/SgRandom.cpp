@@ -64,7 +64,8 @@ void SgRandom::SetSeed(int seed)
         return;
     }
     if (seed == 0)
-        GetGlobalData().m_seed = std::time(0);
+        GetGlobalData().m_seed =
+            static_cast<boost::mt19937::result_type>(std::time(0));
     else
         GetGlobalData().m_seed = seed;
     SgDebug() << "SgRandom::SetSeed: " << GetGlobalData().m_seed << '\n';

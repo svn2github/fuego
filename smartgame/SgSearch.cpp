@@ -249,8 +249,9 @@ bool SgSearch::NullMovePrune(int depth, int delta, int beta)
         return false;
     if (CallExecute(SG_PASS, &delta, depth))
     {
-        float nullvalue = -SearchEngine(depth - delta,
-            -beta, -beta + 1, ignoreStack, &childIsExact, true);
+        float nullvalue =
+            float(-SearchEngine(depth - delta, -beta, -beta + 1, ignoreStack,
+                                &childIsExact, true));
         CallTakeBack();
         if (nullvalue >= beta)
         {

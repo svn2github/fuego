@@ -35,7 +35,7 @@ clock_t g_ticksPerMinute;
 
 void Init()
 {
-    int ticksPerSecond = sysconf(_SC_CLK_TCK);
+    long ticksPerSecond = sysconf(_SC_CLK_TCK);
     if (ticksPerSecond < 0) // Shouldn't happen
     {
         throw SgException("Could not get _SC_CLK_TCK.");
@@ -86,15 +86,14 @@ double SgTime::Get(SgTimeMode mode)
             clock_t clockTicks =
                 buf.tms_utime + buf.tms_stime
                 + buf.tms_cutime + buf.tms_cstime;
-            return static_cast<double>(clockTicks) / g_ticksPerSecond;
+            return double(clockTicks) / double(g_ticksPerSecond);
         }
     case SG_TIME_REAL:
         {
             struct timeval timeVal;
             if (gettimeofday(&timeVal, 0) != 0)
                 throw SgException(string("gettimeofday: ") + strerror(errno));
-            return (timeVal.tv_sec
-                    + static_cast<double>(timeVal.tv_usec) / 1e6);
+            return (double(timeVal.tv_sec) + double(timeVal.tv_usec) / 1e6);
         }
     default:
         SG_ASSERT(false);

@@ -33,7 +33,7 @@ string SgSearchValue::ToString(int unitPerPoint) const
             stream << (abs(m_value) / unitPerPoint);
         else
             stream << setprecision(1)
-              << (static_cast<float>(abs(m_value)) / unitPerPoint);
+                   << (float(abs(m_value)) / float(unitPerPoint));
     }
     else
     {

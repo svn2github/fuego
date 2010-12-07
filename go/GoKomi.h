@@ -124,7 +124,7 @@ inline float GoKomi::ToFloat() const
     if (m_isUnknown)
         return 0.f;
     else
-        return 0.5f * m_value;
+        return 0.5f * float(m_value);
 }
 
 //----------------------------------------------------------------------------
