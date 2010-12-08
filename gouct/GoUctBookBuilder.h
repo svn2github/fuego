@@ -335,7 +335,7 @@ void GoUctBookBuilder<PLAYER>::PrintMessage(std::string msg)
 template<class PLAYER>
 inline float GoUctBookBuilder<PLAYER>::InverseEval(float eval) const
 {
-    return 1.0 - eval;
+    return 1.f - eval;
 }
 
 template<class PLAYER>

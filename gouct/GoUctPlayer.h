@@ -626,7 +626,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(size_t maxGames,
 
     if (earlyPassPossible)
     {
-        const float threshold = 0.2; // Safety threshold
+        const float threshold = 0.2f; // Safety threshold
         for (GoBoard::Iterator it(bd); it; ++it)
         {
             float mean = territory[*it].Mean();
@@ -732,7 +732,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay,
     m_search.SetToPlay(toPlay);
     std::vector<SgPoint> sequence;
     SgUctEarlyAbortParam earlyAbort;
-    earlyAbort.m_threshold = 1 - m_resignThreshold;
+    earlyAbort.m_threshold = 1.f - m_resignThreshold;
     earlyAbort.m_minGames = m_resignMinGames;
     earlyAbort.m_reductionFactor = 3;
     float value = m_search.Search(m_maxGames, maxTime, sequence, rootFilter,
@@ -816,7 +816,7 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
     size_t oldTreeNodes = m_search.Tree().NuNodes();
     if (oldTreeNodes > 1 && initTreeNodes >= 1)
     {
-        float reuse = static_cast<float>(initTreeNodes) / oldTreeNodes;
+        float reuse = float(initTreeNodes) / float(oldTreeNodes);
         int reusePercent = static_cast<int>(100 * reuse);
         SgDebug() << "GoUctPlayer: Reusing " << initTreeNodes
                   << " nodes (" << reusePercent << "%)\n";

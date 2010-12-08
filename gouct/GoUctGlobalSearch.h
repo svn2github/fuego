@@ -511,7 +511,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     GoUctState::StartSearch();
     const GoBoard& bd = Board();
     int size = bd.Size();
-    float maxScore = size * size + GetKomi();
+    float maxScore = float(size * size) + GetKomi();
     m_invMaxScore = 1 / maxScore;
     m_initialMoveNumber = bd.MoveNumber();
     m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
@@ -730,9 +730,9 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     {
         // These parameters were mainly tested on 19x19
         // using GoUctPlayoutPolicy and GoUctDefaultPriorKnowledge
-        SetRaveWeightInitial(0.9);
+        SetRaveWeightInitial(0.9f);
         SetRaveWeightFinal(5000);
-        m_param.m_lengthModification = 0.00028;
+        m_param.m_lengthModification = 0.00028f;
     }
 }
 

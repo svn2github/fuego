@@ -487,7 +487,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             m_param.m_selectType = MoveSelectArg(cmd, 1);
         else if (name == "alpha")
         {
-            float alpha = cmd.FloatArg(1);
+            float alpha = cmd.Arg<float>(1);
             if (alpha < 0)
                 throw GtpFailure("Alpha must be greater than 0!");
             m_bookBuilder.SetAlpha(alpha);

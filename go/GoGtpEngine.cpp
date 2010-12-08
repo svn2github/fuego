@@ -871,7 +871,7 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
         else if (name == "fast_open_moves")
             c->SetFastOpenMoves(cmd.IntArg(1, 0));
         else if (name == "final_space")
-            c->SetFinalSpace(max(cmd.FloatArg(1), 0.));
+            c->SetFinalSpace(max(cmd.Arg<float>(1), 0.f));
         else if (name == "remaining_constant")
             c->SetRemainingConstant(max(cmd.FloatArg(1), 0.));
         else

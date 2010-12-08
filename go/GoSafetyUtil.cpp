@@ -191,8 +191,10 @@ SgEmptyBlackWhite GetWinner(const GoBoard& bd,
     
     const float EPSILON = 0.1f; // avoid judging draws as wins with integer komi
     const int nuPoints = bd.Size() * bd.Size();
-    int winThresholdBlack = int(ceil((nuPoints + komi + EPSILON) / 2.f));
-    int winThresholdWhite = int(ceil((nuPoints - komi + EPSILON) / 2.f));
+    int winThresholdBlack =
+        int(ceil((float(nuPoints) + komi + EPSILON) / 2.f));
+    int winThresholdWhite =
+        int(ceil((float(nuPoints) - komi + EPSILON) / 2.f));
     const SgBWArray<int> winThreshold(winThresholdBlack, winThresholdWhite);
 
     SgBWArray<int> nuSafe;

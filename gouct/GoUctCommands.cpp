@@ -398,9 +398,9 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.BoolArg(1);
         else if (name == "length_modification")
-            p.m_lengthModification = cmd.FloatArg(1);
+            p.m_lengthModification = cmd.Arg<float>(1);
         else if (name == "score_modification")
-            p.m_scoreModification = cmd.FloatArg(1);
+            p.m_scoreModification = cmd.Arg<float>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -628,11 +628,11 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "virtual_loss")
             s.SetVirtualLoss(cmd.BoolArg(1));
         else if (name == "bias_term_constant")
-            s.SetBiasTermConstant(cmd.FloatArg(1));
+            s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "expand_threshold")
             s.SetExpandThreshold(cmd.SizeTypeArg(1, 1));
         else if (name == "first_play_urgency")
-            s.SetFirstPlayUrgency(cmd.FloatArg(1));
+            s.SetFirstPlayUrgency(cmd.Arg<float>(1));
         else if (name == "live_gfx")
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
@@ -648,9 +648,9 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "prune_min_count")
             s.SetPruneMinCount(cmd.SizeTypeArg(1, 1));
         else if (name == "rave_weight_final")
-            s.SetRaveWeightFinal(cmd.FloatArg(1));
+            s.SetRaveWeightFinal(cmd.Arg<float>(1));
         else if (name == "rave_weight_initial")
-            s.SetRaveWeightInitial(cmd.FloatArg(1));
+            s.SetRaveWeightInitial(cmd.Arg<float>(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -1019,7 +1019,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
                     return deadStones;
                 averageStatus.Add(territoryStatistics[*it2].Mean());
             }
-            const float threshold = 0.3;
+            const float threshold = 0.3f;
             isDead =
                 ((c == SG_BLACK && averageStatus.Mean() < threshold)
                  || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold));

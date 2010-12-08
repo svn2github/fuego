@@ -122,7 +122,7 @@ TestSearch::~TestSearch()
 void TestSearch::AddNode(size_t father, SgMove move, int eval)
 {
     TestNode node;
-    int index = m_nodes.size();
+    size_t index = m_nodes.size();
     if (father != NO_NODE)
     {
         SG_ASSERT(father < m_nodes.size());
@@ -249,7 +249,7 @@ SgBlackWhite TestSearch::GetToPlay() const
 
 SgHashCode TestSearch::GetHashCode() const
 {
-    return m_currentNode;
+    return SgHashCode(m_currentNode);
 }
 
 bool TestSearch::EndOfGame() const
