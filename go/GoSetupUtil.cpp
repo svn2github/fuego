@@ -15,22 +15,22 @@ using SgPointUtil::Pt;
 //----------------------------------------------------------------------------
 namespace {
 
-bool IsBlackChar(char c)
+bool IsBlackChar(int c)
 {
     return c == 'x' || c == 'X' || c == '@';
 }
 
-bool IsWhiteChar(char c)
+bool IsWhiteChar(int c)
 {
     return c == '0' || c == 'o' || c == 'O';
 }
 
-bool IsEmptyChar(char c)
+bool IsEmptyChar(int c)
 {
     return c == '.' || c == '+';
 }
 
-bool IsIgnoreChar(char c)
+bool IsIgnoreChar(int c)
 {
     return c == ' ' || c == '\t';
 }
@@ -38,7 +38,7 @@ bool IsIgnoreChar(char c)
 bool ReadLine(std::streambuf& in, GoSetup& setup, int row, int& currLength)
 {
     int col = 0;
-    for (char c = in.sbumpc(); c != EOF && c != '\n'; c = in.sbumpc())
+    for (int c = in.sbumpc(); c != EOF && c != '\n'; c = in.sbumpc())
     {
         if (IsBlackChar(c) || IsWhiteChar(c) || IsEmptyChar(c))
         {

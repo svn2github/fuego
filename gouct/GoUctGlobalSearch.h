@@ -472,7 +472,7 @@ float GoUctGlobalSearchState<POLICY>::GetKomi() const
     const GoRules& rules = Board().Rules();
     float komi = rules.Komi().ToFloat();
     if (rules.ExtraHandicapKomi())
-        komi += rules.Handicap();
+        komi += float(rules.Handicap());
     return komi;
 }
 

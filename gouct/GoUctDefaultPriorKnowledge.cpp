@@ -59,7 +59,7 @@ void GoUctKnowledge::Initialize(SgPoint p, float value, size_t count)
 
 void GoUctKnowledge::ClearValues()
 {
-    for (std::size_t i = 0; i < SG_PASS+1; ++i)
+    for (int i = 0; i < SG_PASS + 1; ++i)
         m_values[i].Clear();
 }
 
@@ -102,20 +102,20 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
             switch (dist[p])
             {
             case 1:
-                Add(p, 1.0, count);
+                Add(p, 1.0f, count);
                 break;
             case 2:
-                Add(p, 0.6, count);
+                Add(p, 0.6f, count);
                 break;
             case 3:
-                Add(p, 0.6, count);
+                Add(p, 0.6f, count);
                 break;
             default:
-                Add(p, 0.1, count);
+                Add(p, 0.1f, count);
                 break;
             }
         }
-        Add(SG_PASS, 0.1, count);
+        Add(SG_PASS, 0.1f, count);
     }
 }
 
@@ -172,7 +172,7 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
     // 19x19 otherwise.
     const bool isSmallBoard = (m_bd.Size() < 15);
 
-    Initialize(SG_PASS, 0.1, isSmallBoard ? 9 : 18);
+    Initialize(SG_PASS, 0.1f, isSmallBoard ? 9 : 18);
     if (isFullBoardRandom && ! anyHeuristic)
     {
         for (GoBoard::Iterator it(m_bd); it; ++it)
@@ -181,7 +181,7 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, isSmallBoard ? 9 : 18);
+                Initialize(*it, 0.1f, isSmallBoard ? 9 : 18);
             else
                 m_values[p].Clear(); // Don't initialize
         }
@@ -194,13 +194,13 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, isSmallBoard ? 9 : 18);
+                Initialize(*it, 0.1f, isSmallBoard ? 9 : 18);
             else if (atari[*it])
-                Initialize(*it, 1.0, 3);
+                Initialize(*it, 1.0f, 3);
             else if (pattern[*it])
-                Initialize(*it, 0.9, 3);
+                Initialize(*it, 0.9f, 3);
             else
-                Initialize(*it, 0.5, 3);
+                Initialize(*it, 0.5f, 3);
         }
     }
     else
@@ -211,13 +211,13 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
             if (! m_bd.IsEmpty(p))
                 continue;
             if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1, isSmallBoard ? 9 : 18);
+                Initialize(*it, 0.1f, isSmallBoard ? 9 : 18);
             else if (atari[*it])
-                Initialize(*it, 0.8, isSmallBoard ? 9 : 18);
+                Initialize(*it, 0.8f, isSmallBoard ? 9 : 18);
             else if (pattern[*it])
-                Initialize(*it, 0.6, isSmallBoard ? 9 : 18);
+                Initialize(*it, 0.6f, isSmallBoard ? 9 : 18);
             else
-                Initialize(*it, 0.4, isSmallBoard ? 9 : 18);
+                Initialize(*it, 0.4f, isSmallBoard ? 9 : 18);
         }
         GoPointList moves = m_policy.GetEquivalentBestMoves();
         for (GoPointList::Iterator it(moves); it; ++it)

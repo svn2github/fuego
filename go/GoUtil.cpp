@@ -23,7 +23,7 @@ std::string GoUtil::ScoreToString(float score)
     if (score < epsilon)
         return "0";
     ostringstream out;
-    bool isFractional = (fabs(static_cast<int>(score) - score) > epsilon);
+    bool isFractional = (fabs(float(int(score)) - score) > epsilon);
     int precision = (isFractional ? 1 : 0);
     out << (blackWin ? "B+" : "W+") << fixed << setprecision(precision)
         << score;

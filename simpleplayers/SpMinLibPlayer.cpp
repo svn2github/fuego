@@ -45,7 +45,7 @@ int SpMinLibMoveGenerator::LibertyMinimum(SgBlackWhite toplay)
     // Evaluation is inversely proportional to minlibs value
     // with appropriate sign
     SG_ASSERT(minlibs != 0);
-    float eval = 100 * sign / minlibs; // in range [-100, 100]
+    float eval = 100.f * sign / float(minlibs); // in range [-100, 100]
     return static_cast<int>(eval);
 }
 

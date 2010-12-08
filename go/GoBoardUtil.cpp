@@ -645,7 +645,7 @@ float GoBoardUtil::ScoreSimpleEndPosition(const GoBoard& bd, float komi,
     int score = 0;
     for (GoBoard::Iterator it(bd); it; ++it)
         score += ScorePoint(bd, *it, noCheck);
-    return (score - komi);
+    return float(score) - komi;
 }
 
 void GoBoardUtil::SharedLiberties(const GoBoard& bd,
@@ -816,10 +816,11 @@ bool GoBoardUtil::ScorePosition(const GoBoard& bd,
             territory -= nuPoints;
     }
     int prisoners = bd.NumPrisoners(SG_BLACK) - bd.NumPrisoners(SG_WHITE);
+    float komi = bd.Rules().Komi().ToFloat();
     if (bd.Rules().JapaneseScoring())
-        score = territory - dead - prisoners - bd.Rules().Komi().ToFloat();
+        score = float(territory - dead - prisoners) - komi;
     else
-        score = territory + stones - bd.Rules().Komi().ToFloat();
+        score = float(territory + stones) - komi;
     return true;
 }
 

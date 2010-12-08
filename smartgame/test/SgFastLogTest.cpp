@@ -18,10 +18,11 @@ namespace {
 BOOST_AUTO_TEST_CASE(SgFastLogTest_Basic)
 {
     SgFastLog fastLog(10);
-    const float epsilon = 0.1;
+    const float epsilon = 0.1f;
+    const float naturalLogBase = float(M_E);
     BOOST_CHECK_CLOSE(fastLog.Log(1), 0.0f, epsilon);
-    BOOST_CHECK_CLOSE(fastLog.Log(M_E), 1.0f, epsilon);
-    BOOST_CHECK_CLOSE(fastLog.Log(pow(M_E, 2.0)), 2.0f, epsilon);
+    BOOST_CHECK_CLOSE(fastLog.Log(naturalLogBase), 1.0f, epsilon);
+    BOOST_CHECK_CLOSE(fastLog.Log(powf(naturalLogBase, 2.0f)), 2.0f, epsilon);
 }
 
 } // namespace

@@ -221,7 +221,7 @@ const GoBook::MapEntry* GoBook::LookupEntry(const GoBoard& bd) const
 SgPoint GoBook::LookupMove(const GoBoard& bd) const
 {
     vector<SgPoint> moves = LookupAllMoves(bd);
-    int nuMoves = moves.size();
+    size_t nuMoves = moves.size();
     if (nuMoves == 0)
         return SG_NULLMOVE;
     SgPoint p = moves[rand() % nuMoves];

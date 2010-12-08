@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(GoTimeControlTest_AbsoluteTime)
 
     GoTimeControl timeControl(bd);
     timeControl.SetFastOpenMoves(0);
-    timeControl.SetFinalSpace(0.7);
+    timeControl.SetFinalSpace(0.7f);
 
     SgTimeRecord timeRecord;
     double timeLeft = 10;

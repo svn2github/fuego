@@ -170,7 +170,7 @@ void GoAutoBook::Merge(const GoAutoBook& other)
             SgBookNode oldNode(mine->second);
             if (newNode.IsLeaf() && oldNode.IsLeaf())
             {
-                newNode.m_heurValue = 0.5 * (newNode.m_heurValue 
+                newNode.m_heurValue = 0.5f * (newNode.m_heurValue 
                                              + oldNode.m_heurValue);
                 m_data[it->first] = newNode;
                 leafsInCommon++;

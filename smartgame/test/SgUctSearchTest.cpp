@@ -345,7 +345,7 @@ void TestUctSearch::AddNode(size_t father, SgMove move, bool isLeaf,
 {
     SG_ASSERT(father == NO_NODE || ! m_nodes[father].m_isLeaf);
     TestNode node;
-    int index = m_nodes.size();
+    size_t index = m_nodes.size();
     if (father != NO_NODE)
     {
         SG_ASSERT(father < m_nodes.size());

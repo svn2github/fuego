@@ -791,14 +791,14 @@ void GoUctPlayoutPolicy<BOARD>::UpdateStatistics()
     {
         if (m_nonRandLen > 0)
         {
-            statistics.m_nonRandLen.Add(m_nonRandLen);
+            statistics.m_nonRandLen.Add(float(m_nonRandLen));
             m_nonRandLen = 0;
         }
     }
     else
     {
         ++m_nonRandLen;
-        statistics.m_moveListLen.Add(GetEquivalentBestMoves().Length());
+        statistics.m_moveListLen.Add(float(GetEquivalentBestMoves().Length()));
     }
 }
 
