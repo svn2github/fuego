@@ -20,6 +20,22 @@ using namespace std;
 
 namespace {
 
+BOOST_AUTO_TEST_CASE(GtpCommandTest_Arg_Generic)
+{
+    BOOST_CHECK(! GtpCommand("command 0").Arg<bool>(0));
+    BOOST_CHECK(GtpCommand("command 1").Arg<bool>(0));
+    BOOST_CHECK_THROW(GtpCommand("command 2").Arg<bool>(0), GtpFailure);
+    BOOST_CHECK_THROW(GtpCommand("command foo").Arg<bool>(0), GtpFailure);
+    BOOST_CHECK_THROW(GtpCommand("command").Arg<bool>(0), GtpFailure);
+
+    BOOST_CHECK_THROW(GtpCommand("command abc 9.1").Arg<double>(0),
+                      GtpFailure);
+    BOOST_CHECK_CLOSE(GtpCommand("command abc 9.1").Arg<double>(1), 9.1, 1e-4);
+
+    BOOST_CHECK_EQUAL(GtpCommand("command 9 abc").Arg<int>(0), 9);
+    BOOST_CHECK_THROW(GtpCommand("command 9 abc").Arg<int>(1), GtpFailure);
+}
+
 BOOST_AUTO_TEST_CASE(GtpCommandTest_ArgToLower)
 {
     GtpCommand cmd("command cAsE");

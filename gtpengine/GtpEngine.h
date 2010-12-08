@@ -205,6 +205,18 @@ public:
     */
     std::string ArgToLower(std::size_t number) const;
 
+    /** Get argument converted to a generic type.
+        This function allows to parse any argument type that implements
+        <tt>operator<<(istream)</tt>. For types directly supported by this
+        class, it is recommended to use the more specific parsing function
+        (e.g. IntArg()), because the error message on failure will be more
+        specific.
+        @param i Argument index starting with 0
+        @return The converted argument
+        @throws Failure If no such argument, or argument cannot be converted */
+    template<typename T>
+    T Arg(std::size_t i) const;
+
     /** Get integer argument converted boolean.
         @param number Argument index starting with 0
         @return false, if argument is 0, true, if 1
@@ -399,6 +411,19 @@ inline GtpCommand::GtpCommand(const std::string& line)
 inline GtpCommand::operator std::ostream&()
 {
     return ResponseStream();
+}
+
+template<typename T>
+T GtpCommand::Arg(std::size_t i) const
+{
+    std::string s = Arg(i);
+    std::istringstream in(s);
+    T result;
+    in >> result;
+    if (! in)
+        throw GtpFailure() << "argument " << (i + 1) << " (" << s
+                           << ") has invalid type";
+    return result;
 }
 
 inline void GtpCommand::CheckArgNone() const
@@ -706,4 +731,3 @@ void GtpEngine::Register(const std::string& command,
 //----------------------------------------------------------------------------
 
 #endif // GTPENGINE_H
-
