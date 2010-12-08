@@ -16,7 +16,7 @@ autoreconf -i
 setup() {
     TARGET="$1"
     # Optimization options for the GCC compiler.
-    GCC_OPTIMIZE="-O3 -march=native"
+    GCC_OPTIMIZE="-O3 -march=native -ffast-math"
     case "$TARGET" in
 	dbg)
 	    CXXFLAGS="-g -pipe"

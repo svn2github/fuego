@@ -249,7 +249,7 @@ SgBlackWhite TestSearch::GetToPlay() const
 
 SgHashCode TestSearch::GetHashCode() const
 {
-    return SgHashCode(m_currentNode);
+    return m_currentNode;
 }
 
 bool TestSearch::EndOfGame() const
