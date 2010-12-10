@@ -1,12 +1,21 @@
 #!/bin/sh
-# This script sets up some commonly used build targets for Fuego.
+# Set up some commonly used build configurations for Fuego.
+# This is a convenience script for developers that assumes a recent version
+# of GCC and sets up build configurations for optimized and debug builds in
+# the subdirectory "build".
 
 DEFAULT_TARGETS="dbg opt opt-9"
-
 if test $# -eq 0 ; then
     TARGETS="$DEFAULT_TARGETS"
 else
     TARGETS="$@"
+fi
+
+# Optimization options for the GCC compiler.
+GCC_OPTIMIZE="-O3 -ffast-math"
+if ! gcc -v 2>&1 | grep -q 'gcc version 4.2' ; then
+    # Value "native" for -march requires at least GCC 4.3
+    GCC_OPTIMIZE="$GCC_OPTIMIZE -march=native"
 fi
 
 aclocal
@@ -15,8 +24,6 @@ autoreconf -i
 
 setup() {
     TARGET="$1"
-    # Optimization options for the GCC compiler.
-    GCC_OPTIMIZE="-O3 -march=native -ffast-math"
     case "$TARGET" in
 	dbg)
 	    CXXFLAGS="-g -pipe"
