@@ -672,8 +672,7 @@ void GtpEngine::BeforeWritingResponse()
 /** Return @c true if command is known, @c false otherwise. */
 void GtpEngine::CmdKnownCommand(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    cmd.SetResponseBool(IsRegistered(cmd.Arg(0)));
+    cmd.SetResponseBool(IsRegistered(cmd.Arg()));
 }
 
 /** List all known commands. */

@@ -152,8 +152,7 @@ void SgGtpCommands::CmdCpuTimeReset(GtpCommand& cmd)
 */
 void SgGtpCommands::CmdDebugger(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    string type = cmd.Arg(0);
+    string type = cmd.Arg();
     const char* path = m_programPath;
     if (path == 0)
         throw GtpFailure("location of executable unknown");
@@ -197,8 +196,7 @@ void SgGtpCommands::CmdEchoErr(GtpCommand& cmd)
 */
 void SgGtpCommands::CmdExec(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    m_engine.ExecuteFile(cmd.Arg(0), SgDebug());
+    m_engine.ExecuteFile(cmd.Arg(), SgDebug());
 }
 
 /** Return the current random seed.
@@ -251,8 +249,7 @@ void SgGtpCommands::CmdPid(GtpCommand& cmd)
 */
 void SgGtpCommands::CmdSetRandomSeed(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    SgRandom::SetSeed(cmd.Arg<int>(0));
+    SgRandom::SetSeed(cmd.Arg<int>());
 }
 
 /** Switch debug logging on/off. */

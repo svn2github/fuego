@@ -282,8 +282,7 @@ void GoUctCommands::CmdFinalScore(GtpCommand& cmd)
 */
 void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    string arg = cmd.Arg(0);
+    string arg = cmd.Arg();
     if (arg == "seki")
         return;
     bool getDead;
@@ -805,8 +804,7 @@ void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
 */
 void GoUctCommands::CmdSaveGames(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    string fileName = cmd.Arg(0);
+    string fileName = cmd.Arg();
     try
     {
         Search().SaveGames(fileName);

@@ -271,8 +271,7 @@ void GoUctBookBuilderCommands<PLAYER>::ShowInfluence(GtpCommand& cmd,
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdOpen(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    m_book.reset(new GoAutoBook(cmd.Arg(0), m_param));
+    m_book.reset(new GoAutoBook(cmd.Arg(), m_param));
 }
 
 /** Closes the current autobook. */
@@ -393,8 +392,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
-    cmd.CheckNuArg(1);
-    GoAutoBook other(cmd.Arg(0), m_param);
+    GoAutoBook other(cmd.Arg(), m_param);
     m_book->Merge(other);
 }
 
@@ -406,8 +404,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
-    cmd.CheckNuArg(1);
-    std::string filename = cmd.Arg(0);
+    std::string filename = cmd.Arg();
     std::ifstream in(filename.c_str());
     if (!in)
         throw GtpFailure() << "Could not open '" << filename << "'\n";
@@ -420,8 +417,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExport(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
-    cmd.CheckNuArg(1);
-    std::string filename = cmd.Arg(0);
+    std::string filename = cmd.Arg();
     std::ofstream of(filename.c_str());
     if (!of)
         throw GtpFailure() << "Could not open '" << filename << "'\n";
@@ -505,10 +501,9 @@ void GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled(GtpCommand& cmd)
 {
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
-    cmd.CheckNuArg(1);
     std::vector< std::vector<SgMove> > workList;
     {
-        std::string filename = cmd.Arg(0);
+        std::string filename = cmd.Arg();
         std::ifstream in(filename.c_str());
         if (!in)
             throw GtpFailure() << "Could not open '" << filename << "'\n";

@@ -215,6 +215,16 @@ public:
     template<typename T>
     T Arg(std::size_t i) const;
 
+    /** Get single argument converted to a type.
+        This function allows to parse any argument type that implements
+        <tt>operator<<(istream)</tt>.
+        @return The converted argument
+        @throws Failure If no such argument, argument cannot be converted or
+        command has more than one arguments
+    */
+    template<typename T>
+    T Arg() const;
+
     /** Get argument converted to a type and check for a minimum value.
         This function allows to parse any argument type that implements
         <tt>operator<<(istream)</tt>.
@@ -437,6 +447,13 @@ T GtpCommand::Arg(std::size_t i) const
                            << ") must be of type \""
                            << typeid(T).name() << "\"";
     return result;
+}
+
+template<typename T>
+inline T GtpCommand::Arg() const
+{
+    CheckNuArg(1);
+    return Arg<T>(0);
 }
 
 template<typename T>

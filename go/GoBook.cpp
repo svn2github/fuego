@@ -387,7 +387,6 @@ void GoBookCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 */
 void GoBookCommands::CmdAdd(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
     SgPoint p = GoGtpCommandUtil::PointArg(cmd, m_bd);
     try
     {
@@ -412,7 +411,6 @@ void GoBookCommands::CmdClear(GtpCommand& cmd)
 */
 void GoBookCommands::CmdDelete(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
     vector<SgPoint> moves = m_book.LookupAllMoves(m_bd);
     if (moves.empty())
         throw GtpFailure("book contains no moves for current position");
@@ -439,8 +437,7 @@ void GoBookCommands::CmdInfo(GtpCommand& cmd)
 
 void GoBookCommands::CmdLoad(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    m_fileName = cmd.Arg(0);
+    m_fileName = cmd.Arg();
     try
     {
         m_book.Read(m_fileName);
@@ -495,15 +492,14 @@ void GoBookCommands::CmdSaveAs(GtpCommand& cmd)
 {
     if (m_engine.MpiSynchronizer()->IsRootProcess())
     {
-    cmd.CheckNuArg(1);
-    m_fileName = cmd.Arg(0);
-    ofstream out(m_fileName.c_str());
-    m_book.Write(out);
-    if (! out)
-    {
-        m_fileName = "";
-        throw GtpFailure("write error");
-    }
+        m_fileName = cmd.Arg();
+        ofstream out(m_fileName.c_str());
+        m_book.Write(out);
+        if (! out)
+        {
+            m_fileName = "";
+            throw GtpFailure("write error");
+        }
     }
 }
 

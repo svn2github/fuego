@@ -62,8 +62,7 @@ void GoSafetyCommands::CmdDameStatic(GtpCommand& cmd)
 */
 void GoSafetyCommands::CmdGfx(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
-    string type = cmd.Arg(0);
+    string type = cmd.Arg();
     int totalRegions = 0;
     SgBWSet safe = GetSafe(totalRegions, type);
     SgPointSet dame;
