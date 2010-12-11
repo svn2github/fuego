@@ -182,7 +182,7 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     return false;
 }
 
-void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctCount minCount,
+void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
                                   bool warnTruncate, double maxTime) const
 {
     size_t allocatorId = 0;
@@ -210,7 +210,7 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctCount minCount,
     @param maxTime See ExtractSubtree()
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
-                            const SgUctNode& node, SgUctCount minCount,
+                            const SgUctNode& node, SgUctValue minCount,
                             std::size_t& currentAllocatorId,
                             bool warnTruncate, bool& abort, SgTimer& timer,
                             double maxTime) const
@@ -335,7 +335,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     SG_ASSERT(allocator.HasCapacity(nuNewChildren));
 
     const SgUctNode* newFirstChild = allocator.Finish();
-    SgUctCount parentCount = allocator.Create(moves);
+    SgUctValue parentCount = allocator.Create(moves);
     
     // Update new children with data in old children
     for (std::size_t i = 0; i < moves.size(); ++i) 

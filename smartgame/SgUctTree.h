@@ -12,7 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include "SgMove.h"
 #include "SgStatistics.h"
-#include "SgUctTypes.h"
+#include "SgUctValue.h"
 
 class SgTimer;
 
@@ -39,23 +39,23 @@ struct SgMoveInfo
     SgUctValue m_value;
 
     /** Count of node after node is created. */
-    SgUctCount m_count;
+    SgUctValue m_count;
 
     /** Rave value of move after node is created from viewpoint of
         parent node.
         Value should not be inverted to child's perspective.
     */
-    SgUctRaveValue m_raveValue;
+    SgUctValue m_raveValue;
 
     /** Rave count of move after node is created. */
-    SgUctRaveCount m_raveCount;
+    SgUctValue m_raveCount;
 
     SgMoveInfo();
 
     SgMoveInfo(SgMove move);
 
-    SgMoveInfo(SgMove move, SgUctValue value, SgUctCount count,
-               SgUctRaveValue raveValue, SgUctRaveCount raveCount);
+    SgMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
+               SgUctValue raveValue, SgUctValue raveCount);
 };
 
 inline SgMoveInfo::SgMoveInfo()
@@ -75,8 +75,8 @@ inline SgMoveInfo::SgMoveInfo(SgMove move)
 {
 }
 
-inline SgMoveInfo::SgMoveInfo(SgMove move, SgUctValue value, SgUctCount count,
-                              SgUctRaveValue raveValue, SgUctRaveCount raveCount)
+inline SgMoveInfo::SgMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
+                              SgUctValue raveValue, SgUctValue raveCount)
     : m_move(move),
       m_value(value),
       m_count(count),
@@ -124,7 +124,7 @@ public:
     void AddGameResult(SgUctValue eval);
 
     /** Adds a game result count times. */
-    void AddGameResults(SgUctValue eval, SgUctCount count);
+    void AddGameResults(SgUctValue eval, SgUctValue count);
 
     /** Add other nodes results to this node's. */
     void MergeResults(const SgUctNode& node);
@@ -135,20 +135,20 @@ public:
     void RemoveGameResult(SgUctValue eval);
 
     /** Removes a game result count times. */
-    void RemoveGameResults(SgUctValue eval, SgUctCount count);
+    void RemoveGameResults(SgUctValue eval, SgUctValue count);
 
     /** Number of times this node was visited.
         This corresponds to the sum of MoveCount() of all children.
         It can be different from MoveCount() of this position, if prior
         knowledge initialization of the children is used.
     */
-    SgUctCount PosCount() const;
+    SgUctValue PosCount() const;
 
     /** Number of times the move leading to this position was chosen.
         This count will be different from PosCount(), if prior knowledge
         initialization is used.
     */
-    SgUctCount MoveCount() const;
+    SgUctValue MoveCount() const;
 
     /** Get first child.
         @note This information is an implementation detail of how SgUctTree
@@ -189,10 +189,10 @@ public:
     */
     void DecPosCount();
 
-    void SetPosCount(SgUctCount value);
+    void SetPosCount(SgUctValue value);
 
     /** Initialize value with prior knowledge. */
-    void InitializeValue(SgUctValue value, SgUctCount count);
+    void InitializeValue(SgUctValue value, SgUctValue count);
 
     /** Copy data from other node.
         Copies all data, apart from the children information (first child
@@ -208,34 +208,34 @@ public:
     /** Get RAVE count.
         @see SgUctSearch::Rave().
     */
-    SgUctRaveCount RaveCount() const;
+    SgUctValue RaveCount() const;
 
     /** Get RAVE mean value.
         Requires: HasRaveValue()
         @see SgUctSearch::Rave().
     */
-    SgUctRaveValue RaveValue() const;
+    SgUctValue RaveValue() const;
 
     bool HasRaveValue() const;
 
     /** Add a game result value to the RAVE value.
         @see SgUctSearch::Rave().
     */
-    void AddRaveValue(SgUctRaveValue value, SgUctRaveCount weight);
+    void AddRaveValue(SgUctValue value, SgUctValue weight);
 
     /** Removes a rave result. */
-    void RemoveRaveValue(SgUctRaveValue value);
+    void RemoveRaveValue(SgUctValue value);
 
-    void RemoveRaveValue(SgUctRaveValue value, SgUctRaveCount weight);
+    void RemoveRaveValue(SgUctValue value, SgUctValue weight);
 
     /** Initialize RAVE value with prior knowledge. */
-    void InitializeRaveValue(SgUctRaveValue value,  SgUctRaveCount count);
+    void InitializeRaveValue(SgUctValue value,  SgUctValue count);
 
     /** Returns the last time knowledge was computed. */
-    SgUctCount KnowledgeCount() const;
+    SgUctValue KnowledgeCount() const;
 
     /** Set that knowledge has been computed at count. */
-    void SetKnowledgeCount(SgUctCount count);
+    void SetKnowledgeCount(SgUctValue count);
 
     /** Returns true if node is a proven node. */
     bool IsProven() const;
@@ -249,7 +249,7 @@ public:
     void SetProvenNodeType(SgProvenNodeType type);
 
 private:
-    SgUctValueStatisticsVolatile m_statistics;
+    SgUctStatisticsVolatile m_statistics;
 
     const SgUctNode* volatile m_firstChild;
 
@@ -261,11 +261,11 @@ private:
         Uses double for count to allow adding fractional values if RAVE
         updates are weighted.
     */
-    SgUctRaveStatisticsVolatile m_raveValue;
+    SgUctStatisticsVolatile m_raveValue;
 
-    volatile SgUctCount m_posCount;
+    volatile SgUctValue m_posCount;
 
-    volatile SgUctCount m_knowledgeCount;
+    volatile SgUctValue m_knowledgeCount;
 
     volatile SgProvenNodeType m_provenType;
 };
@@ -287,7 +287,7 @@ inline void SgUctNode::AddGameResult(SgUctValue eval)
     m_statistics.Add(eval);
 }
 
-inline void SgUctNode::AddGameResults(SgUctValue eval, SgUctCount count)
+inline void SgUctNode::AddGameResults(SgUctValue eval, SgUctValue count)
 {
     m_statistics.Add(eval, count);
 }
@@ -305,22 +305,22 @@ inline void SgUctNode::RemoveGameResult(SgUctValue eval)
     m_statistics.Remove(eval);
 }
 
-inline void SgUctNode::RemoveGameResults(SgUctValue eval, SgUctCount count)
+inline void SgUctNode::RemoveGameResults(SgUctValue eval, SgUctValue count)
 {
     m_statistics.Remove(eval, count);
 }
 
-inline void SgUctNode::AddRaveValue(SgUctRaveValue value, SgUctRaveCount weight)
+inline void SgUctNode::AddRaveValue(SgUctValue value, SgUctValue weight)
 {
     m_raveValue.Add(value, weight);
 }
 
-inline void SgUctNode::RemoveRaveValue(SgUctRaveValue value)
+inline void SgUctNode::RemoveRaveValue(SgUctValue value)
 {
     m_raveValue.Remove(value);
 }
 
-inline void SgUctNode::RemoveRaveValue(SgUctRaveValue value, SgUctRaveCount weight)
+inline void SgUctNode::RemoveRaveValue(SgUctValue value, SgUctValue weight)
 {
     m_raveValue.Remove(value, weight);
 }
@@ -366,12 +366,12 @@ inline void SgUctNode::DecPosCount()
     --m_posCount;
 }
 
-inline void SgUctNode::InitializeValue(SgUctValue value, SgUctCount count)
+inline void SgUctNode::InitializeValue(SgUctValue value, SgUctValue count)
 {
     m_statistics.Initialize(value, count);
 }
 
-inline void SgUctNode::InitializeRaveValue(SgUctRaveValue value, SgUctRaveCount count)
+inline void SgUctNode::InitializeRaveValue(SgUctValue value, SgUctValue count)
 {
     m_raveValue.Initialize(value, count);
 }
@@ -387,7 +387,7 @@ inline SgMove SgUctNode::Move() const
     return m_move;
 }
 
-inline SgUctCount SgUctNode::MoveCount() const
+inline SgUctValue SgUctNode::MoveCount() const
 {
     return m_statistics.Count();
 }
@@ -397,17 +397,17 @@ inline int SgUctNode::NuChildren() const
     return m_nuChildren;
 }
 
-inline SgUctCount SgUctNode::PosCount() const
+inline SgUctValue SgUctNode::PosCount() const
 {
     return m_posCount;
 }
 
-inline SgUctRaveCount SgUctNode::RaveCount() const
+inline SgUctValue SgUctNode::RaveCount() const
 {
     return m_raveValue.Count();
 }
 
-inline SgUctRaveValue SgUctNode::RaveValue() const
+inline SgUctValue SgUctNode::RaveValue() const
 {
     return m_raveValue.Mean();
 }
@@ -423,17 +423,17 @@ inline void SgUctNode::SetNuChildren(int nuChildren)
     m_nuChildren = nuChildren;
 }
 
-inline void SgUctNode::SetPosCount(SgUctCount value)
+inline void SgUctNode::SetPosCount(SgUctValue value)
 {
     m_posCount = value;
 }
 
-inline SgUctCount SgUctNode::KnowledgeCount() const
+inline SgUctValue SgUctNode::KnowledgeCount() const
 {
     return m_knowledgeCount;
 }
 
-inline void SgUctNode::SetKnowledgeCount(SgUctCount count)
+inline void SgUctNode::SetKnowledgeCount(SgUctValue count)
 {
     m_knowledgeCount = count;
 }
@@ -515,7 +515,7 @@ public:
         REQUIRES: HasCapacity(moves.size())
         @param moves The list of moves.
     */
-    SgUctCount Create(const std::vector<SgMoveInfo>& moves);
+    SgUctValue Create(const std::vector<SgMoveInfo>& moves);
 
     /** Create a number of new nodes at the end of the storage.
         REQUIRES: HasCapacity(n)
@@ -561,11 +561,11 @@ inline SgUctNode* SgUctAllocator::CreateOne(SgMove move)
     return (m_finish++);
 }
 
-inline SgUctCount SgUctAllocator::Create(
+inline SgUctValue SgUctAllocator::Create(
                                          const std::vector<SgMoveInfo>& moves)
 {
     SG_ASSERT(HasCapacity(moves.size()));
-    SgUctCount count = 0;
+    SgUctValue count = 0;
     for (std::vector<SgMoveInfo>::const_iterator it = moves.begin();
          it != moves.end(); ++it, ++m_finish)
     {
@@ -647,7 +647,7 @@ public:
 
     /** Adds a game result count times. */
     void AddGameResults(const SgUctNode& node, const SgUctNode* father,
-                        SgUctValue eval, SgUctCount count);
+                        SgUctValue eval, SgUctValue count);
 
     /** Removes a game result.
         @param node The node.
@@ -659,7 +659,7 @@ public:
 
     /** Removes a game result count times. */
     void RemoveGameResults(const SgUctNode& node, const SgUctNode* father,
-                           SgUctValue eval, SgUctCount count);
+                           SgUctValue eval, SgUctValue count);
 
     /** Adds a virtual loss to the given nodes. */
     void AddVirtualLoss(const std::vector<const SgUctNode*>& nodes);
@@ -733,7 +733,7 @@ public:
         @param maxTime Truncate the tree, if the extraction takes longer than
         the given time
     */
-    void CopyPruneLowCount(SgUctTree& target, SgUctCount minCount,
+    void CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
                    bool warnTruncate,
                    double maxTime = std::numeric_limits<double>::max()) const;
 
@@ -755,7 +755,7 @@ public:
         @param weight
         @see SgUctSearch::Rave().
     */
-    void AddRaveValue(const SgUctNode& node, SgUctRaveValue value, SgUctRaveCount weight);
+    void AddRaveValue(const SgUctNode& node, SgUctValue value, SgUctValue weight);
 
     /** Remove a game result from the RAVE value of a node.
         @param node The node with the move
@@ -763,18 +763,18 @@ public:
         @param weight
         @see SgUctSearch::Rave().
     */
-    void RemoveRaveValue(const SgUctNode& node, SgUctRaveValue value, SgUctRaveCount weight);
+    void RemoveRaveValue(const SgUctNode& node, SgUctValue value, SgUctValue weight);
 
     /** Initialize the value and count of a node. */
     void InitializeValue(const SgUctNode& node, SgUctValue value,
-                         SgUctCount count);
+                         SgUctValue count);
 
-    void SetPosCount(const SgUctNode& node, SgUctCount posCount);
+    void SetPosCount(const SgUctNode& node, SgUctValue posCount);
 
     /** Initialize the rave value and count of a move node with prior
         knowledge.
     */
-    void InitializeRaveValue(const SgUctNode& node, SgUctRaveValue value, SgUctRaveCount count);
+    void InitializeRaveValue(const SgUctNode& node, SgUctValue value, SgUctValue count);
 
     /** Remove some children of a node according to a list of filtered moves.
         Requires: Allocator(allocatorId).HasCapacity(node.NuChildren()) <br>
@@ -836,7 +836,7 @@ private:
     const SgUctAllocator& Allocator(std::size_t i) const;
 
     void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
-                     const SgUctNode& node, SgUctCount minCount,
+                     const SgUctNode& node, SgUctValue minCount,
                      std::size_t& currentAllocatorId, bool warnTruncate,
                      bool& abort, SgTimer& timer, double maxTime) const;
 
@@ -856,7 +856,7 @@ inline void SgUctTree::AddGameResult(const SgUctNode& node,
 
 inline void SgUctTree::AddGameResults(const SgUctNode& node,
                                       const SgUctNode* father, SgUctValue eval,
-                                      SgUctCount count)
+                                      SgUctValue count)
 {
 
     SG_ASSERT(Contains(node));
@@ -889,7 +889,7 @@ inline void SgUctTree::CreateChildren(std::size_t allocatorId,
 
     const SgUctNode* firstChild = allocator.Finish();
     
-    SgUctCount parentCount = allocator.Create(moves);
+    SgUctValue parentCount = allocator.Create(moves);
 
     // Write order dependency: SgUctSearch in lock-free mode assumes that
     // m_firstChild is valid if m_nuChildren is greater zero
@@ -913,7 +913,7 @@ inline void SgUctTree::RemoveGameResult(const SgUctNode& node,
 
 inline void SgUctTree::RemoveGameResults(const SgUctNode& node,
                                          const SgUctNode* father, SgUctValue eval,
-                                         SgUctCount count)
+                                         SgUctValue count)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
@@ -924,8 +924,8 @@ inline void SgUctTree::RemoveGameResults(const SgUctNode& node,
     const_cast<SgUctNode&>(node).RemoveGameResults(eval, count);
 }
 
-inline void SgUctTree::AddRaveValue(const SgUctNode& node, SgUctRaveValue value,
-                                    SgUctRaveCount weight)
+inline void SgUctTree::AddRaveValue(const SgUctNode& node, SgUctValue value,
+                                    SgUctValue weight)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
@@ -933,8 +933,8 @@ inline void SgUctTree::AddRaveValue(const SgUctNode& node, SgUctRaveValue value,
     const_cast<SgUctNode&>(node).AddRaveValue(value, weight);
 }
 
-inline void SgUctTree::RemoveRaveValue(const SgUctNode& node, SgUctRaveValue value,
-                                       SgUctRaveCount weight)
+inline void SgUctTree::RemoveRaveValue(const SgUctNode& node, SgUctValue value,
+                                       SgUctValue weight)
 {
     SG_UNUSED(weight);
     SG_ASSERT(Contains(node));
@@ -962,7 +962,7 @@ inline bool SgUctTree::HasCapacity(std::size_t allocatorId,
 }
 
 inline void SgUctTree::InitializeValue(const SgUctNode& node,
-                                       SgUctValue value, SgUctCount count)
+                                       SgUctValue value, SgUctValue count)
 {
     SG_ASSERT(Contains(node));
     // Parameter is const-reference, because only the tree is allowed
@@ -971,7 +971,7 @@ inline void SgUctTree::InitializeValue(const SgUctNode& node,
 }
 
 inline void SgUctTree::InitializeRaveValue(const SgUctNode& node,
-                                           SgUctRaveValue value, SgUctRaveCount count)
+                                           SgUctValue value, SgUctValue count)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
@@ -1000,7 +1000,7 @@ inline const SgUctNode& SgUctTree::Root() const
 }
 
 inline void SgUctTree::SetPosCount(const SgUctNode& node,
-                                   SgUctCount posCount)
+                                   SgUctValue posCount)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed

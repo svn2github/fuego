@@ -9,7 +9,7 @@
 
 #include <cstddef>
 #include <iosfwd>
-#include "SgUctTypes.h"
+#include "SgUctValue.h"
 #include "SgStatistics.h"
 
 class SgUctNode;
@@ -32,7 +32,7 @@ public:
     std::size_t m_moveCounts[MAX_MOVECOUNT];
 
     /** Difference between move value and RAVE value. */
-    SgStatisticsExt<SgUctEstimate,std::size_t> m_biasRave;
+    SgStatisticsExt<SgUctValue,std::size_t> m_biasRave;
 
     SgUctTreeStatistics();
 

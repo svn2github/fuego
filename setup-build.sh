@@ -29,6 +29,10 @@ setup() {
 	    CXXFLAGS="-g -pipe"
 	    CONFIGUREFLAGS="--enable-assert=yes"
 	    ;;
+	dbg-float)
+	    CXXFLAGS="-g -pipe"
+	    CONFIGUREFLAGS="--enable-assert=yes --enable-uct-value-type=float"
+	    ;;
 	dbg-9)
 	    CXXFLAGS="-g -pipe"
 	    CONFIGUREFLAGS="--enable-assert=yes --enable-max-size=9"
@@ -37,9 +41,17 @@ setup() {
 	    CXXFLAGS="$GCC_OPTIMIZE -g -pipe"
 	    CONFIGUREFLAGS=""
 	    ;;
+	opt-float)
+	    CXXFLAGS="$GCC_OPTIMIZE -g -pipe"
+	    CONFIGUREFLAGS="--enable-uct-value-type=float"
+	    ;;
 	opt-9)
 	    CXXFLAGS="$GCC_OPTIMIZE -g -pipe"
 	    CONFIGUREFLAGS="--enable-max-size=9"
+	    ;;
+	opt-9-float)
+	    CXXFLAGS="$GCC_OPTIMIZE -g -pipe"
+	    CONFIGUREFLAGS="--enable-max-size=9 --enable-uct-value-type=float"
 	    ;;
 	*)
 	    echo "Unknown target '$TARGET'"; exit 1

@@ -52,7 +52,7 @@ struct GoUctGlobalSearchStateParam
         The maximum modification is 0.5. The default value of the parameter
         is 0.
     */
-    SgUctEval m_lengthModification;
+    SgUctValue m_lengthModification;
 
     /** Modify game result by score.
         This modifies the win/loss result (1/0) by the score of the end
@@ -66,7 +66,7 @@ struct GoUctGlobalSearchStateParam
         playing strength. The modification can be disabled by setting the
         parameter to zero. The default value is 0.02.
     */
-    SgUctEval m_scoreModification;
+    SgUctValue m_scoreModification;
 
     GoUctGlobalSearchStateParam();
 };
@@ -138,9 +138,9 @@ public:
 
     ~GoUctGlobalSearchState();
 
-    SgUctEval Evaluate();
+    SgUctValue Evaluate();
 
-    bool GenerateAllMoves(SgUctCount count, std::vector<SgMoveInfo>& moves,
+    bool GenerateAllMoves(SgUctValue count, std::vector<SgMoveInfo>& moves,
                           SgProvenNodeType& provenType);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
@@ -192,12 +192,12 @@ private:
     GoPointList m_area;
 
     /** See SetMercyRule() */
-    SgUctEval m_mercyRuleResult;
+    SgUctValue m_mercyRuleResult;
 
     /** Inverse of maximum score one can reach on a board of the current
         size.
     */
-    SgUctEval m_invMaxScore;
+    SgUctValue m_invMaxScore;
 
     SgRandom m_random;
 
@@ -214,7 +214,7 @@ private:
     bool CheckMercyRule();
 
     template<class BOARD>
-    SgUctEval EvaluateBoard(const BOARD& bd, float komi);
+    SgUctValue EvaluateBoard(const BOARD& bd, float komi);
 
     /** Generates all legal moves with no knowledge values. */
     void GenerateLegalMoves(std::vector<SgMoveInfo>& moves);
@@ -282,7 +282,7 @@ void GoUctGlobalSearchState<POLICY>::EndPlayout()
 }
 
 template<class POLICY>
-SgUctEval GoUctGlobalSearchState<POLICY>::Evaluate()
+SgUctValue GoUctGlobalSearchState<POLICY>::Evaluate()
 {
     float komi = GetKomi();
     if (IsInPlayout())
@@ -293,10 +293,10 @@ SgUctEval GoUctGlobalSearchState<POLICY>::Evaluate()
 
 template<class POLICY>
 template<class BOARD>
-SgUctEval GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
+SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
 							float komi)
 {
-    SgUctEval score;
+    SgUctValue score;
     SgPointArray<SgEmptyBlackWhite> scoreBoard;
     SgPointArray<SgEmptyBlackWhite>* scoreBoardPtr;
     if (m_param.m_territoryStatistics)
@@ -305,12 +305,12 @@ SgUctEval GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
         scoreBoardPtr = 0;
     if (m_passMovesPlayoutPhase < 2)
         // Two passes not in playout phase, see comment in GenerateAllMoves()
-        score = (SgUctEval)GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
+        score = (SgUctValue)GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
     else
     {
         if (m_param.m_mercyRule && m_mercyRuleTriggered)
             return m_mercyRuleResult;
-        score = (SgUctEval)GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
+        score = (SgUctValue)GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
 							       false, scoreBoardPtr);
     }
     if (m_param.m_territoryStatistics)
@@ -329,16 +329,16 @@ SgUctEval GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
             }
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
-    SgUctEval lengthMod = GameLength() * m_param.m_lengthModification;
+    SgUctValue lengthMod = GameLength() * m_param.m_lengthModification;
     if (lengthMod > 0.5) {
 	lengthMod = 0.5;
     }
-    if (score > std::numeric_limits<SgUctEval>::epsilon())
+    if (score > std::numeric_limits<SgUctValue>::epsilon())
         return
             (1 - m_param.m_scoreModification)
             + m_param.m_scoreModification * score * m_invMaxScore
             - lengthMod;
-    else if (score < -std::numeric_limits<SgUctEval>::epsilon())
+    else if (score < -std::numeric_limits<SgUctValue>::epsilon())
         return
             m_param.m_scoreModification
             + m_param.m_scoreModification * score * m_invMaxScore
@@ -410,7 +410,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
 }
 
 template<class POLICY>
-bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(SgUctCount count, 
+bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(SgUctValue count, 
                                              std::vector<SgMoveInfo>& moves,
                                              SgProvenNodeType& provenType)
 {
@@ -516,7 +516,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     const GoBoard& bd = Board();
     int size = bd.Size();
     float maxScore = float(size * size) + GetKomi();
-    m_invMaxScore = (SgUctEval)(1 / maxScore);
+    m_invMaxScore = (SgUctValue)(1 / maxScore);
     m_initialMoveNumber = bd.MoveNumber();
     m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
     ClearTerritoryStatistics();
@@ -604,7 +604,7 @@ public:
     /** @name Pure virtual functions of SgUctSearch */
     // @{
 
-    SgUctEval UnknownEval() const;
+    SgUctValue UnknownEval() const;
 
     // @} // @name
 
@@ -714,7 +714,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetFirstPlayUrgency(1);
     SetMoveSelect(SG_UCTMOVESELECT_COUNT);
     SetRave(true);
-    SetExpandThreshold(std::numeric_limits<SgUctCount>::is_integer ? (SgUctCount)1 : std::numeric_limits<SgUctCount>::epsilon());
+    SetExpandThreshold(std::numeric_limits<SgUctValue>::is_integer ? (SgUctValue)1 : std::numeric_limits<SgUctValue>::epsilon());
     SetVirtualLoss(true);
     SetBiasTermConstant(0.0);
     if (boardSize < 15)
@@ -743,11 +743,11 @@ inline void GoUctGlobalSearch<POLICY,FACTORY>::SetGlobalSearchLiveGfx(
 }
 
 template<class POLICY, class FACTORY>
-SgUctEval GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
+SgUctValue GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
 {
     // Note: 0.5 is not a possible value for a Bernoulli variable, better
     // use 0?
-    return (SgUctEval)0.5;
+    return (SgUctValue)0.5;
 }
 
 //----------------------------------------------------------------------------

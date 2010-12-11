@@ -209,12 +209,6 @@ Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
 
 //----------------------------------------------------------------------------
 
-typedef SgStatistics<float,std::size_t> SgUctStatistics;
-
-typedef SgStatisticsExt<float,std::size_t> SgUctStatisticsExt;
-
-//----------------------------------------------------------------------------
-
 /** Game result, sequence and nodes of one Monte-Carlo game in SgUctSearch.
     @ingroup sguctgroup
 */
@@ -223,7 +217,7 @@ struct SgUctGameInfo
     /** The game result of the playout(s).
         The result is from the view of the player at the root.
     */
-    std::vector<SgUctEval> m_eval;
+    std::vector<SgUctValue> m_eval;
 
     /** The sequence of the in-tree phase. */
     std::vector<SgMove> m_inTreeSequence;
@@ -341,7 +335,7 @@ public:
         returns no moves. Should return larger values if position is better
         for the player to move.
     */
-    virtual SgUctEval Evaluate() = 0;
+    virtual SgUctValue Evaluate() = 0;
 
     /** Execute a move.
         @param move The move
@@ -363,7 +357,7 @@ public:
         based computations.
         @param[out] moves The generated moves or empty list at end of game
     */
-    virtual bool GenerateAllMoves(SgUctCount count, 
+    virtual bool GenerateAllMoves(SgUctValue count, 
                                   std::vector<SgMoveInfo>& moves,
                                   SgProvenNodeType& provenType) = 0;
 
@@ -453,7 +447,7 @@ struct SgUctSearchStat
     double m_time;
 
     /** Number of nodes for which the knowledge threshold was exceeded. */ 
-    SgUctCount m_knowledge;
+    SgUctValue m_knowledge;
 
     /** Games per second.
         Useful values only if search time is higher than resolution of
@@ -461,9 +455,9 @@ struct SgUctSearchStat
     */
     double m_gamesPerSecond;
 
-    SgUctStatisticsExt m_gameLength;
+    SgStatisticsExt<SgUctValue,SgUctValue> m_gameLength;
 
-    SgUctStatisticsExt m_movesInTree;
+    SgStatisticsExt<SgUctValue,SgUctValue> m_movesInTree;
 
     SgUctStatistics m_aborted;
 
@@ -482,13 +476,13 @@ struct SgUctSearchStat
 struct SgUctEarlyAbortParam
 {
     /** The threshold to define what a clear win is. */
-    SgUctEstimate m_threshold;
+    SgUctValue m_threshold;
 
     /** The minimum number of games to allow an early abort.
         For a very low number of simulations, the value can be very
         unreliable.
     */
-    SgUctCount m_minGames;
+    SgUctValue m_minGames;
 
     /** The inverse fraction of the total resources (max time, max nodes),
         after which the early abort check is performed.
@@ -506,9 +500,9 @@ struct SgUctEarlyAbortParam
 class SgUctSearch
 {
 public:
-    static SgUctEval InverseEval(SgUctEval eval);
+    static SgUctValue InverseEval(SgUctValue eval);
 
-    static SgUctEstimate InverseEstimate(SgUctEstimate eval);
+    static SgUctValue InverseEstimate(SgUctValue eval);
 
     /** Constructor.
         @param threadStateFactory The tread state factory (takes ownership).
@@ -541,7 +535,7 @@ public:
         the maximum game length.
         This function needs to be thread-safe.
     */
-    virtual SgUctEval UnknownEval() const = 0;
+    virtual SgUctValue UnknownEval() const = 0;
 
     // @} // name
 
@@ -560,7 +554,7 @@ public:
         case appropriately by using its own lock or disabling functionality
         that will not work without locking.
     */
-    virtual void OnSearchIteration(SgUctCount gameNumber, int threadId,
+    virtual void OnSearchIteration(SgUctValue gameNumber, int threadId,
                                    const SgUctGameInfo& info);
 
     /** Hook function that will be called by StartSearch().
@@ -580,7 +574,7 @@ public:
 
     virtual void OnThreadEndSearch(SgUctThreadState& state);
 
-    virtual SgUctCount GamesPlayed() const;
+    virtual SgUctValue GamesPlayed() const;
 
     // @} // name
 
@@ -623,19 +617,20 @@ public:
         early abort.
         @return The value of the root position.
     */
-    SgUctEstimate Search(SgUctCount maxGames, double maxTime,
-                 std::vector<SgMove>& sequence,
-                 const std::vector<SgMove>& rootFilter
-                 = std::vector<SgMove>(),
-                 SgUctTree* initTree = 0,
-                 SgUctEarlyAbortParam* earlyAbort = 0);
+    SgUctValue Search(SgUctValue maxGames, double maxTime,
+                      std::vector<SgMove>& sequence,
+                      const std::vector<SgMove>& rootFilter
+                      = std::vector<SgMove>(),
+                      SgUctTree* initTree = 0,
+                      SgUctEarlyAbortParam* earlyAbort = 0);
 
     /** Do a one-ply Monte-Carlo search instead of the UCT search.
         @param maxGames
         @param maxTime
         @param[out] value The value of the best move
     */
-    SgPoint SearchOnePly(SgUctCount maxGames, double maxTime, SgUctEstimate& value);
+    SgPoint SearchOnePly(SgUctValue maxGames, double maxTime,
+                         SgUctValue& value);
 
     /** Find child node with best move.
         @param node The father node.
@@ -659,7 +654,7 @@ public:
         @param node The node corresponding to the position
         @param child The node corresponding to the move
     */
-    SgUctEstimate GetBound(bool useRave, const SgUctNode& node, 
+    SgUctValue GetBound(bool useRave, const SgUctNode& node, 
 			 const SgUctNode& child) const;
 
     // @} // name
@@ -717,10 +712,10 @@ public:
         tree. This is can be used prune, add children, give a bonus to
         a move, etc.
     */
-    std::vector<SgUctCount> KnowledgeThreshold() const;
+    std::vector<SgUctValue> KnowledgeThreshold() const;
 
     /** See KnowledgeThreshold() */
-    void SetKnowledgeThreshold(const std::vector<SgUctCount>& counts);
+    void SetKnowledgeThreshold(const std::vector<SgUctValue>& counts);
 
     /** Maximum number of nodes in the tree.
         @note The search owns two trees, one of which is used as a temporary
@@ -775,10 +770,10 @@ public:
         Default value is 10000.
         @see @ref sguctsearchweights
     */
-    SgUctEstimate FirstPlayUrgency() const;
+    SgUctValue FirstPlayUrgency() const;
 
     /** See FirstPlayUrgency() */
-    void SetFirstPlayUrgency(SgUctEstimate firstPlayUrgency);
+    void SetFirstPlayUrgency(SgUctValue firstPlayUrgency);
 
     /** Log one-line summary for each game during Search() to a file.
         @todo File name still is hard-coded to "uctsearch.log"
@@ -802,10 +797,10 @@ public:
         The default is 2, which means a node will be expanded on the second
         visit.
     */
-    SgUctCount ExpandThreshold() const;
+    SgUctValue ExpandThreshold() const;
 
     /** See ExpandThreshold() */
-    void SetExpandThreshold(SgUctCount expandThreshold);
+    void SetExpandThreshold(SgUctValue expandThreshold);
 
     /** The number of playouts per simulated game.
         Useful for multi-threading to increase the workload of the threads.
@@ -876,10 +871,10 @@ public:
     void SetPruneFullTree(bool enable);
 
     /** See PruneFullTree() */
-    SgUctCount PruneMinCount() const;
+    SgUctValue PruneMinCount() const;
 
     /** See PruneFullTree() */
-    void SetPruneMinCount(SgUctCount n);
+    void SetPruneMinCount(SgUctValue n);
 
 
     void SetMpiSynchronizer(const SgMpiSynchronizerHandle &synchronizerHandle);
@@ -994,7 +989,7 @@ private:
     bool m_rave;
    
     /** See KnowledgeThreshold() */
-    std::vector<SgUctCount> m_knowledgeThreshold;
+    std::vector<SgUctValue> m_knowledgeThreshold;
 
     /** Flag indicating that the search was terminated because the maximum
         time or number of games was reached.
@@ -1041,7 +1036,7 @@ private:
     std::size_t m_maxNodes;
 
     /** See PruneMinCount() */
-    SgUctCount m_pruneMinCount;
+    SgUctValue m_pruneMinCount;
 
     /** See parameter moveRange in constructor */
     const int m_moveRange;
@@ -1050,15 +1045,15 @@ private:
     std::size_t m_maxGameLength;
 
     /** See ExpandThreshold() */
-    SgUctCount m_expandThreshold;
+    SgUctValue m_expandThreshold;
 
     /** Number of games limit for the current search. */
-    SgUctCount m_maxGames;
+    SgUctValue m_maxGames;
 
     /** Number of games played in the current search. */
-    SgUctCount m_numberGames;
+    SgUctValue m_numberGames;
 
-    SgUctCount m_startRootMoveCount;
+    SgUctValue m_startRootMoveCount;
     /** Interval in number of games in which to check time abort.
         Avoids that the potentially expensive SgTime::Get() is called after
         every game. The interval is updated dynamically according to the
@@ -1067,7 +1062,7 @@ private:
         per total maximum search time)
     */
     std::size_t m_checkTimeInterval;
-    volatile SgUctCount m_nextCheckTime;
+    volatile SgUctValue m_nextCheckTime;
 
     double m_lastScoreDisplayTime;
 
@@ -1075,7 +1070,7 @@ private:
     float m_biasTermConstant;
 
     /** See FirstPlayUrgency() */
-    SgUctEstimate m_firstPlayUrgency;
+    SgUctValue m_firstPlayUrgency;
 
     /** See @ref sguctsearchweights. */
     float m_raveWeightInitial;
@@ -1084,10 +1079,10 @@ private:
     float m_raveWeightFinal;
 
     /** 1 / m_raveWeightInitial precomputed for efficiency */
-    SgUctEstimate m_raveWeightParam1;
+    SgUctValue m_raveWeightParam1;
 
     /** m_raveWeightInitial / m_raveWeightFinal precomputed for efficiency */
-    SgUctEstimate m_raveWeightParam2;
+    SgUctValue m_raveWeightParam2;
 
     /** Time limit for current search. */
     double m_maxTime;
@@ -1140,7 +1135,7 @@ private:
     bool CheckEarlyAbort() const;
 
     bool CheckCountAbort(SgUctThreadState& state,
-                         SgUctCount remainingGames) const;
+                         SgUctValue remainingGames) const;
 
     void Debug(const SgUctThreadState& state, const std::string& textLine);
 
@@ -1151,12 +1146,12 @@ private:
     void CreateChildren(SgUctThreadState& state, const SgUctNode& node,
                         bool deleteChildTrees);
 
-    SgUctEstimate GetBound(bool useRave, float logPosCount, 
+    SgUctValue GetBound(bool useRave, float logPosCount, 
 			 const SgUctNode& child) const;
 
-    SgUctEstimate GetValueEstimate(bool useRave, const SgUctNode& child) const;
+    SgUctValue GetValueEstimate(bool useRave, const SgUctNode& child) const;
 
-    SgUctEstimate GetValueEstimateRave(const SgUctNode& child) const;
+    SgUctValue GetValueEstimateRave(const SgUctNode& child) const;
 
     float Log(float x) const;
 
@@ -1185,7 +1180,7 @@ private:
     void UpdateRaveValues(SgUctThreadState& state, std::size_t playout);
 
     void UpdateRaveValues(SgUctThreadState& state, std::size_t playout,
-                          SgUctEval eval, std::size_t i,
+                          SgUctValue eval, std::size_t i,
                           const std::size_t firstPlay[],
                           const std::size_t firstPlayOpp[]);
 
@@ -1199,22 +1194,22 @@ inline float SgUctSearch::BiasTermConstant() const
     return m_biasTermConstant;
 }
 
-inline SgUctCount SgUctSearch::ExpandThreshold() const
+inline SgUctValue SgUctSearch::ExpandThreshold() const
 {
     return m_expandThreshold;
 }
 
-inline SgUctEstimate SgUctSearch::FirstPlayUrgency() const
+inline SgUctValue SgUctSearch::FirstPlayUrgency() const
 {
     return m_firstPlayUrgency;
 }
 
-inline SgUctEval SgUctSearch::InverseEval(SgUctEval eval)
+inline SgUctValue SgUctSearch::InverseEval(SgUctValue eval)
 {
     return (1 - eval);
 }
 
-inline SgUctEstimate SgUctSearch::InverseEstimate(SgUctEstimate eval)
+inline SgUctValue SgUctSearch::InverseEstimate(SgUctValue eval)
 {
     return (1 - eval);
 }
@@ -1269,7 +1264,7 @@ inline bool SgUctSearch::PruneFullTree() const
     return m_pruneFullTree;
 }
 
-inline SgUctCount SgUctSearch::PruneMinCount() const
+inline SgUctValue SgUctSearch::PruneMinCount() const
 {
     return m_pruneMinCount;
 }
@@ -1299,13 +1294,13 @@ inline void SgUctSearch::SetBiasTermConstant(float biasTermConstant)
     m_biasTermConstant = biasTermConstant;
 }
 
-inline void SgUctSearch::SetExpandThreshold(SgUctCount expandThreshold)
+inline void SgUctSearch::SetExpandThreshold(SgUctValue expandThreshold)
 {
     SG_ASSERT(expandThreshold >= 0);
     m_expandThreshold = expandThreshold;
 }
 
-inline void SgUctSearch::SetFirstPlayUrgency(SgUctEstimate firstPlayUrgency)
+inline void SgUctSearch::SetFirstPlayUrgency(SgUctValue firstPlayUrgency)
 {
     m_firstPlayUrgency = firstPlayUrgency;
 }
@@ -1337,13 +1332,13 @@ inline void SgUctSearch::SetMoveSelect(SgUctMoveSelect moveSelect)
     m_moveSelect = moveSelect;
 }
 
-inline std::vector<SgUctCount> SgUctSearch::KnowledgeThreshold() const
+inline std::vector<SgUctValue> SgUctSearch::KnowledgeThreshold() const
 {
     return m_knowledgeThreshold;
 }
 
 inline void 
-SgUctSearch::SetKnowledgeThreshold(const std::vector<SgUctCount>& t)
+SgUctSearch::SetKnowledgeThreshold(const std::vector<SgUctValue>& t)
 {
     m_knowledgeThreshold = t;
 }
@@ -1359,7 +1354,7 @@ inline void SgUctSearch::SetPruneFullTree(bool enable)
     m_pruneFullTree = enable;
 }
 
-inline void SgUctSearch::SetPruneMinCount(SgUctCount n)
+inline void SgUctSearch::SetPruneMinCount(SgUctValue n)
 {
     m_pruneMinCount = n;
 }

@@ -15,8 +15,8 @@ Current development version
   is no longer supported. The new script setup-build.sh can be used to set up
   some commonly used build configurations.
 * Use only the same floating point type for all counts and values in
-  SgUctSearch and made the floating point configurable via a configure
-  parameter
+  SgUctSearch. The floating point type cane be set with the configure
+  parameter --enable-uct-value-type
 * Added generic argument parsing function GtpCommand::Arg<T> and declared
   old function (GtpCommand::IntArg() etc.) as deprecated
 

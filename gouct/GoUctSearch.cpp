@@ -43,7 +43,7 @@ SgNode* AppendChild(SgNode* node, SgBlackWhite color, SgPoint move)
 }
 
 /** Append game to saved simulations (used if m_keepGames is true) */
-void AppendGame(SgNode* node, SgUctCount gameNumber, int threadId,
+void AppendGame(SgNode* node, SgUctValue gameNumber, int threadId,
                 SgBlackWhite toPlay, const SgUctGameInfo& info)
 {
     SG_ASSERT(node != 0);
@@ -194,7 +194,7 @@ std::string GoUctSearch::MoveString(SgMove move) const
     return SgPointUtil::PointToString(move);
 }
 
-void GoUctSearch::OnSearchIteration(SgUctCount gameNumber, int threadId,
+void GoUctSearch::OnSearchIteration(SgUctValue gameNumber, int threadId,
                                     const SgUctGameInfo& info)
 {
     SgUctSearch::OnSearchIteration(gameNumber, threadId, info);

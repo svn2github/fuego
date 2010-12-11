@@ -131,7 +131,7 @@ string SearchModeToString(GoUctGlobalSearchMode mode)
     }
 }
 
-string KnowledgeThresholdToString(const std::vector<SgUctCount>& t)
+string KnowledgeThresholdToString(const std::vector<SgUctValue>& t)
 {
     if (t.empty())
         return "0";
@@ -147,9 +147,9 @@ string KnowledgeThresholdToString(const std::vector<SgUctCount>& t)
     return os.str();
 }
 
-std::vector<SgUctCount> KnowledgeThresholdFromString(const std::string& val)
+std::vector<SgUctValue> KnowledgeThresholdFromString(const std::string& val)
 {
-    std::vector<SgUctCount> v;
+    std::vector<SgUctValue> v;
     std::istringstream is(val);
     std::size_t t;
     while (is >> t)
@@ -397,9 +397,9 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.Arg<bool>(1);
         else if (name == "length_modification")
-            p.m_lengthModification = cmd.Arg<SgUctEval>(1);
+            p.m_lengthModification = cmd.Arg<SgUctValue>(1);
         else if (name == "score_modification")
-            p.m_scoreModification = cmd.Arg<SgUctEval>(1);
+            p.m_scoreModification = cmd.Arg<SgUctValue>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -461,11 +461,11 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         else if (name == "use_root_filter")
             p.SetUseRootFilter(cmd.Arg<bool>(1));
         else if (name == "max_games")
-            p.SetMaxGames(cmd.ArgMin<SgUctCount>(1, SgUctCount(1)));
+            p.SetMaxGames(cmd.ArgMin<SgUctValue>(1, SgUctValue(1)));
         else if (name == "resign_min_games")
-            p.SetResignMinGames(cmd.ArgMin<SgUctCount>(1, SgUctCount(0)));
+            p.SetResignMinGames(cmd.ArgMin<SgUctValue>(1, SgUctValue(0)));
         else if (name == "resign_threshold")
-            p.SetResignThreshold(cmd.ArgMinMax<SgUctEstimate>(1, 0, 1));
+            p.SetResignThreshold(cmd.ArgMinMax<SgUctValue>(1, 0, 1));
         else if (name == "search_mode")
             p.SetSearchMode(SearchModeArg(cmd, 1));
         else
@@ -629,12 +629,12 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "expand_threshold")
-            s.SetExpandThreshold(cmd.ArgMin<SgUctCount>(1,
-                                     numeric_limits<SgUctCount>::is_integer
-                                     ? SgUctCount(1)
-                                     : numeric_limits<SgUctCount>::epsilon()));
+            s.SetExpandThreshold(cmd.ArgMin<SgUctValue>(1,
+                                     numeric_limits<SgUctValue>::is_integer
+                                     ? SgUctValue(1)
+                                     : numeric_limits<SgUctValue>::epsilon()));
         else if (name == "first_play_urgency")
-            s.SetFirstPlayUrgency(cmd.Arg<SgUctEstimate>(1));
+            s.SetFirstPlayUrgency(cmd.Arg<SgUctValue>(1));
         else if (name == "live_gfx")
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
@@ -648,7 +648,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.ArgMin<int>(1, 1));
         else if (name == "prune_min_count")
-            s.SetPruneMinCount(cmd.ArgMin<SgUctCount>(1, SgUctCount(1)));
+            s.SetPruneMinCount(cmd.ArgMin<SgUctValue>(1, SgUctValue(1)));
         else if (name == "rave_weight_final")
             s.SetRaveWeightFinal(cmd.Arg<float>(1));
         else if (name == "rave_weight_initial")
@@ -719,7 +719,7 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
         SgMove move = moves[i].m_move;
         float value = SgUctSearch::InverseEval(moves[i].m_value);
         //float value = moves[i].m_value;
-        SgUctCount count = moves[i].m_count;
+        SgUctValue count = moves[i].m_count;
         if (count > 0)
         {
             float scaledValue = (value * 2 - 1);
@@ -732,7 +732,7 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     for (size_t i = 0; i < moves.size(); ++i)
     {
         SgMove move = moves[i].m_move;
-        SgUctCount count = moves[i].m_count;
+        SgUctValue count = moves[i].m_count;
         if (count > 0)
             cmd << ' ' << SgWritePoint(move) << ' ' << count;
     }
@@ -951,7 +951,7 @@ void GoUctCommands::CmdValue(GtpCommand& cmd)
 void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    SgUctEval value = Search().Tree().Root().Mean();
+    SgUctValue value = Search().Tree().Root().Mean();
     if (Search().ToPlay() == SG_WHITE)
         value = SgUctSearch::InverseEval(value);
     cmd << value;

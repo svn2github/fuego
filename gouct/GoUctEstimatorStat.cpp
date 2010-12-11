@@ -27,14 +27,14 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
     double maxTime = numeric_limits<double>::max();
     vector<SgMoveInfo> moves;
     search.GenerateAllMoves(moves);
-    SgArray<SgUctEstimate,SG_PASS + 1> trueValues;
+    SgArray<SgUctValue,SG_PASS + 1> trueValues;
     for (size_t i = 0; i < moves.size(); ++i)
     {
         SgPoint p = moves[i].m_move;
         GoModBoard modBoard(search.Board());
         modBoard.Board().Play(p);
         vector<SgMove> sequence;
-        SgUctEstimate value = search.Search(trueValueMaxGames, maxTime, sequence);
+        SgUctValue value = search.Search(trueValueMaxGames, maxTime, sequence);
         trueValues[p] = SgUctSearch::InverseEstimate(value);
         modBoard.Board().Undo();
     }

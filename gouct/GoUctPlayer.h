@@ -166,10 +166,10 @@ public:
     void SetIgnoreClock(bool enable);
 
     /** Limit on number of simulated games per move. */
-    SgUctCount MaxGames() const;
+    SgUctValue MaxGames() const;
 
     /** See MaxGames() */
-    void SetMaxGames(SgUctCount maxGames);
+    void SetMaxGames(SgUctValue maxGames);
 
     /** Think during the opponents time.
         For enabling pondering, ReuseSubtree() also has to be true.
@@ -185,10 +185,10 @@ public:
         early pass check (see EarlyPass()).
         Default is 3000.
     */
-    SgUctCount ResignMinGames() const;
+    SgUctValue ResignMinGames() const;
 
     /** See ResignMinGames()     */
-    void SetResignMinGames(SgUctCount n);
+    void SetResignMinGames(SgUctValue n);
 
     /** Use the root filter. */
     bool UseRootFilter() const;
@@ -209,10 +209,10 @@ public:
     /** Threshold for position value to resign.
         Default is 0.01.
     */
-    SgUctEstimate ResignThreshold() const;
+    SgUctValue ResignThreshold() const;
 
     /** See ResignThreshold() */
-    void SetResignThreshold(SgUctEstimate threshold);
+    void SetResignThreshold(SgUctValue threshold);
 
     /** See GoUctGlobalSearchMode */
     GoUctGlobalSearchMode SearchMode() const;
@@ -280,14 +280,14 @@ public:
     bool m_earlyPass;
 
     /** See ResignThreshold() */
-    SgUctEstimate m_resignThreshold;
+    SgUctValue m_resignThreshold;
 
     /** Used in OnBoardChange() */
     int m_lastBoardSize;
 
-    SgUctCount m_maxGames;
+    SgUctValue m_maxGames;
 
-    SgUctCount m_resignMinGames;
+    SgUctValue m_resignMinGames;
 
     SEARCH m_search;
 
@@ -307,7 +307,7 @@ public:
 
     SgMove GenMovePlayoutPolicy(SgBlackWhite toPlay);
 
-    bool DoEarlyPassSearch(SgUctCount maxGames, double maxTime, SgPoint& move);
+    bool DoEarlyPassSearch(SgUctValue maxGames, double maxTime, SgPoint& move);
 
     SgPoint DoSearch(SgBlackWhite toPlay, double maxTime,
                      bool isDuringPondering);
@@ -317,7 +317,7 @@ public:
 
     void SetDefaultParameters(int boardSize);
 
-    bool VerifyNeutralMove(SgUctCount maxGames, double maxTime, SgPoint move);
+    bool VerifyNeutralMove(SgUctValue maxGames, double maxTime, SgPoint move);
 };
 
 template <class SEARCH, class THREAD>
@@ -364,7 +364,7 @@ inline bool GoUctPlayer<SEARCH, THREAD>::IgnoreClock() const
 }
 
 template <class SEARCH, class THREAD>
-inline SgUctCount GoUctPlayer<SEARCH, THREAD>::MaxGames() const
+inline SgUctValue GoUctPlayer<SEARCH, THREAD>::MaxGames() const
 {
     return m_maxGames;
 }
@@ -376,13 +376,13 @@ inline bool GoUctPlayer<SEARCH, THREAD>::UseRootFilter() const
 }
 
 template <class SEARCH, class THREAD>
-inline SgUctCount GoUctPlayer<SEARCH, THREAD>::ResignMinGames() const
+inline SgUctValue GoUctPlayer<SEARCH, THREAD>::ResignMinGames() const
 {
     return m_resignMinGames;
 }
 
 template <class SEARCH, class THREAD>
-inline SgUctEstimate GoUctPlayer<SEARCH, THREAD>::ResignThreshold() const
+inline SgUctValue GoUctPlayer<SEARCH, THREAD>::ResignThreshold() const
 {
     return m_resignThreshold;
 }
@@ -436,7 +436,7 @@ inline void GoUctPlayer<SEARCH, THREAD>::SetIgnoreClock(bool enable)
 }
 
 template <class SEARCH, class THREAD>
-inline void GoUctPlayer<SEARCH, THREAD>::SetMaxGames(SgUctCount maxGames)
+inline void GoUctPlayer<SEARCH, THREAD>::SetMaxGames(SgUctValue maxGames)
 {
     m_maxGames = maxGames;
 }
@@ -448,13 +448,13 @@ inline void GoUctPlayer<SEARCH, THREAD>::SetUseRootFilter(bool enable)
 }
 
 template <class SEARCH, class THREAD>
-inline void GoUctPlayer<SEARCH, THREAD>::SetResignMinGames(SgUctCount n)
+inline void GoUctPlayer<SEARCH, THREAD>::SetResignMinGames(SgUctValue n)
 {
     m_resignMinGames = n;
 }
 
 template <class SEARCH, class THREAD>
-inline void GoUctPlayer<SEARCH, THREAD>::SetResignThreshold(SgUctEstimate threshold)
+inline void GoUctPlayer<SEARCH, THREAD>::SetResignThreshold(SgUctValue threshold)
 {
     m_resignThreshold = threshold;
 }
@@ -537,7 +537,7 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(GoBoard& bd)
       m_reuseSubtree(false),
       m_earlyPass(true),
       m_lastBoardSize(-1),
-      m_maxGames(std::numeric_limits<SgUctCount>::max()),
+      m_maxGames(std::numeric_limits<SgUctValue>::max()),
       m_resignMinGames(5000),
       m_search(Board(),
                new GoUctPlayoutPolicyFactory<GoUctBoard>(
@@ -572,7 +572,7 @@ void GoUctPlayer<SEARCH, THREAD>::ClearStatistics()
     @return @c true, if it is still a win and everything is safe after a pass
 */
 template <class SEARCH, class THREAD>
-bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctCount maxGames, 
+bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames, 
                                                     double maxTime,
                                                     SgPoint& move)
 {
@@ -594,7 +594,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctCount maxGames,
         SgRestorer<bool> restorer(&m_search.m_param.m_territoryStatistics);
         m_search.m_param.m_territoryStatistics = true;
         std::vector<SgPoint> sequence;
-        SgUctEstimate value = m_search.Search(maxGames, maxTime, sequence);
+        SgUctValue value = m_search.Search(maxGames, maxTime, sequence);
         value = m_search.InverseEstimate(value);
         winAfterPass = (value > 1 - m_resignThreshold);
     }
@@ -735,11 +735,11 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay,
     earlyAbort.m_threshold = 1.f - m_resignThreshold;
     earlyAbort.m_minGames = m_resignMinGames;
     earlyAbort.m_reductionFactor = 3;
-    SgUctEstimate value = m_search.Search(m_maxGames, maxTime, sequence, rootFilter,
+    SgUctValue value = m_search.Search(m_maxGames, maxTime, sequence, rootFilter,
                                   initTree, &earlyAbort);
 
     bool wasEarlyAbort = m_search.WasEarlyAbort();
-    SgUctCount rootMoveCount = m_search.Tree().Root().MoveCount();
+    SgUctValue rootMoveCount = m_search.Tree().Root().MoveCount();
     m_mpiSynchronizer->SynchronizeSearchStatus(value, wasEarlyAbort, rootMoveCount);
 
     if (m_writeDebugOutput)
@@ -873,7 +873,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
         else
             maxTime = m_timeControl.TimeForCurrentMove(time,
                                                        !m_writeDebugOutput);
-        SgUctEstimate value;
+        SgUctValue value;
         if (m_searchMode == GOUCT_SEARCHMODE_ONEPLY)
         {
             m_search.SetToPlay(toPlay);
@@ -882,7 +882,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
                 move = SG_PASS;
             else
             {
-                SgUctEstimate value = (SgUctEstimate)m_search.Tree().Root().Mean();
+                SgUctValue value = (SgUctValue)m_search.Tree().Root().Mean();
                 if (value < m_resignThreshold)
                     move = SG_RESIGN;
             }
@@ -993,13 +993,13 @@ void GoUctPlayer<SEARCH, THREAD>::SetDefaultParameters(int boardSize)
     m_timeControl.SetRemainingConstant(0.5);
     if (boardSize < 15)
     {
-        m_resignThreshold = (SgUctEstimate)0.05;
+        m_resignThreshold = (SgUctValue)0.05;
     }
     else
     {
         // Need higher resign threshold, because GoUctGlobalSearch uses
         // length modification on large board
-        m_resignThreshold = (SgUctEstimate)0.08;
+        m_resignThreshold = (SgUctValue)0.08;
     }
 }
 
@@ -1025,14 +1025,14 @@ const SgDefaultTimeControl& GoUctPlayer<SEARCH, THREAD>::TimeControl() const
     Prevent blunders from so-called neutral moves that are not.
 */
 template <class SEARCH, class THREAD>
-bool GoUctPlayer<SEARCH, THREAD>::VerifyNeutralMove(SgUctCount maxGames, 
+bool GoUctPlayer<SEARCH, THREAD>::VerifyNeutralMove(SgUctValue maxGames, 
                                                     double maxTime,
                                                     SgPoint move)
 {
     GoBoard& bd = Board();
     bd.Play(move);
     std::vector<SgPoint> sequence;
-    SgUctEstimate value = m_search.Search(maxGames, maxTime, sequence);
+    SgUctValue value = m_search.Search(maxGames, maxTime, sequence);
     value = m_search.InverseEstimate(value);
     bd.Undo();
     return value >= 1 - m_resignThreshold;

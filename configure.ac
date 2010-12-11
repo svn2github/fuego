@@ -72,16 +72,12 @@ then
 
 fi
 
-AC_ARG_ENABLE([large-counts],
-	      AS_HELP_STRING([--enable-large-counts],
-	      [Enable large (64-bit) UCT values and counts
-	      (default is no).]),
-	      [largecounts=$enableval],
-	      [largecounts=no])
-
-if test "x$largecounts" = "xyes"
-then
-	AC_DEFINE(ENABLE_LARGE_COUNTS, 1, [define to enable large (64 bit) UCT values and counts])
+AC_ARG_ENABLE(uct-value-type,
+  [  --enable-uct-value-type=t  floating point type used in SgUctSearch (float|double)])
+AH_TEMPLATE([SG_UCT_VALUE_TYPE],
+[Floating point type used for counts and values in SgUctSearch (float|double)])
+if test "$enable_uct_value_type" ; then
+   AC_DEFINE_UNQUOTED(SG_UCT_VALUE_TYPE, $enable_uct_value_type)
 fi
 
 
