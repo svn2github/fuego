@@ -115,8 +115,8 @@ SgTimer.h \
 SgUctSearch.h \
 SgUctTree.h \
 SgUctTreeUtil.h \
-SgUctTypes.h \
 SgUtil.h \
+SgUctValue.h \
 SgVector.h \
 SgVectorUtility.h \
 SgWrite.h
