@@ -20,20 +20,46 @@ using namespace std;
 
 namespace {
 
-BOOST_AUTO_TEST_CASE(GtpCommandTest_Arg_Generic)
+BOOST_AUTO_TEST_CASE(GtpCommandTest_Arg)
 {
-    BOOST_CHECK(! GtpCommand("command 0").Arg<bool>(0));
-    BOOST_CHECK(GtpCommand("command 1").Arg<bool>(0));
-    BOOST_CHECK_THROW(GtpCommand("command 2").Arg<bool>(0), GtpFailure);
-    BOOST_CHECK_THROW(GtpCommand("command foo").Arg<bool>(0), GtpFailure);
-    BOOST_CHECK_THROW(GtpCommand("command").Arg<bool>(0), GtpFailure);
+    {
+        GtpCommand cmd("command abc 9.1");
+        BOOST_CHECK_THROW(cmd.Arg<double>(0), GtpFailure);
+        BOOST_CHECK_CLOSE(cmd.Arg<double>(1), 9.1, 1e-4);
+    }
+    {
+        GtpCommand cmd("command 9 abc");
+        BOOST_CHECK_EQUAL(cmd.Arg<int>(0), 9);
+        BOOST_CHECK_THROW(cmd.Arg<int>(1), GtpFailure);
+    }
+    {
+        GtpCommand cmd("command 9 abc -1");
+        BOOST_CHECK_EQUAL(cmd.Arg<size_t>(0), 9u);
+        BOOST_CHECK_THROW(cmd.Arg<size_t>(1), GtpFailure);
+        BOOST_CHECK_THROW(cmd.Arg<size_t>(2), GtpFailure);
+    }
+}
 
-    BOOST_CHECK_THROW(GtpCommand("command abc 9.1").Arg<double>(0),
-                      GtpFailure);
-    BOOST_CHECK_CLOSE(GtpCommand("command abc 9.1").Arg<double>(1), 9.1, 1e-4);
+BOOST_AUTO_TEST_CASE(GtpCommandTest_ArgMin)
+{
+    {
+        GtpCommand cmd("command 9");
+        BOOST_CHECK_EQUAL(cmd.ArgMin<int>(0, 5), 9);
+        BOOST_CHECK_THROW(cmd.ArgMin<int>(0, 10), GtpFailure);
+    }
+    {
+        GtpCommand cmd("command 9");
+        BOOST_CHECK_EQUAL(cmd.ArgMin<size_t>(0, 5), 9u);
+        BOOST_CHECK_THROW(cmd.ArgMin<size_t>(0, 10), GtpFailure);
+    }
+}
 
-    BOOST_CHECK_EQUAL(GtpCommand("command 9 abc").Arg<int>(0), 9);
-    BOOST_CHECK_THROW(GtpCommand("command 9 abc").Arg<int>(1), GtpFailure);
+BOOST_AUTO_TEST_CASE(GtpCommandTest_ArgMinMax)
+{
+    GtpCommand cmd("command 9");
+    BOOST_CHECK_EQUAL(cmd.ArgMinMax<int>(0, 5, 10), 9);
+    BOOST_CHECK_THROW(cmd.ArgMinMax<int>(0, 0, 5), GtpFailure);
+    BOOST_CHECK_THROW(cmd.ArgMinMax<int>(0, 10, 15), GtpFailure);
 }
 
 BOOST_AUTO_TEST_CASE(GtpCommandTest_ArgToLower)
@@ -71,13 +97,6 @@ BOOST_AUTO_TEST_CASE(GtpCommandTest_CheckNuArg3)
     BOOST_CHECK_NO_THROW(cmd.CheckNuArgLessEqual(4));
 }
 
-BOOST_AUTO_TEST_CASE(GtpCommandTest_FloatArg)
-{
-    GtpCommand cmd("command abc 9.1");
-    BOOST_CHECK_THROW(cmd.FloatArg(0), GtpFailure);
-    BOOST_CHECK_CLOSE(cmd.FloatArg(1), 9.1, 1e-4);
-}
-
 BOOST_AUTO_TEST_CASE(GtpCommandTest_Init)
 {
     GtpCommand cmd("10 command1 arg1 arg2");
@@ -91,28 +110,6 @@ BOOST_AUTO_TEST_CASE(GtpCommandTest_Init)
     BOOST_CHECK_EQUAL(cmd.Name(), "command2");
     BOOST_CHECK_EQUAL(cmd.NuArg(), 1u);
     BOOST_CHECK_EQUAL(cmd.Arg(0), "arg3");
-}
-
-BOOST_AUTO_TEST_CASE(GtpCommandTest_IntArg)
-{
-    GtpCommand cmd("command 9 abc");
-    BOOST_CHECK_EQUAL(cmd.IntArg(0), 9);
-    BOOST_CHECK_THROW(cmd.IntArg(1), GtpFailure);
-}
-
-BOOST_AUTO_TEST_CASE(GtpCommandTest_IntArgMin)
-{
-    GtpCommand cmd("command 9");
-    BOOST_CHECK_EQUAL(cmd.IntArg(0, 5), 9);
-    BOOST_CHECK_THROW(cmd.IntArg(0, 10), GtpFailure);
-}
-
-BOOST_AUTO_TEST_CASE(GtpCommandTest_IntArgMinMax)
-{
-    GtpCommand cmd("command 9");
-    BOOST_CHECK_EQUAL(cmd.IntArg(0, 5, 10), 9);
-    BOOST_CHECK_THROW(cmd.IntArg(0, 0, 5), GtpFailure);
-    BOOST_CHECK_THROW(cmd.IntArg(0, 10, 15), GtpFailure);
 }
 
 BOOST_AUTO_TEST_CASE(GtpCommandTest_Parse)
@@ -140,21 +137,6 @@ BOOST_AUTO_TEST_CASE(GtpCommandTest_Response)
     GtpCommand cmd("name");
     cmd << "Funny";
     BOOST_CHECK_EQUAL(cmd.Response(), "Funny");
-}
-
-BOOST_AUTO_TEST_CASE(GtpCommandTest_SizeTypeArg)
-{
-    GtpCommand cmd("command 9 abc -1");
-    BOOST_CHECK_EQUAL(cmd.SizeTypeArg(0), 9u);
-    BOOST_CHECK_THROW(cmd.SizeTypeArg(1), GtpFailure);
-    BOOST_CHECK_THROW(cmd.SizeTypeArg(2), GtpFailure);
-}
-
-BOOST_AUTO_TEST_CASE(GtpCommandTest_SizeTypeArgMin)
-{
-    GtpCommand cmd("command 9");
-    BOOST_CHECK_EQUAL(cmd.SizeTypeArg(0, 5), 9u);
-    BOOST_CHECK_THROW(cmd.SizeTypeArg(0, 10), GtpFailure);
 }
 
 } // namespace

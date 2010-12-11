@@ -47,7 +47,7 @@ void GoGtpExtraCommands::CmdCfgDistance(GtpCommand& cmd)
     SgPoint p = PointArg(cmd, 0, m_bd);
     int maxDist = numeric_limits<int>::max();
     if (cmd.NuArg() > 1)
-        maxDist = cmd.IntArg(1, 0);
+        maxDist = cmd.ArgMin<int>(1, 0);
     SgPointArray<int> distance = GoBoardUtil::CfgDistance(m_bd, p, maxDist);
     // distance elements are only defined for empty points or block anchors
     SgPointArray<string> stringArray("\"\"");

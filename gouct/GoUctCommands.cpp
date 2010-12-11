@@ -251,9 +251,9 @@ void GoUctCommands::CmdDefaultPolicy(GtpCommand& cmd)
 void GoUctCommands::CmdEstimatorStat(GtpCommand& cmd)
 {
     cmd.CheckNuArg(4);
-    size_t trueValueMaxGames = cmd.SizeTypeArg(0);
-    size_t maxGames = cmd.SizeTypeArg(1);
-    size_t stepSize = cmd.SizeTypeArg(2);
+    size_t trueValueMaxGames = cmd.Arg<size_t>(0);
+    size_t maxGames = cmd.Arg<size_t>(1);
+    size_t stepSize = cmd.Arg<size_t>(2);
     string fileName = cmd.Arg(3);
     GoUctEstimatorStat::Compute(Search(), trueValueMaxGames, maxGames,
                                 stepSize, fileName);
@@ -335,7 +335,7 @@ void GoUctCommands::CmdMaxMemory(GtpCommand& cmd)
         cmd << Search().MaxNodes() * 2 * sizeof(SgUctNode);
     else
     {
-        std::size_t memory = cmd.SizeTypeArg(0, 2*sizeof(SgUctNode));
+        std::size_t memory = cmd.ArgMin<size_t>(0, 2 * sizeof(SgUctNode));
         Search().SetMaxNodes(memory / 2 / sizeof(SgUctNode));
     }
 }
@@ -398,9 +398,9 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.BoolArg(1);
         else if (name == "length_modification")
-            p.m_lengthModification = cmd.NumberArg<SgUctEval>(1);
+            p.m_lengthModification = cmd.Arg<SgUctEval>(1);
         else if (name == "score_modification")
-            p.m_scoreModification = cmd.NumberArg<SgUctEval>(1);
+            p.m_scoreModification = cmd.Arg<SgUctEval>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -462,11 +462,11 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         else if (name == "use_root_filter")
             p.SetUseRootFilter(cmd.BoolArg(1));
         else if (name == "max_games")
-            p.SetMaxGames(cmd.NumberArg<SgUctCount>(1, (SgUctCount)1));
+            p.SetMaxGames(cmd.ArgMin<SgUctCount>(1, SgUctCount(1)));
         else if (name == "resign_min_games")
-            p.SetResignMinGames(cmd.NumberArg<SgUctCount>(1,(SgUctCount)0));
+            p.SetResignMinGames(cmd.ArgMin<SgUctCount>(1, SgUctCount(0)));
         else if (name == "resign_threshold")
-            p.SetResignThreshold(cmd.NumberArg<SgUctEstimate>(1,0,1));
+            p.SetResignThreshold(cmd.ArgMinMax<SgUctEstimate>(1, 0, 1));
         else if (name == "search_mode")
             p.SetSearchMode(SearchModeArg(cmd, 1));
         else
@@ -507,7 +507,7 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
         else if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.BoolArg(1);
         else if (name == "fillboard_tries")
-            p.m_fillboardTries = cmd.IntArg(1);
+            p.m_fillboardTries = cmd.Arg<int>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -620,7 +620,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "prune_full_tree")
             s.SetPruneFullTree(cmd.BoolArg(1));
         else if (name == "randomize_rave_frequency")
-            s.SetRandomizeRaveFrequency(cmd.IntArg(1, 0));
+            s.SetRandomizeRaveFrequency(cmd.ArgMin<int>(1, 0));
         else if (name == "rave")
             s.SetRave(cmd.BoolArg(1));
         else if (name == "weight_rave_updates")
@@ -630,23 +630,26 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "expand_threshold")
-            s.SetExpandThreshold(cmd.NumberArg<SgUctCount>(1, (numeric_limits<SgUctCount>::is_integer ? (SgUctCount)1 : numeric_limits<SgUctCount>::epsilon())));
+            s.SetExpandThreshold(cmd.ArgMin<SgUctCount>(1,
+                                     numeric_limits<SgUctCount>::is_integer
+                                     ? SgUctCount(1)
+                                     : numeric_limits<SgUctCount>::epsilon()));
         else if (name == "first_play_urgency")
-            s.SetFirstPlayUrgency(cmd.NumberArg<SgUctEstimate>(1));
+            s.SetFirstPlayUrgency(cmd.Arg<SgUctEstimate>(1));
         else if (name == "live_gfx")
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
-            s.SetLiveGfxInterval(cmd.IntArg(1, 1));
+            s.SetLiveGfxInterval(cmd.ArgMin<int>(1, 1));
         else if (name == "max_nodes")
-            s.SetMaxNodes(cmd.SizeTypeArg(1, 1));
+            s.SetMaxNodes(cmd.ArgMin<size_t>(1, 1));
         else if (name == "move_select")
             s.SetMoveSelect(MoveSelectArg(cmd, 1));
         else if (name == "number_threads")
-            s.SetNumberThreads(cmd.SizeTypeArg(1, 1));
+            s.SetNumberThreads(cmd.ArgMin<size_t>(1, 1));
         else if (name == "number_playouts")
-            s.SetNumberPlayouts(cmd.IntArg(1, 1));
+            s.SetNumberPlayouts(cmd.ArgMin<int>(1, 1));
         else if (name == "prune_min_count")
-            s.SetPruneMinCount(cmd.NumberArg<SgUctCount>(1, (SgUctCount)1));
+            s.SetPruneMinCount(cmd.ArgMin<SgUctCount>(1, SgUctCount(1)));
         else if (name == "rave_weight_final")
             s.SetRaveWeightFinal(cmd.Arg<float>(1));
         else if (name == "rave_weight_initial")
@@ -703,7 +706,7 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     cmd.CheckNuArgLessEqual(1);
     size_t count = 0;
     if (cmd.NuArg() == 1)
-        count = cmd.SizeTypeArg(0, 0);
+        count = cmd.ArgMin<size_t>(0, 0);
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
@@ -788,7 +791,7 @@ void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
     string fileName = cmd.Arg(0);
     int maxDepth = -1;
     if (cmd.NuArg() == 2)
-        maxDepth = cmd.IntArg(1, 0);
+        maxDepth = cmd.ArgMin<int>(1, 0);
     ofstream out(fileName.c_str());
     if (! out)
         throw GtpFailure() << "Could not open " << fileName;

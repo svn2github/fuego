@@ -388,7 +388,7 @@ void GoGtpEngine::CmdBoard(GtpCommand& cmd)
 void GoGtpEngine::CmdBoardSize(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
-    int size = cmd.IntArg(0, SG_MIN_SIZE, SG_MAX_SIZE);
+    int size = cmd.ArgMinMax<int>(0, SG_MIN_SIZE, SG_MAX_SIZE);
     if (m_fixedBoardSize > 0 && size != m_fixedBoardSize)
         throw GtpFailure() << "Boardsize " << m_fixedBoardSize << " fixed";
     if (Board().MoveNumber() > 0)
@@ -441,7 +441,7 @@ void GoGtpEngine::CmdFinalScore(GtpCommand& cmd)
 /** Standard GTP command fixed_handicap. */
 void GoGtpEngine::CmdFixedHandicap(GtpCommand& cmd)
 {
-    int n = cmd.IntArg(0, 2);
+    int n = cmd.ArgMin<int>(0, 2);
     int size = Board().Size();
     SgVector<SgPoint> stones = GoGtpCommandUtil::GetHandicapStones(size, n);
     PlaceHandicap(stones);
@@ -529,7 +529,7 @@ void GoGtpEngine::CmdGetKomi(GtpCommand& cmd)
 void GoGtpEngine::CmdGGUndo(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
-    Undo(cmd.NuArg() == 0 ? 0 : cmd.IntArg(0, 0));
+    Undo(cmd.NuArg() == 0 ? 0 : cmd.ArgMin<int>(0, 0));
     BoardChanged();
 }
 
@@ -555,7 +555,7 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     else if (type == "absolute")
     {
         cmd.CheckNuArg(2);
-        int mainTime = cmd.IntArg(1, 0);
+        int mainTime = cmd.ArgMin<int>(1, 0);
         GoGtpTimeSettings timeSettings(mainTime, 0, 0);
         if (m_timeSettings == timeSettings)
             return;
@@ -566,9 +566,9 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     {
         cmd.CheckNuArg(4);
         // FIXME: not fully supported yet!
-        int mainTime = cmd.IntArg(1, 0);
-        int byoYomiTime = cmd.IntArg(2, 0);
-        //int byoYomiPeriods = cmd.IntArg(3, 0);
+        int mainTime = cmd.ArgMin<int>(1, 0);
+        int byoYomiTime = cmd.ArgMin<int>(2, 0);
+        //int byoYomiPeriods = cmd.ArgMin<int>(3, 0);
         GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, 1);
         if (m_timeSettings == timeSettings)
             return;
@@ -578,9 +578,9 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     else if (type == "canadian")
     {
         cmd.CheckNuArg(4);
-        int mainTime = cmd.IntArg(1, 0);
-        int byoYomiTime = cmd.IntArg(2, 0);
-        int byoYomiStones = cmd.IntArg(3, 0);
+        int mainTime = cmd.ArgMin<int>(1, 0);
+        int byoYomiTime = cmd.ArgMin<int>(2, 0);
+        int byoYomiStones = cmd.ArgMin<int>(3, 0);
         GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, byoYomiStones);
         if (m_timeSettings == timeSettings)
             return;
@@ -672,7 +672,7 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     string fileName = cmd.Arg(0);
     int moveNumber = -1;
     if (cmd.NuArg() == 2)
-        moveNumber = cmd.IntArg(1, 1);
+        moveNumber = cmd.ArgMin<int>(1, 1);
     ifstream in(fileName.c_str());
     if (! in)
         throw GtpFailure("could not open file");
@@ -750,13 +750,13 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
         }
         else if (name == "overhead")
         {
-            m_overhead = cmd.FloatArg(1);
+            m_overhead = cmd.Arg<double>(1);
             GetGame().Time().SetOverhead(m_overhead);
         }
         else if (name == "statistics_file")
             SetStatisticsFile(cmd.RemainingLine(0));
         else if (name == "timelimit")
-            m_timeLimit = cmd.FloatArg(1);
+            m_timeLimit = cmd.Arg<double>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -867,13 +867,13 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "fast_open_factor")
-            c->SetFastOpenFactor(cmd.FloatArg(1));
+            c->SetFastOpenFactor(cmd.Arg<double>(1));
         else if (name == "fast_open_moves")
-            c->SetFastOpenMoves(cmd.IntArg(1, 0));
+            c->SetFastOpenMoves(cmd.ArgMin<int>(1, 0));
         else if (name == "final_space")
             c->SetFinalSpace(max(cmd.Arg<float>(1), 0.f));
         else if (name == "remaining_constant")
-            c->SetRemainingConstant(max(cmd.FloatArg(1), 0.));
+            c->SetRemainingConstant(max(cmd.Arg<double>(1), 0.));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -893,7 +893,7 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
 void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
 {
     CheckBoardEmpty();
-    int n = cmd.IntArg(0, 2);
+    int n = cmd.ArgMin<int>(0, 2);
     int size = Board().Size();
     SgVector<SgPoint> stones;
     try
@@ -1237,8 +1237,8 @@ void GoGtpEngine::CmdTimeLeft(GtpCommand& cmd)
     // GTP draft 2 standard does not say if time left can be negative,
     // CGOS server sends negative time, but we replace a negative time by
     // zero (not sure, if SgTimeRecord::SetTimeLeft can handle negative times)
-    int timeLeft = max(0, cmd.IntArg(1));
-    int movesLeft = cmd.IntArg(2, 0);
+    int timeLeft = max(0, cmd.Arg<int>(1));
+    int movesLeft = cmd.ArgMin<int>(2, 0);
     SgTimeRecord& time = GetGame().Time();
     time.SetTimeLeft(color, timeLeft);
     time.SetMovesLeft(color, movesLeft);
@@ -1248,9 +1248,9 @@ void GoGtpEngine::CmdTimeLeft(GtpCommand& cmd)
 void GoGtpEngine::CmdTimeSettings(GtpCommand& cmd)
 {
     cmd.CheckNuArg(3);
-    int mainTime = cmd.IntArg(0, 0);
-    int byoYomiTime = cmd.IntArg(1, 0);
-    int byoYomiStones = cmd.IntArg(2, 0);
+    int mainTime = cmd.ArgMin<int>(0, 0);
+    int byoYomiTime = cmd.ArgMin<int>(1, 0);
+    int byoYomiStones = cmd.ArgMin<int>(2, 0);
     GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, byoYomiStones);
     if (m_timeSettings == timeSettings)
         return;

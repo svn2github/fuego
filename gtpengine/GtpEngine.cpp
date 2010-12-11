@@ -440,6 +440,28 @@ const string& GtpCommand::Arg() const
     return Arg(0);
 }
 
+/** Specialization of Arg<T> for T=size_t to work around a GCC bug */
+template<>
+std::size_t GtpCommand::Arg<std::size_t>(std::size_t i) const
+{
+    std::string arg = Arg(i);
+    // Workaround for bug in standard library of some GCC versions (e.g. GCC
+    // 4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
+    // size_t, which should be unsigned
+    bool fail = (! arg.empty() && arg[0] == '-');
+    std::size_t result;
+    if (! fail)
+    {
+        std::istringstream in(arg);
+        in >> result;
+        fail = ! in;
+    }
+    if (fail)
+        throw GtpFailure() << "argument " << (i + 1) << " (" << result
+                           << ") must be of type \"size_t\"";
+    return result;
+}
+
 std::string GtpCommand::ArgLine() const
 {
     string result = m_line.substr(m_arguments[0].m_end);
@@ -489,45 +511,22 @@ void GtpCommand::CheckNuArgLessEqual(std::size_t number) const
 
 double GtpCommand::FloatArg(std::size_t number) const
 {
-    istringstream in(Arg(number));
-    double result;
-    in >> result;
-    if (! in)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be a float";
-    return result;
+    return Arg<double>(number);
 }
 
 int GtpCommand::IntArg(std::size_t number) const
 {
-    istringstream in(Arg(number));
-    int result;
-    in >> result;
-    if (! in)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be a number";
-    return result;
+    return Arg<int>(number);
 }
 
 int GtpCommand::IntArg(std::size_t number, int min) const
 {
-    int result = IntArg(number);
-    if (result < min)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be greater or equal " << min;
-    return result;
+    return ArgMin<int>(number, min);
 }
 
 int GtpCommand::IntArg(std::size_t number, int min, int max) const
 {
-    int result = IntArg(number);
-    if (result < min)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be greater or equal " << min;
-    if (result > max)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be less or equal " << max;
-    return result;
+    return ArgMinMax<int>(number, min, max);
 }
 
 void GtpCommand::Init(const string& line)
@@ -579,31 +578,12 @@ void GtpCommand::SetResponseBool(bool value)
 
 std::size_t GtpCommand::SizeTypeArg(std::size_t number) const
 {
-    string arg = Arg(number);
-    // Workaround for bug in standard library of some GCC versions (e.g. GCC
-    // 4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
-    // size_t, which should be unsigned
-    bool fail = (! arg.empty() && arg[0] == '-');
-    std::size_t result;
-    if (! fail)
-    {
-        istringstream in(arg);
-        in >> result;
-        fail = ! in;
-    }
-    if (fail)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be a number";
-    return result;
+    return Arg<size_t>(number);
 }
 
 std::size_t GtpCommand::SizeTypeArg(std::size_t number, std::size_t min) const
 {
-    std::size_t result = SizeTypeArg(number);
-    if (result < min)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be greater or equal " << min;
-    return result;
+    return ArgMin<size_t>(number, min);
 }
 
 /** Split line into arguments.

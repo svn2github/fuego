@@ -17,6 +17,8 @@ Current development version
 * Use only the same floating point type for all counts and values in
   SgUctSearch and made the floating point configurable via a configure
   parameter
+* Added generic argument parsing function GtpCommand::Arg<T> and declared
+  old function (GtpCommand::IntArg() etc.) as deprecated
 
 Version 0.4.1 - 2009 Dec 23
 ===========================

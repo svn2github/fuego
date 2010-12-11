@@ -315,7 +315,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckNuArg(1);
-    int numExpansions = cmd.IntArg(0, 1);
+    int numExpansions = cmd.ArgMin<int>(0, 1);
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
     m_bookBuilder.Expand(numExpansions);
@@ -340,7 +340,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
         if (workList.empty())
             throw GtpFailure() << "Empty worklist! No action performed";
     }
-    int expansionsRequired = cmd.IntArg(1, 1);
+    int expansionsRequired = cmd.ArgMin<int>(1, 1);
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
     m_bookBuilder.Cover(expansionsRequired, false, workList);
@@ -365,7 +365,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
         if (workList.empty())
             throw GtpFailure() << "Empty worklist! No action performed";
     }
-    int expansionsRequired = cmd.IntArg(1, 1);
+    int expansionsRequired = cmd.ArgMin<int>(1, 1);
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
     m_bookBuilder.Cover(expansionsRequired, true, workList);
@@ -438,7 +438,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdTruncateByDepth(GtpCommand& cmd)
     if (m_book.get() == 0)
         throw GtpFailure() << "No opened autobook!\n";
     cmd.CheckNuArg(2);
-    int depth = cmd.IntArg(0, 0);
+    int depth = cmd.ArgMin<int>(0, 0);
     GoAutoBook other(cmd.Arg(1), m_param);
     GoAutoBookState state(m_bd);
     state.Synchronize();
@@ -470,19 +470,19 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
     {
         std::string name = cmd.Arg(0);
         if (name == "num_threads")
-            m_bookBuilder.SetNumThreads(cmd.IntArg(1, 1));
+            m_bookBuilder.SetNumThreads(cmd.ArgMin<int>(1, 1));
         else if (name == "num_games_per_evaluation")
-            m_bookBuilder.SetNumGamesPerEvaluation(cmd.SizeTypeArg(1, 1));
+            m_bookBuilder.SetNumGamesPerEvaluation(cmd.ArgMin<size_t>(1, 1));
         else if (name == "num_games_per_sort")
-            m_bookBuilder.SetNumGamesPerSort(cmd.SizeTypeArg(1, 1));
+            m_bookBuilder.SetNumGamesPerSort(cmd.ArgMin<size_t>(1, 1));
         else if (name == "use_widening")
             m_bookBuilder.SetUseWidening(cmd.BoolArg(1));
         else if (name == "expand_width")
-            m_bookBuilder.SetExpandWidth(cmd.IntArg(1, 1));
+            m_bookBuilder.SetExpandWidth(cmd.ArgMin<int>(1, 1));
         else if (name == "expand_threshold")
-            m_bookBuilder.SetExpandThreshold(cmd.IntArg(1, 1));
+            m_bookBuilder.SetExpandThreshold(cmd.ArgMin<int>(1, 1));
         else if (name == "usage_count")
-            m_param.m_usageCountThreshold = cmd.SizeTypeArg(1, 0);
+            m_param.m_usageCountThreshold = cmd.ArgMin<size_t>(1, 0);
         else if (name == "move_select")
             m_param.m_selectType = MoveSelectArg(cmd, 1);
         else if (name == "alpha")

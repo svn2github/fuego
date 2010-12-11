@@ -78,7 +78,7 @@ void SgGtpCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 */
 void SgGtpCommands::CmdCompareFloat(GtpCommand& cmd)
 {
-    double value = cmd.FloatArg(0);
+    double value = cmd.Arg<double>(0);
     string response = m_engine.ExecuteCommand(cmd.RemainingLine(0));
     istringstream in(response);
     double responseValue;
@@ -95,7 +95,7 @@ void SgGtpCommands::CmdCompareFloat(GtpCommand& cmd)
 */
 void SgGtpCommands::CmdCompareInt(GtpCommand& cmd)
 {
-    int value = cmd.IntArg(0);
+    int value = cmd.Arg<int>(0);
     string response = m_engine.ExecuteCommand(cmd.RemainingLine(0));
     istringstream in(response);
     int responseValue;
@@ -252,7 +252,7 @@ void SgGtpCommands::CmdPid(GtpCommand& cmd)
 void SgGtpCommands::CmdSetRandomSeed(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
-    SgRandom::SetSeed(cmd.IntArg(0));
+    SgRandom::SetSeed(cmd.Arg<int>(0));
 }
 
 /** Switch debug logging on/off. */

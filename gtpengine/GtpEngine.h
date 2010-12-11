@@ -152,8 +152,6 @@ inline std::ostream& GtpFailure::ResponseStream()
 
 //----------------------------------------------------------------------------
 
-
-
 /** GTP command.
     GtpCommands are passed to command handlers.
     They can be queried for arguments and used for writing the response to.
@@ -207,17 +205,40 @@ public:
     */
     std::string ArgToLower(std::size_t number) const;
 
-    /** Get argument converted to a generic type.
+    /** Get argument converted to a type.
         This function allows to parse any argument type that implements
-        <tt>operator<<(istream)</tt>. For types directly supported by this
-        class, it is recommended to use the more specific parsing function
-        (e.g. IntArg()), because the error message on failure will be more
-        specific.
+        <tt>operator<<(istream)</tt>.
         @param i Argument index starting with 0
         @return The converted argument
-        @throws Failure If no such argument, or argument cannot be converted */
+        @throws Failure If no such argument, or argument cannot be converted
+    */
     template<typename T>
     T Arg(std::size_t i) const;
+
+    /** Get argument converted to a type and check for a minimum value.
+        This function allows to parse any argument type that implements
+        <tt>operator<<(istream)</tt>.
+        @param i Argument index starting with 0
+        @param i The minimum value
+        @return The converted argument
+        @throws Failure If no such argument, argument cannot be converted,
+        or is less than the minimum value
+    */
+    template<typename T>
+    T ArgMin(std::size_t i, const T& min) const;
+
+    /** Get argument converted to a type and check for a range.
+        This function allows to parse any argument type that implements
+        <tt>operator<<(istream)</tt>.
+        @param i Argument index starting with 0
+        @param i The minimum value of the range
+        @param i The maximum value of the range
+        @return The converted argument
+        @throws Failure If no such argument, argument cannot be converted,
+        or is not contained in the range.
+    */
+    template<typename T>
+    T ArgMinMax(std::size_t i, const T& min, const T& max) const;
 
     /** Get integer argument converted boolean.
         @param number Argument index starting with 0
@@ -243,16 +264,6 @@ public:
     */
     void CheckNuArgLessEqual(std::size_t number) const;
 
-    /** Get argument converted to double.
-        @param number Argument index starting with 0
-        @return Argument value
-        @throws GtpFailure If no such argument, or argument is not a double
-    */
-    double FloatArg(std::size_t number) const;
-
-    template<class T>
-	T NumberArg(std::size_t number, T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) const;
-
     /** Get command ID.
         @return ID or empty string, if command has no ID
     */
@@ -265,33 +276,6 @@ public:
         name, and arguments.
     */
     void Init(const std::string& line);
-
-    /** Get argument converted to integer.
-        @param number Argument index starting with 0
-        @return Argument value
-        @throws GtpFailure If no such argument, or argument is not an integer
-    */
-    int IntArg(std::size_t number) const;
-
-    /** Get argument converted to integer in a range with lower limit.
-        @param number Argument index starting with 0
-        @param min Minimum allowed value
-        @return Argument value
-        @throws GtpFailure If no such argument, argument is not an integer,
-        or not in range
-    */
-    int IntArg(std::size_t number, int min) const;
-
-    /** Get argument converted to integer in a range with lower and upper
-        limit.
-        @param number Argument index starting with 0
-        @param min Minimum allowed value
-        @param max Maximum allowed value
-        @return Argument value
-        @throws GtpFailure If no such argument, argument is not an integer,
-        or not in range
-    */
-    int IntArg(std::size_t number, int min, int max) const;
 
     /** Get argument line.
         Get all arguments as a line.
@@ -337,20 +321,43 @@ public:
     /** Set response to "true" or "false". */
     void SetResponseBool(bool value);
 
-    /** Get argument converted to std::size_t.
-        @param number Argument index starting with 0
-        @return Argument value
-        @throws GtpFailure If no such argument, or argument is not a size_t
+
+    /** @name Deprecated functions
+        Will be removed in the future.
+    */
+    // @{
+
+    /** Deprecated
+        @deprecated Use Arg<double>() instead
+    */
+    double FloatArg(std::size_t number) const;
+
+    /** Deprecated
+        @deprecated Use Arg<int>() instead
+    */
+    int IntArg(std::size_t number) const;
+
+    /** Deprecated
+        @deprecated Use ArgMin<int>() instead
+    */
+    int IntArg(std::size_t number, int min) const;
+
+    /** Deprecated
+        @deprecated Use ArgMinMax<int>() instead
+    */
+    int IntArg(std::size_t number, int min, int max) const;
+
+    /** Deprecated
+        @deprecated Use Arg<size_t>() instead
     */
     std::size_t SizeTypeArg(std::size_t number) const;
 
-    /** Get argument converted to std::size_t with lower limit.
-        @param number Argument index starting with 0
-        @param min Minimum allowed value
-        @return Argument value
-        @throws GtpFailure If no such argument, or argument is not a size_t
+    /** Deprecated
+        @deprecated Use ArgMin<size_t>() instead
     */
     std::size_t SizeTypeArg(std::size_t number, std::size_t min) const;
+
+    // @}
 
 private:
     /** Argument in command line. */
@@ -427,7 +434,28 @@ T GtpCommand::Arg(std::size_t i) const
     in >> result;
     if (! in)
         throw GtpFailure() << "argument " << (i + 1) << " (" << s
-                           << ") has invalid type";
+                           << ") must be of type \""
+                           << typeid(T).name() << "\"";
+    return result;
+}
+
+template<typename T>
+T GtpCommand::ArgMin(std::size_t i, const T& min) const
+{
+    T result = Arg<T>(i);
+    if (result < min)
+        throw GtpFailure() << "argument " << (i + 1) << " (" << result
+                           << ") must be greater or equal" << min;
+    return result;
+}
+
+template<typename T>
+T GtpCommand::ArgMinMax(std::size_t i, const T& min, const T& max) const
+{
+    T result = ArgMin(i, min);
+    if (result > max)
+        throw GtpFailure() << "argument " << (i + 1) << " (" << result
+                           << ") must be less or equal" << max;
     return result;
 }
 
@@ -464,24 +492,6 @@ inline std::string GtpCommand::Response() const
 inline std::ostringstream& GtpCommand::ResponseStream()
 {
     return m_response;
-}
-
-template <class T>
-T GtpCommand::NumberArg(std::size_t number, T min, T max) const
-{
-    std::istringstream in(Arg(number));
-    T result;
-    in >> result;
-    if (! in)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be a " << typeid(T).name();
-    if (result < min)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be greater or equal " << min;
-    if (result > max)
-        throw GtpFailure() << "argument " << (number + 1)
-                           << " must be less or equal " << max;
-    return result;
 }
 
 //----------------------------------------------------------------------------
