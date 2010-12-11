@@ -22,7 +22,7 @@ SgUctTreeStatistics::SgUctTreeStatistics()
 void SgUctTreeStatistics::Clear()
 {
     m_nuNodes = 0;
-    for (size_t i = 0; i < MAX_MOVECOUNT; ++i)
+    for (size_t i = 0; i < (size_t)MAX_MOVECOUNT; ++i)
         m_moveCounts[i] = 0;
     m_biasRave.Clear();
 }
@@ -34,9 +34,9 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
     {
         const SgUctNode& node = *it;
         ++m_nuNodes;
-        size_t count = node.MoveCount();
-        if (count < SgUctTreeStatistics::MAX_MOVECOUNT)
-            ++m_moveCounts[count];
+        SgUctCount count = node.MoveCount();
+        if (count < (SgUctCount)SgUctTreeStatistics::MAX_MOVECOUNT)
+            ++m_moveCounts[(size_t)count];
         if (! node.HasChildren())
             continue;
         for (SgUctChildIterator it(tree, node); it; ++it)
@@ -44,8 +44,8 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
             const SgUctNode& child = *it;
             if (child.HasRaveValue() && child.HasMean())
             {
-                float childValue = SgUctSearch::InverseEval(child.Mean());
-                float biasRave = child.RaveValue() - childValue;
+                SgUctEstimate childValue = SgUctSearch::InverseEstimate(child.Mean());
+                SgUctEstimate biasRave = child.RaveValue() - childValue;
                 m_biasRave.Add(biasRave);
             }
         }

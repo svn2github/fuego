@@ -47,12 +47,12 @@ GoUctKnowledge::~GoUctKnowledge()
 {
 }
 
-void GoUctKnowledge::Add(SgPoint p, float value, size_t count)
+void GoUctKnowledge::Add(SgPoint p, SgUctValue value, SgUctCount count)
 {
     m_values[p].Add(value, count);
 }
 
-void GoUctKnowledge::Initialize(SgPoint p, float value, size_t count)
+void GoUctKnowledge::Initialize(SgPoint p, SgUctValue value, SgUctCount count)
 {
     m_values[p].Initialize(value, count);
 }
@@ -72,7 +72,7 @@ void GoUctKnowledge::TransferValues(std::vector<SgMoveInfo>& outmoves) const
         {
             outmoves[i].m_count = m_values[p].Count();
             outmoves[i].m_value =
-                SgUctSearch::InverseEval(m_values[p].Mean());
+                 SgUctSearch::InverseEstimate(m_values[p].Mean());
             outmoves[i].m_raveCount = m_values[p].Count();
             outmoves[i].m_raveValue = m_values[p].Mean();
         }

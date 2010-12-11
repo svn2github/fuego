@@ -72,6 +72,18 @@ then
 
 fi
 
+AC_ARG_ENABLE([large-counts],
+	      AS_HELP_STRING([--enable-large-counts],
+	      [Enable large (64-bit) UCT values and counts
+	      (default is no).]),
+	      [largecounts=$enableval],
+	      [largecounts=no])
+
+if test "x$largecounts" = "xyes"
+then
+	AC_DEFINE(ENABLE_LARGE_COUNTS, 1, [define to enable large (64 bit) UCT values and counts])
+fi
+
 
 AX_CXXFLAGS_WARN_ALL
 AX_CXXFLAGS_GCC_OPTION(-Wextra)

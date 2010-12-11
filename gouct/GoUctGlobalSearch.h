@@ -6,6 +6,7 @@
 #ifndef GOUCT_GLOBALSEARCH_H
 #define GOUCT_GLOBALSEARCH_H
 
+#include <limits>
 #include <boost/scoped_ptr.hpp>
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
@@ -51,7 +52,7 @@ struct GoUctGlobalSearchStateParam
         The maximum modification is 0.5. The default value of the parameter
         is 0.
     */
-    float m_lengthModification;
+    SgUctEval m_lengthModification;
 
     /** Modify game result by score.
         This modifies the win/loss result (1/0) by the score of the end
@@ -65,7 +66,7 @@ struct GoUctGlobalSearchStateParam
         playing strength. The modification can be disabled by setting the
         parameter to zero. The default value is 0.02.
     */
-    float m_scoreModification;
+    SgUctEval m_scoreModification;
 
     GoUctGlobalSearchStateParam();
 };
@@ -137,9 +138,9 @@ public:
 
     ~GoUctGlobalSearchState();
 
-    float Evaluate();
+    SgUctEval Evaluate();
 
-    bool GenerateAllMoves(std::size_t count, std::vector<SgMoveInfo>& moves,
+    bool GenerateAllMoves(SgUctCount count, std::vector<SgMoveInfo>& moves,
                           SgProvenNodeType& provenType);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
@@ -191,12 +192,12 @@ private:
     GoPointList m_area;
 
     /** See SetMercyRule() */
-    float m_mercyRuleResult;
+    SgUctEval m_mercyRuleResult;
 
     /** Inverse of maximum score one can reach on a board of the current
         size.
     */
-    float m_invMaxScore;
+    SgUctEval m_invMaxScore;
 
     SgRandom m_random;
 
@@ -213,7 +214,7 @@ private:
     bool CheckMercyRule();
 
     template<class BOARD>
-    float EvaluateBoard(const BOARD& bd, float komi);
+    SgUctEval EvaluateBoard(const BOARD& bd, float komi);
 
     /** Generates all legal moves with no knowledge values. */
     void GenerateLegalMoves(std::vector<SgMoveInfo>& moves);
@@ -281,7 +282,7 @@ void GoUctGlobalSearchState<POLICY>::EndPlayout()
 }
 
 template<class POLICY>
-float GoUctGlobalSearchState<POLICY>::Evaluate()
+SgUctEval GoUctGlobalSearchState<POLICY>::Evaluate()
 {
     float komi = GetKomi();
     if (IsInPlayout())
@@ -292,10 +293,10 @@ float GoUctGlobalSearchState<POLICY>::Evaluate()
 
 template<class POLICY>
 template<class BOARD>
-float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
-                                                    float komi)
+SgUctEval GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
+							float komi)
 {
-    float score;
+    SgUctEval score;
     SgPointArray<SgEmptyBlackWhite> scoreBoard;
     SgPointArray<SgEmptyBlackWhite>* scoreBoardPtr;
     if (m_param.m_territoryStatistics)
@@ -304,13 +305,13 @@ float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
         scoreBoardPtr = 0;
     if (m_passMovesPlayoutPhase < 2)
         // Two passes not in playout phase, see comment in GenerateAllMoves()
-        score = GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
+        score = (SgUctEval)GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
     else
     {
         if (m_param.m_mercyRule && m_mercyRuleTriggered)
             return m_mercyRuleResult;
-        score = GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
-                                                    false, scoreBoardPtr);
+        score = (SgUctEval)GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
+							       false, scoreBoardPtr);
     }
     if (m_param.m_territoryStatistics)
         for (typename BOARD::Iterator it(bd); it; ++it)
@@ -328,13 +329,16 @@ float GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
             }
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
-    float lengthMod = min(GameLength() * m_param.m_lengthModification, 0.5f);
-    if (score > std::numeric_limits<float>::epsilon())
+    SgUctEval lengthMod = GameLength() * m_param.m_lengthModification;
+    if (lengthMod > 0.5) {
+	lengthMod = 0.5;
+    }
+    if (score > std::numeric_limits<SgUctEval>::epsilon())
         return
             (1 - m_param.m_scoreModification)
             + m_param.m_scoreModification * score * m_invMaxScore
             - lengthMod;
-    else if (score < -std::numeric_limits<float>::epsilon())
+    else if (score < -std::numeric_limits<SgUctEval>::epsilon())
         return
             m_param.m_scoreModification
             + m_param.m_scoreModification * score * m_invMaxScore
@@ -406,7 +410,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
 }
 
 template<class POLICY>
-bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(std::size_t count, 
+bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(SgUctCount count, 
                                              std::vector<SgMoveInfo>& moves,
                                              SgProvenNodeType& provenType)
 {
@@ -512,7 +516,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     const GoBoard& bd = Board();
     int size = bd.Size();
     float maxScore = float(size * size) + GetKomi();
-    m_invMaxScore = 1 / maxScore;
+    m_invMaxScore = (SgUctEval)(1 / maxScore);
     m_initialMoveNumber = bd.MoveNumber();
     m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
     ClearTerritoryStatistics();
@@ -600,7 +604,7 @@ public:
     /** @name Pure virtual functions of SgUctSearch */
     // @{
 
-    float UnknownEval() const;
+    SgUctEval UnknownEval() const;
 
     // @} // @name
 
@@ -610,8 +614,7 @@ public:
 
     void OnStartSearch();
 
-    void OnSearchIteration(std::size_t gameNumber, int threadId,
-                           const SgUctGameInfo& info);
+    void DisplayGfx();
 
     // @} // @name
 
@@ -669,14 +672,10 @@ inline bool GoUctGlobalSearch<POLICY,FACTORY>::GlobalSearchLiveGfx() const
 }
 
 template<class POLICY, class FACTORY>
-void GoUctGlobalSearch<POLICY,FACTORY>::OnSearchIteration(
-                                          std::size_t gameNumber,
-                                          int threadId,
-                                          const SgUctGameInfo& info)
+void GoUctGlobalSearch<POLICY,FACTORY>::DisplayGfx()
 {
-    GoUctSearch::OnSearchIteration(gameNumber, threadId, info);
-    if (m_globalSearchLiveGfx && threadId == 0
-        && gameNumber % LiveGfxInterval() == 0)
+    GoUctSearch::DisplayGfx();
+    if (m_globalSearchLiveGfx)
     {
         const GoUctGlobalSearchState<POLICY>& state =
             dynamic_cast<GoUctGlobalSearchState<POLICY>&>(ThreadState(0));
@@ -715,7 +714,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::SetDefaultParameters(int boardSize)
     SetFirstPlayUrgency(1);
     SetMoveSelect(SG_UCTMOVESELECT_COUNT);
     SetRave(true);
-    SetExpandThreshold(1);
+    SetExpandThreshold(std::numeric_limits<SgUctCount>::is_integer ? (SgUctCount)1 : std::numeric_limits<SgUctCount>::epsilon());
     SetVirtualLoss(true);
     SetBiasTermConstant(0.0);
     if (boardSize < 15)
@@ -744,11 +743,11 @@ inline void GoUctGlobalSearch<POLICY,FACTORY>::SetGlobalSearchLiveGfx(
 }
 
 template<class POLICY, class FACTORY>
-float GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
+SgUctEval GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
 {
     // Note: 0.5 is not a possible value for a Bernoulli variable, better
     // use 0?
-    return 0.5;
+    return (SgUctEval)0.5;
 }
 
 //----------------------------------------------------------------------------

@@ -11,6 +11,7 @@
 #include <boost/shared_ptr.hpp>
 #include "SgMove.h"
 #include "SgSystem.h"
+#include "SgUctTypes.h"
 
 //----------------------------------------------------------------------------
 
@@ -41,7 +42,7 @@ public:
                                    SgUctThreadState &state) = 0;
 
     virtual void OnSearchIteration(SgUctSearch &search, 
-                                   std::size_t gameNumber,
+                                   SgUctCount gameNumber,
                                    int threadId, 
                                    const SgUctGameInfo& info) = 0;
 
@@ -59,10 +60,10 @@ public:
 
     virtual void SynchronizeMove(SgMove &move) = 0;
 
-    virtual void SynchronizeValue(float &value) = 0;
+    virtual void SynchronizeValue(SgUctEstimate &value) = 0;
 
-    virtual void SynchronizeSearchStatus(float &value, bool &earlyAbort, 
-                                         std::size_t &rootMoveCount) = 0;
+    virtual void SynchronizeSearchStatus(SgUctEstimate &value, bool &earlyAbort, 
+                                         SgUctCount &rootMoveCount) = 0;
 };
 
 typedef boost::shared_ptr<SgMpiSynchronizer> SgMpiSynchronizerHandle;
@@ -93,7 +94,7 @@ public:
     virtual void OnThreadEndSearch(SgUctSearch &search, 
                                    SgUctThreadState &state);
 
-    virtual void OnSearchIteration(SgUctSearch &search, std::size_t gameNumber,
+    virtual void OnSearchIteration(SgUctSearch &search, SgUctCount gameNumber,
                                    int threadId, const SgUctGameInfo& info);
 
     virtual void OnStartPonder();
@@ -110,10 +111,10 @@ public:
 
     virtual void SynchronizeMove(SgMove &move);
 
-    virtual void SynchronizeValue(float &value);
+    virtual void SynchronizeValue(SgUctEstimate &value);
 
-    virtual void SynchronizeSearchStatus(float &value, bool &earlyAbort, 
-                                         std::size_t &rootMoveCount);
+    virtual void SynchronizeSearchStatus(SgUctEstimate &value, bool &earlyAbort, 
+                                         SgUctCount &rootMoveCount);
 
 };
 

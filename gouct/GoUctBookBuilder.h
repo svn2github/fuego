@@ -415,7 +415,7 @@ bool GoUctBookBuilder<PLAYER>::GenerateMoves(std::vector<SgMove>& moves,
     SgDebug() << m_state.Board() << '\n';
     m_players[0]->SetMaxGames(m_numGamesPerSort);
     m_workers[0](SG_NULLMOVE);
-    std::vector<std::pair<int, SgMove> > ordered;
+    std::vector<std::pair<SgUctCount, SgMove> > ordered;
     // Store counts for each move in vector.
     {
         const SgUctTree& tree = m_players[0]->Search().Tree();

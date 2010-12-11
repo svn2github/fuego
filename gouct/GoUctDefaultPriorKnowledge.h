@@ -23,11 +23,11 @@ public:
 protected:
     const GoBoard& m_bd;
 
-    SgArray<SgStatisticsBase<float,std::size_t>,SG_PASS+1> m_values;
+    SgArray<SgStatisticsBase<SgUctValue,SgUctCount>,SG_PASS+1> m_values;
 
-    void Add(SgPoint p, float value, std::size_t count);
+    void Add(SgPoint p, SgUctValue value, SgUctCount count);
 
-    void Initialize(SgPoint p, float value, std::size_t count);
+    void Initialize(SgPoint p, SgUctValue value, SgUctCount count);
 
     void ClearValues();
 

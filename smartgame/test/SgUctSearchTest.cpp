@@ -81,13 +81,13 @@ public:
     /** @name Virtual functions of SgUctThreadState */
     // @{
 
-    float Evaluate();
+    SgUctEval Evaluate();
 
     void Execute(SgMove move);
 
     void ExecutePlayout(SgMove move);
 
-    bool GenerateAllMoves(std::size_t count, vector<SgMoveInfo>& moves,
+    bool GenerateAllMoves(SgUctCount count, vector<SgMoveInfo>& moves,
                           SgProvenNodeType& provenType);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
@@ -153,7 +153,7 @@ void TestThreadState::ExecutePlayout(SgMove move)
     Execute(move);
 }
 
-float TestThreadState::Evaluate()
+SgUctEval TestThreadState::Evaluate()
 {
     if (WRITE)
         SgDebug() << "TestUctSearch::Evaluate " << m_currentNode << ": "
@@ -162,7 +162,7 @@ float TestThreadState::Evaluate()
     return CurrentNode().m_eval;
 }
 
-bool TestThreadState::GenerateAllMoves(std::size_t count, 
+bool TestThreadState::GenerateAllMoves(SgUctCount count, 
                                        vector<SgMoveInfo>& moves,
                                        SgProvenNodeType& provenType)
 {
@@ -308,7 +308,7 @@ public:
 
     string MoveString(SgMove move) const;
 
-    float UnknownEval() const;
+    SgUctEval UnknownEval() const;
 
     // @} // @name
 
@@ -375,7 +375,7 @@ string TestUctSearch::MoveString(SgMove move) const
     return buffer.str();
 }
 
-float TestUctSearch::UnknownEval() const
+SgUctEval TestUctSearch::UnknownEval() const
 {
     // UnknownEval() is only called by SgUctSearch if maximum game length was
     // exceeded, which should not happen with Search
@@ -555,7 +555,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
 {
     TestUctSearch search;
     search.SetExpandThreshold(1);
-    std::vector<std::size_t> thresholds(1, 4);
+    std::vector<SgUctCount> thresholds(1, 4);
     search.SetKnowledgeThreshold(thresholds);
     //search.m_write = true;
 

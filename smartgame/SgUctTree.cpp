@@ -66,8 +66,8 @@ void SgUctTree::AddVirtualLoss(const std::vector<const SgUctNode*>& nodes)
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
-        AddGameResult(*nodes[i], father, 1.0); // loss for us = win for child
-        AddRaveValue(*nodes[i], 0.0, 1.0); // loss for us
+        AddGameResult(*nodes[i], father, 1); // loss for us = win for child
+        AddRaveValue(*nodes[i], 0, 1); // loss for us
     }
 }
 
@@ -182,7 +182,7 @@ bool SgUctTree::Contains(const SgUctNode& node) const
     return false;
 }
 
-void SgUctTree::CopyPruneLowCount(SgUctTree& target, std::size_t minCount,
+void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctCount minCount,
                                   bool warnTruncate, double maxTime) const
 {
     size_t allocatorId = 0;
@@ -210,7 +210,7 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, std::size_t minCount,
     @param maxTime See ExtractSubtree()
 */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
-                            const SgUctNode& node, std::size_t minCount,
+                            const SgUctNode& node, SgUctCount minCount,
                             std::size_t& currentAllocatorId,
                             bool warnTruncate, bool& abort, SgTimer& timer,
                             double maxTime) const
@@ -335,7 +335,7 @@ void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
     SG_ASSERT(allocator.HasCapacity(nuNewChildren));
 
     const SgUctNode* newFirstChild = allocator.Finish();
-    std::size_t parentCount = allocator.Create(moves);
+    SgUctCount parentCount = allocator.Create(moves);
     
     // Update new children with data in old children
     for (std::size_t i = 0; i < moves.size(); ++i) 
@@ -396,8 +396,8 @@ void SgUctTree::RemoveVirtualLoss(const std::vector<const SgUctNode*>& nodes)
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
-        RemoveGameResult(*nodes[i], father, 1.0); // see AddVirtualLoss()
-        RemoveRaveValue(*nodes[i], 0.0, 1.0);
+        RemoveGameResult(*nodes[i], father, 1); // see AddVirtualLoss()
+        RemoveRaveValue(*nodes[i], 0, 1);
     }
 }
 

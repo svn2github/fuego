@@ -330,7 +330,7 @@ inline const COUNT& SgStatistics<VALUE,COUNT>::Count() const
 template<typename VALUE, typename COUNT>
 inline VALUE SgStatistics<VALUE,COUNT>::Deviation() const
 {
-    return std::sqrt(m_variance);
+    return (VALUE)std::sqrt(m_variance);
 }
 
 template<typename VALUE, typename COUNT>

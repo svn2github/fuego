@@ -31,6 +31,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <limits>
+#include <typeinfo>
 
 #include "GtpInputStream.h"
 #include "GtpOutputStream.h"
@@ -248,6 +250,9 @@ public:
     */
     double FloatArg(std::size_t number) const;
 
+    template<class T>
+	T NumberArg(std::size_t number, T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) const;
+
     /** Get command ID.
         @return ID or empty string, if command has no ID
     */
@@ -459,6 +464,24 @@ inline std::string GtpCommand::Response() const
 inline std::ostringstream& GtpCommand::ResponseStream()
 {
     return m_response;
+}
+
+template <class T>
+T GtpCommand::NumberArg(std::size_t number, T min, T max) const
+{
+    std::istringstream in(Arg(number));
+    T result;
+    in >> result;
+    if (! in)
+        throw GtpFailure() << "argument " << (number + 1)
+                           << " must be a " << typeid(T).name();
+    if (result < min)
+        throw GtpFailure() << "argument " << (number + 1)
+                           << " must be greater or equal " << min;
+    if (result > max)
+        throw GtpFailure() << "argument " << (number + 1)
+                           << " must be less or equal " << max;
+    return result;
 }
 
 //----------------------------------------------------------------------------

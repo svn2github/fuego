@@ -43,7 +43,7 @@ SgNode* AppendChild(SgNode* node, SgBlackWhite color, SgPoint move)
 }
 
 /** Append game to saved simulations (used if m_keepGames is true) */
-void AppendGame(SgNode* node, size_t gameNumber, int threadId,
+void AppendGame(SgNode* node, SgUctCount gameNumber, int threadId,
                 SgBlackWhite toPlay, const SgUctGameInfo& info)
 {
     SG_ASSERT(node != 0);
@@ -194,35 +194,41 @@ std::string GoUctSearch::MoveString(SgMove move) const
     return SgPointUtil::PointToString(move);
 }
 
-void GoUctSearch::OnSearchIteration(std::size_t gameNumber, int threadId,
+void GoUctSearch::OnSearchIteration(SgUctCount gameNumber, int threadId,
                                     const SgUctGameInfo& info)
 {
     SgUctSearch::OnSearchIteration(gameNumber, threadId, info);
 
     if (m_liveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
-        && gameNumber % m_liveGfxInterval == 0)
+        && gameNumber > m_nextLiveGfx)
     {
-        SgDebug() << "gogui-gfx:\n";
-        switch (m_liveGfx)
-        {
-        case GOUCT_LIVEGFX_COUNTS:
-            GoUctUtil::GfxBestMove(*this, m_toPlay, SgDebug());
-            GoUctUtil::GfxMoveValues(*this, m_toPlay, SgDebug());
-            GoUctUtil::GfxCounts(Tree(), SgDebug());
-            GoUctUtil::GfxStatus(*this, SgDebug());
-            break;
-        case GOUCT_LIVEGFX_SEQUENCE:
-            GoUctUtil::GfxSequence(*this, m_toPlay, SgDebug());
-            GoUctUtil::GfxStatus(*this, SgDebug());
-            break;
-        case GOUCT_LIVEGFX_NONE:
-            SG_ASSERT(false); // Already checked above
-            break;
-        }
-        SgDebug() << '\n';
+	m_nextLiveGfx = gameNumber + m_liveGfxInterval;
+	DisplayGfx();
     }
     if (! LockFree() && m_root != 0)
         AppendGame(m_root, gameNumber, threadId, m_toPlay, info);
+}
+
+void GoUctSearch::DisplayGfx()
+{
+    SgDebug() << "gogui-gfx:\n";
+    switch (m_liveGfx)
+    {
+    case GOUCT_LIVEGFX_COUNTS:
+	GoUctUtil::GfxBestMove(*this, m_toPlay, SgDebug());
+	GoUctUtil::GfxMoveValues(*this, m_toPlay, SgDebug());
+	GoUctUtil::GfxCounts(Tree(), SgDebug());
+	GoUctUtil::GfxStatus(*this, SgDebug());
+	break;
+    case GOUCT_LIVEGFX_SEQUENCE:
+	GoUctUtil::GfxSequence(*this, m_toPlay, SgDebug());
+	GoUctUtil::GfxStatus(*this, SgDebug());
+	break;
+    case GOUCT_LIVEGFX_NONE:
+	SG_ASSERT(false); // Should only be called when LiveGfx is enabled
+	break;
+    }
+    SgDebug() << '\n';
 }
 
 void GoUctSearch::OnStartSearch()
@@ -251,6 +257,8 @@ void GoUctSearch::OnStartSearch()
                             GO_MAX_NUM_MOVES - m_bd.MoveNumber());
     SetMaxGameLength(maxGameLength);
     m_boardHistory.SetFromBoard(m_bd);
+
+    m_nextLiveGfx = m_liveGfxInterval;
 }
 
 void GoUctSearch::SaveGames(const string& fileName) const

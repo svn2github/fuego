@@ -178,7 +178,7 @@ public:
     /** @name Virtual functions of SgUctSearch */
     // @{
 
-    void OnSearchIteration(std::size_t gameNumber, int threadId,
+    void OnSearchIteration(SgUctCount gameNumber, int threadId,
                            const SgUctGameInfo& info);
 
     void OnStartSearch();
@@ -244,12 +244,16 @@ public:
 
     // @} // @name
 
+protected:
+    virtual void DisplayGfx();
+
 private:
     /** See SetKeepGames() */
     bool m_keepGames;
 
     /** See SetLiveGfxInterval() */
     int m_liveGfxInterval;
+    volatile SgUctCount m_nextLiveGfx;
 
     /** Color to play.
         Does not use GoBoard::ToPlay(), because the color to play at the

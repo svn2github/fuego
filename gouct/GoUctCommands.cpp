@@ -131,7 +131,7 @@ string SearchModeToString(GoUctGlobalSearchMode mode)
     }
 }
 
-string KnowledgeThresholdToString(const std::vector<std::size_t>& t)
+string KnowledgeThresholdToString(const std::vector<SgUctCount>& t)
 {
     if (t.empty())
         return "0";
@@ -147,9 +147,9 @@ string KnowledgeThresholdToString(const std::vector<std::size_t>& t)
     return os.str();
 }
 
-std::vector<std::size_t> KnowledgeThresholdFromString(const std::string& val)
+std::vector<SgUctCount> KnowledgeThresholdFromString(const std::string& val)
 {
-    std::vector<std::size_t> v;
+    std::vector<SgUctCount> v;
     std::istringstream is(val);
     std::size_t t;
     while (is >> t)
@@ -398,9 +398,9 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.BoolArg(1);
         else if (name == "length_modification")
-            p.m_lengthModification = cmd.Arg<float>(1);
+            p.m_lengthModification = cmd.NumberArg<SgUctEval>(1);
         else if (name == "score_modification")
-            p.m_scoreModification = cmd.Arg<float>(1);
+            p.m_scoreModification = cmd.NumberArg<SgUctEval>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -462,11 +462,11 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         else if (name == "use_root_filter")
             p.SetUseRootFilter(cmd.BoolArg(1));
         else if (name == "max_games")
-            p.SetMaxGames(cmd.SizeTypeArg(1, 1));
+            p.SetMaxGames(cmd.NumberArg<SgUctCount>(1, (SgUctCount)1));
         else if (name == "resign_min_games")
-            p.SetResignMinGames(cmd.SizeTypeArg(1));
+            p.SetResignMinGames(cmd.NumberArg<SgUctCount>(1,(SgUctCount)0));
         else if (name == "resign_threshold")
-            p.SetResignThreshold(cmd.FloatArg(1));
+            p.SetResignThreshold(cmd.NumberArg<SgUctEstimate>(1,0,1));
         else if (name == "search_mode")
             p.SetSearchMode(SearchModeArg(cmd, 1));
         else
@@ -630,9 +630,9 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "expand_threshold")
-            s.SetExpandThreshold(cmd.SizeTypeArg(1, 1));
+            s.SetExpandThreshold(cmd.NumberArg<SgUctCount>(1, (numeric_limits<SgUctCount>::is_integer ? (SgUctCount)1 : numeric_limits<SgUctCount>::epsilon())));
         else if (name == "first_play_urgency")
-            s.SetFirstPlayUrgency(cmd.Arg<float>(1));
+            s.SetFirstPlayUrgency(cmd.NumberArg<SgUctEstimate>(1));
         else if (name == "live_gfx")
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
@@ -646,7 +646,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.IntArg(1, 1));
         else if (name == "prune_min_count")
-            s.SetPruneMinCount(cmd.SizeTypeArg(1, 1));
+            s.SetPruneMinCount(cmd.NumberArg<SgUctCount>(1, (SgUctCount)1));
         else if (name == "rave_weight_final")
             s.SetRaveWeightFinal(cmd.Arg<float>(1));
         else if (name == "rave_weight_initial")
@@ -717,7 +717,7 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
         SgMove move = moves[i].m_move;
         float value = SgUctSearch::InverseEval(moves[i].m_value);
         //float value = moves[i].m_value;
-        size_t count = moves[i].m_count;
+        SgUctCount count = moves[i].m_count;
         if (count > 0)
         {
             float scaledValue = (value * 2 - 1);
@@ -730,7 +730,7 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     for (size_t i = 0; i < moves.size(); ++i)
     {
         SgMove move = moves[i].m_move;
-        size_t count = moves[i].m_count;
+        SgUctCount count = moves[i].m_count;
         if (count > 0)
             cmd << ' ' << SgWritePoint(move) << ' ' << count;
     }
@@ -950,7 +950,7 @@ void GoUctCommands::CmdValue(GtpCommand& cmd)
 void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    float value = Search().Tree().Root().Mean();
+    SgUctEval value = Search().Tree().Root().Mean();
     if (Search().ToPlay() == SG_WHITE)
         value = SgUctSearch::InverseEval(value);
     cmd << value;

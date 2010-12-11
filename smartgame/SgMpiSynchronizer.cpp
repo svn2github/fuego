@@ -64,7 +64,7 @@ void SgMpiNullSynchronizer::OnThreadEndSearch(SgUctSearch &search,
 }
 
 void SgMpiNullSynchronizer::OnSearchIteration(SgUctSearch &search, 
-                                              size_t gameNumber, 
+                                              SgUctCount gameNumber, 
                                               int threadId, 
                                               const SgUctGameInfo& info)
 {
@@ -109,14 +109,14 @@ void SgMpiNullSynchronizer::SynchronizeMove(SgMove &move)
     SG_UNUSED(move);
 }
 
-void SgMpiNullSynchronizer::SynchronizeValue(float &value)
+void SgMpiNullSynchronizer::SynchronizeValue(SgUctEstimate &value)
 {
     SG_UNUSED(value);
 }
 
-void SgMpiNullSynchronizer::SynchronizeSearchStatus(float &value, 
+void SgMpiNullSynchronizer::SynchronizeSearchStatus(SgUctEstimate &value, 
                                                     bool &earlyAbort, 
-                                                    size_t &rootMoveCount)
+                                                    SgUctCount &rootMoveCount)
 {
     SG_UNUSED(value);
     SG_UNUSED(earlyAbort);
