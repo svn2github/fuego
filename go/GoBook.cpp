@@ -262,10 +262,13 @@ void GoBook::ParseLine(const string& line, GoBoard& tempBoard)
     in >> size;
     if (size < 1)
         ThrowError("Invalid size");
-    if (size > SG_MAX_SIZE && ! m_warningMaxSizeShown)
+    if (size > SG_MAX_SIZE)
     {
-        SgDebug() << "GoBook::ParseLine: Ignoring size=" << size << '\n';
-        m_warningMaxSizeShown = true;
+        if ( ! m_warningMaxSizeShown)
+        {
+            SgDebug() << "GoBook::ParseLine: Ignoring size=" << size << '\n';
+            m_warningMaxSizeShown = true;
+        }
         return;
     }
     vector<SgPoint> variation = ReadPoints(in);
