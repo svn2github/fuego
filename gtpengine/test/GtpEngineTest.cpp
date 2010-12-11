@@ -38,6 +38,13 @@ BOOST_AUTO_TEST_CASE(GtpCommandTest_Arg)
         BOOST_CHECK_THROW(cmd.Arg<size_t>(1), GtpFailure);
         BOOST_CHECK_THROW(cmd.Arg<size_t>(2), GtpFailure);
     }
+    {
+        BOOST_CHECK(! GtpCommand("command 0").Arg<bool>(0));
+        BOOST_CHECK(GtpCommand("command 1").Arg<bool>(0));
+        BOOST_CHECK_THROW(GtpCommand("command 2").Arg<bool>(0), GtpFailure);
+        BOOST_CHECK_THROW(GtpCommand("command foo").Arg<bool>(0), GtpFailure);
+        BOOST_CHECK_THROW(GtpCommand("command").Arg<bool>(0), GtpFailure);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(GtpCommandTest_ArgMin)
@@ -66,15 +73,6 @@ BOOST_AUTO_TEST_CASE(GtpCommandTest_ArgToLower)
 {
     GtpCommand cmd("command cAsE");
     BOOST_CHECK_EQUAL(cmd.ArgToLower(0), "case");
-}
-
-BOOST_AUTO_TEST_CASE(GtpCommandTest_BoolArg)
-{
-    BOOST_CHECK(! GtpCommand("command 0").BoolArg(0));
-    BOOST_CHECK(GtpCommand("command 1").BoolArg(0));
-    BOOST_CHECK_THROW(GtpCommand("command 2").BoolArg(0), GtpFailure);
-    BOOST_CHECK_THROW(GtpCommand("command foo").BoolArg(0), GtpFailure);
-    BOOST_CHECK_THROW(GtpCommand("command").BoolArg(0), GtpFailure);
 }
 
 BOOST_AUTO_TEST_CASE(GtpCommandTest_CheckNuArg0)

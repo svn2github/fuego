@@ -479,12 +479,7 @@ string GtpCommand::ArgToLower(std::size_t number) const
 
 bool GtpCommand::BoolArg(std::size_t number) const
 {
-    string value = Arg(number);
-    if (value == "1")
-        return true;
-    if (value == "0")
-        return false;
-    throw GtpFailure() <<  "argument " << (number + 1) << " must be 0 or 1";
+    return Arg<bool>(number);
 }
 
 void GtpCommand::CheckNuArg(std::size_t number) const

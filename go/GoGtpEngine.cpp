@@ -737,9 +737,9 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "accept_illegal")
-            m_acceptIllegal = cmd.BoolArg(1);
+            m_acceptIllegal = cmd.Arg<bool>(1);
         else if (name == "debug_to_comment")
-            m_debugToComment = cmd.BoolArg(1);
+            m_debugToComment = cmd.Arg<bool>(1);
         else if (name == "auto_save")
         {
             string prefix = cmd.RemainingLine(0);
@@ -799,28 +799,28 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
         string name = cmd.Arg(0);
         if (name == "allow_suicide")
         {
-            r.SetAllowSuicide(cmd.BoolArg(1));
-            m_defaultRules.SetAllowSuicide(cmd.BoolArg(1));
+            r.SetAllowSuicide(cmd.Arg<bool>(1));
+            m_defaultRules.SetAllowSuicide(cmd.Arg<bool>(1));
         }
         else if (name == "capture_dead")
         {
-            r.SetCaptureDead(cmd.BoolArg(1));
-            m_defaultRules.SetCaptureDead(cmd.BoolArg(1));
+            r.SetCaptureDead(cmd.Arg<bool>(1));
+            m_defaultRules.SetCaptureDead(cmd.Arg<bool>(1));
         }
         else if (name == "extra_handicap_komi")
         {
-            r.SetExtraHandicapKomi(cmd.BoolArg(1));
-            m_defaultRules.SetExtraHandicapKomi(cmd.BoolArg(1));
+            r.SetExtraHandicapKomi(cmd.Arg<bool>(1));
+            m_defaultRules.SetExtraHandicapKomi(cmd.Arg<bool>(1));
         }
         else if (name == "japanese_scoring")
         {
-            r.SetJapaneseScoring(cmd.BoolArg(1));
-            m_defaultRules.SetJapaneseScoring(cmd.BoolArg(1));
+            r.SetJapaneseScoring(cmd.Arg<bool>(1));
+            m_defaultRules.SetJapaneseScoring(cmd.Arg<bool>(1));
         }
         else if (name == "two_passes_end_game")
         {
-            r.SetTwoPassesEndGame(cmd.BoolArg(1));
-            m_defaultRules.SetTwoPassesEndGame(cmd.BoolArg(1));
+            r.SetTwoPassesEndGame(cmd.Arg<bool>(1));
+            m_defaultRules.SetTwoPassesEndGame(cmd.Arg<bool>(1));
         }
         else if (name == "ko_rule")
         {

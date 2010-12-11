@@ -472,7 +472,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
         else if (name == "num_games_per_sort")
             m_bookBuilder.SetNumGamesPerSort(cmd.ArgMin<size_t>(1, 1));
         else if (name == "use_widening")
-            m_bookBuilder.SetUseWidening(cmd.BoolArg(1));
+            m_bookBuilder.SetUseWidening(cmd.Arg<bool>(1));
         else if (name == "expand_width")
             m_bookBuilder.SetExpandWidth(cmd.ArgMin<int>(1, 1));
         else if (name == "expand_threshold")

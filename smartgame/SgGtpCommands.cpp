@@ -255,7 +255,7 @@ void SgGtpCommands::CmdSetRandomSeed(GtpCommand& cmd)
 /** Switch debug logging on/off. */
 void SgGtpCommands::CmdQuiet(GtpCommand& cmd)
 {
-    if (cmd.BoolArg(0))
+    if (cmd.Arg<bool>())
         SgDebugToNull();
     else
         SgSwapDebugStr(&cerr);

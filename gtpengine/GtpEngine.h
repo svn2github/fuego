@@ -250,13 +250,6 @@ public:
     template<typename T>
     T ArgMinMax(std::size_t i, const T& min, const T& max) const;
 
-    /** Get integer argument converted boolean.
-        @param number Argument index starting with 0
-        @return false, if argument is 0, true, if 1
-        @throws GtpFailure If no such argument, or argument has other value
-    */
-    bool BoolArg(std::size_t number) const;
-
     /** Check that command has no arguments.
         @throws GtpFailure If command has arguments
     */
@@ -336,6 +329,11 @@ public:
         Will be removed in the future.
     */
     // @{
+
+    /** Deprecated
+        @deprecated Use Arg<bool>() instead
+    */
+    bool BoolArg(std::size_t number) const;
 
     /** Deprecated
         @deprecated Use Arg<double>() instead

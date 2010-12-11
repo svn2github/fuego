@@ -391,11 +391,11 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "live_gfx")
-            s.SetGlobalSearchLiveGfx(cmd.BoolArg(1));
+            s.SetGlobalSearchLiveGfx(cmd.Arg<bool>(1));
         else if (name == "mercy_rule")
-            p.m_mercyRule = cmd.BoolArg(1);
+            p.m_mercyRule = cmd.Arg<bool>(1);
         else if (name == "territory_statistics")
-            p.m_territoryStatistics = cmd.BoolArg(1);
+            p.m_territoryStatistics = cmd.Arg<bool>(1);
         else if (name == "length_modification")
             p.m_lengthModification = cmd.Arg<SgUctEval>(1);
         else if (name == "score_modification")
@@ -447,19 +447,19 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "auto_param")
-            p.SetAutoParam(cmd.BoolArg(1));
+            p.SetAutoParam(cmd.Arg<bool>(1));
         else if (name == "early_pass")
-            p.SetEarlyPass(cmd.BoolArg(1));
+            p.SetEarlyPass(cmd.Arg<bool>(1));
         else if (name == "forced_opening_moves")
-            p.SetForcedOpeningMoves(cmd.BoolArg(1));
+            p.SetForcedOpeningMoves(cmd.Arg<bool>(1));
         else if (name == "ignore_clock")
-            p.SetIgnoreClock(cmd.BoolArg(1));
+            p.SetIgnoreClock(cmd.Arg<bool>(1));
         else if (name == "ponder")
-            p.SetEnablePonder(cmd.BoolArg(1));
+            p.SetEnablePonder(cmd.Arg<bool>(1));
         else if (name == "reuse_subtree")
-            p.SetReuseSubtree(cmd.BoolArg(1));
+            p.SetReuseSubtree(cmd.Arg<bool>(1));
         else if (name == "use_root_filter")
-            p.SetUseRootFilter(cmd.BoolArg(1));
+            p.SetUseRootFilter(cmd.Arg<bool>(1));
         else if (name == "max_games")
             p.SetMaxGames(cmd.ArgMin<SgUctCount>(1, SgUctCount(1)));
         else if (name == "resign_min_games")
@@ -502,9 +502,9 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "nakade_heuristic")
-            p.m_useNakadeHeuristic = cmd.BoolArg(1);
+            p.m_useNakadeHeuristic = cmd.Arg<bool>(1);
         else if (name == "statistics_enabled")
-            p.m_statisticsEnabled = cmd.BoolArg(1);
+            p.m_statisticsEnabled = cmd.Arg<bool>(1);
         else if (name == "fillboard_tries")
             p.m_fillboardTries = cmd.Arg<int>(1);
         else
@@ -537,7 +537,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "check_ladders")
-            f->SetCheckLadders(cmd.BoolArg(1));
+            f->SetCheckLadders(cmd.Arg<bool>(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -609,23 +609,23 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     {
         string name = cmd.Arg(0);
         if (name == "keep_games")
-            s.SetKeepGames(cmd.BoolArg(1));
+            s.SetKeepGames(cmd.Arg<bool>(1));
         else if (name == "knowledge_threshold")
             s.SetKnowledgeThreshold(KnowledgeThresholdFromString(cmd.Arg(1)));
         else if (name == "lock_free")
-            s.SetLockFree(cmd.BoolArg(1));
+            s.SetLockFree(cmd.Arg<bool>(1));
         else if (name == "log_games")
-            s.SetLogGames(cmd.BoolArg(1));
+            s.SetLogGames(cmd.Arg<bool>(1));
         else if (name == "prune_full_tree")
-            s.SetPruneFullTree(cmd.BoolArg(1));
+            s.SetPruneFullTree(cmd.Arg<bool>(1));
         else if (name == "randomize_rave_frequency")
             s.SetRandomizeRaveFrequency(cmd.ArgMin<int>(1, 0));
         else if (name == "rave")
-            s.SetRave(cmd.BoolArg(1));
+            s.SetRave(cmd.Arg<bool>(1));
         else if (name == "weight_rave_updates")
-            s.SetWeightRaveUpdates(cmd.BoolArg(1));
+            s.SetWeightRaveUpdates(cmd.Arg<bool>(1));
         else if (name == "virtual_loss")
-            s.SetVirtualLoss(cmd.BoolArg(1));
+            s.SetVirtualLoss(cmd.Arg<bool>(1));
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "expand_threshold")
