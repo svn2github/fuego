@@ -21,7 +21,13 @@ class SgUctThreadState;
 
 class SgUctGameInfo;
 
-/** Interface for mpi synchronizers. */
+/** Interface for mpi synchronizers.
+    @note This class and related functions are needed for the way the cluster
+    version of Fuego, BlueFuego, is currently implemented. The design is under
+    dispute, because it causes intrusive changes to other classes and breaks
+    encapsulation of their implementation.
+    See http://sourceforge.net/apps/trac/fuego/ticket/32 for details.
+*/
 class SgMpiSynchronizer 
 {
 public:
