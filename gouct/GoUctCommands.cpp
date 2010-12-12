@@ -153,7 +153,7 @@ std::vector<SgUctValue> KnowledgeThresholdFromString(const std::string& val)
     std::istringstream is(val);
     std::size_t t;
     while (is >> t)
-        v.push_back(t);
+        v.push_back(SgUctValue(t));
     if (v.size() == 1 && v[0] == 0)
         v.clear();
     return v;
@@ -211,13 +211,13 @@ void GoUctCommands::CmdBounds(GtpCommand& cmd)
     const SgUctTree& tree = search.Tree();
     const SgUctNode& root = tree.Root();
     bool hasPass = false;
-    float passBound = 0;
+    SgUctValue passBound = 0;
     cmd << "LABEL";
     for (SgUctChildIterator it(tree, root); it; ++it)
     {
         const SgUctNode& child = *it;
         SgPoint move = child.Move();
-        float bound = search.GetBound(search.Rave(), root, child);
+        SgUctValue bound = search.GetBound(search.Rave(), root, child);
         if (move == SG_PASS)
         {
             hasPass = true;
@@ -708,9 +708,9 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
-    size_t count = 0;
+    SgUctValue count = 0;
     if (cmd.NuArg() == 1)
-        count = cmd.ArgMin<size_t>(0, 0);
+        count = SgUctValue(cmd.ArgMin<size_t>(0, 0));
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
@@ -722,12 +722,11 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     for (size_t i = 0; i < moves.size(); ++i) 
     {
         SgMove move = moves[i].m_move;
-        float value = SgUctSearch::InverseEval(moves[i].m_value);
-        //float value = moves[i].m_value;
+        SgUctValue value = SgUctSearch::InverseEval(moves[i].m_value);
         SgUctValue count = moves[i].m_count;
         if (count > 0)
         {
-            float scaledValue = (value * 2 - 1);
+            SgUctValue scaledValue = (value * 2 - 1);
             if (m_bd.ToPlay() != SG_BLACK)
                 scaledValue *= -1;
             cmd << ' ' << SgWritePoint(move) << ' ' << scaledValue;
@@ -930,7 +929,7 @@ void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
     cmd.CheckArgNone();
     SgPointArray<SgUctStatistics> territoryStatistics
         = ThreadState(0).m_territoryStatistics;
-    SgPointArray<float> array;
+    SgPointArray<SgUctValue> array;
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
         if (territoryStatistics[*it].Count() == 0)
@@ -938,7 +937,7 @@ void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
         array[*it] = territoryStatistics[*it].Mean() * 2 - 1;
     }
     cmd << '\n'
-        << SgWritePointArrayFloat<float>(array, m_bd.Size(), true, 3);
+        << SgWritePointArrayFloat<SgUctValue>(array, m_bd.Size(), true, 3);
 }
 
 /** Return value of root node from last search.
@@ -1016,7 +1015,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
         bool isDead = safe[SgOppBW(c)].Contains(*it);
         if (! isDead && ! safe[c].Contains(*it))
         {
-            SgStatistics<float,int> averageStatus;
+            SgStatistics<SgUctValue,int> averageStatus;
             for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
             {
                 if (territoryStatistics[*it2].Count() == 0)

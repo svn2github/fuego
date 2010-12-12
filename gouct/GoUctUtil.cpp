@@ -156,9 +156,9 @@ void GoUctUtil::GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,
             const SgUctNode& child = *it;
             if (! child.HasMean())
                 continue;
-            float value = SgUctSearch::InverseEval(child.Mean());
+            SgUctValue value = SgUctSearch::InverseEval(child.Mean());
             // Scale to [-1,+1], black positive
-            double influence = value * 2 - 1;
+            SgUctValue influence = value * 2 - 1;
             if (toPlay == SG_WHITE)
                 influence *= -1;
             SgPoint move = child.Move();

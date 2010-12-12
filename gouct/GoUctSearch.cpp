@@ -300,8 +300,8 @@ SgPoint GoUctSearchUtil::TrompTaylorPassCheck(SgPoint move,
         trompTaylorScore *= -1;
     const SgUctTree& tree = search.Tree();
     const SgUctNode& root = tree.Root();
-    float value = root.Mean();
-    float trompTaylorWinValue = (trompTaylorScore > 0 ? 1 : 0);
+    SgUctValue value = root.Mean();
+    SgUctValue trompTaylorWinValue = (trompTaylorScore > 0 ? 1 : 0);
     if (value < trompTaylorWinValue)
         return move;
     SgDebug() << "GoUctSearchUtil::TrompTaylorPassCheck: bad pass move value="

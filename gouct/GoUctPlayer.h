@@ -629,7 +629,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
         const float threshold = 0.2f; // Safety threshold
         for (GoBoard::Iterator it(bd); it; ++it)
         {
-            float mean = territory[*it].Mean();
+            SgUctValue mean = territory[*it].Mean();
             if (mean > threshold && mean < 1 - threshold)
             {
                 // Check if neutral point
@@ -638,7 +638,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
                 for (SgNb4Iterator it2(*it); it2; ++it2)
                     if (! bd.IsBorder(*it2))
                     {
-                        float mean = territory[*it2].Mean();
+                        SgUctValue mean = territory[*it2].Mean();
                         if (mean < threshold)
                             isSafeToPlayAdj = true;
                         if (mean > 1 - threshold)

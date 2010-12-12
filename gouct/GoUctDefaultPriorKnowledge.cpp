@@ -95,27 +95,27 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
     if (last != SG_NULLMOVE && last != SG_PASS)
     {
         SgPointArray<int> dist = GoBoardUtil::CfgDistance(m_bd, last, 3);
-        const size_t count = (isSmallBoard ? 4 : 5);
+        const SgUctValue count = (isSmallBoard ? 4 : 5);
         for (GoPointList::Iterator it(emptyPoints); it; ++it)
         {
             const SgPoint p = *it;
             switch (dist[p])
             {
             case 1:
-                Add(p, 1.0f, count);
+                Add(p, SgUctValue(1.0), count);
                 break;
             case 2:
-                Add(p, 0.6f, count);
+                Add(p, SgUctValue(0.6), count);
                 break;
             case 3:
-                Add(p, 0.6f, count);
+                Add(p, SgUctValue(0.6), count);
                 break;
             default:
-                Add(p, 0.1f, count);
+                Add(p, SgUctValue(0.1), count);
                 break;
             }
         }
-        Add(SG_PASS, 0.1f, count);
+        Add(SG_PASS, SgUctValue(0.1), count);
     }
 }
 
