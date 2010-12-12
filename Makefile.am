@@ -17,6 +17,7 @@ unittestmain
 # Maybe use ax_prog_doxygen.m4 from the autoconf archive?
 EXTRA_DIST = \
 TODO \
+setup-build.sh \
 doc/doxygen/Makefile \
 doc/doxygen/fuegomain/Makefile \
 doc/doxygen/fuegomain/doxygen.cfg \
