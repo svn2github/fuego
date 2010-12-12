@@ -215,6 +215,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_lockFree(false),
       m_weightRaveUpdates(true),
       m_pruneFullTree(true),
+      m_checkFloatPrecision(true),
       m_numberThreads(1),
       m_numberPlayouts(1),
       m_maxNodes(4000000),
@@ -260,26 +261,32 @@ SgUctValue SgUctSearch::GamesPlayed() const
 
 bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
 {
-    SgUctValue gamesPlayed = GamesPlayed();
     if (SgUserAbort())
     {
         Debug(state, "SgUctSearch: abort flag");
         return true;
     }
-    const bool isEarlyAbort = CheckEarlyAbort();
+    const SgUctNode& root = m_tree.Root();
+    if (! SgUctValueUtil::IsPrecise(root.MoveCount()) && m_checkFloatPrecision)
+    {
+        Debug(state, "SgUctSearch: floating point type precision reached");
+        return true;
+    }
+    SgUctValue gamesPlayed = GamesPlayed();
     if (gamesPlayed >= m_maxGames)
     {
         Debug(state, "SgUctSearch: max games reached");
         return true;
     }
-    if (m_tree.Root().IsProven())
+    if (root.IsProven())
     {
-        if (m_tree.Root().IsProvenWin())
+        if (root.IsProvenWin())
             Debug(state, "SgUctSearch: root is proven win!");
         else 
             Debug(state, "SgUctSearch: root is proven loss!");
         return true;
     }
+    const bool isEarlyAbort = CheckEarlyAbort();
     if (   isEarlyAbort
         && m_earlyAbort->m_reductionFactor * gamesPlayed >= m_maxGames
        )
@@ -635,10 +642,6 @@ string SgUctSearch::LastGameSummaryLine() const
 
 float SgUctSearch::Log(float x) const
 {
-    // TODO: can we speed up the computation of the logarithm by taking
-    // advantage of the fact that the argument is an integer type?
-    // Maybe round result to integer (then it is simple the position of the
-    // highest bit
 #if SG_UCTFASTLOG
     return m_fastLog.Log(x);
 #else

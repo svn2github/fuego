@@ -876,6 +876,14 @@ public:
     /** See PruneFullTree() */
     void SetPruneMinCount(SgUctValue n);
 
+    /** Terminate the search if the counts can no longer be represented
+        precisely by SgUctValue.
+        Default is true.
+    */
+    bool CheckFloatPrecision() const;
+
+    /** See CheckFloatPrecision() */
+    void SetCheckFloatPrecision(bool enable);
 
     void SetMpiSynchronizer(const SgMpiSynchronizerHandle &synchronizerHandle);
 
@@ -1025,6 +1033,9 @@ private:
 
     /** See PruneFullTree() */
     bool m_pruneFullTree;
+
+    /** See CheckFloatPrecision() */
+    bool m_checkFloatPrecision;
 
     /** See NumberThreads() */
     std::size_t m_numberThreads;
@@ -1194,6 +1205,11 @@ inline float SgUctSearch::BiasTermConstant() const
     return m_biasTermConstant;
 }
 
+inline bool SgUctSearch::CheckFloatPrecision() const
+{
+    return m_checkFloatPrecision;
+}
+
 inline SgUctValue SgUctSearch::ExpandThreshold() const
 {
     return m_expandThreshold;
@@ -1292,6 +1308,11 @@ inline float SgUctSearch::RaveWeightFinal() const
 inline void SgUctSearch::SetBiasTermConstant(float biasTermConstant)
 {
     m_biasTermConstant = biasTermConstant;
+}
+
+inline void SgUctSearch::SetCheckFloatPrecision(bool enable)
+{
+    m_checkFloatPrecision = enable;
 }
 
 inline void SgUctSearch::SetExpandThreshold(SgUctValue expandThreshold)

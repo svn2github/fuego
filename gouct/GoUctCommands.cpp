@@ -549,6 +549,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
+    @arg @c check_float_precision See GoUctSearch::CheckFloatPrecision
     @arg @c keep_games See GoUctSearch::KeepGames
     @arg @c lock_free See SgUctSearch::LockFree
     @arg @c log_games See SgUctSearch::LogGames
@@ -577,7 +578,9 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     {
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
-        cmd << "[bool] keep_games " << s.KeepGames() << '\n'
+        cmd << "[bool] check_float_precision " << s.CheckFloatPrecision()
+            << '\n'
+            << "[bool] keep_games " << s.KeepGames() << '\n'
             << "[bool] lock_free " << s.LockFree() << '\n'
             << "[bool] log_games " << s.LogGames() << '\n'
             << "[bool] prune_full_tree " << s.PruneFullTree() << '\n'
@@ -608,7 +611,9 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "keep_games")
+        if (name == "check_float_precision")
+            s.SetCheckFloatPrecision(cmd.Arg<bool>(1));
+        else if (name == "keep_games")
             s.SetKeepGames(cmd.Arg<bool>(1));
         else if (name == "knowledge_threshold")
             s.SetKnowledgeThreshold(KnowledgeThresholdFromString(cmd.Arg(1)));

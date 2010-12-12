@@ -18,7 +18,7 @@
     The default type is @c double, but it is possible to use @c float to reduce
     the node size and to get some performance gains (especially on 32-bit
     systems). However, using @c float sets a practical limit on the number of
-    simulations before the count and mean values go into saturation. This
+    simulations before the count and mean values go into "saturation". This
     maximum is given by 2^d-1 with d being the digits in the mantissa (=23 for
     IEEE 754 float's). The search will terminate when this number is
     reached.
@@ -36,6 +36,29 @@ typedef SgStatisticsBase<SgUctValue,SgUctValue> SgUctStatistics;
 
 typedef SgStatisticsBase<volatile SgUctValue,volatile SgUctValue>
   SgUctStatisticsVolatile;
+
+//----------------------------------------------------------------------------
+
+namespace SgUctValueUtil
+{
+
+/** Check if floating point value is a precise representation of a positive
+    integer.
+    When SgUctValue is used for counts, the search should abort when the
+    value is no longer precise, because incrementing it further will not
+    change its value anymore.
+    @return @c true if value is not negative and less or equal
+    <tt>(size_t(1) << numeric_limits<SgUctValue>::digits) - 1)</tt>
+*/
+inline bool IsPrecise(SgUctValue val)
+{
+    BOOST_STATIC_ASSERT(std::numeric_limits<SgUctValue>::radix == 2);
+    const int digits = std::numeric_limits<SgUctValue>::digits;
+    const SgUctValue max = SgUctValue((std::size_t(1) << digits) - 1);
+    return val >= 0 && val <= max;
+}
+
+}
 
 //----------------------------------------------------------------------------
 
