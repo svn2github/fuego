@@ -202,8 +202,8 @@ void GoUctSearch::OnSearchIteration(SgUctValue gameNumber, int threadId,
     if (m_liveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
         && gameNumber > m_nextLiveGfx)
     {
-	m_nextLiveGfx = gameNumber + m_liveGfxInterval;
-	DisplayGfx();
+        m_nextLiveGfx = gameNumber + m_liveGfxInterval;
+        DisplayGfx();
     }
     if (! LockFree() && m_root != 0)
         AppendGame(m_root, gameNumber, threadId, m_toPlay, info);
@@ -215,18 +215,18 @@ void GoUctSearch::DisplayGfx()
     switch (m_liveGfx)
     {
     case GOUCT_LIVEGFX_COUNTS:
-	GoUctUtil::GfxBestMove(*this, m_toPlay, SgDebug());
-	GoUctUtil::GfxMoveValues(*this, m_toPlay, SgDebug());
-	GoUctUtil::GfxCounts(Tree(), SgDebug());
-	GoUctUtil::GfxStatus(*this, SgDebug());
-	break;
+        GoUctUtil::GfxBestMove(*this, m_toPlay, SgDebug());
+        GoUctUtil::GfxMoveValues(*this, m_toPlay, SgDebug());
+        GoUctUtil::GfxCounts(Tree(), SgDebug());
+        GoUctUtil::GfxStatus(*this, SgDebug());
+        break;
     case GOUCT_LIVEGFX_SEQUENCE:
-	GoUctUtil::GfxSequence(*this, m_toPlay, SgDebug());
-	GoUctUtil::GfxStatus(*this, SgDebug());
-	break;
+        GoUctUtil::GfxSequence(*this, m_toPlay, SgDebug());
+        GoUctUtil::GfxStatus(*this, SgDebug());
+        break;
     case GOUCT_LIVEGFX_NONE:
-	SG_ASSERT(false); // Should only be called when LiveGfx is enabled
-	break;
+        SG_ASSERT(false); // Should only be called when LiveGfx is enabled
+        break;
     }
     SgDebug() << '\n';
 }

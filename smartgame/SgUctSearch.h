@@ -655,7 +655,7 @@ public:
         @param child The node corresponding to the move
     */
     SgUctValue GetBound(bool useRave, const SgUctNode& node, 
-			 const SgUctNode& child) const;
+                        const SgUctNode& child) const;
 
     // @} // name
 
@@ -1157,8 +1157,8 @@ private:
     void CreateChildren(SgUctThreadState& state, const SgUctNode& node,
                         bool deleteChildTrees);
 
-    SgUctValue GetBound(bool useRave, float logPosCount, 
-			 const SgUctNode& child) const;
+    SgUctValue GetBound(bool useRave, float logPosCount,
+                        const SgUctNode& child) const;
 
     SgUctValue GetValueEstimate(bool useRave, const SgUctNode& child) const;
 

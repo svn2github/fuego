@@ -294,7 +294,7 @@ SgUctValue GoUctGlobalSearchState<POLICY>::Evaluate()
 template<class POLICY>
 template<class BOARD>
 SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
-							float komi)
+                                                         float komi)
 {
     SgUctValue score;
     SgPointArray<SgEmptyBlackWhite> scoreBoard;
@@ -310,8 +310,10 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
     {
         if (m_param.m_mercyRule && m_mercyRuleTriggered)
             return m_mercyRuleResult;
-        score = (SgUctValue)GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
-							       false, scoreBoardPtr);
+        score =
+            SgUctValue(GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
+                                                           false,
+                                                           scoreBoardPtr));
     }
     if (m_param.m_territoryStatistics)
         for (typename BOARD::Iterator it(bd); it; ++it)
@@ -330,9 +332,8 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
     SgUctValue lengthMod = GameLength() * m_param.m_lengthModification;
-    if (lengthMod > 0.5) {
-	lengthMod = 0.5;
-    }
+    if (lengthMod > 0.5)
+        lengthMod = 0.5;
     if (score > std::numeric_limits<SgUctValue>::epsilon())
         return
             (1 - m_param.m_scoreModification)
