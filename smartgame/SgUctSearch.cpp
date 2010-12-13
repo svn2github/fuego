@@ -524,7 +524,7 @@ SgUctValue SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
     return GetBound(useRave, Log(posCount), child);
 }
 
-SgUctValue SgUctSearch::GetBound(bool useRave, float logPosCount,
+SgUctValue SgUctSearch::GetBound(bool useRave, SgUctValue logPosCount,
                                  const SgUctNode& child) const
 {
     SgUctValue value;
@@ -640,10 +640,10 @@ string SgUctSearch::LastGameSummaryLine() const
     return SummaryLine(LastGameInfo());
 }
 
-float SgUctSearch::Log(float x) const
+SgUctValue SgUctSearch::Log(SgUctValue x) const
 {
 #if SG_UCTFASTLOG
-    return m_fastLog.Log(x);
+    return SgUctValue(m_fastLog.Log(float(x)));
 #else
     return log(x);
 #endif
@@ -823,7 +823,8 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
 }
 
 /** Backs up proven information. Last node of nodes is the newly
-    proven node. */
+    proven node.
+*/
 void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
 {
     if (nodes.size() <= 1) 
@@ -858,7 +859,7 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
     @param[out] isTerminal Was the sequence terminated because of a real
     terminal position (GenerateAllMoves() returned an empty list)?
     @return @c false, if game was aborted due to maximum length
- */
+*/
 bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
 {
     vector<SgMove>& sequence = state.m_gameInfo.m_inTreeSequence;
@@ -1281,7 +1282,7 @@ void SgUctSearch::UpdateCheckTimeInterval(double time)
         return;
     // Dynamically update m_checkTimeInterval (see comment at definition of
     // m_checkTimeInterval)
-    float wantedTimeDiff = (m_maxTime > 1 ? 0.1 : 0.1 * m_maxTime);
+    double wantedTimeDiff = (m_maxTime > 1 ? 0.1 : 0.1 * m_maxTime);
     if (time < wantedTimeDiff / 10)
     {
         // Computing games per second might be unreliable for small times
@@ -1290,9 +1291,8 @@ void SgUctSearch::UpdateCheckTimeInterval(double time)
     }
     m_statistics.m_gamesPerSecond = GamesPlayed() / time;
     double gamesPerSecondPerThread =
-        m_statistics.m_gamesPerSecond / m_numberThreads;
-    m_checkTimeInterval =
-        static_cast<size_t>(wantedTimeDiff * gamesPerSecondPerThread);
+        m_statistics.m_gamesPerSecond / double(m_numberThreads);
+    m_checkTimeInterval = SgUctValue(wantedTimeDiff * gamesPerSecondPerThread);
     if (m_checkTimeInterval == 0)
         m_checkTimeInterval = 1;
 }
@@ -1378,7 +1378,7 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state,
     const SgUctNode* node = state.m_gameInfo.m_nodes[i];
     if (! node->HasChildren())
         return;
-    std::size_t len = state.m_gameInfo.m_sequence[playout].size();
+    size_t len = state.m_gameInfo.m_sequence[playout].size();
     for (SgUctChildIterator it(m_tree, *node); it; ++it)
     {
         const SgUctNode& child = *it;
@@ -1391,7 +1391,7 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state,
             continue;
         SgUctValue weight;
         if (m_weightRaveUpdates)
-            weight = 2 - static_cast<SgUctValue>(first - i) / (len - i);
+            weight = 2 - SgUctValue(first - i) / SgUctValue(len - i);
         else
             weight = 1;
         m_tree.AddRaveValue(child, eval, weight);
@@ -1415,15 +1415,16 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     SgUctValue eval = 0;
     for (size_t i = 0; i < m_numberPlayouts; ++i)
         eval += info.m_eval[i];
-    eval /= m_numberPlayouts;
+    eval /= SgUctValue(m_numberPlayouts);
     SgUctValue inverseEval = InverseEval(eval);
     const vector<const SgUctNode*>& nodes = info.m_nodes;
-
+    SgUctValue count = SgUctValue(m_numberPlayouts);
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode& node = *nodes[i];
         const SgUctNode* father = (i > 0 ? nodes[i - 1] : 0);
-        m_tree.AddGameResults(node, father, i % 2 == 0 ? eval : inverseEval, m_numberPlayouts);
+        m_tree.AddGameResults(node, father, i % 2 == 0 ? eval : inverseEval,
+                              count);
     }
 }
 

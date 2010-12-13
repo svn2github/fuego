@@ -1065,6 +1065,7 @@ private:
     SgUctValue m_numberGames;
 
     SgUctValue m_startRootMoveCount;
+
     /** Interval in number of games in which to check time abort.
         Avoids that the potentially expensive SgTime::Get() is called after
         every game. The interval is updated dynamically according to the
@@ -1072,7 +1073,8 @@ private:
         (if the total search time is at least one second, otherwise ten times
         per total maximum search time)
     */
-    std::size_t m_checkTimeInterval;
+    SgUctValue m_checkTimeInterval;
+
     volatile SgUctValue m_nextCheckTime;
 
     double m_lastScoreDisplayTime;
@@ -1157,14 +1159,14 @@ private:
     void CreateChildren(SgUctThreadState& state, const SgUctNode& node,
                         bool deleteChildTrees);
 
-    SgUctValue GetBound(bool useRave, float logPosCount,
+    SgUctValue GetBound(bool useRave, SgUctValue logPosCount,
                         const SgUctNode& child) const;
 
     SgUctValue GetValueEstimate(bool useRave, const SgUctNode& child) const;
 
     SgUctValue GetValueEstimateRave(const SgUctNode& child) const;
 
-    float Log(float x) const;
+    SgUctValue Log(SgUctValue x) const;
 
     bool NeedToComputeKnowledge(const SgUctNode* current);
 
