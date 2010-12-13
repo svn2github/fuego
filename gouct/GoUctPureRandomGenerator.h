@@ -216,7 +216,7 @@ inline void GoUctPureRandomGenerator<BOARD>::OnPlay()
         // that generated point is still empty
         for (GoPointList::Iterator it(capturedStones); it; ++it)
             Insert(*it);
-        m_nuEmptyFloat += capturedStones.Length();
+        m_nuEmptyFloat += float(capturedStones.Length());
     }
     CheckConsistency();
 }

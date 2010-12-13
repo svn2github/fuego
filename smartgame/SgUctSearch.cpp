@@ -1252,7 +1252,7 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
     m_nextCheckTime = (SgUctValue)m_checkTimeInterval;
     m_startRootMoveCount = m_tree.Root().MoveCount();
 
-    for (size_t i = 0; i < m_threads.size(); ++i)
+    for (unsigned int i = 0; i < m_threads.size(); ++i)
         ThreadState(i).StartSearch();
 }
 

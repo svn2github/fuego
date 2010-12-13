@@ -64,7 +64,7 @@ public:
 
         SgStatisticsExt<float,std::size_t> m_reuse;
 
-        SgStatisticsExt<float,std::size_t> m_gamesPerSecond;
+        SgStatisticsExt<double,std::size_t> m_gamesPerSecond;
 
         Statistics();
 

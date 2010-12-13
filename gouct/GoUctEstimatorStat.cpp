@@ -34,7 +34,8 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
         GoModBoard modBoard(search.Board());
         modBoard.Board().Play(p);
         vector<SgMove> sequence;
-        SgUctValue value = search.Search(trueValueMaxGames, maxTime, sequence);
+        SgUctValue value =
+            search.Search(SgUctValue(trueValueMaxGames), maxTime, sequence);
         trueValues[p] = SgUctSearch::InverseEstimate(value);
         modBoard.Board().Undo();
     }
