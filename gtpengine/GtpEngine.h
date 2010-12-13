@@ -442,8 +442,7 @@ T GtpCommand::Arg(std::size_t i) const
     in >> result;
     if (! in)
         throw GtpFailure() << "argument " << (i + 1) << " (" << s
-                           << ") must be of type \""
-                           << typeid(T).name() << "\"";
+                           << ") must be of type " << typeid(T).name();
     return result;
 }
 
@@ -460,7 +459,7 @@ T GtpCommand::ArgMin(std::size_t i, const T& min) const
     T result = Arg<T>(i);
     if (result < min)
         throw GtpFailure() << "argument " << (i + 1) << " (" << result
-                           << ") must be greater or equal" << min;
+                           << ") must be greater or equal " << min;
     return result;
 }
 
@@ -470,7 +469,7 @@ T GtpCommand::ArgMinMax(std::size_t i, const T& min, const T& max) const
     T result = ArgMin(i, min);
     if (result > max)
         throw GtpFailure() << "argument " << (i + 1) << " (" << result
-                           << ") must be less or equal" << max;
+                           << ") must be less or equal " << max;
     return result;
 }
 

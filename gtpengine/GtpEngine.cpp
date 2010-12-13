@@ -458,7 +458,7 @@ std::size_t GtpCommand::Arg<std::size_t>(std::size_t i) const
     }
     if (fail)
         throw GtpFailure() << "argument " << (i + 1) << " (" << result
-                           << ") must be of type \"size_t\"";
+                           << ") must be of type size_t";
     return result;
 }
 
