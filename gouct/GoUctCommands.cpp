@@ -649,7 +649,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "move_select")
             s.SetMoveSelect(MoveSelectArg(cmd, 1));
         else if (name == "number_threads")
-            s.SetNumberThreads(cmd.ArgMin<size_t>(1, 1));
+            s.SetNumberThreads(cmd.ArgMin<unsigned int>(1, 1));
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.ArgMin<int>(1, 1));
         else if (name == "prune_min_count")
@@ -1058,7 +1058,7 @@ GoUctPlayerType& GoUctCommands::Player()
 }
 
 GoUctPlayoutPolicy<GoUctBoard>&
-GoUctCommands::Policy(std::size_t threadId)
+GoUctCommands::Policy(unsigned int threadId)
 {
     GoUctPlayoutPolicy<GoUctBoard>* policy =
         dynamic_cast<GoUctPlayoutPolicy<GoUctBoard>*>(
@@ -1128,7 +1128,7 @@ GoUctSearch& GoUctCommands::Search()
     yet created.
 */
 GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
-GoUctCommands::ThreadState(std::size_t threadId)
+GoUctCommands::ThreadState(unsigned int threadId)
 {
     GoUctSearch& search = Search();
     if (! search.ThreadsCreated())

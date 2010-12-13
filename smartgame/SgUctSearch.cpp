@@ -64,7 +64,7 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
 
 //----------------------------------------------------------------------------
 
-SgUctThreadState::SgUctThreadState(size_t threadId, int moveRange)
+SgUctThreadState::SgUctThreadState(unsigned int threadId, int moveRange)
     : m_threadId(threadId),
       m_isSearchInitialized(false),
       m_isTreeOutOfMem(false),
@@ -371,7 +371,7 @@ bool SgUctSearch::CheckEarlyAbort() const
 void SgUctSearch::CreateThreads()
 {
     DeleteThreads();
-    for (size_t i = 0; i < m_numberThreads; ++i)
+    for (unsigned int i = 0; i < m_numberThreads; ++i)
     {
         auto_ptr<SgUctThreadState> state(
                                       m_threadStateFactory->Create(i, *this));
@@ -415,7 +415,7 @@ void SgUctSearch::DeleteThreads()
 */
 void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node)
 {
-    size_t threadId = state.m_threadId;
+    unsigned int threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
         Debug(state, str(format("SgUctSearch: maximum tree size %1% reached")
@@ -655,7 +655,7 @@ void SgUctSearch::CreateChildren(SgUctThreadState& state,
                                  const SgUctNode& node,
                                  bool deleteChildTrees)
 {
-    size_t threadId = state.m_threadId;
+    unsigned int threadId = state.m_threadId;
     if (! m_tree.HasCapacity(threadId, state.m_moves.size()))
     {
         Debug(state, str(format("SgUctSearch: maximum tree size %1% reached")
@@ -731,7 +731,8 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
     SgDebug() << out.str() << endl;
 }
 
-void SgUctSearch::OnSearchIteration(SgUctValue gameNumber, int threadId,
+void SgUctSearch::OnSearchIteration(SgUctValue gameNumber,
+                                    unsigned int threadId,
                                     const SgUctGameInfo& info)
 {
     const int DISPLAY_INTERVAL = 5;
@@ -1188,7 +1189,7 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     return *node.FirstChild();
 }
 
-void SgUctSearch::SetNumberThreads(std::size_t n)
+void SgUctSearch::SetNumberThreads(unsigned int n)
 {
     SG_ASSERT(n >= 1);
     if (m_numberThreads == n)

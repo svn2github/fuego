@@ -285,7 +285,7 @@ class SgUctThreadState
 {
 public:
     /** Number of the thread between 0 and SgUctSearch::NumberThreads() - 1 */
-    const std::size_t m_threadId;
+    const unsigned int m_threadId;
 
     bool m_isSearchInitialized;
 
@@ -323,7 +323,7 @@ public:
      */
     int m_randomizeCounter;
 
-    SgUctThreadState(size_t threadId, int moveRange = 0);
+    SgUctThreadState(unsigned int threadId, int moveRange = 0);
 
     virtual ~SgUctThreadState();
 
@@ -435,7 +435,7 @@ class SgUctThreadStateFactory
 public:
     virtual ~SgUctThreadStateFactory();
 
-    virtual SgUctThreadState* Create(std::size_t threadId,
+    virtual SgUctThreadState* Create(unsigned int threadId,
                                      const SgUctSearch& search) = 0;
 };
 
@@ -554,7 +554,8 @@ public:
         case appropriately by using its own lock or disabling functionality
         that will not work without locking.
     */
-    virtual void OnSearchIteration(SgUctValue gameNumber, int threadId,
+    virtual void OnSearchIteration(SgUctValue gameNumber,
+                                   unsigned int threadId,
                                    const SgUctGameInfo& info);
 
     /** Hook function that will be called by StartSearch().
@@ -730,10 +731,10 @@ public:
     void SetMaxNodes(std::size_t maxNodes);
 
     /** The number of threads to use during the search. */
-    std::size_t NumberThreads() const;
+    unsigned int NumberThreads() const;
 
     /** See SetNumberThreads() */
-    void SetNumberThreads(std::size_t n);
+    void SetNumberThreads(unsigned int n);
 
     /** Lock-free usage of multi-threaded search.
         @ref sguctsearchlockfree
@@ -1038,7 +1039,7 @@ private:
     bool m_checkFloatPrecision;
 
     /** See NumberThreads() */
-    std::size_t m_numberThreads;
+    unsigned int m_numberThreads;
 
     /** See NumberPlayouts() */
     std::size_t m_numberPlayouts;
@@ -1262,7 +1263,7 @@ inline SgUctMoveSelect SgUctSearch::MoveSelect() const
     return m_moveSelect;
 }
 
-inline std::size_t SgUctSearch::NumberThreads() const
+inline unsigned int SgUctSearch::NumberThreads() const
 {
     return m_numberThreads;
 }

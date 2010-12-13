@@ -32,7 +32,7 @@ public:
         board that will be synchronized with the currently searched position
         in StartSearch()
     */
-    GoUctState(std::size_t threadId, const GoBoard& bd);
+    GoUctState(unsigned int threadId, const GoBoard& bd);
 
     /** @name Pure virtual functions of SgUctThreadState */
     // @{
@@ -178,7 +178,7 @@ public:
     /** @name Virtual functions of SgUctSearch */
     // @{
 
-    void OnSearchIteration(SgUctValue gameNumber, int threadId,
+    void OnSearchIteration(SgUctValue gameNumber, unsigned int threadId,
                            const SgUctGameInfo& info);
 
     void OnStartSearch();

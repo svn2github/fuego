@@ -75,7 +75,7 @@ class TestThreadState
     : public SgUctThreadState
 {
 public:
-    TestThreadState(size_t threadId, const vector<TestNode>& nodes);
+    TestThreadState(unsigned int threadId, const vector<TestNode>& nodes);
 
 
     /** @name Virtual functions of SgUctThreadState */
@@ -116,7 +116,7 @@ private:
     void TakeBack(size_t nuMoves);
 };
 
-TestThreadState::TestThreadState(size_t threadId,
+TestThreadState::TestThreadState(unsigned int threadId,
                                  const vector<TestNode>& nodes)
     : SgUctThreadState(threadId),
       m_currentNode(0),
@@ -256,7 +256,7 @@ class TestThreadStateFactory
 public:
     TestThreadStateFactory(const vector<TestNode>& nodes);
 
-    SgUctThreadState* Create(size_t threadId, const SgUctSearch& search);
+    SgUctThreadState* Create(unsigned int threadId, const SgUctSearch& search);
 
 private:
     const vector<TestNode>& m_nodes;
@@ -267,7 +267,7 @@ TestThreadStateFactory::TestThreadStateFactory(const vector<TestNode>& nodes)
 {
 }
 
-SgUctThreadState* TestThreadStateFactory::Create(size_t threadId,
+SgUctThreadState* TestThreadStateFactory::Create(unsigned int threadId,
                                                  const SgUctSearch& search)
 {
     SG_UNUSED(search);

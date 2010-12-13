@@ -122,7 +122,7 @@ private:
         GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >&
         Player();
 
-    GoUctPlayoutPolicy<GoUctBoard>& Policy(std::size_t threadId);
+    GoUctPlayoutPolicy<GoUctBoard>& Policy(unsigned int threadId);
 
     void Register(GtpEngine& e, const std::string& command,
                   GtpCallback<GoUctCommands>::Method method);
@@ -130,7 +130,7 @@ private:
     GoUctSearch& Search();
 
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
-    ThreadState(std::size_t threadId);
+    ThreadState(unsigned int threadId);
 };
 
 //----------------------------------------------------------------------------

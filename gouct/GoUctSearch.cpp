@@ -43,7 +43,7 @@ SgNode* AppendChild(SgNode* node, SgBlackWhite color, SgPoint move)
 }
 
 /** Append game to saved simulations (used if m_keepGames is true) */
-void AppendGame(SgNode* node, SgUctValue gameNumber, int threadId,
+void AppendGame(SgNode* node, SgUctValue gameNumber, unsigned int threadId,
                 SgBlackWhite toPlay, const SgUctGameInfo& info)
 {
     SG_ASSERT(node != 0);
@@ -96,7 +96,7 @@ void GoUctState::AssertionHandler::Run()
 
 //----------------------------------------------------------------------------
 
-GoUctState::GoUctState(std::size_t threadId, const GoBoard& bd)
+GoUctState::GoUctState(unsigned int threadId, const GoBoard& bd)
     : SgUctThreadState(threadId, MOVERANGE),
       m_assertionHandler(*this),
       m_uctBd(bd),
@@ -194,7 +194,8 @@ std::string GoUctSearch::MoveString(SgMove move) const
     return SgPointUtil::PointToString(move);
 }
 
-void GoUctSearch::OnSearchIteration(SgUctValue gameNumber, int threadId,
+void GoUctSearch::OnSearchIteration(SgUctValue gameNumber,
+                                    unsigned int threadId,
                                     const SgUctGameInfo& info)
 {
     SgUctSearch::OnSearchIteration(gameNumber, threadId, info);

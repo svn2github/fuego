@@ -129,7 +129,7 @@ public:
         @param safe Safety information. Stores a reference to the argument.
         @param allSafe Safety information. Stores a reference to the argument.
     */
-    GoUctGlobalSearchState(std::size_t threadId, const GoBoard& bd,
+    GoUctGlobalSearchState(unsigned int threadId, const GoBoard& bd,
                            POLICY* policy,
                            const GoUctGlobalSearchStateParam& param,
                            const GoUctPlayoutPolicyParam& policyParam,
@@ -223,7 +223,7 @@ private:
 };
 
 template<class POLICY>
-GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(std::size_t threadId,
+GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(unsigned int threadId,
          const GoBoard& bd, POLICY* policy,
          const GoUctGlobalSearchStateParam& param,
          const GoUctPlayoutPolicyParam& policyParam,
@@ -549,7 +549,7 @@ public:
                                   const SgBWSet& safe,
                                   const SgPointArray<bool>& allSafe);
 
-    SgUctThreadState* Create(std::size_t threadId, const SgUctSearch& search);
+    SgUctThreadState* Create(unsigned int threadId, const SgUctSearch& search);
 
 private:
     GoBoard& m_bd;
@@ -755,7 +755,7 @@ SgUctValue GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
 
 template<class POLICY, class FACTORY>
 SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
-                              std::size_t threadId, const SgUctSearch& search)
+                              unsigned int threadId, const SgUctSearch& search)
 {
     const GoUctGlobalSearch<POLICY,FACTORY>& globalSearch =
         dynamic_cast<const GoUctGlobalSearch<POLICY,FACTORY>&>(search);
