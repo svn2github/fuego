@@ -830,7 +830,8 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
 {
     if (nodes.size() <= 1) 
         return;
-    for (int i = nodes.size() - 2; i >= 0; --i)
+    size_t i = nodes.size() - 2;
+    while (true)
     {
         const SgUctNode& parent = *nodes[i];
         SgProvenNodeType type = SG_PROVEN_LOSS;
@@ -852,6 +853,9 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
             SgUctNode* node = const_cast<SgUctNode*>(&parent);
             node->SetProvenNodeType(type);
         }
+        if (i == 0)
+            break;
+        --i;
     }
 }
 
