@@ -83,6 +83,5 @@ fi
 
 AX_CXXFLAGS_WARN_ALL
 AX_CXXFLAGS_GCC_OPTION(-Wextra)
-AX_CXXFLAGS_GCC_OPTION(-Wconversion)
 
 AC_OUTPUT([Makefile book/Makefile regression/Makefile misctests/Makefile fuegomain/Makefile fuegotest/Makefile go/Makefile gouct/Makefile gtpengine/Makefile simpleplayers/Makefile smartgame/Makefile unittestmain/Makefile])

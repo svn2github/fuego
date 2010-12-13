@@ -72,7 +72,7 @@ public:
     bool IsInPlayout() const;
 
     /** Length of the current game from the root position of the search. */
-    int GameLength() const;
+    std::size_t GameLength() const;
 
     void Dump(std::ostream& out) const;
 
@@ -103,7 +103,7 @@ private:
     bool m_isInPlayout;
 
     /** See GameLength() */
-    int m_gameLength;
+    std::size_t m_gameLength;
 };
 
 inline const GoBoard& GoUctState::Board() const
@@ -111,7 +111,7 @@ inline const GoBoard& GoUctState::Board() const
     return m_bd;
 }
 
-inline int GoUctState::GameLength() const
+inline std::size_t GoUctState::GameLength() const
 {
     return m_gameLength;
 }
