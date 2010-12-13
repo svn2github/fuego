@@ -86,7 +86,7 @@ bool IsAliveBlock(const SgPointSet& block)
         ;
 }
 
-bool CheckAlwaysAlive8Code(int code)
+bool CheckAlwaysAlive8Code(long code)
 {
     return    code == 11210 // T
            || code == 3110 // L with foot
@@ -213,7 +213,7 @@ GoEyeStatus Special2x3Cases(const GoBoard& bd,
     if (nuStones > 0)
     {
         const int code = GoEyeUtil::DegreeCode(stones);
-        const int code8 = GoEyeUtil::DegreeCode8(stones);
+        const long code8 = GoEyeUtil::DegreeCode8(stones);
         // oo.
         // .oo
         if (code == 220 && code8 == 2200)
