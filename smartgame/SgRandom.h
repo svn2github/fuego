@@ -60,8 +60,15 @@ public:
     */
     unsigned int Int();
 
-    /** Get a random integer in [0..range - 1]. */
+    /** Get a random integer in an interval.
+        @param range The upper limit of the interval (exclusive)
+        @pre range range <= SgRandom::Max()
+        @return An integer in <tt> [0..range - 1]</tt>
+     */
     int Int(int range);
+
+    /** See SgRandom::Int(int) */
+    std::size_t Int(std::size_t range);
 
     /** Get a random integer in [min, max - 1] */
     int Range(int min, int max);
@@ -114,6 +121,14 @@ inline int SgRandom::Int(int range)
     SG_ASSERT(static_cast<unsigned int>(range) <= SgRandom::Max());
     int i = Int() % range;
     SG_ASSERTRANGE(i, 0, range - 1);
+    return i;
+}
+
+inline std::size_t SgRandom::Int(std::size_t range)
+{
+    SG_ASSERT(range <= SgRandom::Max());
+    std::size_t i = Int() % range;
+    SG_ASSERT(i < range);
     return i;
 }
 
