@@ -333,7 +333,8 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
             }
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
-    SgUctValue lengthMod = GameLength() * m_param.m_lengthModification;
+    SgUctValue lengthMod =
+        SgUctValue(GameLength()) * m_param.m_lengthModification;
     if (lengthMod > 0.5)
         lengthMod = 0.5;
     if (score > std::numeric_limits<SgUctValue>::epsilon())

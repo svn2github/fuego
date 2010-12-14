@@ -87,8 +87,8 @@ private:
 template<typename I, typename O, typename W>
 SgThreadedWorker<I,O,W>::SgThreadedWorker(std::vector<W>& workers)
     : m_quit(false),
-      m_startWork(workers.size() + 1),
-      m_workFinished(workers.size() + 1)
+      m_startWork(static_cast<unsigned int>(workers.size() + 1)),
+      m_workFinished(static_cast<unsigned int>(workers.size() + 1))
 {
     for (std::size_t i = 0; i < workers.size(); ++i)
     {
