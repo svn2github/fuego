@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpTimeSettingsTest.cpp
-    Unit tests for GoGtpTimeSettings.
-*/
+    Unit tests for GoGtpTimeSettings. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

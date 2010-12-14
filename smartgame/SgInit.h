@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgInit.h
-    Initialization of the SmartGo module.
-*/
+    Initialization of the SmartGo module. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_INIT_H
@@ -16,8 +15,7 @@ void SgInitImpl(bool compiledInDebugMode);
     This function must be called after using the SmartGo module.
     Also calls SgMemCheck.
     @note Will become obsolete in the future
-    @see SgInit
-*/
+    @see SgInit */
 void SgFini();
 
 /** Call all lower-level initialization functions.
@@ -27,8 +25,7 @@ void SgFini();
     initialization; this function will become unnecessary in the future.
     Currently still needed for:
     - Property
-    @throws SgException on error
-*/
+    @throws SgException on error */
 inline void SgInit()
 {
     // This function must be inline, it needs to use the setting of NDEBUG
@@ -41,8 +38,7 @@ inline void SgInit()
 }
 
 /** Check that SgInit was called.
-    @throws SgException if not
-*/
+    @throws SgException if not */
 void SgInitCheck();
 
 //----------------------------------------------------------------------------

@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GtpInputStream.h
-*/
+/** @file GtpInputStream.h */
 //----------------------------------------------------------------------------
 
 #ifndef GTP_INPUTSTREAM_H
@@ -12,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Base class for input streams used by GtpEngine.
-    This implementation only forwards calls to std::istream.
-*/
+    This implementation only forwards calls to std::istream. */
 class GtpInputStream
 {
 public:

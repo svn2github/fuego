@@ -4,8 +4,7 @@
 
     See A.L. Zobrist "A New Hashing Method with Application for Game Playing",
     Techn. Rep. #88, Univ. of Wisconsin, Madison, WI 53706, April 1970.
-    (Reprinted in ICCA Journal, Spring 1990?.)
-*/
+    (Reprinted in ICCA Journal, Spring 1990?.) */
 //----------------------------------------------------------------------------
 
 #ifndef SG_HASH_H
@@ -36,8 +35,7 @@ public:
     ~SgHash() {}
 
     /** Reinitialize the hash code.
-        Caution: after Clear() hash code matches code of empty board.
-    */
+        Caution: after Clear() hash code matches code of empty board. */
     void Clear();
 
     /** Set to random value. */
@@ -59,19 +57,16 @@ public:
 
     /** First integer (deprecated).
         @deprecated Don't use this function; it exposes implementation
-        details.
-    */
+        details. */
     unsigned int Code1() const;
 
     /** Second integer (deprecated).
         @deprecated Don't use this function; it exposes implementation
-        details.
-    */
+        details. */
     unsigned int Code2() const;
 
     /** Return a random hash code.
-        @return A random hash code, which is not zero.
-    */
+        @return A random hash code, which is not zero. */
     static SgHash Random();
 
     /** Roll bits n places to the left */
@@ -296,8 +291,7 @@ public:
         black and white pieces, MAX_HASH_INDEX needs to be bigger than twice
         the number of points on the board. It's up to the client to map points
         to this range.
-        2 * SG_MAXPOINT, plus capture hash
-    */
+        2 * SG_MAXPOINT, plus capture hash */
     static const int MAX_HASH_INDEX = 1500;
 
     SgHashZobrist();
@@ -338,8 +332,7 @@ namespace SgHashUtil
 {
     /** Xor hash code with code from the global Zobrist table.
         @deprecated Use your own zobrist table to avoid bugs due to
-        overlapping usage of indices
-    */
+        overlapping usage of indices */
     template<int N>
     inline SgHash<N> GetZobrist(int index)
     {
@@ -348,8 +341,7 @@ namespace SgHashUtil
 
     /** Xor hash code with code from the global Zobrist table.
         @deprecated Use your own zobrist table to avoid bugs due to
-        overlapping usage of indices
-    */
+        overlapping usage of indices */
     template<int N>
     inline void XorZobrist(SgHash<N>& hash, int index)
     {

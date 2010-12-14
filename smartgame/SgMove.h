@@ -8,8 +8,7 @@
     (apart that they are negative). If you do, at least document it with
     a static assertion.
     Classes that can work with moves of different games should only include
-    this header.
-*/
+    this header. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_MOVE_H
@@ -20,20 +19,17 @@
 typedef int SgMove;
 
 /** A null move is an uninitialized move, not legal to execute.
-    Not the same as a pass move or a null move in null-move-search.
-*/
+    Not the same as a pass move or a null move in null-move-search. */
 const SgMove SG_NULLMOVE = -1;
 
 /** Used for coupon search.
     Indicates that no move was made in the game, but a coupon taken from
-    the coupon stack.
-*/
+    the coupon stack. */
 const SgMove SG_COUPONMOVE = -2;
 
 /** Used for coupon search.
     Indicates that no move was made in the game, but a virtual coupon taken
-    from the coupon stack.
-*/
+    from the coupon stack. */
 const SgMove SG_COUPONMOVE_VIRTUAL = -3;
 
 /** Resign. */

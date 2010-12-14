@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSearchTest.cpp
-    Unit tests for classes in SgSearch.
-*/
+    Unit tests for classes in SgSearch. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -24,8 +23,7 @@ namespace {
 /** Test class that allows to define artificial game trees for testing
     SgSearch.
     - Does not use hash tables yet
-    - Black (max) is always the first player
-*/
+    - Black (max) is always the first player */
 class TestSearch
     : public SgSearch
 {
@@ -42,8 +40,7 @@ public:
 
 
     /** Add node to test tree.
-        @param father Index of father node, NO_NODE if root node.
-    */
+        @param father Index of father node, NO_NODE if root node. */
     void AddNode(size_t father, SgMove move, int eval);
 
     bool CheckDepthLimitReached() const;
@@ -55,8 +52,7 @@ public:
     bool Execute(SgMove move, int* delta, int depth);
 
     /** Index of last node in which Evaluate was called.
-        For testing that a search aborts at the expected node.
-    */
+        For testing that a search aborts at the expected node. */
     size_t LastEvaluated() const;
 
     string MoveString(SgMove move) const;
@@ -279,8 +275,7 @@ namespace {
        \--3(0)--7(5)
              \--8(6)
              \--9(7)
-    @endverbatim
-*/
+    @endverbatim */
 BOOST_AUTO_TEST_CASE(SgSearchTest_Simple)
 {
     TestSearch search;
@@ -314,8 +309,7 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_Simple)
        \--3(-1)
     @endverbatim
     Node control cuts search at 2-ply after node 1
-    (last evaluated should be node 3 from 1-ply search)
-*/
+    (last evaluated should be node 3 from 1-ply search) */
 BOOST_AUTO_TEST_CASE(SgSearchTest_IncompleteIteration)
 {
     TestSearch search;
@@ -348,8 +342,7 @@ BOOST_AUTO_TEST_CASE(SgSearchTest_IncompleteIteration)
        |
        \--3(-1)--7(1)
     @endverbatim
-    Node control cuts search at 2-ply after node 6
-*/
+    Node control cuts search at 2-ply after node 6 */
 BOOST_AUTO_TEST_CASE(SgSearchTest_NewBestInIncompleteIteration)
 {
     TestSearch search;

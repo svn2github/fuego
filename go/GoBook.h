@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBook.h
-    Opening book.
-*/
+    Opening book. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_BOOK_H
@@ -33,8 +32,7 @@ class GoBoard;
     mirroring. If there are duplicates, because of sequences with move
     transpositions or rotating/mirroring, reading will throw an exception
     containing an error message with line number information of the
-    duplicates.
-*/
+    duplicates. */
 
 class GoGtpEngine;
 
@@ -60,33 +58,28 @@ public:
 
     /** Add a book move to the current position.
         @throws SgException if move cannot be added (illegal or move sequence
-        to current position cannot be determined)
-    */
+        to current position cannot be determined) */
     void Add(const GoBoard& bd, SgPoint move);
 
     void Clear();
 
     /** Deletes a book move in the current position.
-        @throws SgException if the move is not a book move.
-    */
+        @throws SgException if the move is not a book move. */
     void Delete(const GoBoard& bd, SgPoint move);
 
     /** Get an entry.
         @param index The index of the entry
-        @see NuEntries()
-    */
+        @see NuEntries() */
     const Entry& GetEntry(std::size_t index) const;
 
     /** Return line number of current position in file the book was loaded
         from.
         @return Line number or 0, if current position is not in book or
-        was not in book, when the book was loaded.
-    */
+        was not in book, when the book was loaded. */
     int Line(const GoBoard& bd) const;
 
     /** Randomly select a move for the current position.
-        Returns SG_NULLMOVE if position is not in opening book.
-    */
+        Returns SG_NULLMOVE if position is not in opening book. */
     SgPoint LookupMove(const GoBoard& bd) const;
 
     std::vector<SgPoint> LookupAllMoves(const GoBoard& bd) const;
@@ -95,8 +88,7 @@ public:
 
     /** Read book from stream.
         @param in
-        @param streamName Name used for error messages (e.g. file name)
-     */
+        @param streamName Name used for error messages (e.g. file name) */
     void Read(std::istream& in, const std::string& streamName = "");
 
     /** Read book from file. */
@@ -113,8 +105,7 @@ private:
         /** Board size.
             The hash code is not enough to differentiate positions with
             different board sizes, since the empty board always has the
-            same hash code.
-        */
+            same hash code. */
         int m_size;
 
         /** Index of the original (untransformed) book entry in m_entries. */
@@ -182,8 +173,7 @@ public:
         - @link CmdMoves() @c book_moves @endlink
         - @link CmdPosition() @c book_position @endlink
         - @link CmdSave() @c book_save @endlink
-        - @link CmdSaveAs() @c book_save_as @endlink
-    */
+        - @link CmdSaveAs() @c book_save_as @endlink */
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file

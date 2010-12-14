@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoPlayer.h
-    Player.
-*/
+    Player. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_PLAYER_H
@@ -24,8 +23,7 @@ class GoPlayer
     : public GoBoardSynchronizer
 {
 public:
-    /** Constructor.
-    */
+    /** Constructor. */
     GoPlayer(const GoBoard& bd);
 
     virtual ~GoPlayer();
@@ -41,8 +39,7 @@ public:
                             SgBlackWhite toPlay) = 0;
 
     /** Get the name of this player.
-        Default implementation returns "Unknown"
-    */
+        Default implementation returns "Unknown" */
     virtual std::string Name() const;
 
     /** Get node for appending search traces */
@@ -57,8 +54,7 @@ public:
         in particular, it should return numeric_limits<int>::min()
         (which is what the default implementation does).
         Values can be positive or negative; better moves should have higher
-        values; the units of the values are not specified.
-     */
+        values; the units of the values are not specified. */
     virtual int MoveValue(SgPoint p);
 
     /** Inform the player that the game was finished.
@@ -69,8 +65,7 @@ public:
         start and end is not always well-defined (setup, undo, etc.)
         For example, it will be called in the GTP interface if after a change
         on the board GoBoardUtil::EndOfGame() is true.
-        The default implementation does nothing.
-    */
+        The default implementation does nothing. */
     virtual void OnGameFinished();
 
     /** Inform the player that a new game was started.
@@ -81,8 +76,7 @@ public:
         start and end is not always well-defined (setup, undo, etc.)
         For example, it will be called in the GTP interface in
         GoGtpEngine::Init(), or on the clear_board and loadsgf commands.
-        The default implementation does nothing.
-    */
+        The default implementation does nothing. */
     virtual void OnNewGame();
 
     /** Think during opponent's time.
@@ -95,8 +89,7 @@ public:
         The function Ponder() is typically called from a different thread but
         without overlap with other uses of the player, so the player does not
         have to care about thread-safety.
-        Default implementation does nothing and returns immediately.
-    */
+        Default implementation does nothing and returns immediately. */
     virtual void Ponder();
 
     /** See m_variant */
@@ -116,8 +109,7 @@ private:
     /** Player variant. Used for short-term testing of small modifications.
         The default variant is 0.
         Do not use to create significantly different players -
-        implement a new player instead.
-    */
+        implement a new player instead. */
     int m_variant;
 
     /** Not implemented */

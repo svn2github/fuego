@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctCommands.h
-*/
+/** @file GoUctCommands.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_COMMANDS_H
@@ -21,8 +20,7 @@ class GoUctSearch;
 
 /** GTP commands for GoUctPlayer.
     Some of the commands are also usable for other players, as long as they
-    use a subclass of GoUctSearch (and implement GoUctObjectWithSearch).
-*/
+    use a subclass of GoUctSearch (and implement GoUctObjectWithSearch). */
 class GoUctCommands
 {
 public:
@@ -31,8 +29,7 @@ public:
         @param player Reference to pointer to current player, this player can
         be null or a different player, but those commands of this class that
         need a GoUctPlayer will fail, if the current player is not
-        GoUctPlayer.
-    */
+        GoUctPlayer. */
     GoUctCommands(GoBoard& bd, GoPlayer*& player);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
@@ -67,8 +64,7 @@ public:
         - @link CmdStatSearch() @c uct_stat_search @endlink
         - @link CmdStatTerritory() @c uct_stat_territory @endlink
         - @link CmdValue() @c uct_value @endlink
-        - @link CmdValueBlack() @c uct_value_black @endlink
-    */
+        - @link CmdValueBlack() @c uct_value_black @endlink */
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file

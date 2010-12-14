@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoStaticSafetySolver.cpp
-    See GoStaticSafetySolver.h.
-*/
+    See GoStaticSafetySolver.h. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

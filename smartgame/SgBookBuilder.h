@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file SgBookBuilder.h
- */
+/** @file SgBookBuilder.h */
 //----------------------------------------------------------------------------
 
 #ifndef SG_BOOKBUILDER_HPP
@@ -33,14 +32,12 @@
     We also think there is a typo with respect to the formula of epo_i on
     page 80. Namely, since p_i is the negamax of p_{s_j}s, then we should
     sum the values to find the distance from optimal, not subtract. That is,
-    we use epo_i = 1 + min(s_j) (epb_{s_j} + alpha*(p_i + p_{s_j}) instead.
-*/
+    we use epo_i = 1 + min(s_j) (epb_{s_j} + alpha*(p_i + p_{s_j}) instead. */
 
 //----------------------------------------------------------------------------
 
 /** State in the Opening Book.
-    @ingroup openingbook
- */
+    @ingroup openingbook */
 class SgBookNode
 {
 public:
@@ -133,8 +130,7 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
     SgBookBuilder::Refresh() computes the correct propagation value for
     all internal nodes given the current set of leaf nodes. A node in
     which SgBookNode::IsLeaf() is true is treated as a leaf even
-    if it has children in the book (ie, children from transpositions)
-*/
+    if it has children in the book (ie, children from transpositions) */
 
 /** @page bookcover Book Cover
     @ingroup openingbook
@@ -153,15 +149,13 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
     are added to the node no matter how many expansions it has already
     received.
 
-    A book refresh should be performed after this operation.
-*/
+    A book refresh should be performed after this operation. */
 
 //----------------------------------------------------------------------------
 
 /** Base class for automated book building.
 
-    @ingroup openingbook
-*/
+    @ingroup openingbook */
 class SgBookBuilder
 {
 public:

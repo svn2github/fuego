@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgPointArrayTest.cpp
-    Unit tests for SgPointArray.
-*/
+    Unit tests for SgPointArray. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -16,8 +15,7 @@ using namespace std;
 namespace {
 
 /** Test constructor of SgPointArray<int>(int).
-    Tests that all elements are initialized with 0.
-*/
+    Tests that all elements are initialized with 0. */
 BOOST_AUTO_TEST_CASE(SgArrayTestConstructorDefault)
 {
     // Use placement new to avoid memory accidentally initialized with 0

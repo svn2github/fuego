@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoBook.cpp
-*/
+/** @file GoBook.cpp */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -132,8 +131,7 @@ void GoBook::Delete(const GoBoard& bd, SgPoint move)
     @param tempBoard A local temporary work board, reused for efficiency
     (does not have to be initialized)
     @param line Line number of entry from the file (0 if unknown or entry is
-    not from a file)
-*/
+    not from a file) */
 void GoBook::InsertEntry(const vector<SgPoint>& sequence,
                          const vector<SgPoint>& moves, int size,
                          GoBoard& tempBoard, int line)
@@ -383,8 +381,7 @@ void GoBookCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 
 /** Add a move for the current position to the book.
     Arguments: point <br>
-    Returns: Position information after the move deletion as in CmdPosition()
-*/
+    Returns: Position information after the move deletion as in CmdPosition() */
 void GoBookCommands::CmdAdd(GtpCommand& cmd)
 {
     SgPoint p = GoGtpCommandUtil::PointArg(cmd, m_bd);
@@ -407,8 +404,7 @@ void GoBookCommands::CmdClear(GtpCommand& cmd)
 
 /** Delete a move for the current position to the book.
     Arguments: point <br>
-    Returns: Position information after the move deletion as in CmdPosition()
-*/
+    Returns: Position information after the move deletion as in CmdPosition() */
 void GoBookCommands::CmdDelete(GtpCommand& cmd)
 {
     vector<SgPoint> moves = m_book.LookupAllMoves(m_bd);
@@ -464,8 +460,7 @@ void GoBookCommands::CmdMoves(GtpCommand& cmd)
     color (active moves), moves that lead to a known position in the book
     with yellow (other moves). The status line shows the line number of the
     position in the file (0, if unknown) and the number of active and other
-    moves.
-*/
+    moves. */
 void GoBookCommands::CmdPosition(GtpCommand& cmd)
 {
     cmd.CheckArgNone();

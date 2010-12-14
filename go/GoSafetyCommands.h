@@ -18,8 +18,7 @@ class GoSafetyCommands
 {
 public:
     /** Constructor.
-        @param bd The game board.
-    */
+        @param bd The game board. */
     GoSafetyCommands(const GoBoard& bd);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
@@ -28,8 +27,7 @@ public:
         - @link CmdDameStatic() @c go_safe_dame_static @endlink
         - @link CmdGfx() @c go_safe_gfx @endlink
         - @link CmdSafe() @c go_safe @endlink
-        - @link CmdWinner() @c go_safe_winner @endlink
-    */
+        - @link CmdWinner() @c go_safe_winner @endlink */
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file

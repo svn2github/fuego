@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpMoveGenerator.h
-    Simple move generator for simple players
-*/
+    Simple move generator for simple players */
 //----------------------------------------------------------------------------
 
 #ifndef SP_MOVEGENERATOR_H
@@ -14,8 +13,7 @@ class SgEvaluatedMoves;
 //----------------------------------------------------------------------------
 
 /** Simple move generators.
-    Either static or 1-ply lookahead
-*/
+    Either static or 1-ply lookahead */
 class SpMoveGenerator
 {
 public:

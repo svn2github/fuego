@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpInfluencePlayer.cpp
-    See SpInfluencePlayer.h
-*/
+    See SpInfluencePlayer.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgPointSet.h
-    Sets of points on the board.
-*/
+    Sets of points on the board. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_POINTSET_H
@@ -21,8 +20,7 @@
 
 /** Set of points.
     Represents a set of points on the Go board. This class is efficient for
-    bit-level operations on the board as a whole.
-*/
+    bit-level operations on the board as a whole. */
 class SgPointSet
 {
 public:
@@ -95,8 +93,7 @@ public:
     SgPointSet& Clear();
 
     /** Compute connected component by iterative Border calculation.
-        @note Slow for large diameter sets.
-    */
+        @note Slow for large diameter sets. */
     SgPointSet Component(SgPoint p) const;
 
     /** Good for small diameter sets */
@@ -110,13 +107,11 @@ public:
 
     /** Check if contains point.
      Can be called with out-of-board points, otherwise use
-     ContainsPoints().
-     */
+     ContainsPoints(). */
     bool Contains(SgPoint p) const;
     
     /** Check if contains point.
-     Can only be called with on-board points, otherwise use Contains().
-     */
+     Can only be called with on-board points, otherwise use Contains(). */
     bool ContainsPoint(SgPoint p) const;
     
     SgRect EnclosingRect() const;
@@ -138,8 +133,7 @@ public:
 
     /** Whether set is connected or not.
         @return True if connected or set is empty.
-        @note Slow for large diameters.
-    */
+        @note Slow for large diameters. */
     bool IsConnected() const;
 
     /** Whether set is connected or not. */
@@ -159,8 +153,7 @@ public:
     bool Overlaps(const SgPointSet& other) const;
     
     /** First point of set.
-        @return First (smallest) point of set or SG_NULLPOINT for empty set.
-    */
+        @return First (smallest) point of set or SG_NULLPOINT for empty set. */
     SgPoint PointOf() const;
 
     /** Is this set a subset of s? */
@@ -178,8 +171,7 @@ public:
     void Write(std::ostream& out, int boardSize) const;
     
     /** Return whether point 'p' is close to a point in set.
-        in implementation: const int MAX_CLOSE_DISTANCE = 3;
-    */
+        in implementation: const int MAX_CLOSE_DISTANCE = 3; */
     bool IsCloseTo(SgPoint p) const;
     
 private:
@@ -214,32 +206,28 @@ private:
 
 
 /** Compute difference between point sets.
-    @relatesalso SgPointSet
-*/
+    @relatesalso SgPointSet */
 inline SgPointSet operator-(const SgPointSet& L, const SgPointSet& R)
 {
     return (SgPointSet(L) -= R);
 }
 
 /** Compute intersection between point sets.
-    @relatesalso SgPointSet
-*/
+    @relatesalso SgPointSet */
 inline SgPointSet operator&(const SgPointSet& L, const SgPointSet& R)
 {
     return (SgPointSet(L) &= R);
 }
 
 /** Compute union between point sets.
-    @relatesalso SgPointSet
-*/
+    @relatesalso SgPointSet */
 inline SgPointSet operator|(const SgPointSet& L, const SgPointSet& R)
 {
     return (SgPointSet(L) |= R);
 }
 
 /** Compute XOR between point sets.
-    @relatesalso SgPointSet
-*/
+    @relatesalso SgPointSet */
 inline SgPointSet operator^(const SgPointSet& L, const SgPointSet& R)
 {
     return (SgPointSet(L) ^= R);
@@ -448,8 +436,7 @@ inline SgPointSet SgPointSet::operator<<(int n) const
 
 /** Iterator to iterate through 'set'.
     Set may contain only board
-    points, no 'Border' points.
-*/
+    points, no 'Border' points. */
 class SgSetIterator
 {
 public:
@@ -521,8 +508,7 @@ inline int SgSetIterator::Size() const
 /** Point set efficient for marking and testing.
     A SgSimpleSet is like a SgPointSet, except that it's more efficient at
     marking points and testing for marked points, while taking more time to
-    clear, and not providing bit operations on the whole set.
-*/
+    clear, and not providing bit operations on the whole set. */
 class SgSimpleSet
 {
 public:

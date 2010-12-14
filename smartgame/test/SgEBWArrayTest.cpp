@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgEBWArrayTest.cpp
-    Unit tests for SgEBWArray.
-*/
+    Unit tests for SgEBWArray. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

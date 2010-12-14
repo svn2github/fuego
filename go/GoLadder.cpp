@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoLadder.cpp
-*/
+/** @file GoLadder.cpp */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -49,8 +48,7 @@ void GoLadder::InitMaxMoveNumber()
 }
 
 /** Marks all stones in the block p as part of the prey.
-    If 'stones' is not 0, then append the stones to the existing list.
-*/
+    If 'stones' is not 0, then append the stones to the existing list. */
 void GoLadder::MarkStonesAsPrey(SgPoint p, SgVector<SgPoint>* stones)
 {
     SG_ASSERT(m_bd->IsValidPoint(p));
@@ -71,8 +69,7 @@ void GoLadder::MarkStonesAsPrey(SgPoint p, SgVector<SgPoint>* stones)
     The latter are found by checking whether blocks adjacent to the block in
     question are the prey or not. Does not return the correct blocks if the
     prey has more than three liberties, but in that case, the prey has
-    escaped anyway.
-*/
+    escaped anyway. */
 void GoLadder::FilterAdjacent(GoPointList& adjBlocks)
 {
     GoPointList temp;
@@ -106,8 +103,7 @@ bool GoLadder::BlockIsAdjToPrey(SgPoint p, int numAdj)
 }
 
 /** Play hunter move and update all the relevant information.
-    Play at one of the two liberties of the prey.
-*/
+    Play at one of the two liberties of the prey. */
 int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
                              SgPoint lib2, const GoPointList& adjBlk,
                              SgVector<SgPoint>* sequence)
@@ -155,8 +151,7 @@ int GoLadder::PlayHunterMove(int depth, SgPoint move, SgPoint lib1,
 
 /** Play prey move and update all the relevant information.
     Extend the prey by playing at its only liberty, or capture a block
-    adjacent to the prey.
-*/
+    adjacent to the prey. */
 int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
                            const GoPointList& adjBlk,
                            SgVector<SgPoint>* sequence)
@@ -520,8 +515,7 @@ int GoLadder::Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
 
 /** Check whether the block at 'prey' is caught in a snapback.
     Snapback means that it can be captured, but it's only a single stone, and
-    the prey can capture right back.
-*/
+    the prey can capture right back. */
 bool GoLadder::IsSnapback(SgPoint prey)
 {
     bool isSnapback = false;
@@ -679,8 +673,7 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
     Possible return values:
     - SG_PASS if already escaped/captured
     - the point to play
-    - SG_NULLMOVE in case of failure
-*/
+    - SG_NULLMOVE in case of failure */
 SgPoint GoLadderUtil::TryLadder(const GoBoard& bd, SgPoint prey,
                                 SgBlackWhite firstPlayer)
 {

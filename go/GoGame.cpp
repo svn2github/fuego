@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGame.cpp
-    See GoGame.h
-*/
+    See GoGame.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -34,8 +33,7 @@ void AddStatisticsToNode(const SgSearchStatistics* stat, SgNode* node)
 }
 
 /** Add up to 4 handicap stones to '*stones', and reduce '*handicap'
-    by that amount.
-*/
+    by that amount. */
 void AddHandicap(int size, int row, int col, int* handicap,
                                SgVector<SgPoint>* stones)
 {
@@ -233,8 +231,7 @@ void GoGameRecord::Init(int size, const GoRules& rules)
 
 /**
    @todo get handicap from properties, not from board
-   @todo  get komi from properties, not from board
-*/
+   @todo  get komi from properties, not from board */
 void GoGameRecord::InitFromRoot(SgNode* root, bool fTakeOwnership)
 {
     DeleteTreeAndInitState();

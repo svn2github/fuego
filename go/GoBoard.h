@@ -4,8 +4,7 @@
 
     GoBoard defines a Go board that implements the rules of Go and provides
     a lot of helper functions to get blocks, liberties, adjacent blocks,
-    and so on.
-*/
+    and so on. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_BOARD_H
@@ -38,8 +37,7 @@
 const int GO_DEFAULT_SIZE = (SG_MAX_SIZE >= 19 ? 19 : SG_MAX_SIZE);
 
 /** Maximum number of moves in game.
-    HEURISTIC: Longest possible game.
-*/
+    HEURISTIC: Longest possible game. */
 const int GO_MAX_NUM_MOVES = (3 * SG_MAX_SIZE * SG_MAX_SIZE);
 
 //----------------------------------------------------------------------------
@@ -57,8 +55,7 @@ enum GoMoveInfoFlag
     GO_MOVEFLAG_CAPTURING,
 
     /** The move was illegal according to the current rules and allow ko
-        settings.
-    */
+        settings. */
     GO_MOVEFLAG_ILLEGAL,
 
     _GO_NU_MOVEFLAG
@@ -72,8 +69,7 @@ typedef std::bitset<_GO_NU_MOVEFLAG> GoMoveInfo;
 typedef SgSList<SgPoint,SG_MAX_ONBOARD + 1> GoPointList;
 
 /** Static list having enough room for longest move sequence supported by
-    GoBoard.
-*/
+    GoBoard. */
 typedef SgSList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
 
 //----------------------------------------------------------------------------
@@ -93,15 +89,13 @@ typedef SgSList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
 
     @see
     - @ref goboardko
-    - @ref goboardhash
-*/
+    - @ref goboardhash */
 class GoBoard
 {
 public:
     /** Maximum number of immediate ko recaptures for GoBoard::m_koColor.
         Enforced only if ko modifies hash
-        @see KoModifiesHash()
-    */
+        @see KoModifiesHash() */
     static const int MAX_KOLEVEL = 3;
 
     /** Marker that can be used in client code.
@@ -111,8 +105,7 @@ public:
         marker (or don't want to use a global variable for thread-safety).
         Since only one function can use this marker at a time, you should
         assert with SgReserveMarker that the marker is not used in a
-        conflicting way.
-    */
+        conflicting way. */
     mutable SgMarker m_userMarker;
 
     explicit GoBoard(int size = GO_DEFAULT_SIZE,
@@ -127,8 +120,7 @@ public:
     uint64_t CountPlay() const;
 
     /** Re-initializes the board with new size.
-        Keeps old GoRules.
-    */
+        Keeps old GoRules. */
     void Init(int size, const GoSetup& setup = GoSetup());
 
     /** Re-initializes the board with new size and rules. */
@@ -140,8 +132,7 @@ public:
         by the players only.
         The players and the class GoBoard should not assume that they are
         immutable; they can be changed from the outside using this function at
-        anytime.
-    */
+        anytime. */
     GoRules& Rules();
 
     /** Current game rules. */
@@ -153,8 +144,7 @@ public:
     /** Check if sufficient space on internal stacks.
         Should be checked before executing a move.
         If the internal stacks overflow, assertions will (hopefully)
-        trigger in debug mode, but undefined behaviour occurs in release mode.
-    */
+        trigger in debug mode, but undefined behaviour occurs in release mode. */
     bool StackOverflowLikely() const;
 
     /** Check if move at point would be the first move there. */
@@ -165,8 +155,7 @@ public:
     bool IsNewPosition() const;
 
     /** Check if point is occupied by a stone.
-        Can be called with border points.
-    */
+        Can be called with border points. */
     bool Occupied(SgPoint p) const;
 
     bool IsEmpty(SgPoint p) const;
@@ -196,20 +185,17 @@ public:
 
     /** Returns the offset to the point on the line above this point.
         Returns zero for points outside the board, and for the center
-        point(s).
-    */
+        point(s). */
     int Up(SgPoint p) const;
 
     /** Returns the offset along left side of the board.
         Left and right are as seen from the edge toward the center of the
         board.
-        Returns zero for the same points as Up does.
-    */
+        Returns zero for the same points as Up does. */
     int Left(SgPoint p) const;
 
     /** Returns the offset along right side of the board.
-        @see Left for more info.
-    */
+        @see Left for more info. */
     int Right(SgPoint p) const;
 
     /** Same as Left/Right, but the side is passed in as an index (0 or 1). */
@@ -283,8 +269,7 @@ public:
 
     /** Information about the most recent call to Play.
         Guaranteed to be valid only directly after a call to Play.
-        @see GoMoveInfoFlag
-    */
+        @see GoMoveInfoFlag */
     bool LastMoveInfo(GoMoveInfoFlag flag) const;
 
     GoMoveInfo GetLastMoveInfo() const;
@@ -292,23 +277,20 @@ public:
     void AllowKoRepetition(bool allowKo);
 
     /** Make all repetition moves legal.
-        @see @ref goboardko
-    */
+        @see @ref goboardko */
     void AllowAnyRepetition(bool allowAny);
 
     /** Enable modification of hash code by Ko moves.
         Can be used if Ko repetition is allowed.
         @warning You have to disable it in the same position, where it was
         enabled, otherwise the incremental update of the hash code does not
-        work; use KoHashModifier in GoBoardUtil to do this automatically.
-    */
+        work; use KoHashModifier in GoBoardUtil to do this automatically. */
     void SetKoModifiesHash(bool modify);
 
     bool KoRepetitionAllowed() const;
 
     /** Are all repetition moves legal?
-        @see @ref goboardko
-    */
+        @see @ref goboardko */
     bool AnyRepetitionAllowed() const;
 
     bool KoModifiesHash() const;
@@ -318,18 +300,15 @@ public:
         If move is not legal according to the current GoRules, the
         move flag isIllegal will be set.
         After playing the color to play ys the opposite color of the color
-        of the move.
-    */
+        of the move. */
     void Play(SgPoint p, SgBlackWhite player);
 
     /** Play a move for the current player.
-        @see Play(SgPoint,SgBlackWhite);
-    */
+        @see Play(SgPoint,SgBlackWhite); */
     void Play(SgPoint p);
 
     /** Play a move.
-        @see Play(SgPoint,SgBlackWhite);
-    */
+        @see Play(SgPoint,SgBlackWhite); */
     void Play(GoPlayerMove move);
 
     /** Undo the most recent move. */
@@ -344,13 +323,11 @@ public:
         false on such input.
         LastMoveInfo is guaranteed to be vaild after this call.
         Suicide moves are only legal, if SetSelfRemovalAllowed(true) was
-        called.
-    */
+        called. */
     bool IsLegal(int p, SgBlackWhite player) const;
 
     /** Check whether the move at 'p' is legal for color to play.
-        @see IsLegal(int, SgBlackWhite).
-    */
+        @see IsLegal(int, SgBlackWhite). */
     bool IsLegal(int p) const;
 
     bool IsSuicide(SgPoint p) const;
@@ -361,13 +338,11 @@ public:
     /** The stones removed from the board by the most recent move.
         Can be used for incremental update of other data structures.
         Includes captures and suicide stones.
-        Only valid directly after a GoBoard::Play, otherwise undefined.
-    */
+        Only valid directly after a GoBoard::Play, otherwise undefined. */
     const GoPointList& CapturedStones() const;
 
     /** The stones captured by the most recent move.
-        @see CapturedStones
-    */
+        @see CapturedStones */
     int NuCapturedStones() const;
 
     /** The total number of stones of 'color' that have been
@@ -382,71 +357,60 @@ public:
 
     /** Return move with a certain move number.
         @param i The move number (starting with 0).
-        @return The ith move.
-     */
+        @return The ith move. */
     GoPlayerMove Move(int i) const;
 
     /** Return last move played.
         @return The last move played or SG_NULLMOVE, if
         - No move was played yet
-        - The last move was not by the opposite color of the current player
-    */
+        - The last move was not by the opposite color of the current player */
     SgPoint GetLastMove() const;
 
     /** 2nd Last move = last move by ToPlay().
-        Conditions similar to GetLastMove().
-    */
+        Conditions similar to GetLastMove(). */
     SgPoint Get2ndLastMove() const;
 
     /** Point which is currently illegal due to simple ko rule.
         Note that there could be more points illegal if superko rules
         are used.
-        @return The ko point or SG_NULLPOINT, if none exists.
-    */
+        @return The ko point or SG_NULLPOINT, if none exists. */
     SgPoint KoPoint() const;
 
     /** Return hash code for this position.
         @warning Hash code for empty positions is always 0, independent of
-        the board size.
-    */
+        the board size. */
     const SgHashCode& GetHashCode() const;
 
     /** Return hash code for this position, modified by whose turn it
         is to play.
         Note that GetHashCode() != GetHashCodeInclToPlay(), regardless
-        of whose turn it is to play.
-    */
+        of whose turn it is to play. */
     SgHashCode GetHashCodeInclToPlay() const;
 
     /** Return the number of stones in the block at 'p'.
-        Not defined for empty or border points.
-    */
+        Not defined for empty or border points. */
     int NumStones(SgPoint p) const;
 
     /** Return NumStones(p) == 1. */
     bool IsSingleStone(SgPoint p) const;
 
     /** Return whether the two stones are located in the same block.
-        Return false if one of the stones is an empty or border point.
-    */
+        Return false if one of the stones is an empty or border point. */
     bool AreInSameBlock(SgPoint stone1, SgPoint stone2) const;
 
     /** Return the smallest point of the block at a point.
-        Requires: Occupied(p) <br>
-    */
+        Requires: Occupied(p) <br> */
     SgPoint Anchor(SgPoint p) const;
 
     /** Efficient combined test if point is occupied and belongs to a block.
         @return true, if point is occupied and belongs to the block with
-        the given anchor.
-    */
+        the given anchor. */
     bool IsInBlock(SgPoint p, SgPoint anchor) const;
 
     /** Check if empty point is a liberty of block.
         @param p The point the check.
         @param anchor The anchor of the block.
-        @return true If point is liberty of block.
-    */
+        @return true If point is liberty of block. */
     bool IsLibertyOfBlock(SgPoint p, SgPoint anchor) const;
 
     /** Get adjacent opponent blocks with a maximum number of liberties for a
@@ -457,23 +421,20 @@ public:
         @param anchors Resulting neighbor anchors and an additional END_POINT.
         @param maxAnchors Array size of anchors (for detecting overflow in
         debug mode)
-        @return Number of anchors (without the END_POINT)
-    */
+        @return Number of anchors (without the END_POINT) */
     int AdjacentBlocks(SgPoint p, int maxLib, SgPoint anchors[],
                        int maxAnchors) const;
 
     /** %List anchor of each block of color 'c' adjacent to the
         empty point 'p'.
         Assert if 'p' is not empty.
-        Fill an array of points, terminated by END_POINT.
-    */
+        Fill an array of points, terminated by END_POINT. */
     void NeighborBlocks(SgPoint p, SgBlackWhite c, SgPoint anchors[]) const;
 
     /** %List anchor of each block of color 'c' with at most 'maxLib'
         liberties adjacent to the empty point 'p'.
         Assert if 'p' is not empty.
-        Fill an array of points, terminated by END_POINT.
-    */
+        Fill an array of points, terminated by END_POINT. */
     void NeighborBlocks(SgPoint p, SgBlackWhite c, int maxLib,
                         SgPoint anchors[]) const;
 
@@ -486,13 +447,11 @@ public:
     int TotalNumEmpty() const;
 
     /** Return the liberty of 'blockInAtari' which must have exactly
-        one liberty.
-    */
+        one liberty. */
     SgPoint TheLiberty(SgPoint blockInAtari) const;
 
     /** Return the number of liberties of the block at 'p'.
-        Not defined for empty or border points.
-    */
+        Not defined for empty or border points. */
     int NumLiberties(SgPoint p) const;
 
     /** Return whether block has at most n liberties. */
@@ -502,24 +461,20 @@ public:
     bool AtLeastNumLibs(SgPoint block, int n) const;
 
     /** Return whether the number of liberties of the block at 'p' is one.
-        Requires: Occupied(p)
-    */
+        Requires: Occupied(p) */
     bool InAtari(SgPoint p) const;
 
     /** Check if point is occupied and in atari.
         Faster than Occupied(p) || InAtari(p).
-        May be called for border points.
-    */
+        May be called for border points. */
     bool OccupiedInAtari(SgPoint p) const;
 
     /** Return whether playing colour c at p can capture anything,
-        ignoring any possible repetition.
-    */
+        ignoring any possible repetition. */
     bool CanCapture(SgPoint p, SgBlackWhite c) const;
 
     /** %Player who has immediately retaken a ko.
-        It is SG_EMPTY if no player has done it.
-    */
+        It is SG_EMPTY if no player has done it. */
     SgEmptyBlackWhite KoColor() const;
 
     /** Number of times that KoColor has immediately retaken a ko. */
@@ -528,30 +483,26 @@ public:
     /** %Player who will lose any ko.
         KoLoser is a player who is a priori determined to lose ko fights.
         therefore he is never allowed to become 'KoColor'
-        If KoLoser is empty, no such prior bias is assumed.
-    */
+        If KoLoser is empty, no such prior bias is assumed. */
     SgEmptyBlackWhite KoLoser() const;
 
     /** See KoLoser. */
     void SetKoLoser(SgEmptyBlackWhite color);
 
     /** Checks whether all the board data structures are in a consistent
-        state.
-    */
+        state. */
     void CheckConsistency() const;
 
     /** Remember current position for quickly undoing a sequence of moves.
         Note that for short sequences of moves this can take longer than
-        incrementally restoring the state by multiple calls to Undo().
-    */
+        incrementally restoring the state by multiple calls to Undo(). */
     void TakeSnapshot();
 
     /** Restore a snapshot.
         Can only be called, if previously TakeSnapshot() was called and
         the current position is a followup position of the snapshot position.
         RestoreSnapshot() can used multiple times for the same snapshot.
-        @see TakeSnapshot()
-    */
+        @see TakeSnapshot() */
     void RestoreSnapshot();
 
 private:
@@ -560,8 +511,7 @@ private:
     {
     public:
         /** Upper limit for liberties.
-            Proof?
-        */
+            Proof? */
         static const int MAX_LIBERTIES = (SG_MAX_SIZE / 3) * 2 * SG_MAX_SIZE;
 
         typedef SgSList<SgPoint,MAX_LIBERTIES> LibertyList;
@@ -625,8 +575,7 @@ private:
     };
 
     /** Board hash code.
-        @see @ref goboardhash
-    */
+        @see @ref goboardhash */
     class HashCode
     {
     public:
@@ -672,8 +621,7 @@ private:
     };
 
     /** Information to undo a move.
-        Holds information necessary to undo a play.
-    */
+        Holds information necessary to undo a play. */
     struct StackEntry
     {
         /** Color of the move. */
@@ -683,8 +631,7 @@ private:
         SgPoint m_point;
 
         /** Old value of m_isFirst[m_point].
-            Only defined if m_point is not SG_PASS
-        */
+            Only defined if m_point is not SG_PASS */
         bool m_isFirst;
 
         /** Old value of m_isNewPosition */
@@ -737,8 +684,7 @@ private:
         Corresponds to the current state, excluding block data (which is
         stored in the stack m_blockList), data, which is only defined
         immediately after a function call, ot data, which is not expected
-        to change during a TakeSnapshot/RestoreSnapshot (e.g. rules)
-    */
+        to change during a TakeSnapshot/RestoreSnapshot (e.g. rules) */
     struct State
     {
         /** Point which is currently illegal for simple Ko rule. */
@@ -810,8 +756,7 @@ private:
     SgGrid m_size;
 
     /** Rules for this board.
-        Can be modified anytime with GoBoard::Rules()
-    */
+        Can be modified anytime with GoBoard::Rules() */
     GoRules m_rules;
 
     /** Setup stones in the root position. */
@@ -820,8 +765,7 @@ private:
     GoMoveInfo m_moveInfo;
 
     /** Block data (stored in a stack).
-        Maximum number: A move can create zero or one new block.
-    */
+        Maximum number: A move can create zero or one new block. */
     SgSList<Block,GO_MAX_NUM_MOVES>* m_blockList;
 
     // The following members are mutable since they're used while computing
@@ -860,8 +804,7 @@ private:
     /** Check if move violates Ko rule.
         Sets isRepetition and updates m_koLevel, m_koColor and hash
         (if KoModifiesHash)
-        @return false if isRepetition
-    */
+        @return false if isRepetition */
     bool CheckKo(SgBlackWhite player);
 
     void AddLibToAdjBlocks(SgPoint p);
@@ -904,8 +847,7 @@ private:
     /** Kill own block if no liberties.
         Sets isSuicide flag.
         @return false if move was suicide and suicide not allowed by current
-        rules
-    */
+        rules */
     bool CheckSuicide(SgPoint p, StackEntry& entry);
 
     void AddStone(SgPoint p, SgBlackWhite c);
@@ -925,8 +867,7 @@ private:
 
     /** Save state.
         @param entry The stack entry to save information to; must already
-        have a valid m_type field.
-    */
+        have a valid m_type field. */
     void SaveState(StackEntry& entry);
 
     friend class LibertyCopyIterator;
@@ -936,8 +877,7 @@ private:
 public:
     /** Iterate through all the stones of a block.
         Point 'p' must be occupied.
-        Also, the stones can only be accessed for the current board position.
-    */
+        Also, the stones can only be accessed for the current board position. */
     class StoneIterator
     {
     public:
@@ -957,8 +897,7 @@ public:
             No copy of list is necessary, even if moves are played and undone
             while iterating over the list, since the implementation of GoBoard
             does guarantee that the order of the block's stone list is
-            preserved.
-        */
+            preserved. */
         GoBoard::Block::StoneIterator m_it;
 
         const GoBoard& m_board;
@@ -985,8 +924,7 @@ public:
     /** Iterate through all the liberties of a block.
         Point 'p' must be occupied.
         Liberties should only be accessed for the current board position.
-        No moves are allowed to be executed during the iteration.
-    */
+        No moves are allowed to be executed during the iteration. */
     class LibertyIterator
     {
     public:
@@ -1021,8 +959,7 @@ public:
         Point 'p' must be occupied.
         Like GoBoard::LibertyIterator, but allows moves to be executed during
         the iteration (uses a copy of the liberty list, if required by the
-        implementation).
-    */
+        implementation). */
     class LibertyCopyIterator
     {
     public:
@@ -1042,8 +979,7 @@ public:
             Necessary, because if moves are played and undone while iterating
             over liberty list, the implementation of GoBoard does not
             guarantee, that the order of the block's liberty list is
-            preserved.
-        */
+            preserved. */
         Block::LibertyList m_liberties;
 
         Block::LibertyList::Iterator m_it;
@@ -1509,8 +1445,7 @@ inline bool GoBoard::IsLegal(int p) const
 }
 
 /** Check if point is a pass move or a coupon move, which is handled like a
-    pass move.
-*/
+    pass move. */
 inline bool GoBoard::IsPass(SgPoint p)
 {
     return (p == SG_PASS || SgMoveUtil::IsCouponMove(p));

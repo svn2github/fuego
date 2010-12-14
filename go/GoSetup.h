@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSetup.h
-    Initial setup information for GoBoard.
-*/
+    Initial setup information for GoBoard. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_SETUP_H
@@ -22,8 +21,7 @@ public:
     SgBlackWhite m_player;
 
     /** Create empty setup.
-        Contains no setup stones. Black is to move.
-    */
+        Contains no setup stones. Black is to move. */
     GoSetup();
 
     bool operator==(const GoSetup& setup) const;
@@ -31,13 +29,11 @@ public:
     bool operator!=(const GoSetup& setup) const;
 
     /** Add a black stone.
-        Convenience function. Equivalent to @c m_stones[SG_BLACK].Include(p)
-    */
+        Convenience function. Equivalent to @c m_stones[SG_BLACK].Include(p) */
     void AddBlack(SgPoint p);
 
     /** Add a black stone.
-        Convenience function. Equivalent to @c m_stones[SG_WHITE].Include(p)
-    */
+        Convenience function. Equivalent to @c m_stones[SG_WHITE].Include(p) */
     void AddWhite(SgPoint p);
 
     /** Does the setup contain no setup stones and is the player Black. */

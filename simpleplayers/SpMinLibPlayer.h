@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpMinLibPlayer.h
-    Minimum liberty player - blocks with fewest liberties are most urgent.
-*/
+    Minimum liberty player - blocks with fewest liberties are most urgent. */
 //----------------------------------------------------------------------------
 
 #ifndef SP_MINLIBPLAYER_H
@@ -13,8 +12,7 @@
 
 //----------------------------------------------------------------------------
 
-/** Tries to maximize minimum liberty of own minus opponent blocks.
-*/
+/** Tries to maximize minimum liberty of own minus opponent blocks. */
 class SpMinLibMoveGenerator
     : public Sp1PlyMoveGenerator
 {

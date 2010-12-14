@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctBoard.h
-    Go board optimized for Monte-Carlo.
-*/
+    Go board optimized for Monte-Carlo. */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_BOARD_H
@@ -37,8 +36,7 @@
 
     Otherwise, the member functions are named like in class GoBoard to allow
     writing utility functions that use the board class as a template parameter
-    (as long as they use only the functionality shared by both board classes)
-*/
+    (as long as they use only the functionality shared by both board classes) */
 class GoUctBoard
 {
 public:
@@ -49,8 +47,7 @@ public:
         marker (or don't want to use a global variable for thread-safety).
         Since only one function can use this marker at a time, you should
         assert with SgReserveMarker that the marker is not used in a
-        conflicting way.
-    */
+        conflicting way. */
     mutable SgMarker m_userMarker;
 
     explicit GoUctBoard(const GoBoard& bd);
@@ -66,8 +63,7 @@ public:
     SgGrid Size() const;
 
     /** Check if point is occupied by a stone.
-        Can be called with border points.
-    */
+        Can be called with border points. */
     bool Occupied(SgPoint p) const;
 
     bool IsEmpty(SgPoint p) const;
@@ -94,20 +90,17 @@ public:
 
     /** Returns the offset to the point on the line above this point.
         Returns zero for points outside the board, and for the center
-        point(s).
-    */
+        point(s). */
     int Up(SgPoint p) const;
 
     /** Returns the offset along left side of the board.
         Left and right are as seen from the edge toward the center of the
         board.
-        Returns zero for the same points as Up does.
-    */
+        Returns zero for the same points as Up does. */
     int Left(SgPoint p) const;
 
     /** Returns the offset along right side of the board.
-        @see Left for more info.
-    */
+        @see Left for more info. */
     int Right(SgPoint p) const;
 
     /** Same as Left/Right, but the side is passed in as an index (0 or 1). */
@@ -152,20 +145,17 @@ public:
     int LastBoardPoint() const;
 
     /** Play a move for the current player.
-        @see Play(SgPoint,SgBlackWhite);
-    */
+        @see Play(SgPoint,SgBlackWhite); */
     void Play(SgPoint p);
 
     /** Check whether the move at 'p' is legal.
         Since it's not clear how 'p' was arrived at, any value of 'p' is
         admissible, even out of point range and on border points; just return
-        false on such input.
-    */
+        false on such input. */
     bool IsLegal(int p, SgBlackWhite player) const;
 
     /** Check whether the move at 'p' is legal for color to play.
-        @see IsLegal(int, SgBlackWhite).
-    */
+        @see IsLegal(int, SgBlackWhite). */
     bool IsLegal(int p) const;
 
     bool IsSuicide(SgPoint p) const;
@@ -175,13 +165,11 @@ public:
 
     /** The stones removed from the board by the most recent move.
         Can be used for incremental update of other data structures.
-        Only valid directly after a GoUctBoard::Play, otherwise undefined.
-    */
+        Only valid directly after a GoUctBoard::Play, otherwise undefined. */
     const GoPointList& CapturedStones() const;
 
     /** The stones captured by the most recent move.
-        @see CapturedStones
-    */
+        @see CapturedStones */
     int NuCapturedStones() const;
 
     /** The total number of stones of 'color' that have been
@@ -191,34 +179,29 @@ public:
     /** Return last move played.
         @return The last move played or SG_NULLMOVE, if
         - No move was played yet
-        - The last move was not by the opposite color of the current player
-    */
+        - The last move was not by the opposite color of the current player */
     SgPoint GetLastMove() const;
 
     /** 2nd Last move = last move by ToPlay().
-        Conditions similar to GetLastMove().
-    */
+        Conditions similar to GetLastMove(). */
     SgPoint Get2ndLastMove() const;
 
     /** Return the number of stones in the block at 'p'.
-        Not defined for empty or border points.
-    */
+        Not defined for empty or border points. */
     int NumStones(SgPoint p) const;
 
     /** Return NumStones(p) == 1. */
     bool IsSingleStone(SgPoint p) const;
 
     /** Return whether the two stones are located in the same block.
-        Return false if one of the stones is an empty or border point.
-    */
+        Return false if one of the stones is an empty or border point. */
     bool AreInSameBlock(SgPoint stone1, SgPoint stone2) const;
 
     /** Return a reference point in the block at a point.
         @note In contrast to GoBoard, the anchor point is not guaranteed
         to be the smallest point (this functionality is not needed in
         Monte-Carlo)
-        Requires: Occupied(p).
-    */
+        Requires: Occupied(p). */
     SgPoint Anchor(SgPoint p) const;
 
     /** See GoBoard::IsInBlock */
@@ -235,34 +218,29 @@ public:
         @param anchors Resulting neighbor anchors and an additional END_POINT.
         @param maxAnchors Array size of anchors (for detecting overflow in
         debug mode)
-        @return Number of anchors (without the END_POINT)
-    */
+        @return Number of anchors (without the END_POINT) */
     int AdjacentBlocks(SgPoint p, int maxLib, SgPoint anchors[],
                        int maxAnchors) const;
 
     /** %List anchor of each block of color 'c' adjacent to the
         empty point 'p'.
         Assert if 'p' is not empty.
-        Fill an array of points, terminated by END_POINT.
-    */
+        Fill an array of points, terminated by END_POINT. */
     void NeighborBlocks(SgPoint p, SgBlackWhite c, SgPoint anchors[]) const;
 
     /** %List anchor of each block of color 'c' with at most 'maxLib'
         liberties adjacent to the empty point 'p'.
         Assert if 'p' is not empty.
-        Fill an array of points, terminated by END_POINT.
-    */
+        Fill an array of points, terminated by END_POINT. */
     void NeighborBlocks(SgPoint p, SgBlackWhite c, int maxLib,
                         SgPoint anchors[]) const;
 
     /** Return the liberty of 'blockInAtari' which must have exactly
-        one liberty.
-    */
+        one liberty. */
     SgPoint TheLiberty(SgPoint blockInAtari) const;
 
     /** Return the number of liberties of the block at 'p'.
-        Not defined for empty or border points.
-    */
+        Not defined for empty or border points. */
     int NumLiberties(SgPoint p) const;
 
     /** Return whether block has at most n liberties. */
@@ -272,24 +250,20 @@ public:
     bool AtLeastNumLibs(SgPoint block, int n) const;
 
     /** Return whether the number of liberties of the block at 'p' is one.
-        Requires: Occupied(p)
-    */
+        Requires: Occupied(p) */
     bool InAtari(SgPoint p) const;
 
     /** Check if point is occupied and in atari.
         Faster than Occupied(p) || InAtari(p).
-        May be called for border points.
-    */
+        May be called for border points. */
     bool OccupiedInAtari(SgPoint p) const;
 
     /** Return whether playing colour c at p can capture anything,
-        ignoring any possible repetition.
-    */
+        ignoring any possible repetition. */
     bool CanCapture(SgPoint p, SgBlackWhite c) const;
 
     /** Checks whether all the board data structures are in a consistent
-        state.
-    */
+        state. */
     void CheckConsistency() const;
 
 private:
@@ -298,8 +272,7 @@ private:
     {
     public:
         /** Upper limit for liberties.
-            Proof?
-        */
+            Proof? */
         static const int MAX_LIBERTIES = (SG_MAX_SIZE / 3) * 2 * SG_MAX_SIZE;
 
         typedef SgSList<SgPoint,MAX_LIBERTIES> LibertyList;
@@ -424,8 +397,7 @@ public:
     /** Iterate through all the liberties of a block.
         Point 'p' must be occupied.
         Liberties should only be accessed for the current board position.
-        No moves are allowed to be executed during the iteration.
-    */
+        No moves are allowed to be executed during the iteration. */
     class LibertyIterator
     {
     public:
@@ -454,8 +426,7 @@ public:
 
     /** Iterate through all the stones of a block.
         Point 'p' must be occupied.
-        Also, the stones can only be accessed for the current board position.
-    */
+        Also, the stones can only be accessed for the current board position. */
     class StoneIterator
     {
     public:

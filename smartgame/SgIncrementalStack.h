@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgIncrementalStack.h
-    Incremental Update Stack for fast undo during search.
-*/
+    Incremental Update Stack for fast undo during search. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_INCREMENTALSTACK_H
@@ -32,8 +31,7 @@ enum SgIncrementalStackEvent
 };
 
 /** Incremental Update Stack for fast undo during search.
-    Used by GoRegionBoard.
-*/
+    Used by GoRegionBoard. */
 class SgIncrementalStack
 {
 public:

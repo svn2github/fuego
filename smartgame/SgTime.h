@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgTime.h
-    Time measurement.
-*/
+    Time measurement. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_TIME_H
@@ -15,8 +14,7 @@
 enum SgTimeMode
 {
     /** Measure CPU-time.
-        Returns the CPU time of the current thread including child processes.
-    */
+        Returns the CPU time of the current thread including child processes. */
     SG_TIME_CPU,
 
     /** Measure real time. */

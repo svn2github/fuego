@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctSearch.h
-    Class SgUctSearch and helper classes.
-*/
+    Class SgUctSearch and helper classes. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_UCTSEARCH_H
@@ -63,8 +62,7 @@
     @see
     - @ref sguctsearchlockfree
     - @ref sguctsearchweights
-    - @ref sguctsearchproven
-*/
+    - @ref sguctsearchproven */
 
 /** @page sguctsearchlockfree Lock-free mode in SgUctSearch
 
@@ -129,8 +127,7 @@ used in most modern standard computers, guarantee these assumptions. They also
 synchronize CPU caches after writes. (See
 <a href="http://download.intel.com/design/processor/manuals/253668.pdf">
 Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
-7.1 Locked Atomic Operations and 7.2 Memory Ordering).
-*/
+7.1 Locked Atomic Operations and 7.2 Memory Ordering). */
 
 /** @page sguctsearchweights Estimator weights in SgUctSearch
     The weights of the estimators (move value, RAVE value) are chosen by
@@ -173,8 +170,7 @@ Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
     part of the normalization constant, so the weight is simply
     @f$ N_{\rm move} @f$.
     If no estimator has a sample count yet, the first-play-urgency parameter
-    is used for the value estimate.
-*/
+    is used for the value estimate. */
 
 /** @page sguctsearchproven Proven Nodes in SgUctSearch
 
@@ -204,19 +200,16 @@ Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
     losing. This is because it is possible progressive widening (or
     other heuristics) are being used by the derived state and in such
     a case it may not be true that all the current children being
-    losses implies the parent state is a loss.
-*/
+    losses implies the parent state is a loss. */
 
 //----------------------------------------------------------------------------
 
 /** Game result, sequence and nodes of one Monte-Carlo game in SgUctSearch.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 struct SgUctGameInfo
 {
     /** The game result of the playout(s).
-        The result is from the view of the player at the root.
-    */
+        The result is from the view of the player at the root. */
     std::vector<SgUctValue> m_eval;
 
     /** The sequence of the in-tree phase. */
@@ -224,13 +217,11 @@ struct SgUctGameInfo
 
     /** The sequence of the playout(s).
         For convenient usage, they also include the moves from
-        m_inTreeSequence, even if they are the same for each playout.
-    */
+        m_inTreeSequence, even if they are the same for each playout. */
     std::vector<std::vector<SgMove> > m_sequence;
 
     /** Was the playout aborted due to maxGameLength (stored for each
-        playout).
-    */
+        playout). */
     std::vector<bool> m_aborted;
 
     /** Nodes visited in the in-tree phase. */
@@ -240,8 +231,7 @@ struct SgUctGameInfo
         For convenient usage, the index corresponds to the move number from
         the root position on, even if the flag is currently only used for
         moves in the playout phase, so the flag is false for all moves in the
-        in-tree phase.
-    */
+        in-tree phase. */
     std::vector<std::vector<bool> > m_skipRaveUpdate;
 
     void Clear(std::size_t numberPlayouts);
@@ -250,8 +240,7 @@ struct SgUctGameInfo
 //----------------------------------------------------------------------------
 
 /** Move selection strategy after search is finished.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 enum SgUctMoveSelect
 {
     /** Select move with highest mean value. */
@@ -264,8 +253,7 @@ enum SgUctMoveSelect
     SG_UCTMOVESELECT_BOUND,
 
     /** Use the weighted sum of UCT and RAVE value (but without
-        bias terms).
-    */
+        bias terms). */
     SG_UCTMOVESELECT_ESTIMATE
 };
 
@@ -279,8 +267,7 @@ enum SgUctMoveSelect
     (e.g. SgRandom::Global())
     @note Technically it is possible to use a non-thread safe implementation
     of subclasses, as long as the search is run with only one thread.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctThreadState
 {
 public:
@@ -290,8 +277,7 @@ public:
     bool m_isSearchInitialized;
 
     /** Flag indicating the a node could not be expanded, because the
-        maximum tree size was reached.
-    */
+        maximum tree size was reached. */
     bool m_isTreeOutOfMem;
 
     SgUctGameInfo m_gameInfo;
@@ -300,27 +286,22 @@ public:
         Reused for efficiency. Stores the first time a move was played
         by the color to play at the root position (move is used as an index,
         do m_moveRange must be > 0); numeric_limits<size_t>::max(), if the
-        move was not played.
-    */
+        move was not played. */
     boost::scoped_array<std::size_t> m_firstPlay;
 
     /** Local variable for SgUctSearch::UpdateRaveValues().
-        Like m_firstPlayToPlay, but for opponent color.
-    */
+        Like m_firstPlayToPlay, but for opponent color. */
     boost::scoped_array<std::size_t> m_firstPlayOpp;
 
     /** Local variable for SgUctSearch::PlayInTree().
-        Reused for efficiency.
-    */
+        Reused for efficiency. */
     std::vector<SgMoveInfo> m_moves;
 
     /** Local variable for SgUctSearch::CheckCountAbort().
-        Reused for efficiency.
-    */
+        Reused for efficiency. */
     std::vector<SgMove> m_excludeMoves;
 
-    /** Thread's counter for Randomized Rave in SgUctSearch::SelectChild().
-     */
+    /** Thread's counter for Randomized Rave in SgUctSearch::SelectChild(). */
     int m_randomizeCounter;
 
     SgUctThreadState(unsigned int threadId, int moveRange = 0);
@@ -333,21 +314,18 @@ public:
     /** Evaluate end-of-game position.
         Will only be called if GenerateAllMoves() or GeneratePlayoutMove()
         returns no moves. Should return larger values if position is better
-        for the player to move.
-    */
+        for the player to move. */
     virtual SgUctValue Evaluate() = 0;
 
     /** Execute a move.
-        @param move The move
-     */
+        @param move The move */
     virtual void Execute(SgMove move) = 0;
 
     /** Execute a move in the playout phase.
         For optimization if the subclass uses uses a different game state
         representation in the playout phase. Otherwise the function can be
         implemented in the subclass by simply calling Execute().
-        @param move The move
-     */
+        @param move The move */
     virtual void ExecutePlayout(SgMove move) = 0;
 
     /** Generate moves.
@@ -355,8 +333,7 @@ public:
         If return is true, trees under children will be deleted.
         @param count Number of times node has been visited. For knowledge-
         based computations.
-        @param[out] moves The generated moves or empty list at end of game
-    */
+        @param[out] moves The generated moves or empty list at end of game */
     virtual bool GenerateAllMoves(SgUctValue count, 
                                   std::vector<SgMoveInfo>& moves,
                                   SgProvenNodeType& provenType) = 0;
@@ -366,16 +343,14 @@ public:
         @param[out] skipRaveUpdate This value should be set to true, if the
         move should be excluded from RAVE updates. Otherwise it can be
         ignored.
-        @return The move or SG_NULLMOVE at the end of the game.
-    */
+        @return The move or SG_NULLMOVE at the end of the game. */
     virtual SgMove GeneratePlayoutMove(bool& skipRaveUpdate) = 0;
 
     /** Start search.
         This function should do any necessary preparations for playing games
         in the thread, like initializing the thread's copy of the game state
         from the global game state. The function does not have to be
-        thread-safe.
-    */
+        thread-safe. */
     virtual void StartSearch() = 0;
 
     /** Take back moves played in the in-tree phase. */
@@ -386,8 +361,7 @@ public:
         after this function is called. If the subclass implements the playout
         in s separate state, which is initialized in StartPlayout() and does
         not support undo, the implementation of this function can be left
-        empty in the subclass.
-    */
+        empty in the subclass. */
     virtual void TakeBackPlayout(std::size_t nuMoves) = 0;
 
     // @} // name
@@ -397,26 +371,22 @@ public:
     // @{
 
     /** Function that will be called by PlayGame() before the game.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void GameStart();
 
     /** Function that will be called at the beginning of the playout phase.
         Will be called only once (not once per playout!). Can be used for
         example to save some state of the current position for more efficient
         implementation of TakeBackPlayout().
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void StartPlayouts();
 
     /** Function that will be called at the beginning of each playout.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void StartPlayout();
 
     /** Function that will be called after each playout.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void EndPlayout();
 
     // @} // name
@@ -428,8 +398,7 @@ class SgUctSearch;
 
 /** Create game specific thread state.
     @see SgUctThreadState
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctThreadStateFactory
 {
 public:
@@ -451,8 +420,7 @@ struct SgUctSearchStat
 
     /** Games per second.
         Useful values only if search time is higher than resolution of
-        SgTime::Get().
-    */
+        SgTime::Get(). */
     double m_gamesPerSecond;
 
     SgStatisticsExt<SgUctValue,SgUctValue> m_gameLength;
@@ -471,8 +439,7 @@ struct SgUctSearchStat
 /** Optional parameters to SgUctSearch::Search() to allow early aborts.
     If early abort is used, the search will be aborted after a fraction of the
     resources (max time, max nodes) are spent, if the value is a clear win
-    (above a threshold).
-*/
+    (above a threshold). */
 struct SgUctEarlyAbortParam
 {
     /** The threshold to define what a clear win is. */
@@ -480,13 +447,11 @@ struct SgUctEarlyAbortParam
 
     /** The minimum number of games to allow an early abort.
         For a very low number of simulations, the value can be very
-        unreliable.
-    */
+        unreliable. */
     SgUctValue m_minGames;
 
     /** The inverse fraction of the total resources (max time, max nodes),
-        after which the early abort check is performed.
-    */
+        after which the early abort check is performed. */
     int m_reductionFactor;
 };
 
@@ -495,8 +460,7 @@ struct SgUctEarlyAbortParam
 /** Monte Carlo tree search using UCT.
     The evaluation function is assumed to be in <code>[0..1]</code> and
     inverted with <code>1 - eval</code>.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctSearch
 {
 public:
@@ -513,8 +477,7 @@ public:
         need to store data in arrays using the move as an index for
         efficient implementation. If the game does not use a small integer
         range for its move representation, this parameter should be 0.
-        Then, enhancements that require a small move range cannot be enabled.
-    */
+        Then, enhancements that require a small move range cannot be enabled. */
     SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
                 int moveRange = 0);
 
@@ -526,15 +489,13 @@ public:
     // @{
 
     /** Convert move to string (game dependent).
-        This function needs to be thread-safe.
-    */
+        This function needs to be thread-safe. */
     virtual std::string MoveString(SgMove move) const = 0;
 
     /** Evaluation value to use if evaluation is unknown.
         This value will be used, if games are aborted, because they exceed
         the maximum game length.
-        This function needs to be thread-safe.
-    */
+        This function needs to be thread-safe. */
     virtual SgUctValue UnknownEval() const = 0;
 
     // @} // name
@@ -552,23 +513,20 @@ public:
         @warning If LockFree() is enabled, this function will be called from
         multiple threads without locking. The subclass should handle this
         case appropriately by using its own lock or disabling functionality
-        that will not work without locking.
-    */
+        that will not work without locking. */
     virtual void OnSearchIteration(SgUctValue gameNumber,
                                    unsigned int threadId,
                                    const SgUctGameInfo& info);
 
     /** Hook function that will be called by StartSearch().
         Default implementation calls m_mpiSynchronizer.StartSearch().
-        This function does not need to be thread-safe.
-    */
+        This function does not need to be thread-safe. */
     virtual void OnStartSearch();
 
     /** Hook function that will be called when search
     completes.  Default implementation calls
     m_mpiSynchronizer.EndSearch().  This function
-    does not need to be thread-safe.
-    */
+    does not need to be thread-safe. */
     virtual void OnEndSearch();
 
     virtual void OnThreadStartSearch(SgUctThreadState& state);
@@ -585,22 +543,19 @@ public:
 
     /** Get a list of all generated moves.
         Sets up thread state 0 for a seach and calls GenerateAllMoves
-        of the thread state.
-    */
+        of the thread state. */
     void GenerateAllMoves(std::vector<SgMoveInfo>& moves);
 
     /** Play a single game.
         Plays a single game using the thread state of the first thread.
-        Call StartSearch() before calling this function.
-    */
+        Call StartSearch() before calling this function. */
     void PlayGame();
 
     /** Start search.
         Initializes search for current position and clears statistics.
         @param rootFilter Moves to filter at the root node
         @param initTree The tree to initialize the search with. 0 for no
-        initialization. The trees are actually swapped, not copied.
-    */
+        initialization. The trees are actually swapped, not copied. */
     void StartSearch(const std::vector<SgMove>& rootFilter
                      = std::vector<SgMove>(),
                      SgUctTree* initTree = 0);
@@ -616,8 +571,7 @@ public:
         initialization. The trees are actually swapped, not copied.
         @param earlyAbort See SgUctEarlyAbortParam. Null means not to do an
         early abort.
-        @return The value of the root position.
-    */
+        @return The value of the root position. */
     SgUctValue Search(SgUctValue maxGames, double maxTime,
                       std::vector<SgMove>& sequence,
                       const std::vector<SgMove>& rootFilter
@@ -628,8 +582,7 @@ public:
     /** Do a one-ply Monte-Carlo search instead of the UCT search.
         @param maxGames
         @param maxTime
-        @param[out] value The value of the best move
-    */
+        @param[out] value The value of the best move */
     SgPoint SearchOnePly(SgUctValue maxGames, double maxTime,
                          SgUctValue& value);
 
@@ -637,15 +590,13 @@ public:
         @param node The father node.
         @param excludeMoves Optional list of moves to ignore in the children
         nodes.
-        @return The best child or 0 if no child nodes exists.
-    */
+        @return The best child or 0 if no child nodes exists. */
     const SgUctNode*
     FindBestChild(const SgUctNode& node,
                   const std::vector<SgMove>* excludeMoves = 0) const;
 
     /** Extract sequence of best moves from root node.
-        @param[out] sequence The resulting sequence.
-    */
+        @param[out] sequence The resulting sequence. */
     void FindBestSequence(std::vector<SgMove>& sequence) const;
 
     /** Return the bound of a move.
@@ -653,8 +604,7 @@ public:
         pure UCT bound or the combined bound if RAVE is used.
         @param useRave Whether rave should be used or not.
         @param node The node corresponding to the position
-        @param child The node corresponding to the move
-    */
+        @param child The node corresponding to the move */
     SgUctValue GetBound(bool useRave, const SgUctNode& node, 
                         const SgUctNode& child) const;
 
@@ -666,15 +616,13 @@ public:
 
     /** Info for last game.
         Returns the last game info of the first thread.
-        This function is not thread-safe.
-    */
+        This function is not thread-safe. */
     const SgUctGameInfo& LastGameInfo() const;
 
     /** One-line summary text for last game.
         Contains: move, count and mean for all nodes; result
         Returns the last game info of the first thread.
-        This function is not thread-safe.
-    */
+        This function is not thread-safe. */
     std::string LastGameSummaryLine() const;
 
     /** See parameter earlyAbort in Search() */
@@ -686,8 +634,7 @@ public:
         Returns a tree that is compatible in size and number of allocators
         to the tree of the search. This tree is used by the search itself as
         a temporary tree for certain operations during the search, but can be
-        used by other code while the search is not running.
-    */
+        used by other code while the search is not running. */
     SgUctTree& GetTempTree();
 
     // @} // name
@@ -698,8 +645,7 @@ public:
 
     /** Constant c in the bias term.
         This constant corresponds to 2 C_p in the original UCT paper.
-        The default value is 0.7, which works well in 9x9 Go.
-    */
+        The default value is 0.7, which works well in 9x9 Go. */
     float BiasTermConstant() const;
 
     /** See BiasTermConstant() */
@@ -711,8 +657,7 @@ public:
         computations to occur as a node becomes more
         important. Returned move info will be merged with info in the
         tree. This is can be used prune, add children, give a bonus to
-        a move, etc.
-    */
+        a move, etc. */
     std::vector<SgUctValue> KnowledgeThreshold() const;
 
     /** See KnowledgeThreshold() */
@@ -721,13 +666,11 @@ public:
     /** Maximum number of nodes in the tree.
         @note The search owns two trees, one of which is used as a temporary
         tree for some operations (see GetTempTree()). This functions sets
-        the maximum number of nodes per tree.
-    */
+        the maximum number of nodes per tree. */
     std::size_t MaxNodes() const;
 
     /** See MaxNodes()
-        @param maxNodes Maximum number of nodes (>= 1)
-    */
+        @param maxNodes Maximum number of nodes (>= 1) */
     void SetMaxNodes(std::size_t maxNodes);
 
     /** The number of threads to use during the search. */
@@ -737,8 +680,7 @@ public:
     void SetNumberThreads(unsigned int n);
 
     /** Lock-free usage of multi-threaded search.
-        @ref sguctsearchlockfree
-    */
+        @ref sguctsearchlockfree */
     bool LockFree() const;
 
     /** See LockFree() */
@@ -750,14 +692,12 @@ public:
     /** Randomly turns off rave with given frequency -
         once in every frequency child selections.
         Helps in rare cases where rave ignores the best move. 
-        Set frequency to 0 to switch it off.
-    */
+        Set frequency to 0 to switch it off. */
     void SetRandomizeRaveFrequency(int frequency);
 
     /** Don't update RAVE value if opponent played the same move first.
         Default is false (since it depends on the game and move
-        representation, if it should be used).
-    */
+        representation, if it should be used). */
     bool RaveCheckSame() const;
 
     /** See RaveCheckSame() */
@@ -769,16 +709,14 @@ public:
         According to the MoGo tech report, it can be useful to use smaller
         values (as low as 1) to encorouge early exploitation.
         Default value is 10000.
-        @see @ref sguctsearchweights
-    */
+        @see @ref sguctsearchweights */
     SgUctValue FirstPlayUrgency() const;
 
     /** See FirstPlayUrgency() */
     void SetFirstPlayUrgency(SgUctValue firstPlayUrgency);
 
     /** Log one-line summary for each game during Search() to a file.
-        @todo File name still is hard-coded to "uctsearch.log"
-    */
+        @todo File name still is hard-coded to "uctsearch.log" */
     bool LogGames() const;
 
     /** See LogGames() */
@@ -787,8 +725,7 @@ public:
     /** Maximum game length.
         If the number of moves in a game exceed this length, it will be
         counted as a loss.
-        The default is @c numeric_limits<size_t>::max()
-    */
+        The default is @c numeric_limits<size_t>::max() */
     std::size_t MaxGameLength() const;
 
     /** See MaxGameLength() */
@@ -796,8 +733,7 @@ public:
 
     /** Required number of simulations to expand a node in the tree.
         The default is 2, which means a node will be expanded on the second
-        visit.
-    */
+        visit. */
     SgUctValue ExpandThreshold() const;
 
     /** See ExpandThreshold() */
@@ -805,8 +741,7 @@ public:
 
     /** The number of playouts per simulated game.
         Useful for multi-threading to increase the workload of the threads.
-        Default is 1.
-    */
+        Default is 1. */
     std::size_t NumberPlayouts() const;
 
     void SetNumberPlayouts(std::size_t n);
@@ -817,8 +752,7 @@ public:
         no "RAVE bias term" is used. The estimated value of a move is the
         weighted mean of the move value and the RAVE value and then a
         single UCT-like bias term is added.
-        @see RaveWeightFunc
-    */
+        @see RaveWeightFunc */
     bool Rave() const;
 
     /** See Rave() */
@@ -846,8 +780,7 @@ public:
         Gives more weight to moves that are closer to the position for which
         the RAVE statistics are stored. The weighting function is linearly
         decreasing from 2 to 0 with the move number from the position for
-        which the RAVE statistics are stored to the end of the simulated game.
-    */
+        which the RAVE statistics are stored to the end of the simulated game. */
     bool WeightRaveUpdates() const;
 
     /** See WeightRaveUpdates() */
@@ -864,8 +797,7 @@ public:
         during a search. The minimum count is PruneMinCount() at the beginning
         of the search and is doubled every time a pruning operation does not
         reduce the tree by at least a factor of 2. The creation of the pruned
-        tree uses the temporary tree (see GetTempTree()).
-    */
+        tree uses the temporary tree (see GetTempTree()). */
     bool PruneFullTree() const;
 
     /** See PruneFullTree() */
@@ -879,8 +811,7 @@ public:
 
     /** Terminate the search if the counts can no longer be represented
         precisely by SgUctValue.
-        Default is true.
-    */
+        Default is true. */
     bool CheckFloatPrecision() const;
 
     /** See CheckFloatPrecision() */
@@ -905,23 +836,20 @@ public:
     // @} // name
 
     /** Get state of one of the threads.
-        Requires: ThreadsCreated()
-    */
+        Requires: ThreadsCreated() */
     SgUctThreadState& ThreadState(int i) const;
 
     /** Check if threads are already created.
         The threads are created at the beginning of the first search
         (to allow multi-step construction with setting the policy after
-        the constructor call).
-    */
+        the constructor call). */
     bool ThreadsCreated() const;
 
     /** Create threads.
         The threads are created at the beginning of the first search
         (to allow multi-step construction with setting the policy after
         the constructor call). This function needs to be called explicitely
-        only, if a thread state is going to be used before the first search.
-    */
+        only, if a thread state is going to be used before the first search. */
     void CreateThreads();
 
 private:
@@ -945,8 +873,7 @@ private:
     private:
         /** Copyable function object that invokes Thread::operator().
             Needed because the the constructor of boost::thread copies the
-            function object argument.
-        */
+            function object argument. */
         class Function
         {
         public:
@@ -980,8 +907,7 @@ private:
 
         /** The thread.
             Order dependency: must be constructed as the last member, because
-            the constructor starts the thread.
-        */
+            the constructor starts the thread. */
         boost::thread m_thread;
 
         void operator()();
@@ -1001,8 +927,7 @@ private:
     std::vector<SgUctValue> m_knowledgeThreshold;
 
     /** Flag indicating that the search was terminated because the maximum
-        time or number of games was reached.
-    */
+        time or number of games was reached. */
     volatile bool m_aborted;
     
     volatile bool m_isTreeOutOfMemory;
@@ -1013,8 +938,7 @@ private:
     bool m_wasEarlyAbort;
 
     /** See SgUctEarlyAbortParam.
-        The auto pointer is empty, if no early abort is used.
-    */
+        The auto pointer is empty, if no early abort is used. */
     std::auto_ptr<SgUctEarlyAbortParam> m_earlyAbort;
 
     /** See SgUctMoveSelect */
@@ -1072,8 +996,7 @@ private:
         every game. The interval is updated dynamically according to the
         current games/sec, such that it is called ten times per second
         (if the total search time is at least one second, otherwise ten times
-        per total maximum search time)
-    */
+        per total maximum search time) */
     SgUctValue m_checkTimeInterval;
 
     volatile SgUctValue m_nextCheckTime;
@@ -1121,16 +1044,14 @@ private:
     /** Mutex for protecting global variables during multi-threading.
         Currently, only the play-out phase of games is thread safe, therefore
         this lock is always locked elsewhere (in-tree phase, updating of
-        values and statistics, etc.)
-    */
+        values and statistics, etc.) */
     boost::recursive_mutex m_globalMutex;
 
     SgUctSearchStat m_statistics;
 
     /** List of threads.
         The elements are owned by the vector (shared_ptr is only used because
-        auto_ptr should not be used with standard containers)
-    */
+        auto_ptr should not be used with standard containers) */
     std::vector<boost::shared_ptr<Thread> > m_threads;
 
 #if SG_UCTFASTLOG

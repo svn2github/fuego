@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgGtpCommands.h
-    General utility GTP commands.
-*/
+    General utility GTP commands. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_GTPCOMMANDS_H
@@ -19,8 +18,7 @@
     You should make it a member of your engine to ensure that its lifetime
     is as long as the engine's lifetime, otherwise the pointers in GtpCallback
     will point to freed memory.
-    @see @ref sggtpcommandscommands
-*/
+    @see @ref sggtpcommandscommands */
 class SgGtpCommands
 {
 public:
@@ -28,8 +26,7 @@ public:
         @param engine The GTP engine (needed for wrapper commands that invoke
         arbitrary other engine commands like sg_compare_float)
         @param programPath The path to the executable for the engine for
-        sg_debug, 0 if unknown
-    */
+        sg_debug, 0 if unknown */
     SgGtpCommands(GtpEngine& engine, const char* programPath = 0);
 
     virtual ~SgGtpCommands();
@@ -47,8 +44,7 @@ public:
         - @link CmdDebugger() @c sg_debugger @endlink
         - @link CmdExec() @c sg_exec @endlink
         - @link CmdParam() @c sg_param @endlink
-        - @link CmdQuiet() @c quiet @endlink
-    */
+        - @link CmdQuiet() @c quiet @endlink */
     /** @name Command Callbacks */
     // @{
     virtual void CmdCompareFloat(GtpCommand&);
@@ -70,8 +66,7 @@ public:
 
     /** Register commands at engine.
         Make sure that this object lives as long as the GtpEngine,
-        for example by making it a member of the engine.
-    */
+        for example by making it a member of the engine. */
     void Register(GtpEngine& engine);
 
 private:

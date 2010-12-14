@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSetupUtilTest.cpp
-    Unit tests for GoSetupUtil.
-*/
+    Unit tests for GoSetupUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

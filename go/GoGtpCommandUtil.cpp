@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoGtpCommandUtil.cpp
-*/
+/** @file GoGtpCommandUtil.cpp */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -20,8 +19,7 @@ using SgPointUtil::Pt;
 namespace {
 
 /** Comparison of gogui-analyze_commands lines for
-    SortResponseAnalyzeCommands
-*/
+    SortResponseAnalyzeCommands */
 bool LessAnalyzeLabel(const string& line1, const string& line2)
 {
     // Analyze label is the second entry in the line, separator is '/'

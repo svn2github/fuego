@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GtpEngineTest.cpp
-    Unit tests for GtpEngine.
-*/
+    Unit tests for GtpEngine. */
 //----------------------------------------------------------------------------
 
 #include "../GtpEngine.h"
@@ -167,8 +166,7 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_CommandWithID)
 
 /** GTP engine returning invalid responses for testing class GtpEngine.
     For testing that the base class GtpEngine sanitizes responses of
-    subclasses that contain empty lines (see @ref GtpEngine::MainLoop).
-*/
+    subclasses that contain empty lines (see @ref GtpEngine::MainLoop). */
 class InvalidResponseEngine
     : public GtpEngine
 {

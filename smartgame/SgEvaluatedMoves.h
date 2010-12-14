@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgEvaluatedMoves.h
-    Data structure for keeping move values.
-*/
+    Data structure for keeping move values. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_EVALUATEDMOVES_H
@@ -16,8 +15,7 @@
     with that value.
     @todo  Originally worked with any SgMove, but introduction of SgPointSet
     relevant now requires SgMove=SgPoint. Should be made independent of that
-    again, otherwise, why not merge with SgEvaluatedMovesArray?
-*/
+    again, otherwise, why not merge with SgEvaluatedMovesArray? */
 class SgEvaluatedMoves
 {
 public:
@@ -104,8 +102,7 @@ protected:
 //----------------------------------------------------------------------------
 
 /** Simple data structure keeps an integer value for each point on a board.
-    @todo better name: SgEvaluatedPoints?
-*/
+    @todo better name: SgEvaluatedPoints? */
 class SgEvaluatedMovesArray
     : public SgEvaluatedMoves
 {

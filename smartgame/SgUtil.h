@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUtil.h
-    Small utility functions
-*/
+    Small utility functions */
 //----------------------------------------------------------------------------
 
 #ifndef SG_UTIL_H
@@ -47,8 +46,7 @@ inline void UpperLimit(T& x, const T& limit)
 
 /** Utility class to assure balance between black and white plays.
     The difference between the number of plays by both colors
-    is forced to be within the margin.
-*/
+    is forced to be within the margin. */
 class SgBalancer
 {
 public:

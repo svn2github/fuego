@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBlock.h
-    A block contained in a GoRegionBoard.
-*/
+    A block contained in a GoRegionBoard. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_BLOCK_H
@@ -21,8 +20,7 @@ class GoRegion;
 
 /** A block augmented by a list of its healthy regions.
     Used together with GoRegion in GoRegionBoard.
-    @todo Avoid cyclic dependency with GoBlock
-*/
+    @todo Avoid cyclic dependency with GoBlock */
 class GoBlock
 {
 public:
@@ -30,8 +28,7 @@ public:
         Parameters:
         color: color of block
         anchor: stone identifying block
-        board: the board we are on
-    */
+        board: the board we are on */
     GoBlock(SgBlackWhite color, SgPoint anchor, const GoBoard& board)
         : m_has1Eye(false),
           m_bd(board),
@@ -81,8 +78,7 @@ public:
     }
 
     /** set of all liberties
-        @todo slow
-    */
+        @todo slow */
     SgPointSet Liberties() const
     {
         return m_stones.Border(m_bd.Size()) & m_bd.AllEmpty();
@@ -179,8 +175,7 @@ protected:
     const GoBoard& m_bd;
 
     /** This constructor used only in GoChain constructor
-        Stones is set to the union of the merged chains.
-    */
+        Stones is set to the union of the merged chains. */
     GoBlock(const GoBlock* b, const SgPointSet& stones,
            const SgVectorOf<GoRegion>& healthy)
         : m_healthy(healthy),

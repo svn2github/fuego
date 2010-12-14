@@ -22,6 +22,5 @@
     - <a href="http://www.lysator.liu.se/~gunnar/gtp/">
     GTP - Go Text Protocol</a>
     - <a href="http://www.gnu.org/software/gnugo/gnugo_19.html#SEC204">
-    GNU Go GTP Command Reference</a>
-*/
+    GNU Go GTP Command Reference</a> */
 

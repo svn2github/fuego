@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpLibertyPlayer.h
-    Liberty player, concentrates on low liberty stones
-*/
+    Liberty player, concentrates on low liberty stones */
 //----------------------------------------------------------------------------
 
 #ifndef SP_LIBERTYPLAYER_H
@@ -13,8 +12,7 @@
 //----------------------------------------------------------------------------
 
 /** Tries to capture and escape with low liberty stones
-    Blocks with few liberties are very important to this player 
-*/
+    Blocks with few liberties are very important to this player  */
 class SpLibertyMoveGenerator
     : public SpStaticMoveGenerator
 {

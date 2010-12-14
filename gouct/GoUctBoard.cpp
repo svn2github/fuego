@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoard.cpp
-    See GoBoard.h
-*/
+    See GoBoard.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -23,8 +22,7 @@ namespace {
     Check some data structures for consistency after and before each play
     (and at some other places).
     This is an expensive check and therefore has to be enabled at compile
-    time.
-*/
+    time. */
 const bool CONSISTENCY = false;
 
 } // namespace
@@ -338,8 +336,7 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
 /** Remove liberty from adjacent blocks and kill opponent blocks without
     liberties.
     As a side effect, computes adjacent blocks of own color to avoid a
-    second call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone().
-*/
+    second call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone(). */
 void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                                   SgSList<Block*,4>& ownAdjBlocks)
 {

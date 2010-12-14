@@ -19,6 +19,5 @@
 
     - %GtpEngine
     - SmartGame
-    - Go
-*/
+    - Go */
 

@@ -24,8 +24,7 @@ public:
 
     /** Get moves to filter in the current position.
         This function is invoked by the player before the search, it does not
-        need to be thread-safe.
-    */
+        need to be thread-safe. */
     std::vector<SgPoint> Get();
 
     // @} // @name
@@ -35,8 +34,7 @@ public:
     // @{
 
     /** Prune unsuccesful ladder defense moves (unless the ladder would be
-        short).
-    */
+        short). */
     bool CheckLadders() const;
 
     /** See CheckLadders() */
@@ -53,13 +51,11 @@ private:
     bool m_checkLadders;
 
     /** Minimum ladder length necessary to prune loosing ladder defense moves.
-        @see m_checkLadders
-    */
+        @see m_checkLadders */
     int m_minLadderLength;
 
     /** Local variable in Get().
-        Reused for efficiency.
-    */
+        Reused for efficiency. */
     mutable SgVector<SgPoint> m_ladderSequence;
 };
 

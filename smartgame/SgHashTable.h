@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgHashTable.h
-    Hash table.
-*/
+    Hash table. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_HASHTABLE_H
@@ -45,16 +44,14 @@ public:
 
     /** Leaves the positions in the hash table, but set all depths to zero, so
         that only the best move is valid, not the value. The hash entries will
-        easily be replaced by fresh information.
-    */
+        easily be replaced by fresh information. */
     void Age();
 
     /** Clear the hash table by marking all entries as invalid. */
     void Clear();
 
     /** Return true and the data stored under that code, or false if
-        none stored.
-    */
+        none stored. */
     bool Lookup(const SgHashCode& code, DATA* data) const;
 
     /** Size of hash table. */
@@ -62,8 +59,7 @@ public:
 
     /** Try to store 'data' under the hash code 'code'.
         Return whether the data was stored. The only reason for not storing
-        it would be some 'better' data already hashing to the same hash code.
-    */
+        it would be some 'better' data already hashing to the same hash code. */
     bool Store(const SgHashCode& code, const DATA& data);
 
     /** number of collisions on store */

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoNodeUtil.h
-    Utility functions for Go trees.
-*/
+    Utility functions for Go trees. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_NODEUTIL_H
@@ -29,13 +28,11 @@ namespace GoNodeUtil
                                const SgVector<SgPoint>& wPoints);
 
     /** Find komi that is valid for this node.
-        Search parent nodes until a node with a komi property is found.
-    */
+        Search parent nodes until a node with a komi property is found. */
     GoKomi GetKomi(const SgNode* node);
 
     /** Find handicap that is valid for this node.
-        Search parent nodes until a node with a handicap property is found.
-    */
+        Search parent nodes until a node with a handicap property is found. */
     int GetHandicap(const SgNode* node);
 }
 

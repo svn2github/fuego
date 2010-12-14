@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpCommandUtilTest.cpp
-    Unit tests for GoGtpCommandUtil.
-*/
+    Unit tests for GoGtpCommandUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -32,8 +31,7 @@ SgPoint ParsePoint(const string& s)
 namespace {
 
 /** Test that GoGtpCommandUtil::GetHandicapStones() returns stones according
-    to the GTP standard.
-*/
+    to the GTP standard. */
 BOOST_AUTO_TEST_CASE(GoGtpCommandUtilTest_GetHandicapStones)
 {
     // GTP locations are defined up to size 25, but SG_MAX_SIZE could be

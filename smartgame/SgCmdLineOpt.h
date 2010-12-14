@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgCmdLineOpt.h
-    Parser for command line options.
-*/
+    Parser for command line options. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_CMDLINEOPT_H
@@ -62,8 +61,7 @@
         }
         return 0;
     }
-    @endverbatim
-*/
+    @endverbatim */
 class SgCmdLineOpt
 {
 public:
@@ -72,28 +70,23 @@ public:
     bool Contains(const char* option) const;
 
     /** Get a list of the remaining command line arguments that are not an
-        option.
-    */
+        option. */
     const std::vector<std::string>& GetArguments() const;
 
     /** Get value of a floating point option.
-        @throws SgException on error
-    */        
+        @throws SgException on error */        
     double GetDouble(const char* option) const;
 
     /** Get value of a floating point option or use default value.
-        @throws SgException on error
-    */        
+        @throws SgException on error */        
     double GetDouble(const char* option, double defaultValue) const;
 
     /** Get value of an integer option.
-        @throws SgException on error
-    */        
+        @throws SgException on error */        
     int GetInteger(const char* option) const;
 
     /** Get value of an integer option or use default value.
-        @throws SgException on error
-    */        
+        @throws SgException on error */        
     int GetInteger(const char* option, int defaultValue) const;
 
     /** Get value of a string option. */
@@ -109,8 +102,7 @@ public:
         @param specs
         Array of valid options (not including the leading '-').
         Append ':' to options that are allowed to have an argument.
-        @throws SgException on error
-    */
+        @throws SgException on error */
     void Parse(int argc, char* argv[], const std::vector<std::string>& specs);
 
     /** Parse options from user created array.
@@ -118,8 +110,7 @@ public:
         function uses char* arguments, but for testing this class with a
         user created array, it is better to use const char*, because
         assigning a string constant to char* causes compiler warnings with
-        some compilers.
-    */
+        some compilers. */
     void Parse(int argc, const char* argv[],
                const std::vector<std::string>& specs);
 

@@ -3,8 +3,7 @@
     Recognize safe territories using 1-vital and 2-vital definitions
     under alternating play
     from Martin Mueller's thesis [Mueller 95, p. 62-63] 
-    and from [Mueller 97b].
-*/
+    and from [Mueller 97b]. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_SAFETYSOLVER_H
@@ -15,8 +14,7 @@
 //----------------------------------------------------------------------------
 
 /** Improved static detection of safe blocks and regions
-    Uses static rules to find 1-vital, 2-vital and safely surrounded areas.
-*/
+    Uses static rules to find 1-vital, 2-vital and safely surrounded areas. */
 class GoSafetySolver : public GoStaticSafetySolver
 {
 public:
@@ -46,8 +44,7 @@ public:
 protected:  
 
     /** See GoStaticSafetySolver::RegionHealthyForBlock.
-        This implementation uses 1-vital information
-    */
+        This implementation uses 1-vital information */
     virtual bool RegionHealthyForBlock(const GoRegion& r,
                                        const GoBlock& b) const;
 

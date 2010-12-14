@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctUtil.h
-*/
+/** @file GoUctUtil.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_UTIL_H
@@ -27,8 +26,7 @@ class SgUctTree;
 
 /** General utility functions used in GoUct.
     These functions are used in GoUct, but should not depend on other classes
-    in GoUct to avoid cyclic dependencies.
-*/
+    in GoUct to avoid cyclic dependencies. */
 namespace GoUctUtil
 {
     /** reject random move if it was self atari */
@@ -41,8 +39,7 @@ namespace GoUctUtil
     
     /** Conservative clump correction.
         Only "very clumpy" moves are replaced.
-        If false, more "clumps" are replaced.
-    */
+        If false, more "clumps" are replaced. */
     const bool CONSERVATIVE_CLUMP = true;
 
     /** Used in clump correction. */
@@ -72,23 +69,20 @@ namespace GoUctUtil
         @param bd
         @param p A (legal) move
         @return The replacement move, if one was found, otherwise the
-        original move.
-     */
+        original move. */
     template<class BOARD>
     bool DoSelfAtariCorrection(const BOARD& bd, SgPoint& p);
 
     /** Check if p makes ugly clump. Possibly replace by neighbor.
         If p is close to many own stones:
         check if neighboring point looks better. If
-        yes, replace by neighbor.
-    */
+        yes, replace by neighbor. */
     template<class BOARD>
     bool DoClumpCorrection(const BOARD& bd, SgPoint& p);
 
     /** Check, if playing at a lib gains liberties.
         Does not handle capturing moves for efficiency. Not needed, because
-        capturing moves have a higher priority in the playout.
-    */
+        capturing moves have a higher priority in the playout. */
     template<class BOARD>
     bool GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib);
 
@@ -105,8 +99,7 @@ namespace GoUctUtil
           setup stones)
         # All points in the corner up to and including the 5th row are empty
         @return A randomly selected move that fulfills the conditions or
-        SG_NULLPOINT if no such move exists.
-    */
+        SG_NULLPOINT if no such move exists. */
     SgPoint GenForcedOpeningMove(const GoBoard& bd);
 
     /** Filter for generating moves in random phase.
@@ -114,8 +107,7 @@ namespace GoUctUtil
         GoBoardUtil::IsCompletelySurrounded() returns false.
         If a policy generates no pass move as long as there are still moves
         on the board that this function would return true for, then the
-        end position can be scored with GoBoardUtil::ScoreSimpleEndPosition().
-    */
+        end position can be scored with GoBoardUtil::ScoreSimpleEndPosition(). */
     template<class BOARD>
     bool GeneratePoint(const BOARD& bd, SgBalancer& balancer, SgPoint p, 
                        SgBlackWhite toPlay);
@@ -127,8 +119,7 @@ namespace GoUctUtil
         shadow stones in GoGui).
         @param search The search containing the tree and statistics
         @param toPlay The color toPlay at the root node of the tree
-        @param out The stream to write the gfx commands to
-    */
+        @param out The stream to write the gfx commands to */
     void GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
                      std::ostream& out);
 
@@ -137,8 +128,7 @@ namespace GoUctUtil
         analyze command type "gfx" after the search (see http://gogui.sf.net).
         Prints a LABEL command to display the move counts.
         @param tree
-        @param out The stream to write the gfx commands to
-    */
+        @param out The stream to write the gfx commands to */
     void GfxCounts(const SgUctTree& tree, std::ostream& out);
 
     /** Print the move values as Gfx commands for GoGui.
@@ -148,8 +138,7 @@ namespace GoUctUtil
         INFLUENCE gfx command.
         @param search The search containing the tree and statistics
         @param toPlay The color to play in the root node of the UCT tree
-        @param out The stream to write the gfx commands to
-    */
+        @param out The stream to write the gfx commands to */
     void GfxMoveValues(const SgUctSearch& search, SgBlackWhite toPlay,
                        std::ostream& out);
 
@@ -169,15 +158,13 @@ namespace GoUctUtil
         - Abrt = Percentage of games aborted (due to maximum game length)
         - Gm/s = Simulations per second
         @param search The search containing the tree and statistics
-        @param out The stream to write the gfx commands to
-    */
+        @param out The stream to write the gfx commands to */
     void GfxStatus(const SgUctSearch& search, std::ostream& out);
 
     /** Print territory statistics as GoGui gfx commands.
         Can be used for GoGui live graphics during the search or GoGui
         analyze command type "gfx" after the search (see http://gogui.sf.net).
-        Uses INFLUENCE gfx command.
-    */
+        Uses INFLUENCE gfx command. */
     void GfxTerritoryStatistics(
             const SgPointArray<SgUctStatistics>& territoryStatistics,
             const GoBoard& bd, std::ostream& out);
@@ -196,8 +183,7 @@ namespace GoUctUtil
         tree
         @param toPlay The color toPlay at the root node of the tree
         @param out The stream to save to tree to
-        @param maxDepth Only save tree to a certain depth. -1 means no limit.
-    */
+        @param maxDepth Only save tree to a certain depth. -1 means no limit. */
     void SaveTree(const SgUctTree& tree, int boardSize, const SgBWSet& stones,
                   SgBlackWhite toPlay, std::ostream& out, int maxDepth = -1);
 
@@ -213,8 +199,7 @@ namespace GoUctUtil
         @param random The random generator
         @param balancer The balancer used in GeneratePoint()
         @return The move or SG_NULLMOVE if no empty point is a legal move that
-        should be generated
-    */
+        should be generated */
     template<class BOARD>
     SgPoint SelectRandom(const BOARD& bd, SgBlackWhite toPlay,
                          GoPointList& emptyPts,
@@ -227,8 +212,7 @@ namespace GoUctUtil
     /** Return statistics of all children of a node.
         @param search The search containing the tree and statistics
         @param bSort Whether sort the children
-        @param node The node
-    */
+        @param node The node */
     std::string ChildrenStatistics(const SgUctSearch& search,
                                    bool bSort, const SgUctNode& node);
 
@@ -417,8 +401,7 @@ inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgBalancer& balancer,
             static int count = 0;
             if (++count < 30)
                 SgDebug() << bd << "Removed mutual atari"
-                << SgWriteMove(p, bd.ToPlay()) << '\n';
-            */
+                << SgWriteMove(p, bd.ToPlay()) << '\n'; */
             return true;
         }
     }

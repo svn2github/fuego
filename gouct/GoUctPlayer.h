@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctPlayer.h
-    Class GoUctPlayer.
-*/
+    Class GoUctPlayer. */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_PLAYER_H
@@ -77,8 +76,7 @@ public:
     GoUctPlayoutPolicyParam m_playoutPolicyParam;
 
     /** Constructor.
-        @param bd The board.
-    */
+        @param bd The board. */
     GoUctPlayer(GoBoard& bd);
 
     ~GoUctPlayer();
@@ -130,8 +128,7 @@ public:
     /** Automatically adapt the search parameters optimized for the current
         board size.
         If on, GoUctGlobalSearch::SetDefaultParameters will automatically
-        be called, if the board size changes.
-    */
+        be called, if the board size changes. */
     bool AutoParam() const;
 
     /** See AutoParam() */
@@ -141,16 +138,14 @@ public:
         Aborts search early, if value is above 1 - ResignThreshold(), and
         performs a second search to see, if it is still a win and all points
         are safe (using territory statistics) after playing a pass. If this
-        is true, it plays a pass.
-    */
+        is true, it plays a pass. */
     bool EarlyPass() const;
 
     /** See EarlyPass() */
     void SetEarlyPass(bool enable);
 
     /** Enforce opening moves in the corner on large boards.
-        See GoUctUtil::GenForcedOpeningMove. Default is true.
-    */
+        See GoUctUtil::GenForcedOpeningMove. Default is true. */
     bool ForcedOpeningMoves() const;
 
     /** See ForcedOpeningMoves() */
@@ -158,8 +153,7 @@ public:
 
     /** Ignore time settings of the game.
         Ignore time record given to GenMove() and only obeys maximum
-        number of games and maximum time. Default is true.
-    */
+        number of games and maximum time. Default is true. */
     bool IgnoreClock() const;
 
     /** See IgnoreClock() */
@@ -173,8 +167,7 @@ public:
 
     /** Think during the opponents time.
         For enabling pondering, ReuseSubtree() also has to be true.
-        Pondering search will be terminated after MaxGames() or 60 min.
-    */
+        Pondering search will be terminated after MaxGames() or 60 min. */
     bool EnablePonder() const;
 
     /** See EnablePonder() */
@@ -183,8 +176,7 @@ public:
     /** Minimum number of simulations to check for resign.
         This minimum number of simulations is also required to apply the
         early pass check (see EarlyPass()).
-        Default is 3000.
-    */
+        Default is 3000. */
     SgUctValue ResignMinGames() const;
 
     /** See ResignMinGames()     */
@@ -199,16 +191,14 @@ public:
     /** Reuse subtree from last search.
         Reuses the subtree from the last search, if the current position is
         a number of regular game moves later than the position that the
-        previous search corresponds to.
-    */
+        previous search corresponds to. */
     bool ReuseSubtree() const;
 
     /** See ReuseSubtree() */
     void SetReuseSubtree(bool enable);
 
     /** Threshold for position value to resign.
-        Default is 0.01.
-    */
+        Default is 0.01. */
     SgUctValue ResignThreshold() const;
 
     /** See ResignThreshold() */
@@ -246,8 +236,7 @@ public:
     GoUctRootFilter& RootFilter();
 
     /** Set a new root filter.
-        Deletes the old root filter and takes ownership of the new filter.
-    */
+        Deletes the old root filter and takes ownership of the new filter. */
     void SetRootFilter(GoUctRootFilter* filter);
 
     void SetMpiSynchronizer(const SgMpiSynchronizerHandle &synchronizerHandle);
@@ -297,8 +286,7 @@ public:
 
     boost::scoped_ptr<GoUctRootFilter> m_rootFilter;
 
-    /** Playout policy used if search mode is GOUCT_SEARCHMODE_PLAYOUTPOLICY.
-    */
+    /** Playout policy used if search mode is GOUCT_SEARCHMODE_PLAYOUTPOLICY. */
     boost::scoped_ptr<GoUctPlayoutPolicy<GoBoard> > m_playoutPolicy;
 
     SgMpiSynchronizerHandle m_mpiSynchronizer;
@@ -569,8 +557,7 @@ void GoUctPlayer<SEARCH, THREAD>::ClearStatistics()
     @param maxGames Maximum simulations for the search
     @param maxTime Maximum time for the search
     @param[out] move The move to play (pass or a neutral point to fill)
-    @return @c true, if it is still a win and everything is safe after a pass
-*/
+    @return @c true, if it is still a win and everything is safe after a pass */
 template <class SEARCH, class THREAD>
 bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames, 
                                                     double maxTime,
@@ -691,8 +678,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
     handles the decision to discard an aborted FindInitTree differently)
     @return The best move or SG_NULLMOVE if terminal position (can also
     happen, if @c isDuringPondering, no search was performed, because
-    DoSearch() was aborted during FindInitTree()).
-*/
+    DoSearch() was aborted during FindInitTree()). */
 template <class SEARCH, class THREAD>
 SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay, 
                                               double maxTime,
@@ -793,8 +779,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay,
     Goes back in the tree until the node is found, the search tree is valid
     for and checks if the path of nodes corresponds to an alternating
     sequence of moves starting with the color to play of the search tree.
-    @see SetReuseSubtree
-*/
+    @see SetReuseSubtree */
 template <class SEARCH, class THREAD>
 void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree, 
                                                SgBlackWhite toPlay,
@@ -1022,8 +1007,7 @@ const SgDefaultTimeControl& GoUctPlayer<SEARCH, THREAD>::TimeControl() const
 }
 
 /** Verify that the move selected by DoEarlyPassSearch is viable.
-    Prevent blunders from so-called neutral moves that are not.
-*/
+    Prevent blunders from so-called neutral moves that are not. */
 template <class SEARCH, class THREAD>
 bool GoUctPlayer<SEARCH, THREAD>::VerifyNeutralMove(SgUctValue maxGames, 
                                                     double maxTime,

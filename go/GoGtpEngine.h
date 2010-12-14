@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpEngine.h
-    GtpEngine with GoBoard, GoPlayer and GoGame.
-*/
+    GtpEngine with GoBoard, GoPlayer and GoGame. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GTPENGINE_H
@@ -24,8 +23,7 @@
 //----------------------------------------------------------------------------
 
 /** GtpEngine with GoBoard, GoPlayer and GoGame.
-    @see gogtpenginecommands
-*/
+    @see gogtpenginecommands */
 class GoGtpEngine
     : public GtpEngine
 {
@@ -73,8 +71,7 @@ public:
         - @link CmdTimeLastMove() @c time_last_move @endlink
         - @link CmdTimeLeft() @c time_left @endlink
         - @link CmdTimeSettings() @c time_settings @endlink
-        - @link CmdUndo() @c undo @endlink
-    */
+        - @link CmdUndo() @c undo @endlink */
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file
@@ -136,8 +133,7 @@ public:
         (e.g. TsumeGo solvers) This causes player-specific GTP commands,
         like @c reg_genmove) not to be registered.
         @param noHandicap Don't register handicap commands (useful, to
-        avoid accepting handicap games on KGS)
-    */
+        avoid accepting handicap games on KGS) */
     GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoardSize,
                 const char* programPath = 0, bool noPlayer = false,
                 bool noHandicap = false);
@@ -151,20 +147,17 @@ public:
 
     /** Automatically save game after each move.
         @param prefix Filename prefix; game number and file extension sgf
-        will be added.
-    */
+        will be added. */
     void SetAutoSave(const std::string& prefix);
 
     /** File to save statistics.
         An empty string means that the statistics will not be saved (default
         behavior).
-        @see CreateStatisticsSlots()
-    */
+        @see CreateStatisticsSlots() */
     void SetStatisticsFile(const std::string& fileName);
 
     /** Automatically write board to SgDebug() after changes.
-        Default is false.
-    */
+        Default is false. */
     void SetAutoShowBoard(bool showBoard);
 
     /** Write everything written to SgDebug() during a genmove command to the
@@ -173,23 +166,20 @@ public:
         stream. After the move generation, SgDebug() will be reset to its old
         value and the string will be written to SgDebug(), as well as added
         as a comment to the new game node.
-        Default is false.
-    */
+        Default is false. */
     void SetDebugToComment(bool debugToComment);
 
     /** Set maximum number of clear_board commands.
         -1 means no limit (default).
         After the limit is reached, the clear_board command will fail.
         This limit can be used to limit the game loop of the Computer
-        bot interface to the Kiseido Go server http://kgs.kiseido.com.
-    */
+        bot interface to the Kiseido Go server http://kgs.kiseido.com. */
     void SetMaxClearBoard(int n);
 
     /** Set named rules.
         @param namedRules Named rules.
         @exception SgException on unknown rules.
-        @see GoRules::SetNamedRules
-    */
+        @see GoRules::SetNamedRules */
     void SetNamedRules(const std::string& namedRules);
 
     /** See TimeLimit() */
@@ -200,25 +190,21 @@ public:
 
 #if GTPENGINE_PONDER
     /** Implementation of GtpEngine::Ponder()
-        Calls GoPlayer::Ponder() if a player is set.
-    */
+        Calls GoPlayer::Ponder() if a player is set. */
     void Ponder();
 
     /** Implementation of GtpEngine::StopPonder()
-        Calls SgSetUserAbort()
-    */
+        Calls SgSetUserAbort() */
     void StopPonder();
 
     /** Implementation of GtpEngine::InitPonder()
-        Calls SgSetUserAbort(false)
-    */
+        Calls SgSetUserAbort(false) */
     void InitPonder();
 #endif // GTPENGINE_PONDER
 
 #if GTPENGINE_INTERRUPT
     /** Implementation of GtpEngine::Interrupt().
-        Calls SgSetUserAbort()
-    */
+        Calls SgSetUserAbort() */
     void Interrupt();
 #endif // GTPENGINE_INTERRUPT
 
@@ -235,8 +221,7 @@ protected:
         them to register external classes, which handle player specific GTP
         commands. These external classes can be constructed with a reference
         to this pointer, such that they can access the player they need.
-        They have to check first, that the current player is the expected one.
-    */
+        They have to check first, that the current player is the expected one. */
     GoPlayer* m_player;
 
     boost::scoped_ptr<GoAutoBook> m_autoBook;
@@ -244,14 +229,12 @@ protected:
     /** Hook function to be executed before each command.
         Resets user abort flag. Lengthy functions should poll SgUserAbort but
         should not reset the user abort flag themselves.
-        Also flushes SgDebug() (see comment at BeforeWritingResponse()).
-    */
+        Also flushes SgDebug() (see comment at BeforeWritingResponse()). */
     void BeforeHandleCommand();
 
     /** Hook function to be executed before the response of a command is
         written.
-        Flushes SgDebug().
-    */
+        Flushes SgDebug(). */
     void BeforeWritingResponse();
 
     GoBoard& Board();
@@ -279,21 +262,18 @@ protected:
     /** Write integer array response to command.
         Elements with the value numeric_limits<int>::min() are considered to
         have no defined value and are written as "" for compatibility with
-        GoGui.
-    */
+        GoGui. */
     void RespondNumberArray(GtpCommand& cmd, const SgPointArray<int>& array,
                             int scale);
 
     /** Set player.
-        Takes ownership of player.
-    */
+        Takes ownership of player. */
     void SetPlayer(GoPlayer* player);
 
     void Init(int size);
 
     /** Play a move in game and goto new node.
-        @throws GtpFailure If move stack overflow or illegal move.
-    */
+        @throws GtpFailure If move stack overflow or illegal move. */
     void Play(SgBlackWhite color, SgPoint move);
 
 protected:
@@ -310,13 +290,11 @@ protected:
         subclass should use AddStatistics() to fill in the values. Only
         defined slots may be used. Slots that are not filled in will get the
         value '-'
-        @see SetStatisticsFile()
-    */
+        @see SetStatisticsFile() */
     virtual std::vector<std::string> CreateStatisticsSlots();
 
     /** Add statistics for the last generated move.
-        See CreateStatisticsSlots(). Default implementation does nothing.
-    */
+        See CreateStatisticsSlots(). Default implementation does nothing. */
     virtual void AddPlayStatistics();
 
     /** See CreateStatisticsSlots() */
@@ -372,13 +350,11 @@ private:
 
     /** Maximum number of clear_board commands.
         -1, if no limit.
-        @see SetMaxClearBoard()
-    */
+        @see SetMaxClearBoard() */
     int m_maxClearBoard;
 
     /** Number of clear_board commands.
-        @see SetMaxClearBoard()
-    */
+        @see SetMaxClearBoard() */
     int m_numberClearBoard;
 
     double m_timeLastMove;
@@ -393,8 +369,7 @@ private:
     GoGtpTimeSettings m_timeSettings;
 
     /** Default rules.
-        Will be used whenever a new game is started.
-    */
+        Will be used whenever a new game is started. */
     GoRules m_defaultRules;
 
     GoBoard m_board;
@@ -509,8 +484,7 @@ inline double GoGtpEngine::TimeLimit()
 //----------------------------------------------------------------------------
 
 /** Assertion handler that can be registered with SgRegisterAssertionHandler.
-    Calls GoBoardUtil::DumpBoard with the engine's board.
-*/
+    Calls GoBoardUtil::DumpBoard with the engine's board. */
 class GoGtpAssertionHandler
     : public SgAssertionHandler
 {

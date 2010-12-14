@@ -4,8 +4,7 @@
 
     An example of a strategy: keep a territory safe that was proven safe
     earlier on. The strategy contains answers to any opponent threat.
-    Strategies can be generated, tracked, and enforced during search.
-*/
+    Strategies can be generated, tracked, and enforced during search. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_STRATEGY_H
@@ -33,8 +32,7 @@ std::ostream& operator<<(std::ostream& stream, SgStrategyStatus s);
 //----------------------------------------------------------------------------
 
 /** Strategy for achieving a certain goal.
-    Pure virtual class, see e.g. SgMiaiStrategy for an implementation.
-*/
+    Pure virtual class, see e.g. SgMiaiStrategy for an implementation. */
 class SgStrategy
 {
 public:

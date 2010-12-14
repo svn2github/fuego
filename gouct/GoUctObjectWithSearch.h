@@ -11,8 +11,7 @@ class GoUctSearch;
 
 /** Interface implemented by object that owns a (single) GoUctSearch.
     If a GoPlayer implements this interface, the GoUctSearch related GTP
-    commands in GoUctCommands can be used with this player.
-*/
+    commands in GoUctCommands can be used with this player. */
 class GoUctObjectWithSearch
 {
 public:

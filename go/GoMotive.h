@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoMotive.h
-    Enumerations GoMotive and GoModifier.
- */
+    Enumerations GoMotive and GoModifier. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_MOTIVE_H
@@ -13,8 +12,7 @@
 //----------------------------------------------------------------------------
 
 /** Move motives.
-    These motives were originally used in the Explorer Go program.
-*/
+    These motives were originally used in the Explorer Go program. */
 enum GoMotive
 {
     /** Dummy motive used as placeholder */

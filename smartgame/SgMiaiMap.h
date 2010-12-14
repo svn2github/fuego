@@ -1,8 +1,7 @@
 //----------------------------------------------------------------------------
 /** @file SgMiaiMap.h
     Efficient implementation of a consistent (not broken) SgMiaiStrategy.
-
-*/
+ */
 //----------------------------------------------------------------------------
 
 #ifndef SG_MIAIMAP_H
@@ -21,8 +20,7 @@
     Uses two boards, one for each color.
     Board entries either point to the miai point, 
     or are set to SG_NULLPOINT if the point is not part of a miai.
-    Can only be used going forward through a game - does not support undo.
-*/
+    Can only be used going forward through a game - does not support undo. */
 class SgMiaiMap
 {
 public:
@@ -39,17 +37,14 @@ public:
     SgStrategyStatus Status() const;
 
     /** Convert SgMiaiStrategy into SgMiaiMap. 
-        The SgMiaiStrategy must not have overlapping threats.
-    */
+        The SgMiaiStrategy must not have overlapping threats. */
     void ConvertFromSgMiaiStrategy(const SgMiaiStrategy& s);
     
-    /** Convert SgMiaiMap into SgMiaiStrategy. 
-    */
+    /** Convert SgMiaiMap into SgMiaiStrategy.  */
     void ConvertToSgMiaiStrategy(SgMiaiStrategy* s) const;
 private:
     /** Move that must be played to stop or convert an open threat.
-        Returns SG_NULLPOINT if no such move.
-    */
+        Returns SG_NULLPOINT if no such move. */
     SgPoint m_forcedMove;
     
     /** Strategy has failed if opponent has occupied both points in a pair */

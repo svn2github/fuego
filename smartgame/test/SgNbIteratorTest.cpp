@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgNbIteratorTest.cpp
-    Unit tests for SgNbIterator.
-*/
+    Unit tests for SgNbIterator. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

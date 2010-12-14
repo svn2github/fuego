@@ -15,14 +15,12 @@
     streams.
     The implementation of this class is platform-dependent. Currently, only
     POSIX systems are supported (it also uses GCC-specific extensions to
-    open C++ streams from file descriptors).
-*/
+    open C++ streams from file descriptors). */
 class SgProcess
 {
 public:
     /** Constructor.
-        @throws SgException on failure
-    */
+        @throws SgException on failure */
     SgProcess(const std::string& command);
 
     ~SgProcess();

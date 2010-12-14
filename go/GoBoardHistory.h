@@ -17,15 +17,13 @@
     - the rules
     - the setup stones and color to play before any moves were played
     - the history of moves (needed if super-ko rules are used)
-    - the current color to play
- */
+    - the current color to play */
 class GoBoardHistory
 {
 public:
     /** Constructor.
         The initial state is that the history does not correspond to any
-        valid position.
-    */
+        valid position. */
     GoBoardHistory();
 
     /** Initialize from a current board position. */
@@ -35,8 +33,7 @@ public:
         @param other The other position
         @param[out] sequence The sequence leading from the other position to
         this one
-        @return @c true If the position is a follow-up
-    */
+        @return @c true If the position is a follow-up */
     bool IsAlternatePlayFollowUpOf(const GoBoardHistory& other,
                                    std::vector<SgPoint>& sequence);
 

@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctSearch.h
-*/
+/** @file GoUctSearch.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_SEARCH_H
@@ -19,8 +18,7 @@ class SgNode;
 
 //----------------------------------------------------------------------------
 
-/** Thread state for GoUctSearch.
-*/
+/** Thread state for GoUctSearch. */
 class GoUctState
     : public SgUctThreadState
 {
@@ -30,8 +28,7 @@ public:
         constructor of SgUctThreadState.
         @param bd The board with the current position. The state has is own
         board that will be synchronized with the currently searched position
-        in StartSearch()
-    */
+        in StartSearch() */
     GoUctState(unsigned int threadId, const GoBoard& bd);
 
     /** @name Pure virtual functions of SgUctThreadState */
@@ -129,8 +126,7 @@ inline const GoUctBoard& GoUctState::UctBoard() const
 //----------------------------------------------------------------------------
 
 /** Live-gfx mode used in GoUctSearch.
-    @see GoUctSearch::LiveGfx.
-*/
+    @see GoUctSearch::LiveGfx. */
 enum GoUctLiveGfx
 {
     /** Don't print live-gfx information. */
@@ -143,8 +139,7 @@ enum GoUctLiveGfx
         Shows the main variation on the board instead of the counts and values
         (main variation and counts cannot be shown at the same time, because
         the sequence numbers conflict with the counts).
-        The status line shows the same information as in GoGuiGfx()
-    */
+        The status line shows the same information as in GoGuiGfx() */
     GOUCT_LIVEGFX_SEQUENCE
 };
 
@@ -157,8 +152,7 @@ class GoUctSearch
 public:
     /** Constructor.
         @param bd The board
-        @param factory
-    */
+        @param factory */
     GoUctSearch(GoBoard& bd, SgUctThreadStateFactory* factory);
 
     ~GoUctSearch();
@@ -195,8 +189,7 @@ public:
 
     /** See SetKeepGames()
         @throws SgException if KeepGames() was false at last invocation of
-        StartSearch()
-    */
+        StartSearch() */
     void SaveGames(const std::string& fileName) const;
 
     /** See GoUctUtil::SaveTree() */
@@ -215,8 +208,7 @@ public:
     // @{
 
     /** Keep a SGF tree of all games.
-        This is reset in OnStartSearch() and can be saved with SaveGames().
-    */
+        This is reset in OnStartSearch() and can be saved with SaveGames(). */
     bool KeepGames() const;
 
     /** See KeepGames() */
@@ -226,8 +218,7 @@ public:
         If enabled, LiveGfx commands for GoGui are outputted to the debug
         stream every n games. Note that GoUctUtil::GoGuiGfx() outputs values
         as influence data and assumes values in [0:1].
-        @see GoUctLiveGfxMode, LiveGfxInterval()
-    */
+        @see GoUctLiveGfxMode, LiveGfxInterval() */
     GoUctLiveGfx LiveGfx() const;
 
     /** See LiveGfx() */
@@ -235,8 +226,7 @@ public:
 
     /** Interval for outputting of live graphics commands for GoGui.
         Default is every 5000 games.
-        @see LiveGfx()
-    */
+        @see LiveGfx() */
     int LiveGfxInterval() const;
 
     /** See LiveGfxInterval() */
@@ -259,14 +249,12 @@ private:
         Does not use GoBoard::ToPlay(), because the color to play at the
         root node of the search could be needed after the board has
         changed (e.g. when saving the tree after a move was generated and
-        played on the board).
-    */
+        played on the board). */
     SgBlackWhite m_toPlay;
 
     /** Stones of position that the current search tree belongs to.
         Needed such that the tree can be saved even if the board has
-        changed (e.g. after a move was generated and played).
-    */
+        changed (e.g. after a move was generated and played). */
     SgBWSet m_stones;
 
     GoBoard& m_bd;
@@ -358,8 +346,7 @@ namespace GoUctSearchUtil
         and other needed information (like board, rules,
         SgUctSearch::ToPlay(), SgUctSearch::UseCount())
         @return The second best move, if the above applies and such a move
-        exists.
-    */
+        exists. */
     SgPoint TrompTaylorPassCheck(SgPoint move, const GoUctSearch& search);
 }
 

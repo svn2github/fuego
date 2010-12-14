@@ -18,8 +18,7 @@
     queried for arguments and used for writing the response to.
     GTP error responses are created by throwing an instance of GtpFailure.
     All such exceptions are caught in the main loop and converted
-    into a response with error status.
-*/
+    into a response with error status. */
 //----------------------------------------------------------------------------
 
 #ifndef GTPENGINE_H
@@ -44,8 +43,7 @@
     waiting for the next command. This can be used for thinking during the
     opponent's time.
     Enabling this macro adds a dependency on the Boost.Thread library.
-    @see GtpEngine::Ponder()
-*/
+    @see GtpEngine::Ponder() */
 #define GTPENGINE_PONDER 1
 #endif
 
@@ -54,8 +52,7 @@
     If this macro is enabled, GtpEngine has the additional function
     Interrupt() to interrupt a running command.
     Enabling this macro adds a dependency on the Boost.Thread library.
-    @see GtpEngine::Interrupt()
-*/
+    @see GtpEngine::Interrupt() */
 #define GTPENGINE_INTERRUPT 1
 #endif
 
@@ -86,8 +83,7 @@
     GtpFailure failure;
     failure.ResponseStream() << message << ...;
     throw failure;
-    @endverbatim
-*/
+    @endverbatim */
 class GtpFailure
 {
 public:
@@ -99,16 +95,14 @@ public:
 
     /** Copy constructor.
         Needed for operator<<.
-        Preserves the internal string stream format state.
-    */
+        Preserves the internal string stream format state. */
     GtpFailure(const GtpFailure& failure);
 
     /** Destructor. */
     ~GtpFailure() throw();
 
     /** Get the response.
-        Returns a copy of the text in the internal string stream.
-    */
+        Returns a copy of the text in the internal string stream. */
     std::string Response() const;
 
     /** Get the internal string stream. */
@@ -119,8 +113,7 @@ private:
 };
 
 /** @relates GtpFailure
-    @note Returns a new object, see @ref GtpFailure
-*/
+    @note Returns a new object, see @ref GtpFailure */
 template<typename TYPE>
 GtpFailure operator<<(const GtpFailure& failure, const TYPE& type)
 {
@@ -130,8 +123,7 @@ GtpFailure operator<<(const GtpFailure& failure, const TYPE& type)
 }
 
 /** @relates GtpFailure
-    @note Returns a new object, see @ref GtpFailure
-*/
+    @note Returns a new object, see @ref GtpFailure */
 template<typename TYPE>
 GtpFailure operator<<(const GtpFailure& failure, TYPE& type)
 {
@@ -162,47 +154,40 @@ inline std::ostream& GtpFailure::ResponseStream()
 
     The response message format does not have any special requirement,
     it will be sanitized by GtpEngine before writing to form a valid
-    GTP response (see @ref GtpEngine::MainLoop).
-*/
+    GTP response (see @ref GtpEngine::MainLoop). */
 
 class GtpCommand
 {
 public:
     /** Construct empty command.
         @warning An empty command cannot be used, before Init() was called.
-        This constructor exists only to reuse instances.
-    */
+        This constructor exists only to reuse instances. */
     GtpCommand();
 
     /** Construct with a command line.
-        @see Init()
-    */
+        @see Init() */
     GtpCommand(const std::string& line);
 
     /** Conversion to output stream.
-        Returns reference to response stream.
-    */
+        Returns reference to response stream. */
     operator std::ostream&();
 
     /** Get argument.
         @param number Argument index starting with 0
         @return Argument value
-        @throws GtpFailure If no such argument
-    */
+        @throws GtpFailure If no such argument */
     const std::string& Arg(std::size_t number) const;
 
     /** Get single argument.
         @return Argument value
         @throws GtpFailure If no such argument or command has more than one
-        arguments
-    */
+        arguments */
     const std::string& Arg() const;
 
     /** Get argument converted to lowercase.
         @param number Argument index starting with 0
         @return Copy of argument value converted to lowercase
-        @throws GtpFailure If no such argument
-    */
+        @throws GtpFailure If no such argument */
     std::string ArgToLower(std::size_t number) const;
 
     /** Get argument converted to a type.
@@ -210,8 +195,7 @@ public:
         <tt>operator<<(istream)</tt>.
         @param i Argument index starting with 0
         @return The converted argument
-        @throws Failure If no such argument, or argument cannot be converted
-    */
+        @throws Failure If no such argument, or argument cannot be converted */
     template<typename T>
     T Arg(std::size_t i) const;
 
@@ -220,8 +204,7 @@ public:
         <tt>operator<<(istream)</tt>.
         @return The converted argument
         @throws Failure If no such argument, argument cannot be converted or
-        command has more than one arguments
-    */
+        command has more than one arguments */
     template<typename T>
     T Arg() const;
 
@@ -232,8 +215,7 @@ public:
         @param i The minimum value
         @return The converted argument
         @throws Failure If no such argument, argument cannot be converted,
-        or is less than the minimum value
-    */
+        or is less than the minimum value */
     template<typename T>
     T ArgMin(std::size_t i, const T& min) const;
 
@@ -245,54 +227,46 @@ public:
         @param i The maximum value of the range
         @return The converted argument
         @throws Failure If no such argument, argument cannot be converted,
-        or is not contained in the range.
-    */
+        or is not contained in the range. */
     template<typename T>
     T ArgMinMax(std::size_t i, const T& min, const T& max) const;
 
     /** Check that command has no arguments.
-        @throws GtpFailure If command has arguments
-    */
+        @throws GtpFailure If command has arguments */
     void CheckArgNone() const;
 
     /** Check number of arguments.
         @param number Expected number of arguments
-        @throws GtpFailure If command has a different number of arguments
-    */
+        @throws GtpFailure If command has a different number of arguments */
     void CheckNuArg(std::size_t number) const;
 
     /** Check maximum number of arguments.
         @param number Expected maximum number of arguments
-        @throws GtpFailure If command has more arguments
-    */
+        @throws GtpFailure If command has more arguments */
     void CheckNuArgLessEqual(std::size_t number) const;
 
     /** Get command ID.
-        @return ID or empty string, if command has no ID
-    */
+        @return ID or empty string, if command has no ID */
     std::string ID() const;
 
     /** Initialize with a command line.
         The line should be not empty, not contain only whitespaces and not
         be a comment line.
         It will be split into the optional numeric command ID, the command
-        name, and arguments.
-    */
+        name, and arguments. */
     void Init(const std::string& line);
 
     /** Get argument line.
         Get all arguments as a line.
         No modfications to the line were made apart from trimmimg leading
-        and trailing white spaces.
-    */
+        and trailing white spaces. */
     std::string ArgLine() const;
 
     /** Get command line.
         Returns full command line as given to the constructor or
         GtpCommand::Init.
         No modfications to the line were made apart from trimmimg leading
-        and trailing white spaces.
-    */
+        and trailing white spaces. */
     const std::string& Line() const;
 
     /** Get argument name. */
@@ -306,13 +280,11 @@ public:
         @return The remaining line after the given argument, unmodified apart
         from leading and trailing whitespaces, which are trimmed. Quotation
         marks are not handled.
-        @throws GtpFailure If no such argument
-    */
+        @throws GtpFailure If no such argument */
     std::string RemainingLine(std::size_t number) const;
 
     /** Get response.
-        @return A copy of the internal response string stream
-    */
+        @return A copy of the internal response string stream */
     std::string Response() const;
 
     /** Get internal response string stream */
@@ -326,43 +298,35 @@ public:
 
 
     /** @name Deprecated functions
-        Will be removed in the future.
-    */
+        Will be removed in the future. */
     // @{
 
     /** Deprecated
-        @deprecated Use Arg<bool>() instead
-    */
+        @deprecated Use Arg<bool>() instead */
     bool BoolArg(std::size_t number) const;
 
     /** Deprecated
-        @deprecated Use Arg<double>() instead
-    */
+        @deprecated Use Arg<double>() instead */
     double FloatArg(std::size_t number) const;
 
     /** Deprecated
-        @deprecated Use Arg<int>() instead
-    */
+        @deprecated Use Arg<int>() instead */
     int IntArg(std::size_t number) const;
 
     /** Deprecated
-        @deprecated Use ArgMin<int>() instead
-    */
+        @deprecated Use ArgMin<int>() instead */
     int IntArg(std::size_t number, int min) const;
 
     /** Deprecated
-        @deprecated Use ArgMinMax<int>() instead
-    */
+        @deprecated Use ArgMinMax<int>() instead */
     int IntArg(std::size_t number, int min, int max) const;
 
     /** Deprecated
-        @deprecated Use Arg<size_t>() instead
-    */
+        @deprecated Use Arg<size_t>() instead */
     std::size_t SizeTypeArg(std::size_t number) const;
 
     /** Deprecated
-        @deprecated Use ArgMin<size_t>() instead
-    */
+        @deprecated Use ArgMin<size_t>() instead */
     std::size_t SizeTypeArg(std::size_t number, std::size_t min) const;
 
     // @}
@@ -373,8 +337,7 @@ private:
     {
         /** Argument value.
             Enclosing quotes are removed if there were any and escape
-            characters within enclosing quotes are removed.
-        */
+            characters within enclosing quotes are removed. */
         std::string m_value;
 
         /** Position of first character in m_line after this argument. */
@@ -526,8 +489,7 @@ public:
     @note Instances keep a pointer to the object containing the member
     function. If the object does is not a subclass of GtpEngine and registers
     only its own members, you have to make sure that the object's lifetime
-    exceeds the lifetime of the GtpEngine.
-*/
+    exceeds the lifetime of the GtpEngine. */
 template<class ENGINE>
 class GtpCallback
     : public GtpCallbackBase
@@ -583,16 +545,14 @@ void GtpCallback<ENGINE>::operator()(GtpCommand& cmd)
     command, not when the response to the previous command is received,
     because GtpEngine continues reading the stream while the previous command
     is in progress. This functionality is only enabled, if GtpEngine was
-    compiled with GTPENGINE_INTERRUPT.
-*/
+    compiled with GTPENGINE_INTERRUPT. */
 
 /** Base class for GTP (Go Text Protocol) engines.
     Commands can be added with GtpEngine::Register().
     Existing commands can be overridden by registering a new handler for
     the command or by overriding the command handler member function
     in subclasses.
-    @see @ref gtpenginecommands, @ref gtpenginesimulatedelay
-*/
+    @see @ref gtpenginecommands, @ref gtpenginesimulatedelay */
 class GtpEngine
 {
 public:
@@ -602,8 +562,7 @@ public:
         - @link CmdName() @c name @endlink
         - @link CmdProtocolVersion() @c protocol_version @endlink
         - @link CmdQuit() @c quit @endlink
-        - @link CmdVersion() @c version @endlink
-    */
+        - @link CmdVersion() @c version @endlink */
     /** @name Command Callbacks */
     // @{
     virtual void CmdKnownCommand(GtpCommand&);
@@ -616,8 +575,7 @@ public:
 
     /** Constructor.
         @param in Input GTP stream
-        @param out Output GTP stream
-    */
+        @param out Output GTP stream */
     GtpEngine(GtpInputStream& in, GtpOutputStream& out);
 
     virtual ~GtpEngine();
@@ -627,8 +585,7 @@ public:
         @param name The file name
         @param log Stream for logging the commands and responses to (default
         is std::cerr).
-        @throw GtpFailure If a command fails
-    */
+        @throw GtpFailure If a command fails */
     void ExecuteFile(const std::string& name, std::ostream& log = std::cerr);
 
     /** Execute a single command string.
@@ -636,8 +593,7 @@ public:
         @param log Stream for logging the command and response to (default
         is std::cerr).
         @returns The command response
-        @throw GtpFailure If the command fails
-    */
+        @throw GtpFailure If the command fails */
     std::string ExecuteCommand(const std::string& cmd,
                                std::ostream& log = std::cerr);
 
@@ -646,21 +602,18 @@ public:
         handler and writes the response to the output stream.
         Empty lines in the command responses will be replaced by a line
         containing a single space, because empty lines are not allowed
-        in GTP responses.
-    */
+        in GTP responses. */
     void MainLoop();
 
     /** Register command handler.
         Takes ownership of callback.
         If a command was already registered with the same name,
-        it will be replaced by the new command.
-    */
+        it will be replaced by the new command. */
     void Register(const std::string& name, GtpCallbackBase* callback);
 
     /** Register a member function as a command handler.
         If a command was already registered with the same name,
-        it will be replaced by the new command.
-    */
+        it will be replaced by the new command. */
     template<class T>
     void Register(const std::string& command,
                   typename GtpCallback<T>::Method method, T* instance);
@@ -687,8 +640,7 @@ public:
         of the blocking std::getline (maybe in a future version of
         Boost.Thread), this function could also be called in other GTP
         commands.
-        @see MainLoop()
-    */
+        @see MainLoop() */
     void SetQuit();
 
     /** Did the last command set the quit flag? */
@@ -708,20 +660,17 @@ public:
         StopPonder() will set it. Ponder() will poll the abort flag and return
         when it is set (or it has nothing to do; or some maximum time limit
         for pondering was exceeded).
-        The default implementation does nothing and returns immediately.
-    */
+        The default implementation does nothing and returns immediately. */
     virtual void Ponder();
 
     /** Prepare for pondering.
         @see Ponder()
-        The default implementation does nothing.
-    */
+        The default implementation does nothing. */
     virtual void InitPonder();
 
     /** Stop pondering.
         @see Ponder()
-        The default implementation does nothing.
-    */
+        The default implementation does nothing. */
     virtual void StopPonder();
 #endif // GTPENGINE_PONDER
 
@@ -731,21 +680,18 @@ public:
         <a href="http://gogui.sf.net">GoGui</a>. It will be called from a
         different thread that the command thread when the special command
         line <tt># interrupt</tt> is received.
-        The default implementation does nothing.
-    */
+        The default implementation does nothing. */
     virtual void Interrupt();
 #endif // GTPENGINE_INTERRUPT
 
 protected:
     /** Hook function to be executed before each command.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void BeforeHandleCommand();
 
     /** Hook function to be executed before the response of a command is
         written.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void BeforeWritingResponse();
 
 private:

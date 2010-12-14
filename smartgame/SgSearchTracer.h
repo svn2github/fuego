@@ -2,8 +2,7 @@
 /** @file SgSearchTracer.h
     Trace search for SgSearch.
 
-    SgSearchTracer stores the whole search in a game tree using SgNode's.
-*/
+    SgSearchTracer stores the whole search in a game tree using SgNode's. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SEARCHTRACER_H
@@ -37,8 +36,7 @@ public:
 
      /** Adds move property to node (game-dependent). 
          The default implementation stores the move in a SgMoveProp.
-         Override this method for other games.
-     */
+         Override this method for other games. */
     virtual void AddMoveProp(SgNode* node, SgMove move,
                              SgBlackWhite player);
     
@@ -51,8 +49,7 @@ public:
 
     /** Go one move up in the trace tree.
         Don't do anything if m_traceNode is null.
-        To be called from the client's TakeBack method.
-    */
+        To be called from the client's TakeBack method. */
     void TakeBackTraceNode();
 
     /** Is tracing on? Default implementation always returns true. */

@@ -2,8 +2,7 @@
 /** @file SgWrite.h
     Utility write functions for SmartGo data types.
     @todo Write functions logically belong to the files of the classes they
-    are outputting; should be moved.
-*/
+    are outputting; should be moved. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_WRITE_H
@@ -22,8 +21,7 @@
 //----------------------------------------------------------------------------
 
 /** Write left aligned text with a minimum width of 15 characters.
-    Also appends a space to the label text.
-*/
+    Also appends a space to the label text. */
 class SgWriteLabel
 {
 public:
@@ -41,8 +39,7 @@ private:
 //----------------------------------------------------------------------------
 
 /** Write all points in list.
-    Splits long lists into multiple lines.
-*/
+    Splits long lists into multiple lines. */
 class SgWritePointList
 {
 public:
@@ -120,8 +117,7 @@ std::ostream& operator<<(std::ostream& out,
 //----------------------------------------------------------------------------
 
 /** Write player color and move for games in which a move is a SgPoint.
-    @todo Move to SgPoint, merge class with SgWritePoint.
-*/
+    @todo Move to SgPoint, merge class with SgWritePoint. */
 class SgWriteMove
 {
 public:

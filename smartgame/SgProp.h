@@ -5,8 +5,7 @@
     Module SgProp defines properties that are stored in each node of a game
     tree. Most properties correspond to items written in the SGF file format,
     but there are other properties that are hidden and only used by the
-    system.
-*/
+    system. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_PROP_H
@@ -33,15 +32,13 @@ typedef int SgPropFlags;
 /** Game dependent format for point values of SGF properties. */
 enum SgPropPointFmt {
     /** Point format used in Go.
-        Points are written as two letters. 'aa' is top left corner.
-    */
+        Points are written as two letters. 'aa' is top left corner. */
     SG_PROPPOINTFMT_GO,
 
     /** Point format used in Hex and Reversi.
         Points are written as letter/number. 'a1' is top left corner.
         Both letters 'i' and 'j' are used ('i' is not skipped as in standard
-        Go coordinates)
-    */
+        Go coordinates) */
     SG_PROPPOINTFMT_HEX
 };
 
@@ -53,8 +50,7 @@ namespace SgPropUtil
                                         bool escapeColon);
 
     /** Return point format for a given game.
-        Returns SG_PROPPOINTFMT_GO for unknown game numbers.
-    */
+        Returns SG_PROPPOINTFMT_GO for unknown game numbers. */
     SgPropPointFmt GetPointFmt(int gameNumber);
 
     /** Convert point to SGF point string. */
@@ -63,8 +59,7 @@ namespace SgPropUtil
 
     /** Convert SGF point string to point.
         @return The point or SG_PASS (only allowed if point format is
-        SG_PROPPOINTFMT_GO) or SG_NULLMOVE, if s is not a valid point.
-     */
+        SG_PROPPOINTFMT_GO) or SG_NULLMOVE, if s is not a valid point. */
     SgPoint SgfStringToPoint(const std::string& s, int boardSize,
                              SgPropPointFmt fmt);
 }
@@ -128,8 +123,7 @@ const int SG_PROPCLASS_NEWLINE = 1 << 16;
 //----------------------------------------------------------------------------
 
 /** Property list.
-    Implemented as list of pointers to objects derived from Property.
-*/
+    Implemented as list of pointers to objects derived from Property. */
 class SgPropList
 {
 public:
@@ -147,32 +141,27 @@ public:
         Note that SG_PROP_INFO, SG_PROP_ANNOTATE, SG_PROP_POS_ANNO,
         SG_PROP_MOVE_ANNO, and SG_PROP_COUNT match any property that has the
         corresponding flag set.
-        @return 0 if there is no such property.
-    */
+        @return 0 if there is no such property. */
     SgProp* Get(SgPropID id) const;
 
     /** Return the first property in the list that matches the given text. */
     SgProp* GetPropContainingText(const std::string& findText) const;
 
     /** Add the property to this property list.
-        Enforces that no two properties of the same kind are added.
-    */
+        Enforces that no two properties of the same kind are added. */
     void Add(const SgProp* prop);
 
     /** If the property with the given ID exists, move it to the front of this
-        property list.
-    */
+        property list. */
     void MoveToFront(SgPropID id);
 
     /** Remove the property from the property list.
-        Return true if the property was in the list.
-    */
+        Return true if the property was in the list. */
     bool Remove(const SgProp* prop);
 
     /** Remove any properties that match 'id' from this list, and
         dispose them, except don't touch *protectProp if it's in
-        the list.
-    */
+        the list. */
     void Remove(SgPropID id, const SgProp* protectProp);
 
     void RemoveProp(SgPropID id) { Remove(id, 0); }
@@ -184,8 +173,7 @@ public:
         ?! doubtful move SG_PROP_DOUBTFUL <br>
         ?  bad move SG_PROP_BAD_MOVE[1] <br>
         ?? very bad move SG_PROP_BAD_MOVE[2] <br>
-        Return true if a move annotation was added.
-    */
+        Return true if a move annotation was added. */
     bool AppendMoveAnnotation(std::string* s) const;
 
 private:
@@ -262,21 +250,18 @@ public:
     virtual ~SgProp();
 
     /** Override this function for each property class to return an exact
-        duplicate of this property.
-    */
+        duplicate of this property. */
     virtual SgProp* Duplicate() const = 0;
 
     /** Return the property type of this property. */
     SgPropID ID() const;
 
     /** Get the flags for this property type.
-        Not normally overridden.
-    */
+        Not normally overridden. */
     virtual SgPropFlags Flags() const;
 
     /** Get the the label for this property type.
-        Overridden only by SgPropUnknown.
-    */
+        Overridden only by SgPropUnknown. */
     virtual std::string Label() const;
 
     /** Return whether any of the given flags are set for this property. */
@@ -288,15 +273,13 @@ public:
         Use the default file format if 'fileFormat' is
         zero; use the proper version of the sgf file format if 'fileFormat'
         is 3 or greater.
-        @return true if the property should be written to file
-    */
+        @return true if the property should be written to file */
     virtual bool ToString(std::vector<std::string>& values, int boardSize,
                           SgPropPointFmt fmt, int fileFormat) const = 0;
 
     /** Override this method to convert the string read from disk to the value
         of this property, and set the value of this property.
-        @return true, if the string could be converted to a valid property.
-    */
+        @return true, if the string could be converted to a valid property. */
     virtual bool FromString(const std::vector<std::string>& values,
                             int boardSize, SgPropPointFmt fmt) = 0;
 
@@ -309,8 +292,7 @@ public:
         Abstract properties can be registered with 'prop' set to 0.
         No property object of that type can be instantiated.
         (?? useful for searching?)
-        This method asserts and returns 0 if the registry is full.
-    */
+        This method asserts and returns 0 if the registry is full. */
     static SgPropID Register(SgProp* prop, const char* label,
                              SgPropFlags flags = 0);
 
@@ -318,20 +300,17 @@ public:
     static SgProp* CreateProperty(SgPropID id);
 
     /** Return the ID for a given label.
-        Return SG_PROP_NONE if there is no property with that label.
-    */
+        Return SG_PROP_NONE if there is no property with that label. */
     static SgPropID GetIDOfLabel(const std::string& label);
 
     /** Convert the text specified in the Find dialog to special propIDs to
         search for.
-        Return SG_PROP_NONE if the literal text should be searched for.
-    */
+        Return SG_PROP_NONE if the literal text should be searched for. */
     static SgPropID ConvertFindTextToPropID(const std::string& findText);
 
     /** Initialize properties.
         Registers most properties. Does not register SG_PROP_MOVE_BLACK ("B")
-        and SG_PROP_MOVE_WHITE ("W"), because they are game dependent.
-    */
+        and SG_PROP_MOVE_WHITE ("W"), because they are game dependent. */
     static void Init();
 
     /** Finalize properties. */
@@ -339,39 +318,33 @@ public:
 
     /** If this property is marked as either SG_PROPCLASS_BLACK or
         SG_PROPCLASS_WHITE, return that property.
-        Otherwise the return value is undefined (checked with assertion).
-    */
+        Otherwise the return value is undefined (checked with assertion). */
     SgBlackWhite Player() const;
 
     bool IsPlayer(SgBlackWhite player) const;
 
     /** If the given property is marked as either SG_PROPCLASS_BLACK or
         SG_PROPCLASS_WHITE, return the property of the opposite color,
-        otherwise return 'id'.
-    */
+        otherwise return 'id'. */
     static SgPropID OpponentProp(SgPropID id);
 
     /** If the given property is marked as either SG_PROPCLASS_BLACK or
         SG_PROPCLASS_WHITE, return the property of player's color, otherwise
-        return 'id'.
-    */
+        return 'id'. */
     static SgPropID PlayerProp(SgPropID id, SgBlackWhite player);
 
     /** Override this method to do something special when changing the color
-        of a property (e.g. a value might need to be negated).
-    */
+        of a property (e.g. a value might need to be negated). */
     virtual void ChangeToOpponent();
 
     /** Return true if the given 'id' matches this property.
         The special properties SG_PROP_INFO, SG_PROP_ANNOTATE,
         SG_PROP_POS_ANNO, SG_PROP_MOVE_ANNO, and SG_PROP_COUNT match any
-        property that has the corresponding flag set.
-    */
+        property that has the corresponding flag set. */
     bool MatchesID(SgPropID id) const;
 
     /** Return true if this property matches the given text.
-        Override for specific properties.
-    */
+        Override for specific properties. */
     virtual bool ContainsText(const std::string& findText);
 
 protected:
@@ -419,8 +392,7 @@ inline bool SgProp::Flag(SgPropFlags flags) const
     Unknown properties are used to store properties read from file but not
     understood by this version. This property keeps the label and the string
     that were read in, so that it can be written out again in exactly the same
-    way.
-*/
+    way. */
 class SgPropUnknown
     : public SgProp
 {
@@ -536,8 +508,7 @@ public:
         @param id Property ID
         @param value Value
         @param precision Precision after dot.
-        0 means default precision.
-    */
+        0 means default precision. */
     SgPropReal(SgPropID id, double value, int precision = 0);
 
     SgProp* Duplicate() const;
@@ -586,8 +557,7 @@ inline void SgPropReal::SetValue(double value, int precision)
 //----------------------------------------------------------------------------
 
 /** A property with no associated value.
-    Works as a flag (property present/absent).
-*/
+    Works as a flag (property present/absent). */
 class SgPropSimple
     : public SgProp
 {
@@ -612,8 +582,7 @@ inline SgPropSimple::SgPropSimple(SgPropID id)
 
 /** Multiple property.
     @todo AR: Make sure it's in range[1..2]. Should be deleted if it's 0.
-    @todo AR: could do away with this after all, set flag instead?
-*/
+    @todo AR: could do away with this after all, set flag instead? */
 class SgPropMultiple
     : public SgPropInt
 {
@@ -683,8 +652,7 @@ inline SgPropTime::SgPropTime(SgPropID id, double value, int precision)
 //----------------------------------------------------------------------------
 
 /** Like SgPropTime, but gets stored with millisecond precision rather than
-    tenths of a second.
-*/
+    tenths of a second. */
 class SgPropMSec
     : public SgPropTime
 {
@@ -711,8 +679,7 @@ inline SgPropMSec::SgPropMSec(SgPropID id, double value)
 //----------------------------------------------------------------------------
 
 /** A property storing a point-move for games.
-    Only for games in which a move can be described by a point.
-*/
+    Only for games in which a move can be described by a point. */
 class SgPropMove
     : public SgProp
 {
@@ -902,24 +869,20 @@ public:
     SgProp* Duplicate() const;
 
     /** Return a list with all the points that have text associated with
-        them.
-    */
+        them. */
     const SgVector<SgPoint>& GetPointsWithText() const;
 
     /** If point 'p' has a string, copy that string into '*string' and return
         true.
-        Otherwise return false and don't change '*string'.
-    */
+        Otherwise return false and don't change '*string'. */
     bool GetStringAtPoint(SgPoint p, std::string* s) const;
 
     /** Set the string for point 'p' to 'string'.
-        If that point already has a string, replace it with the new string.
-    */
+        If that point already has a string, replace it with the new string. */
     void AddStringAtPoint(SgPoint p, const std::string& s);
 
     /** Append 'string' to the string for point 'p'.
-        If that point has no string, create a new one.
-    */
+        If that point has no string, create a new one. */
     void AppendToStringAtPoint(SgPoint p, const std::string& s);
 
     /** Remove any existing string for point 'p'. */
@@ -1005,8 +968,7 @@ inline void SgPropPlayer::SetValue(SgBlackWhite player)
 //----------------------------------------------------------------------------
 
 /** A property storing a list of stones to add to the board,
-    or points to make empty.
-*/
+    or points to make empty. */
 class SgPropAddStone
     : public SgPropPointList
 {

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoRules.h
-    Class GoRules.
-*/
+    Class GoRules. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_RULES_H
@@ -21,16 +20,14 @@ public:
     enum KoRule
     {
         /** Positional superko.
-            Full board repetition is forbidden, independent on who is to play.
-        */
+            Full board repetition is forbidden, independent on who is to play. */
         POS_SUPERKO,
 
         /** Only repetition of the position two moves ago is forbidden. */
         SIMPLEKO,
 
         /** Situational superko.
-            Full board repetition is forbidden, including who is to play.
-        */
+            Full board repetition is forbidden, including who is to play. */
         SUPERKO
     };
 
@@ -51,8 +48,7 @@ public:
 
     /** Whether it necessary to capture dead stones.
         With some rules all un-captured stones count as alive.
-        Default is false.
-    */
+        Default is false. */
     bool CaptureDead() const;
 
     /** See CaptureDead() */
@@ -73,8 +69,7 @@ public:
 
     /** True if using Japanese style scoring.
         Japanese style scoring counts territory and prisoners, but not
-        own stones.
-    */
+        own stones. */
     bool JapaneseScoring() const;
 
     void SetJapaneseScoring(bool japaneseScoring);
@@ -90,8 +85,7 @@ public:
 
     /** Each handicap stone counts as an extra komi point for white.
         This extra komi point is not included in the komi settings. Used by
-        the KGS Go server. Default is false.
-    */
+        the KGS Go server. Default is false. */
     bool ExtraHandicapKomi() const;
 
     /** See ExtraHandicapKomi() */
@@ -150,8 +144,7 @@ public:
         </tr>
         </table>
         @param namedRules The named rules.
-        @exception SgException If rule name is not known.
-     */
+        @exception SgException If rule name is not known. */
     void SetNamedRules(const std::string& namedRules);
 
 private:

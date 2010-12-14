@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgFastLog.h
-    Fast logarithm.
-*/
+    Fast logarithm. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_FASTLOG_H
@@ -16,8 +15,7 @@
     current CPUs: A fast logarithm implementation with adjustable accuracy.
     http://www.icsi.berkeley.edu/pubs/techreports/TR-07-002.pdf
 
-    The implementation assumes that the platform uses IEEE 754 floats.
-*/
+    The implementation assumes that the platform uses IEEE 754 floats. */
 class SgFastLog
 {
 public:

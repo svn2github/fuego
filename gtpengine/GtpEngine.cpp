@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GtpEngine.cpp
-    See GtpEngine.h
-*/
+    See GtpEngine.h */
 //----------------------------------------------------------------------------
 
 #include "GtpEngine.h"
@@ -45,8 +44,7 @@ void Trim(string& str);
 /** Check, if line contains a command.
     @param line The line to check.
     @return True, if command does not contain only whitespaces and is not a
-    comment line.
-*/
+    comment line. */
 bool IsCommandLine(const string& line)
 {
     string trimmedLine = line;
@@ -59,8 +57,7 @@ bool IsCommandLine(const string& line)
 /** Read next command from stream.
     @param in The input stream.
     @param[out] cmd The command (reused for efficiency)
-    @return @c false on end-of-stream or read error.
-*/
+    @return @c false on end-of-stream or read error. */
 bool ReadCommand(GtpCommand& cmd, GtpInputStream& in)
 {
     string line;
@@ -79,8 +76,7 @@ bool ReadCommand(GtpCommand& cmd, GtpInputStream& in)
     space.
     @param text The input string.
     @return The input string with all occurrences of "\n\n" replaced by
-    "\n \n".
-*/
+    "\n \n". */
 string ReplaceEmptyLines(const string& text)
 {
     if (text.find("\n\n") == string::npos)
@@ -102,8 +98,7 @@ string ReplaceEmptyLines(const string& text)
 
 /** Remove leading and trailing whitespaces from a string.
     Whitespaces are tab, carriage return and space.
-    @param str The input string.
-*/
+    @param str The input string. */
 void Trim(string& str)
 {
     char const* whiteSpace = " \t\r";
@@ -141,8 +136,7 @@ namespace {
 /** Ponder thread used by GtpEngine::MainLoop().
     This thread calls GtpEngine::Ponder() while the engine is waiting for the
     next command.
-    @see GtpEngine::Ponder()
-*/
+    @see GtpEngine::Ponder() */
 class PonderThread
 {
 public:
@@ -184,8 +178,7 @@ private:
 
     /** The thread to run the ponder function.
         Order dependency: must be constructed as the last member, because the
-        constructor starts the thread.
-    */
+        constructor starts the thread. */
     boost::thread m_thread;
 };
 
@@ -251,8 +244,7 @@ namespace {
     This thread is used instead of the simple function
     ReadCommand(GtpCommand&), if GtpEngine is compiled with interrupt
     support.
-    @see GtpEngine::Interrupt()
-*/
+    @see GtpEngine::Interrupt() */
 class ReadThread
 {
 public:
@@ -300,8 +292,7 @@ private:
 
     /** The thread to run the read command function.
         Order dependency: must be constructed as the last member, because the
-        constructor starts the thread.
-    */
+        constructor starts the thread. */
     boost::thread m_thread;
 };
 
@@ -585,8 +576,7 @@ std::size_t GtpCommand::SizeTypeArg(std::size_t number, std::size_t min) const
     Arguments are words separated by whitespaces.
     Arguments with whitespaces can be quoted with quotation marks ('"').
     Characters can be escaped with a backslash ('\').
-    @param line The line to split.
-*/
+    @param line The line to split. */
 void GtpCommand::SplitLine(const string& line)
 {
     m_arguments.clear();
@@ -702,8 +692,7 @@ void GtpEngine::CmdQuit(GtpCommand& cmd)
 
 /** Return empty version string.
     The GTP standard says to return empty string, if no meaningful reponse
-    is available.
-*/
+    is available. */
 void GtpEngine::CmdVersion(GtpCommand& cmd)
 {
     cmd.CheckArgNone();

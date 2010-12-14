@@ -9,8 +9,7 @@
     sample, which is easy in SgStatisticsBase, but not possible in
     SgStatisticsExt). However, member functions with the same meaning have the
     same name, so that the classes are easily replacable in user code and can
-    be used as template arguments.
-*/
+    be used as template arguments. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_STATISTICS_H
@@ -30,8 +29,7 @@
 
 /** Computes mean of a statistical variable.
     The template parameters are the floating point type and the counter type,
-    depending on the precision-memory tradeoff.
-*/
+    depending on the precision-memory tradeoff. */
 template<typename VALUE, typename COUNT>
 class SgStatisticsBase
 {
@@ -41,8 +39,7 @@ public:
     /** Create statistics initialized with values.
         Note that value must be initialized to 0 if count is 0.
         Equivalent to creating a statistics and calling @c count times
-        Add(val)
-    */
+        Add(val) */
     SgStatisticsBase(VALUE val, COUNT count);
 
     void Add(VALUE val);
@@ -61,16 +58,14 @@ public:
 
     /** Initialize with values.
         Equivalent to calling Clear() and calling @c count times
-        Add(val)
-    */
+        Add(val) */
     void Initialize(VALUE val, COUNT count);
 
     /** Check if the mean value is defined.
         The mean value is defined, if the count if greater than zero. The
         result of this function is equivalent to <tt>Count() > 0</tt>, for
         integer count types and <tt>Count() > epsilon()</tt> for floating
-        point count types.
-    */
+        point count types. */
     bool IsDefined() const;
 
     const VALUE& Mean() const;
@@ -79,13 +74,11 @@ public:
     void Write(std::ostream& out) const;
 
     /** Save in a compact platform-independent text format.
-        The data is written in a single line, without trailing newline.
-    */
+        The data is written in a single line, without trailing newline. */
     void SaveAsText(std::ostream& out) const;
 
     /** Load from text format.
-        See SaveAsText()
-    */
+        See SaveAsText() */
     void LoadFromText(std::istream& in);
 
 private:
@@ -234,8 +227,7 @@ void SgStatisticsBase<VALUE,COUNT>::SaveAsText(std::ostream& out) const
 
 /** Computes mean and variance of a statistical variable.
     The template parameters are the floating point type and the counter type,
-    depending on the precision-memory tradeoff.
-*/
+    depending on the precision-memory tradeoff. */
 template<typename VALUE, typename COUNT>
 class SgStatistics
 {
@@ -244,8 +236,7 @@ public:
 
     /** Create statistics initialized with values.
         Equivalent to creating a statistics and calling @c count times
-        Add(val)
-    */
+        Add(val) */
     SgStatistics(VALUE val, COUNT count);
 
     void Add(VALUE val);
@@ -266,13 +257,11 @@ public:
     void Write(std::ostream& out) const;
 
     /** Save in a compact platform-independent text format.
-        The data is written in a single line, without trailing newline.
-    */
+        The data is written in a single line, without trailing newline. */
     void SaveAsText(std::ostream& out) const;
 
     /** Load from text format.
-        See SaveAsText()
-    */
+        See SaveAsText() */
     void LoadFromText(std::istream& in);
 
 private:
@@ -379,8 +368,7 @@ void SgStatistics<VALUE,COUNT>::SaveAsText(std::ostream& out) const
 /** Extended version of SgStatistics.
     Also stores minimum and maximum values.
     The template parameters are the floating point type and the counter type,
-    depending on the precision-memory tradeoff.
-*/
+    depending on the precision-memory tradeoff. */
 template<typename VALUE, typename COUNT>
 class SgStatisticsExt
 {
@@ -497,15 +485,13 @@ void SgStatisticsExt<VALUE,COUNT>::Write(std::ostream& out) const
 
 /** Set of named statistical variables.
     The template parameters are the floating point type and the counter type,
-    depending on the precision-memory tradeoff.
-*/
+    depending on the precision-memory tradeoff. */
 template<typename VALUE, typename COUNT>
 class SgStatisticsCollection
 {
 public:
     /** Add the statistics of another collection.
-        The collections must contain the same entries.
-    */
+        The collections must contain the same entries. */
     void Add(const SgStatisticsCollection<VALUE,COUNT>& collection);
 
     void Clear();
@@ -606,8 +592,7 @@ void SgStatisticsCollection<VALUE,COUNT>::Write(std::ostream& o) const
 
 /** Histogram.
     The template parameters are the floating point type and the counter type,
-    depending on the precision-memory tradeoff.
-*/
+    depending on the precision-memory tradeoff. */
 template<typename VALUE, typename COUNT>
 class SgHistogram
 {
@@ -634,8 +619,7 @@ public:
         Writes the historgram in a format that likely can be used by other
         programs. Writes one x,y pair per line. The separator is TAB.
         The x-values are the left border values of the bins, the y-values
-        are the counts of the bins.
-    */
+        are the counts of the bins. */
     void Write(std::ostream& out) const;
 
     /** Write with labels.
@@ -645,8 +629,7 @@ public:
         Value[0]  100
         Value[10] 2000
         Value[20] 500
-        @endverbatim
-    */
+        @endverbatim */
     void WriteWithLabels(std::ostream& out, const std::string& label) const;
 
 private:

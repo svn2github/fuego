@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgRestorerTest.cpp
-    Unit tests for SgRestorer.
-*/
+    Unit tests for SgRestorer. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

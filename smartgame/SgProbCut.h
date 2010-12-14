@@ -4,8 +4,7 @@
     Implementation of Buro's Multi-ProbCut method for use with SgSearch.
     See <a href="http://www.cs.ualberta.ca/~mburo/publications.html">
     Michael Buro's publications</a> on ProbCut and Multi-ProbCut
-
-*/
+ */
 //----------------------------------------------------------------------------
 
 #ifndef SG_PROBCUT_H

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpTimeSettings.cpp
-    See GoGtpTimeSettings.h
-*/
+    See GoGtpTimeSettings.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

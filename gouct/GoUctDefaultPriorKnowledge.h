@@ -37,8 +37,7 @@ protected:
 //----------------------------------------------------------------------------
 
 /** Default prior knowledge heuristic.
-    Mainly uses GoUctPlayoutPolicy to generate prior knowledge.
-*/
+    Mainly uses GoUctPlayoutPolicy to generate prior knowledge. */
 class GoUctDefaultPriorKnowledge 
 : public GoUctKnowledge
 {

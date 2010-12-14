@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgVectorUtilityTest.cpp
-    Unit tests for SgVectorUtility.
-*/
+    Unit tests for SgVectorUtility. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpLibertyPlayer.cpp
-    See SpLibertyPlayer.h
-*/
+    See SpLibertyPlayer.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -50,8 +49,7 @@ int SpLibertyMoveGenerator::Score(SgPoint p)
 
 /** counts surplus liberties of all blocks, those above 2.
     penalty for less than 2 liberties.
-    @todo make threshold of 2 variable, experiment
-*/
+    @todo make threshold of 2 variable, experiment */
 int LibertyMinus2(const GoBoard& board, SgBlackWhite color)
 {
     int nuLibs = 0;

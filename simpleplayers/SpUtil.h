@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpUtil.h
-    Utility functions
-*/
+    Utility functions */
 //----------------------------------------------------------------------------
 
 #ifndef SP_UTIL_H
@@ -18,8 +17,7 @@ namespace SpUtil
 {
     /** Get all legal moves.
         Filters out moves into own safe territory with no opponent stones
-        adjacent if useFilter.
-    */
+        adjacent if useFilter. */
     SgPointSet GetRelevantMoves(GoBoard& bd, SgBlackWhite toPlay,
                                 bool useFilter);
 }

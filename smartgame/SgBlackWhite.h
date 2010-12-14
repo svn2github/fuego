@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBlackWhite.h
-    Color of player in two-player games (black/white).
-*/
+    Color of player in two-player games (black/white). */
 //----------------------------------------------------------------------------
 
 #ifndef SG_BLACKWHITE_H
@@ -55,8 +54,7 @@ inline char SgBW(SgBlackWhite color)
         "first with *it == SG_BLACK, then with *it == SG_WHITE"
         (unless it encounters a break or return inside)
     }
-    @endverbatim
-*/
+    @endverbatim */
 class SgBWIterator
 {
 public:

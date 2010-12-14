@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpCommandUtil.h
-    Utils for Go GTP commands
-*/
+    Utils for Go GTP commands */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GTPCOMMANDUTIL_H
@@ -37,16 +36,14 @@ namespace GoGtpCommandUtil
         @param n Number of handicap stones (0, 2, 3, 4, 5, 6, 7, 8, 9).
         @returns Location of the handicap stones.
         @throws GtpFailure If handicap locations are not defined for this
-        number and board size.
-    */
+        number and board size. */
     SgVector<SgPoint> GetHandicapStones(int size, int n);
 
     SgMove MoveArg(const GtpCommand& cmd, std::size_t number,
                    const GoBoard& board);
 
     /** Parse argument list consisting of toPlay followed by list of stones.
-        All stones are of the same 'defender' color.
-     */
+        All stones are of the same 'defender' color. */
     void ParseMultiStoneArgument(GtpCommand& cmd,
                                  const GoBoard& board,
                                  SgBlackWhite& toPlay,
@@ -59,8 +56,7 @@ namespace GoGtpCommandUtil
                      const GoBoard& board);
 
     /** Return point list argument starting a given argument number to the
-        end of arguments.
-    */
+        end of arguments. */
     SgVector<SgPoint> PointListArg(const GtpCommand& cmd, std::size_t number,
                                  const GoBoard& board);
 
@@ -76,8 +72,7 @@ namespace GoGtpCommandUtil
         from different components and should be displayed alphabetically.
         @param response Old response in the format expected by
         gogui-analyze_commands
-        @return New response, lines sorted by analyze label
-    */
+        @return New response, lines sorted by analyze label */
     std::string SortResponseAnalyzeCommands(const std::string& response);
 
     SgPoint StoneArg(const GtpCommand& cmd, std::size_t number,

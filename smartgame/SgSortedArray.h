@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSortedArray.h
-    Sorted array.
-*/
+    Sorted array. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SORTEDARRAY_H
@@ -15,8 +14,7 @@
     Implements an array of type <code>T</code> elements that can be sorted by
     keys of type <code>K</code>.
     Class <code>K</code> needs to support comparison.
-    Class <code>T</code> currently needs to be a simple type.
-*/
+    Class <code>T</code> currently needs to be a simple type. */
 template <class T, class K, int size>
 class SgSortedArray
 {

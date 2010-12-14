@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctUtilTest.cpp
-    Unit tests for GoUctUtil.
-*/
+    Unit tests for GoUctUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -229,8 +228,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SmallBoard)
 }
 
 /** Test that no moves are generated if more than 5 stones of a color are
-    already on a board.
-*/
+    already on a board. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SetupStones)
 {
     string s(". . . . . . . . . . . . . . . . . . .\n"

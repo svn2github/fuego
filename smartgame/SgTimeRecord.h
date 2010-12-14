@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgTimeRecord.h
-    Time management.
-*/
+    Time management. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_TIMERECORD_H
@@ -42,8 +41,7 @@ enum SgClockState {
     except in the TimeContest object. Thus leaving a node and returning to
     it later will restore the time left when first entering the node, not
     when leaving the node.
-
-*/
+ */
 class SgTimeRecord
 {
 public:
@@ -54,8 +52,7 @@ public:
         'oneMoveOnly' must be true for the second constructor (just to
         distinguish the two constructors). The second one creates a time
         record that can be used to set a specific time period for one move
-        only.
-    */
+        only. */
     SgTimeRecord(bool oneMoveOnly, double timeForMove);
 
     ~SgTimeRecord();
@@ -94,26 +91,22 @@ public:
     bool ClockIsRunning() const;
 
     /** Returns the current time left.
-        Call UpdateTimeLeft first to get the newest information.
-    */
+        Call UpdateTimeLeft first to get the newest information. */
     double TimeLeft(SgBlackWhite player) const;
 
     /** The number of moves left to play in this overtime period.
-        This is zero if the game is in main time.
-    */
+        This is zero if the game is in main time. */
     int MovesLeft(SgBlackWhite color) const;
 
     void SetTimeLeft(SgBlackWhite color, double timeLeft);
 
     /** Turn the clock on or off.
         @todo Set gUserAbort if the time is turned off, so that for example a
-        search is aborted.
-    */
+        search is aborted. */
     void TurnClockOn(bool turnOn);
 
     /** Set number of moves left to play in this overtime period.
-        This is zero if the game is in main time.
-    */
+        This is zero if the game is in main time. */
     void SetMovesLeft(SgBlackWhite color, int moves);
 
     /** Set the clock into suspended state. */
@@ -121,8 +114,7 @@ public:
 
     /** Update the internal m_timeLeft.
         If the time left is negative, m_movesLeft is set if overtime is
-        starting, or a "lost on time" is shown if m_loseOnTime is true.
-    */
+        starting, or a "lost on time" is shown if m_loseOnTime is true. */
     void UpdateTimeLeft();
 
     // @} // name
@@ -136,16 +128,14 @@ public:
         refresh the current state
         If the clock is on and the node is not m_atNode, the clock is
         suspended. m_player is set to the given player, and m_timeLeft is set
-        to reflect the time left at that node.
-    */
+        to reflect the time left at that node. */
     void EnterNode(SgNode& node, SgBlackWhite player);
 
     /** Called by GoGame to react to user events.
         Called when a move was played on the board.
         If the clock was suspended, the clock is turned back on.
         Otherwise, if the clock was running, the time left is stored as
-        properties in the new node.
-    */
+        properties in the new node. */
     void PlayedMove(SgNode& node, SgBlackWhite player);
 
     /** Set time left and store it as a property in the tree. 
@@ -159,13 +149,11 @@ public:
     // @{
 
     /** Returns the time stored at the given node or its most recent
-        ancestor.
-    */
+        ancestor. */
     static SgBWArray<double> GetTimeFromTree(SgNode& node);
 
     /** Returns the number of moves left to play in overtime as determined by
-        the given node or an ancestor with that property.
-    */
+        the given node or an ancestor with that property. */
     static SgBWArray<int> GetOTMovesFromTree(SgNode& node);
 
     /** Sets the time property at the given node for both players. */
@@ -175,32 +163,28 @@ public:
 
 private:
     /** How many moves to play in one overtime period.
-        zero if there is no overtime.
-    */
+        zero if there is no overtime. */
     int m_overtimeNumMoves;
 
     /** The length of one overtime period. */
     double m_overtimePeriod;
 
     /** How much time to subtract for each move due to time
-        used by the operator of the program (move entry, etc.).
-    */
+        used by the operator of the program (move entry, etc.). */
     double m_overhead;
 
     /** Whether to end the game when a player has negative time left. */
     bool m_loseOnTime;
 
     /** The player whose clock is running.
-        Only relevant if the clock is running.
-    */
+        Only relevant if the clock is running. */
     SgBlackWhite m_player;
 
     /** Whether the clock is turned on and running. */
     bool m_clockIsOn;
 
     /** Whether the clock is suspended.
-        Note: m_clockIsOn and m_suspended cannot both be true.
-    */
+        Note: m_clockIsOn and m_suspended cannot both be true. */
     bool m_suspended;
 
     /** The current node at which the time is running. */
@@ -208,13 +192,11 @@ private:
 
     /** The time left for both players.
         This is updated frequently, reflecting the time stored in fAtNode
-        minus the time spent at that node.
-    */
+        minus the time spent at that node. */
     SgBWArray<double> m_timeLeft;
 
     /**The number of moves left to play in this overtime period.
-       This is zero if game is in main time.
-    */
+       This is zero if game is in main time. */
     SgBWArray<int> m_movesLeft;
 
     /** The time at which fTimeLeft was last updated. */
@@ -293,8 +275,7 @@ inline bool SgTimeRecord::UseOvertime() const
 //----------------------------------------------------------------------------
 
 /** Output SgTimeRecord to stream.
-    @relatesalso SgTimeRecord
-*/
+    @relatesalso SgTimeRecord */
 std::ostream& operator<<(std::ostream& out, const SgTimeRecord& time);
 
 /** Output SgClockState to stream. */

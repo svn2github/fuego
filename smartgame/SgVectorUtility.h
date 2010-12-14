@@ -3,8 +3,7 @@
     %SgVector utility classes.
     
     SgVector operations that are useful but not basic enough to be included 
-    in SgVector itself.
-*/
+    in SgVector itself. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_VECTORUTILITY_H

@@ -6,8 +6,7 @@
 
     A property list is simply kept as a list.
     Any special characteristics of the
-    property list are enforced when adding new items to the list.
-*/
+    property list are enforced when adding new items to the list. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

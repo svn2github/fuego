@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file FuegoTestMain.cpp
-    Main function for FuegoTest.
-*/
+    Main function for FuegoTest. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgDebug.cpp
-    See SgDebug.h
- */
+    See SgDebug.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -17,8 +16,7 @@ using namespace std;
 
 /** Null stream.
     This file stream will never be opened and acts as a null stream
-    for SgDebug().
-*/
+    for SgDebug(). */
 static ofstream s_nullStream;
 
 static auto_ptr<ofstream> s_fileStream;

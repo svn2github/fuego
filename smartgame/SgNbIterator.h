@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgNbIterator.h
-    Neighbor point iterators
-*/
+    Neighbor point iterators */
 //----------------------------------------------------------------------------
 
 #ifndef SG_NBITERATOR_H
@@ -24,8 +23,7 @@
     1 -p- 2    e.g. next[2] = +WE
        |
        3
-    @endverbatim
-*/
+    @endverbatim */
 class SgNb4Iterator
     : public SgArray<SgPoint,4>::Iterator
 {
@@ -67,8 +65,7 @@ private:
        p       e.g. next[0] = -NS-WE
      /   \
     2     3
-    @endverbatim
-*/
+    @endverbatim */
 class SgNb4DiagIterator
 {
 public:
@@ -127,8 +124,7 @@ private:
     3 -p- 4    e.g. next[1] = -NS
      / | \
     5  6  7
-    @endverbatim
-*/
+    @endverbatim */
 class SgNb8Iterator
 {
 public:

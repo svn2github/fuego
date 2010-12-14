@@ -5,8 +5,7 @@
     GoGame implements the GoGameRecord class, which provides functions for
     playing and replaying moves in a game tree.
     Derived from it is the GoGame class, which allows two Player objects
-    to play a game against each other.
-*/
+    to play a game against each other. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GAME_H
@@ -34,8 +33,7 @@ class SgSearchStatistics;
     should only be possible through member functions of this class, such that
     it can guarantee that its invariants are met (i.e. the board position
     always belongs to the current node and the current node always points to a
-    valid node in the tree).
-*/
+    valid node in the tree). */
 class GoGameRecord
 {
 public:
@@ -50,24 +48,20 @@ public:
         If 'fTakeOwnership', the game record will delete this tree when
         it's destroyed, otherwise the client is reponsible
         for deleting the tree.
-        @todo AR: change comment
-    */
+        @todo AR: change comment */
     virtual void InitFromRoot(SgNode* root, bool fTakeOwnership);
 
     /** Delete the old game record and start with a fresh one.
         Init the board with the given parameters, and create a root node
-        to start with.
-    */
+        to start with. */
     virtual void Init(int size, const GoRules& rules);
 
     /** Hook for subclasses.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void OnGoToNode(SgNode* dest);
 
     /** Override to initialize other boards in derived classes.
-        @see GoBoard
-    */
+        @see GoBoard */
     virtual void OnInitBoard(int size, const GoRules& rules);
 
     virtual void OnInitHandicap(const GoRules& rules, SgNode* root);
@@ -82,21 +76,18 @@ public:
         Add move as the next move at the current position.
         If a node with that move already exists, then don't add a new one.
         Return the node with that move.
-        Also add any statistics from 'stat' and time left to that node.
-    */
+        Also add any statistics from 'stat' and time left to that node. */
     SgNode* AddMove(SgMove move, SgBlackWhite player,
                     const SgSearchStatistics* stat = 0);
 
     /** Add a node with a comment that a player resigned.
         For informational purposes only, the resign node will not be made
-        the current node.
-    */
+        the current node. */
     SgNode* AddResignNode(SgBlackWhite player);
 
     /** Play to the given node.
         @c dest must be in this tree, or 0.
-        Also updates the clock.
-    */
+        Also updates the clock. */
     void GoToNode(SgNode* dest);
 
     /** Play to the next node in the given direction. */
@@ -114,15 +105,13 @@ public:
     /** Get the name of the given player.
         Return the blank string if unknown.
         Override to get information from an ongoing game rather than fron the
-        game record.
-    */
+        game record. */
     virtual std::string GetPlayerName(SgBlackWhite player) const;
 
     /** Return the current score (black minus white).
         @todo: in what units?
         Return true if there's a score recorded in the tree, otherwise false.
-        Override to return information about the score from a player.
-    */
+        Override to return information about the score from a player. */
     virtual bool GetScore(int* score) const;
 
     /** The time left in the game at the current position. */
@@ -133,14 +122,12 @@ public:
 
     /** Return the current position in the tree.
         @todo changed from protected to public because of getting
-        the current time left.
-    */
+        the current time left. */
     SgNode* CurrentNode();
 
     /** Return the current position in the tree.
         @todo changed from protected to public because of getting
-        the current time left.
-    */
+        the current time left. */
     const SgNode* CurrentNode() const;
 
     /** Whether this game record owns the game tree. */
@@ -149,13 +136,11 @@ public:
     bool CanDeleteCurrentNode() const;
 
     /** Return the move of the current node.
-        Return NullMove if no current move.
-    */
+        Return NullMove if no current move. */
     SgMove CurrentMove() const;
 
     /** Get the number of moves since root or last node with setup
-        properties.
-    */
+        properties. */
     int CurrentMoveNumber() const;
 
 private:
@@ -185,8 +170,7 @@ private:
     GoGameRecord& operator=(const GoGameRecord&);
 
     /** Delete the tree and initialize the state associated with the position
-        in the tree.
-    */
+        in the tree. */
     void DeleteTreeAndInitState();
 };
 
@@ -236,8 +220,7 @@ namespace GoGameUtil
         @param game (current node must be root)
         @param moveNumber move number (-1 means goto last node in main
         variation)
-        @return false if moveNumber greater than moves in main variation
-    */
+        @return false if moveNumber greater than moves in main variation */
     bool GotoBeforeMove(GoGameRecord* game, int moveNumber);
 }
 
@@ -245,8 +228,7 @@ namespace GoGameUtil
 
 /** Game record played between two players.
     A GoGame object handles the synchronization between the players
-    and the board they're playing on, and keeps track of the time.
-*/
+    and the board they're playing on, and keeps track of the time. */
 class GoGame
     : public GoGameRecord
 {
@@ -256,16 +238,14 @@ public:
     virtual ~GoGame();
 
     /** Needed to avoid hiding of inherited virtual function by the
-        other variants of GoGame::Init.
-    */
+        other variants of GoGame::Init. */
     virtual void InitFromRoot(SgNode* root, bool fTakeOwnership)
     {
         GoGameRecord::InitFromRoot(root, fTakeOwnership);
     }
 
     /** Needed to avoid hiding of inherited virtual function by the
-        other variants of GoGame::Init.
-    */
+        other variants of GoGame::Init. */
     void Init(int size, const GoRules& rules);
 
     void Init(SgNode* root, bool fTakeOwnership, bool fDeletePlayers);
@@ -276,8 +256,7 @@ public:
 
     /** Turn the clock on or off.
         Call this method instead of Time().TurnClockOn
-        so that computer player is started and stopped appropriately.
-    */
+        so that computer player is started and stopped appropriately. */
     void TurnClockOn(bool turnOn);
 
     /** Return whether the clock is running (not stopped or suspended). */
@@ -286,27 +265,23 @@ public:
     /** Set the player 'color' to the player algorithm 'player'.
         The old player of that color is stopped and deleted, and the new
         player is initialized to the current board state.
-        A 0 player means user interaction.
-    */
+        A 0 player means user interaction. */
     void SetPlayer(SgBlackWhite color, GoPlayer* player);
 
     /** Delete the player 'color' (set it to interactive input).
         @note If black and white point to the same player, delete will be
-        called only once, but both players will be set to null.
-    */
+        called only once, but both players will be set to null. */
     void DeletePlayer(SgBlackWhite color);
 
     /** Whether the human move at 'move' can be played at this point.
         The move must be legal, and either it's a human player to play
-        or the clock is inactive.
-    */
+        or the clock is inactive. */
     bool CanPlayHumanMove(SgMove move, SgBlackWhite player) const;
 
     /** Adds a move to the game record and tells all other players to update
         their boards.
         Returns whether the move was added to the game record.
-        @todo AR: to be replaced by HumanPlayer.
-    */
+        @todo AR: to be replaced by HumanPlayer. */
     bool PlayHumanMove(SgMove move, SgBlackWhite player);
 
     void PlayComputerMove(const GoPlayerMove* playerMove);

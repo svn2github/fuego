@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgConnCompIterator.h
-    Classes ConnCompIterator and ConnComp8Iterator
-*/
+    Classes ConnCompIterator and ConnComp8Iterator */
 //----------------------------------------------------------------------------
 
 #ifndef SG_CONNCOMPITERATOR_H
@@ -18,8 +17,7 @@
     {
     ...define block with points '*it' and color 'color'...
     }
-    </pre>
-*/
+    </pre> */
 class SgConnCompIterator
 {
 public:

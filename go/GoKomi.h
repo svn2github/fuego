@@ -11,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Class wrapping a komi value.
-    Supported komi values are "unknown" or multiples of 0.5.
-*/
+    Supported komi values are "unknown" or multiples of 0.5. */
 class GoKomi
 {
 public:
@@ -22,13 +21,11 @@ public:
     {
     public:
         /** Constructor.
-            @param komi The invalid komi value.
-        */
+            @param komi The invalid komi value. */
         InvalidKomi(float komi);
 
         /** Constructor.
-            @param komi The invalid komi value.
-        */
+            @param komi The invalid komi value. */
         InvalidKomi(const std::string& komi);
     };
 
@@ -36,16 +33,14 @@ public:
     GoKomi();
 
     /** Construct komi from float.
-        @param komi The komi, will be rounded to a multiple of 0.5.
-    */
+        @param komi The komi, will be rounded to a multiple of 0.5. */
     GoKomi(float komi);
 
     /** Construct komi from string.
         @param komi The string, leading and trailing whitespaces will be
         ignored, empty for unknown komi, float otherwise. The float will be
         rounded to a multiple of 0.5.
-        @throws InvalidKomi If string is not empty or contains a float.
-    */
+        @throws InvalidKomi If string is not empty or contains a float. */
     GoKomi(const std::string& komi);
 
     GoKomi& operator=(const GoKomi& komi);
@@ -55,26 +50,22 @@ public:
     bool operator!=(const GoKomi& komi) const;
 
     /** Check if komi is unknown.
-        @return true, if komi has unknown value.
-    */
+        @return true, if komi has unknown value. */
     bool IsUnknown() const;
 
     /** Convert komi to float.
-        @return The komi value as a float, zero if komi is unknown.
-    */
+        @return The komi value as a float, zero if komi is unknown. */
     float ToFloat() const;
 
     /** Convert komi to string.
-        @return The komi value as a string, empty string if komi is unknown.
-    */
+        @return The komi value as a string, empty string if komi is unknown. */
     std::string ToString() const;
 
 private:
     bool m_isUnknown;
 
     /** Komi value stored as integer.
-        Corresponds to the real komi multiplied by two.
-    */
+        Corresponds to the real komi multiplied by two. */
     int m_value;
 };
 

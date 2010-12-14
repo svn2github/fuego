@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpDumbTacticalPlayer.cpp
-    See SpDumbTacticalPlayer.h
-*/
+    See SpDumbTacticalPlayer.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgVector.h
-    std::vector-based replacement for previous SgList class.
-*/
+    std::vector-based replacement for previous SgList class. */
 //----------------------------------------------------------------------------
 #ifndef SG_VECTOR_H
 #define SG_VECTOR_H
@@ -24,29 +23,25 @@ public:
     { }
     
     /** Return reference to element.
-        @param index Position of element in range <code>0..length-1</code>.
-    */
+        @param index Position of element in range <code>0..length-1</code>. */
     T& operator[](int index)
     {
         return m_vec[index];
     }
 
     /** Return const reference to element.
-        @param index Position of element in range <code>0..length-1</code>.
-    */
+        @param index Position of element in range <code>0..length-1</code>. */
     const T& operator[](int index) const
     {
         return m_vec[index];
     }
 
     /** Assignment operator.
-        Copy content of other vector.
-    */
+        Copy content of other vector. */
     SgVector<T>& operator=(const SgVector<T>& v);
 
     /** Compare whether the contents of two vectors are identical.
-        Same length, and the same elements in the same sequence.
-    */
+        Same length, and the same elements in the same sequence. */
     bool operator==(const SgVector<T>& rhs) const
     {
         return m_vec == rhs.m_vec;
@@ -59,8 +54,7 @@ public:
     }
             
     /** Returns the last element of the vector.
-        Asserts if the vector is empty.
-    */
+        Asserts if the vector is empty. */
     const T& Back() const
     {
         SG_ASSERT(NonEmpty());
@@ -85,14 +79,12 @@ public:
         and clear the <code>*tail</code> vector.
         Remark: this operation is efficient for lists but not so
         meaningful for vectors.
-        PushBackList may be more appropriate in most cases.
-    */
+        PushBackList may be more appropriate in most cases. */
     void Concat(SgVector<T>* tail);
 
     /** Check if element is in vector.
         @return <code>true</code> if <code>elt</code> is included in this
-        vector, <code>false</code> if not.
-    */
+        vector, <code>false</code> if not. */
     bool Contains(const T& elt) const;
     
     /** delete element at specified index */
@@ -101,16 +93,14 @@ public:
     /** Remove the first occurence of element.
         If <code>elt</code> is in the vector, remove the first
         occurence of <code>elt</code> from the vector, and return
-        <code>true</code>. Otherwise do nothing and return <code>false</code>.
-    */
+        <code>true</code>. Otherwise do nothing and return <code>false</code>. */
     bool Exclude(const T& elt);
 
     /** Exclude each element of <code>vector</code> from this vector. */
     void Exclude(const SgVector<T>& vector);
 
     /** Returns the first element of the vector.
-        Asserts if the vector is empty.
-    */
+        Asserts if the vector is empty. */
     const T& Front() const
     {
         SG_ASSERT(NonEmpty());
@@ -120,13 +110,11 @@ public:
     /** Find position of element.
         @returns The position of <code>elt</code> in the vector,
         in range <code>0..length-1</code>. Returns -1 if <code>elt</code>
-        is not in the vector.
-    */
+        is not in the vector. */
     int Index(const T& elt) const;
 
     /** Push <code>elt</code> to the back of the vector only
-        if it is not included yet.
-    */
+        if it is not included yet. */
     void Include(const T& elt)
     {
         if (! Contains(elt))
@@ -139,8 +127,7 @@ public:
         returns <code>true</code> if the element is inserted.
         @todo made two separate functions for efficiency, should be
         a template taking a compare template arg.
-        Same for <code>Merge()</code> below.
-    */
+        Same for <code>Merge()</code> below. */
     bool Insert(const T& elt);
 
     /** Return whether this vector contains zero elements. */
@@ -180,8 +167,7 @@ public:
         <pre>
         for (SgVectorIterator<T> it(vector); it; ++it)
             Insert(*it);
-        </pre>
-    */
+        </pre> */
     void Merge(const SgVector<T>& vector);
 
     /** Test whether a vector is as long as or longer than a given length. */ 
@@ -200,19 +186,16 @@ public:
         The vector must not be empty.
         @return The element[0] of the original vector before removal.
         @deprecated Don't use this function; it is slow. 
-        Only exists for SgList compatibility.
-    */
+        Only exists for SgList compatibility. */
     T PopFront();
 
     /** Remove the last element of the vector.
-        The vector must not be empty.
-    */
+        The vector must not be empty. */
     void PopBack();
 
     /** Insert element at the beginning of the vector.
         @deprecated Don't use this function; it is slow.
-        Only exists for SgList compatibility.
-    */
+        Only exists for SgList compatibility. */
     void PushFront(const T& elt);
 
     /** Add a single element at the end of the vector. */
@@ -228,8 +211,7 @@ public:
 
     /** Removes all but the first copy of each element from the vector.
         After calling @c RemoveDuplicates(), @c UniqueElements() is @c true.
-        @return true, if at least one duplicate was removed
-    */
+        @return true, if at least one duplicate was removed */
     bool RemoveDuplicates();
     
     void Reverse()
@@ -250,8 +232,7 @@ public:
     /** Clear this vector and set it to contain the <code>%count</code>
         elements from
         <code>array[0]</code> to <code>array[%count - 1]</code>.
-        If <code>%count</code> is zero, the vector is just cleared.
-    */
+        If <code>%count</code> is zero, the vector is just cleared. */
     void SetTo(const T* array, int count);
 
     void Sort();
@@ -265,8 +246,7 @@ public:
         std::swap(m_vec, vector->m_vec);
     }
 
-    /** Returns the Nth-last element of the vector. It must exist.
-    */
+    /** Returns the Nth-last element of the vector. It must exist. */
     const T& TopNth(int index) const
     {
         SG_ASSERT(NonEmpty());
@@ -276,16 +256,14 @@ public:
     }
 
     /** Include all elements from <code>set</code> into this vector.
-        Appends new elements at the end of this vector.
-    */
+        Appends new elements at the end of this vector. */
     void Union(const SgVector<T>& set);
 
     /** Check for duplicate elements.
         @return <code>true</code> if there are no duplicate elements in
         the vector.
         Useful for debugging.
-        @todo speed it up
-    */
+        @todo speed it up */
     bool UniqueElements() const;
 
     std::vector<T>& Vector()
@@ -311,8 +289,7 @@ private:
     <pre>
       for (SgVectorIterator<T> it(vector); it; ++it) { ... it() ... }
     </pre>
-    Better performance because every method is inline.
-*/
+    Better performance because every method is inline. */
 template<typename T>
 class SgVectorIterator
 {
@@ -326,8 +303,7 @@ public:
     /** Copy current state of iterator.
         Useful for creating a new iterator that only runs from the current
         position to the vector end. See <code>UniqueElements()</code>
-        for an example.
-    */
+        for an example. */
     SgVectorIterator(const SgVectorIterator& it)
         : m_vec(it.m_vec)
     { }
@@ -449,8 +425,7 @@ private:
 
     /** Conversion of element pointer to non-const void pointer.
         @note Not sure if there is a better way without needing the
-        const cast.
-    */
+        const cast. */
     static void* GetVoidPtr(const T* element)
     {
         return const_cast<void*>(static_cast<const void*>(element));
@@ -754,8 +729,7 @@ bool SgVector<T>::UniqueElements() const
     @verbatim
         (e1, e2), (e1, e3), ... (e1, en), (e2,e3), ... (e(n - 1), en)
     @endverbatim
-    @todo use standard iterator format.
-*/
+    @todo use standard iterator format. */
 template<typename T>
 class SgVectorPairIterator
 {
@@ -768,8 +742,7 @@ public:
         Return <code>true</code> and change <code>elt1</code> and
         <code>elt2</code> if not reached the end of
         the vector; return <code>false</code> and don't touch
-        the parameters if at the end of the vector.
-    */
+        the parameters if at the end of the vector. */
     bool NextPair(T& elt1, T& elt2);
 
 private:
@@ -805,16 +778,14 @@ bool SgVectorPairIterator<T>::NextPair(T& elt1, T& elt2)
     Each pair is returned exactly once, i.e. with
     <code>list = e1, e2,...en</code>
     the returned pairs are (in order):
-    <code>(e1,e2), (e1,e3), ... (e1,en), (e2,e3),...(e(n-1),en)</code>
-*/
+    <code>(e1,e2), (e1,e3), ... (e1,en), (e2,e3),...(e(n-1),en)</code> */
 template<class T>
 class SgVectorPairIteratorOf
     : public SgVectorPairIterator<void*>
 {
 public:
     /** Create an iterator to iterate through all possible
-        pairs of list elements.
-    */
+        pairs of list elements. */
     SgVectorPairIteratorOf(const SgVectorOf<T>& list)
         : SgVectorPairIterator<void*>
           (static_cast<const SgVector<void*>&>(list))
@@ -823,8 +794,7 @@ public:
     /** Find the next pair of data elements.
         Return @c true and change @c elt1 and @c elt2 if not reached the end
         of the list; return <code>false</code> and don't touch the parameters
-        if at the end of the list.
-    */
+        if at the end of the list. */
     bool NextPair(T*& elt1, T*& elt2)
     {
         void* voidPtr1;
@@ -842,8 +812,7 @@ public:
 //----------------------------------------------------------------------------
 /** This template is a partial replacement for the previous SgOwnerListOf
     class. It must be called 'by hand', but the old SgOwnerListOf was
-    never 100% implemented anyway.
-*/
+    never 100% implemented anyway. */
 template<typename T>
 void FreeAll(SgVectorOf<T>& objects)
 {

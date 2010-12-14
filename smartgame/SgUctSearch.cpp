@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file SgUctSearch.cpp
-*/
+/** @file SgUctSearch.cpp */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -389,8 +388,7 @@ void SgUctSearch::CreateThreads()
     than one. Also ensures that the line is written as a single string to
     avoid intermingling of text lines from different threads.
     @param state The state of the thread (only used for state.m_threadId)
-    @param textLine The line of text without trailing newline character.
-*/
+    @param textLine The line of text without trailing newline character. */
 void SgUctSearch::Debug(const SgUctThreadState& state,
                         const std::string& textLine)
 {
@@ -411,8 +409,7 @@ void SgUctSearch::DeleteThreads()
 
 /** Expand a node.
     @param state The thread state with state.m_moves already computed.
-    @param node The node to expand.
-*/
+    @param node The node to expand. */
 void SgUctSearch::ExpandNode(SgUctThreadState& state, const SgUctNode& node)
 {
     unsigned int threadId = state.m_threadId;
@@ -595,8 +592,7 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
     estimators are used.
     Previously there were more estimators than move value and RAVE value,
     and in the future there may be again. GetValueEstimate() is easier to
-    extend, this function is more optimized for the special case.
-*/
+    extend, this function is more optimized for the special case. */
 SgUctValue SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
 {
     SG_ASSERT(m_rave);
@@ -824,8 +820,7 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
 }
 
 /** Backs up proven information. Last node of nodes is the newly
-    proven node.
-*/
+    proven node. */
 void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
 {
     if (nodes.size() <= 1) 
@@ -863,8 +858,7 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
     @param state
     @param[out] isTerminal Was the sequence terminated because of a real
     terminal position (GenerateAllMoves() returned an empty list)?
-    @return @c false, if game was aborted due to maximum length
-*/
+    @return @c false, if game was aborted due to maximum length */
 bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
 {
     vector<SgMove>& sequence = state.m_gameInfo.m_inTreeSequence;
@@ -956,8 +950,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
 /** Finish the game using GeneratePlayoutMove().
     @param state The thread state.
     @param playout The number of the playout.
-    @return @c false if game was aborted
-*/
+    @return @c false if game was aborted */
 bool SgUctSearch::PlayoutGame(SgUctThreadState& state, std::size_t playout)
 {
     SgUctGameInfo& info = state.m_gameInfo;
@@ -1304,8 +1297,7 @@ void SgUctSearch::UpdateCheckTimeInterval(double time)
 
 /** Update the RAVE values in the tree for both players after a game was
     played.
-    @see SgUctSearch::Rave()
-*/
+    @see SgUctSearch::Rave() */
 void SgUctSearch::UpdateRaveValues(SgUctThreadState& state)
 {
     for (size_t i = 0; i < m_numberPlayouts; ++i)

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoRegionUtil.cpp
-    See GoRegionUtil.h.
-*/
+    See GoRegionUtil.h. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -83,8 +82,7 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
 }
 
 /** Is p adjacent to all blocks represented by anchors?
-    GoRegion has an identical function taking a list of GoBlock's.
-*/
+    GoRegion has an identical function taking a list of GoBlock's. */
 inline bool IsAdjacentToAll(const GoBoard& board, SgPoint p,
                             const SgVector<SgPoint>& anchors)
 {
@@ -99,8 +97,7 @@ inline bool IsAdjacentToAll(const GoBoard& board, SgPoint p,
     eye regions.
     Right now, test only for special cases, not even Benson.
         1. single block 2 eyes
-        2. simple check for 2 blocks
-*/
+        2. simple check for 2 blocks */
 bool TwoSeparateEyes(const GoBoard& bd, const SgPointSet& pts,
                      const SgPointSet& boundary, SgBlackWhite color)
 {

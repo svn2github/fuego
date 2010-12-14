@@ -18,5 +18,4 @@
       - @ref sggtpcommandscommands "SgGtpCommands"
       - @ref gogtpenginecommands "GoGtpEngine"
       - @ref gobookcommands "GoBook"
-      - @ref gouctgtpcommands "GoUctCommands"
-*/
+      - @ref gouctgtpcommands "GoUctCommands" */

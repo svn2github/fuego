@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSafetyUtil.cpp
-    See GoSafetyUtil.h.
-*/
+    See GoSafetyUtil.h. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -31,8 +30,7 @@ const bool DEBUG_MIGHT_MAKE_LIFE = false;
 const bool DEBUG_EXTENDED_MIGHT_MAKE_LIFE = false;
 
 /** Players can fill half the outside liberties of safe stones.
-    Can round up for ToPlay(), must round down for opponent.
-*/
+    Can round up for ToPlay(), must round down for opponent. */
 void AddLibertiesAsMoves(const GoBoard& bd,
                                  const SgBWSet& safe,
                                  SgBWArray<int>& nuSafe)
@@ -67,8 +65,7 @@ inline SgEmptyBlackWhite CheckWinner(
 
 /** find 2 libs which would connect block to safe.
     if found, update libs and safe to indicate that the block is safe now:
-    add block to safe, add block libs to libs, remove the two libs.
-*/
+    add block to safe, add block libs to libs, remove the two libs. */
 bool Find2Connections(const GoBoard& bd, SgPoint block, SgPointSet* libs,
                     SgPointSet* usedLibs, SgPointSet* safe)
 {
@@ -105,8 +102,7 @@ bool Find2Connections(const GoBoard& bd, SgPoint block, SgPointSet* libs,
 
     Can omit maxNuOmissions (0 or 1) empty points from checking.
     maxNuOmissions = 1 if testing whether opponent can make 2 eyes here,
-    0 otherwise. Returns bool whether connections were found.
-*/
+    0 otherwise. Returns bool whether connections were found. */
 bool Find2ConnectionsForAll(const GoBoard& bd, const SgPointSet& pts,
                 const SgPointSet& inSafe, SgBlackWhite color,
                 int maxNuOmissions = 0)

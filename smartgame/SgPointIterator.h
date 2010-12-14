@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgPointIterator.h
-    Class SgPointIterator.
-*/
+    Class SgPointIterator. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_POINTITERATOR_H
@@ -12,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Iterate through an array of points
-    terminated by END_POINT (defined to be zero for performance).
-*/
+    terminated by END_POINT (defined to be zero for performance). */
 class SgPointIterator
 {
 public:
@@ -72,8 +70,7 @@ class SgPointRangeIterator
 public:
     /** Constructor.
         @param first Pointer to first element.
-        @param end Pointer to last element + 1.
-    */
+        @param end Pointer to last element + 1. */
     SgPointRangeIterator(const SgPoint* first, const SgPoint* end);
 
     virtual ~SgPointRangeIterator();

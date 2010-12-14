@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardTest.cpp
-    Unit tests for GoBoard.
-*/
+    Unit tests for GoBoard. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -111,8 +110,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_CanUndo)
     . . .
     O2. .
     X1O3.  X4 at 1
-    @endverbatim
-*/
+    @endverbatim */
 BOOST_AUTO_TEST_CASE(GoBoardTest_CapturedStones)
 {
     GoBoard bd;
@@ -136,8 +134,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_CapturedStones)
 
 /** Check default settings in GoBoard.
     Checks the default values of settings in GoBoard that some other code
-    does rely on.
-*/
+    does rely on. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_Defaults)
 {
     GoBoard bd;
@@ -172,8 +169,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCode)
 }
 
 /** Tests that the hash code is 0 for the empty positions.
-    If this is changed later, make sure no code relies on that fact.
-*/
+    If this is changed later, make sure no code relies on that fact. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCode_EmptyPosition)
 {
     {
@@ -195,8 +191,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCode_EmptyPosition)
 }
 
 /** Play and undo some moves and remember and compare the hash code
-    including to play.
-*/
+    including to play. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCodeInclToPlay)
 {
     GoBoard bd(19);
@@ -340,8 +335,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition)
 
 /** Test for GoBoard::IsIllegal for Ko move.
     Test for catching a bug that occured in the incremental update of the
-    illegal ko point.
-*/
+    illegal ko point. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition_2)
 {
     GoSetup setup;
@@ -365,8 +359,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition_2)
 /** Test for GoBoard::IsIllegal for Ko move.
     Checks that a capture-back move with the capturing move resulting in a
     single-stone block with more than one liberty does not violate Ko.
-    This bug occured in the incremental update of the illegal Ko point.
-*/
+    This bug occured in the incremental update of the illegal Ko point. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition_3)
 {
     // |. O O O O .
@@ -424,8 +417,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Occupied)
 }
 
 /** Test GoBoard::IsLegal(SgPoint, SgBlackWhite) for suicide move.
-    Create position with add stones.
- */
+    Create position with add stones. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Suicide)
 {
     GoSetup setup;
@@ -437,8 +429,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Suicide)
 }
 
 /** Test GoBoard::IsLegal(SgPoint) for suicide move.
-    Create position with play commands.
- */
+    Create position with play commands. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Suicide_2)
 {
     GoBoard bd;
@@ -520,8 +511,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsValidPoint)
 
 /** Test KoLevel and isIllegal flags depending on ko repetition allowed and
     ko modifies hash.
-    @see sgboardko
-*/
+    @see sgboardko */
 void GoBoardTest_Ko(bool allowKoRepetition, bool koModifiesHash)
 {
     // 3 . . . .
@@ -821,8 +811,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_5)
 }
 
 /** Test GoBoard::NumLiberties adding stones twice to an existing block,
-    and removing a liberty.
-*/
+    and removing a liberty. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_6)
 {
     GoBoard bd(9);
@@ -851,8 +840,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_6)
     . O . .
     O @ O .
     O . O .
-    @endverbatim
-*/
+    @endverbatim */
 BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_7)
 {
     GoBoard bd(9);

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgStack.h
-    Stack class.
-*/
+    Stack class. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_STACK_H
@@ -12,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Stack with up to size objects of class T. Stack does not assume ownership.
-    Memory management of objects on stack is the user's responsibility.
-*/
+    Memory management of objects on stack is the user's responsibility. */
 template <class T, int SIZE>
 class SgStack
 {

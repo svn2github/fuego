@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoGtpExtraCommands.cpp
-*/
+/** @file GoGtpExtraCommands.cpp */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -39,8 +38,7 @@ void GoGtpExtraCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
     This command is compatible with GoGui's analyze command type
     @c sboard <br>
     Argument: point [max_dist]<br>
-    Returns: Board of integer numbers
-*/
+    Returns: Board of integer numbers */
 void GoGtpExtraCommands::CmdCfgDistance(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -60,8 +58,7 @@ void GoGtpExtraCommands::CmdCfgDistance(GtpCommand& cmd)
 /** Return fast ladder status.
     Arguments: prey point<br>
     Returns: escaped|captured|unsettled<br>
-    @see FastLadderStatus
-*/
+    @see FastLadderStatus */
 void GoGtpExtraCommands::CmdLadder(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -86,8 +83,7 @@ void GoGtpExtraCommands::CmdLadder(GtpCommand& cmd)
 /** Return static ladder status.
     Arguments: prey point<br>
     Returns: escaped|captured|unsettled<br>
-    @see GoStaticLadder
-*/
+    @see GoStaticLadder */
 void GoGtpExtraCommands::CmdStaticLadder(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);

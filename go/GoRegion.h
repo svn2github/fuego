@@ -8,8 +8,7 @@
     Regions compute properties such as 1-vitality,
     2-vitality [Mueller 95, p. 62-63],[Mueller 97b].
     They are used for static and search-based safety solvers.
-    They are also used for better move generation, e.g. in semeai.
-*/
+    They are also used for better move generation, e.g. in semeai. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_REGION_H
@@ -33,8 +32,7 @@ class GoRegionBoard;
 
 /** Information computed about a GoRegion.
     @todo Does not follow naming convention for constants in global
-    namespace; rename to all-uppercase and use prefix GO_
-*/
+    namespace; rename to all-uppercase and use prefix GO_ */
 enum GoRegionFlag
 {
     GO_REGION_SMALL,
@@ -81,8 +79,7 @@ typedef std::bitset<_GO_REGION_FLAG_COUNT> GoRegionFlags;
     Workshop in Japan '97, pages 80-86, Computer Shogi Association, Tokyo, 
     Japan, 1997.
 
-    @todo Avoid cyclic dependency with GoBlock
-*/
+    @todo Avoid cyclic dependency with GoBlock */
 class GoRegion
 {
 public:
@@ -133,8 +130,7 @@ public:
     }
 
     /** Blocks of region.
-        Non const version used by GoRegionBoard.
-    */
+        Non const version used by GoRegionBoard. */
     SgVectorOf<GoBlock>& BlocksNonConst()
     {
         return m_blocks;
@@ -196,8 +192,7 @@ public:
     void ComputeFlag(GoRegionFlag flag);
 
     /** Only blocks are incrementally updated, others must be reset after
-        move
-    */
+        move */
     void ResetNonBlockFlags()
     {   m_computedFlags.reset(); // clear all other flags.
         m_computedFlags.set(GO_REGION_COMPUTED_BLOCKS);
@@ -213,8 +208,7 @@ public:
 
     /** Computes GO_REGION_SMALL, GO_REGION_CORRIDOR, 
         GO_REGION_SINGLE_BLOCK_BOUNDARY, 
-        GO_REGION_STATIC_1VC, GO_REGION_STATIC_2V
-    */
+        GO_REGION_STATIC_1VC, GO_REGION_STATIC_2V */
     void ComputeBasicFlags();
 
     /** compute flag */
@@ -264,8 +258,7 @@ public:
     bool Safe2Cuts(const GoBoard& board) const;
 
     /** Test if all empty points are liberties of blocks
-        @todo does not test only for boundary block libs, but all libs.
-    */
+        @todo does not test only for boundary block libs, but all libs. */
     bool AllEmptyAreLibs() const;
 
     /** Test if points of region are 2-vital for color.
@@ -273,8 +266,7 @@ public:
         Condition 2: two intersection points (@see Has2IPs)
         refined version: points need not be liberty, if next to both IP.
         Example: bent-5 in the corner, as in Berlekamp/Wolfe C.11 top left
-        corner
-    */
+        corner */
     bool Has2SureLibs(SgMiaiStrategy* miaiStrategy) const;
 
     /** block liberties in this region */
@@ -294,26 +286,22 @@ public:
 
     /** Can we find two connection paths to each interior empty point? 
         This implements only the simple, non-recursive case.
-        See Find2ConnForAllInterior() for a more general solution.
-    */
+        See Find2ConnForAllInterior() for a more general solution. */
     bool Find2ConnForAll() const;
 
     /** find 2-connection paths for all interior empty points, using recursive
-        extension. Erik v.d.Werf's recursive extension to Find2ConnForAll.
-    */
+        extension. Erik v.d.Werf's recursive extension to Find2ConnForAll. */
     bool Find2ConnForAllInterior(SgMiaiStrategy* miaiStrategy,
                                  SgVector<SgPoint>& usedLibs) const;
 
     /** An IP divides a region into two eyes AND connects all surrounding
         blocks, this one defines that ip has to be adjancent to all interior
-        points.
-    */
+        points. */
     bool Has2IPs(const SgVector<SgPoint>& interiorEmpty, SgMiaiPair* ips)
         const;
 
     /** whether there are 2 intersection points, doesn't have to be adjacent
-        to all interior points.
-    */
+        to all interior points. */
     bool Has2IntersectionPoints(const SgVector<SgPoint>& usedLibs) const;
 
     /** Get all intersections points inside region */
@@ -322,13 +310,11 @@ public:
     /** Get all SgMiaiPairs that can divide the region. A dividing 
         SgMiaiPair has two adjacent points that are libs from the 
         same boundary block, and they are split points for region.
-        This is a loose condition for SgMiaiPairs. 
-    */
+        This is a loose condition for SgMiaiPairs.  */
     void GetDivideMiaiPairs(SgVector<SgMiaiPair>& pairs) const;
 
     /** Compute joint liberties of all m_blocks. Since we need at least 2
-        joint libs, we stop computing if we find that this is impossible.
-    */
+        joint libs, we stop computing if we find that this is impossible. */
     void JointLibs(SgVector<SgPoint>* libs) const;
 
     /** See ExEye::IsCorridor() */
@@ -342,8 +328,7 @@ public:
 
     /** Find two so far unused liberties for connecting c1 and c2 
         @todo In future, must respect all other chain conditions 
-              active in this region.
-    */
+              active in this region. */
     void Find2FreeLibs(const GoChain* c1, const GoChain* c2, 
                         SgPoint* lib1, SgPoint* lib2) const;
 
@@ -354,8 +339,7 @@ public:
     void SetBlocks(const SgVectorOf<GoBlock>& blocks);
 
     /** Get chain of color in area.
-            @todo There must be faster ways to do this.
-    */
+            @todo There must be faster ways to do this. */
     void FindChains(const GoRegionBoard& ra);
 
     /** Set safe flag for region */
@@ -414,13 +398,11 @@ private:
         If corridor, then opp. can get at most 2 libs (Opp2L).
         If Opp2L && cut point empty then opp cut move is self atari,
         therefore cut is protected (and remains protected if opponent
-        is captured and plays inside again)
-    */
+        is captured and plays inside again) */
     bool ProtectedCuts(const GoBoard& board) const;
 
     /** Static test if region is 1-vital.
-        @todo explain the algorithm.
-    */
+        @todo explain the algorithm. */
     bool ComputeIs1Vital() const;
 
     /** Static test if region is 1-vital and all blocks are connected. */
@@ -439,8 +421,7 @@ private:
     void ComputeEyeSpace();
 
     /** compute at most maxNu empty points in the interior
-        @todo does not test only for boundary block libs, but all libs.
-    */
+        @todo does not test only for boundary block libs, but all libs. */
     void InteriorEmpty(SgVector<SgPoint>* interiorEmpty, int maxNu) const;
 
 #ifndef NDEBUG

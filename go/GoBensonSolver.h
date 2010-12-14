@@ -4,8 +4,7 @@
     
     D.B. Benson. Life in the game of Go. Information Sciences, 10:17Ð29, 1976.
     Reprinted in Computer Games, Levy, D.N.L. (Editor), Vol. II, pp. 203-213,
-    Springer Verlag, 1988.
-*/
+    Springer Verlag, 1988. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_BENSONSOLVER_H

@@ -9,8 +9,7 @@
     there is no overlap with the negative values for special moves
     in SgMove), so they can be used as move integers for games where a move
     can be described by a single point on the board.
-    @see sgboardrepresentation
-*/
+    @see sgboardrepresentation */
 //----------------------------------------------------------------------------
 /** @page sgboardrepresentation Board Representation
 
@@ -59,8 +58,7 @@
  2| 41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59
  1| 21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39
    [A] [B] [C] [D] [E] [F] [G] [H] [J] [K] [L] [M] [N] [O] [P] [Q] [R] [S] [T]
-</pre>
-*/
+</pre> */
 //----------------------------------------------------------------------------
 
 #ifndef SG_POINT_H
@@ -90,8 +88,7 @@ const int SG_MIN_SIZE = 2;
         points. Note that if SG_DEFINE_MAX_SIZE is used, external projects
         using the SmartGame library must also compiled with the same definition
         for SG_DEFINE_MAX_SIZE, otherwise run-time crashes will occur because
-        of a disagreement on array sizes.
-    */
+        of a disagreement on array sizes. */
     const int SG_MAX_SIZE = 19;
 #else
     BOOST_STATIC_ASSERT(SG_DEFINE_MAX_SIZE >= SG_MIN_SIZE);
@@ -116,8 +113,7 @@ const int SG_MAXPOINT = SG_MAX_SIZE * SG_MAX_SIZE + 3 * (SG_MAX_SIZE + 1);
 const int SG_MAX_ONBOARD = SG_MAX_SIZE * SG_MAX_SIZE;
 
 /** The maximum number of moves.
-    Limit using the largest possible board size and pass move.
-*/
+    Limit using the largest possible board size and pass move. */
 const int SG_MAX_MOVES = SG_MAX_ONBOARD + 1;
 
 /** West-East  : offset of horizontal neighbors */
@@ -135,14 +131,12 @@ const SgPoint SG_NULLPOINT = SG_NULLMOVE;
    the move.
    @note SG_PASS should not be used in games that cannot use SgPoint to
    describe a move or in which pass is not legal, because of the potential
-   conflict with the integer range for describing moves in those games.
-*/
+   conflict with the integer range for describing moves in those games. */
 const SgMove SG_PASS = SG_MAXPOINT + 1;
 
 /** Test if move is not a point.
     Returns true for special moves with negative values as defined in SgMove.h
-    (e.g. SG_NULLMOVE) and for SG_PASS.
-*/
+    (e.g. SG_NULLMOVE) and for SG_PASS. */
 inline bool SgIsSpecialMove(SgMove m)
 {
     return m < 0 || m == SG_PASS;
@@ -161,8 +155,7 @@ typedef int SgGrid;
 
 /** Write point.
     Wrapper class to allow overloading the output stream operator,
-    because SgPoint is a typedef int.
-*/
+    because SgPoint is a typedef int. */
 struct SgWritePoint
 {
     SgPoint m_p;
@@ -189,8 +182,7 @@ inline SgWritePoint::SgWritePoint(SgPoint p)
     in >> SgReadPoint(point);
     if (! in)
        SgDebug() << "Invalid point\n";
-    @endcode
-*/
+    @endcode */
 class SgReadPoint
 {
 public:
@@ -276,8 +268,7 @@ private:
 };
 
 /** Return column of point.
-    The lower left corner of the coordinate grid is (1, 1).
-*/
+    The lower left corner of the coordinate grid is (1, 1). */
 inline SgGrid Col(SgPoint p)
 {
     static PointToCol pointToCol;
@@ -285,8 +276,7 @@ inline SgGrid Col(SgPoint p)
 }
 
 /** Return row of point.
-    The lower left corner of the coordinate grid is (1, 1).
-*/
+    The lower left corner of the coordinate grid is (1, 1). */
 inline SgGrid Row(SgPoint p)
 {
     static PointToRow pointToRow;
@@ -294,8 +284,7 @@ inline SgGrid Row(SgPoint p)
 }
 
 /** Converts from (col, row) to a one-dimensional point.
-    Only for on board points; will trigger assertion for off-board points.
-*/
+    Only for on board points; will trigger assertion for off-board points. */
 inline SgPoint Pt(int col, int row)
 {
     SG_ASSERT_GRIDRANGE(col);
@@ -356,14 +345,12 @@ inline bool In8Neighborhood(SgPoint p1, SgPoint p2)
     @param p The point to be rotated (SG_PASS is allowed and returned
     unmodified)
     @param size The board size
-    @return The rotated mirrored point
-*/
+    @return The rotated mirrored point */
 SgPoint Rotate(int rotation, SgPoint p, int size);
 
 /** Return the inverse rotation as used in SgPointUtil::Rotate.
     @param rotation The rotation mode in [0..7]
-    @return The inverse rotation mode
-*/
+    @return The inverse rotation mode */
 int InvRotation(int rotation);
 
 } // namespace SgPointUtil

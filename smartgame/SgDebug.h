@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgDebug.h
-    Logging stream.
- */
+    Logging stream. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_DEBUG_H
@@ -18,8 +17,7 @@ std::ostream& SgDebug();
 /** Write warning prefix to logging stream and return it.
     Writes "WARNING: " to the logging stream and returns it for outputting
     the rest of the warning line. Lines beginning with this prefix are
-    displayed in a different color than regular stderr output in GoGui.
-*/
+    displayed in a different color than regular stderr output in GoGui. */
 std::ostream& SgWarning();
 
 //----------------------------------------------------------------------------
@@ -28,13 +26,11 @@ std::ostream& SgWarning();
 void SgDebugToFile(const char* filename);
 
 /** Set logging stream to null stream.
-    Discards everything written to SgDebug().
-*/
+    Discards everything written to SgDebug(). */
 void SgDebugToNull();
 
 /** Set logging stream to console window.
-    @todo: Bad function name, uses std::cerr on Unix and std::cout on MAC
-*/
+    @todo: Bad function name, uses std::cerr on Unix and std::cout on MAC */
 void SgDebugToWindow();
 
 std::ostream* SgSwapDebugStr(std::ostream* newStr);
@@ -65,8 +61,7 @@ class SgDebugToString
 public:
     /** Constructor.
         @param writeToOldDebugStr Also write the content of the string to the
-        old stream, after it was reset in the desctructor.
-    */
+        old stream, after it was reset in the desctructor. */
     SgDebugToString(bool writeToOldDebugStr);
 
     ~SgDebugToString();

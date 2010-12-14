@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctCommands.cpp
-*/
+/** @file GoUctCommands.cpp */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -202,8 +201,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "gfx".
     Move bounds are shown as labels on the board, the pass move bound is
     shown as text in the status line.
-    @see SgUctSearch::GetBound
-*/
+    @see SgUctSearch::GetBound */
 void GoUctCommands::CmdBounds(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -246,8 +244,7 @@ void GoUctCommands::CmdDefaultPolicy(GtpCommand& cmd)
 
 /** Compute estimator statistics.
     Arguments: trueValueMaxGames maxGames stepSize fileName
-    @see GoUctEstimatorStat::Compute()
-*/
+    @see GoUctEstimatorStat::Compute() */
 void GoUctCommands::CmdEstimatorStat(GtpCommand& cmd)
 {
     cmd.CheckNuArg(4);
@@ -261,8 +258,7 @@ void GoUctCommands::CmdEstimatorStat(GtpCommand& cmd)
 
 /** Return final score.
     Does a small search and uses the territory statistics to determine the
-    status of blocks.
-*/
+    status of blocks. */
 void GoUctCommands::CmdFinalScore(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -278,8 +274,7 @@ void GoUctCommands::CmdFinalScore(GtpCommand& cmd)
     status of blocks. The engine cannot detect seki, so according to the
     GTP standard, all stones that are not dead are reported as alive, the
     response to seki is an empty list. <br>
-    Arguments: alive|seki|dead
-*/
+    Arguments: alive|seki|dead */
 void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
 {
     string arg = cmd.Arg();
@@ -309,8 +304,7 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
 
 /** Show move values and sample numbers of last search.
     Arguments: none
-    @see GoUctSearch::GoGuiGfx()
-*/
+    @see GoUctSearch::GoGuiGfx() */
 void GoUctCommands::CmdGfx(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -325,8 +319,7 @@ void GoUctCommands::CmdGfx(GtpCommand& cmd)
 /** Computes the maximum number of nodes in search tree given the
     maximum allowed memory for the tree. Assumes two trees. Returns
     current memory usage if no arguments.
-    Arguments: max memory for trees
- */
+    Arguments: max memory for trees */
 void GoUctCommands::CmdMaxMemory(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
@@ -342,8 +335,7 @@ void GoUctCommands::CmdMaxMemory(GtpCommand& cmd)
 /** Return a list of all moves that the search would generate in the current
     position.
     Arguments: none
-    @see SgUctSearch::GenerateAllMoves()
-*/
+    @see SgUctSearch::GenerateAllMoves() */
 void GoUctCommands::CmdMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -365,8 +357,7 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
     @arg @c length_modification See
         GoUctGlobalSearchStateParam::m_langthModification
     @arg @c score_modification See
-        GoUctGlobalSearchStateParam::m_scoreModification
-*/
+        GoUctGlobalSearchStateParam::m_scoreModification */
 void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -420,8 +411,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c max_games See GoUctPlayer::MaxGames
     @arg @c resign_min_games See GoUctPlayer::ResignMinGames
     @arg @c resign_threshold See GoUctPlayer::ResignThreshold
-    @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode
-*/
+    @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode */
 void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -484,8 +474,7 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     @arg @c nakade_heuristic
         See GoUctPlayoutPolicyParam::m_useNakadeHeuristic
     @arg @c fillboard_tries
-        See GoUctPlayoutPolicyParam::m_fillboardTries
-*/
+        See GoUctPlayoutPolicyParam::m_fillboardTries */
 void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -518,8 +507,7 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c check_ladders See GoUctDefaultRootFilter::CheckLadders()
-*/
+    @arg @c check_ladders See GoUctDefaultRootFilter::CheckLadders() */
 void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -568,8 +556,7 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     @arg @c number_playouts See SgUctSearch::NumberPlayouts
     @arg @c prune_min_count See SgUctSearch::PruneMinCount
     @arg @c rave_weight_final See SgUctSearch::RaveWeightFinal
-    @arg @c rave_weight_initial See SgUctSearch::RaveWeightInitial
-*/
+    @arg @c rave_weight_initial See SgUctSearch::RaveWeightInitial */
 void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -667,8 +654,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
 
 /** Show matching patterns.
     Returns: List of points for matching patterns
-    @see GoUctPatterns
-*/
+    @see GoUctPatterns */
 void GoUctCommands::CmdPatterns(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -681,8 +667,7 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
 /** Return equivalent best moves in playout policy.
     See GoUctPlayoutPolicy::GetEquivalentBestMoves() <br>
     Arguments: none <br>
-    Returns: Move type string followed by move list on a single line.
-*/
+    Returns: Move type string followed by move list on a single line. */
 void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -703,8 +688,7 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
 /** Show prior knowledge.
     The response is compatible to the GoGui analyze command type @c
     gfx and shows the prior knowledge values as influence and the
-    counts as labels.
-*/
+    counts as labels. */
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
@@ -746,8 +730,7 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 /** Show RAVE values of last search at root position.
     This command is compatible to the GoGui analyze command type @c sboard.
     The values are scaled to [-1,+1] from Black's point of view.
-    @see SgUctSearch::Rave
-*/
+    @see SgUctSearch::Rave */
 void GoUctCommands::CmdRaveValues(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -771,8 +754,7 @@ void GoUctCommands::CmdRaveValues(GtpCommand& cmd)
 }
 
 /** Return filtered root moves.
-    @see GoUctRootFilter::Get()
-*/
+    @see GoUctRootFilter::Get() */
 void GoUctCommands::CmdRootFilter(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -784,8 +766,7 @@ void GoUctCommands::CmdRootFilter(GtpCommand& cmd)
     max_depth is an optional argument to cut the tree at a certain depth
     (the root node has depth 0). If it is not used, the full tree will be
     saved.
-    @see GoUctSearch::SaveTree()
-*/
+    @see GoUctSearch::SaveTree() */
 void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
 {
     if (Search().MpiSynchronizer()->IsRootProcess())
@@ -804,8 +785,7 @@ void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
 
 /** Save all random games.
     Arguments: filename
-    @see GoUctSearch::SaveGames()
-*/
+    @see GoUctSearch::SaveGames() */
 void GoUctCommands::CmdSaveGames(GtpCommand& cmd)
 {
     string fileName = cmd.Arg();
@@ -822,8 +802,7 @@ void GoUctCommands::CmdSaveGames(GtpCommand& cmd)
 /** Count the score using the scoring function of UCT.
     Arguments: none <br>
     Returns: Score (Win/Loss)
-    @see GoBoardUtil::ScoreSimpleEndPosition()
-*/
+    @see GoBoardUtil::ScoreSimpleEndPosition() */
 void GoUctCommands::CmdScore(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -844,8 +823,7 @@ void GoUctCommands::CmdScore(GtpCommand& cmd)
     to specify the first color to move within the response, and this command
     returns the sequence of the last search, which is unrelated to the current
     color to play on the board.) <br>
-    Arguments: none
-*/
+    Arguments: none */
 void GoUctCommands::CmdSequence(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -854,8 +832,7 @@ void GoUctCommands::CmdSequence(GtpCommand& cmd)
 
 /** Write statistics of GoUctPlayer.
     Arguments: none
-    @see GoUctPlayer::Statistics
-*/
+    @see GoUctPlayer::Statistics */
 void GoUctCommands::CmdStatPlayer(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -864,8 +841,7 @@ void GoUctCommands::CmdStatPlayer(GtpCommand& cmd)
 
 /** Clear statistics of GoUctPlayer.
     Arguments: none
-    @see GoUctPlayer::Statistics
-*/
+    @see GoUctPlayer::Statistics */
 void GoUctCommands::CmdStatPlayerClear(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -877,8 +853,7 @@ void GoUctCommands::CmdStatPlayerClear(GtpCommand& cmd)
     Needs enabling the statistics with
     <code>uct_param_policy statistics_enabled</code>
     Only the statistics of the first thread's policy used.
-    @see GoUctPlayoutPolicyStat
-*/
+    @see GoUctPlayoutPolicyStat */
 void GoUctCommands::CmdStatPolicy(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -893,8 +868,7 @@ void GoUctCommands::CmdStatPolicy(GtpCommand& cmd)
 /** Clear statistics of GoUctPlayoutPolicy
     Arguments: none <br>
     Only the statistics of the first thread's policy used.
-    @see GoUctPlayoutPolicyStat
-*/
+    @see GoUctPlayoutPolicyStat */
 void GoUctCommands::CmdStatPolicyClear(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -903,8 +877,7 @@ void GoUctCommands::CmdStatPolicyClear(GtpCommand& cmd)
 
 /** Write statistics of search and tree.
     Arguments: none
-    @see SgUctSearch::WriteStatistics()
-*/
+    @see SgUctSearch::WriteStatistics() */
 void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -922,8 +895,7 @@ void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
     Statistics are only collected, if enabled with
     <code>uct_param_global_search territory_statistics 1</code>. <br>
     Arguments: none
-    @see GoUctGlobalSearchState::m_territoryStatistics
-*/
+    @see GoUctGlobalSearchState::m_territoryStatistics */
 void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -941,8 +913,7 @@ void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
 }
 
 /** Return value of root node from last search.
-    Arguments: none
-*/
+    Arguments: none */
 void GoUctCommands::CmdValue(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -950,8 +921,7 @@ void GoUctCommands::CmdValue(GtpCommand& cmd)
 }
 
 /** Return value of root node from last search, from Black's point of view.
-    Arguments: none
-*/
+    Arguments: none */
 void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -963,8 +933,7 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
 
 /** Do a small search with territory statistics enabled to determine what
     blocks are dead for the final_status_list and final_score commands.
-    @return Point set containing dead stones.
-*/
+    @return Point set containing dead stones. */
 SgPointSet GoUctCommands::DoFinalStatusSearch()
 {
     SgPointSet deadStones;
@@ -1125,8 +1094,7 @@ GoUctSearch& GoUctCommands::Search()
 
 /** Return state of first thread, if search is of type GoUctGlobalSearch.
     @throws GtpFailure, if search is a different subclass or threads are not
-    yet created.
-*/
+    yet created. */
 GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
 GoUctCommands::ThreadState(unsigned int threadId)
 {

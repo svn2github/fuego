@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoRegionBoard.h
-    A GoRegionBoard provides the connected components of a GoBoard.
-*/
+    A GoRegionBoard provides the connected components of a GoBoard. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_REGIONBOARD_H
@@ -26,8 +25,7 @@ class GoChain;
     GoBoard and the GoBlock's in a GoRegionBoard.
 
     GoChain's are not updated automatically for performance reasons
-    - call GenChains() to update them.
-*/
+    - call GenChains() to update them. */
 class GoRegionBoard
 {
 public:
@@ -67,16 +65,14 @@ public:
     void ExecuteMovePrologue();
 
     /** Called after a move or added stone has been successfully executed.
-        The board is guaranteed to be in a legal state.
-    */
+        The board is guaranteed to be in a legal state. */
     void OnExecutedMove(GoPlayerMove playerMove);
 
     /** Similar to OnExecutedMove, but move is not coded into one int. */
     void OnExecutedUncodedMove(int move, SgBlackWhite moveColor);
 
     /** Called after a move has been undone.
-        The board is guaranteed to be in a legal state.
-    */
+        The board is guaranteed to be in a legal state. */
     void OnUndoneMove();
 
     /** All GoBlock's of given color */
@@ -142,8 +138,7 @@ public:
     /** Compute all GoChain's
         @todo currently this only creates 1 chain for each block.
         The merging is only done in GoSafetySolver::GenBlocksRegions()
-        and must be moved here.
-    */
+        and must be moved here. */
     void GenChains();
 
     /** Clear all flags etc. to recompute regions and blocks */
@@ -158,8 +153,7 @@ public:
     }
 
     /** Searches the list of all blocks for the block.
-        Boundary must belong to a single block.
-    */
+        Boundary must belong to a single block. */
     GoBlock* GetBlock(const SgPointSet& boundary,
                          SgBlackWhite color) const;
 
@@ -191,8 +185,7 @@ public:
     /** Return GoBlock's just captured on last move, before update.
         For incremental update.
         Can be called for any empty point.
-        returns 0 if no previous block there.
-    */
+        returns 0 if no previous block there. */
     void PreviousBlocksAt(const SgVector<SgPoint>& area, SgBlackWhite color,
                             SgVectorOf<GoBlock>* captures) const;
 
@@ -260,8 +253,7 @@ private:
 
     /** For all captured stones: merge its adjacent previous regions into one.
         then for all captured stones: add their area to its single adjacent
-        region.
-    */
+        region. */
     void MergeAdjacentAndAddBlock(SgPoint move, SgBlackWhite capturedColor);
 
     /** Merge all regions and the captured area into new large region */
@@ -314,8 +306,7 @@ private:
     
     /** has healthy count been computed for all blocks?
         @todo in fully incremental mode, this should be determined locally
-        for each block, not globally.
-    */
+        for each block, not globally. */
     bool m_computedHealthy;
     
     /** Boardsize is needed to avoid problems with resizing an empty board */

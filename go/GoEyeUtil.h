@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoEyeUtil.h
-    GoBoard eye-related utility classes.
-*/
+    GoBoard eye-related utility classes. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_EYEUTIL_H
@@ -38,8 +37,7 @@ namespace GoEyeUtil
         but it is good for distinguishing small graphs.
 
         For example, it can not distinguish between a "straight" and a "bent"
-        line of three.
-    */
+        line of three. */
     int DegreeCode(const SgPointSet& points);
 
     /** Like DegreeCode, but also count diagonal neighbors */
@@ -52,8 +50,7 @@ namespace GoEyeUtil
     /** Check if area is one of the classical nakade shapes:
         *,**,***, **, ***, **, ***,  * ,  *  .
                    *   *   **  **   ***  ***
-                                     *   **
-    */
+                                     *   ** */
     bool IsNakadeShape(const SgPointSet& area);
                        
     /** Check if point is a single point eye with one or two adjacent blocks.
@@ -64,8 +61,7 @@ namespace GoEyeUtil
         blocks that share another single point eye.
         Larger eyes can be reduced to simple eyes (assuming chinese rules,
         so that playing on does not change the score).
-        @todo Add example to documentation where this method fails
-    */
+        @todo Add example to documentation where this method fails */
     bool IsSimpleEye(const GoBoard& bd, SgPoint p, SgBlackWhite c);
 
     /**  */
@@ -76,8 +72,7 @@ namespace GoEyeUtil
     bool IsPossibleEye(const GoBoard& board, SgBlackWhite color, SgPoint p);
 
     /** Given opponent's safe stones, can p ever become an eye?
-        Checks direct and diagonal neighbors.
-    */
+        Checks direct and diagonal neighbors. */
     bool CanBecomeSinglePointEye(const GoBoard& board, SgPoint p,
                              const SgPointSet& oppSafe);
 
@@ -87,8 +82,7 @@ namespace GoEyeUtil
                                  SgBlackWhite toPlay);
 
     /** Return true if a point can become an eye by adding number of
-        defender's move.
-    */
+        defender's move. */
     bool NumberOfMoveToEye(const GoBoard& bd, SgBlackWhite c, SgPoint p,
                            int& number);
 
@@ -101,8 +95,7 @@ namespace GoEyeUtil
         # O . O O X
         # . O . O X
         ###########
-        @endverbatim
-    */
+        @endverbatim */
     bool IsSinglePointEye2(const GoBoard& bd, SgPoint p, SgBlackWhite c);
 
     /** As IsSinglePointEye2, but specifying points assumed to be eyes. */
@@ -115,8 +108,7 @@ namespace GoEyeUtil
                        SgBlackWhite c);
 
     /** As NumberOfMoveToEye2, but includes existing diagonal eyes,
-        and allows opponent stones to be captured.
-    */
+        and allows opponent stones to be captured. */
     bool NumberOfMoveToEye2(const GoBoard& bd, SgBlackWhite c,
                             SgPoint p, int& nummoves);
 
@@ -131,16 +123,14 @@ namespace GoEyeUtil
 
     /** Does p locally,within a 3x3 region, split its neighbors in s?
         Even if the reply is 'yes', s might still be connected outside
-        the region.
-    */
+        the region. */
     bool IsLocalSplitPt(SgPoint p, const SgPointSet& set);
 
     /** Area is tree shape if it does not contain a 2x2 square. */
     bool IsTreeShape(const SgPointSet& area);
 
     /** Vital point in small shape - usually has most liberties
-        See implementation for details.
-    */
+        See implementation for details. */
     bool IsVitalPt(const SgPointSet& points, SgPoint p, SgBlackWhite opp,
                const GoBoard& bd);
 
@@ -152,8 +142,7 @@ namespace GoEyeUtil
         maybeSeki, sureSeki: can there be, or is there, a seki between
             boundary stones and interior opponent stones?
         @todo: seki support is primitive only.
-        vital is set iff makeNakade or makeFalse
-    */
+        vital is set iff makeNakade or makeFalse */
     void TestNakade(const SgPointSet& points, const GoBoard& bd,
                     SgBlackWhite color, bool isFullyEnclosed, bool& isNakade,
                     bool& makeNakade, bool& makeFalse, bool& maybeSeki,

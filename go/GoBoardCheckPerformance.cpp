@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardCheckPerformance.cpp
-    See GoBoardCheckPerformance.h
-*/
+    See GoBoardCheckPerformance.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

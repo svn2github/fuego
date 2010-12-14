@@ -4,8 +4,7 @@
     Also track whether an area can form a local seki.
     
     @todo the implementation of seki support is incomplete.
-    @todo needs unit test cases.
-*/
+    @todo needs unit test cases. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_EYECOUNT_H
@@ -18,8 +17,7 @@
 /** Quick summary of eye status
     @todo there are more cases, see Landman's paper
     in Games of no Chance.
-    Will add them later as needed.
-*/
+    Will add them later as needed. */
 enum GoEyeStatus
 {
     EYE_UNKNOWN,
@@ -146,8 +144,7 @@ public:
     
     /** Compute total eye count of two independent areas.
         This takes sente and gote into account - if there are
-        two independent gote eyes, then it is one sure eye.
-    */
+        two independent gote eyes, then it is one sure eye. */
     void AddIndependent(const GoEyeCount& from);
     
     /** In contrast to AddIndependent, just adds numbers */

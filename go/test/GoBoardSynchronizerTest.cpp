@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardSynchronizerTest.cpp
-    Unit tests for GoBoardSynchronizer.
-*/
+    Unit tests for GoBoardSynchronizer. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

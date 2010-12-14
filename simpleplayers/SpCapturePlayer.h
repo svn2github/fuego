@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpCapturePlayer.h
-    Simple player that captures whenever possible, otherwise plays randomly
-*/
+    Simple player that captures whenever possible, otherwise plays randomly */
 //----------------------------------------------------------------------------
 
 #ifndef SP_CAPTUREPLAYER_H

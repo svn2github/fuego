@@ -41,8 +41,7 @@
     There are also functions that allow to lock and unlock the board
     explicitly, for cases in which the period of temporary modifications
     cannot be mapped to the lifetime of a GoModBoard instance (e.g. because
-    the period starts end ends in different functions).
-*/
+    the period starts end ends in different functions). */
 class GoModBoard
 {
 public:
@@ -50,26 +49,22 @@ public:
         Remembers the current board state.
         @param bd The board
         @param locked Whether to start in locked mode (for explicit usage
-        of Lock() and Unlock())
-    */
+        of Lock() and Unlock()) */
     GoModBoard(const GoBoard& bd, bool locked = false);
 
     /** Destructor.
-        Checks with assertions that the board state is restored.
-    */
+        Checks with assertions that the board state is restored. */
     ~GoModBoard();
 
     /** Explicit conversion to non-const reference.
         This function triggers an assertion, if the board is currently in
-        locked mode.
-    */
+        locked mode. */
     GoBoard& Board() const;
 
     /** Automatic conversion to non-const reference.
         Allows to pass GoModBoard to functions that expect a non-const GoBoard
         reference without explicitely calling GoModBoard.Board().
-        @see Board()
-    */
+        @see Board() */
     operator GoBoard&() const;
 
     /** Explicitely unlock the board. */
@@ -77,8 +72,7 @@ public:
 
     /** Explicitely lock the board.
         Checks with assertions that the board state is restored.
-        See Lock()
-    */
+        See Lock() */
     void Lock();
 
 private:

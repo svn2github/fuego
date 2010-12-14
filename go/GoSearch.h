@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSearch.h
-    Class GoSearch extends SgSearch
-*/
+    Class GoSearch extends SgSearch */
 //----------------------------------------------------------------------------
 
 #ifndef GO_SEARCH_H
@@ -14,8 +13,7 @@ class GoBoard;
 //----------------------------------------------------------------------------
 
 /** Go search.
-    Defines EndOfGame to return true after two passes.
-*/
+    Defines EndOfGame to return true after two passes. */
 class GoSearch
     : public SgSearch
 {
@@ -28,25 +26,21 @@ public:
 
     /** Return false, because some Go searches require it.
         @todo Remove. Implement it in the subclasses, because it depends on
-        the move generation there.
-    */
+        the move generation there. */
     bool CheckDepthLimitReached() const;
 
     bool EndOfGame() const;
 
     /** Default implementation of SgSearch::Execute() for Go searches.
-        Executes the move is legal.
-    */
+        Executes the move is legal. */
     bool Execute(SgMove move, int* delta, int depth);
 
     /** Default implementation of SgSearch::GetHashCode() for Go searches.
-        @return Board().GetHashCodeInclToPlay().
-    */
+        @return Board().GetHashCodeInclToPlay(). */
     SgHashCode GetHashCode() const;
 
     /** Default implementation of SgSearch::ToPlay() for Go searches.
-        @return Board().ToPlay().
-    */
+        @return Board().ToPlay(). */
     SgBlackWhite GetToPlay() const;
 
     void SetToPlay(SgBlackWhite toPlay);
@@ -54,8 +48,7 @@ public:
     std::string MoveString(SgMove move) const;
 
     /** Default implementation of SgSearch::TakeBack() for Go searches.
-        Takes back the move on the board.
-    */
+        Takes back the move on the board. */
     void TakeBack();
 
 private:

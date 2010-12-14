@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGameRecordTest.cpp
-    Unit tests for GoGameRecord.
-*/
+    Unit tests for GoGameRecord. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

@@ -3,8 +3,7 @@
     Sorted table of moves.
 
     Move tables are used to store a small number of best moves. They
-    have the usual operations Insert, Delete, etc.
-*/
+    have the usual operations Insert, Delete, etc. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SORTEDMOVES_H
@@ -36,13 +35,11 @@ public:
     void DeleteEqual();
 
     /** Delete move at index.
-        Shift remaining moves forward and adjust lower bound if necessary.
-    */
+        Shift remaining moves forward and adjust lower bound if necessary. */
     void Delete(int index);
 
     /** Insert move with given value in table.
-        Update m_nuMoves, m_lowerBound of table if necessary.
-    */
+        Update m_nuMoves, m_lowerBound of table if necessary. */
     void Insert(const MOVE& move, VALUE value);
 
     /**  */
@@ -69,8 +66,7 @@ public:
     }
 
     /**  Adjust number of moves: throw out all moves whose value has become
-        less than the value of m_move[m_maxNuMoves - 1]
-    */
+        less than the value of m_move[m_maxNuMoves - 1] */
     void SetMaxMoves(int nu); // adjust all other values too
 
     /** Limit number of moves */

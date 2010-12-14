@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgArray.h
-    Static array.
-*/
+    Static array. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_ARRAY_H
@@ -15,8 +14,7 @@ template<typename T, int SIZE> class SgArray;
 
 /** Helper class to allow partial specialization of SgArray::operator=.
     Partial member function specialization is not yet supported by standard
-    C++.
-*/
+    C++. */
 template<typename T, int SIZE>
 class SgArrayAssign
 {
@@ -81,8 +79,7 @@ void SgArrayAssign<T*,SIZE>::Assign(T** dest, T* const * src)
 /** Static array.
     Wrapper class around a C style array.
     Uses assertions for indices in range in debug mode.
-    @deprecated Use boost::array instead
-*/
+    @deprecated Use boost::array instead */
 template<typename T, int SIZE>
 class SgArray
 {

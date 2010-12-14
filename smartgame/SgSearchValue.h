@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSearchValue.h
-    Scalar values used in search tasks derived from class SgSearch.
-*/
+    Scalar values used in search tasks derived from class SgSearch. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SEARCHVALUE_H
@@ -22,8 +21,7 @@
     values being good for white.
     <pre>
     int v = Board().ToPlay() == SG_WHITE ? -value : +value;
-    </pre>
-*/
+    </pre> */
 class SgSearchValue
 {
 public:
@@ -34,13 +32,11 @@ public:
         /** The best possible search result - highest possible value.
         A win in n ply is encoded with a value of MAX_VALUE - n.
         A loss is encoded as -value if the win would be encoded as value.
-        MAX_VALUE==32000.
-        */
+        MAX_VALUE==32000. */
         MAX_VALUE = MAX_LEVEL * SgSearch::MAX_DEPTH,
         
         /** The worst possible search result. 
-            All search results are in the range [MIN_VALUE..MAX_VALUE].
-        */
+            All search results are in the range [MIN_VALUE..MAX_VALUE]. */
         MIN_VALUE = -MAX_VALUE,
 
         /** The maximum number of Ko recaptures allowed in a search. */
@@ -49,8 +45,7 @@ public:
         /** KO_VALUE is the result for win by ko.
             Similarly with MAX_VALUE, a win by Ko in n ply is encoded as 
             KO_VALUE - n.
-            KO_VALUE==32000 - 256 = 31744.
-        */
+            KO_VALUE==32000 - 256 = 31744. */
         KO_VALUE = MAX_VALUE - SgSearch::MAX_DEPTH,
 
         /** MIN_PROVEN_VALUE is the lowest score that indicates a proven win.
@@ -59,8 +54,7 @@ public:
             2. values in the range [-MIN_PROVEN_VALUE+1..MIN_PROVEN_VALUE-1] 
                are heuristic scores.
             3. values in range [MIN_PROVEN_VALUE..MAX_VALUE] 
-               are proven wins (possibly by ko).
-        */
+               are proven wins (possibly by ko). */
         MIN_PROVEN_VALUE = MAX_VALUE
                                - (MAX_KO_LEVEL + 1) * SgSearch::MAX_DEPTH
     };
@@ -80,8 +74,7 @@ public:
 
     /** Convert 'string' to a value and set this value.
         Return true if the string could be converted to a valid value,
-        otherwise false.
-    */
+        otherwise false. */
     bool FromString(const std::string& s);
 
     bool IsEstimate() const;
@@ -110,8 +103,7 @@ public:
 
     /** Set '*s' to the string for this value, e.g. "B+3.5", "W+20",
         or "W+(ko)[12]". The value is divided by 'unitPerPoint' to determine
-        the number of points.
-    */
+        the number of points. */
     std::string ToString(int unitPerPoint = 1) const;
 
 private:

@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoAutoBook.h
- */
+/** @file GoAutoBook.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOAUTOBOOK_H
@@ -85,8 +84,7 @@ struct GoAutoBookParam
 //----------------------------------------------------------------------------
 
 /** Simple text-based book format.
-    Entire book is loaded into memory.
-*/
+    Entire book is loaded into memory. */
 class GoAutoBook
 {
 public:
@@ -113,8 +111,7 @@ public:
 
     /** Returns the move leading to the best child state. 
         The best child state depends on the move selection criteria.
-        See GoAutoBookParam.
-    */
+        See GoAutoBookParam. */
     SgMove FindBestChild(GoAutoBookState& state) const;
 
     //----------------------------------------------------------------------
@@ -125,14 +122,12 @@ public:
         are leafs in merged book, value is the set to be the average.
 
         @todo Handle counts properly? Would need to know the original
-        book the two books we are merging derived from.
-     */
+        book the two books we are merging derived from. */
     void Merge(const GoAutoBook& other);
 
     /** Add states to be disabled. 
         These states will not be considered for selection in
-        FindBestChild() from the parent state. 
-    */
+        FindBestChild() from the parent state.  */
     void AddDisabledLines(const std::set<SgHashCode>& disabled);
 
     /** Copies a truncated version of the book into other. */

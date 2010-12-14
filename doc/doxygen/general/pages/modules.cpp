@@ -26,5 +26,4 @@
         fuegomain [label="FuegoMain", style=bold]
         gouct -> fuegomain
     }
-    @enddot
-*/
+    @enddot */

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctBoardTest.cpp
-    Unit tests for GoUctBoard.
-*/
+    Unit tests for GoUctBoard. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -17,8 +16,7 @@ using SgPointUtil::Pt;
 namespace {
 
 /** Copied and adapted from GoBoardTest_GetLastMove.
-    Parts removed that use Undo()
-*/
+    Parts removed that use Undo() */
 BOOST_AUTO_TEST_CASE(GoUctBoardTest_GetLastMove)
 {
     GoBoard board(19);

@@ -19,8 +19,7 @@
     It is usually returned from procedures to indicate failure.
     Because the tree is usually traversed depth-first, it is safe to assume
     that it is faster to go to the leftmost than to the rightmost son, and
-    faster to go to the right brother than to the left brother.
-*/
+    faster to go to the right brother than to the left brother. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_NODE_H
@@ -37,8 +36,7 @@
     Procedures for moving around in the tree return 0 if the desti-
     nation doesn't exist.
     References to "left" and "right" picture the tree with the root at the
-    top and the main line of play going down the left side.
-*/
+    top and the main line of play going down the left side. */
 class SgNode
 {
 public:
@@ -100,8 +98,7 @@ public:
     }
 
     /** True of the node is on the main branch of the tree, that is
-        none of its ancestors has a left brother.
-    */
+        none of its ancestors has a left brother. */
     bool IsOnMain() const;
 
     /** NOT HasSon(node) */
@@ -148,14 +145,12 @@ public:
     SgNode* PrevDepthFirst() const;
 
     /** Return the next node in the given direction.
-        Returns 0 if there is no such node.
-    */
+        Returns 0 if there is no such node. */
     SgNode* NodeInDirection(Direction dir) const;
 
     /** Return whether this node contains a property that matches the given
         text.
-        Doesn't handle text representing special properties.
-    */
+        Doesn't handle text representing special properties. */
     bool ContainsText(const std::string& findText);
 
     /** Returns all nodes on path from this node up to the root. */
@@ -164,20 +159,17 @@ public:
     /** Find the closest common ancestor of the two nodes.
         Returns the path from this node to 'node': how many times
         to go one node back, and a vector of the nodes to execute from
-        there (excluding the common ancestor).
-    */
+        there (excluding the common ancestor). */
     void ShortestPathTo(SgNode* node, int* numBack,
                         SgVectorOf<SgNode>* path) const;
 
     /** Promote this node to first son.
-        Moves all its left brothers one position to the right.
-    */
+        Moves all its left brothers one position to the right. */
     void PromoteNode();
 
     /** The tree above this node is changed such that this node is on
         the main path.
-        (first in depth-first search).
-    */
+        (first in depth-first search). */
     void PromotePath();
 
     /** Deletes all nodes below this node, but not this node itself. */
@@ -192,8 +184,7 @@ public:
         SgNode* root = Root();
         root->DeleteSubtree();
         delete root;
-        @endverbatim
-    */
+        @endverbatim */
     void DeleteTree();
 
     SgNode* NewFather();
@@ -209,8 +200,7 @@ public:
     void AppendTo(SgNode* n);
 
     /** Add a new node and add all trees in 'roots' as subtrees of that
-        node.
-    */
+        node. */
     static SgNode* LinkTrees(const SgVectorOf<SgNode>& roots);
 
     SgPropList& Props()
@@ -238,16 +228,14 @@ public:
     }
 
     /** HasProp also handles abstract node properties like SG_PROP_TERMINAL
-        and SG_PROP_BRANCH, while Get only returns real properties.
-    */
+        and SG_PROP_BRANCH, while Get only returns real properties. */
     bool HasProp(SgPropID id) const;
 
     /** has SG_PROP_MOVE_BLACK or SG_PROP_MOVE_WHITE */
     bool HasNodeMove() const;
 
     /** Player of move.
-        REQUIRES: HasNodeMove()
-    */
+        REQUIRES: HasNodeMove() */
     SgBlackWhite NodePlayer() const;
 
     SgPoint NodeMove() const;
@@ -255,14 +243,12 @@ public:
     /** Return the most recent node that has the given property, starting
         backwards from this node.
         Return this node if it has the wanted property; return the root of the
-        tree if no node with that property was found.
-    */
+        tree if no node with that property was found. */
     SgNode* TopProp(SgPropID id) const;
 
     /** Return the value of the given property at this node.
         Or 0 if there is no such property. The property must be of class
-        SgPropInt (or a derived class).
-    */
+        SgPropInt (or a derived class). */
     int GetIntProp(SgPropID id) const;
 
     /** return if property exists. If true, return its value in *value */
@@ -270,14 +256,12 @@ public:
 
     /** Value of the given property at this node.
         Returns 0 if there is no such property.
-        The property must be of class SgPropReal.
-    */
+        The property must be of class SgPropReal. */
     double GetRealProp(SgPropID id) const;
 
     /** Set the value of the given property at this node to 'value'.
         Create such a property if it doesn't exist yet. The property must be
-        of class SgPropInt (or a derived class).
-    */
+        of class SgPropInt (or a derived class). */
     void SetIntProp(SgPropID id, int value);
 
     /** Set the value of the given property at this node.
@@ -285,38 +269,32 @@ public:
         The property must be of class SgPropReal.
         @param  id
         @param value
-        @param precision Precision; 0 means default precision (6)
-    */
+        @param precision Precision; 0 means default precision (6) */
     void SetRealProp(SgPropID id, double value, int precision = 0);
 
     /** Set the value of the given property at this node to 'value'.
         Create such a property if it doesn't exist yet. The property must be
-        of class SgPropText (or a derived class).
-    */
+        of class SgPropText (or a derived class). */
     void SetStringProp(SgPropID id, const std::string& value);
 
     /** Return the value of the given property at this node.
         Or 0 if there is no such property. The property must be of class
-        SgPropText (or a derived class).
-    */
+        SgPropText (or a derived class). */
     bool GetStringProp(SgPropID id, std::string* value) const;
 
     /** Set the value of the given property at this node to 'value'.
         Create such a property if it doesn't exist yet. The property must be
-        of class SgPropPointList (or a derived class).
-    */
+        of class SgPropPointList (or a derived class). */
     void SetListProp(SgPropID id, const SgVector<SgPoint>& value);
     void SetListProp(SgPropID id, const SgPointSet& value);
 
     /** Add comment to existing SG_PROP_COMMENT of this node, or create a new
-        SG_PROP_COMMENT with this text.
-    */
+        SG_PROP_COMMENT with this text. */
     void AddComment(const std::string& comment);
 
     /** If it exists, copy the property with the given 'id' from 'sourceNode'
         to this node, and return it.
-        If the property doesn't exist, return 0.
-    */
+        If the property doesn't exist, return 0. */
     SgProp* CopyPropFrom(const SgNode& sourceNode, SgPropID id);
 
     /** Copy all properties from 'sourceNode' to this node. */
@@ -325,20 +303,17 @@ public:
     /** Add a move property to this node with 'move' played by 'player'.
         @return the property added.
         @warning Only for games which use SgMoveProp
-        @todo Too game dependent for a member of SgNode, move somewhere else
-    */
+        @todo Too game dependent for a member of SgNode, move somewhere else */
     SgProp* AddMoveProp(SgMove move, SgBlackWhite player);
 
     /** Return the player, if explicitely set.
-        REQUIRES: Get(SG_PROP_PLAYER)
-    */
+        REQUIRES: Get(SG_PROP_PLAYER) */
     SgBlackWhite Player() const;
 
     /** Count the nodes in this subtree and sets SG_PROP_NUM_NODES for each
         interior node in the subtree that has at least two sons, plus for this
         node if 'fSetPropOnThisNode' is set.
-        Return the number of nodes in the subtree, including this node.
-    */
+        Return the number of nodes in the subtree, including this node. */
     int CountNodes(bool fSetPropOnThisNode);
 
     static void CopySubtree(const SgNode* node, SgNode* copy);
@@ -366,8 +341,7 @@ public:
         node2 "1.1.1"
         node3 "1.2"
         @endverbatim
-        A null node pointer has the TreeIndex "NIL".
-    */
+        A null node pointer has the TreeIndex "NIL". */
     static std::string TreeIndex(const SgNode* node);
 
 private:
@@ -494,13 +468,11 @@ public:
     /** Create an iterator for iterating through all nodes in the subtree
         of 'rootOfSubtree', including the node itself.
         If 'preOrder' (default), return internal nodes before their sons; if
-        'postOrder', then return the leaves before the internal nodes.
-    */
+        'postOrder', then return the leaves before the internal nodes. */
     SgNodeIterator(SgNode* rootOfSubtree, bool postOrder = false);
 
     /** Abort the iteration.
-        The next call to operator bool will return false.
-    */
+        The next call to operator bool will return false. */
     void Abort()
     {
         m_nextNode = 0;
@@ -549,16 +521,14 @@ public:
     /** Create an iterator for iterating through all nodes in the subtree
         of 'rootOfSubtree', including the node itself.
         If 'preOrder' (default), return internal nodes before their sons; if
-        'postOrder', then return the leaves before the internal nodes.
-    */
+        'postOrder', then return the leaves before the internal nodes. */
     SgNodeConstIterator(const SgNode* rootOfSubtree, bool postOrder = false);
 
     /** Find next node in the tree. Return false when done with all nodes. */
     bool Next();
 
     /** Abort the iteration.
-        The next call to operator bool will return false.
-    */
+        The next call to operator bool will return false. */
     void Abort()
     {
         m_nextNode = 0;

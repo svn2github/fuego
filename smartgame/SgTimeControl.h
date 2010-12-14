@@ -21,8 +21,7 @@ public:
         See class description.
         @param timeRecord Time settings and clock state of current game.
         @param quiet Don't print logging information to SgDebug()
-        @return Time suggestion for current move in seconds.
-    */
+        @return Time suggestion for current move in seconds. */
     virtual double TimeForCurrentMove(const SgTimeRecord& timeRecord,
                                       bool quiet = false) = 0;
 
@@ -44,8 +43,7 @@ public:
     -# [A minimum time of 0.1 is also enforced, but this might become
         obsolete, see SetMinTime()]
     -# The parameter RemainingConstant() can be used to spend exponentially
-       more time earlier in the game
-*/
+       more time earlier in the game */
 class SgDefaultTimeControl
     : public SgTimeControl
 {
@@ -58,8 +56,7 @@ public:
 
     /** Set time reduction factor for fast opening moves.
         Default is 0.25.
-        See class description.
-    */
+        See class description. */
     double FastOpenFactor() const;
 
     /** See FastOpenFactor() */
@@ -67,8 +64,7 @@ public:
 
     /** Set how many opening moves should be played quickly.
         Default is 0.
-        See class description.
-    */
+        See class description. */
     int FastOpenMoves() const;
 
     /** See FastOpenMoves() */
@@ -85,8 +81,7 @@ public:
         game (moves played plus expected remaining moves). The default value
         is 1.0, which does not limit the number of expected remaining moves.
         The smaller the value, the more time is spent in the early phase of
-        the game.
-    */
+        the game. */
     double RemainingConstant() const;
 
     /** See RemainingConstant() */
@@ -95,8 +90,7 @@ public:
     /** Set minimum time for any move.
         Could be made obsolete? If the player cannot generate a meaningful
         move in less than a minimum time, he can decide itself to ignore
-        the time limit.
-    */
+        the time limit. */
     void SetMinTime(double mintime);
 
     // @} // @name Parameters
@@ -109,8 +103,7 @@ public:
         @param[out] toPlay Current color to move.
         @param[out] movesPlayed Moves already played (by the current player)
         @param[out] estimatedRemainingMoves An estimate of the number of
-        remaining moves (for the current player) in the game.
-    */
+        remaining moves (for the current player) in the game. */
     virtual void GetPositionInfo(SgBlackWhite& toPlay,
                                  int& movesPlayed,
                                  int& estimatedRemainingMoves) = 0;
@@ -134,8 +127,7 @@ private:
 /** Abstract interface for players (or other objects) that own an instance
     of SgDefaultTimeControl.
     Can be used to query a player at runtime (with a dynamic_cast), whether it
-    uses such an object and set parameters.
-*/
+    uses such an object and set parameters. */
 class SgObjectWithDefaultTimeControl
 {
 public:

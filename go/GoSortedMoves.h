@@ -3,8 +3,7 @@
     Specialization of SgSortedMoves for Go: move = SgMove, value = int.
 
     Move tables are used to store a small number of best moves. They
-    have the usual operations Insert, Delete, etc.
-*/
+    have the usual operations Insert, Delete, etc. */
 //----------------------------------------------------------------------------
 #ifndef GO_SORTEDMOVES_H
 #define GO_SORTEDMOVES_H
@@ -17,8 +16,7 @@
 
 /** Specialization of SgSortedMoves for Go: move = SgMove, value = int 
     @todo make maxNuMoves a template parameter, use instead 
-    of GO_SORTED_MOVES_MAX
-*/
+    of GO_SORTED_MOVES_MAX */
 class GoSortedMoves : 
     public SgSortedMoves<SgMove, int, GO_SORTED_MOVES_MAX>
 {

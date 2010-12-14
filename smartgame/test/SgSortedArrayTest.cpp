@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSortedArrayTest.cpp
-    Unit tests for SgSortedArray.
-*/
+    Unit tests for SgSortedArray. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

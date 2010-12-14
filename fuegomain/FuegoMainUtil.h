@@ -22,8 +22,7 @@ namespace FuegoMainUtil
         @param book The opening book to load
         @param programDir the directory of the executable (may be a relative
         path or an empty string)
-        @throws SgException, if book is not found
-    */
+        @throws SgException, if book is not found */
     void LoadBook(GoBook& book, const boost::filesystem::path& programDir);
 
     /** Return Fuego version.
@@ -31,8 +30,7 @@ namespace FuegoMainUtil
         time, its value is used as the version, otherwise the version
         is "(__DATE__)". 
         If SVNREV is defined, ( SVNREV ) is added.
-        If compiled in debug mode, " (dbg)" is added.
-    */
+        If compiled in debug mode, " (dbg)" is added. */
     std::string Version();
 }
 

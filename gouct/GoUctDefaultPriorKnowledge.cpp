@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctDefaultPriorKnowledge.cpp
-    See GoUctDefaultPriorKnowledge.h
-*/
+    See GoUctDefaultPriorKnowledge.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -124,8 +123,7 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
     @param[out] atari
     @param[out] empty As a side effect, this function finds all empty points
     on the board
-    @return @c true if any such moves was found
-*/
+    @return @c true if any such moves was found */
 bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
                                                      SgPointSet& pattern,
                                                      SgPointSet& atari,

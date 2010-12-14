@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctDefaultRootFilter.cpp
-    See GoUctDefaultRootFilter.h
-*/
+    See GoUctDefaultRootFilter.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -19,8 +18,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 /** Return true, if point is on edge line and no stone is within a
-    Manhattan distance of 4.
-*/
+    Manhattan distance of 4. */
 bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
 {
     if (bd.Occupied(p))

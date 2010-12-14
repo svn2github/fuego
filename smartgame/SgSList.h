@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSList.h
-    Static list.
-*/
+    Static list. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SLIST_H
@@ -14,8 +13,7 @@
 /** Static list not using dynamic memory allocation.
     Elements need to have a default constructor.
     They should be value-types, not entity-types, because operations like
-    Clear() do not call the destructor of the old elements immediately.
-*/
+    Clear() do not call the destructor of the old elements immediately. */
 template<typename T, int SIZE>
 class SgSList
 {
@@ -81,18 +79,15 @@ public:
         Like RemoveFirst, but more efficient and does not preserve
         order of remaining elements. The first occurrence of the value is
         replaced by the last element.
-        @return false, if element was not found
-    */
+        @return false, if element was not found */
     bool Exclude(const T& val);
 
     /** PushBack value at the end of the list if it's not already in the
-        list.
-    */
+        list. */
     void Include(const T& val);
 
     /** Build intersection with other list.
-        List may not contain duplicate entries.
-    */
+        List may not contain duplicate entries. */
     SgSList Intersect(const SgSList<T,SIZE>& list) const;
 
     bool IsEmpty() const;
@@ -105,8 +100,7 @@ public:
 
     /** Remove the last element of the list.
         Does not return the last element for efficiency. To get the last
-        element, use Last() before calling PopBack().
-    */
+        element, use Last() before calling PopBack(). */
     void PopBack();
 
     void PushBack(const T& val);
@@ -114,15 +108,13 @@ public:
     /** Push back all elements of another list.
         Works with lists of different maximum sizes.
         Requires: Total resulting number of elements will fit into the target
-        list.
-    */
+        list. */
     template<int SIZE2>
     void PushBackList(const SgSList<T,SIZE2>& list);
 
     /** Remove first occurence of a value.
         Preserves order of remaining elements.
-        @see Exclude
-    */
+        @see Exclude */
     void RemoveFirst(const T& val);
 
     /** Resize list.
@@ -130,8 +122,7 @@ public:
         at a place greater than the old length are not initialized, they are
         just the old elements at this place.
         This is necessary if elements are re-used for efficiency and will be
-        initialized later.
-    */
+        initialized later. */
     void Resize(int length);
 
     bool SameElements(const SgSList& list) const;

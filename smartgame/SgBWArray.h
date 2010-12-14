@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBWArray.h
-    Arrays indexed by color.
-*/
+    Arrays indexed by color. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_BWARRAY_H
@@ -26,8 +25,7 @@ public:
         and because it does not allow use cases with incremental
         initialization after construction. If you want to initialize for
         example an SgBWArray<int> with 0, use the constructor that takes a
-        default value.
-    */
+        default value. */
     SgBWArray();
 
     SgBWArray(const T& val);

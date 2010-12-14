@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgRect.h
-    Rectangle on the Go board.
-*/
+    Rectangle on the Go board. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_RECT_H
@@ -12,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Rectangle on the Go board. 
-    top < bottom, coordinates grow from top to bottom.
-*/
+    top < bottom, coordinates grow from top to bottom. */
 class SgRect
 {
 public:
@@ -185,8 +183,7 @@ private:
 
 //----------------------------------------------------------------------------
 
-/** Iterator for rectangle on the Go board, based on SgRect object
-*/
+/** Iterator for rectangle on the Go board, based on SgRect object */
 class SgRectIterator
 {
 public:

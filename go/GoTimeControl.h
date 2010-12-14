@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoTimeControl.h
-    Time management.
-*/
+    Time management. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_TIMECONTROL_H
@@ -17,8 +16,7 @@ class GoBoard;
     Implements SgDefaultTimeControl. The remaining number of moves in the game
     is estimated by comparing the number of empty points to the expected final
     number of empty points (can be tuned with the SetFinalSpace() parameter;
-    default = 0.75).
-*/
+    default = 0.75). */
 class GoTimeControl
     : public SgDefaultTimeControl
 {
@@ -30,8 +28,7 @@ public:
     // @{
 
     /** Set estimated proportion of occupied points at the end of the game.
-        See class description.
-    */
+        See class description. */
     float FinalSpace() const;
 
     /** See FinalSpace() */

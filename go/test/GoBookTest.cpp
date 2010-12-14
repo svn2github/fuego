@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBookTest.cpp
-    Unit tests for GoBook.
-*/
+    Unit tests for GoBook. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -86,8 +85,7 @@ BOOST_AUTO_TEST_CASE(GoBookTest_Delete)
 }
 
 /** Test that a position in a book matches rotated/mirrored/transposed
-    positions.
-*/
+    positions. */
 BOOST_AUTO_TEST_CASE(GoBookTest_RotatedAndTransposedMatches)
 {
     istringstream in("9 C3 C7 E5 | G3 G7");

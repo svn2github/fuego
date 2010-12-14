@@ -31,6 +31,5 @@ moves will be legal.
 
 - AllowKoRepetition does not allow two non-alternating Ko moves by the same
 player in a row
-(does some code rely on this?)
-*/
+(does some code rely on this?) */
 

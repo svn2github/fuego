@@ -1,8 +1,7 @@
 //----------------------------------------------------------------------------
 /** @file SpMaxEyePlayer.h
     Plays to complete simple eyes as quickly as possible, or preventing
-    opponent from doing so.
-*/
+    opponent from doing so. */
 //----------------------------------------------------------------------------
 
 #ifndef SP_MAXEYEPLAYER_H
@@ -15,8 +14,7 @@
 
 //----------------------------------------------------------------------------
 
-/** Tries to maximize simple eye score of any point.
-*/
+/** Tries to maximize simple eye score of any point. */
 class SpMaxEyeMoveGenerator
     : public Sp1PlyMoveGenerator
 {

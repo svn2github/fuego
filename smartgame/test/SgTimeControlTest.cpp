@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgTimeControlTest.cpp
-    Unit tests for SgTimeControl.
-*/
+    Unit tests for SgTimeControl. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -58,8 +57,7 @@ inline void TimeControl::SetPositionInfo(SgBlackWhite toPlay, int movesPlayed,
 //----------------------------------------------------------------------------
 
 /** Test border cases in which bugs could make SgDefaultTimeControl return
-    infinity.
-*/
+    infinity. */
 BOOST_AUTO_TEST_CASE(SgDefaultTimeControlTest_Infinity)
 {
     TimeControl control;

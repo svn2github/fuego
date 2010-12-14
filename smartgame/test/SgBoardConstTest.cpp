@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBoardConstTest.cpp
-    Unit tests for SgBoardConst.
-*/
+    Unit tests for SgBoardConst. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

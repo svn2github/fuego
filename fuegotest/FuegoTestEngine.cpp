@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file FuegoTestEngine.cpp
-    See FuegoTestEngine.h
-*/
+    See FuegoTestEngine.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -69,8 +68,7 @@ void FuegoTestEngine::CmdName(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c player Player id as in FuegoTestEngine::SetPlayer
-*/
+    @arg @c player Player id as in FuegoTestEngine::SetPlayer */
 void FuegoTestEngine::CmdParam(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);

@@ -55,6 +55,5 @@
     - Don't copy and paste code; avoid redundancy
     - Don't create cyclic dependencies between classes, files or modules
     - Don't use inheritance to tweak the implementation of classes
-    - <b>In general: Use best C++ practices</b>
-*/
+    - <b>In general: Use best C++ practices</b> */
 

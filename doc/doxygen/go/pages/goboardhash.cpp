@@ -27,6 +27,5 @@ The idea is to eliminate hashing problems caused by the same
 position reached at different level in the search, or recapture
 is legal in one branch and illegal in another.
 It is not a complete solution to the GHI problem.
-
-*/
+ */
 

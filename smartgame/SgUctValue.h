@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctValue.h
-    Defines the floating point type used in SgUctSearch
-*/
+    Defines the floating point type used in SgUctSearch */
 //----------------------------------------------------------------------------
 
 #ifndef SG_UCTVALUE_H
@@ -21,8 +20,7 @@
     simulations before the count and mean values go into "saturation". This
     maximum is given by 2^d-1 with d being the digits in the mantissa (=23 for
     IEEE 754 float's). The search will terminate when this number is
-    reached.
-*/
+    reached. */
 
 #ifdef SG_UCT_VALUE_TYPE
 typedef SG_UCT_VALUE_TYPE SgUctValue;
@@ -48,8 +46,7 @@ namespace SgUctValueUtil
     value is no longer precise, because incrementing it further will not
     change its value anymore.
     @return @c true if value is not negative and less or equal
-    <tt>(size_t(1) << numeric_limits<SgUctValue>::digits) - 1)</tt>
-*/
+    <tt>(size_t(1) << numeric_limits<SgUctValue>::digits) - 1)</tt> */
 inline bool IsPrecise(SgUctValue val)
 {
     BOOST_STATIC_ASSERT(std::numeric_limits<SgUctValue>::radix == 2);

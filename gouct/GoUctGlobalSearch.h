@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctGlobalSearch.h
-*/
+/** @file GoUctGlobalSearch.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_GLOBALSEARCH_H
@@ -23,8 +22,7 @@
     Compile-time constant to enable the usage of the safety solver. This
     cost some performance and there are no experiments yet showing that it
     improves the playing strength. It is also currently not functional,
-    since it has not been updated after code changes.
-*/
+    since it has not been updated after code changes. */
 const bool GOUCT_USE_SAFETY_SOLVER = false;
 
 //----------------------------------------------------------------------------
@@ -34,8 +32,7 @@ struct GoUctGlobalSearchStateParam
 {
     /** Use the mercy rule.
         Count games early as win or loss, if stone difference on board
-        exceeds a threshold of 30% of the total number of points on board.
-    */
+        exceeds a threshold of 30% of the total number of points on board. */
     bool m_mercyRule;
 
     /** Compute probabilities of territory in terminal positions. */
@@ -50,8 +47,7 @@ struct GoUctGlobalSearchStateParam
         The modification is added for losses and subtracted for wins. The
         value is the length of times the value of the modification parameter.
         The maximum modification is 0.5. The default value of the parameter
-        is 0.
-    */
+        is 0. */
     SgUctValue m_lengthModification;
 
     /** Modify game result by score.
@@ -64,8 +60,7 @@ struct GoUctGlobalSearchStateParam
         look equal in clearly won or lost positions. It can also reduce the
         typical game length and could even have a positive effect on the
         playing strength. The modification can be disabled by setting the
-        parameter to zero. The default value is 0.02.
-    */
+        parameter to zero. The default value is 0.02. */
     SgUctValue m_scoreModification;
 
     GoUctGlobalSearchStateParam();
@@ -95,13 +90,11 @@ struct GoUctGlobalSearchStateParam
     In the in-tree-phase of the game, pass moves are always allowed to avoid
     zugzwang situations, if there is a seki on the board. After two
     passes the game is terminated and scored with
-    GoBoardUtil::TrompTaylorScore.
-*/
+    GoBoardUtil::TrompTaylorScore. */
 
 /** Global UCT-Search for Go.
     - @ref gouctpassmoves
-    @tparam POLICY The playout policy
-*/
+    @tparam POLICY The playout policy */
 template<class POLICY>
 class GoUctGlobalSearchState
     : public GoUctState
@@ -112,8 +105,7 @@ public:
     const SgPointArray<bool>& m_allSafe;
 
     /** Probabilities that a point belongs to Black in a terminal position.
-        Only computed if GoUctGlobalSearchStateParam::m_territoryStatistics.
-    */
+        Only computed if GoUctGlobalSearchStateParam::m_territoryStatistics. */
     SgPointArray<SgUctStatistics> m_territoryStatistics;
 
     /** Constructor.
@@ -127,8 +119,7 @@ public:
         @param param Parameters. Stores a reference to the argument.
         @param policyParam. Stores a reference to the argument.
         @param safe Safety information. Stores a reference to the argument.
-        @param allSafe Safety information. Stores a reference to the argument.
-    */
+        @param allSafe Safety information. Stores a reference to the argument. */
     GoUctGlobalSearchState(unsigned int threadId, const GoBoard& bd,
                            POLICY* policy,
                            const GoUctGlobalSearchStateParam& param,
@@ -160,8 +151,7 @@ public:
     POLICY* Policy();
 
     /** Set random policy.
-        Sets a new random policy and deletes the old one, if it existed.
-    */
+        Sets a new random policy and deletes the old one, if it existed. */
     void SetPolicy(POLICY* policy);
 
     void ClearTerritoryStatistics();
@@ -181,8 +171,7 @@ private:
     int m_mercyRuleThreshold;
 
     /** Difference of stones on board.
-        Black counts positive.
-    */
+        Black counts positive. */
     int m_stoneDiff;
 
     /** Board move number at root node of search. */
@@ -195,8 +184,7 @@ private:
     SgUctValue m_mercyRuleResult;
 
     /** Inverse of maximum score one can reach on a board of the current
-        size.
-    */
+        size. */
     SgUctValue m_invMaxScore;
 
     SgRandom m_random;
@@ -530,8 +518,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
 
 /** Factory for creating a GoUctGlobalSearchState.
     @tparam POLICY The playout policy
-    @tparam FACTORY The factory for the playout policy
-*/
+    @tparam FACTORY The factory for the playout policy */
 template<class POLICY, class FACTORY>
 class GoUctGlobalSearchStateFactory
     : public SgUctThreadStateFactory
@@ -544,8 +531,7 @@ public:
         Stores a reference. Lifetime of parameter must exceed the lifetime of
         this instance.
         @param safe
-        @param allSafe
-    */
+        @param allSafe */
     GoUctGlobalSearchStateFactory(GoBoard& bd,
                                   FACTORY& playoutPolicyFactory,
                                   const GoUctPlayoutPolicyParam& policyParam,
@@ -585,8 +571,7 @@ GoUctGlobalSearchStateFactory<POLICY,FACTORY>
 
 /** Full board Monte-Carlo tree search.
     @tparam POLICY The playout policy
-    @tparam FACTORY The factory for the playout policy
-*/
+    @tparam FACTORY The factory for the playout policy */
 template<class POLICY, class FACTORY>
 class GoUctGlobalSearch
     : public GoUctSearch
@@ -599,8 +584,7 @@ public:
         @param playoutPolicyFactory Creates multiple instances of the playout
         policies. Takes ownership. playoutPolicyFactory should not have
         SetSafe() and SetAllSafe() already set, because the search will call
-        these functions using its own safety information.
-    */
+        these functions using its own safety information. */
     GoUctGlobalSearch(GoBoard& bd,
                       FACTORY* playoutPolicyFactory,
                       const GoUctPlayoutPolicyParam& policyParam);
@@ -631,8 +615,7 @@ public:
         influence data shows the terriroy statistics (which must be enabled)
         instead of the move values. No move counts are shown.
         The live graphics interval from GoUctSearch will be used.
-        @see GoUctSearch::LiveGfxInterval()
-    */
+        @see GoUctSearch::LiveGfxInterval() */
     bool GlobalSearchLiveGfx() const;
 
     /** See GlobalSearchLiveGfx() */

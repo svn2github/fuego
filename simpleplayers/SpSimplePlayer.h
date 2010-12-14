@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpSimplePlayer.h
-    Base class for simple Go playing algorithms.
-*/
+    Base class for simple Go playing algorithms. */
 //----------------------------------------------------------------------------
 
 #ifndef SP_SIMPLEPLAYER_H
@@ -17,8 +16,7 @@ class SpRandomMoveGenerator;
 //----------------------------------------------------------------------------
 
 /** SimplePlayer has one move generator. 
-    It generates random moves if no other move is found.
-*/
+    It generates random moves if no other move is found. */
 class SpSimplePlayer
     : public GoPlayer
 {

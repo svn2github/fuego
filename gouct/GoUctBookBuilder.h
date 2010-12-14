@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctBookBuilder.h
- */
+/** @file GoUctBookBuilder.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOBOOKBUILDER_H
@@ -24,8 +23,7 @@
 
     @todo Copy settings from passed player to other players.
 
-    @ingroup openingbook
-*/
+    @ingroup openingbook */
 template<class PLAYER>
 class GoUctBookBuilder : public SgBookBuilder
 {

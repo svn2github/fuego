@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSearchValue.cpp
-    See SgSearchValue.h.
-*/
+    See SgSearchValue.h. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -19,8 +18,7 @@ using namespace std;
 
 /** Set '*s' to the string for this value.
     e.g. "B+3.5", "W+20", or "W+(ko)[12]". The value is divided by
-    'unitPerPoint' to determine the number of points.
-*/
+    'unitPerPoint' to determine the number of points. */
 string SgSearchValue::ToString(int unitPerPoint) const
 {
     if (m_value == 0)

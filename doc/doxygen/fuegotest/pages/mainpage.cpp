@@ -26,5 +26,4 @@
       - @ref gogtpenginecommands "GoGtpEngine"
       - @ref gogtpextracommands "GoGtpExtraCommands"
       - @ref gosafetycommands "GoSafetyCommands"
-      - @ref fuegotestenginecommands "FuegoTestEngine"
-*/
+      - @ref fuegotestenginecommands "FuegoTestEngine" */

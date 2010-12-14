@@ -13,5 +13,4 @@ C++ libraries or Boost is encapsulated in classes in the SmartGame library
 (e.g. SgTime, SgProcess). The current implementation using POSIX functions.
 To port these classes to other platforms, an alternative implementation needs
 to be added to the source code.
-
-*/
+ */

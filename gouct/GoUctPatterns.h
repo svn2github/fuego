@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctPatterns.h
-*/
+/** @file GoUctPatterns.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_PATTERNS_H
@@ -56,8 +55,7 @@
     @verbatim
     X . ?   ? X ?   ? X O    ? X O    ? X O
     O . ?   o . O   ? . ? B  ? . o W  O . X W
-    @endverbatim
-*/
+    @endverbatim */
 template<class BOARD>
 class GoUctPatterns
 {

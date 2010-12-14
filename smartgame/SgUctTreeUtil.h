@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctTreeUtil.h
-    Utility functions for users of SgUctSearch.h
-*/
+    Utility functions for users of SgUctSearch.h */
 //----------------------------------------------------------------------------
 
 #ifndef SG_UCTTREEUTIL_H
@@ -18,8 +17,7 @@ class SgUctTree;
 //----------------------------------------------------------------------------
 
 /** Statistical properties of a SgUctTree.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctTreeStatistics
 {
 public:
@@ -45,15 +43,13 @@ public:
 };
 
 /** Write a SgUctTreeStatistics.
-    @relatesalso SgUctTreeStatistics
-*/
+    @relatesalso SgUctTreeStatistics */
 std::ostream& operator<<(std::ostream& out, const SgUctTreeStatistics& stat);
 
 //----------------------------------------------------------------------------
 
 /** Utility functions for users of SgUctTree.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 namespace SgUctTreeUtil
 {
     /** Extract the subtree from the node after a sequence of moves.
@@ -64,16 +60,14 @@ namespace SgUctTreeUtil
         @param[out] target The target tree (will be cleared before using it).
         @param sequence The sequence of moves.
         @param warnTruncate See SgUctTree::ExtractSubtree
-        @param maxTime See SgUctTree::ExtractSubtree
-    */
+        @param maxTime See SgUctTree::ExtractSubtree */
     void ExtractSubtree(const SgUctTree& tree, SgUctTree& target,
                         const std::vector<SgMove>& sequence,
                         bool warnTruncate,
                         double maxTime = std::numeric_limits<double>::max());
 
     /** Find move node with a given move.
-        @return The child node or 0, if the position node has no such child.
-    */
+        @return The child node or 0, if the position node has no such child. */
     const SgUctNode* FindChildWithMove(const SgUctTree& tree,
                                        const SgUctNode& node, SgMove move);
 

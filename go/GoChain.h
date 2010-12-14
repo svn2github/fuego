@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoChain.h
-    A chain contained in a @see GoRegionBoard.
-*/
+    A chain contained in a @see GoRegionBoard. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_CHAIN_H
@@ -32,8 +31,7 @@ enum GoChainType
 std::ostream& operator<<(std::ostream& stream, GoChainType f);
 
 /** Condition that explains why two blocks or chains can be merged 
-    into a new, larger chain.
-*/
+    into a new, larger chain. */
 class GoChainCondition
 {
 public:

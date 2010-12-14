@@ -97,6 +97,5 @@ Then the command <tt>make</tt> should be run in
 - GNU Autotools manuals:
   <a href="http://www.gnu.org/software/automake/manual/html_node/index.html">Automake</a>,
   <a href="http://www.gnu.org/software/autoconf/manual/html_node/index.html">Autoconf</a>,
-  <a href="http://www.gnu.org/software/libtool/manual/html_node/index.html">Libtool</a>
-*/
+  <a href="http://www.gnu.org/software/libtool/manual/html_node/index.html">Libtool</a> */
 

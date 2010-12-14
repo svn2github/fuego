@@ -3,8 +3,7 @@
     Unit tests for SgGameReader.
 
     The relative paths for SGF file resources used by the SgGameReader tests
-    expect that the working directory is project_explorer/linux/test.
-*/
+    expect that the working directory is project_explorer/linux/test. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -52,8 +51,7 @@ BOOST_AUTO_TEST_CASE(SgGameReaderTest_NoWarnings)
 
 /** Test that points are interpreted correctly if SZ comes after point
     values.
-    Allowed by the SGF standard (?); used by some programs.
-*/
+    Allowed by the SGF standard (?); used by some programs. */
 BOOST_AUTO_TEST_CASE(SgGameReaderTest_SizeAfterPoints)
 {
     istringstream in("(;AB[aa][ab]SZ[9])");

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctEstimatorStat.cpp
-    See GoUctEstimatorStat.h
-*/
+    See GoUctEstimatorStat.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

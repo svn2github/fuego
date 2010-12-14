@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSystemTest.cpp
-    Unit tests for SgSystem.
-*/
+    Unit tests for SgSystem. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -32,8 +31,7 @@ BOOST_AUTO_TEST_CASE(SgSystemTestByteOrder)
     the debug version of bitset.h (used if _GLIBCXX_DEBUG is defined).
     The implementation of bitset::operator|= in
     /usr/include/gcc/darwin/3.3/c++/debug/dbg_bitset.h contains a typo
-    (!= instead of |=).
-*/
+    (!= instead of |=). */
 BOOST_AUTO_TEST_CASE(SgSystemTestGccBitSetBug)
 {
     bitset<1> set1;

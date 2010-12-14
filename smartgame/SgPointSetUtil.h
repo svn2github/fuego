@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgPointSetUtil.h
-    Utility functions for SgPointSet.
-*/
+    Utility functions for SgPointSet. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_POINTSETUTIL_H

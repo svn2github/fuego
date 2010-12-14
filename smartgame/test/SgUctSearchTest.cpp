@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctSearchTest.cpp
-    Unit tests for classes in SgUctSearch.
-*/
+    Unit tests for classes in SgUctSearch. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -69,8 +68,7 @@ struct TestNode
 
 /** Thread state for TestUctSearch.
     @note This class is not thread-safe, it can be used only, if the search
-    uses only one thread.
-*/
+    uses only one thread. */
 class TestThreadState
     : public SgUctThreadState
 {
@@ -277,8 +275,7 @@ SgUctThreadState* TestThreadStateFactory::Create(unsigned int threadId,
 //----------------------------------------------------------------------------
 
 /** Test class that allows to define artificial game trees for testing
-    class SgUctSearch.
-*/
+    class SgUctSearch. */
 class TestUctSearch
     : public SgUctSearch
 {
@@ -292,13 +289,11 @@ public:
 
     /** Add leaf node to test tree.
         @param father Index of father node, NO_NODE if root node.
-        @param eval Game result
-    */
+        @param eval Game result */
     void AddLeafNode(size_t father, SgMove move, float eval);
 
     /** Add internal node to test tree.
-        @param father Index of father node, NO_NODE if root node.
-    */
+        @param father Index of father node, NO_NODE if root node. */
     void AddNode(size_t father, SgMove move);
 
     // @} // @name
@@ -400,8 +395,7 @@ namespace {
     |  \--10 L
     \--4--11 L
        \--12 L
-    @endverbatim
-*/
+    @endverbatim */
 BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
 {
     TestUctSearch search;
@@ -428,8 +422,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     /* Game 1
        Sequence: 1, 5 (no expand)
        Tree: [nodeIndex](count,value)
-       0[0](0,0)
-    */
+       0[0](0,0) */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -450,8 +443,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        0[0](2,0)--1[1](1,1)
        \----------2[2]
        \----------3[3]
-       \----------4[4]
-    */
+       \----------4[4] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -474,8 +466,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        0[0](3,0.33)--1[1](1,1)
        \-------------2[2](1,0)
        \-------------3[3]
-       \-------------4[4]
-    */
+       \-------------4[4] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -498,8 +489,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        0[0](4,0.5)--1[1](1,1)
        \------------2[2](1,0)
        \------------3[3](1,0)
-       \------------4[4]
-    */
+       \------------4[4] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -522,8 +512,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
        0[0](5,0.4)--1[1](1,1)
        \------------2[2](1,0)
        \------------3[3](1,0)
-       \------------4[4](1,1)
-    */
+       \------------4[4](1,1) */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -549,8 +538,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     0--1  L
     \--2  W
     \--3  W
-    @endverbatim
-*/
+    @endverbatim */
 BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
 {
     TestUctSearch search;
@@ -570,8 +558,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
     /* Game 1
        Sequence: 1 (no expand)
        Tree: [nodeIndex](count,value)
-       0[0](1,0)
-    */
+       0[0](1,0) */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -590,8 +577,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
        Tree: [nodeIndex](count,value)
        0[0](2,0)--1[1](1,1)
        \----------2[2]
-       \----------3[3]
-    */
+       \----------3[3] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -612,8 +598,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
        Tree: [nodeIndex](count,value)
        0[0](3,0.33)--1[1](1,1)
        \-------------2[2](1,0)
-       \-------------3[3]
-    */
+       \-------------3[3] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -634,8 +619,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
        Tree: [nodeIndex](count,value)
        0[0](4,0.5)--1[1](1,1)
        \------------2[2](1,0)
-       \------------3[3](1,0)
-    */
+       \------------3[3](1,0) */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -661,8 +645,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
 
        Node 1 receives its 1 win bonus. Node 2 is chosen for the
        playout, and is a loss, but it also receives a bonus of a
-       single win. Node 100 is a new node and is given a large bonus.
-    */
+       single win. Node 100 is a new node and is given a large bonus. */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();

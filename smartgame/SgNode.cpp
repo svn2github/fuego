@@ -8,8 +8,7 @@
     son. Each node also has a pointer to its list of properties, as well as an
     extra bit used to efficiently find the shortest path between two nodes.
     This data structure assumes that time and not space is the major
-    performance bottleneck.
-*/
+    performance bottleneck. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoTimeControlTest.cpp
-    Unit tests for GoTimeControl.
-*/
+    Unit tests for GoTimeControl. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -23,8 +22,7 @@ namespace {
 //----------------------------------------------------------------------------
 
 /** Test that not the full remaining time is used, if close to the
-    expected final number of stones on the board, but no overtime is used.
-*/
+    expected final number of stones on the board, but no overtime is used. */
 BOOST_AUTO_TEST_CASE(GoTimeControlTest_AbsoluteTime)
 {
     // Fill the board to > 70%, so that expected remaining number of moves
@@ -57,8 +55,7 @@ BOOST_AUTO_TEST_CASE(GoTimeControlTest_AbsoluteTime)
 }
 
 /** Test that the expected move time is returned for an empty board.
-    See the time management algorithm documentation in GoTimeControl.
-*/
+    See the time management algorithm documentation in GoTimeControl. */
 BOOST_AUTO_TEST_CASE(GoTimeControlTest_EmptyBoard)
 {
     GoBoard bd(19);

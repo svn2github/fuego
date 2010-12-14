@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctTreeUtilTest.cpp
-    Unit tests for classes in SgUctTreeUtil.
-*/
+    Unit tests for classes in SgUctTreeUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -57,8 +56,7 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree)
          (4)  (5) <-- Root for ExtractSubtree()
               / \
              /   \
-            (6)  (7)
-    */
+            (6)  (7) */
     SgUctTree tree;
     tree.CreateAllocators(1);
     tree.SetMaxNodes(10);
@@ -107,8 +105,7 @@ BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree)
     through, but the source nodes could came from arbitrary allocators
     of the source tree. Therefore it can happen that one of the target
     allocators overflows, even if all the source allocators are below their
-    maximum limits.
-*/
+    maximum limits. */
 BOOST_AUTO_TEST_CASE(SgUctTreeUtilTest_ExtractSubtree_Overflow)
 {
     SgUctTree tree;

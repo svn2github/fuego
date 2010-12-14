@@ -22,8 +22,7 @@ namespace SgNodeUtil
         SG_PROP_OVERHEAD.
         @todo Initial time settings property @c TM is not handled,
         SgTimeRecord does presently not support main time (without a finite
-        number of moves left)
-    */
+        number of moves left) */
     void UpdateTime(SgTimeRecord& time, const SgNode* node);
 }
 

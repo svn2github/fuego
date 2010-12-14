@@ -25,6 +25,5 @@
     - @ref goboardko
     - @ref goboardhash
     - @ref gogtpenginecommands
-    - @ref gobookcommands
-*/
+    - @ref gobookcommands */
 

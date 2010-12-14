@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBoardConst.h
-    Constant data for a given board size.
-*/
+    Constant data for a given board size. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_BOARDCONST_H
@@ -19,16 +18,14 @@
 
 /** Constant data for a given board size for games with square boards.
     All boards created with the same board size share the same
-    data to reduce memory consumption and increase cache hits.
-*/
+    data to reduce memory consumption and increase cache hits. */
 class SgBoardConst
 {
 public:
     SgBoardConst(SgGrid size);
 
     /** Change the information for this object to another size.
-        Does nothing if 'newSize' is the same.
-    */
+        Does nothing if 'newSize' is the same. */
     void ChangeSize(SgGrid newSize);
 
     /** Get board size. */
@@ -36,21 +33,18 @@ public:
 
     /** Distance from the nearest border point.
         Points on the edge of the board have distance 1;
-        border (off-board) points have distance 0.
-    */
+        border (off-board) points have distance 0. */
     SgGrid Line(SgPoint p) const;
 
     /** The distance to the second-closest border point.
         Points on the edge of the board have distance 1;
-        border (off-board) points have distance 0.
-    */
+        border (off-board) points have distance 0. */
     SgGrid Pos(SgPoint p) const;
 
     /** Offset for neighboring point away from edge of board.
         @todo: the following seems weird, remove?
         Can also be a diagonal neighbor if no direct up-neighbor exists.
-        If no up-neighbor exists at all, returns offset of 0.
-    */
+        If no up-neighbor exists at all, returns offset of 0. */
     int Up(SgPoint p) const;
 
     /** Offset for neighbor to the left, when looking in Up() direction */
@@ -66,14 +60,12 @@ public:
         On 12x12 boards and larger, this includes 5x5 area from corner
         except the 5,5 point itself (the classical opening moves and below).
         See SgBoardConst::BoardConstImpl::BoardConstImpl for details.
-        On smaller boards, includes the 4x4 area except the 4,4 point itself.
-    */
+        On smaller boards, includes the 4x4 area except the 4,4 point itself. */
     const SgPointSet& Corners() const;
 
     /** Set of points on edge but not in corners of the board.
         On 12x12 boards and larger, this includes points on lines 1-4.
-        On smaller boards, lines 1 to 3.
-    */
+        On smaller boards, lines 1 to 3. */
     const SgPointSet& Edges() const;
 
     /** All points on board not in Corners() or Edges() */
@@ -89,16 +81,14 @@ public:
         Using FirstBoardPoint and LastBoardPoint the board points can be
         traversed with a for-loop. This avoids the border points before and
         after the board, but not the ones to the side of the board;
-        one must still check for border fields within the loop.
-    */
+        one must still check for border fields within the loop. */
     int FirstBoardPoint() const;
 
     /** See FirstBoardPoint */
     int LastBoardPoint() const;
 
     /** List of on-board neighbor points terminated by SG_ENDPOINT.
-        Points are sorted from low to high.
-    */
+        Points are sorted from low to high. */
     const SgPoint* NeighborIterAddress(SgPoint p) const;
 
     const SgPoint* BoardIterAddress() const;
@@ -261,8 +251,7 @@ inline const SgPoint* SgBoardConst::CornerIterAddress() const
 //----------------------------------------------------------------------------
 
 /** Iterate through all points on a specific line on the given board.
-    e.g. all points on the third line.
-*/
+    e.g. all points on the third line. */
 class SgLineIterator
     : public SgPointIterator
 {
@@ -287,8 +276,7 @@ public:
 //----------------------------------------------------------------------------
 
 /** Iterate through the two directions along the sides for the given point.
-    Returns the offset to the left (clockwise) first, then to the right.
-*/
+    Returns the offset to the left (clockwise) first, then to the right. */
 class SgSideIterator
 {
 public:
@@ -335,8 +323,7 @@ private:
 //----------------------------------------------------------------------------
 
 /** Iterate over all on-board neighbor points.
-    The points are iterated in sorted order (from low to high).
-*/
+    The points are iterated in sorted order (from low to high). */
 class SgNbIterator
     : public SgPointIterator
 {

@@ -17,23 +17,20 @@ class GoBoardSynchronizer
 public:
     /** Create a synchronizer.
         The publisher board can be at any position; the subscriber match that
-        position the first time BoardSynchronizer::UpdateSubscriber is called.
-    */
+        position the first time BoardSynchronizer::UpdateSubscriber is called. */
     GoBoardSynchronizer(const GoBoard& publisher);
 
     virtual ~GoBoardSynchronizer();
 
     /** Set the board that will subscribe to all the changes of the publisher.
-        Can only be called once.
-    */
+        Can only be called once. */
     void SetSubscriber(GoBoard& subscriber);
 
     /** Update the subscriber board.
         Calls Init, Play, Undo and/or SetToPlay to update the
         subscriber to the current state of the publisher.
         If no subscriber was set with SetSubscriber, this function does
-        nothing.
-    */
+        nothing. */
     void UpdateSubscriber();
 
 protected:
@@ -41,28 +38,23 @@ protected:
     // @{
 
     /** Board was initialized with new size.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void OnBoardChange();
 
     /** Move about to be executed.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void PrePlay(GoPlayerMove move);
 
     /** Move was executed.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void OnPlay(GoPlayerMove move);
 
     /** Move about to be undone.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void PreUndo();
 
     /** Move was undone.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void OnUndo();
 
     // @}

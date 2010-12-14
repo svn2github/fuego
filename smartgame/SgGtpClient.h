@@ -12,16 +12,14 @@
 //----------------------------------------------------------------------------
 
 /** Error thrown by SgGtpClient::Send() if command fails or connection is
-    broken.
-*/
+    broken. */
 class SgGtpFailure
     : public SgException
 {
 public:
     /** Constructor.
         @param message The failure response of the command or other error
-        message.
-    */
+        message. */
     SgGtpFailure(const std::string& message);
 };
 
@@ -47,16 +45,14 @@ public:
         SgDebug() << "Error running GNU Go: " << e.what() << '\n';
     }
 
-@endcode
-*/
+@endcode */
 class SgGtpClient
 {
 public:
     /** Constructor.
         @param in Input stream.
         @param out Output stream.
-        @param verbose Log stream to SgDebug()
-    */
+        @param verbose Log stream to SgDebug() */
     SgGtpClient(std::istream& in, std::ostream& out, bool verbose = false);
 
     virtual ~SgGtpClient();
@@ -64,8 +60,7 @@ public:
     /** Send a command.
         @return The response if command succeeds (without status character
         and whitespace after status character)
-        @throws SgGtpFailure If command fails or connection is broken.
-    */
+        @throws SgGtpFailure If command fails or connection is broken. */
     std::string Send(const std::string& command);
 
 private:

@@ -10,6 +10,5 @@ as the first in every cpp-file, but not in any header file.
 SgInit() / SgFini() must be called before / after using any classes to
 initialize global variables (however it is deprecated to use global or
 class static variables in newly written code).
-
-*/
+ */
 

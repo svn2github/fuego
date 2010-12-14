@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardUpdaterTest.cpp
-    Unit tests for GoBoardUpdater.
-*/
+    Unit tests for GoBoardUpdater. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -74,8 +73,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUpdaterTest_Setup)
 /** Test that setting a stone on an point occupied by the second move
     in a game works.
     Checks for a bug that was only triggered, if the changed stone color
-    was the second move played, not the first move,
-*/
+    was the second move played, not the first move, */
 BOOST_AUTO_TEST_CASE(GoBoardUpdaterTest_SetupOnOccupiedMoveTwo)
 {
     SgNode* root = new SgNode();

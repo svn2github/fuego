@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file FuegoMainEngine.cpp
-    See FuegoMainEngine.h
-*/
+    See FuegoMainEngine.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -64,8 +63,7 @@ void FuegoMainEngine::CmdName(GtpCommand& cmd)
 }
 
 /** Return Fuego version.
-    @see FuegoMainUtil::Version()
-*/
+    @see FuegoMainUtil::Version() */
 void FuegoMainEngine::CmdVersion(GtpCommand& cmd)
 {
     cmd << FuegoMainUtil::Version();

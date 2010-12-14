@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpAveragePlayer.h
-    Average liberty player
-*/
+    Average liberty player */
 //----------------------------------------------------------------------------
 
 #ifndef SP_AVERAGEPLAYER_H
@@ -15,8 +14,7 @@
 
 /** Tries to maximize liberty average of own minus opponent blocks.
     Tends to build long chains with many liberties and some eyes.
-    The strongest of the original simple players.
-*/
+    The strongest of the original simple players. */
 class SpAverageMoveGenerator
     : public Sp1PlyMoveGenerator
 {

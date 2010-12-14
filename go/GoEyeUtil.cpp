@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoEyeUtil.cpp
-    See GoEyeUtil.h
-*/
+    See GoEyeUtil.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -24,8 +23,7 @@ int NuEdgePoints(const GoBoard& bd, const SgPointSet& points)
 /** Recognizes 2x2 block of points.
     Relies on the current implementation 
     where SgSetIterator produces set members in sorted order,
-    such that bulky four points have values p, p+WE, p+NS, p+WE+NS
-*/
+    such that bulky four points have values p, p+WE, p+NS, p+WE+NS */
 bool IsBulkyFour(const SgPointSet& points)
 {
     SG_ASSERT(points.IsSize(4));
@@ -72,8 +70,7 @@ bool Is2x3Area(const SgPointSet& area)
 /** Block has a shape that gives the opponent two eyes,
     if it gets captured by a single opponent surrounding block.
     @todo needs to check if all points in block 
-    are adjacent to defender's stones - to avoid bent 4, 3x2 in corner etc.
-*/
+    are adjacent to defender's stones - to avoid bent 4, 3x2 in corner etc. */
 bool IsAliveBlock(const SgPointSet& block)
 {
     const int code = GoEyeUtil::DegreeCode(block);
@@ -96,8 +93,7 @@ bool CheckAlwaysAlive8Code(long code)
 /** Block has a shape that gives the opponent two eyes,
     and cannot be extended into a nakade shape.
     @todo needs to check if all points in block 
-    are adjacent to defender's stones - to avoid bent 4, 3x2 in corner etc.
-*/
+    are adjacent to defender's stones - to avoid bent 4, 3x2 in corner etc. */
 bool IsAlwaysAliveBlock(const SgPointSet& block)
 {
     const int code = GoEyeUtil::DegreeCode(block);
@@ -120,8 +116,7 @@ bool IsNakadeBlock(const GoBoard& bd,
 
 
 /** area is all filled by stones, except for one empty point
-    These stones are in an alive shape (two eyes for opponent).
-*/
+    These stones are in an alive shape (two eyes for opponent). */
 bool AlmostFilledByLivingShape(const GoBoard& bd, 
                           const SgPointSet& points,
                           SgBlackWhite stoneColor)
@@ -134,8 +129,7 @@ bool AlmostFilledByLivingShape(const GoBoard& bd,
 }
 
 /** Area contains stones in an alive shape (two eyes for opponent).
-    It cannot be extended into a nakade shape.
-*/
+    It cannot be extended into a nakade shape. */
 bool ContainsLivingShape(const GoBoard& bd, 
                           const SgPointSet& points,
                           SgBlackWhite stoneColor)
@@ -147,8 +141,7 @@ bool ContainsLivingShape(const GoBoard& bd,
 }
 
 /** area is all filled by stones, except for one empty point.
-    These stones are in a nakade shape (only one eye).
- */
+    These stones are in a nakade shape (only one eye). */
 bool AlmostFilledByNakade(const GoBoard& bd, 
                           const SgPointSet& points,
                           SgBlackWhite stoneColor)
@@ -166,8 +159,7 @@ bool AlmostFilledByNakade(const GoBoard& bd,
 /** Test for the case of a 3 stone block in a bulky 5 shape, which is not
     handled well by the standard heuristics.
     It is almost always nakade, except when one empty point is not
-    a liberty of the block.
-*/
+    a liberty of the block. */
 GoEyeStatus BulkyFiveNakade(const GoBoard& bd, 
                             const SgPointSet& points,
                             SgBlackWhite stoneColor)
@@ -289,8 +281,7 @@ inline bool TestOpposite(const SgPointSet& set, SgPoint p, int ns, int we)
 
 
 /** Check for bent four in the corner. brute force check of all eight cases. 
-    @todo rewrite using the pattern symmetry functions
-*/
+    @todo rewrite using the pattern symmetry functions */
 bool IsBentFour(const SgPointSet& points, int boardSize, SgPoint* vital)
 {
     SG_ASSERT(points.IsSize(4));
@@ -364,8 +355,7 @@ bool IsBentFour(const SgPointSet& points, int boardSize, SgPoint* vital)
 }
 
 /** The pattern with 2 diagonal stones is the only one that is unsettled.
-    All others are nakade - only 1 eye
-*/
+    All others are nakade - only 1 eye */
 bool TwoDiagonalStonesInBulkyFour(const GoBoard& bd, 
                                   const SgPointSet& points,
                                   SgBlackWhite stoneColor)

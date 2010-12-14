@@ -29,8 +29,7 @@ public:
         @param defaultSize The (game-dependent) default board size, if file
         contains no SZ property.
         @throws SgException If saving fails (presently it does only check if
-        the file is ok at the beginning, not if all writes succeed)
-    */
+        the file is ok at the beginning, not if all writes succeed) */
     void WriteGame(SgNode& root, bool allProps, int fileFormat,
                    const std::string& application, int gameNumber,
                    int defaultSize);

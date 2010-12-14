@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctTreeTest.cpp
-    Unit tests for classes in SgUctTree.
-*/
+    Unit tests for classes in SgUctTree. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -31,8 +30,7 @@ BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_Simple)
        (1) (2) (3)
            /
           /
-         (4)
-    */
+         (4) */
     SgUctTree tree;
     tree.CreateAllocators(1);
     tree.SetMaxNodes(10);

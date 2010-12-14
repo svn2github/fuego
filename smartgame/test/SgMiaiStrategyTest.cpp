@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgMiaiStrategyTest.cpp
-    Unit tests for SgMiaiStrategy.
-*/
+    Unit tests for SgMiaiStrategy. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

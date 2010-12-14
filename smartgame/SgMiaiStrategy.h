@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgMiaiStrategy.h
-    Simple strategy for winning a specified goal using paired moves.
-*/
+    Simple strategy for winning a specified goal using paired moves. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_MIAISTRATEGY_H
@@ -69,8 +68,7 @@ public:
     const SgVector<SgPoint>& OpenThreats() const;
     
     /** If exactly one open threat, return that move.
-        If no active threat, return SG_NULLPOINT.
-    */
+        If no active threat, return SG_NULLPOINT. */
     SgPoint OpenThreatMove() const;
  
     /** See SgStrategy::ExecuteMove */
@@ -92,8 +90,7 @@ private:
     SgVector<SgMiaiPair> m_miaiStrategies;
     
     /** open threats must be answered to achieve strategy.
-        More than one open threat means strategy cannot be achieved.
-    */
+        More than one open threat means strategy cannot be achieved. */
     SgVector<SgPoint> m_openThreats;
     
     /** Strategy has failed if opponent has occupied both points in a pair */

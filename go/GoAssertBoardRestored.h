@@ -23,15 +23,13 @@ public:
     ~GoAssertBoardRestored();
 
     /** Checks with assertions that the state of the board is the same
-        as it was at the last call to Init() or the constructor.
-    */
+        as it was at the last call to Init() or the constructor. */
     void AssertRestored();
 
     void Init(const GoBoard& bd);
 
     /** Set to a state, in which the destructor does not call
-        AssertRestored() anymore.
-    */
+        AssertRestored() anymore. */
     void Clear();
 
 private:

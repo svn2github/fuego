@@ -3,8 +3,7 @@
     Search engine.
 
     SgSearch is the search engine of the Smart Game Board, providing depth-
-    first search with iterative deepening and transposition tables.
-*/
+    first search with iterative deepening and transposition tables. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SEARCH_H
@@ -28,8 +27,7 @@ class SgSearchControl;
 
 /** Used in class SgSearch to implement killer heuristic.
     Keeps track of two moves that have been successful at a particular level.
-    The moves are sorted by frequency.
-*/
+    The moves are sorted by frequency. */
 class SgKiller
 {
 public:
@@ -237,8 +235,7 @@ typedef SgStack<SgMove, SgSearchLimit::MAX_DEPTH> SgSearchStack;
     @todo Why does AmaSearch::Evaluate need the hash table, shouldn't that be
     done in SgSearch?
     @todo Remove m_depth, pass as argument to Evaluate instead
-    @todo Use best-response as move ordering heuristic
-*/
+    @todo Use best-response as move ordering heuristic */
 class SgSearch
 {
 public:
@@ -246,8 +243,7 @@ public:
         in the internal representation of search. Used for fractional ply
         extensions. E.g. extending from atari in Go may count as only
         1/8 ply = DEPTH_UNIT/8. This way forced lines can be searched
-        much deeper at a low nominal search depth.
-    */
+        much deeper at a low nominal search depth. */
     static const int DEPTH_UNIT = 100;
 
     /** Remark: could make it 512 if deep ladder search a problem */
@@ -255,13 +251,11 @@ public:
 
    /** Infinity for windowed searches.
         Needs prefix SG_ even if not in global namespace, because there is a
-        conflict with a global macro INFINITY.
-    */
+        conflict with a global macro INFINITY. */
     static const int SG_INFINITY;
 
     /** Constructor.
-        @param hash Hash table to use or 0, if no hash table should be used.
-    */
+        @param hash Hash table to use or 0, if no hash table should be used. */
     SgSearch(SgSearchHashTable* hash);
 
     virtual ~SgSearch();
@@ -270,8 +264,7 @@ public:
         Usually this should return true, but it depends on the move generation
         in the subclass. For example, if the move generation prunes some
         moves at lower depths, because the goal cannot be reached at the
-        current depth, this function has to return false.
-    */
+        current depth, this function has to return false. */
     virtual bool CheckDepthLimitReached() const = 0;
 
     const SgSearchHashTable* HashTable() const;
@@ -282,14 +275,12 @@ public:
 
     /** Search control.
         Set the abort checking function; pass 0 to disable abort checking.
-        Caller keeps ownership of control.
-    */
+        Caller keeps ownership of control. */
     void SetSearchControl(SgSearchControl* control);
 
     /** ProbCut.
         Set the ProbCut bounds; pass 0 to disable ProbCut.
-        Caller keeps ownership of probcut.
-    */
+        Caller keeps ownership of probcut. */
     void SetProbCut(SgProbCut* probcut);
 
     /** Convert move to string (game dependent). */
@@ -298,8 +289,7 @@ public:
     virtual void SetToPlay(SgBlackWhite toPlay) = 0;
 
     /** Hook function called at the beginning of a search.
-        Default implementation does nothing.
-    */
+        Default implementation does nothing. */
     virtual void OnStartSearch();
 
     /** Looks 'depthLimit' moves ahead to find the value of the
@@ -310,8 +300,7 @@ public:
         with new bounds.
         If node is not 0, then add the whole search tree below '*node'.
         The hash table is seeded with the sequence passed in, so that partial
-        results from a previous search can speed up a re-search.
-    */
+        results from a previous search can speed up a re-search. */
     int DepthFirstSearch(int depthLimit, int boundLo, int boundHi,
                          SgVector<SgMove>* sequence, bool clearHash = true,
                          SgNode* traceNode = 0);
@@ -327,8 +316,7 @@ public:
         is reached. The bound parameters are just passed to DepthFirstSearch.
         If node is not 0, then add the whole search tree below '*node'.
         The hash table is seeded with the sequence passed in, so that partial
-        results from a previous search can speed up a re-search.
-    */
+        results from a previous search can speed up a re-search. */
     int IteratedSearch(int depthMin, int depthMax, int boundLo,
                        int boundHi, SgVector<SgMove>* sequence,
                        bool clearHash = true, SgNode* traceNode = 0);
@@ -339,14 +327,12 @@ public:
                        bool clearHash = true, SgNode* traceNode = 0);
 
     /** During IteratedSearch or CombinedSearch, this returns the current
-        depth that's being searched to.
-    */
+        depth that's being searched to. */
     int IteratedSearchDepthLimit() const;
 
     /** Called at start of each depth level of IteratedSearch.
         Can be overridden to adapt search (or instrumentation) to current
-        depth. Must call inherited.
-    */
+        depth. Must call inherited. */
     virtual void StartOfDepth(int depthLimit);
 
     /** Return whether the search was aborted. */
@@ -355,8 +341,7 @@ public:
     /** Mark this search as aborted.
         Will terminate next time AbortSearch gets called. Or mark search as
         not having been aborted (e.g. when minimizing area and first search
-        succeeds but second one doesn't have enough time to complete).
-    */
+        succeeds but second one doesn't have enough time to complete). */
     void SetAbortSearch(bool fAborted = true);
 
     void SetScout(bool flag = true);
@@ -378,13 +363,11 @@ public:
     }
     
     /** Starts the clock and clears the statistics.
-        Can be nested; only the outermost call actually does anything.
-    */
+        Can be nested; only the outermost call actually does anything. */
     void StartTime();
 
     /** Stops the clock and clears the statistics.
-        Can be nested; only the outermost call actually does anything.
-    */
+        Can be nested; only the outermost call actually does anything. */
     void StopTime();
 
     /** Generate moves.
@@ -398,8 +381,7 @@ public:
         (height > 0). Note that this is a fractional value: each move may be
         counted as less than one full move to look deeper in some variations.
         The value is expressed in DEPTH_UNIT rather than using float to be
-        stored compactly in the hash table.
-    */
+        stored compactly in the hash table. */
     virtual void Generate(SgVector<SgMove>* moves, int depth) = 0;
 
     /** The returned value reflects the value of the position, with
@@ -407,8 +389,7 @@ public:
         @param isExact Return value, if set, the value is exact, even if it is
         not a terminal positions and Generate would generate moves.
         @param depth See SgSearch::Generate()
-        @return The evaluation of the current position.
-    */
+        @return The evaluation of the current position. */
     virtual int Evaluate(bool* isExact, int depth) = 0;
 
     /** Return true if the move was executed, false if it was illegal
@@ -419,8 +400,7 @@ public:
         zero to look deeper into one variation.
         @param depth See SgSearch::Generate() (Execute could need to know the
         depth to reject moves depending on the depth that were originally
-        generated, e.g. used in ExCaptureTask::Execute)
-    */
+        generated, e.g. used in ExCaptureTask::Execute) */
     virtual bool Execute(SgMove move, int* delta, int depth) = 0;
 
     /** Takes back the most recent move successfully executed by Execute. */
@@ -431,29 +411,25 @@ public:
 
     /** Test whether search should be aborted.
         Return true to abort search. Default implementation checks Abort() of
-        the installed search control.
-    */
+        the installed search control. */
     virtual bool AbortSearch();
 
     /** Return the hash code for the current position. */
     virtual SgHashCode GetHashCode() const = 0;
 
     /** The current depth of the search, incremented by 1 for each
-        move that's played. Value is 0 at root level of search.
-    */
+        move that's played. Value is 0 at root level of search. */
     int CurrentDepth() const;
 
     /** Indicates which move in the movelist at the previous level was
         executed.
         This may be necessary if the value or moves at a
-        position depend on the sequence leading to that position.
-    */
+        position depend on the sequence leading to that position. */
     SgMove PrevMove() const;
 
     /** The move prior to the previous move.
         Knowing both the last two moves is necessary to decide whether the
-        current position is a seki, where it's best for both players to pass.
-    */
+        current position is a seki, where it's best for both players to pass. */
     SgMove PrevMove2() const;
 
     /** Is the game over? */
@@ -461,8 +437,7 @@ public:
 
     /** Initialize PrevMove, CurrentDepth and other variables so that they can
         be accessed when move generation/evaluation are called directly,
-        not as part of a search.
-    */
+        not as part of a search. */
     void InitSearch(int startDepth = 0);
 
     /** Is tracing currently active?*/

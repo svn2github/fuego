@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpDumbTacticalPlayer.h
-    Dumb tactical player
-*/
+    Dumb tactical player */
 //----------------------------------------------------------------------------
 
 #ifndef SP_DUMBTACTICALPLAYER_H
@@ -19,8 +18,7 @@
        libs, and fill the one with the most second order liberties. If there
        is a tie pick one at random.
     3. Make a random move that doesn't fill own eye
-    4. Pass
-*/
+    4. Pass */
 class SpDumbTacticalMoveGenerator
     : public SpStaticMoveGenerator
 {

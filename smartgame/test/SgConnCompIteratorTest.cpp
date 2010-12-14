@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgConnCompIteratorTest.cpp
-    Unit tests for ConnCompIterator
-*/
+    Unit tests for ConnCompIterator */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -19,8 +18,7 @@ namespace {
 
 /** Test ConnCompIterator.
     Assumes that the iterator returns components with lower point values
-    first.
-*/
+    first. */
 BOOST_AUTO_TEST_CASE(SgPointSetTestConnCompIterator)
 {
     SgPointSet a;

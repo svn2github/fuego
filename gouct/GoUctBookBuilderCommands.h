@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctBookBuilderCommands.h
-*/
+/** @file GoUctBookBuilderCommands.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_BOOKBUILDERCOMMANDS_H
@@ -22,8 +21,7 @@ class GoUctSearch;
 //----------------------------------------------------------------------------
 
 /** Commands for autobook. 
-    @ingroup openingbook
-*/
+    @ingroup openingbook */
 template<class PLAYER>
 class GoUctBookBuilderCommands
 {
@@ -33,8 +31,7 @@ public:
         @param player Reference to pointer to current player, this player can
         be null or a different player, but those commands of this class that
         need a GoUctPlayer will fail, if the current player is not a
-        PLAYER.
-    */
+        PLAYER. */
     GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player,
                              boost::scoped_ptr<GoAutoBook>& book);
 
@@ -58,8 +55,7 @@ public:
         - @link CmdTruncateByDepth() @c autobook_truncate_by_depth @endlink
         - @link CmdImport() @c autobook_import @endlink
         - @link CmdExport() @c autobook_export @endlink
-        - @link CmdMainLine() @c autobook_mainline @endlink
-    */
+        - @link CmdMainLine() @c autobook_mainline @endlink */
     /** @name Command Callbacks */
     // @{
     void CmdOpen(GtpCommand& cmd);
@@ -266,8 +262,7 @@ void GoUctBookBuilderCommands<PLAYER>::ShowInfluence(GtpCommand& cmd,
 //----------------------------------------------------------------------------
 
 /** Opens a autobook.
-    Closes any previously opened book.
-*/
+    Closes any previously opened book. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdOpen(GtpCommand& cmd)
 {
@@ -321,8 +316,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
 }
 
 /** Covers the given set of lines in the current book.
-    @ref bookcover
-*/
+    @ref bookcover */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
 {
@@ -346,8 +340,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
 }
 
 /** Covers the given set of lines in the current book.
-    @ref bookcover
-*/
+    @ref bookcover */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
 {
@@ -371,8 +364,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
 }
 
 /** Refreshes the current book.
-    @ref bookrefresh
-*/
+    @ref bookrefresh */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
 {
@@ -385,8 +377,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
 }
 
 /** Merges the current book with the given book.
-    See GoAutoBook::Merge().
- */
+    See GoAutoBook::Merge(). */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
 {
@@ -397,8 +388,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdMerge(GtpCommand& cmd)
 }
 
 /** Import values directly into the current book.
-    File format is (hash, value) pairs, one per line.
- */
+    File format is (hash, value) pairs, one per line. */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
 {
@@ -495,8 +485,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
 }
 
 /** Load a list of disabled lines.
-    See GoAutoBook::AddDisabledLines().
-*/
+    See GoAutoBook::AddDisabledLines(). */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled(GtpCommand& cmd)
 {

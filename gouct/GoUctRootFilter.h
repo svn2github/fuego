@@ -13,8 +13,7 @@ class GoBoard;
 //----------------------------------------------------------------------------
 
 /** Interface for using external knowledge to prune moves at the root node of
-    a search.
-*/
+    a search. */
 class GoUctRootFilter
 {
 public:
@@ -22,8 +21,7 @@ public:
 
     /** Get moves to filter in the current position.
         This function is invoked by the player before the search, it does not
-        need to be thread-safe.
-    */
+        need to be thread-safe. */
     virtual std::vector<SgPoint> Get() = 0;
 };
 

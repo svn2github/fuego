@@ -3,8 +3,7 @@
     System specific definitions for SmartGo.
 
     This file contains system specific defines and includes.
-    It always needs to be the first header file included by any .cpp file.
- */
+    It always needs to be the first header file included by any .cpp file. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SYSTEM_H
@@ -20,16 +19,14 @@
 //----------------------------------------------------------------------------
 
 /** Avoid compiler warnings for unused variables.
-    This function is more portable than using a \#pragma directive.
-*/
+    This function is more portable than using a \#pragma directive. */
 template <class T>
 inline void SG_UNUSED(const T&)
 {
 }
 
 /** Avoid compiler warnings for variables used only if NDEBUG is not defined.
-    This macro is more portable than using a \#pragma directive.
-*/
+    This macro is more portable than using a \#pragma directive. */
 #ifndef NDEBUG
 #define SG_DEBUG_ONLY(x)
 #else
@@ -73,13 +70,11 @@ class SgAssertionHandler
 {
 public:
     /** Constructor.
-        Automatically registers the handler.
-    */
+        Automatically registers the handler. */
     SgAssertionHandler();
 
     /** Constructor.
-        Automatically unregisters the handler.
-    */
+        Automatically unregisters the handler. */
     virtual ~SgAssertionHandler();
 
     virtual void Run() = 0;
@@ -120,13 +115,11 @@ const bool SG_HEAVYCHECK = false;
     Lengthy functions should poll the user abort flag with SgUserAbort and
     abort, if necessary; they should not reset the flag themselves.
     It can also be called from a different thread (the abort flag is
-    declared volatile).
-*/
+    declared volatile). */
 void SgSetUserAbort(bool aborted);
 
 /** Poll for user abort.
-    @see SgSetUserAbort.
-*/
+    @see SgSetUserAbort. */
 bool SgUserAbort();
 
 //----------------------------------------------------------------------------

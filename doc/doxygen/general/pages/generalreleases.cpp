@@ -44,5 +44,4 @@ https://fuego.svn.sourceforge.net/svnroot/fuego/branches/VERSION_0_3_FIXES \
    version in the bugfix branch has a ".0.SVN" appended.
 -# Commit the changes.
 -# Upload the file release to SourceForge
-
-*/
+ */

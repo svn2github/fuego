@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBlackWhiteTest.cpp
-    Unit tests for SgColorIterator.
-*/
+    Unit tests for SgColorIterator. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

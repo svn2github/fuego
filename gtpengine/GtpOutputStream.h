@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GtpOutputStream.h
-*/
+/** @file GtpOutputStream.h */
 //----------------------------------------------------------------------------
 
 #ifndef GTP_OUTPUTSTREAM_H
@@ -12,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Base class for output streams used by GtpEngine.
-    This implementation only forwards calls to std::ostream.
- */
+    This implementation only forwards calls to std::ostream. */
 class GtpOutputStream
 {
 public:

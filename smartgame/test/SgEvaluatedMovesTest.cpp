@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgEvaluatedMovesTest.cpp
-    Unit tests for SgEvaluatedMoves.
-*/
+    Unit tests for SgEvaluatedMoves. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

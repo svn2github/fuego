@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoRegionBoardTest.cpp
-    Unit tests for GoRegionBoard.
-*/
+    Unit tests for GoRegionBoard. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

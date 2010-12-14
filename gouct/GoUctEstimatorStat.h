@@ -1,8 +1,7 @@
 //----------------------------------------------------------------------------
 /** @file GoUctEstimatorStat.h
     Utility classes to gather statistics for estimators (like RAVE) used in
-    SgUctSearch.
-*/
+    SgUctSearch. */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_ESTIMATORSTAT_H
@@ -29,8 +28,7 @@ namespace GoUctEstimatorStat
         determine the true value
         @param maxGames Maximum number of games for actual search.
         @param stepSize Interval of games played to save the values.
-        @param fileName File to append the resulting samples to
-    */
+        @param fileName File to append the resulting samples to */
     void Compute(GoUctSearch& search, std::size_t trueValueMaxGames,
                  std::size_t maxGames, std::size_t stepSize,
                  const std::string& fileName);

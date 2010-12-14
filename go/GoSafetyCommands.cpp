@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSafetyCommands.cpp
-    See GoSafetyCommands.h
-*/
+    See GoSafetyCommands.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -58,8 +57,7 @@ void GoSafetyCommands::CmdDameStatic(GtpCommand& cmd)
     - Color Magenta (#980098): dame points
     - Color Red: safe for black and white (should not happen)
     - Circle: unsurroundable
-    - Status line: point counts, percentage of safe points
-*/
+    - Status line: point counts, percentage of safe points */
 void GoSafetyCommands::CmdGfx(GtpCommand& cmd)
 {
     string type = cmd.Arg();
@@ -108,8 +106,7 @@ void GoSafetyCommands::CmdGfx(GtpCommand& cmd)
 /** List of safe points.
     If no color is given, safe points of both colors are listed.
     Arguments: benson|static [black|white]<br>
-    Returns: number of point followed bu list of points in one line.
-*/
+    Returns: number of point followed bu list of points in one line. */
 void GoSafetyCommands::CmdSafe(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);

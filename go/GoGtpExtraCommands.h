@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoGtpExtraCommands.h
-*/
+/** @file GoGtpExtraCommands.h */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GTPEXTRACOMMANDS_H
@@ -16,14 +15,12 @@ class GoPlayer;
 
 /** Extra GTP commands to access functionality of the Go library.
     Contains commands that are mainly useful for debugging and testing
-    the Go library and that not all Go GTP engines may want to register.
-*/
+    the Go library and that not all Go GTP engines may want to register. */
 class GoGtpExtraCommands
 {
 public:
     /** Constructor.
-        @param bd The game board.
-    */
+        @param bd The game board. */
     GoGtpExtraCommands(GoBoard& bd);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
@@ -31,8 +28,7 @@ public:
     /** @page gogtpextracommands GoGtpExtraCommands Commands
         - @link CmdCfgDistance() @c go_distance @endlink
         - @link CmdLadder() @c go_ladder @endlink
-        - @link CmdStaticLadder() @c go_static_ladder @endlink
-    */
+        - @link CmdStaticLadder() @c go_static_ladder @endlink */
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file

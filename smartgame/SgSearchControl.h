@@ -4,8 +4,7 @@
 
     Provides base class SgSearchControl and several 
     basic serch control strategies.
-    An SgSearchControl object is installed into SgSearch or derived engine.
-*/
+    An SgSearchControl object is installed into SgSearch or derived engine. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SEARCHCONTROL_H
@@ -22,8 +21,7 @@ public:
     virtual ~SgSearchControl();
 
     /** Check if search should be aborted.
-        Called at each node.
-    */
+        Called at each node. */
     virtual bool Abort(double elapsedTime, int numNodes) = 0;
 
     /** Check if next iteration should be started.
@@ -31,8 +29,7 @@ public:
         The default implementation always returns true.
         @param depth The depth of the next iteration.
         @param elapsedTime The elapsed time in seconds.
-        @param numNodes The number of nodes visited.
-    */
+        @param numNodes The number of nodes visited. */
     virtual bool StartNextIteration(int depth, double elapsedTime,
                                     int numNodes);
 
@@ -88,8 +85,7 @@ inline void SgTimeSearchControl::SetMaxTime(double maxTime)
 //----------------------------------------------------------------------------
 
 /** Example of a simple search abort class: abort when node limit
-    is reached.
-*/
+    is reached. */
 class SgNodeSearchControl
     : public SgSearchControl
 {

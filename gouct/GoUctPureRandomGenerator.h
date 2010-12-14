@@ -14,8 +14,7 @@
 
 /** Randomly select from empty points on the board.
     Finds and shuffles the empty points on the board at the beginning
-    to avoid repeated loops over the board to find empty points.
-*/
+    to avoid repeated loops over the board to find empty points. */
 template<class BOARD>
 class GoUctPureRandomGenerator
 {
@@ -26,8 +25,7 @@ public:
     void Start();
 
     /** Update state.
-        Must be called after each play on the board.
-    */
+        Must be called after each play on the board. */
     void OnPlay();
 
     /** Return a list of points that are currently potentially empty.
@@ -36,15 +34,13 @@ public:
         or to get a shuffled list of the empty points (e.g. for finding
         legal moves when expanding a node in the in-tree-phase of UCT).
         Points in the list are candidates, they still have to be tested, if
-        they are really empty.
-    */
+        they are really empty. */
     const std::vector<SgPoint>& Candidates() const;
 
     /** Generate a pure random move.
         Randomly select an empty point on the board that fulfills
         GoUctUtil::GeneratePoint() for the color currently to play on the
-        board.
-    */
+        board. */
     SgPoint Generate(SgBalancer& balancer);
 
     /** Generate a move using the fillboard heuristic.
@@ -56,8 +52,7 @@ public:
         Chatriot, Gelly, Hoock, Perez, Rimmel, Teytaud:
         <a href="http://www.lri.fr/~teytaud/eg.pdf">
         Combining expert, offline, transient and online learning in
-        Monte-Carlo exploration</a>
-     */
+        Monte-Carlo exploration</a> */
     SgPoint GenerateFillboardMove(int numberTries);
 
 private:

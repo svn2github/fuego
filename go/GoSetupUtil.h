@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoSetupUtil.h
-    utilities to create setup information for GoBoard.
-*/
+    utilities to create setup information for GoBoard. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_SETUPUTIL_H
@@ -20,8 +19,7 @@ namespace GoSetupUtil
                    'x', 'X', '@' for black stones,
                    '.' and '+' for empty points.
         Blanks ' ' and tabs are ignored.
-        Lines must be separated by a '\n' character.
-    */
+        Lines must be separated by a '\n' character. */
     GoSetup CreateSetupFromStream(std::streambuf& in, int& boardSize);
 
     GoSetup CreateSetupFromString(std::string& in, int& boardSize);

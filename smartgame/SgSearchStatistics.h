@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSearchStatistics.h
-    Search statistics
-*/
+    Search statistics */
 //----------------------------------------------------------------------------
 
 #ifndef SG_SEARCHSTATISTICS_H
@@ -57,8 +56,7 @@ public:
     /** Set the time used to the given value.
         Only needed because doesn't keep track of real time used, and some
         searches might want to report the real time rather than the thread
-        time.
-    */
+        time. */
     void SetTimeUsed(double timeUsed);
 
     double TimeUsed() const;

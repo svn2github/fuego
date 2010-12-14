@@ -3,8 +3,7 @@
     Check performance of the GoBoard class.
 
     @todo check performance on different kinds of positions.
-    check execute/undo move, full board repetition, etc.
-*/
+    check execute/undo move, full board repetition, etc. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_BOARDCHECKPERFORMANCE_H
@@ -47,8 +46,7 @@ namespace GoBoardCheckPerformance
     Time3: 50 GoBoard::Iterator
     Time4: 150 For 0..SG_MAXPOINT, no dependency
     Time5: 60 First/LastBoardPoint, no dependency
-    @endverbatim
-*/
+    @endverbatim */
 void CheckPerformance(const GoBoard& board, std::ostream& out);
 
 } // namespace GoBoardCheckPerformance

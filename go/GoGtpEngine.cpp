@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpEngine.cpp
-    See GoGtpEngine.h
-*/
+    See GoGtpEngine.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -264,8 +263,7 @@ void GoGtpEngine::CheckBoardEmpty() const
     @param move The move
     @param checkOnlyOccupied Only check if point is empty (accepts moves that
     are illegal, because of the ko or suicide rules used)
-    @throws GtpFailure if not legal.
-*/
+    @throws GtpFailure if not legal. */
 void GoGtpEngine::CheckLegal(string message, SgBlackWhite color, SgPoint move,
                              bool checkOnlyOccupied)
 {
@@ -315,8 +313,7 @@ void GoGtpEngine::CheckMaxClearBoard()
 
 /** Return all legal move points.
     Compatible with GNU Go's all_legal command.<br>
-    Arguments: color
-*/
+    Arguments: color */
 void GoGtpEngine::CmdAllLegal(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -344,8 +341,7 @@ void GoGtpEngine::CmdAllMoveValues(GtpCommand& cmd)
 }
 
 /** Return configuration for GoGui analyze commands.
-    See the GoGui documentation http://gogui.sf.net
-*/
+    See the GoGui documentation http://gogui.sf.net */
 void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -377,8 +373,7 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 }
 
 /** Print some information about game board.
-    See WriteBoardInfo for optional arguments.
-*/
+    See WriteBoardInfo for optional arguments. */
 void GoGtpEngine::CmdBoard(GtpCommand& cmd)
 {
     WriteBoardInfo(cmd, Board());
@@ -397,8 +392,7 @@ void GoGtpEngine::CmdBoardSize(GtpCommand& cmd)
 }
 
 /** Init new game.
-    @see SetMaxGames()
-*/
+    @see SetMaxGames() */
 void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -425,8 +419,7 @@ void GoGtpEngine::CmdClock(GtpCommand& cmd)
     Computes a final score only, if Tromp-Taylor rules are used
     (GoRules::CaptureDead() == true and GoRules::JapaneseScoring() == false).
     Otherwise it returns an error. Override this function for players that
-    have enough knowledge to do a better scoring.
-*/
+    have enough knowledge to do a better scoring. */
 void GoGtpEngine::CmdFinalScore(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -489,8 +482,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     of his dead stones (if it is a win accosing to Tromp-Taylor counting),
     but KGS will not use Tromp-Taylor counting in the cleanup phase, but
     send another <tt>final_status_list dead</tt> command. See also bug
-    2157832 int the bug tracker.
-*/
+    2157832 int the bug tracker. */
 void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
 {
     GoRules& rules = Board().Rules();
@@ -512,8 +504,7 @@ void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
 }
 
 /** Get the komi.
-    Compatible to GNU Go's get_komi.
-*/
+    Compatible to GNU Go's get_komi. */
 void GoGtpEngine::CmdGetKomi(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -524,8 +515,7 @@ void GoGtpEngine::CmdGetKomi(GtpCommand& cmd)
     Extension command introduced by GNU Go to undo multiple moves.<br>
     Arguments: optional int<br>
     Fails: if move history is too short<br>
-    Returns: nothing
- */
+    Returns: nothing */
 void GoGtpEngine::CmdGGUndo(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(1);
@@ -536,8 +526,7 @@ void GoGtpEngine::CmdGGUndo(GtpCommand& cmd)
 /** Sets time settings on kgs.
     Handles the four different kinds of time control on kgs, "none",
     "absolute", "byoyomi" (which is not currently fully supported),
-    and "canadian".
- */
+    and "canadian". */
 void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
 {
     if (cmd.NuArg() < 1)
@@ -595,8 +584,7 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     convention.
     The command does nothing but indicate the ability to handle the
     special comment line <tt># interrupt</tt> used by GoGui.
-    It is registered as a handler for @c gogui-interrupt.
-*/
+    It is registered as a handler for @c gogui-interrupt. */
 void GoGtpEngine::CmdInterrupt(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -605,8 +593,7 @@ void GoGtpEngine::CmdInterrupt(GtpCommand& cmd)
 /** Check if move is legal.
     Compatible with GNU Go's is_legal.
     Arguments: color move<br>
-    Returns: 0/1
-*/
+    Returns: 0/1 */
 void GoGtpEngine::CmdIsLegal(GtpCommand& cmd)
 {
     cmd.CheckNuArg(2);
@@ -616,8 +603,7 @@ void GoGtpEngine::CmdIsLegal(GtpCommand& cmd)
 }
 
 /** Set the komi.
-    GTP standard command.
-*/
+    GTP standard command. */
 void GoGtpEngine::CmdKomi(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -642,8 +628,7 @@ void GoGtpEngine::CmdKomi(GtpCommand& cmd)
     (A19, B19, ..., A18, B18, ...)
 
     Arguments: color<br>
-    Returns: List of stones<br>
-*/
+    Returns: List of stones<br> */
 void GoGtpEngine::CmdListStones(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -718,8 +703,7 @@ void GoGtpEngine::CmdName(GtpCommand& cmd)
     @arg @c debug_to_comment See SetDebugToComment()
     @arg @c overhead See SgTimeRecord::SetOverhead()
     @arg @c statistics_file See SetStatisticsFile()
-    @arg @c timelimit See TimeLimit()
-*/
+    @arg @c timelimit See TimeLimit() */
 void GoGtpEngine::CmdParam(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -773,8 +757,7 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
     @arg @c extra_handicap_komi See GoRules:ExtraHandicapKomi()
     @arg @c japanese_scoring See GoRules:JapaneseScoring()
     @arg @c two_passes_end_game See GoRules:TwoPassesEndGame()
-    @arg @c ko_rule (simple, superko, pos_superko) See GoRules:KoRule()
-*/
+    @arg @c ko_rule (simple, superko, pos_superko) See GoRules:KoRule() */
 void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -843,8 +826,7 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
     @arg @c fast_open_factor See SgDefaultTimeControl::FastOpenFactor()
     @arg @c fast_open_moves See SgDefaultTimeControl::FastOpenMoves()
     @arg @c final_space See GoTimeControl::FinalSpace()
-    @arg @c remaining_constant See SgDefaultTimeControl::RemainingConstant()
-*/
+    @arg @c remaining_constant See SgDefaultTimeControl::RemainingConstant() */
 void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
 {
     SgObjectWithDefaultTimeControl* object =
@@ -888,8 +870,7 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
 
     Arguments: number of handicap stones <br>
     Effect: Places handicap stones at chosen locations <br>
-    Returns: Handicap stone locations <br>
-*/
+    Returns: Handicap stone locations <br> */
 void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
 {
     CheckBoardEmpty();
@@ -949,8 +930,7 @@ void GoGtpEngine::CmdPlay(GtpCommand& cmd)
 
     This command is registered with the command name @c gogui-play_sequence
     as used in newer versions of GoGui and for a transition period also
-    with @c play_sequence as used by older versions of GoGui
-*/
+    with @c play_sequence as used by older versions of GoGui */
 void GoGtpEngine::CmdPlaySequence(GtpCommand& cmd)
 {
     SgNode* oldCurrentNode = GetGame().CurrentNode();
@@ -1019,8 +999,7 @@ void GoGtpEngine::CmdPointInfo(GtpCommand& cmd)
 }
 
 /** Print some information about player board.
-    See WriteBoardInfo for optional arguments.
-*/
+    See WriteBoardInfo for optional arguments. */
 void GoGtpEngine::CmdPlayerBoard(GtpCommand& cmd)
 {
     WriteBoardInfo(cmd, Player().Board());
@@ -1047,8 +1026,7 @@ void GoGtpEngine::CmdQuit(GtpCommand& cmd)
 /** Generate a move, but do not play it.
     Like in GNU Go, if there was a random seed set, it is initialized before
     each reg_genmove to avoid a dependency of the random numbers on previous
-    move generations.
-*/
+    move generations. */
 void GoGtpEngine::CmdRegGenMove(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -1063,8 +1041,7 @@ void GoGtpEngine::CmdRegGenMove(GtpCommand& cmd)
 /** Version of CmdRegGenMove() without color argument.
     This is a non-standard version of reg_genmove without color argument.
     It generates a move for the color to play.
-
-*/
+ */
 void GoGtpEngine::CmdRegGenMoveToPlay(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -1074,8 +1051,7 @@ void GoGtpEngine::CmdRegGenMoveToPlay(GtpCommand& cmd)
 }
 
 /** Set named rules.
-    @see GoGtpEngine::SetNamedRules()
-*/
+    @see GoGtpEngine::SetNamedRules() */
 void GoGtpEngine::CmdRules(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -1093,8 +1069,7 @@ void GoGtpEngine::CmdRules(GtpCommand& cmd)
 /** Save current game to file.
     Saves the complete game tree, including any trees from searches
     if storing searches is enabled with global flags.<br>
-    Argument: filename
-*/
+    Argument: filename */
 void GoGtpEngine::CmdSaveSgf(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -1107,8 +1082,7 @@ void GoGtpEngine::CmdSaveSgf(GtpCommand& cmd)
     quits, if a clear_board command fails. This command will remove the
     sentinel file, if it currently exists. Future invocations of clear_board
     will fail, if the sentinel file exists at that time. <br>
-    Argument: filename
-*/
+    Argument: filename */
 void GoGtpEngine::CmdSentinelFile(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -1127,8 +1101,7 @@ void GoGtpEngine::CmdSentinelFile(GtpCommand& cmd)
 }
 
 /** Standard GTP command for explicit placement of handicap stones.
-    Arguments: list of points
- */
+    Arguments: list of points */
 void GoGtpEngine::CmdSetFreeHandicap(GtpCommand& cmd)
 {
     SgVector<SgPoint> stones = PointListArg(cmd);
@@ -1143,8 +1116,7 @@ void GoGtpEngine::CmdSetFreeHandicap(GtpCommand& cmd)
     - game_name
     - player_black
     - player_white
-    - result
-*/
+    - result */
 void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 {
     string key = cmd.Arg(0);
@@ -1164,8 +1136,7 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 /** Place setup stones.
     Command will be used by future versions of GoGui. <br>
     Argument: color point [color point ...] <br>
-    With color: b, black, w, white
-*/
+    With color: b, black, w, white */
 void GoGtpEngine::CmdSetup(GtpCommand& cmd)
 {
     const GoBoard& bd = Board();
@@ -1200,8 +1171,7 @@ void GoGtpEngine::CmdSetup(GtpCommand& cmd)
 
 /** Set color to play.
     Command will be used by future versions of GoGui. <br>
-    Argument: color <br>
-*/
+    Argument: color <br> */
 void GoGtpEngine::CmdSetupPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
@@ -1326,8 +1296,7 @@ SgPoint GoGtpEngine::EmptyPointArg(const GtpCommand& cmd,
     Note that since GTP allows arbitrary state changes, it is not always
     clearly defined, if a game is played and when it is finished, but
     this function should at least be ensured to be called at the end of a
-    game in the use case of playing a game or a series of games.
-*/
+    game in the use case of playing a game or a series of games. */
 void GoGtpEngine::GameFinished()
 {
     if (m_player != 0)
@@ -1611,8 +1580,7 @@ void GoGtpEngine::Undo(int n)
 
 /** Write board info.
     Optional arguments:
-    - countplay
-*/
+    - countplay */
 void GoGtpEngine::WriteBoardInfo(GtpCommand& cmd, const GoBoard& bd)
 {
     cmd.CheckNuArgLessEqual(1);

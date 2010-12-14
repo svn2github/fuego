@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file FuegoTestEngine.h
-*/
+/** @file FuegoTestEngine.h */
 //----------------------------------------------------------------------------
 
 #ifndef FUEGOTEST_ENGINE_H
@@ -14,8 +13,7 @@
 
 /** GTP interface with commands for testing functionality of the Fuego
     libraries.
-    @see @ref fuegotestoverview
-*/
+    @see @ref fuegotestoverview */
 class FuegoTestEngine
     : public GoGtpEngine
 {
@@ -25,8 +23,7 @@ public:
         @param out
         @param fixedBoardSize
         @param programPath
-        @param player Player ID as in CreatePlayer()
-    */
+        @param player Player ID as in CreatePlayer() */
     FuegoTestEngine(GtpInputStream& in, GtpOutputStream& out,
                     int fixedBoardSize, const char* programPath = 0,
                     const std::string& player = "");
@@ -34,8 +31,7 @@ public:
     ~FuegoTestEngine();
 
     /** @page fuegotestenginecommands FuegoTestEngine Commands
-        - @link CmdParam() @c fuegotest_param @endlink
-    */
+        - @link CmdParam() @c fuegotest_param @endlink */
     void CmdAnalyzeCommands(GtpCommand& cmd);
     void CmdName(GtpCommand& cmd);
     void CmdParam(GtpCommand& cmd);

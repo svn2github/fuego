@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGtpTimeSettings.h
-    Time settings as used in time_settings standard GTP command.
-*/
+    Time settings as used in time_settings standard GTP command. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GTPTIMESETTINGS_H
@@ -25,8 +24,7 @@ public:
         and byoYomiStones=0 means no time limits.
         @param mainTime Main time measured in seconds.
         @param byoYomiTime Byo yomi time measured in seconds.
-        @param byoYomiStones Number of stones per byo yomi period.
-    */
+        @param byoYomiStones Number of stones per byo yomi period. */
     GoGtpTimeSettings(int mainTime, int byoYomiTime, int byoYomiStones);
 
     bool operator==(const GoGtpTimeSettings& timeSettings) const;
@@ -38,8 +36,7 @@ public:
     int ByoYomiStones() const;
 
     /** Check if no time limits are used.
-        Equivalent to byoYomiTime>0 and byoYomiStones=0.
-    */
+        Equivalent to byoYomiTime>0 and byoYomiStones=0. */
     bool NoTimeLimits() const;
 
 private:

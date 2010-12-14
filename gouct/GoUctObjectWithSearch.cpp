@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctObjectWithSearch.cpp
-    See GoUctObjectWithSearch.h
-*/
+    See GoUctObjectWithSearch.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

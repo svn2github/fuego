@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file SgBookBuilder.cpp 
- */
+/** @file SgBookBuilder.cpp  */
 //----------------------------------------------------------------------------
 
 #include "SgBookBuilder.h"
@@ -506,8 +505,7 @@ void SgBookBuilder::DoExpansion(std::vector<SgMove>& pv)
 /** Refresh's each child of the given state. UpdateValue() and
     UpdatePriority() are called on internal nodes. Returns true if
     state exists in book.  
-    @ref bookrefresh
-*/
+    @ref bookrefresh */
 bool SgBookBuilder::Refresh(bool root)
 {
     if (HasBeenVisited())

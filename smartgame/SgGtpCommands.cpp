@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgGtpCommands.cpp
-    See SgGtpCommands.h
-*/
+    See SgGtpCommands.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -74,8 +73,7 @@ void SgGtpCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 
 /** Run another GTP command and compare its response against a float value.
     Arguments: float command [arg...] <br>
-    Returns: -1 if response is smaller than float; 1 otherwise.
-*/
+    Returns: -1 if response is smaller than float; 1 otherwise. */
 void SgGtpCommands::CmdCompareFloat(GtpCommand& cmd)
 {
     double value = cmd.Arg<double>(0);
@@ -91,8 +89,7 @@ void SgGtpCommands::CmdCompareFloat(GtpCommand& cmd)
 /** Run another GTP command and compare its response against an integer value.
     Arguments: int command [arg...] <br>
     Returns: -1 if response is smaller than int; 0 if it is equal; 1 if it is
-    greater
-*/
+    greater */
 void SgGtpCommands::CmdCompareInt(GtpCommand& cmd)
 {
     int value = cmd.Arg<int>(0);
@@ -115,8 +112,7 @@ void SgGtpCommands::CmdCompareInt(GtpCommand& cmd)
     An optional string argument can be used as an ID for a timer.
     Default ID is "total".
     Other IDs are only allowed if cputime_reset was called with this ID
-    before.
-*/
+    before. */
 void SgGtpCommands::CmdCpuTime(GtpCommand& cmd)
 {
 
@@ -135,8 +131,7 @@ void SgGtpCommands::CmdCpuTime(GtpCommand& cmd)
 
 /** Reset process time.
     An optional string argument can be used as an ID for a timer.
-    Default ID is "total".
-*/
+    Default ID is "total". */
 void SgGtpCommands::CmdCpuTimeReset(GtpCommand& cmd)
 {
     string id = ParseCpuTimeId(cmd);
@@ -148,8 +143,7 @@ void SgGtpCommands::CmdCpuTimeReset(GtpCommand& cmd)
     Arguments: debugger-type <br>
     Currently implemented debugger types:
     - gdb_kde GDB in KDE terminal
-    - gdb_gnome GDB in GNOME terminal
-*/
+    - gdb_gnome GDB in GNOME terminal */
 void SgGtpCommands::CmdDebugger(GtpCommand& cmd)
 {
     string type = cmd.Arg();
@@ -171,16 +165,14 @@ void SgGtpCommands::CmdDebugger(GtpCommand& cmd)
 }
 
 /** Echo command argument line as response.
-    This command is compatible with GNU Go's 'echo' command.
-*/
+    This command is compatible with GNU Go's 'echo' command. */
 void SgGtpCommands::CmdEcho(GtpCommand& cmd)
 {
     cmd << cmd.ArgLine();
 }
 
 /** Echo command argument line to std::cerr.
-    This command is compatible with GNU Go's 'echo_err' command.
-*/
+    This command is compatible with GNU Go's 'echo_err' command. */
 void SgGtpCommands::CmdEchoErr(GtpCommand& cmd)
 {
     string line = cmd.ArgLine();
@@ -192,8 +184,7 @@ void SgGtpCommands::CmdEchoErr(GtpCommand& cmd)
     Argument: filename <br>
     Aborts on the first command that fails. Responses to the commands in the
     file are written to SgDebug()
-    @see GtpEngine::ExecuteFile
-*/
+    @see GtpEngine::ExecuteFile */
 void SgGtpCommands::CmdExec(GtpCommand& cmd)
 {
     m_engine.ExecuteFile(cmd.Arg(), SgDebug());
@@ -201,8 +192,7 @@ void SgGtpCommands::CmdExec(GtpCommand& cmd)
 
 /** Return the current random seed.
     See SgRandom::SetSeed(int) for the special meaning of zero and negative
-    values.
-*/
+    values. */
 void SgGtpCommands::CmdGetRandomSeed(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -211,8 +201,7 @@ void SgGtpCommands::CmdGetRandomSeed(GtpCommand& cmd)
 
 /** Set global parameters used in module SmartGame.
     Parameters:
-    @arg @c time_mode cpu|real See SgTime
-*/
+    @arg @c time_mode cpu|real See SgTime */
 void SgGtpCommands::CmdParam(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -245,8 +234,7 @@ void SgGtpCommands::CmdPid(GtpCommand& cmd)
 /** Set and store random seed.
     Arguments: seed <br>
     See SgRandom::SetSeed(int) for the special meaning of zero and negative
-    values.
-*/
+    values. */
 void SgGtpCommands::CmdSetRandomSeed(GtpCommand& cmd)
 {
     SgRandom::SetSeed(cmd.Arg<int>());

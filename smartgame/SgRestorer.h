@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgRestorer.h
-    Change and restore stack-based variables.
-*/
+    Change and restore stack-based variables. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_RESTORER_H
@@ -11,8 +10,7 @@
 
 /** A SgRestorer<T> variable saves the current state of a variable of type
     T and restores it to that saved value upon leaving the scope in an
-    exception-safe way.
-*/
+    exception-safe way. */
 template <class T>
 class SgRestorer
 {
@@ -42,8 +40,7 @@ private:
 //----------------------------------------------------------------------------
 
 /** Saves the current state of a variable of type T and asserts that the
-    saved value equals the value upon leaving the scope.
-*/
+    saved value equals the value upon leaving the scope. */
 template <class T>
 class SgAssertRestored
 {

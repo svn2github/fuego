@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoStaticSafetySolver.h
-    Recognize safe stones and territories statically.
-*/
+    Recognize safe stones and territories statically. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_STATICSAFETYSOLVER_H
@@ -17,8 +16,7 @@
     The algorithm is used to implement both Benson's algorithm for
     unconditional safety and a solver using the extended 1-vitality and
     2-vitality definitions from Martin Mueller's thesis [Mueller 95, p. 62-63]
-    and from [Mueller 97b].
-*/
+    and from [Mueller 97b]. */
 class GoStaticSafetySolver
 {
 public:
@@ -60,8 +58,7 @@ protected:
     /** Compute closure of blocks set for Benson's algorithm.
         Expand set of blocks until all blocks adjacent to all adjacent
         regions are in set.
-        see [Benson] for explanation.
-    */
+        see [Benson] for explanation. */
     virtual void FindClosure(SgVectorOf<GoBlock>* blocks) const;
 
     /** Compute all GoBlock's and GoRegion's on board*/
@@ -69,8 +66,7 @@ protected:
 
     /** Is r healthy for b? Implements Benson, override for better tests
         Benson's classic healthyness test: all empty points of region must be
-        liberties of the block.
-    */
+        liberties of the block. */
     virtual bool RegionHealthyForBlock(const GoRegion& r,
                                        const GoBlock& b) const;
 
@@ -84,8 +80,7 @@ protected:
     /** Test if list of Benson blocks forms a living group.
         Each block must have a sure liberty count of at least 2.
         A region provides one sure liberty if it is healthy and its
-        boundary consists only of blocks in the list.
-    */
+        boundary consists only of blocks in the list. */
     void TestAlive(SgVectorOf<GoBlock>* blocks, SgBWSet* safe,
                    SgBlackWhite color);
 

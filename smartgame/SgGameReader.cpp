@@ -54,8 +54,7 @@ bool SgGameReader::GetIntProp(const SgGameReader::RawProperties& properties,
 /** Create SgProp instances and add them to node.
     The only properties that are interpreted by the reader are SZ (board size)
     and GM (point format, because they must be handled before all other root
-    node properties to parse points correctly.
-*/
+    node properties to parse points correctly. */
 void SgGameReader::HandleProperties(SgNode* node,
                                     const RawProperties& properties,
                                     int& boardSize, SgPropPointFmt& fmt)

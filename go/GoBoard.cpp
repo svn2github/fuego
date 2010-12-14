@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoard.cpp
-    See GoBoard.h
-*/
+    See GoBoard.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -23,8 +22,7 @@ namespace {
     Check some data structures for consistency after and before each play
     and undo (and at some other places).
     This is an expensive check and therefore has to be enabled at compile
-    time.
-*/
+    time. */
 const bool CONSISTENCY = false;
 
 void UpdateChanges(SgPoint p, SgSList<SgPoint,SG_MAXPOINT>& changes,
@@ -838,8 +836,7 @@ void GoBoard::Undo()
 }
 
 /** Remove liberty from adjacent blocks and kill opponent blocks without
-    liberties.
-*/
+    liberties. */
 void GoBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
                                StackEntry& entry)
 {

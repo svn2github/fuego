@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgHashTest.cpp
-    Unit tests for SgHash.
-*/
+    Unit tests for SgHash. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -26,8 +25,7 @@ BOOST_AUTO_TEST_CASE(SgHashCodeTest_Clear)
 }
 
 /** SgHashCode constructor test.
-    Checks that hash code is initialized with zero.
-*/
+    Checks that hash code is initialized with zero. */
 BOOST_AUTO_TEST_CASE(SgHashCodeTest_Constructor)
 {
     SgHashCode hash;
@@ -104,8 +102,7 @@ BOOST_AUTO_TEST_CASE(SgHashUtilTest_XorInteger)
 //----------------------------------------------------------------------------
 
 /** Entries in Zobrist table should be distinct and non-zero.
-    Tests only consecutive values for distinctness, not all pairs.
-*/
+    Tests only consecutive values for distinctness, not all pairs. */
 BOOST_AUTO_TEST_CASE(SgHashZobristTest_Initialization)
 {
     SgHashZobrist<64> t;

@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpSafePlayer.h
-    Safe player
-*/
+    Safe player */
 //----------------------------------------------------------------------------
 
 #ifndef SP_SAFEPLAYER_H
@@ -13,8 +12,7 @@
 //----------------------------------------------------------------------------
 
 /** Uses GoSafetySolver and one ply search.
-    Strong in the end, random in the beginning
-*/
+    Strong in the end, random in the beginning */
 class SpSafeMoveGenerator
     : public Sp1PlyMoveGenerator
 {

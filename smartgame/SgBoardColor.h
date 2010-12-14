@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBoardColor.h
-    State of a point on the board for games with Black, White, Empty states.
-*/
+    State of a point on the board for games with Black, White, Empty states. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_BOARDCOLOR_H
@@ -60,8 +59,7 @@ inline char SgEBW(SgEmptyBlackWhite color)
 //----------------------------------------------------------------------------
 
 /** Iterator over three colors, Empty, Black and White.
-    Works analogously to SgBWIterator.
-*/
+    Works analogously to SgBWIterator. */
 class SgEBWIterator
 {
 public:
@@ -71,8 +69,7 @@ public:
 
     /** Advance the state of the iteration to the next element.
         Relies on current coding: incrementing SG_WHITE will yield value
-        outside of {SG_EMPTY, SG_BLACK, SG_WHITE}
-    */
+        outside of {SG_EMPTY, SG_BLACK, SG_WHITE} */
     void operator++()
     {
         ++m_color;

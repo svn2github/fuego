@@ -4,8 +4,7 @@
 
     @note
     Will become obsolete when class GoBoard is fast enough for computing
-    ladders.
-*/
+    ladders. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_LADDER_H
@@ -47,15 +46,13 @@ public:
         twoLibIsEscape: if prey is to play and has two libs, does it count as
         an immediate escape, or shall we keep trying to capture?
         @return Positive value if ladder is good for prey, negative, if good
-        for hunter.
-    */
+        for hunter. */
     int Ladder(const GoBoard& bd, SgPoint prey, SgBlackWhite toPlay,
                SgVector<SgPoint>* sequence, bool twoLibIsEscape = false);
 
 private:
     /** Maximum number of moves in ladder.
-        If board has simple ko rule, ladders could not terminate.
-    */
+        If board has simple ko rule, ladders could not terminate. */
     static const int MAX_LADDER_MOVES = 200;
 
     /** Maximum move number before ladder should be aborted. */
@@ -113,8 +110,7 @@ namespace GoLadderUtil {
     Return an empty sequence if the prey is already captured or has escaped,
     without needing to play a move.
     If the prey can be temporarily removed from the board but can capture
-    back immediately (snapback), return that the prey cannot be captured.
-*/
+    back immediately (snapback), return that the prey cannot be captured. */
 bool Ladder(const GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
             bool fTwoLibIsEscape = false, SgVector<SgPoint>* sequence = 0);
 
@@ -123,8 +119,7 @@ bool Ladder(const GoBoard& board, SgPoint prey, SgBlackWhite toPlay,
     If it is unsettled, set '*toCapture' and '*toEscape' (if not 0) to the
     capturing/escaping move to play.
     Otherwise, leave '*toCapture' and '*toEscape' unchanged. The point at
-    'prey' must be occupied.
-*/
+    'prey' must be occupied. */
 GoLadderStatus LadderStatus(const GoBoard& bd, SgPoint prey,
                             bool fTwoLibIsEscape = false,
                             SgPoint* toCapture = 0, SgPoint* toEscape = 0);
@@ -134,8 +129,7 @@ GoLadderStatus LadderStatus(const GoBoard& bd, SgPoint prey,
     - Suicide
     - self removal, self atari
     - can be captured by ladder?
-    - is it a Ko?
-*/
+    - is it a Ko? */
 bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col,
                         bool& byLadder, bool& isKoCut, bool tryLadder = true);
 

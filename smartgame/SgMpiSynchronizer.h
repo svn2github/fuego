@@ -1,6 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file SgMpiSynchronizer.h
-*/
+/** @file SgMpiSynchronizer.h */
 //----------------------------------------------------------------------------
 
 #ifndef SG_MPISYNCHRONIZER_H
@@ -26,8 +25,7 @@ class SgUctGameInfo;
     version of Fuego, BlueFuego, is currently implemented. The design is under
     dispute, because it causes intrusive changes to other classes and breaks
     encapsulation of their implementation.
-    See http://sourceforge.net/apps/trac/fuego/ticket/32 for details.
-*/
+    See http://sourceforge.net/apps/trac/fuego/ticket/32 for details. */
 class SgMpiSynchronizer 
 {
 public:

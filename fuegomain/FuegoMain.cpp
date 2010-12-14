@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file FuegoMain.cpp
-    Main function for Fuego
-*/
+    Main function for Fuego */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -54,8 +53,7 @@ int g_srand;
 
 /** Get program directory from program path.
     @param programPath Program path taken from @c argv[0] in
-    @c main. According to ANSI C, this can be @c 0.
- */
+    @c main. According to ANSI C, this can be @c 0. */
 path GetProgramDir(const char* programPath)
 {
     if (programPath == 0)

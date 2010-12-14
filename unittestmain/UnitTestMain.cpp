@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file UnitTestMain.cpp
-    Main function for running unit tests from all modules in project Fuego.
-*/
+    Main function for running unit tests from all modules in project Fuego. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

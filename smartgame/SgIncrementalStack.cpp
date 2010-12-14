@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgIncrementalStack.cpp
-    See SgIncrementalStack.h
-*/
+    See SgIncrementalStack.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

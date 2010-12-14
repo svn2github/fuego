@@ -14,8 +14,7 @@
 namespace SgStringUtil
 {
     /** Split command line into arguments.
-        Allows " for words containing whitespaces.
-    */
+        Allows " for words containing whitespaces. */
     std::vector<std::string> SplitArguments(std::string s);
 }
 

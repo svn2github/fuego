@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgWriteTest.cpp
-    Unit tests for classes in SgWrite.
-*/
+    Unit tests for classes in SgWrite. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

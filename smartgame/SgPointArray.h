@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgPointArray.h
-    Array indexed by points.
-*/
+    Array indexed by points. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_POINTARRAY_H
@@ -18,8 +17,7 @@
 /** An array of SG_MAXPOINT values of type T, indexed by SgPoint.
     Also enforces that all elements are initialized in the constructor,
     either with T(0), if T can be constructed in such a way or be providing
-    an initialization value.
-*/
+    an initialization value. */
 template<class T>
 class SgPointArray
     : public SgArray<T,SG_MAXPOINT>
@@ -56,8 +54,7 @@ inline SgPointArray<T>::SgPointArray(const SgPointArray& pointArray)
 
 /** Write a point array.
     Computes the maximum string representation length of each element in the
-    array to write out aligned columns with minimum space in between.
-*/
+    array to write out aligned columns with minimum space in between. */
 template<typename T>
 class SgWritePointArray
 {
@@ -115,8 +112,7 @@ std::ostream& operator<<(std::ostream& out,
 
 /** Write a float point array.
     Enhanced version of SgWritePointArray for float or double types.
-    Allows to specify some formatting options for floating point numbers.
-*/
+    Allows to specify some formatting options for floating point numbers. */
 template<typename FLOAT>
 class SgWritePointArrayFloat
 {

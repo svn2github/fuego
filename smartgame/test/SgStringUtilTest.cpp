@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgStringUtilTest.cpp
-    Unit tests for SgStringUtil.
-*/
+    Unit tests for SgStringUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

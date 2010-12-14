@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoRegionUtil.h
-    Utility functions for GoRegion and GoRegionBoard.
-*/
+    Utility functions for GoRegion and GoRegionBoard. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_REGIONUTIL_H
@@ -31,31 +30,27 @@ namespace GoRegionUtil
     /** Test if pts has 2 IP or eyes.
         Has2IPorEyes is called after all interior points are 2conn proved.
         It returns true if two intersection points are found or single
-        boundary block forms two separate eyes.
-    */
+        boundary block forms two separate eyes. */
     bool Has2IPorEyes(const GoBoard& board, const SgPointSet& pts,
                       SgBlackWhite color,
                       const SgVector<SgPoint>& boundaryAnchors);
 
     /** Do pts belong to only one block?
-        pts must be non-empty.
-    */
+        pts must be non-empty. */
     bool IsSingleBlock(const GoBoard& board, const SgPointSet& pts,
                        SgBlackWhite color);
 
     /** A region is called small iff its interior is completely filled
         by opponent stones (or there is no interior).
         This definition (and the name "small") is due to Benson.
-        pts must be a region completely surrounded by opponent stones.
-    */
+        pts must be a region completely surrounded by opponent stones. */
     bool IsSmallRegion(const GoBoard& board, const SgPointSet& pts,
                        SgBlackWhite opp);
 
     /** Find anchors of all blocks represented by origAnchors
         that are present in current board position.
         Some of the origAnchors may have been captured in the meantime, and
-        some anchors may have changed by extending and/or merging of blocks.
-    */
+        some anchors may have changed by extending and/or merging of blocks. */
     void FindCurrentAnchors(const GoBoard& board,
                             const SgVector<SgPoint>& origAnchors,
                             SgVector<SgPoint>* currentAnchors);

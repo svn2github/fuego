@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgCmdLineOptTest.cpp
-    Unit tests for SgCmdLineOpt.
-*/
+    Unit tests for SgCmdLineOpt. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

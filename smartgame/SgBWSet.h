@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgBWSet.h
-    Pair of SgPointSet for Black and White
-*/
+    Pair of SgPointSet for Black and White */
 //----------------------------------------------------------------------------
 
 #ifndef SG_BWSET_H

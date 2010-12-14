@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardUtil.h
-    GoBoard-related utility classes.
-*/
+    GoBoard-related utility classes. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_BOARDUTIL_H
@@ -20,8 +19,7 @@
 /** Utility functions for users of class GoBoard.
     Some of the functions that the board class as a template argument,
     such that they can be used with specialized variants of GoBoard that
-    share only a sub-functionality.
-*/
+    share only a sub-functionality. */
 namespace GoBoardUtil
 {
     /** Add anchors of neighbor blocks to list. */
@@ -41,8 +39,7 @@ namespace GoBoardUtil
             e.g. by using direction = NS + WE,
             or even jumps.
         Precondition: all these squares must be empty,
-                      and playing on them must be legal.
-    */
+                      and playing on them must be legal. */
     void AddWall(GoBoard& bd,
                  SgBlackWhite color,
                  SgPoint start,
@@ -63,8 +60,7 @@ namespace GoBoardUtil
 
     /** Return whether 'block1' and 'block2' have at least two shared
         liberties.
-        Not defined for empty or border points.
-    */
+        Not defined for empty or border points. */
     bool AtLeastTwoSharedLibs(const GoBoard& bd, SgPoint block1,
                               SgPoint block2);
 
@@ -91,14 +87,12 @@ namespace GoBoardUtil
         @param maxDist The maximum distance to search (points with a
         distance &gt; maxDist will get the value numeric_limits<int>::max())
         @return The array containing the distances; for blocks only the
-        element at the block anchor is defined.
-    */
+        element at the block anchor is defined. */
     SgPointArray<int> CfgDistance(const GoBoard& bd, SgPoint p,
                                int maxDist = std::numeric_limits<int>::max());
 
     /** Is p contained in anchor[] ?
-        anchor[] must be terminated by END_POINT.
-    */
+        anchor[] must be terminated by END_POINT. */
     bool ContainsAnchor(const SgPoint anchor[], const SgPoint p);
 
    /** Get diagonal points with a color.
@@ -106,30 +100,26 @@ namespace GoBoardUtil
        @param p The point.
        @param c The color.
        @param diagonals Resulting point list. Will be cleared before
-       adding the points.
-    */
+       adding the points. */
     void DiagonalsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgVector<SgPoint>* diagonals);
 
     /** Write board including move history to stream.
         This function is intended for printing the current board state
         for debugging or after a crash. The move history is written in SGF
-        format.
-    */
+        format. */
     void DumpBoard(const GoBoard& bd, std::ostream& out = SgDebug());
 
     /** Return whether the game is finished.
         (two or three consecutive pass moves).
-        For the choice of two or three: @see GoRules constructor.
-    */
+        For the choice of two or three: @see GoRules constructor. */
     bool EndOfGame(const GoBoard& bd);
 
     /** Add other stones of blocks to SgPointSet if one is in set */
     void ExpandToBlocks(const GoBoard& board, SgPointSet& pointSet);
 
     /** Find a neighboring point in color c.
-        Precondition: Call only if such a point exists.
-    */
+        Precondition: Call only if such a point exists. */
     template<class BOARD>
     SgPoint FindNeighbor(const BOARD& bd, SgPoint p, SgEmptyBlackWhite c);
 
@@ -139,25 +129,21 @@ namespace GoBoardUtil
                          SgVector<SgPoint>* moves);
 
     /** Convert the given move to human-readable coordinates.
-        (lower left A1 to upper right T19, leaving out column I).
-    */
+        (lower left A1 to upper right T19, leaving out column I). */
     void GetCoordString(SgMove move, std::string* s, int boardSize);
 
     /** Convert the given move to human-readable coordinates.
-        (lower left A1 to upper right T19, leaving out column I).
-    */
+        (lower left A1 to upper right T19, leaving out column I). */
     void GetCoordString(const GoBoard& board, SgMove move, std::string* s);
 
 
     /** Which intersections were modified with the last move.
-        Can check either before or after move is played (set premove)
-    */
+        Can check either before or after move is played (set premove) */
     SgRect GetDirtyRegion(const GoBoard& bd, SgMove move, SgBlackWhite color,
                           bool checklibs = false, bool premove = false);
 
     /** Return whether block has at least one adjacent opponent
-        block with at most maxLib liberties.
-    */
+        block with at most maxLib liberties. */
     bool HasAdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib);
 
     bool HasStonesOfBothColors(const GoBoard& bd,
@@ -168,8 +154,7 @@ namespace GoBoardUtil
         Good criterion for move generation in Monte-Carlo. See:
         Remi Coulom: Efficient selectivity and backup operators in
         Monte-Carlo tree search, CG2006, Appendix A.1,
-        http://remi.coulom.free.fr/CG2006/
-    */
+        http://remi.coulom.free.fr/CG2006/ */
     template<class BOARD>
     bool IsCompletelySurrounded(const BOARD& bd, SgPoint p);
 
@@ -182,16 +167,14 @@ namespace GoBoardUtil
     /** Does block have two shared liberties with some other block? 
         WARNING: for efficiency this checks only the first two liberties
         of the block. So it is accurate for two-liberty blocks,
-        and a heuristic for blocks with more liberties.
-    */
+        and a heuristic for blocks with more liberties. */
     template<class BOARD>
     bool IsSimpleChain(const BOARD& bd, SgPoint block, SgPoint& other);
     
     /** Is lib a simple eye of block?
         Eyes is a list of other eye points, that do not need to be
         occupied for lib to be an eye.
-        Precondition (not tested): lib is surrounded by stones of color.
-    */
+        Precondition (not tested): lib is surrounded by stones of color. */
     bool IsSimpleEyeOfBlock(const GoBoard& bd, SgPoint lib,
                             SgPoint blockAnchor,
                             const SgVector<SgPoint>& eyes);
@@ -199,8 +182,7 @@ namespace GoBoardUtil
     /** Check if the move just played on p was a snapback.
         A snapback is a single stone in atari which can be captured by a
         legal move, if the move creates a block with more than one stone
-        in atari.
-    */
+        in atari. */
     bool IsSnapback(const GoBoard& bd, SgPoint p);
 
     /** all points on lines [from..to] */
@@ -209,21 +191,18 @@ namespace GoBoardUtil
     bool ManySecondaryLibs(const GoBoard& bd, SgPoint block);
 
     /** Either move is not legal, or the block at move is in atari
-        after the move.
-    */
+        after the move. */
     bool MoveNotLegalOrAtari(GoBoard& bd, SgPoint move);
 
     /** Move is legal and the block at move is not in atari
-        after the move.
-    */
+        after the move. */
     bool MoveLegalAndNotAtari(GoBoard& bd, SgPoint move);
 
     /** Get adjacent points with a color.
         @param bd The board.
         @param p The point.
         @param c The color.
-        @return Resulting point list.
-    */
+        @return Resulting point list. */
     SgSList<SgPoint,4> NeighborsOfColor(const GoBoard& bd, SgPoint p, int c);
 
     /** Get adjacent points with a color (SgVector version).
@@ -231,8 +210,7 @@ namespace GoBoardUtil
         @param p The point.
         @param c The color.
         @param neighbors Resulting point list. Will be cleared before
-        adding the points.
-    */
+        adding the points. */
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgVector<SgPoint>* neighbors);
 
@@ -243,29 +221,25 @@ namespace GoBoardUtil
         @param bd The board.
         @param p Move to play; SG_PASS or on-board point.
         @param player Color to play.
-        @return true if the move was executed.
-    */
+        @return true if the move was executed. */
     bool PlayIfLegal(GoBoard& bd, SgPoint p, SgBlackWhite player);
 
     /** Play a move for the current player if legal.
         @param bd The board.
         @param p Move to play; SG_PASS or on-board point.
-        @return true if the move was executed.
-    */
+        @return true if the move was executed. */
     bool PlayIfLegal(GoBoard& bd, SgPoint p);
 
     /** Keep only the anchor of each block in the list.
         Points not occupied are removed from the list. The initial list may
         contain duplicate stones; these will be thrown out. The returned list
-        will be sorted by anchors.
-    */
+        will be sorted by anchors. */
     void ReduceToAnchors(const GoBoard& bd, SgVector<SgPoint>* stones);
 
     /** Keep only the anchor of each block in the list.
         Points not occupied are removed from the list. The initial list may
         contain duplicate stones; these will be thrown out. The returned list
-        will not be sorted by anchors.
-    */
+        will not be sorted by anchors. */
     void ReduceToAnchors(const GoBoard& bd, const SgVector<SgPoint>& stones,
                          SgSList<SgPoint,SG_MAXPOINT> &anchors);
 
@@ -273,32 +247,27 @@ namespace GoBoardUtil
     void RegionCode(const GoBoard& bd, const SgVector<SgPoint>& region,
                     SgHashCode* c);
 
-    /** Returns true iff during the first N moves of a Chinese handicap game.
-    */
+    /** Returns true iff during the first N moves of a Chinese handicap game. */
     bool RemainingChineseHandicap(const GoBoard& bd);
 
     /** Check if move would be self-atari.
-        Faster than Executing the move, then calling InAtari().
-    */
+        Faster than Executing the move, then calling InAtari(). */
     template<class BOARD>
     bool SelfAtari(const BOARD& bd, SgPoint p);
 
     /** Same as above, but also compute number of stones put into selfatari.
-         numStones is set only if the return value is 'true'.
-    */
+         numStones is set only if the return value is 'true'. */
     template<class BOARD>
     bool SelfAtari(const BOARD& bd, SgPoint p, int& numStones);
 
     /** Check if move would be self-atari for given color.
-        That color may be different from bd.ToPlay().
-    */
+        That color may be different from bd.ToPlay(). */
     template<class BOARD>
     bool SelfAtariForColor(const BOARD& bd, SgPoint p,
                            SgBlackWhite toPlay);
 
     /** Return all points that are liberties of both 'block1' and 'block2'.
-        Not defined for empty or border points.
-    */
+        Not defined for empty or border points. */
     void SharedLiberties(const GoBoard& bd, SgPoint block1, SgPoint block2,
                          SgVector<SgPoint>* sharedLibs);
 
@@ -317,8 +286,7 @@ namespace GoBoardUtil
         @return @c false if position cannot be scored, because the dead
         stones information is not consistent (a region with dead stones of
         both colors exists or dead stones of a color in a region of that
-        color).
-    */
+        color). */
     bool ScorePosition(const GoBoard& bd, const SgPointSet& deadStones,
                        float& score);
 
@@ -342,8 +310,7 @@ namespace GoBoardUtil
         @param safe
         @param noCheck
         @param scoreBoard Optional board to fill in the status of each
-        point (SG_EMPTY means dame); null if not needed
-    */
+        point (SG_EMPTY means dame); null if not needed */
     template<class BOARD>
     float ScoreSimpleEndPosition(const BOARD& bd, float komi,
                                  const SgBWSet& safe, bool noCheck,
@@ -367,8 +334,7 @@ namespace GoBoardUtil
         useful even if it is sometimes wrong)
         @throws SgException If there are empty points, which are not single
         empty points or with stones of both colors adjacent.
-        @return Score including komi, positive for black.
-    */
+        @return Score including komi, positive for black. */
     float ScoreSimpleEndPosition(const GoBoard& bd, float komi,
                                  bool noCheck = false);
 
@@ -378,8 +344,7 @@ namespace GoBoardUtil
         then copies an array to a list. For me, it's not necessary because
         I use arrays.
         @note Consider using GoBoard::StoneIterator instead, if you don't need
-        to keep the array
-    */
+        to keep the array */
     int Stones(const GoBoard& bd, SgPoint p, SgPoint stones[]);
 
     void TestForChain(GoBoard& bd, SgPoint block, SgPoint block2, SgPoint lib,
@@ -392,15 +357,13 @@ namespace GoBoardUtil
         @param komi The komi
         @param scoreBoard Optional board to fill in the status of each
         point (SG_EMPTY means dame)
-        @return The score, black counting positive, komi included.
-    */
+        @return The score, black counting positive, komi included. */
     template<class BOARD>
     float TrompTaylorScore(const BOARD& bd, float komi,
                            SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
 
     /** Check if the last two moves were two passes in a row, the first pass
-        by the current color to play, the second by the opponent.
-    */
+        by the current color to play, the second by the opponent. */
     bool TwoPasses(const GoBoard& bd);
 
     /** Undo all moves or setup stones. */
@@ -900,8 +863,7 @@ inline std::ostream& operator<<(std::ostream& out, const GoBoard& bd)
 
 /** Used to restore the ko rule to its current value in an exception-safe way.
     To use it, just declare a variable of this type on the stack for the
-    desired scope.
-*/
+    desired scope. */
 class GoRestoreKoRule
 {
 public:
@@ -936,8 +898,7 @@ inline GoRestoreKoRule::~GoRestoreKoRule()
 
 /** Used to restore ToPlay to its current value in an exception-safe way.
     To use it, just declare a RestoreToPlay variable on the stack for the
-    desired scope.
-*/
+    desired scope. */
 class GoRestoreToPlay
 {
 public:
@@ -1015,8 +976,7 @@ private:
 /** Used to permit/forbid self-removal for certain periods of play.
     Restores the setting to the previous value in an exception-safe way.
     To use it, just declare a SelfRemoval variable on the stack for the
-    desired scope.
-*/
+    desired scope. */
 class GoRestoreSuicide
 {
 public:
@@ -1050,8 +1010,7 @@ private:
     play.
     Restores the settings to the previous values in an exception-safe way.
     To use it, just declare a RestoreRepetitionAndRemoval variable on the
-    stack for the desired scope.
-*/
+    stack for the desired scope. */
 class GoRestoreRepetitionAndSuicide
 {
 public:
@@ -1096,8 +1055,7 @@ private:
 //----------------------------------------------------------------------------
 
 /** Iterate through the anchors of all the blocks adjacent to the given
-    point.
-*/
+    point. */
 class GoNeighborBlockIterator
     : public SgPointIterator
 {
@@ -1126,8 +1084,7 @@ private:
 static const int MAX_ADJACENT = (SG_MAX_SIZE + 1) * (SG_MAX_SIZE + 1) / 4;
 
 /** Iterate through the anchors of all the blocks adjacent to the given
-    block.
-*/
+    block. */
 template<class BOARD>
 class GoAdjBlockIterator
     : public SgPointIterator
@@ -1139,8 +1096,7 @@ private:
     /** Maximum number of adjacent blocks.
         Not quite sure this is an upper limit, but couldn't find an
         example that had more adjacent stones than a spiral block with
-        adjacent single stones spaced one apart.
-    */
+        adjacent single stones spaced one apart. */
 
     SgPoint m_points[MAX_ADJACENT];
 };

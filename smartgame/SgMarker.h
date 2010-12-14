@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgMarker.h
-    Class SgMarker.
-*/
+    Class SgMarker. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_MARKER_H
@@ -15,8 +14,7 @@
 
 /** Used to mark points on the board.
     Like SgPointSet but uses more memory and is faster at marking and clearing
-    all marks.
-*/
+    all marks. */
 class SgMarker
 {
 public:
@@ -106,8 +104,7 @@ inline bool SgMarker::NewMark(SgPoint p)
 //----------------------------------------------------------------------------
 
 /** Declare a variable of this class on the stack to reserve a board marker.
-    It asserts that nobody else is using the same marker at the same time.
-*/
+    It asserts that nobody else is using the same marker at the same time. */
 class SgReserveMarker
 {
 public:

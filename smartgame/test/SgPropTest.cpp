@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgPropTest.cpp
-    Unit tests for classes in SgProp.
-*/
+    Unit tests for classes in SgProp. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"

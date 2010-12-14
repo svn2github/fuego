@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoMoveExecutor.h
-    Class GoMoveExecutor.
-*/
+    Class GoMoveExecutor. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_MOVEEXECUTOR_H
@@ -12,8 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Used to execute and undo one move without having to worry about undoing
-    the move.
-*/
+    the move. */
 class GoMoveExecutor
 {
 public:
@@ -43,8 +41,7 @@ public:
     /** Can be used to undo the move before the MoveExecutor is destructed, to
         force the situation back the previous state.
         Note that this can only be called for legal moves, and IsLegal returns
-        false afterwards.
-    */
+        false afterwards. */
     void UndoMove()
     {
         SG_ASSERT(m_isLegal);

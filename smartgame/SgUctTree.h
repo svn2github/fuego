@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctTree.h
-    Class SgUctTree and strongly related classes.
-*/
+    Class SgUctTree and strongly related classes. */
 //----------------------------------------------------------------------------
 
 #ifndef SG_UCTTREE_H
@@ -34,8 +33,7 @@ struct SgMoveInfo
     /** Value of node after node is created. 
         Value is from child's perspective, so the value stored here
         must be the inverse of the evaluation from the parent's
-        perspective. 
-    */
+        perspective.  */
     SgUctValue m_value;
 
     /** Count of node after node is created. */
@@ -43,8 +41,7 @@ struct SgMoveInfo
 
     /** Rave value of move after node is created from viewpoint of
         parent node.
-        Value should not be inverted to child's perspective.
-    */
+        Value should not be inverted to child's perspective. */
     SgUctValue m_raveValue;
 
     /** Rave count of move after node is created. */
@@ -110,8 +107,7 @@ typedef enum
     relies on the fact that m_firstChild is valid, if m_nuChildren is greater
     zero or that the mean value of the move and RAVE value statistics is valid
     if the corresponding count is greater zero.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctNode
 {
 public:
@@ -119,8 +115,7 @@ public:
     SgUctNode(const SgMoveInfo& info);
 
     /** Add game result.
-        @param eval The game result (e.g. score or 0/1 for win loss)
-    */
+        @param eval The game result (e.g. score or 0/1 for win loss) */
     void AddGameResult(SgUctValue eval);
 
     /** Adds a game result count times. */
@@ -130,8 +125,7 @@ public:
     void MergeResults(const SgUctNode& node);
 
     /** Removes a game result.
-        @param eval The game result (e.g. score or 0/1 for win loss)
-    */
+        @param eval The game result (e.g. score or 0/1 for win loss) */
     void RemoveGameResult(SgUctValue eval);
 
     /** Removes a game result count times. */
@@ -140,28 +134,24 @@ public:
     /** Number of times this node was visited.
         This corresponds to the sum of MoveCount() of all children.
         It can be different from MoveCount() of this position, if prior
-        knowledge initialization of the children is used.
-    */
+        knowledge initialization of the children is used. */
     SgUctValue PosCount() const;
 
     /** Number of times the move leading to this position was chosen.
         This count will be different from PosCount(), if prior knowledge
-        initialization is used.
-    */
+        initialization is used. */
     SgUctValue MoveCount() const;
 
     /** Get first child.
         @note This information is an implementation detail of how SgUctTree
-        manages nodes. Use SgUctChildIterator to access children nodes.
-    */
+        manages nodes. Use SgUctChildIterator to access children nodes. */
     const SgUctNode* FirstChild() const;
 
     /** Does the node have at least one child? */
     bool HasChildren() const;
 
     /** Average game result.
-        Requires: HasMean()
-     */
+        Requires: HasMean() */
     SgUctValue Mean() const;
 
     /** True, if mean value is defined (move count not zero) */
@@ -169,8 +159,7 @@ public:
 
     /** Get number of children.
         @note This information is an implementation detail of how SgUctTree
-        manages nodes. Use SgUctChildIterator to access children nodes.
-    */
+        manages nodes. Use SgUctChildIterator to access children nodes. */
     int NuChildren() const;
 
     /** See FirstChild() */
@@ -180,13 +169,11 @@ public:
     void SetNuChildren(int nuChildren);
 
     /** Increment the position count.
-        See PosCount()
-    */
+        See PosCount() */
     void IncPosCount();
 
     /** Decrement the position count.
-        See PosCount()
-    */
+        See PosCount() */
     void DecPosCount();
 
     void SetPosCount(SgUctValue value);
@@ -196,31 +183,26 @@ public:
 
     /** Copy data from other node.
         Copies all data, apart from the children information (first child
-        and number of children).
-    */
+        and number of children). */
     void CopyDataFrom(const SgUctNode& node);
 
     /** Get move.
-        Requires: Node has a move (is not root node)
-    */
+        Requires: Node has a move (is not root node) */
     SgMove Move() const;
 
     /** Get RAVE count.
-        @see SgUctSearch::Rave().
-    */
+        @see SgUctSearch::Rave(). */
     SgUctValue RaveCount() const;
 
     /** Get RAVE mean value.
         Requires: HasRaveValue()
-        @see SgUctSearch::Rave().
-    */
+        @see SgUctSearch::Rave(). */
     SgUctValue RaveValue() const;
 
     bool HasRaveValue() const;
 
     /** Add a game result value to the RAVE value.
-        @see SgUctSearch::Rave().
-    */
+        @see SgUctSearch::Rave(). */
     void AddRaveValue(SgUctValue value, SgUctValue weight);
 
     /** Removes a rave result. */
@@ -259,8 +241,7 @@ private:
 
     /** RAVE statistics.
         Uses double for count to allow adding fractional values if RAVE
-        updates are weighted.
-    */
+        updates are weighted. */
     SgUctStatisticsVolatile m_raveValue;
 
     volatile SgUctValue m_posCount;
@@ -468,8 +449,7 @@ inline void SgUctNode::SetProvenNodeType(SgProvenNodeType type)
 /** Allocater for nodes used in the implementation of SgUctTree.
     Each thread has its own node allocator to allow lock-free usage of
     SgUctTree.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctAllocator
 {
 public:
@@ -493,8 +473,7 @@ public:
         comparisons for pointers to elements in different containers
         is platform-dependent, it is only guaranteed that it returns true,
         if not node belongs to the allocator, but not that it returns false
-        for nodes not in the allocator.
-    */
+        for nodes not in the allocator. */
     bool Contains(const SgUctNode& node) const;
 
     const SgUctNode* Start() const;
@@ -506,21 +485,18 @@ public:
     /** Create a new node at the end of the storage.
         REQUIRES: HasCapacity(1)
         @param move The constructor argument.
-        @return A pointer to new newly created node.
-    */
+        @return A pointer to new newly created node. */
     SgUctNode* CreateOne(SgMove move);
 
     /** Create a number of new nodes with a given list of moves at the end of
         the storage. Returns the sum of counts of moves.
         REQUIRES: HasCapacity(moves.size())
-        @param moves The list of moves.
-    */
+        @param moves The list of moves. */
     SgUctValue Create(const std::vector<SgMoveInfo>& moves);
 
     /** Create a number of new nodes at the end of the storage.
         REQUIRES: HasCapacity(n)
-        @param n The number of nodes to create.
-    */
+        @param n The number of nodes to create. */
     void CreateN(std::size_t n);
 
     void Swap(SgUctAllocator& allocator);
@@ -534,8 +510,7 @@ private:
 
     /** Not implemented.
         Cannot be copied because array contains pointers to elements.
-        Use Swap() instead.
-    */
+        Use Swap() instead. */
     SgUctAllocator& operator=(const SgUctAllocator& tree);
 };
 
@@ -621,8 +596,7 @@ inline const SgUctNode* SgUctAllocator::Start() const
     the integrity of the tree structure.
     The tree can be used in a lock-free way during a search (see
     @ref sguctsearchlockfree).
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctTree
 {
 public:
@@ -630,8 +604,7 @@ public:
 
     /** Constructor.
         Construct a tree. Before using the tree, CreateAllocators() and
-        SetMaxNodes() must be called (in this order).
-    */
+        SetMaxNodes() must be called (in this order). */
     SgUctTree();
 
     /** Create node allocators for threads. */
@@ -640,8 +613,7 @@ public:
     /** Add a game result.
         @param node The node.
         @param father The father (if not root) to update the position count.
-        @param eval
-    */
+        @param eval */
     void AddGameResult(const SgUctNode& node, const SgUctNode* father,
                        SgUctValue eval);
 
@@ -652,8 +624,7 @@ public:
     /** Removes a game result.
         @param node The node.
         @param father The father (if not root) to update the position count.
-        @param eval
-    */
+        @param eval */
     void RemoveGameResult(const SgUctNode& node, const SgUctNode* father,
                           SgUctValue eval);
 
@@ -672,8 +643,7 @@ public:
     /** Return the current maximum number of nodes.
         This returns the maximum number of nodes as set by SetMaxNodes().
         See SetMaxNodes() why the real maximum number of nodes can be higher
-        or lower.
-    */
+        or lower. */
     std::size_t MaxNodes() const;
 
     /** Change maximum number of nodes.
@@ -682,27 +652,23 @@ public:
         maximum number of nodes can be higher (because the root node is
         owned by this class, not an allocator) or lower (if maxNodes is not
         a multiple of the number of allocators).
-        @param maxNodes Maximum number of nodes
-    */
+        @param maxNodes Maximum number of nodes */
     void SetMaxNodes(std::size_t maxNodes);
 
     /** Swap content with another tree.
         The other tree must have the same number of allocators and
-        the same maximum number of nodes.
-    */
+        the same maximum number of nodes. */
     void Swap(SgUctTree& tree);
 
     bool HasCapacity(std::size_t allocatorId, std::size_t n) const;
 
     /** Create children nodes.
-        Requires: Allocator(allocatorId).HasCapacity(moves.size())
-    */
+        Requires: Allocator(allocatorId).HasCapacity(moves.size()) */
     void CreateChildren(std::size_t allocatorId, const SgUctNode& node,
                         const std::vector<SgMoveInfo>& moves);
 
     /** Merge new children with old.
-        Requires: Allocator(allocatorId).HasCapacity(moves.size())
-     */
+        Requires: Allocator(allocatorId).HasCapacity(moves.size()) */
     void MergeChildren(std::size_t allocatorId, const SgUctNode& node,
                        const std::vector<SgMoveInfo>& moves,
                        bool deleteChildTrees);
@@ -716,8 +682,7 @@ public:
         @param node The start node of the subtree.
         @param warnTruncate Print warning to SgDebug() if tree was truncated
         @param maxTime Truncate the tree, if the extraction takes longer than
-        the given time
-    */
+        the given time */
     void ExtractSubtree(SgUctTree& target, const SgUctNode& node,
                    bool warnTruncate,
                    double maxTime = std::numeric_limits<double>::max()) const;
@@ -731,8 +696,7 @@ public:
         @param minCount The minimum count (SgUctNode::MoveCount())
         @param warnTruncate Print warning to SgDebug() if tree was truncated
         @param maxTime Truncate the tree, if the extraction takes longer than
-        the given time
-    */
+        the given time */
     void CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
                    bool warnTruncate,
                    double maxTime = std::numeric_limits<double>::max()) const;
@@ -742,8 +706,7 @@ public:
     std::size_t NuAllocators() const;
 
     /** Total number of nodes.
-        Includes the sum of nodes in all allocators plus the root node.
-    */
+        Includes the sum of nodes in all allocators plus the root node. */
     std::size_t NuNodes() const;
 
     /** Number of nodes in one of the allocators. */
@@ -753,16 +716,14 @@ public:
         @param node The node with the move
         @param value
         @param weight
-        @see SgUctSearch::Rave().
-    */
+        @see SgUctSearch::Rave(). */
     void AddRaveValue(const SgUctNode& node, SgUctValue value, SgUctValue weight);
 
     /** Remove a game result from the RAVE value of a node.
         @param node The node with the move
         @param value
         @param weight
-        @see SgUctSearch::Rave().
-    */
+        @see SgUctSearch::Rave(). */
     void RemoveRaveValue(const SgUctNode& node, SgUctValue value, SgUctValue weight);
 
     /** Initialize the value and count of a node. */
@@ -772,24 +733,21 @@ public:
     void SetPosCount(const SgUctNode& node, SgUctValue posCount);
 
     /** Initialize the rave value and count of a move node with prior
-        knowledge.
-    */
+        knowledge. */
     void InitializeRaveValue(const SgUctNode& node, SgUctValue value, SgUctValue count);
 
     /** Remove some children of a node according to a list of filtered moves.
         Requires: Allocator(allocatorId).HasCapacity(node.NuChildren()) <br>
         For efficiency, no reorganization of the tree is done to remove
         the dead subtrees (and NuNodes() will not report the real number of
-        nodes in the tree). This function can be used in lock-free mode.
-    */
+        nodes in the tree). This function can be used in lock-free mode. */
     void ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                      const std::vector<SgMove>& rootFilter);
 
     /** Sets the children under node to be exactly those in moves,
         reusing the old children if possible. Children not in moves
         are pruned, children missing from moves are added as leaves.
-        Requires: Allocator(allocatorId).HasCapacity(moves.size())
-     */
+        Requires: Allocator(allocatorId).HasCapacity(moves.size()) */
     void SetChildren(std::size_t allocatorId, const SgUctNode& node,
                      const vector<SgMove>& moves);
 
@@ -797,8 +755,7 @@ public:
     // @{
 
     /** Do some consistency checks.
-        @throws SgException if inconsistencies are detected.
-    */
+        @throws SgException if inconsistencies are detected. */
     void CheckConsistency() const;
 
     /** Check if tree contains node.
@@ -806,8 +763,7 @@ public:
         comparisons for pointers to elements in different containers
         is platform-dependent, it is only guaranteed that it returns true,
         if not node belongs to the allocator, but not that it returns false
-        for nodes not in the tree.
-    */
+        for nodes not in the tree. */
     bool Contains(const SgUctNode& node) const;
 
     void DumpDebugInfo(std::ostream& out) const;
@@ -821,14 +777,12 @@ private:
 
     /** Allocators.
         The elements are owned by the vector (shared_ptr is only used because
-        auto_ptr should not be used with standard containers)
-    */
+        auto_ptr should not be used with standard containers) */
     std::vector<boost::shared_ptr<SgUctAllocator> > m_allocators;
 
     /** Not implemented.
         Cannot be copied because allocators contain pointers to elements.
-        Use SgUctTree::Swap instead.
-    */
+        Use SgUctTree::Swap instead. */
     SgUctTree& operator=(const SgUctTree& tree);
 
     SgUctAllocator& Allocator(std::size_t i);
@@ -1015,14 +969,12 @@ inline void SgUctTree::SetPosCount(const SgUctNode& node,
     exists (checked with an assertion), since in many use cases, the case
     of no children needs to be handled specially and should be checked
     before doing a loop over all children.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctChildIterator
 {
 public:
     /** Constructor.
-        Requires: node.HasChildren()
-    */
+        Requires: node.HasChildren() */
     SgUctChildIterator(const SgUctTree& tree, const SgUctNode& node);
 
     const SgUctNode& operator*() const;
@@ -1065,8 +1017,7 @@ inline SgUctChildIterator::operator bool() const
 //----------------------------------------------------------------------------
 
 /** Iterator for traversing a tree depth-first.
-    @ingroup sguctgroup
-*/
+    @ingroup sguctgroup */
 class SgUctTreeIterator
 {
 public:
@@ -1085,8 +1036,7 @@ private:
 
     /** Stack of child iterators.
         The elements are owned by the stack (shared_ptr is only used because
-        auto_ptr should not be used with standard containers)
-    */
+        auto_ptr should not be used with standard containers) */
     std::stack<boost::shared_ptr<SgUctChildIterator> > m_stack;
 };
 

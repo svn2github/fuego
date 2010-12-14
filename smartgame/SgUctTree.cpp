@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgUctTree.cpp
-    See SgUctTree.h
-*/
+    See SgUctTree.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -170,8 +169,7 @@ void SgUctTree::Clear()
 }
 
 /** Check if node is in tree.
-    Only used for assertions. May not be available in future implementations.
-*/
+    Only used for assertions. May not be available in future implementations. */
 bool SgUctTree::Contains(const SgUctNode& node) const
 {
     if (&node == &m_root)
@@ -207,8 +205,7 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
     @param[in,out] abort Flag to abort copying. Must be initialized to false
     by top-level caller
     @param timer
-    @param maxTime See ExtractSubtree()
-*/
+    @param maxTime See ExtractSubtree() */
 void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node, SgUctValue minCount,
                             std::size_t& currentAllocatorId,

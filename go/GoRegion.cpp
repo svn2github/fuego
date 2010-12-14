@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoRegion.cpp
-    See GoRegion.h.
-*/
+    See GoRegion.h. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -45,8 +44,7 @@ static const bool WRITEDEBUG = false;
 namespace {
 
 /** Is p adjacent to all blocks?
-    GoRegionUtil has an identical function taking a list of anchorss.
-*/
+    GoRegionUtil has an identical function taking a list of anchorss. */
 inline bool IsAdjacentToAll(const GoBoard& board, SgPoint p,
                             const SgVectorOf<GoBlock>& blocks)
 {
@@ -199,8 +197,7 @@ bool GoRegion::Has2SureLibs(SgMiaiStrategy* miaiStrategy) const
     }
 
     /** find all interior points connected to boundary
-        recursively, that have 2 intersection points inside region
-    */
+        recursively, that have 2 intersection points inside region */
     SgVector<SgPoint> usedLibs;
     bool result2 =    Find2ConnForAllInterior(miaiStrategy, usedLibs)
                    && Has2IntersectionPoints(usedLibs);
@@ -930,8 +927,7 @@ void GoRegion::ComputeMultipleBlockEyeSpace()
             m_eyes.SetEyes(0, 1);
         }
         else
-            m_eyes.SetEyes(1, 1);
-        */
+            m_eyes.SetEyes(1, 1); */
         /* */ return; /* */
     }
     else if (nu <= 7)

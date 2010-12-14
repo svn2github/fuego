@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SpInfluencePlayer.h
-    Greedy influence player
-*/
+    Greedy influence player */
 //----------------------------------------------------------------------------
 
 #ifndef SP_INFLUENCEPLAYER_H

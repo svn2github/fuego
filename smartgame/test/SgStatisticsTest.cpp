@@ -1,7 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgStatisticsTest.cpp
-    Unit tests for SgStatistics.
-*/
+    Unit tests for SgStatistics. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
