@@ -54,8 +54,8 @@ inline bool IsPrecise(SgUctValue val)
 {
     BOOST_STATIC_ASSERT(std::numeric_limits<SgUctValue>::radix == 2);
     const int digits = std::numeric_limits<SgUctValue>::digits;
-    const SgUctValue max = SgUctValue((std::size_t(1) << digits) - 1);
-    return val >= 0 && val <= max;
+    const SgUctValue max = pow((SgUctValue)2.0, digits) - 1;
+    return val <= max;
 }
 
 }
