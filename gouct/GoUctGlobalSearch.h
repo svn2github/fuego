@@ -303,7 +303,9 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
         scoreBoardPtr = &scoreBoard;
     else
         scoreBoardPtr = 0;
-    if (m_passMovesPlayoutPhase < 2)
+    if (m_param.m_mercyRule && m_mercyRuleTriggered)
+	return m_mercyRuleResult;
+    else if (m_passMovesPlayoutPhase < 2)
         // Two passes not in playout phase, see comment in GenerateAllMoves()
         score = (SgUctValue)GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
     else
