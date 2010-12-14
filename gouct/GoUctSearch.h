@@ -227,10 +227,10 @@ public:
     /** Interval for outputting of live graphics commands for GoGui.
         Default is every 5000 games.
         @see LiveGfx() */
-    int LiveGfxInterval() const;
+    SgUctValue LiveGfxInterval() const;
 
     /** See LiveGfxInterval() */
-    void SetLiveGfxInterval(int interval);
+    void SetLiveGfxInterval(SgUctValue interval);
 
     // @} // @name
 
@@ -242,7 +242,8 @@ private:
     bool m_keepGames;
 
     /** See SetLiveGfxInterval() */
-    int m_liveGfxInterval;
+    SgUctValue m_liveGfxInterval;
+
     volatile SgUctValue m_nextLiveGfx;
 
     /** Color to play.
@@ -298,7 +299,7 @@ inline GoUctLiveGfx GoUctSearch::LiveGfx() const
     return m_liveGfx;
 }
 
-inline int GoUctSearch::LiveGfxInterval() const
+inline SgUctValue GoUctSearch::LiveGfxInterval() const
 {
     return m_liveGfxInterval;
 }
@@ -313,7 +314,7 @@ inline void GoUctSearch::SetLiveGfx(GoUctLiveGfx mode)
     m_liveGfx = mode;
 }
 
-inline void GoUctSearch::SetLiveGfxInterval(int interval)
+inline void GoUctSearch::SetLiveGfxInterval(SgUctValue interval)
 {
     SG_ASSERT(interval > 0);
     m_liveGfxInterval = interval;

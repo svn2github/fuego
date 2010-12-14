@@ -630,7 +630,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "live_gfx")
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
-            s.SetLiveGfxInterval(cmd.ArgMin<int>(1, 1));
+            s.SetLiveGfxInterval(cmd.ArgMin<SgUctValue>(1, 1));
         else if (name == "max_nodes")
             s.SetMaxNodes(cmd.ArgMin<size_t>(1, 1));
         else if (name == "move_select")

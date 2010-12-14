@@ -452,7 +452,7 @@ struct SgUctEarlyAbortParam
 
     /** The inverse fraction of the total resources (max time, max nodes),
         after which the early abort check is performed. */
-    int m_reductionFactor;
+    SgUctValue m_reductionFactor;
 };
 
 //----------------------------------------------------------------------------
