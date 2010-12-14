@@ -248,16 +248,16 @@ protected:
     float m_alpha;
 
     /** See UseWidening() */
-    bool m_use_widening;
+    bool m_useWidening;
 
     /** See UseWidening() */
-    std::size_t m_expand_width;
+    std::size_t m_expandWidth;
 
     /** See UseWidening() */
-    std::size_t m_expand_threshold;
+    std::size_t m_expandThreshold;
     
     /** Number of iterations after which the db is flushed to disk. */
-    std::size_t m_flush_iterations;
+    std::size_t m_flushIterations;
 
     //------------------------------------------------------------------------
 
@@ -322,19 +322,19 @@ protected:
     virtual bool HasBeenVisited() = 0;
 
 private:
-    std::size_t m_num_evals;
+    std::size_t m_numEvals;
 
-    std::size_t m_num_widenings;
+    std::size_t m_numWidenings;
 
-    std::size_t m_value_updates;
+    std::size_t m_valueUpdates;
 
-    std::size_t m_priority_updates;
+    std::size_t m_priorityUpdates;
 
-    std::size_t m_internal_nodes;
+    std::size_t m_internalNodes;
 
-    std::size_t m_leaf_nodes;
+    std::size_t m_leafNodes;
 
-    std::size_t m_terminal_nodes;
+    std::size_t m_terminalNodes;
 
     //---------------------------------------------------------------------
 
@@ -369,32 +369,32 @@ inline void SgBookBuilder::SetAlpha(float alpha)
 
 inline bool SgBookBuilder::UseWidening() const
 {
-    return m_use_widening;
+    return m_useWidening;
 }
 
 inline void SgBookBuilder::SetUseWidening(bool flag)
 {
-    m_use_widening = flag;
+    m_useWidening = flag;
 }
 
 inline std::size_t SgBookBuilder::ExpandWidth() const
 {
-    return m_expand_width;
+    return m_expandWidth;
 }
 
 inline void SgBookBuilder::SetExpandWidth(std::size_t width)
 {
-    m_expand_width = width;
+    m_expandWidth = width;
 }
 
 inline std::size_t SgBookBuilder::ExpandThreshold() const
 {
-    return m_expand_threshold;
+    return m_expandThreshold;
 }
 
 inline void SgBookBuilder::SetExpandThreshold(std::size_t threshold)
 {
-    m_expand_threshold = threshold;
+    m_expandThreshold = threshold;
 }
 
 //----------------------------------------------------------------------------

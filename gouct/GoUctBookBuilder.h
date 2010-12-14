@@ -147,19 +147,19 @@ private:
     /** See NumGamesForSort() */
     SgUctValue m_numGamesPerSort;
 
-    std::size_t m_num_evals;
+    std::size_t m_numEvals;
 
-    std::size_t m_num_widenings;
+    std::size_t m_numWidenings;
 
-    std::size_t m_value_updates;
+    std::size_t m_valueUpdates;
 
-    std::size_t m_priority_updates;
+    std::size_t m_priorityUpdates;
 
-    std::size_t m_internal_nodes;
+    std::size_t m_internalNodes;
 
-    std::size_t m_leaf_nodes;
+    std::size_t m_leafNodes;
 
-    std::size_t m_terminal_nodes;
+    std::size_t m_terminalNodes;
 
     /** Players for each thread. */
     std::vector<PLAYER*> m_players;
