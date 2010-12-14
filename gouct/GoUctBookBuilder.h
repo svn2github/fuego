@@ -56,16 +56,16 @@ public:
     void SetNumThreads(std::size_t num);
 
     /** Number of games to play when evaluation a state. */
-    std::size_t NumGamesPerEvaluation() const;
+    SgUctValue NumGamesPerEvaluation() const;
 
     /** See NumGamesPerEvaluation(). */
-    void SetNumGamesPerEvaluation(std::size_t num);
+    void SetNumGamesPerEvaluation(SgUctValue num);
 
     /** Number of games to play when sorting children. */
-    std::size_t NumGamesPerSort() const;
+    SgUctValue NumGamesPerSort() const;
 
     /** See NumGamesForSort() */
-    void SetNumGamesPerSort(std::size_t num);
+    void SetNumGamesPerSort(SgUctValue num);
 
     //---------------------------------------------------------------------    
 
@@ -142,10 +142,10 @@ private:
     std::size_t m_numThreads;
 
     /** See NumGamesPerEvaluation. */
-    std::size_t m_numGamesPerEvaluation;
+    SgUctValue m_numGamesPerEvaluation;
 
     /** See NumGamesForSort() */
-    std::size_t m_numGamesPerSort;
+    SgUctValue m_numGamesPerSort;
 
     std::size_t m_num_evals;
 
@@ -189,27 +189,25 @@ inline void GoUctBookBuilder<PLAYER>::SetNumThreads(std::size_t num)
 }
 
 template<class PLAYER>
-inline std::size_t GoUctBookBuilder<PLAYER>
-::NumGamesPerEvaluation() const
+inline SgUctValue GoUctBookBuilder<PLAYER>::NumGamesPerEvaluation() const
 {
     return m_numGamesPerEvaluation;
 }
 
 template<class PLAYER>
-inline void GoUctBookBuilder<PLAYER>
-::SetNumGamesPerEvaluation(std::size_t num)
+inline void GoUctBookBuilder<PLAYER>::SetNumGamesPerEvaluation(SgUctValue num)
 {
     m_numGamesPerEvaluation = num;
 }
 
 template<class PLAYER>
-inline std::size_t GoUctBookBuilder<PLAYER>::NumGamesPerSort() const
+inline SgUctValue GoUctBookBuilder<PLAYER>::NumGamesPerSort() const
 {
     return m_numGamesPerSort;
 }
 
 template<class PLAYER>
-inline void GoUctBookBuilder<PLAYER>::SetNumGamesPerSort(std::size_t num)
+inline void GoUctBookBuilder<PLAYER>::SetNumGamesPerSort(SgUctValue num)
 {
     m_numGamesPerSort = num;
 }
@@ -307,7 +305,7 @@ float GoUctBookBuilder<PLAYER>::Worker::operator()(const SgMove& move)
     m_player->GenMove(SgTimeRecord(true, 9999), m_player->Board().ToPlay());
     GoUctSearch& search 
         = dynamic_cast<GoUctSearch&>(m_player->Search());
-    float score = search.Tree().Root().Mean();
+    float score = static_cast<float>(search.Tree().Root().Mean());
     return score;
 }
 

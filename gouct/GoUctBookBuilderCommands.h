@@ -468,9 +468,10 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
         if (name == "num_threads")
             m_bookBuilder.SetNumThreads(cmd.ArgMin<int>(1, 1));
         else if (name == "num_games_per_evaluation")
-            m_bookBuilder.SetNumGamesPerEvaluation(cmd.ArgMin<size_t>(1, 1));
+            m_bookBuilder.SetNumGamesPerEvaluation(
+                                                cmd.ArgMin<SgUctValue>(1, 1));
         else if (name == "num_games_per_sort")
-            m_bookBuilder.SetNumGamesPerSort(cmd.ArgMin<size_t>(1, 1));
+            m_bookBuilder.SetNumGamesPerSort(cmd.ArgMin<SgUctValue>(1, 1));
         else if (name == "use_widening")
             m_bookBuilder.SetUseWidening(cmd.Arg<bool>(1));
         else if (name == "expand_width")
