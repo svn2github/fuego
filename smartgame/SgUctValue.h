@@ -6,6 +6,7 @@
 #ifndef SG_UCTVALUE_H
 #define SG_UCTVALUE_H
 
+#include <cmath>
 #include <limits>
 #include <boost/static_assert.hpp>
 #include "SgStatistics.h"
@@ -51,7 +52,7 @@ inline bool IsPrecise(SgUctValue val)
 {
     BOOST_STATIC_ASSERT(std::numeric_limits<SgUctValue>::radix == 2);
     const int digits = std::numeric_limits<SgUctValue>::digits;
-    const SgUctValue max = pow((SgUctValue)2.0, digits) - 1;
+    const SgUctValue max = std::pow((SgUctValue)2.0, digits) - 1;
     return val <= max;
 }
 
