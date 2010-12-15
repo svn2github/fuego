@@ -41,18 +41,19 @@ typedef SgStatisticsBase<volatile SgUctValue,volatile SgUctValue>
 namespace SgUctValueUtil
 {
 
-/** Check if floating point value is a precise representation of a positive
-    integer.
+/** Check if floating point value is a precise representation of an integer.
     When SgUctValue is used for counts, the search should abort when the
     value is no longer precise, because incrementing it further will not
     change its value anymore.
-    @return @c true if value is not negative and less or equal
-    <tt>(size_t(1) << numeric_limits<SgUctValue>::digits) - 1)</tt> */
-inline bool IsPrecise(SgUctValue val)
+    @tparam T The floating point type
+    @return @c true if value is less or equal @f$ r^d - 1 @f$ (<i>r</i>:
+    radix, <i>d</i>: number of the digits in the mantissa of the type) */
+template<typename T>
+inline bool IsPrecise(T val)
 {
-    BOOST_STATIC_ASSERT(std::numeric_limits<SgUctValue>::radix == 2);
-    const int digits = std::numeric_limits<SgUctValue>::digits;
-    const SgUctValue max = std::pow((SgUctValue)2.0, digits) - 1;
+    const int radix = std::numeric_limits<T>::radix;
+    const int digits = std::numeric_limits<T>::digits;
+    const SgUctValue max = std::pow(T(radix), digits) - 1;
     return val <= max;
 }
 
