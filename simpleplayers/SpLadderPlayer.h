@@ -16,7 +16,7 @@ class SpLadderMoveGenerator
     : public SpStaticMoveGenerator
 {
 public:
-    explicit SpLadderMoveGenerator(GoBoard& board)
+    explicit SpLadderMoveGenerator(const GoBoard& board)
         : SpStaticMoveGenerator(board)
     { }
 
@@ -32,7 +32,7 @@ class SpLadderPlayer
     : public SpSimplePlayer
 {
 public:
-    SpLadderPlayer(GoBoard& board)
+    SpLadderPlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpLadderMoveGenerator(board))
     { }
 

@@ -9,6 +9,7 @@
 #include "GoBensonSolver.h"
 #include "GoBoardUtil.h"
 #include "GoLadder.h"
+#include "GoModBoard.h"
 #include "SgEvaluatedMoves.h"
 #include "SgNbIterator.h"
 
@@ -16,7 +17,7 @@ using GoLadderUtil::LadderStatus;
 
 //----------------------------------------------------------------------------
 
-SpDumbTacticalMoveGenerator::SpDumbTacticalMoveGenerator(GoBoard& board)
+SpDumbTacticalMoveGenerator::SpDumbTacticalMoveGenerator(const GoBoard& board)
     : SpStaticMoveGenerator(board), m_useLadders(false)
 { }
     
@@ -32,10 +33,12 @@ int SpDumbTacticalMoveGenerator::Score(SgPoint p)
 void SpDumbTacticalMoveGenerator::GenerateMoves(SgEvaluatedMoves& eval,
                                                 SgBlackWhite toPlay)
 {
-    GoRestoreToPlay restoreToPlay(m_board);
-    m_board.SetToPlay(toPlay);
+    GoModBoard modBoard(m_board);
+    GoBoard& bd = modBoard.Board();
+    GoRestoreToPlay restoreToPlay(bd);
+    bd.SetToPlay(toPlay);
     // Don't permit player to kill its own groups.
-    GoRestoreSuicide restoreSuicide(m_board, false);
+    GoRestoreSuicide restoreSuicide(bd, false);
     GenerateDefendMoves(eval);
     GenerateAttackMoves(eval);
     // Otherwise make a random legal move that doesn't fill own eye
@@ -93,29 +96,31 @@ void SpDumbTacticalMoveGenerator::GenerateAttackMoves(SgEvaluatedMoves& eval)
 
     // Do Benson life test
     SgBWSet safepoints;
-    GoBensonSolver benson(m_board);
+    GoModBoard modBoard(m_board);
+    GoBoard& bd = modBoard.Board();
+    GoBensonSolver benson(bd);
     benson.FindSafePoints(&safepoints);
     
     // Find opponent blocks without two eyes (using Benson algorithm)
-    for (GoBlockIterator anchorit(m_board); anchorit; ++anchorit)
+    for (GoBlockIterator anchorit(bd); anchorit; ++anchorit)
     {
         // Ignore own blocks
-        if (m_board.IsColor(*anchorit, m_board.ToPlay()))
+        if (bd.IsColor(*anchorit, bd.ToPlay()))
             continue;
         
         // Ignore opponent blocks that are unconditionally alive
-        if (safepoints[m_board.Opponent()].Contains(*anchorit))
+        if (safepoints[bd.Opponent()].Contains(*anchorit))
             continue;
 
         // Generate all ladder captures
         if (m_useLadders)
         {
             SgPoint tocapture, toescape;
-            GoLadderStatus status = LadderStatus(m_board, *anchorit, false,
+            GoLadderStatus status = LadderStatus(bd, *anchorit, false,
                                                  &tocapture, &toescape);
             if (status == GO_LADDER_CAPTURED)
             {
-                int score = m_board.NumStones(*anchorit) * capturestoneweight;
+                int score = bd.NumStones(*anchorit) * capturestoneweight;
                 eval.AddMove(tocapture, score);
             }
         }
@@ -125,15 +130,15 @@ void SpDumbTacticalMoveGenerator::GenerateAttackMoves(SgEvaluatedMoves& eval)
         // 2. +Second liberties
         // 3. +Size of group
         // [4]. Own liberties?
-        int firstlibs = m_board.NumLiberties(*anchorit);
-        int size = m_board.NumStones(*anchorit);
-        for (GoBoard::LibertyIterator libit(m_board, *anchorit); libit;
+        int firstlibs = bd.NumLiberties(*anchorit);
+        int size = bd.NumStones(*anchorit);
+        for (GoBoard::LibertyIterator libit(bd, *anchorit); libit;
              ++libit)
         {
             int secondlibs = 0;
             for (SgNb4Iterator nbit(*libit); nbit; ++nbit)
             {
-                if (m_board.IsValidPoint(*nbit) && m_board.IsEmpty(*nbit))
+                if (bd.IsValidPoint(*nbit) && bd.IsEmpty(*nbit))
                 {
                     secondlibs++;
                 }

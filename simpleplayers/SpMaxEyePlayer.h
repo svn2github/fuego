@@ -19,7 +19,7 @@ class SpMaxEyeMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpMaxEyeMoveGenerator(GoBoard& board, bool eyego = false)
+    SpMaxEyeMoveGenerator(const GoBoard& board, bool eyego = false)
         : Sp1PlyMoveGenerator(board), m_eyeGo(eyego)
     { }
 
@@ -38,7 +38,7 @@ class SpMaxEyePlayer
     : public SpSimplePlayer
 {
 public:
-    SpMaxEyePlayer(GoBoard& board, bool eyego = false)
+    SpMaxEyePlayer(const GoBoard& board, bool eyego = false)
         : SpSimplePlayer(board, new SpMaxEyeMoveGenerator(board, eyego))
     { }
 

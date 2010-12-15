@@ -8,6 +8,7 @@
 
 #include "GoLadder.h"
 #include "GoMoveExecutor.h"
+#include "GoModBoard.h"
 #include "SgConnCompIterator.h"
 #include "SgEvaluatedMoves.h"
 
@@ -27,37 +28,39 @@ int SpLadderMoveGenerator::Score(SgPoint p)
 void SpLadderMoveGenerator::GenerateMoves(SgEvaluatedMoves& eval,
                                           SgBlackWhite toPlay)
 {
+    GoModBoard modBoard(m_board);
+    GoBoard& bd = modBoard.Board();
     // Don't permit player to kill its own groups.
-    GoRestoreToPlay restoreToPlay(m_board);
-    m_board.SetToPlay(toPlay);
-    GoRestoreSuicide restoreSuicide(m_board, false);
+    GoRestoreToPlay restoreToPlay(bd);
+    bd.SetToPlay(toPlay);
+    GoRestoreSuicide restoreSuicide(bd, false);
     for (SgBlackWhite color = SG_BLACK; color <= SG_WHITE; ++color)
     {
-        for (SgConnCompIterator it(m_board.All(color), m_board.Size());
+        for (SgConnCompIterator it(bd.All(color), bd.Size());
              it; ++it)
         {
             SgPointSet block(*it);
             SgPoint p = block.PointOf(), toCapture, toEscape; 
-            GoLadderStatus st = LadderStatus(m_board, p, false, &toCapture,
+            GoLadderStatus st = LadderStatus(bd, p, false, &toCapture,
                                              &toEscape);
             if (st == GO_LADDER_UNSETTLED)
             {
                 SgPoint move =
-                    color == m_board.ToPlay() ? toEscape : toCapture;
+                    color == bd.ToPlay() ? toEscape : toCapture;
                 int size = 1000 * block.Size();
                 eval.AddMove(move, size);
-                if ((color == m_board.ToPlay()) && (move == SG_PASS))
+                if ((color == bd.ToPlay()) && (move == SG_PASS))
                 {
                     // try liberties
-                    for (GoBoard::LibertyIterator it(m_board, p); it; ++it)
+                    for (GoBoard::LibertyIterator it(bd, p); it; ++it)
                     {
                         SgPoint lib = *it;
-                        GoMoveExecutor m(m_board, lib, color);
-                        if (m.IsLegal() && m_board.Occupied(p))
+                        GoMoveExecutor m(bd, lib, color);
+                        if (m.IsLegal() && bd.Occupied(p))
                         {
                             SgPoint toCapture2, toEscape2; 
                             GoLadderStatus st2 =
-                                LadderStatus(m_board, p, false, &toCapture2,
+                                LadderStatus(bd, p, false, &toCapture2,
                                              &toEscape2);
                             if (st2 == GO_LADDER_ESCAPED)
                                 eval.AddMove(lib, size);

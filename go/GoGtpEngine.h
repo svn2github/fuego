@@ -241,7 +241,7 @@ protected:
     /** Deprecated.
         @deprecated In the future, only GoGame will be allowed to modify
         its board. */
-    GoBoard& Board();
+    GoBoard& NonConstBoard();
 
     void BoardChanged();
 
@@ -431,7 +431,7 @@ void GoGtpEngine::AddStatistics(const std::string& key, const T& value)
     AddStatistics(key, s.str());
 }
 
-inline GoBoard& GoGtpEngine::Board()
+inline GoBoard& GoGtpEngine::NonConstBoard()
 {
     return m_game.NonConstBoard();
 }

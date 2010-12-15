@@ -17,7 +17,7 @@ class SpMinLibMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpMinLibMoveGenerator(GoBoard& board)
+    explicit SpMinLibMoveGenerator(const GoBoard& board)
         : Sp1PlyMoveGenerator(board)
     { }
 
@@ -33,7 +33,7 @@ class SpMinLibPlayer
     : public SpSimplePlayer
 {
 public:
-    SpMinLibPlayer(GoBoard& board)
+    explicit SpMinLibPlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpMinLibMoveGenerator(board))
     { }
 

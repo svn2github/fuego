@@ -763,15 +763,17 @@ bool GoBoardUtil::HasStonesOfBothColors(const GoBoard& bd,
     return false;
 }
 
-bool GoBoardUtil::MoveNotLegalOrAtari(GoBoard& bd, SgPoint move)
+bool GoBoardUtil::MoveNotLegalOrAtari(const GoBoard& bd, SgPoint move)
 {
-    GoMoveExecutor execute(bd, move);
+    GoModBoard modBoard(bd);
+    GoMoveExecutor execute(modBoard.Board(), move);
     return (! execute.IsLegal() || bd.InAtari(move));
 }
 
-bool GoBoardUtil::MoveLegalAndNotAtari(GoBoard& bd, SgPoint move)
+bool GoBoardUtil::MoveLegalAndNotAtari(const GoBoard& bd, SgPoint move)
 {
-    GoMoveExecutor execute(bd, move);
+    GoModBoard modBoard(bd);
+    GoMoveExecutor execute(modBoard.Board(), move);
     return (execute.IsLegal() && ! bd.InAtari(move));
 }
 

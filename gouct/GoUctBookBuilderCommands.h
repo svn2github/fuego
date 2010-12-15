@@ -32,7 +32,7 @@ public:
         be null or a different player, but those commands of this class that
         need a GoUctPlayer will fail, if the current player is not a
         PLAYER. */
-    GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player,
+    GoUctBookBuilderCommands(const GoBoard& bd, GoPlayer*& player,
                              boost::scoped_ptr<GoAutoBook>& book);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
@@ -81,7 +81,7 @@ public:
     void Register(GtpEngine& engine);
 
 private:
-    GoBoard& m_bd;
+    const GoBoard& m_bd;
 
     GoPlayer*& m_player;
 
@@ -108,7 +108,7 @@ private:
 
 template<class PLAYER>
 GoUctBookBuilderCommands<PLAYER>
-::GoUctBookBuilderCommands(GoBoard& bd, GoPlayer*& player, 
+::GoUctBookBuilderCommands(const GoBoard& bd, GoPlayer*& player,
                            boost::scoped_ptr<GoAutoBook>& book)
 : m_bd(bd),
     m_player(player),

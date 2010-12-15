@@ -19,7 +19,7 @@ class SpAverageMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpAverageMoveGenerator(GoBoard& board)
+    explicit SpAverageMoveGenerator(const GoBoard& board)
         : Sp1PlyMoveGenerator(board)
     { }
 
@@ -33,7 +33,7 @@ class SpAveragePlayer
     : public SpSimplePlayer
 {
 public:
-    SpAveragePlayer(GoBoard& board)
+    SpAveragePlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpAverageMoveGenerator(board))
     { }
 

@@ -16,7 +16,7 @@ class SpGreedyMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpGreedyMoveGenerator(GoBoard& board)
+    explicit SpGreedyMoveGenerator(const GoBoard& board)
         : Sp1PlyMoveGenerator(board)
     { }
 
@@ -30,7 +30,7 @@ class SpGreedyPlayer
     : public SpSimplePlayer
 {
 public:
-    SpGreedyPlayer(GoBoard& board)
+    SpGreedyPlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpGreedyMoveGenerator(board))
     { }
 

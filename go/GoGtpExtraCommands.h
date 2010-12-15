@@ -21,7 +21,7 @@ class GoGtpExtraCommands
 public:
     /** Constructor.
         @param bd The game board. */
-    GoGtpExtraCommands(GoBoard& bd);
+    GoGtpExtraCommands(const GoBoard& bd);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -40,7 +40,7 @@ public:
     void Register(GtpEngine& engine);
 
 private:
-    GoBoard& m_bd;
+    const GoBoard& m_bd;
 
     void Register(GtpEngine& e, const std::string& command,
                   GtpCallback<GoGtpExtraCommands>::Method method);

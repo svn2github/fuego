@@ -28,7 +28,7 @@ public:
     virtual int MoveValue(SgPoint p);
 
 protected:
-    SpSimplePlayer(GoBoard& board, SpMoveGenerator* generator);
+    SpSimplePlayer(const GoBoard& board, SpMoveGenerator* generator);
             
 private:
     /** Move generator */

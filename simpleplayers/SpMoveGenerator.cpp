@@ -8,6 +8,7 @@
 
 #include <limits>
 #include "GoMoveExecutor.h"
+#include "GoModBoard.h"
 #include "SgEvaluatedMoves.h"
 
 using namespace std;
@@ -17,9 +18,11 @@ using namespace std;
 void SpMoveGenerator::GenerateMoves(SgEvaluatedMoves& eval,
                                     SgBlackWhite toPlay)
 {
-    GoRestoreToPlay restoreToPlay(m_board);
-    m_board.SetToPlay(toPlay);
-    GoRestoreSuicide restoreSuicide(m_board, false);
+    GoModBoard modBoard(m_board);
+    GoBoard& bd = modBoard.Board();
+    GoRestoreToPlay restoreToPlay(bd);
+    bd.SetToPlay(toPlay);
+    GoRestoreSuicide restoreSuicide(bd, false);
     for (SgSetIterator it(eval.Relevant()); it; ++it)
     {
         SgPoint p(*it);
@@ -31,7 +34,9 @@ void SpMoveGenerator::GenerateMoves(SgEvaluatedMoves& eval,
 
 int Sp1PlyMoveGenerator::EvaluateMove(SgPoint p)
 {
-    GoMoveExecutor execute(m_board, p);
+    GoModBoard modBoard(m_board);
+    GoBoard& bd = modBoard.Board();
+    GoMoveExecutor execute(bd, p);
     if (execute.IsLegal())
         return Evaluate();
     else

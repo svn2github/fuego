@@ -16,7 +16,7 @@ class SpCaptureMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpCaptureMoveGenerator(GoBoard& board)
+    explicit SpCaptureMoveGenerator(const GoBoard& board)
         : Sp1PlyMoveGenerator(board)
     { }
 
@@ -30,7 +30,7 @@ class SpCapturePlayer
     : public SpSimplePlayer
 {
 public:
-    SpCapturePlayer(GoBoard& board)
+    SpCapturePlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpCaptureMoveGenerator(board))
     { }
 

@@ -23,7 +23,7 @@ class SpDumbTacticalMoveGenerator
     : public SpStaticMoveGenerator
 {
 public:
-    explicit SpDumbTacticalMoveGenerator(GoBoard& board);
+    explicit SpDumbTacticalMoveGenerator(const GoBoard& board);
     
     virtual void GenerateMoves(SgEvaluatedMoves& eval, SgBlackWhite toPlay);
 
@@ -49,7 +49,7 @@ class SpDumbTacticalPlayer
     : public SpSimplePlayer
 {
 public:
-    SpDumbTacticalPlayer(GoBoard& board)
+    SpDumbTacticalPlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpDumbTacticalMoveGenerator(board))
     { }
     

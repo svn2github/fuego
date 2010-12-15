@@ -20,7 +20,7 @@ using GoGtpCommandUtil::StoneArg;
 
 //----------------------------------------------------------------------------
 
-GoGtpExtraCommands::GoGtpExtraCommands(GoBoard& bd)
+GoGtpExtraCommands::GoGtpExtraCommands(const GoBoard& bd)
     : m_bd(bd)
 {
 }

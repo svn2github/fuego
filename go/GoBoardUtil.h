@@ -192,11 +192,11 @@ namespace GoBoardUtil
 
     /** Either move is not legal, or the block at move is in atari
         after the move. */
-    bool MoveNotLegalOrAtari(GoBoard& bd, SgPoint move);
+    bool MoveNotLegalOrAtari(const GoBoard& bd, SgPoint move);
 
     /** Move is legal and the block at move is not in atari
         after the move. */
-    bool MoveLegalAndNotAtari(GoBoard& bd, SgPoint move);
+    bool MoveLegalAndNotAtari(const GoBoard& bd, SgPoint move);
 
     /** Get adjacent points with a color.
         @param bd The board.

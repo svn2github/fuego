@@ -115,7 +115,7 @@ void FuegoTestEngine::CmdVersion(GtpCommand& cmd)
 
 GoPlayer* FuegoTestEngine::CreatePlayer(const string& playerId)
 {
-    GoBoard& bd = Board();
+    const GoBoard& bd = Board();
     if (playerId == "")
         return 0;
     if (playerId == "average")

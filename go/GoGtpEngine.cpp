@@ -231,9 +231,8 @@ void GoGtpEngine::AutoSave() const
 
 void GoGtpEngine::BoardChanged()
 {
-    GoBoard& bd = Board();
     if (m_autoShowBoard)
-        SgDebug() << bd;
+        SgDebug() << Board();
     AutoSave();
 }
 
@@ -265,7 +264,7 @@ void GoGtpEngine::CheckBoardEmpty() const
 void GoGtpEngine::CheckLegal(string message, SgBlackWhite color, SgPoint move,
                              bool checkOnlyOccupied)
 {
-    GoBoard& bd = Board();
+    GoBoard& bd = NonConstBoard();
     bool illegal = false;
     string reason = "";
     if (move != SG_PASS)
@@ -327,7 +326,7 @@ void GoGtpEngine::CmdAllLegal(GtpCommand& cmd)
 void GoGtpEngine::CmdAllMoveValues(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    GoBoard& bd = Board();
+    const GoBoard& bd = Board();
     GoPlayer& player = Player();
     for (GoBoard::Iterator it(bd); it; ++it)
         if (! bd.Occupied(*it))
@@ -482,7 +481,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     2157832 int the bug tracker. */
 void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
 {
-    GoRules& rules = Board().Rules();
+    GoRules& rules = NonConstBoard().Rules();
     bool oldCaptureDead = rules.CaptureDead();
     rules.SetCaptureDead(true);
     RulesChanged();
@@ -609,7 +608,7 @@ void GoGtpEngine::CmdKomi(GtpCommand& cmd)
         GoKomi komi(cmd.Arg(0));
         m_game.Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
         m_defaultRules.SetKomi(komi);
-        Board().Rules().SetKomi(komi);
+        NonConstBoard().Rules().SetKomi(komi);
         RulesChanged();
     }
     catch (const GoKomi::InvalidKomi& e)
@@ -672,7 +671,7 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     m_game.Init(root, true, false);
     if (! GoGameUtil::GotoBeforeMove(&m_game, moveNumber))
         throw GtpFailure("invalid move number");
-    GoRules& rules = Board().Rules();
+    GoRules& rules = NonConstBoard().Rules();
     rules = m_defaultRules;
     rules.SetKomi(GoNodeUtil::GetKomi(m_game.CurrentNode()));
     rules.SetHandicap(GoNodeUtil::GetHandicap(m_game.CurrentNode()));
@@ -757,7 +756,7 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
 void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoRules& r = Board().Rules();
+    GoRules& r = NonConstBoard().Rules();
     if (cmd.NuArg() == 0)
     {
         cmd << "[bool] allow_suicide "
@@ -1174,7 +1173,7 @@ void GoGtpEngine::CmdSetupPlayer(GtpCommand& cmd)
     SgNode* node = m_game.CurrentNode();
     node->Props().RemoveProp(SG_PROP_PLAYER);
     node->Add(new SgPropPlayer(SG_PROP_PLAYER, toPlay));
-    Board().SetToPlay(toPlay);
+    NonConstBoard().SetToPlay(toPlay);
     if (m_player != 0)
         m_player->UpdateSubscriber();
     BoardChanged();
@@ -1304,7 +1303,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     CheckMoveStackOverflow();
     StartStatistics();
     GoPlayer& player = Player();
-    GoBoard& bd = Board();
+    GoBoard& bd = NonConstBoard();
     bd.SetToPlay(color);
     double startTime = SgTime::Get();
     SgTimeRecord time;
@@ -1409,7 +1408,7 @@ SgPoint GoGtpEngine::MoveArg(const GtpCommand& cmd, std::size_t number) const
 void GoGtpEngine::PlaceHandicap(const SgVector<SgPoint>& stones)
 {
     CheckBoardEmpty();
-    GoBoard& bd = Board();
+    GoBoard& bd = NonConstBoard();
     SgNode* node = m_game.CurrentNode();
     if (node->HasSon())
         node = m_game.CurrentNode()->NewRightMostSon();
@@ -1547,7 +1546,7 @@ void GoGtpEngine::SetPlayer(GoPlayer* player)
 
 void GoGtpEngine::SetNamedRules(const string& namedRules)
 {
-    Board().Rules().SetNamedRules(namedRules);
+    NonConstBoard().Rules().SetNamedRules(namedRules);
     m_defaultRules.SetNamedRules(namedRules);
     RulesChanged();
 }

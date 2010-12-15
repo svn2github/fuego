@@ -17,7 +17,7 @@ class SpLibertyMoveGenerator
     : public SpStaticMoveGenerator
 {
 public:
-    SpLibertyMoveGenerator(GoBoard& board)
+    SpLibertyMoveGenerator(const GoBoard& board)
         : SpStaticMoveGenerator(board)
     { }
 
@@ -31,7 +31,7 @@ class SpLibertyPlayer
     : public SpSimplePlayer
 {
 public:
-    SpLibertyPlayer(GoBoard& board)
+    SpLibertyPlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpLibertyMoveGenerator(board))
     { }
 

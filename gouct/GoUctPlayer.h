@@ -77,7 +77,7 @@ public:
 
     /** Constructor.
         @param bd The board. */
-    GoUctPlayer(GoBoard& bd);
+    GoUctPlayer(const GoBoard& bd);
 
     ~GoUctPlayer();
 
@@ -514,7 +514,7 @@ void GoUctPlayer<SEARCH, THREAD>::Statistics::Write(std::ostream& out) const
 }
 
 template <class SEARCH, class THREAD>
-GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(GoBoard& bd)
+GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(const GoBoard& bd)
     : GoPlayer(bd),
       m_searchMode(GOUCT_SEARCHMODE_UCT),
       m_autoParam(true),

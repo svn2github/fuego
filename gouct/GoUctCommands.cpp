@@ -162,7 +162,7 @@ std::vector<SgUctValue> KnowledgeThresholdFromString(const std::string& val)
 
 //----------------------------------------------------------------------------
 
-GoUctCommands::GoUctCommands(GoBoard& bd, GoPlayer*& player)
+GoUctCommands::GoUctCommands(const GoBoard& bd, GoPlayer*& player)
     : m_bd(bd),
       m_player(player)
 {
@@ -953,9 +953,11 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
     // two passes in-tree
     int nuUndoPass = 0;
     SgBlackWhite toPlay = m_bd.ToPlay();
-    while (m_bd.GetLastMove() == SG_PASS)
+    GoModBoard modBoard(m_bd);
+    GoBoard& bd = modBoard.Board();
+    while (bd.GetLastMove() == SG_PASS)
     {
-        m_bd.Undo();
+        bd.Undo();
         toPlay = SgOppBW(toPlay);
         ++nuUndoPass;
     }
@@ -968,24 +970,24 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
               << SgWritePointList(sequence, "", false);
     for (int i = 0; i < nuUndoPass; ++i)
     {
-        m_bd.Play(SG_PASS, toPlay);
+        bd.Play(SG_PASS, toPlay);
         toPlay = SgOppBW(toPlay);
     }
     m_player->UpdateSubscriber();
 
     SgPointArray<SgUctStatistics> territoryStatistics =
         ThreadState(0).m_territoryStatistics;
-    GoSafetySolver safetySolver(m_bd);
+    GoSafetySolver safetySolver(bd);
     SgBWSet safe;
     safetySolver.FindSafePoints(&safe);
-    for (GoBlockIterator it(m_bd); it; ++it)
+    for (GoBlockIterator it(bd); it; ++it)
     {
-        SgBlackWhite c = m_bd.GetStone(*it);
+        SgBlackWhite c = bd.GetStone(*it);
         bool isDead = safe[SgOppBW(c)].Contains(*it);
         if (! isDead && ! safe[c].Contains(*it))
         {
             SgStatistics<SgUctValue,int> averageStatus;
-            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+            for (GoBoard::StoneIterator it2(bd, *it); it2; ++it2)
             {
                 if (territoryStatistics[*it2].Count() == 0)
                     // No statistics, maybe all simulations aborted due to
@@ -999,7 +1001,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
                  || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold));
         }
         if (isDead)
-            for (GoBoard::StoneIterator it2(m_bd, *it); it2; ++it2)
+            for (GoBoard::StoneIterator it2(bd, *it); it2; ++it2)
                 deadStones.Include(*it2);
     }
     return deadStones;

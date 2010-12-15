@@ -17,7 +17,7 @@ class SpSafeMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpSafeMoveGenerator(GoBoard& board)
+    explicit SpSafeMoveGenerator(const GoBoard& board)
         : Sp1PlyMoveGenerator(board)
     { }
 
@@ -31,7 +31,7 @@ class SpSafePlayer
     : public SpSimplePlayer
 {
 public:
-    SpSafePlayer(GoBoard& board)
+    SpSafePlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpSafeMoveGenerator(board))
     { }
 

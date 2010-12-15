@@ -17,7 +17,7 @@ class SgEvaluatedMoves;
 class SpMoveGenerator
 {
 public:
-    explicit SpMoveGenerator(GoBoard& board)
+    explicit SpMoveGenerator(const GoBoard& board)
         : m_board(board)
     { }
 
@@ -30,7 +30,7 @@ public:
 
 protected:
     /** Reference to go board on which to play */
-    GoBoard& m_board;
+    const GoBoard& m_board;
 
     /** Not implemented */
     SpMoveGenerator(const SpMoveGenerator&);
@@ -44,7 +44,7 @@ class SpStaticMoveGenerator
     : public SpMoveGenerator
 {
 public:
-    explicit SpStaticMoveGenerator(GoBoard& board)
+    explicit SpStaticMoveGenerator(const GoBoard& board)
         : SpMoveGenerator(board)
     { }
     
@@ -59,7 +59,7 @@ class Sp1PlyMoveGenerator
     : public SpMoveGenerator
 {
 public:
-    explicit Sp1PlyMoveGenerator(GoBoard& board)
+    explicit Sp1PlyMoveGenerator(const GoBoard& board)
         : SpMoveGenerator(board)
     { }
     

@@ -18,7 +18,7 @@ class SpRandomMoveGenerator
     : public SpStaticMoveGenerator
 {
 public:
-    SpRandomMoveGenerator(GoBoard& board)
+    SpRandomMoveGenerator(const GoBoard& board)
         : SpStaticMoveGenerator(board)
     { }
 
@@ -32,7 +32,7 @@ class SpRandomPlayer
     : public SpSimplePlayer
 {
 public:
-    SpRandomPlayer(GoBoard& board)
+    SpRandomPlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpRandomMoveGenerator(board))
     { }
 

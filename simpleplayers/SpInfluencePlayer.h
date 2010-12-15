@@ -16,7 +16,7 @@ class SpInfluenceMoveGenerator
     : public Sp1PlyMoveGenerator
 {
 public:
-    explicit SpInfluenceMoveGenerator(GoBoard& board)
+    explicit SpInfluenceMoveGenerator(const GoBoard& board)
         : Sp1PlyMoveGenerator(board)
     { }
 
@@ -30,7 +30,7 @@ class SpInfluencePlayer
     : public SpSimplePlayer
 {
 public:
-    SpInfluencePlayer(GoBoard& board)
+    SpInfluencePlayer(const GoBoard& board)
         : SpSimplePlayer(board, new SpInfluenceMoveGenerator(board))
     { }
 

@@ -30,7 +30,7 @@ public:
         be null or a different player, but those commands of this class that
         need a GoUctPlayer will fail, if the current player is not
         GoUctPlayer. */
-    GoUctCommands(GoBoard& bd, GoPlayer*& player);
+    GoUctCommands(const GoBoard& bd, GoPlayer*& player);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -103,7 +103,7 @@ public:
     void Register(GtpEngine& engine);
 
 private:
-    GoBoard& m_bd;
+    const GoBoard& m_bd;
 
     GoPlayer*& m_player;
 
