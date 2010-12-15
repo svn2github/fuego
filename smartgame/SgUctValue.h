@@ -53,7 +53,7 @@ inline bool IsPrecise(T val)
 {
     const int radix = std::numeric_limits<T>::radix;
     const int digits = std::numeric_limits<T>::digits;
-    const SgUctValue max = std::pow(T(radix), digits) - 1;
+    const T max = std::pow(T(radix), digits) - 1;
     return val <= max;
 }
 
