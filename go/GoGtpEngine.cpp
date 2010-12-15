@@ -164,7 +164,7 @@ GoGtpEngine::~GoGtpEngine()
 void GoGtpEngine::AddPlayerProp(SgBlackWhite color, const string& name,
                                 bool overwrite)
 {
-    SgNode& root = GetGame().Root();
+    SgNode& root = m_game.Root();
     SgPropID SG_PROP_PLAYER =
         (color == SG_BLACK ? SG_PROP_PLAYER_BLACK : SG_PROP_PLAYER_WHITE);
     if (overwrite || ! root.HasProp(SG_PROP_PLAYER))
@@ -198,21 +198,20 @@ void GoGtpEngine::ApplyTimeSettings()
     SG_ASSERT(Board().MoveNumber() == 0);
     if (m_timeSettings.NoTimeLimits())
         return;
-    GoGame& game = GetGame();
-    SgTimeRecord& time = game.Time();
-    SgNode& node = *game.CurrentNode();
+    SgTimeRecord& time = m_game.Time();
+    SgNode& node = *m_game.CurrentNode();
     int mainTime = m_timeSettings.MainTime();
     time.SetOTPeriod(m_timeSettings.ByoYomiTime());
     time.SetOTNumMoves(m_timeSettings.ByoYomiStones());
     time.SetOverhead(m_overhead);
     time.SetClock(node, SG_BLACK, mainTime);
     time.SetClock(node, SG_WHITE, mainTime);
-    SgNode& root = game.Root();
+    SgNode& root = m_game.Root();
     if (mainTime > 0)
         root.Add(new SgPropTime(SG_PROP_TIME, mainTime));
     root.SetIntProp(SG_PROP_OT_NU_MOVES, m_timeSettings.ByoYomiStones());
     root.Add(new SgPropTime(SG_PROP_OT_PERIOD, m_timeSettings.ByoYomiTime()));
-    game.TurnClockOn(true);
+    m_game.TurnClockOn(true);
 }
 
 void GoGtpEngine::AutoSave() const
@@ -295,7 +294,7 @@ void GoGtpEngine::CheckLegal(string message, SgBlackWhite color, SgPoint move,
     }
     if (illegal)
     {
-        int moveNumber = GetGame().CurrentMoveNumber() + 1;
+        int moveNumber = m_game.CurrentMoveNumber() + 1;
         throw GtpFailure() << message << moveNumber << ' ' << SgBW(color)
                            << ' ' << SgWritePoint(move) << reason;
     }
@@ -410,7 +409,7 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
 void GoGtpEngine::CmdClock(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    cmd << '\n' << GetGame().Time();
+    cmd << '\n' << m_game.Time();
 }
 
 /** Compute final score.
@@ -443,7 +442,6 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgBlackWhite color = BlackWhiteArg(cmd, 0);
-    GoGame& game = GetGame();
     auto_ptr<SgDebugToString> debugStrToString;
     if (m_debugToComment)
         debugStrToString.reset(new SgDebugToString(true));
@@ -451,7 +449,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     if (move == SG_RESIGN)
     {
         cmd << "resign";
-        SgNode* node = game.AddResignNode(color);
+        SgNode* node = m_game.AddResignNode(color);
         if (debugStrToString.get() != 0)
         {
             node->AddComment("\n\n");
@@ -461,10 +459,10 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     }
     else
     {
-        SgNode* node = game.AddMove(move, color);
+        SgNode* node = m_game.AddMove(move, color);
         if (debugStrToString.get() != 0)
             node->AddComment(debugStrToString->GetString());
-        game.GoToNode(node);
+        m_game.GoToNode(node);
         BoardChanged();
         cmd << SgWritePoint(move);
     }
@@ -608,7 +606,7 @@ void GoGtpEngine::CmdKomi(GtpCommand& cmd)
     try
     {
         GoKomi komi(cmd.Arg(0));
-        GetGame().Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+        m_game.Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
         m_defaultRules.SetKomi(komi);
         Board().Rules().SetKomi(komi);
         RulesChanged();
@@ -670,14 +668,13 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     }
     if (Board().MoveNumber() > 0)
         GameFinished();
-    GoGame& game = GetGame();
-    game.Init(root, true, false);
-    if (! GoGameUtil::GotoBeforeMove(&game, moveNumber))
+    m_game.Init(root, true, false);
+    if (! GoGameUtil::GotoBeforeMove(&m_game, moveNumber))
         throw GtpFailure("invalid move number");
     GoRules& rules = Board().Rules();
     rules = m_defaultRules;
-    rules.SetKomi(GoNodeUtil::GetKomi(game.CurrentNode()));
-    rules.SetHandicap(GoNodeUtil::GetHandicap(game.CurrentNode()));
+    rules.SetKomi(GoNodeUtil::GetKomi(m_game.CurrentNode()));
+    rules.SetHandicap(GoNodeUtil::GetHandicap(m_game.CurrentNode()));
     RulesChanged();
     if (m_player != 0)
         m_player->OnNewGame();
@@ -733,7 +730,7 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
         else if (name == "overhead")
         {
             m_overhead = cmd.Arg<double>(1);
-            GetGame().Time().SetOverhead(m_overhead);
+            m_game.Time().SetOverhead(m_overhead);
         }
         else if (name == "statistics_file")
             SetStatisticsFile(cmd.RemainingLine(0));
@@ -931,7 +928,7 @@ void GoGtpEngine::CmdPlay(GtpCommand& cmd)
     with @c play_sequence as used by older versions of GoGui */
 void GoGtpEngine::CmdPlaySequence(GtpCommand& cmd)
 {
-    SgNode* oldCurrentNode = GetGame().CurrentNode();
+    SgNode* oldCurrentNode = m_game.CurrentNode();
     try
     {
         for (size_t i = 0; i < cmd.NuArg(); i += 2)
@@ -939,7 +936,7 @@ void GoGtpEngine::CmdPlaySequence(GtpCommand& cmd)
     }
     catch (GtpFailure fail)
     {
-        GetGame().GoToNode(oldCurrentNode);
+        m_game.GoToNode(oldCurrentNode);
         throw fail;
     }
     BoardChanged();
@@ -1119,7 +1116,7 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 {
     string key = cmd.Arg(0);
     string value = cmd.RemainingLine(0);
-    SgNode& root = GetGame().Root();
+    SgNode& root = m_game.Root();
     if (key == "game_name")
         root.SetStringProp(SG_PROP_GAME_NAME, value);
     else if (key == "player_black")
@@ -1159,11 +1156,10 @@ void GoGtpEngine::CmdSetup(GtpCommand& cmd)
     for (SgSetIterator it(points[SG_WHITE]); it; ++it)
         if (bd.GetColor(*it) != SG_WHITE)
             addWhite->PushBack(*it);
-    GoGame& game = GetGame();
-    SgNode* node = game.CurrentNode()->NewRightMostSon();
+    SgNode* node = m_game.CurrentNode()->NewRightMostSon();
     node->Add(addBlack);
     node->Add(addWhite);
-    game.GoToNode(node);
+    m_game.GoToNode(node);
     BoardChanged();
 }
 
@@ -1174,7 +1170,7 @@ void GoGtpEngine::CmdSetupPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgBlackWhite toPlay = BlackWhiteArg(cmd, 0);
-    SgNode* node = GetGame().CurrentNode();
+    SgNode* node = m_game.CurrentNode();
     node->Props().RemoveProp(SG_PROP_PLAYER);
     node->Add(new SgPropPlayer(SG_PROP_PLAYER, toPlay));
     Board().SetToPlay(toPlay);
@@ -1207,7 +1203,7 @@ void GoGtpEngine::CmdTimeLeft(GtpCommand& cmd)
     // zero (not sure, if SgTimeRecord::SetTimeLeft can handle negative times)
     int timeLeft = max(0, cmd.Arg<int>(1));
     int movesLeft = cmd.ArgMin<int>(2, 0);
-    SgTimeRecord& time = GetGame().Time();
+    SgTimeRecord& time = m_game.Time();
     time.SetTimeLeft(color, timeLeft);
     time.SetMovesLeft(color, movesLeft);
 }
@@ -1314,9 +1310,9 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     if (ignoreClock || m_timeSettings.NoTimeLimits())
         time = SgTimeRecord(true, m_timeLimit);
     else
-        time = GetGame().Time();
+        time = m_game.Time();
     AddStatistics("GAME", m_autoSaveFileName);
-    AddStatistics("MOVE", GetGame().CurrentMoveNumber() + 1);
+    AddStatistics("MOVE", m_game.CurrentMoveNumber() + 1);
     SgPoint move = SG_NULLMOVE;
     if (m_autoBook.get() != 0)
     {
@@ -1408,10 +1404,9 @@ void GoGtpEngine::PlaceHandicap(const SgVector<SgPoint>& stones)
 {
     CheckBoardEmpty();
     GoBoard& bd = Board();
-    GoGame& game = GetGame();
-    SgNode* node = game.CurrentNode();
+    SgNode* node = m_game.CurrentNode();
     if (node->HasSon())
-        node = game.CurrentNode()->NewRightMostSon();
+        node = m_game.CurrentNode()->NewRightMostSon();
     SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
     for (SgVectorIterator<SgPoint> it(stones); it; ++it)
         addBlack->PushBack(*it);
@@ -1420,7 +1415,7 @@ void GoGtpEngine::PlaceHandicap(const SgVector<SgPoint>& stones)
     node->Add(handicap);
     bd.Rules().SetHandicap(stones.Length());
     RulesChanged();
-    game.GoToNode(node);
+    m_game.GoToNode(node);
     BoardChanged();
 }
 
@@ -1433,8 +1428,8 @@ void GoGtpEngine::Play(SgBlackWhite color, SgPoint move)
     if (move == SG_RESIGN)
         return;
     CheckLegal("illegal move: ", color, move, m_acceptIllegal);
-    SgNode* node = GetGame().AddMove(move, color);
-    GetGame().GoToNode(node);
+    SgNode* node = m_game.AddMove(move, color);
+    m_game.GoToNode(node);
 }
 
 GoPlayer& GoGtpEngine::Player() const
@@ -1486,7 +1481,7 @@ void GoGtpEngine::SaveGame(const std::string& fileName) const
     {
         ofstream out(fileName.c_str());
         SgGameWriter writer(out);
-        writer.WriteGame(GetGame().Root(), true, 0, 1, 19);
+        writer.WriteGame(m_game.Root(), true, 0, 1, 19);
     }
     catch (const SgException& e)
     {
@@ -1537,8 +1532,8 @@ inline void GoGtpEngine::SetStatisticsFile(const std::string& fileName)
 void GoGtpEngine::SetPlayer(GoPlayer* player)
 {
     m_player = player;
-    GetGame().SetPlayer(SG_BLACK, player);
-    GetGame().SetPlayer(SG_WHITE, player);
+    m_game.SetPlayer(SG_BLACK, player);
+    m_game.SetPlayer(SG_WHITE, player);
     if (m_player != 0)
         m_player->OnNewGame();
     InitStatistics();
@@ -1565,15 +1560,14 @@ SgPoint GoGtpEngine::StoneArg(const GtpCommand& cmd, std::size_t number) const
 void GoGtpEngine::Undo(int n)
 {
     SG_ASSERT(n >= 0);
-    GoGame& game = GetGame();
-    SgNode* node = game.CurrentNode();
+    SgNode* node = m_game.CurrentNode();
     for (int i = 0; i < n; ++i)
     {
         if (! node->HasNodeMove() || ! node->HasFather())
             throw GtpFailure() << "cannot undo " << n << " move(s)";
         node = node->Father();
     }
-    game.GoToNode(node);
+    m_game.GoToNode(node);
 }
 
 /** Write board info.

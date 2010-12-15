@@ -139,6 +139,8 @@ public:
 
     GoBook& Book();
 
+    const GoGame& Game() const;
+
     /** Write game and player boards. */
     void DumpState(std::ostream& out) const;
 
@@ -249,10 +251,6 @@ protected:
 
     SgPoint GenMove(SgBlackWhite color, bool ignoreClock);
 
-    GoGame& GetGame();
-
-    const GoGame& GetGame() const;
-
     /** Throws GtpFailure if no player set. */
     GoPlayer& Player() const;
 
@@ -273,7 +271,6 @@ protected:
         @throws GtpFailure If move stack overflow or illegal move. */
     void Play(SgBlackWhite color, SgPoint move);
 
-protected:
     /** @name Statistics file */
     // @{
 
@@ -448,12 +445,7 @@ inline GoBook& GoGtpEngine::Book()
     return m_book;
 }
 
-inline GoGame& GoGtpEngine::GetGame()
-{
-    return m_game;
-}
-
-inline const GoGame& GoGtpEngine::GetGame() const
+inline const GoGame& GoGtpEngine::Game() const
 {
     return m_game;
 }
