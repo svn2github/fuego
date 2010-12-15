@@ -132,7 +132,7 @@ public:
         like @c reg_genmove) not to be registered.
         @param noHandicap Don't register handicap commands (useful, to
         avoid accepting handicap games on KGS) */
-    GoGtpEngine(int fixedBoardSize, const char* programPath = 0,
+    GoGtpEngine(int fixedBoardSize = 0, const char* programPath = 0,
                 bool noPlayer = false, bool noHandicap = false);
 
     ~GoGtpEngine();
