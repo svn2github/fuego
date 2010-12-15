@@ -345,7 +345,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_GetDirtyRegion)
     BOOST_CHECK_EQUAL(l2, SgRect(2,4,3,5));
 }
 
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_PassWins)
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorPassWins)
 {
     GoBoard bd(9);
     GoRules& rules = bd.Rules();
@@ -353,20 +353,20 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_PassWins)
     rules.SetCaptureDead(true);
     rules.SetJapaneseScoring(false);
     bd.Play(Pt(5, 5), SG_BLACK);
-    BOOST_CHECK(! PassWins(bd, SG_BLACK)); // Last move was not a pass
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Last move was not a pass
     bd.Play(SG_PASS, SG_WHITE);
-    BOOST_CHECK(PassWins(bd, SG_BLACK));
+    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
     bd.Play(SG_PASS, SG_BLACK);
-    BOOST_CHECK(! PassWins(bd, SG_BLACK)); // Black is not to play
-    BOOST_CHECK(! PassWins(bd, SG_WHITE)); // Negative score for White
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Black is not to play
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_WHITE)); // Negative score for White
     bd.Undo();
-    BOOST_CHECK(PassWins(bd, SG_BLACK));
+    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
     rules.SetCaptureDead(false);
-    BOOST_CHECK(! PassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
     rules.SetCaptureDead(true);
-    BOOST_CHECK(PassWins(bd, SG_BLACK));
+    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
     rules.SetJapaneseScoring(true);
-    BOOST_CHECK(! PassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_ReduceToAnchors)

@@ -215,7 +215,7 @@ namespace GoBoardUtil
                           SgVector<SgPoint>* neighbors);
 
     /** Check if Tromp-Taylor rules and pass wins. */
-    bool PassWins(const GoBoard& bd, SgBlackWhite toPlay);
+    bool TrompTaylorPassWins(const GoBoard& bd, SgBlackWhite toPlay);
 
     /** Play a move if legal
         @param bd The board.

@@ -567,13 +567,13 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
     GoBoard& bd = Board();
     bd.Play(SG_PASS);
     bool winAfterPass = false;
-    bool passWins = GoBoardUtil::PassWins(bd, bd.ToPlay());
+    bool passWins = GoBoardUtil::TrompTaylorPassWins(bd, bd.ToPlay());
     m_mpiSynchronizer->SynchronizePassWins(passWins);
     if (passWins)
     {
-        // Using GoBoardUtil::PassWins here is not strictly necessary, but
-        // safer, because it can take the search in the else-statement a while
-        // to explore the pass move
+        // Using GoBoardUtil::TrompTaylorPassWins here is not strictly
+        // necessary, but safer, because it can take the search in the
+        // else-statement a while to explore the pass move
         winAfterPass = false;
     }
     else
@@ -845,7 +845,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
         if (move != SG_NULLMOVE)
             SgDebug() << "GoUctPlayer: Forced opening move\n";
     }
-    if (move == SG_NULLMOVE && GoBoardUtil::PassWins(bd, toPlay))
+    if (move == SG_NULLMOVE && GoBoardUtil::TrompTaylorPassWins(bd, toPlay))
     {
         move = SG_PASS;
         SgDebug() << "GoUctPlayer: Pass wins (Tromp-Taylor rules)\n";

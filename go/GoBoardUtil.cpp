@@ -559,7 +559,7 @@ void GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
         neighbors->PushBack(p + SG_NS);
 }
 
-bool GoBoardUtil::PassWins(const GoBoard& bd, SgBlackWhite toPlay)
+bool GoBoardUtil::TrompTaylorPassWins(const GoBoard& bd, SgBlackWhite toPlay)
 {
     if (toPlay != bd.ToPlay())
         // Not defined if non-alternating moves
