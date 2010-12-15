@@ -70,7 +70,10 @@ public:
     const GoBoard& Board() const;
 
     /** Return the root of this tree. */
-    SgNode& Root() const;
+    SgNode& Root();
+
+    /** Return the root of this tree. */
+    const SgNode& Root() const;
 
     /** Add move to the game record.
         Add move as the next move at the current position.
@@ -179,7 +182,13 @@ inline const GoBoard& GoGameRecord::Board() const
     return m_board;
 }
 
-inline SgNode& GoGameRecord::Root() const
+inline SgNode& GoGameRecord::Root()
+{
+    SG_ASSERT(m_current);
+    return *m_current->Root();
+}
+
+inline const SgNode& GoGameRecord::Root() const
 {
     SG_ASSERT(m_current);
     return *m_current->Root();
