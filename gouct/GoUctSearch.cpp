@@ -269,7 +269,7 @@ void GoUctSearch::SaveGames(const string& fileName) const
         throw SgException("No games to save");
     ofstream out(fileName.c_str());
     SgGameWriter writer(out);
-    writer.WriteGame(*m_root, true, 0, "", 1, 19);
+    writer.WriteGame(*m_root, true, 0, 1, 19);
     }
 }
 

@@ -22,9 +22,8 @@ SgGameWriter::SgGameWriter(ostream& out)
 {
 }
 
-void SgGameWriter::WriteGame(SgNode& root, bool allProps, int fileFormat,
-                             const string& application, int gameNumber,
-                             int defaultSize)
+void SgGameWriter::WriteGame(const SgNode& root, bool allProps,
+                             int fileFormat, int gameNumber, int defaultSize)
 {
     if (! m_out)
         throw SgException("SgGameWriter: write error");
@@ -34,37 +33,6 @@ void SgGameWriter::WriteGame(SgNode& root, bool allProps, int fileFormat,
         m_fileFormat = fileFormat;
     else if (root.HasProp(SG_PROP_FORMAT))
         m_fileFormat = root.GetIntProp(SG_PROP_FORMAT);
-    root.Add(new SgPropInt(SG_PROP_FORMAT, m_fileFormat));
-    if (application != "")
-        root.Add(new SgPropText(SG_PROP_APPLIC, application));
-    root.Add(new SgPropInt(SG_PROP_GAME, gameNumber));
-    // Reorder the main root properties in a fixed order to make games more
-    // human-readable and to avoid unnecessary diffs. Note that they'll end
-    // up in the opposite sequence.
-    SgPropList& props = root.Props();
-    props.MoveToFront(SG_PROP_PLAYER);
-    props.MoveToFront(SG_PROP_ADD_EMPTY);
-    props.MoveToFront(SG_PROP_ADD_WHITE);
-    props.MoveToFront(SG_PROP_ADD_BLACK);
-    props.MoveToFront(SG_PROP_USER);
-    props.MoveToFront(SG_PROP_SOURCE);
-    props.MoveToFront(SG_PROP_ROUND);
-    props.MoveToFront(SG_PROP_EVENT);
-    props.MoveToFront(SG_PROP_PLACE);
-    props.MoveToFront(SG_PROP_DATE);
-    props.MoveToFront(SG_PROP_RESULT);
-    props.MoveToFront(SG_PROP_PLAYER_BLACK);
-    props.MoveToFront(SG_PROP_RANK_BLACK);
-    props.MoveToFront(SG_PROP_TEAM_BLACK);
-    props.MoveToFront(SG_PROP_PLAYER_WHITE);
-    props.MoveToFront(SG_PROP_RANK_WHITE);
-    props.MoveToFront(SG_PROP_TEAM_WHITE);
-    props.MoveToFront(SG_PROP_GAME_NAME);
-    props.MoveToFront(SG_PROP_APPLIC);
-    props.MoveToFront(SG_PROP_SIZE);
-    props.MoveToFront(SG_PROP_FORMAT);
-    props.MoveToFront(SG_PROP_GAME);
-
     SgPropPointFmt fmt = GetPointFmt(gameNumber);
     WriteSubtree(root, allProps, defaultSize, fmt);
     m_out.put('\n');

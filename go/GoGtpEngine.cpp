@@ -1486,7 +1486,7 @@ void GoGtpEngine::SaveGame(const std::string& fileName) const
     {
         ofstream out(fileName.c_str());
         SgGameWriter writer(out);
-        writer.WriteGame(GetGame().Root(), true, 0, "", 1, 19);
+        writer.WriteGame(GetGame().Root(), true, 0, 1, 19);
     }
     catch (const SgException& e)
     {

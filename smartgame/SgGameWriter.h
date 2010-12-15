@@ -19,20 +19,16 @@ public:
     SgGameWriter(std::ostream& out);
 
     /** Write the game tree at 'root' to the given archive.
-        Add file format and application properties to the root node.
         @param root Root node of the game.
         @param allProps Write all properties.
         @param fileFormat if zero, write it out with the default file format.
-        @param application Application name (will add AP property if not
-        empty)
         @param gameNumber Game number (will add GM property)
         @param defaultSize The (game-dependent) default board size, if file
         contains no SZ property.
         @throws SgException If saving fails (presently it does only check if
         the file is ok at the beginning, not if all writes succeed) */
-    void WriteGame(SgNode& root, bool allProps, int fileFormat,
-                   const std::string& application, int gameNumber,
-                   int defaultSize);
+    void WriteGame(const SgNode& root, bool allProps, int fileFormat,
+                   int gameNumber, int defaultSize);
 
 private:
     std::ostream& m_out;
