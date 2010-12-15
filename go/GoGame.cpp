@@ -54,9 +54,9 @@ void AddHandicap(int size, int row, int col, int* handicap,
 
 //----------------------------------------------------------------------------
 
-GoGameRecord::GoGameRecord(GoBoard& board)
-    : m_current(0),
-      m_board(board),
+GoGameRecord::GoGameRecord(int boardSize)
+    : m_board(boardSize),
+      m_current(0),
       m_time(),
       m_ownsTree(true),
       m_oldCommentNode(0),
@@ -390,8 +390,8 @@ bool GoGameUtil::GotoBeforeMove(GoGameRecord* game, int moveNumber)
 
 //----------------------------------------------------------------------------
 
-GoGame::GoGame(GoBoard& board)
-    : GoGameRecord(board),
+GoGame::GoGame(int boardSize)
+    : GoGameRecord(boardSize),
       m_player(0)
 {
 }

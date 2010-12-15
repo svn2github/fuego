@@ -21,8 +21,7 @@ namespace {
 /** Test executing and undoing a node with setup stones. */
 BOOST_AUTO_TEST_CASE(GoGameRecordTest_Setup)
 {
-    GoBoard bd;
-    GoGameRecord game(bd);
+    GoGameRecord game;
     SgNode* node = game.CurrentNode()->NewRightMostSon();
     SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
     addBlack->PushBack(Pt(1, 1));
@@ -32,6 +31,7 @@ BOOST_AUTO_TEST_CASE(GoGameRecordTest_Setup)
     node->Add(addBlack);
     node->Add(addWhite);
     game.GoToNode(node);
+    const GoBoard& bd = game.Board();
     BOOST_CHECK_EQUAL(SG_BLACK, bd.GetColor(Pt(1, 1)));
     BOOST_CHECK_EQUAL(SG_WHITE, bd.GetColor(Pt(2, 2)));
     BOOST_CHECK_EQUAL(SG_WHITE, bd.GetColor(Pt(3, 3)));

@@ -26,19 +26,19 @@ class SgSearchStatistics;
 //----------------------------------------------------------------------------
 
 /** Game stored as a tree of moves.
-    @note What is wrong with this class? It exposes non-const access to its
-    data members and therefore cannot guarantee the integrity of its state. In
-    the future, this class should only provide read access to the board, tree,
-    and current node pointer. All modifications to and navigation in the tree
-    should only be possible through member functions of this class, such that
-    it can guarantee that its invariants are met (i.e. the board position
-    always belongs to the current node and the current node always points to a
-    valid node in the tree). */
+    Contains a game tree, a board and a pointer to a current node. The
+    current node is always a valid node of the tree and the board reflects
+    the game state at the current node.
+    @note This class is in the process of being refactored to provide
+    encapsulation and to guarantee its class invariants. In the future, the
+    tree, current node and board will only be modifiable through member
+    functions of this class. Non-const accessors to these member variables
+    will be removed. */
 class GoGameRecord
 {
 public:
     /** Create a game record for replaying games on the given board. */
-    explicit GoGameRecord(GoBoard& board);
+    explicit GoGameRecord(int boardSize = GO_DEFAULT_SIZE);
 
     virtual ~GoGameRecord();
 
@@ -68,6 +68,13 @@ public:
 
     /** Get the board associated with this game record. */
     const GoBoard& Board() const;
+
+    /** Deprecated.
+        @deprecated In the future, only this class should be allowed to modify
+        the board to guarantee its class invariants (i.e. the current node
+        is always a valid node of the tree and the board reflects the state
+        in the current node. */
+    GoBoard& NonConstBoard();
 
     /** Return the root of this tree. */
     SgNode& Root();
@@ -147,10 +154,10 @@ public:
     int CurrentMoveNumber() const;
 
 private:
+    GoBoard m_board;
+
     /** The position in the current tree. */
     SgNode* m_current;
-
-    GoBoard& m_board;
 
     GoBoardUpdater m_updater;
 
@@ -178,6 +185,11 @@ private:
 };
 
 inline const GoBoard& GoGameRecord::Board() const
+{
+    return m_board;
+}
+
+inline GoBoard& GoGameRecord::NonConstBoard()
 {
     return m_board;
 }
@@ -242,7 +254,7 @@ class GoGame
     : public GoGameRecord
 {
 public:
-    explicit GoGame(GoBoard& board);
+    explicit GoGame(int boardSize = GO_DEFAULT_SIZE);
 
     virtual ~GoGame();
 

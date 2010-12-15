@@ -141,6 +141,8 @@ public:
 
     const GoGame& Game() const;
 
+    const GoBoard& Board() const;
+
     /** Write game and player boards. */
     void DumpState(std::ostream& out) const;
 
@@ -236,9 +238,10 @@ protected:
         Flushes SgDebug(). */
     void BeforeWritingResponse();
 
+    /** Deprecated.
+        @deprecated In the future, only GoGame will be allowed to modify
+        its board. */
     GoBoard& Board();
-
-    const GoBoard& Board() const;
 
     void BoardChanged();
 
@@ -366,8 +369,6 @@ private:
         Will be used whenever a new game is started. */
     GoRules m_defaultRules;
 
-    GoBoard m_board;
-
     /** Order dependency: destruct m_game before m_board */
     GoGame m_game;
 
@@ -432,12 +433,12 @@ void GoGtpEngine::AddStatistics(const std::string& key, const T& value)
 
 inline GoBoard& GoGtpEngine::Board()
 {
-    return m_board;
+    return m_game.NonConstBoard();
 }
 
 inline const GoBoard& GoGtpEngine::Board() const
 {
-    return m_board;
+    return m_game.Board();
 }
 
 inline GoBook& GoGtpEngine::Book()

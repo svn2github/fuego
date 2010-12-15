@@ -24,7 +24,7 @@ class TestPlayer
 public:
     int m_nuBoardChangeCalls;
 
-    TestPlayer(GoBoard& bd);
+    TestPlayer(const GoBoard& bd);
 
     SgMove GenMove(const SgTimeRecord& time, SgBlackWhite toPlay);
 
@@ -33,7 +33,7 @@ protected:
     void OnBoardChange();
 };
 
-TestPlayer::TestPlayer(GoBoard& bd)
+TestPlayer::TestPlayer(const GoBoard& bd)
     : GoPlayer(bd)
 {
     m_nuBoardChangeCalls = 0;
@@ -56,9 +56,8 @@ void TestPlayer::OnBoardChange()
 /** Test that GoGame::Init updates the players. */
 BOOST_AUTO_TEST_CASE(GoGameTest_UpdatePlayers)
 {
-    GoBoard bd(19);
-    GoGame game(bd);
-    TestPlayer* player = new TestPlayer(bd);
+    GoGame game(19);
+    TestPlayer* player = new TestPlayer(game.Board());
     BOOST_CHECK_EQUAL(player->m_nuBoardChangeCalls, 0);
     game.SetPlayer(SG_BLACK, player);
     BOOST_CHECK_EQUAL(player->m_nuBoardChangeCalls, 0); // no boardsize change

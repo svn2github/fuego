@@ -91,10 +91,9 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
       m_timeLastMove(0),
       m_timeLimit(10),
       m_overhead(0),
-      m_board(fixedBoardSize > 0 ? fixedBoardSize : GO_DEFAULT_SIZE),
-      m_game(m_board),
+      m_game(fixedBoardSize > 0 ? fixedBoardSize : GO_DEFAULT_SIZE),
       m_sgCommands(*this, programPath),
-      m_bookCommands(*this, m_board, m_book),
+      m_bookCommands(*this, Board(), m_book),
       m_mpiSynchronizer(SgMpiNullSynchronizer::Create())
 {
     Init(Board().Size());
