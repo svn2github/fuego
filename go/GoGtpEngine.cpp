@@ -97,6 +97,8 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
       m_bookCommands(*this, m_board, m_book),
       m_mpiSynchronizer(SgMpiNullSynchronizer::Create())
 {
+    Init(Board().Size());
+
     Register("all_legal", &GoGtpEngine::CmdAllLegal, this);
     Register("boardsize", &GoGtpEngine::CmdBoardSize, this);
     Register("clear_board", &GoGtpEngine::CmdClearBoard, this);
@@ -1352,6 +1354,11 @@ void GoGtpEngine::Init(int size)
     char dateBuffer[128];
     strftime(dateBuffer, sizeof(dateBuffer), "%Y-%m-%d", timeStruct);
     m_game.Root().SetStringProp(SG_PROP_DATE, dateBuffer);
+    GoKomi komi = Board().Rules().Komi();
+    if (!komi.IsUnknown())
+    {
+        m_game.Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+    }
     ApplyTimeSettings();
     CreateAutoSaveFileName();
 }
