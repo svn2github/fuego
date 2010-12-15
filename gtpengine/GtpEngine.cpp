@@ -619,10 +619,8 @@ GtpCallbackBase::~GtpCallbackBase() throw()
 
 //----------------------------------------------------------------------------
 
-GtpEngine::GtpEngine(GtpInputStream& in, GtpOutputStream& out)
-    : m_quit(false),
-      m_in(in),
-      m_out(out)
+GtpEngine::GtpEngine()
+    : m_quit(false)
 {
     Register("known_command", &GtpEngine::CmdKnownCommand, this);
     Register("list_commands", &GtpEngine::CmdListCommands, this);
@@ -777,14 +775,14 @@ bool GtpEngine::IsRegistered(const string& command) const
     return (m_callbacks.find(command) != m_callbacks.end());
 }
 
-void GtpEngine::MainLoop()
+void GtpEngine::MainLoop(GtpInputStream& in, GtpOutputStream& out)
 {
     m_quit = false;
 #if GTPENGINE_PONDER
     PonderThread ponderThread(*this);
 #endif
 #if GTPENGINE_INTERRUPT
-    ReadThread readThread(m_in, *this);
+    ReadThread readThread(in, *this);
 #endif
     GtpCommand cmd;
     while (true)
@@ -801,7 +799,7 @@ void GtpEngine::MainLoop()
         ponderThread.StopPonder();
 #endif
         if (isStreamGood)
-            HandleCommand(cmd, m_out);
+            HandleCommand(cmd, out);
         else
             SetQuit();
         if (m_quit)

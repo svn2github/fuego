@@ -19,13 +19,10 @@ class FuegoTestEngine
 {
 public:
     /** Constructor.
-        @param in
-        @param out
         @param fixedBoardSize
         @param programPath
         @param player Player ID as in CreatePlayer() */
-    FuegoTestEngine(GtpInputStream& in, GtpOutputStream& out,
-                    int fixedBoardSize, const char* programPath = 0,
+    FuegoTestEngine(int fixedBoardSize, const char* programPath = 0,
                     const std::string& player = "");
 
     ~FuegoTestEngine();

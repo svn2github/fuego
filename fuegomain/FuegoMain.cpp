@@ -63,10 +63,7 @@ path GetProgramDir(const char* programPath)
 
 void MainLoop()
 {
-    GtpInputStream gtpIn(cin);
-    GtpOutputStream gtpOut(cout);
-    FuegoMainEngine engine(gtpIn, gtpOut, g_fixedBoardSize, g_programPath,
-                           g_noHandicap);
+    FuegoMainEngine engine(g_fixedBoardSize, g_programPath, g_noHandicap);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_maxGames >= 0)
         engine.SetMaxClearBoard(g_maxGames);
@@ -74,7 +71,9 @@ void MainLoop()
         FuegoMainUtil::LoadBook(engine.Book(), g_programDir);
     if (g_config != "")
         engine.ExecuteFile(g_config);
-    engine.MainLoop();
+    GtpInputStream in(cin);
+    GtpOutputStream out(cout);
+    engine.MainLoop(in, out);
 }
 
 void Help(po::options_description& desc)

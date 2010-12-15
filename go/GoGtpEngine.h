@@ -122,8 +122,6 @@ public:
     // @} // @name
 
     /** Constructor.
-        @param in See parameter @c in in GtpEngine::GtpEngine
-        @param out See parameter @c out in GtpEngine::GtpEngine
         @param fixedBoardSize Initial and only allowed size of the board.
         0 means startup with GO_DEFAULT_SIZE and allow to change board size
         @param programPath File path to the executable. Needed for
@@ -134,9 +132,8 @@ public:
         like @c reg_genmove) not to be registered.
         @param noHandicap Don't register handicap commands (useful, to
         avoid accepting handicap games on KGS) */
-    GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoardSize,
-                const char* programPath = 0, bool noPlayer = false,
-                bool noHandicap = false);
+    GoGtpEngine(int fixedBoardSize, const char* programPath = 0,
+                bool noPlayer = false, bool noHandicap = false);
 
     ~GoGtpEngine();
 

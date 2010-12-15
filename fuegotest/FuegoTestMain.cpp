@@ -41,13 +41,13 @@ const char* g_programPath;
 
 void MainLoop()
 {
-    GtpInputStream gtpIn(cin);
-    GtpOutputStream gtpOut(cout);
-    FuegoTestEngine engine(gtpIn, gtpOut, 0, g_programPath, g_player);
+    FuegoTestEngine engine(0, g_programPath, g_player);
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_config != "")
         engine.ExecuteFile(g_config);
-    engine.MainLoop();
+    GtpInputStream in(cin);
+    GtpOutputStream out(cout);
+    engine.MainLoop(in, out);
 }
 
 void Help(po::options_description& desc)

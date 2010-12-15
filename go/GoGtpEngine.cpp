@@ -76,11 +76,9 @@ string KoRuleToString(GoRules::KoRule rule)
 
 //----------------------------------------------------------------------------
 
-GoGtpEngine::GoGtpEngine(GtpInputStream& in, GtpOutputStream& out, int fixedBoardSize,
-                         const char* programPath, bool noPlayer,
-                         bool noHandicap)
-    : GtpEngine(in, out),
-      m_player(0),
+GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
+                         bool noPlayer, bool noHandicap)
+    : m_player(0),
       m_autoBook(0),
       m_noPlayer(noPlayer),
       m_acceptIllegal(false),

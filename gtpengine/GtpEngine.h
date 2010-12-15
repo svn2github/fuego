@@ -573,10 +573,7 @@ public:
     virtual void CmdVersion(GtpCommand&);
     // @} // @name
 
-    /** Constructor.
-        @param in Input GTP stream
-        @param out Output GTP stream */
-    GtpEngine(GtpInputStream& in, GtpOutputStream& out);
+    GtpEngine();
 
     virtual ~GtpEngine();
 
@@ -602,8 +599,10 @@ public:
         handler and writes the response to the output stream.
         Empty lines in the command responses will be replaced by a line
         containing a single space, because empty lines are not allowed
-        in GTP responses. */
-    void MainLoop();
+        in GTP responses.
+        @param in Input GTP stream
+        @param out Output GTP stream */
+    void MainLoop(GtpInputStream& in, GtpOutputStream& out);
 
     /** Register command handler.
         Takes ownership of callback.
@@ -698,10 +697,6 @@ private:
     typedef std::map<std::string,GtpCallbackBase*> CallbackMap;
 
     bool m_quit;
-
-    GtpInputStream& m_in;
-
-    GtpOutputStream& m_out;
 
     CallbackMap m_callbacks;
 

@@ -148,8 +148,8 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_Command)
     ostringstream out;
     GtpInputStream gin(in);
     GtpOutputStream gout(out);
-    GtpEngine engine(gin, gout);
-    engine.MainLoop();
+    GtpEngine engine;
+    engine.MainLoop(gin, gout);
     BOOST_CHECK_EQUAL(out.str(), "= \n\n");
 }
 
@@ -159,8 +159,8 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_CommandWithID)
     ostringstream out;
     GtpInputStream gin(in);
     GtpOutputStream gout(out);
-    GtpEngine engine(gin, gout);
-    engine.MainLoop();
+    GtpEngine engine;
+    engine.MainLoop(gin, gout);
     BOOST_CHECK_EQUAL(out.str(), "=10 \n\n");
 }
 
@@ -171,16 +171,14 @@ class InvalidResponseEngine
     : public GtpEngine
 {
 public:
-    InvalidResponseEngine(GtpInputStream& in, GtpOutputStream& out);
+    InvalidResponseEngine();
 
     void CmdInvalidResponse(GtpCommand& cmd);
 
     void CmdInvalidResponse2(GtpCommand& cmd);
 };
 
-InvalidResponseEngine::InvalidResponseEngine(GtpInputStream& in, 
-                                             GtpOutputStream& out)
-    : GtpEngine(in, out)
+InvalidResponseEngine::InvalidResponseEngine()
 {
     typedef GtpCallback<InvalidResponseEngine> Callback;
     Register("invalid_response",
@@ -211,8 +209,8 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_MainLoopEmptyLines)
     ostringstream out;
     GtpInputStream gin(in);
     GtpOutputStream gout(out);
-    InvalidResponseEngine engine(gin, gout);
-    engine.MainLoop();
+    InvalidResponseEngine engine;
+    engine.MainLoop(gin, gout);
     BOOST_CHECK_EQUAL(out.str(),
                       "= This response is invalid\n"
                       " \n"
@@ -227,8 +225,8 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_MainLoopEmptyLines2)
     ostringstream out;
     GtpInputStream gin(in);
     GtpOutputStream gout(out);
-    InvalidResponseEngine engine(gin, gout);
-    engine.MainLoop();
+    InvalidResponseEngine engine;
+    engine.MainLoop(gin, gout);
     BOOST_CHECK_EQUAL(out.str(),
                       "= This response is invalid\n"
                       " \n"
@@ -243,8 +241,8 @@ BOOST_AUTO_TEST_CASE(GtpEngineTest_UnknownCommand)
     ostringstream out;
     GtpInputStream gin(in);
     GtpOutputStream gout(out);
-    GtpEngine engine(gin, gout);
-    engine.MainLoop();
+    GtpEngine engine;
+    engine.MainLoop(gin, gout);
     BOOST_REQUIRE(out.str().size() >= 2);
     BOOST_CHECK_EQUAL(out.str().substr(0, 2), "? ");
 }

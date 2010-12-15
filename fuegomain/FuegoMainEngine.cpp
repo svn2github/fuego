@@ -14,10 +14,9 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-FuegoMainEngine::FuegoMainEngine(GtpInputStream& in, GtpOutputStream& out,
-                                 int fixedBoardSize, const char* programPath,
+FuegoMainEngine::FuegoMainEngine(int fixedBoardSize, const char* programPath,
                                  bool noHandicap)
-    : GoGtpEngine(in, out, fixedBoardSize, programPath, false, noHandicap),
+    : GoGtpEngine(fixedBoardSize, programPath, false, noHandicap),
       m_uctCommands(Board(), m_player),
       m_autoBookCommands(Board(), m_player, m_autoBook),
       m_safetyCommands(Board())
