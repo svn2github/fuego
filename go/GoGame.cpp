@@ -58,21 +58,18 @@ GoGameRecord::GoGameRecord(int boardSize)
     : m_board(boardSize),
       m_current(0),
       m_time(),
-      m_ownsTree(true),
       m_oldCommentNode(0),
       m_numMovesToInsert(0)
 {
     // Make sure GoInit was called to avoid silent failure of ExecuteMove
     // because of unregistered move property
     GoInitCheck();
-    InitFromRoot(0, true);
+    InitFromRoot(0);
 }
 
 GoGameRecord::~GoGameRecord()
 {
-    // AR: go to 0 first??
-    if (m_current && m_ownsTree)
-        m_current->DeleteTree();
+    m_current->Root()->DeleteTree();
 }
 
 
@@ -154,10 +151,8 @@ int GoGameRecord::CurrentMoveNumber() const
 
 void GoGameRecord::DeleteTreeAndInitState()
 {
-    // Delete previous game tree if we own it.
-    if (m_current && m_ownsTree)
-        m_current->DeleteTree();
-
+    if (m_current)
+        m_current->Root()->DeleteTree();
     m_current = 0;
     m_oldCommentNode = 0;
 }
@@ -221,7 +216,6 @@ void GoGameRecord::Init(int size, const GoRules& rules)
     OnInitBoard(size, rules);
     // Create a new game tree, use current board.
     SgNode* root = new SgNode();
-    m_ownsTree = true;
     // Add root property: board size.
     SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
     root->Add(boardSize);
@@ -229,15 +223,11 @@ void GoGameRecord::Init(int size, const GoRules& rules)
     GoToNode(root);
 }
 
-/**
-   @todo get handicap from properties, not from board
-   @todo  get komi from properties, not from board */
-void GoGameRecord::InitFromRoot(SgNode* root, bool fTakeOwnership)
+void GoGameRecord::InitFromRoot(SgNode* root)
 {
     DeleteTreeAndInitState();
     if (root)
     {
-        m_ownsTree = fTakeOwnership;
         // Get board properties from root node.
         int size = GO_DEFAULT_SIZE;
         SgPropInt* boardSize =
@@ -254,7 +244,6 @@ void GoGameRecord::InitFromRoot(SgNode* root, bool fTakeOwnership)
     {
         // Create a new game tree, use current board.
         root = new SgNode();
-        m_ownsTree = true;
 
         // Add root property: board size.
         SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
@@ -430,14 +419,14 @@ void GoGame::Init(int size, const GoRules& rules)
     UpdatePlayers();
 }
 
-void GoGame::Init(SgNode* root, bool fTakeOwnership, bool fDeletePlayers)
+void GoGame::Init(SgNode* root, bool fDeletePlayers)
 {
     if (fDeletePlayers)
     {
         DeletePlayer(SG_BLACK);
         DeletePlayer(SG_WHITE);
     }
-    GoGameRecord::InitFromRoot(root, fTakeOwnership);
+    GoGameRecord::InitFromRoot(root);
     UpdatePlayers();
 }
 

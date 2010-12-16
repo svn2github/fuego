@@ -42,14 +42,8 @@ public:
 
     virtual ~GoGameRecord();
 
-    /** Delete the old game record and start with a fresh one.
-        If 'root' is 0, create a root node to start with,
-        otherwise use the game tree passed in 'root'.
-        If 'fTakeOwnership', the game record will delete this tree when
-        it's destroyed, otherwise the client is reponsible
-        for deleting the tree.
-        @todo AR: change comment */
-    virtual void InitFromRoot(SgNode* root, bool fTakeOwnership);
+    /** Init from an existing game tree */
+    virtual void InitFromRoot(SgNode* root);
 
     /** Delete the old game record and start with a fresh one.
         Init the board with the given parameters, and create a root node
@@ -140,9 +134,6 @@ public:
         the current time left. */
     const SgNode* CurrentNode() const;
 
-    /** Whether this game record owns the game tree. */
-    bool OwnsTree() const;
-
     bool CanDeleteCurrentNode() const;
 
     /** Return the move of the current node.
@@ -163,9 +154,6 @@ private:
 
     /** A record of the clock settings and time left. */
     SgTimeRecord m_time;
-
-    /** Whether this game record owns the game tree. */
-    bool m_ownsTree;
 
     /** Comment display. */
     SgNode* m_oldCommentNode;
@@ -226,11 +214,6 @@ inline const SgNode* GoGameRecord::CurrentNode() const
     return m_current;
 }
 
-inline bool GoGameRecord::OwnsTree() const
-{
-    return m_ownsTree;
-}
-
 //----------------------------------------------------------------------------
 
 /** Utility functions for GoGameRecord. */
@@ -260,16 +243,16 @@ public:
 
     /** Needed to avoid hiding of inherited virtual function by the
         other variants of GoGame::Init. */
-    virtual void InitFromRoot(SgNode* root, bool fTakeOwnership)
+    virtual void InitFromRoot(SgNode* root)
     {
-        GoGameRecord::InitFromRoot(root, fTakeOwnership);
+        GoGameRecord::InitFromRoot(root);
     }
 
     /** Needed to avoid hiding of inherited virtual function by the
         other variants of GoGame::Init. */
     void Init(int size, const GoRules& rules);
 
-    void Init(SgNode* root, bool fTakeOwnership, bool fDeletePlayers);
+    void Init(SgNode* root, bool fDeletePlayers);
 
     void Init(int size, const GoRules& rules, bool fDeletePlayers);
 
