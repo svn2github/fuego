@@ -157,32 +157,35 @@ bool GoGameRecord::EndOfGame() const
     return GoBoardUtil::EndOfGame(m_board);
 }
 
-std::string GoGameRecord::GetPlayerName(SgBlackWhite player) const
+/** Find the game info node with a game info property that determines
+    this property for the current node.
+    Returns an empty string, if no such node exists. */
+std::string GoGameRecord::GetGameInfoStringProp(SgPropID id) const
 {
-    SgPropID playerNamePropID =
-        SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, player);
-    SgNode* node = CurrentNode()->TopProp(playerNamePropID);
-    if (node && node->HasProp(playerNamePropID))
+    const SgNode* node = m_current->TopProp(id);
+    if (node->HasProp(id))
     {
-        SgPropText* prop =
-            dynamic_cast<SgPropText*>(node->Get(playerNamePropID));
+        const SgPropText* prop = dynamic_cast<SgPropText*>(node->Get(id));
         return prop->Value();
     }
     else
         return "";
 }
 
-bool GoGameRecord::GetScore(int* score) const
+std::string GoGameRecord::GetGameName() const
 {
-    SG_ASSERT(score);
-    SgNode* node = CurrentNode()->TopProp(SG_PROP_VALUE);
-    if (node && node->HasProp(SG_PROP_VALUE))
-    {
-        *score = node->GetIntProp(SG_PROP_VALUE);
-        return true;
-    }
-    else
-        return false;
+    return GetGameInfoStringProp(SG_PROP_GAME_NAME);
+}
+
+std::string GoGameRecord::GetPlayerName(SgBlackWhite player) const
+{
+    SgPropID id = SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, player);
+    return GetGameInfoStringProp(id);
+}
+
+std::string GoGameRecord::GetResult() const
+{
+    return GetGameInfoStringProp(SG_PROP_RESULT);
 }
 
 void GoGameRecord::GoInDirection(SgNode::Direction dir)
@@ -325,13 +328,6 @@ void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
     }
 }
 
-void GoGameRecord::SetPlayerName(SgBlackWhite player, const std::string& name)
-{
-    SgPropID id = SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, player);
-    SgNode* node = m_current->TopProp(id);
-    node->SetStringProp(id, name);
-}
-
 void GoGameRecord::SetToPlay(SgBlackWhite player)
 {
     if (player != m_board.ToPlay())
@@ -346,6 +342,30 @@ void GoGameRecord::SetToPlay(SgBlackWhite player)
             m_time.EnterNode(*m_current, player);
         }
     }
+}
+
+void GoGameRecord::UpdateGameInfoStringProp(SgPropID id,
+                                            const std::string& value)
+{
+    SgNode* node = m_current->TopProp(id);
+    node->SetStringProp(id, value);
+}
+
+void GoGameRecord::UpdateGameName(const std::string& name)
+{
+    UpdateGameInfoStringProp(SG_PROP_GAME_NAME, name);
+}
+
+void GoGameRecord::UpdatePlayerName(SgBlackWhite color,
+                                    const std::string& name)
+{
+    SgPropID id = SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, color);
+    UpdateGameInfoStringProp(id, name);
+}
+
+void GoGameRecord::UpdateResult(const std::string& result)
+{
+    UpdateGameInfoStringProp(SG_PROP_RESULT, result);
 }
 
 //----------------------------------------------------------------------------

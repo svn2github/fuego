@@ -458,7 +458,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     // Store computer player in SGF tree only if it was not already set from a
     // loaded SGF file or with the command go_set_info
     if (m_game.GetPlayerName(color).empty())
-        m_game.SetPlayerName(color, Player().Name());
+        m_game.UpdatePlayerName(color, Player().Name());
 }
 
 /** Generate cleanup move.
@@ -1110,13 +1110,13 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
     string value = cmd.RemainingLine(0);
     SgNode& root = m_game.Root();
     if (key == "game_name")
-        root.SetStringProp(SG_PROP_GAME_NAME, value);
+        m_game.UpdateGameName(value);
     else if (key == "player_black")
-        m_game.SetPlayerName(SG_BLACK, value);
+        m_game.UpdatePlayerName(SG_BLACK, value);
     else if (key == "player_white")
-        m_game.SetPlayerName(SG_WHITE, value);
+        m_game.UpdatePlayerName(SG_WHITE, value);
     else if (key == "result")
-        root.SetStringProp(SG_PROP_RESULT, value);
+        m_game.UpdateResult(value);
     AutoSave();
 }
 

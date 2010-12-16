@@ -110,19 +110,6 @@ public:
     /** Return whether the game is finished. */
     bool EndOfGame() const;
 
-    /** Get the player name.
-        Searches to nearest game info node on the path to the root node that
-        has a player property. Returns an empty string if unknown. */
-    std::string GetPlayerName(SgBlackWhite player) const;
-
-    void SetPlayerName(SgBlackWhite player, const std::string& name);
-
-    /** Return the current score (black minus white).
-        @todo: in what units?
-        @return true if there's a score recorded in the tree, otherwise
-        false. */
-    bool GetScore(int* score) const;
-
     /** The time left in the game at the current position. */
     SgTimeRecord& Time();
 
@@ -146,6 +133,38 @@ public:
     /** Get the number of moves since root or last node with setup
         properties. */
     int CurrentMoveNumber() const;
+
+
+    /** @name Query or change game info properties */
+    // @{
+
+    /** Get the player name.
+        Searches to nearest game info node on the path to the root node that
+        has a player property. Returns an empty string if unknown. */
+    std::string GetPlayerName(SgBlackWhite player) const;
+
+    /** Set the player name at root node or most recent node with this
+        property. */
+    void UpdatePlayerName(SgBlackWhite player, const std::string& name);
+
+    /** Get the game result.
+        Searches to nearest game info node on the path to the root node that
+        has a result property. Returns an empty string if unknown. */
+    std::string GetResult() const;
+
+    /** Set the result at root node or most recent node with this property. */
+    void UpdateResult(const std::string& result);
+
+    /** Get the game name.
+        Searches to nearest game info node on the path to the root node that
+        has a game name property. Returns an empty string if unknown. */
+    std::string GetGameName() const;
+
+    /** Set the game name at root node or most recent node with this
+        property. */
+    void UpdateGameName(const std::string& name);
+
+    // @} // name
 
 private:
     GoBoard m_board;
@@ -174,7 +193,11 @@ private:
         in the tree. */
     void DeleteTreeAndInitState();
 
+    std::string GetGameInfoStringProp(SgPropID id) const;
+
     void InitHandicap(const GoRules& rules, SgNode* root);
+
+    void UpdateGameInfoStringProp(SgPropID id, const std::string& value);
 };
 
 inline const GoBoard& GoGameRecord::Board() const
