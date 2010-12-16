@@ -42,6 +42,13 @@ public:
 
     virtual ~GoGameRecord();
 
+    /** @name Virtual functions
+        @note Still needed because subclass GoGame tracks changes to the
+        current node by callback (virtual) functions. This functionality of
+        GoGameRecord may be removed in the future, it is not recommended to
+        create more such subclasses. */
+    // @{
+
     /** Init from an existing game tree */
     virtual void InitFromRoot(SgNode* root);
 
@@ -53,6 +60,9 @@ public:
     /** Hook for subclasses.
         Default implementation does nothing. */
     virtual void OnGoToNode(SgNode* dest);
+
+    // @} // name
+
 
     /** Get the board associated with this game record. */
     const GoBoard& Board() const;
@@ -100,17 +110,16 @@ public:
     /** Return whether the game is finished. */
     bool EndOfGame() const;
 
-    /** Get the name of the given player.
-        Return the blank string if unknown.
-        Override to get information from an ongoing game rather than fron the
-        game record. */
-    virtual std::string GetPlayerName(SgBlackWhite player) const;
+    /** Get the player name.
+        Searches to nearest game info node on the path to the root node that
+        has a player property. Returns an empty string if unknown. */
+    std::string GetPlayerName(SgBlackWhite player) const;
 
     /** Return the current score (black minus white).
         @todo: in what units?
-        Return true if there's a score recorded in the tree, otherwise false.
-        Override to return information about the score from a player. */
-    virtual bool GetScore(int* score) const;
+        @return true if there's a score recorded in the tree, otherwise
+        false. */
+    bool GetScore(int* score) const;
 
     /** The time left in the game at the current position. */
     SgTimeRecord& Time();
