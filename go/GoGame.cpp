@@ -340,21 +340,38 @@ void GoGameRecord::SetKomiGlobal(GoKomi komi)
     m_board.Rules().SetKomi(komi);
 }
 
-void GoGameRecord::SetTimeSettingsGlobal(double mainSeconds,
-                                         double overtimeSeconds,
-                                         int overtimeStones)
+void GoGameRecord::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
+                                         double overhead)
 {
+    m_timeSettings = timeSettings;
     SgNode& root = *(m_current->Root());
     SgNodeUtil::RemovePropInSubtree(root, SG_PROP_TIME);
     SgNodeUtil::RemovePropInSubtree(root, SG_PROP_OT_NU_MOVES);
     SgNodeUtil::RemovePropInSubtree(root, SG_PROP_OT_PERIOD);
-    if (mainSeconds > 0)
-        root.Add(new SgPropTime(SG_PROP_TIME, mainSeconds));
-    if (overtimeSeconds > 0)
+    if (timeSettings.IsUnknown())
     {
-        root.SetIntProp(SG_PROP_OT_NU_MOVES, overtimeStones);
-        root.Add(new SgPropTime(SG_PROP_OT_PERIOD, overtimeSeconds));
+        // TODO: What to do with m_time? What to do with time left properties
+        // in tree nodes?
+        return;
     }
+    double mainTime = timeSettings.MainTime();
+    root.Add(new SgPropTime(SG_PROP_TIME, mainTime));
+    double overtime = timeSettings.Overtime();
+    if (overtime > 0)
+    {
+        root.Add(new SgPropTime(SG_PROP_OT_PERIOD, overtime));
+        root.SetIntProp(SG_PROP_OT_NU_MOVES, timeSettings.OvertimeMoves());
+    }
+    // TODO: What if the current node is not the root? What if nodes on the
+    // path from the root to the current node contain time left properties?
+    // Should we delete all time left properties or keep and still respect
+    // them for setting the time left in the current position?
+    m_time.SetOTPeriod(overtime);
+    m_time.SetOTNumMoves(timeSettings.OvertimeMoves());
+    m_time.SetOverhead(overhead);
+    m_time.SetClock(*m_current, SG_BLACK, mainTime);
+    m_time.SetClock(*m_current, SG_WHITE, mainTime);
+    m_time.TurnClockOn(true);
 }
 
 void GoGameRecord::SetToPlay(SgBlackWhite player)

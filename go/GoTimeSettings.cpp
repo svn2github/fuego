@@ -13,7 +13,7 @@ GoTimeSettings::GoTimeSettings()
       m_overtime(1),
       m_overtimeMoves(0)
 {
-    SG_ASSERT(NoTimeLimits());
+    SG_ASSERT(IsUnknown());
 }
 
 GoTimeSettings::GoTimeSettings(double mainTime)
@@ -41,7 +41,7 @@ bool GoTimeSettings::operator==(const GoTimeSettings& timeSettings)
             && timeSettings.m_overtimeMoves == m_overtimeMoves);
 }
 
-bool GoTimeSettings::NoTimeLimits() const
+bool GoTimeSettings::IsUnknown() const
 {
     return (m_overtime > 0 && m_overtimeMoves == 0);
 }

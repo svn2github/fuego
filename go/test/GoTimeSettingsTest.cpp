@@ -14,18 +14,10 @@ using namespace std;
 
 namespace {
 
-/** Test if no time limits is properly encoded as defined in GTP standard. */
 BOOST_AUTO_TEST_CASE(GoTimeSettingsTest_DefaultConstructor)
 {
     GoTimeSettings timeSettings;
-    BOOST_CHECK(timeSettings.Overtime() > 0);
-    BOOST_CHECK_EQUAL(timeSettings.OvertimeMoves(), 0);
-}
-
-BOOST_AUTO_TEST_CASE(GoTimeSettingsTest_NoTimeLimits)
-{
-    GoTimeSettings timeSettings;
-    BOOST_CHECK(timeSettings.NoTimeLimits());
+    BOOST_CHECK(timeSettings.IsUnknown());
 }
 
 } // namespace

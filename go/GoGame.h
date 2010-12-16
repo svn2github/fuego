@@ -15,6 +15,7 @@
 #include "GoBoard.h"
 #include "GoBoardUpdater.h"
 #include "GoBoardUtil.h"
+#include "GoTimeSettings.h"
 #include "SgNode.h"
 #include "SgPoint.h"
 #include "SgTimeRecord.h"
@@ -84,6 +85,8 @@ public:
     /** Return the root of this tree. */
     const SgNode& Root() const;
 
+    const GoTimeSettings& TimeSettings() const;
+
     /** Add move to the game record.
         Add move as the next move at the current position.
         If a node with that move already exists, then don't add a new one.
@@ -146,10 +149,12 @@ public:
         in the tree. */
     void SetKomiGlobal(GoKomi komi);
 
-    /** Set time settings properties in the root node and delete all time
-        settings properties in the tree. */
-    void SetTimeSettingsGlobal(double mainSeconds, double overtimeSeconds,
-                               int overtimeStones);
+    /** Set time settings properties in the root node and delete all such
+        properties in the rest of the tree.
+        @param timeSettings
+        @param overhead See SgTimeRecord */
+    void SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
+                               double overhead = 0);
 
     /** Get the player name.
         Searches to nearest game info node on the path to the root node that
@@ -189,6 +194,8 @@ private:
     SgNode* m_current;
 
     GoBoardUpdater m_updater;
+
+    GoTimeSettings m_timeSettings;
 
     /** A record of the clock settings and time left. */
     SgTimeRecord m_time;
@@ -246,6 +253,11 @@ inline SgTimeRecord& GoGameRecord::Time()
 inline const SgTimeRecord& GoGameRecord::Time() const
 {
     return m_time;
+}
+
+inline const GoTimeSettings& GoGameRecord::TimeSettings() const
+{
+    return m_timeSettings;
 }
 
 inline SgNode* GoGameRecord::CurrentNode()

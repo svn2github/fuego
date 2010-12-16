@@ -33,8 +33,7 @@ public:
 
     int OvertimeMoves() const;
 
-    /** Check if no time limits are used. */
-    bool NoTimeLimits() const;
+    bool IsUnknown() const;
 
 private:
     /** Main time measured in seconds. */

@@ -186,22 +186,7 @@ void GoGtpEngine::AddStatistics(const std::string& key,
 void GoGtpEngine::ApplyTimeSettings()
 {
     SG_ASSERT(Board().MoveNumber() == 0);
-    if (m_timeSettings.NoTimeLimits())
-        return;
-    SgTimeRecord& time = m_game.Time();
-    SgNode& node = *m_game.CurrentNode();
-    double mainTime = m_timeSettings.MainTime();
-    time.SetOTPeriod(m_timeSettings.Overtime());
-    time.SetOTNumMoves(m_timeSettings.OvertimeMoves());
-    time.SetOverhead(m_overhead);
-    time.SetClock(node, SG_BLACK, mainTime);
-    time.SetClock(node, SG_WHITE, mainTime);
-    SgNode& root = m_game.NonConstRoot();
-    if (mainTime > 0)
-        root.Add(new SgPropTime(SG_PROP_TIME, mainTime));
-    root.SetIntProp(SG_PROP_OT_NU_MOVES, m_timeSettings.OvertimeMoves());
-    root.Add(new SgPropTime(SG_PROP_OT_PERIOD, m_timeSettings.Overtime()));
-    m_game.TurnClockOn(true);
+    m_game.SetTimeSettingsGlobal(m_timeSettings);
 }
 
 void GoGtpEngine::AutoSave() const
@@ -526,7 +511,7 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     {
         cmd.CheckNuArg(1);
         m_timeSettings = GoTimeSettings();
-        SG_ASSERT(m_timeSettings.NoTimeLimits());
+        ApplyTimeSettings();
     }
     else if (type == "absolute")
     {
@@ -1295,7 +1280,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     bd.SetToPlay(color);
     double startTime = SgTime::Get();
     SgTimeRecord time;
-    if (ignoreClock || m_timeSettings.NoTimeLimits())
+    if (ignoreClock || m_timeSettings.IsUnknown())
         time = SgTimeRecord(true, m_timeLimit);
     else
         time = m_game.Time();
