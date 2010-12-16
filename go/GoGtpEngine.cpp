@@ -190,17 +190,17 @@ void GoGtpEngine::ApplyTimeSettings()
         return;
     SgTimeRecord& time = m_game.Time();
     SgNode& node = *m_game.CurrentNode();
-    int mainTime = m_timeSettings.MainTime();
-    time.SetOTPeriod(m_timeSettings.ByoYomiTime());
-    time.SetOTNumMoves(m_timeSettings.ByoYomiStones());
+    double mainTime = m_timeSettings.MainTime();
+    time.SetOTPeriod(m_timeSettings.Overtime());
+    time.SetOTNumMoves(m_timeSettings.OvertimeMoves());
     time.SetOverhead(m_overhead);
     time.SetClock(node, SG_BLACK, mainTime);
     time.SetClock(node, SG_WHITE, mainTime);
     SgNode& root = m_game.NonConstRoot();
     if (mainTime > 0)
         root.Add(new SgPropTime(SG_PROP_TIME, mainTime));
-    root.SetIntProp(SG_PROP_OT_NU_MOVES, m_timeSettings.ByoYomiStones());
-    root.Add(new SgPropTime(SG_PROP_OT_PERIOD, m_timeSettings.ByoYomiTime()));
+    root.SetIntProp(SG_PROP_OT_NU_MOVES, m_timeSettings.OvertimeMoves());
+    root.Add(new SgPropTime(SG_PROP_OT_PERIOD, m_timeSettings.Overtime()));
     m_game.TurnClockOn(true);
 }
 
@@ -525,15 +525,14 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     if (type == "none")
     {
         cmd.CheckNuArg(1);
-        // This will make m_timeSetings.NoTimeLimits() to true.
-        m_timeSettings = GoGtpTimeSettings(0, 1, 0);
+        m_timeSettings = GoTimeSettings();
         SG_ASSERT(m_timeSettings.NoTimeLimits());
     }
     else if (type == "absolute")
     {
         cmd.CheckNuArg(2);
         int mainTime = cmd.ArgMin<int>(1, 0);
-        GoGtpTimeSettings timeSettings(mainTime, 0, 0);
+        GoTimeSettings timeSettings(mainTime);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
@@ -544,9 +543,9 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
         cmd.CheckNuArg(4);
         // FIXME: not fully supported yet!
         int mainTime = cmd.ArgMin<int>(1, 0);
-        int byoYomiTime = cmd.ArgMin<int>(2, 0);
+        int overtime = cmd.ArgMin<int>(2, 0);
         //int byoYomiPeriods = cmd.ArgMin<int>(3, 0);
-        GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, 1);
+        GoTimeSettings timeSettings(mainTime, overtime, 1);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
@@ -556,9 +555,9 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     {
         cmd.CheckNuArg(4);
         int mainTime = cmd.ArgMin<int>(1, 0);
-        int byoYomiTime = cmd.ArgMin<int>(2, 0);
-        int byoYomiStones = cmd.ArgMin<int>(3, 0);
-        GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, byoYomiStones);
+        int overtime = cmd.ArgMin<int>(2, 0);
+        int overtimeMoves = cmd.ArgMin<int>(3, 0);
+        GoTimeSettings timeSettings(mainTime, overtime, overtimeMoves);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
@@ -1202,9 +1201,9 @@ void GoGtpEngine::CmdTimeSettings(GtpCommand& cmd)
 {
     cmd.CheckNuArg(3);
     int mainTime = cmd.ArgMin<int>(0, 0);
-    int byoYomiTime = cmd.ArgMin<int>(1, 0);
-    int byoYomiStones = cmd.ArgMin<int>(2, 0);
-    GoGtpTimeSettings timeSettings(mainTime, byoYomiTime, byoYomiStones);
+    int overtime = cmd.ArgMin<int>(1, 0);
+    int overtimeMoves = cmd.ArgMin<int>(2, 0);
+    GoTimeSettings timeSettings(mainTime, overtime, overtimeMoves);
     if (m_timeSettings == timeSettings)
         return;
     if (Board().MoveNumber() > 0)

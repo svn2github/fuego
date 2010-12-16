@@ -12,13 +12,13 @@ fuego_unittest_SOURCES = \
 ../go/test/GoGameRecordTest.cpp \
 ../go/test/GoGtpCommandUtilTest.cpp \
 ../go/test/GoGtpEngineTest.cpp \
-../go/test/GoGtpTimeSettingsTest.cpp \
 ../go/test/GoKomiTest.cpp \
 ../go/test/GoLadderTest.cpp \
 ../go/test/GoRegionTest.cpp \
 ../go/test/GoRegionBoardTest.cpp \
 ../go/test/GoSetupUtilTest.cpp \
 ../go/test/GoTimeControlTest.cpp \
+../go/test/GoTimeSettingsTest.cpp \
 ../go/test/GoUtilTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
 ../gouct/test/GoUctUtilTest.cpp \

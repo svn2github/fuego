@@ -340,6 +340,23 @@ void GoGameRecord::SetKomiGlobal(GoKomi komi)
     m_board.Rules().SetKomi(komi);
 }
 
+void GoGameRecord::SetTimeSettingsGlobal(double mainSeconds,
+                                         double overtimeSeconds,
+                                         int overtimeStones)
+{
+    SgNode& root = *(m_current->Root());
+    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_TIME);
+    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_OT_NU_MOVES);
+    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_OT_PERIOD);
+    if (mainSeconds > 0)
+        root.Add(new SgPropTime(SG_PROP_TIME, mainSeconds));
+    if (overtimeSeconds > 0)
+    {
+        root.SetIntProp(SG_PROP_OT_NU_MOVES, overtimeStones);
+        root.Add(new SgPropTime(SG_PROP_OT_PERIOD, overtimeSeconds));
+    }
+}
+
 void GoGameRecord::SetToPlay(SgBlackWhite player)
 {
     if (player != m_board.ToPlay())

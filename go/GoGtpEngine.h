@@ -13,8 +13,8 @@
 #include "GoBook.h"
 #include "GoAutoBook.h"
 #include "GoGame.h"
-#include "GoGtpTimeSettings.h"
 #include "GoStaticLadder.h"
+#include "GoTimeSettings.h"
 #include "GtpEngine.h"
 #include "SgGtpCommands.h"
 #include "SgPointArray.h"
@@ -363,7 +363,7 @@ private:
     double m_overhead;
 
     /** Time settings for game. */
-    GoGtpTimeSettings m_timeSettings;
+    GoTimeSettings m_timeSettings;
 
     /** Default rules.
         Will be used whenever a new game is started. */

@@ -146,6 +146,11 @@ public:
         in the tree. */
     void SetKomiGlobal(GoKomi komi);
 
+    /** Set time settings properties in the root node and delete all time
+        settings properties in the tree. */
+    void SetTimeSettingsGlobal(double mainSeconds, double overtimeSeconds,
+                               int overtimeStones);
+
     /** Get the player name.
         Searches to nearest game info node on the path to the root node that
         has a player property. Returns an empty string if unknown. */
