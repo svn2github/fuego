@@ -208,13 +208,13 @@ void GoGameRecord::Init(int size, const GoRules& rules)
 // to the given size and handicap, and create a root node to start with.
 {
     DeleteTreeAndInitState();
-    OnInitBoard(size, rules);
+    m_board.Init(size, rules);
     // Create a new game tree, use current board.
     SgNode* root = new SgNode();
     // Add root property: board size.
     SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
     root->Add(boardSize);
-    OnInitHandicap(rules, root);
+    InitHandicap(rules, root);
     GoToNode(root);
 }
 
@@ -233,7 +233,7 @@ void GoGameRecord::InitFromRoot(SgNode* root)
             ForceInRange(SG_MIN_SIZE, &size, SG_MAX_SIZE);
         }
         const GoRules& rules = m_board.Rules();
-        OnInitBoard(size, GoRules(rules.Handicap(), rules.Komi()));
+        m_board.Init(size, GoRules(rules.Handicap(), rules.Komi()));
     }
     else
     {
@@ -259,12 +259,7 @@ void GoGameRecord::OnGoToNode(SgNode* dest)
     SG_UNUSED(dest);
 }
 
-void GoGameRecord::OnInitBoard(int size, const GoRules& rules)
-{
-    m_board.Init(size, rules);
-}
-
-void GoGameRecord::OnInitHandicap(const GoRules& rules, SgNode* root)
+void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
 {
     // Add handicap properties.
     if (2 <= rules.Handicap())

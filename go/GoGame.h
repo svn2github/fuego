@@ -54,12 +54,6 @@ public:
         Default implementation does nothing. */
     virtual void OnGoToNode(SgNode* dest);
 
-    /** Override to initialize other boards in derived classes.
-        @see GoBoard */
-    virtual void OnInitBoard(int size, const GoRules& rules);
-
-    virtual void OnInitHandicap(const GoRules& rules, SgNode* root);
-
     /** Get the board associated with this game record. */
     const GoBoard& Board() const;
 
@@ -168,6 +162,8 @@ private:
     /** Delete the tree and initialize the state associated with the position
         in the tree. */
     void DeleteTreeAndInitState();
+
+    void InitHandicap(const GoRules& rules, SgNode* root);
 };
 
 inline const GoBoard& GoGameRecord::Board() const
