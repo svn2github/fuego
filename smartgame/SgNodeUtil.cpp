@@ -30,6 +30,13 @@ int SgNodeUtil::GetMoveNumber(const SgNode* node)
     return nuMoves;
 }
 
+void SgNodeUtil::RemovePropInSubtree(SgNode& root, SgPropID id)
+{
+    root.Props().RemoveProp(id);
+    for (SgSonNodeIterator it(&root); it; ++it)
+        RemovePropInSubtree(*(*it), id);
+}
+
 void SgNodeUtil::UpdateTime(SgTimeRecord& time, const SgNode* node)
 {
     vector<const SgNode*> nodes;

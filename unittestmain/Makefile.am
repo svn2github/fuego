@@ -43,6 +43,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgMiaiStrategyTest.cpp \
 ../smartgame/test/SgNbIteratorTest.cpp \
 ../smartgame/test/SgNodeTest.cpp \
+../smartgame/test/SgNodeUtilTest.cpp \
 ../smartgame/test/SgPointArrayTest.cpp \
 ../smartgame/test/SgPointTest.cpp \
 ../smartgame/test/SgPointSetTest.cpp \

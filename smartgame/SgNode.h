@@ -286,6 +286,7 @@ public:
         Create such a property if it doesn't exist yet. The property must be
         of class SgPropPointList (or a derived class). */
     void SetListProp(SgPropID id, const SgVector<SgPoint>& value);
+
     void SetListProp(SgPropID id, const SgPointSet& value);
 
     /** Add comment to existing SG_PROP_COMMENT of this node, or create a new

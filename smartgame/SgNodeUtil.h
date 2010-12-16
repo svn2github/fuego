@@ -5,6 +5,8 @@
 #ifndef SG_NODEUTIL_H
 #define SG_NODEUTIL_H
 
+#include "SgProp.h"
+
 class SgNode;
 class SgTimeRecord;
 
@@ -14,6 +16,9 @@ namespace SgNodeUtil
 {
     /** Get number of moves since root or last node with setup properties. */
     int GetMoveNumber(const SgNode* node);
+
+    /** Remove all occurrences of a property in the subtree of a node. */
+    void RemovePropInSubtree(SgNode& root, SgPropID id);
 
     /** Update the current time information corresponding to a node.
         Visits all nodes in the path from root to the target node and applies

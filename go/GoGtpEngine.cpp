@@ -594,13 +594,11 @@ void GoGtpEngine::CmdIsLegal(GtpCommand& cmd)
     GTP standard command. */
 void GoGtpEngine::CmdKomi(GtpCommand& cmd)
 {
-    cmd.CheckNuArg(1);
     try
     {
-        GoKomi komi(cmd.Arg(0));
-        m_game.NonConstRoot().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+        GoKomi komi(cmd.Arg());
+        m_game.SetKomiGlobal(komi);
         m_defaultRules.SetKomi(komi);
-        NonConstBoard().Rules().SetKomi(komi);
         RulesChanged();
     }
     catch (const GoKomi::InvalidKomi& e)

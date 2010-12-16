@@ -331,6 +331,15 @@ void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
     }
 }
 
+void GoGameRecord::SetKomiGlobal(GoKomi komi)
+{
+    SgNode& root = *(m_current->Root());
+    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_KOMI);
+    if (! komi.IsUnknown())
+        root.SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+    m_board.Rules().SetKomi(komi);
+}
+
 void GoGameRecord::SetToPlay(SgBlackWhite player)
 {
     if (player != m_board.ToPlay())

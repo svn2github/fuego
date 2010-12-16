@@ -142,6 +142,10 @@ public:
     /** @name Query or change game info properties */
     // @{
 
+    /** Set komi property in the root node and delete all komi properties
+        in the tree. */
+    void SetKomiGlobal(GoKomi komi);
+
     /** Get the player name.
         Searches to nearest game info node on the path to the root node that
         has a player property. Returns an empty string if unknown. */
