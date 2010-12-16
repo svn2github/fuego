@@ -217,6 +217,9 @@ void GoGameRecord::Init(int size, const GoRules& rules)
     // Add root property: board size.
     SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
     root->Add(boardSize);
+    GoKomi komi = rules.Komi();
+    if (! komi.IsUnknown())
+        root->SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
     InitHandicap(rules, root);
     GoToNode(root);
 }

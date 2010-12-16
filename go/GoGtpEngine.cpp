@@ -1343,11 +1343,6 @@ void GoGtpEngine::Init(int size)
     char dateBuffer[128];
     strftime(dateBuffer, sizeof(dateBuffer), "%Y-%m-%d", timeStruct);
     m_game.UpdateDate(dateBuffer);
-    GoKomi komi = Board().Rules().Komi();
-    if (!komi.IsUnknown())
-    {
-        m_game.NonConstRoot().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
-    }
     ApplyTimeSettings();
     CreateAutoSaveFileName();
 }
