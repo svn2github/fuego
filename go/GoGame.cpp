@@ -117,11 +117,6 @@ SgNode* GoGameRecord::AddResignNode(SgBlackWhite player)
     return node;
 }
 
-bool GoGameRecord::CanDeleteCurrentNode() const
-{
-    return CurrentNode() && CurrentNode()->HasFather();
-}
-
 bool GoGameRecord::CanGoInDirection(SgNode::Direction dir) const
 {
     SgNode* node = m_current->NodeInDirection(dir);

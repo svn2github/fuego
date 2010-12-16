@@ -134,8 +134,6 @@ public:
         the current time left. */
     const SgNode* CurrentNode() const;
 
-    bool CanDeleteCurrentNode() const;
-
     /** Return the move of the current node.
         Return NullMove if no current move. */
     SgMove CurrentMove() const;
