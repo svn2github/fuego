@@ -115,6 +115,8 @@ public:
         has a player property. Returns an empty string if unknown. */
     std::string GetPlayerName(SgBlackWhite player) const;
 
+    void SetPlayerName(SgBlackWhite player, const std::string& name);
+
     /** Return the current score (black minus white).
         @todo: in what units?
         @return true if there's a score recorded in the tree, otherwise

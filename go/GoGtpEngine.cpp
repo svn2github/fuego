@@ -161,17 +161,6 @@ GoGtpEngine::~GoGtpEngine()
 #endif
 }
 
-/** Add player name property to root node. */
-void GoGtpEngine::AddPlayerProp(SgBlackWhite color, const string& name,
-                                bool overwrite)
-{
-    SgNode& root = m_game.Root();
-    SgPropID SG_PROP_PLAYER =
-        (color == SG_BLACK ? SG_PROP_PLAYER_BLACK : SG_PROP_PLAYER_WHITE);
-    if (overwrite || ! root.HasProp(SG_PROP_PLAYER))
-        root.SetStringProp(SG_PROP_PLAYER, name);
-}
-
 void GoGtpEngine::AddPlayStatistics()
 {
     // Default implementation does nothing
@@ -466,7 +455,10 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
         BoardChanged();
         cmd << SgWritePoint(move);
     }
-    AddPlayerProp(color, Player().Name(), false);
+    // Store computer player in SGF tree only if it was not already set from a
+    // loaded SGF file or with the command go_set_info
+    if (m_game.GetPlayerName(color).empty())
+        m_game.SetPlayerName(color, Player().Name());
 }
 
 /** Generate cleanup move.
@@ -1120,9 +1112,9 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
     if (key == "game_name")
         root.SetStringProp(SG_PROP_GAME_NAME, value);
     else if (key == "player_black")
-        AddPlayerProp(SG_BLACK, value, true);
+        m_game.SetPlayerName(SG_BLACK, value);
     else if (key == "player_white")
-        AddPlayerProp(SG_WHITE, value, true);
+        m_game.SetPlayerName(SG_WHITE, value);
     else if (key == "result")
         root.SetStringProp(SG_PROP_RESULT, value);
     AutoSave();

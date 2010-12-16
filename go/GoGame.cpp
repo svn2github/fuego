@@ -325,6 +325,13 @@ void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
     }
 }
 
+void GoGameRecord::SetPlayerName(SgBlackWhite player, const std::string& name)
+{
+    SgPropID id = SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, player);
+    SgNode* node = m_current->TopProp(id);
+    node->SetStringProp(id, name);
+}
+
 void GoGameRecord::SetToPlay(SgBlackWhite player)
 {
     if (player != m_board.ToPlay())

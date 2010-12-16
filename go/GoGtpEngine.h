@@ -395,9 +395,6 @@ private:
 
     SgMpiSynchronizerHandle m_mpiSynchronizer;
 
-    void AddPlayerProp(SgBlackWhite color, const std::string& name,
-                       bool overwrite);
-
     void ApplyTimeSettings();
 
     void AutoSave() const;
