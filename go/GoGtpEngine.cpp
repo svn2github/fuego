@@ -196,7 +196,7 @@ void GoGtpEngine::ApplyTimeSettings()
     time.SetOverhead(m_overhead);
     time.SetClock(node, SG_BLACK, mainTime);
     time.SetClock(node, SG_WHITE, mainTime);
-    SgNode& root = m_game.Root();
+    SgNode& root = m_game.NonConstRoot();
     if (mainTime > 0)
         root.Add(new SgPropTime(SG_PROP_TIME, mainTime));
     root.SetIntProp(SG_PROP_OT_NU_MOVES, m_timeSettings.ByoYomiStones());
@@ -598,7 +598,7 @@ void GoGtpEngine::CmdKomi(GtpCommand& cmd)
     try
     {
         GoKomi komi(cmd.Arg(0));
-        m_game.Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+        m_game.NonConstRoot().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
         m_defaultRules.SetKomi(komi);
         NonConstBoard().Rules().SetKomi(komi);
         RulesChanged();
@@ -1108,7 +1108,6 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 {
     string key = cmd.Arg(0);
     string value = cmd.RemainingLine(0);
-    SgNode& root = m_game.Root();
     if (key == "game_name")
         m_game.UpdateGameName(value);
     else if (key == "player_black")
@@ -1343,11 +1342,11 @@ void GoGtpEngine::Init(int size)
     struct tm* timeStruct = localtime(&timeValue);
     char dateBuffer[128];
     strftime(dateBuffer, sizeof(dateBuffer), "%Y-%m-%d", timeStruct);
-    m_game.Root().SetStringProp(SG_PROP_DATE, dateBuffer);
+    m_game.UpdateDate(dateBuffer);
     GoKomi komi = Board().Rules().Komi();
     if (!komi.IsUnknown())
     {
-        m_game.Root().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+        m_game.NonConstRoot().SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
     }
     ApplyTimeSettings();
     CreateAutoSaveFileName();

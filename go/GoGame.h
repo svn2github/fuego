@@ -74,8 +74,12 @@ public:
         in the current node. */
     GoBoard& NonConstBoard();
 
-    /** Return the root of this tree. */
-    SgNode& Root();
+    /** Deprecated.
+        @deprecated In the future, only this class should be allowed to modify
+        the tree to guarantee its class invariants (i.e. the current node
+        is always a valid node of the tree and the board reflects the state
+        in the current node. */
+    SgNode& NonConstRoot();
 
     /** Return the root of this tree. */
     const SgNode& Root() const;
@@ -147,6 +151,9 @@ public:
         property. */
     void UpdatePlayerName(SgBlackWhite player, const std::string& name);
 
+    /** Set the date at root node or most recent node with this property. */
+    void UpdateDate(const std::string& date);
+
     /** Get the game result.
         Searches to nearest game info node on the path to the root node that
         has a result property. Returns an empty string if unknown. */
@@ -210,7 +217,7 @@ inline GoBoard& GoGameRecord::NonConstBoard()
     return m_board;
 }
 
-inline SgNode& GoGameRecord::Root()
+inline SgNode& GoGameRecord::NonConstRoot()
 {
     SG_ASSERT(m_current);
     return *m_current->Root();

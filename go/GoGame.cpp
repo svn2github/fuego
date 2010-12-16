@@ -344,6 +344,11 @@ void GoGameRecord::SetToPlay(SgBlackWhite player)
     }
 }
 
+void GoGameRecord::UpdateDate(const std::string& date)
+{
+    UpdateGameInfoStringProp(SG_PROP_DATE, date);
+}
+
 void GoGameRecord::UpdateGameInfoStringProp(SgPropID id,
                                             const std::string& value)
 {
