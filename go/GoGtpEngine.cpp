@@ -475,10 +475,10 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     Arguments: color
     @bug This does not work, if the opponent passes, before he captured all
     of our dead stones, because then we could also pass without capturing all
-    of his dead stones (if it is a win accosing to Tromp-Taylor counting),
+    of his dead stones (if it is a win according to Tromp-Taylor counting),
     but KGS will not use Tromp-Taylor counting in the cleanup phase, but
-    send another <tt>final_status_list dead</tt> command. See also bug
-    2157832 int the bug tracker. */
+    send another <tt>final_status_list dead</tt> command. See also
+    http://sourceforge.net/apps/trac/fuego/ticket/15 */
 void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
 {
     GoRules& rules = NonConstBoard().Rules();

@@ -345,8 +345,6 @@ public:
     static std::string TreeIndex(const SgNode* node);
 
 private:
-    //friend class SgNodeIterator;
-
     SgNode* m_son;
 
     SgNode* m_father;
