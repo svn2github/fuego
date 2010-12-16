@@ -75,13 +75,6 @@ public:
         in the current node. */
     GoBoard& NonConstBoard();
 
-    /** Deprecated.
-        @deprecated In the future, only this class should be allowed to modify
-        the tree to guarantee its class invariants (i.e. the current node
-        is always a valid node of the tree and the board reflects the state
-        in the current node. */
-    SgNode& NonConstRoot();
-
     /** Return the root of this tree. */
     const SgNode& Root() const;
 
@@ -231,12 +224,6 @@ inline const GoBoard& GoGameRecord::Board() const
 inline GoBoard& GoGameRecord::NonConstBoard()
 {
     return m_board;
-}
-
-inline SgNode& GoGameRecord::NonConstRoot()
-{
-    SG_ASSERT(m_current);
-    return *m_current->Root();
 }
 
 inline const SgNode& GoGameRecord::Root() const
