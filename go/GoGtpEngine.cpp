@@ -1278,8 +1278,6 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     CheckMoveStackOverflow();
     StartStatistics();
     GoPlayer& player = Player();
-    GoBoard& bd = NonConstBoard();
-    bd.SetToPlay(color);
     double startTime = SgTime::Get();
     SgTimeRecord time;
     if (ignoreClock || m_timeSettings.IsUnknown())
@@ -1289,13 +1287,16 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     AddStatistics("GAME", m_autoSaveFileName);
     AddStatistics("MOVE", m_game.CurrentMoveNumber() + 1);
     SgPoint move = SG_NULLMOVE;
-    if (m_autoBook.get() != 0)
+    if (color == Board().ToPlay())
     {
-        SgDebug() << "GoGtpEngine: Checking AutoBook instead of book\n";
-        move = m_autoBook->LookupMove(bd);
+        if (m_autoBook.get() != 0)
+        {
+            SgDebug() << "GoGtpEngine: Checking AutoBook instead of book\n";
+            move = m_autoBook->LookupMove(Board());
+        }
+        else 
+            move = m_book.LookupMove(Board());
     }
-    else 
-        move = m_book.LookupMove(bd);
     m_mpiSynchronizer->SynchronizeMove(move);
     if (move != SG_NULLMOVE)
     {
