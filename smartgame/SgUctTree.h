@@ -172,9 +172,17 @@ public:
         See PosCount() */
     void IncPosCount();
 
+    /** Increment the position count.
+        See PosCount() */
+    void IncPosCount(SgUctValue count);
+
     /** Decrement the position count.
         See PosCount() */
     void DecPosCount();
+
+    /** Decrement the position count.
+        See PosCount() */
+    void DecPosCount(SgUctValue count);
 
     void SetPosCount(SgUctValue value);
 
@@ -342,9 +350,27 @@ inline void SgUctNode::IncPosCount()
     ++m_posCount;
 }
 
+inline void SgUctNode::IncPosCount(SgUctValue count)
+{
+    m_posCount += count;
+}
+
 inline void SgUctNode::DecPosCount()
 {
-    --m_posCount;
+    SgUctValue posCount = m_posCount;
+    if (posCount > 0)
+    {
+	m_posCount = posCount - 1;
+    }
+}
+
+inline void SgUctNode::DecPosCount(SgUctValue count)
+{
+    SgUctValue posCount = m_posCount;
+    if (posCount >= count)
+    {
+	m_posCount = posCount - count;
+    }
 }
 
 inline void SgUctNode::InitializeValue(SgUctValue value, SgUctValue count)
@@ -817,8 +843,7 @@ inline void SgUctTree::AddGameResults(const SgUctNode& node,
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     if (father != 0)
-        const_cast<SgUctNode*>(father)->SetPosCount(father->PosCount() 
-                                                    + count);
+        const_cast<SgUctNode*>(father)->IncPosCount(count);
     const_cast<SgUctNode&>(node).AddGameResults(eval, count);
 }
 
@@ -873,8 +898,7 @@ inline void SgUctTree::RemoveGameResults(const SgUctNode& node,
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes 
     if (father != 0)
-        const_cast<SgUctNode*>(father)->SetPosCount(father->PosCount() 
-                                                    - count);
+        const_cast<SgUctNode*>(father)->DecPosCount(count);
     const_cast<SgUctNode&>(node).RemoveGameResults(eval, count);
 }
 
