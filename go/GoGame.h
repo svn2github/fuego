@@ -27,9 +27,9 @@ class SgSearchStatistics;
 //----------------------------------------------------------------------------
 
 /** Game stored as a tree of moves.
-    Contains a game tree, a board and a pointer to a current node. The
-    current node is always a valid node of the tree and the board reflects
-    the game state at the current node.
+    Contains a game tree, a pointer to a current node, a board and records
+    of the time left. The current node is always a valid node of the tree and
+    the board and time records reflect the game state at the current node.
     @note This class is in the process of being refactored to provide
     encapsulation and to guarantee its class invariants. In the future, the
     tree, current node and board will only be modifiable through member
@@ -177,6 +177,8 @@ public:
     /** Set the game name at root node or most recent node with this
         property. */
     void UpdateGameName(const std::string& name);
+
+    void SetRulesGlobal(const GoRules& rules);
 
     // @} // name
 

@@ -16,6 +16,7 @@
 #include <boost/filesystem/operations.hpp>
 #include "GoEyeUtil.h"
 #include "GoGtpCommandUtil.h"
+#include "GoModBoard.h"
 #include "GoNodeUtil.h"
 #include "GoPlayer.h"
 #include "GoTimeControl.h"
@@ -238,7 +239,8 @@ void GoGtpEngine::CheckBoardEmpty() const
 void GoGtpEngine::CheckLegal(string message, SgBlackWhite color, SgPoint move,
                              bool checkOnlyOccupied)
 {
-    GoBoard& bd = NonConstBoard();
+    GoModBoard modBoard(Board());
+    GoBoard& bd = modBoard.Board();
     bool illegal = false;
     string reason = "";
     if (move != SG_PASS)
@@ -454,13 +456,14 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     of our dead stones, because then we could also pass without capturing all
     of his dead stones (if it is a win according to Tromp-Taylor counting),
     but KGS will not use Tromp-Taylor counting in the cleanup phase, but
-    send another <tt>final_status_list dead</tt> command. See also
+    send another @c final_status_list dead command. See also
     http://sourceforge.net/apps/trac/fuego/ticket/15 */
 void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
 {
-    GoRules& rules = NonConstBoard().Rules();
+    GoRules rules = Board().Rules();
     bool oldCaptureDead = rules.CaptureDead();
     rules.SetCaptureDead(true);
+    m_game.SetRulesGlobal(rules);
     RulesChanged();
     try
     {
@@ -469,10 +472,12 @@ void GoGtpEngine::CmdGenMoveCleanup(GtpCommand& cmd)
     catch (const GtpFailure& failure)
     {
         rules.SetCaptureDead(oldCaptureDead);
+        m_game.SetRulesGlobal(rules);
         RulesChanged();
         throw failure;
     }
     rules.SetCaptureDead(oldCaptureDead);
+    m_game.SetRulesGlobal(rules);
     RulesChanged();
 }
 
@@ -730,9 +735,9 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
 void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoRules& r = NonConstBoard().Rules();
     if (cmd.NuArg() == 0)
     {
+        const GoRules& r = Board().Rules();
         cmd << "[bool] allow_suicide "
             << SgWriteBoolAsInt(r.AllowSuicide()) << '\n'
             << "[bool] capture_dead "
@@ -748,6 +753,7 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
     }
     else if (cmd.NuArg() == 2)
     {
+        GoRules r = Board().Rules();
         string name = cmd.Arg(0);
         if (name == "allow_suicide")
         {
@@ -781,6 +787,7 @@ void GoGtpEngine::CmdParamRules(GtpCommand& cmd)
         }
         else
             throw GtpFailure() << "unknown parameter: " << name;
+        m_game.SetRulesGlobal(r);
         RulesChanged();
     }
     else
@@ -1514,8 +1521,8 @@ void GoGtpEngine::SetPlayer(GoPlayer* player)
 
 void GoGtpEngine::SetNamedRules(const string& namedRules)
 {
-    NonConstBoard().Rules().SetNamedRules(namedRules);
     m_defaultRules.SetNamedRules(namedRules);
+    m_game.SetRulesGlobal(m_defaultRules);
     RulesChanged();
 }
 

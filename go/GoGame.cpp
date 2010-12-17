@@ -207,14 +207,10 @@ void GoGameRecord::GoToNode(SgNode* dest)
 }
 
 void GoGameRecord::Init(int size, const GoRules& rules)
-// Delete the old game record and start with a fresh one. Init the board
-// to the given size and handicap, and create a root node to start with.
 {
     DeleteTreeAndInitState();
     m_board.Init(size, rules);
-    // Create a new game tree, use current board.
     SgNode* root = new SgNode();
-    // Add root property: board size.
     SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
     root->Add(boardSize);
     GoKomi komi = rules.Komi();
@@ -229,7 +225,6 @@ void GoGameRecord::InitFromRoot(SgNode* root)
     DeleteTreeAndInitState();
     if (root)
     {
-        // Get board properties from root node.
         int size = GO_DEFAULT_SIZE;
         SgPropInt* boardSize =
             static_cast<SgPropInt*>(root->Get(SG_PROP_SIZE));
@@ -338,6 +333,13 @@ void GoGameRecord::SetKomiGlobal(GoKomi komi)
     if (! komi.IsUnknown())
         root.SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
     m_board.Rules().SetKomi(komi);
+}
+
+void GoGameRecord::SetRulesGlobal(const GoRules& rules)
+{
+    m_board.Rules() = rules;
+    // TODO: Create description of rules and store it in RU property of root
+    SetKomiGlobal(rules.Komi());
 }
 
 void GoGameRecord::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
