@@ -1144,16 +1144,11 @@ void GoGtpEngine::CmdSetup(GtpCommand& cmd)
 }
 
 /** Set color to play.
-    Command will be used by future versions of GoGui. <br>
     Argument: color <br> */
 void GoGtpEngine::CmdSetupPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
-    SgBlackWhite toPlay = BlackWhiteArg(cmd, 0);
-    SgNode* node = m_game.CurrentNode();
-    node->Props().RemoveProp(SG_PROP_PLAYER);
-    node->Add(new SgPropPlayer(SG_PROP_PLAYER, toPlay));
-    NonConstBoard().SetToPlay(toPlay);
+    m_game.SetToPlay(BlackWhiteArg(cmd, 0));
     if (m_player != 0)
         m_player->UpdateSubscriber();
     BoardChanged();

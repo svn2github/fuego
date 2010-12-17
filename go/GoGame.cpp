@@ -376,20 +376,13 @@ void GoGameRecord::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
     m_time.TurnClockOn(true);
 }
 
-void GoGameRecord::SetToPlay(SgBlackWhite player)
+void GoGameRecord::SetToPlay(SgBlackWhite toPlay)
 {
-    if (player != m_board.ToPlay())
-    {
-        m_board.SetToPlay(player);
-        if (m_current)
-        {
-            // Also record this change of player in the move tree.
-            m_current->Add(new SgPropPlayer(SG_PROP_PLAYER, player));
-
-            // Update the clock.
-            m_time.EnterNode(*m_current, player);
-        }
-    }
+    if (toPlay == m_board.ToPlay())
+        return;
+    m_board.SetToPlay(toPlay);
+    m_current->Add(new SgPropPlayer(SG_PROP_PLAYER, toPlay));
+    m_time.EnterNode(*m_current, toPlay);
 }
 
 void GoGameRecord::UpdateDate(const std::string& date)

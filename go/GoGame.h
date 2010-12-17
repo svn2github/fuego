@@ -104,8 +104,9 @@ public:
     /** Return whether there is a next node in the given direction. */
     bool CanGoInDirection(SgNode::Direction dir) const;
 
-    /** Set the current player. */
-    void SetToPlay(SgBlackWhite player);
+    /** Set the current player.
+        Same meaning as the SGF property PL. */
+    void SetToPlay(SgBlackWhite toPlay);
 
     /** Return whether the game is finished. */
     bool EndOfGame() const;
@@ -277,7 +278,16 @@ namespace GoGameUtil
 
 /** Game record played between two players.
     A GoGame object handles the synchronization between the players
-    and the board they're playing on, and keeps track of the time. */
+    and the board they are playing on.
+    @deprecated There is no real reason to tie the players to a game record
+    and always synchronize them immediately to the current node when
+    navigating in the tree. Therefore, this class and the corresponding
+    virtual functions in GoGameRecord may be removed in the future (and
+    GoGameRecord be renamed to GoGame). In new code, use only GoGameRecord
+    and call GoPlayer::UpdateSubscriber() and GoPlayer::SetCurrentNode()
+    explicitely. Note that you already need to call UpdateSubscriber() if the
+    rules or komi is changed in GoGameRecord, because GoGame does not
+    automatically update the players in these cases. */
 class GoGame
     : public GoGameRecord
 {
