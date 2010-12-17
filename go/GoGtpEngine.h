@@ -238,11 +238,6 @@ protected:
         Flushes SgDebug(). */
     void BeforeWritingResponse();
 
-    /** Deprecated.
-        @deprecated In the future, only GoGame will be allowed to modify
-        its board. */
-    GoBoard& NonConstBoard();
-
     void BoardChanged();
 
     void CheckLegal(std::string message, SgBlackWhite color, SgPoint move,
@@ -426,11 +421,6 @@ void GoGtpEngine::AddStatistics(const std::string& key, const T& value)
     std::ostringstream s;
     s << value;
     AddStatistics(key, s.str());
-}
-
-inline GoBoard& GoGtpEngine::NonConstBoard()
-{
-    return m_game.NonConstBoard();
 }
 
 inline const GoBoard& GoGtpEngine::Board() const

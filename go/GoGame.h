@@ -26,7 +26,7 @@ class SgSearchStatistics;
 
 //----------------------------------------------------------------------------
 
-/** Game stored as a tree of moves.
+/** Game state and move history including variations.
     Contains a game tree, a pointer to a current node, a board and records
     of the time left. The current node is always a valid node of the tree and
     the board and time records reflect the game state at the current node.
@@ -68,17 +68,17 @@ public:
     /** Get the board associated with this game record. */
     const GoBoard& Board() const;
 
-    /** Deprecated.
-        @deprecated In the future, only this class should be allowed to modify
-        the board to guarantee its class invariants (i.e. the current node
-        is always a valid node of the tree and the board reflects the state
-        in the current node. */
-    GoBoard& NonConstBoard();
-
     /** Return the root of this tree. */
     const SgNode& Root() const;
 
     const GoTimeSettings& TimeSettings() const;
+
+    /** Set handicap stones at explicitely given points.
+        If the current node alread has children, a new child is created with
+        the handicap setup (and made the current node), otherwise the
+        handicap stones are added to the current node.
+        @pre Board is empty */
+    void PlaceHandicap(const SgVector<SgPoint>& stones);
 
     /** Add move to the game record.
         Add move as the next move at the current position.
@@ -220,11 +220,6 @@ private:
 };
 
 inline const GoBoard& GoGameRecord::Board() const
-{
-    return m_board;
-}
-
-inline GoBoard& GoGameRecord::NonConstBoard()
 {
     return m_board;
 }

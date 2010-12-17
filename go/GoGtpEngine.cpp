@@ -1379,19 +1379,8 @@ SgPoint GoGtpEngine::MoveArg(const GtpCommand& cmd, std::size_t number) const
 void GoGtpEngine::PlaceHandicap(const SgVector<SgPoint>& stones)
 {
     CheckBoardEmpty();
-    GoBoard& bd = NonConstBoard();
-    SgNode* node = m_game.CurrentNode();
-    if (node->HasSon())
-        node = m_game.CurrentNode()->NewRightMostSon();
-    SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
-    for (SgVectorIterator<SgPoint> it(stones); it; ++it)
-        addBlack->PushBack(*it);
-    node->Add(addBlack);
-    SgPropInt* handicap = new SgPropInt(SG_PROP_HANDICAP, stones.Length());
-    node->Add(handicap);
-    bd.Rules().SetHandicap(stones.Length());
+    m_game.PlaceHandicap(stones);
     RulesChanged();
-    m_game.GoToNode(node);
     BoardChanged();
 }
 

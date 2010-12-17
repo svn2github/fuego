@@ -260,8 +260,29 @@ void GoGameRecord::OnGoToNode(SgNode* dest)
     SG_UNUSED(dest);
 }
 
+void GoGameRecord::PlaceHandicap(const SgVector<SgPoint>& stones)
+{
+    SG_ASSERT(m_board.TotalNumStones(SG_BLACK)
+              + m_board.TotalNumStones(SG_WHITE) > 0);
+    SgNode* node = m_current;
+    if (node->HasSon())
+        node = node->NewRightMostSon();
+    SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
+    for (SgVectorIterator<SgPoint> it(stones); it; ++it)
+        addBlack->PushBack(*it);
+    node->Add(addBlack);
+    SgPropInt* handicap = new SgPropInt(SG_PROP_HANDICAP, stones.Length());
+    node->Add(handicap);
+    node->Add(new SgPropPlayer(SG_PROP_PLAYER, SG_WHITE));
+    m_board.Rules().SetHandicap(stones.Length());
+    GoToNode(node);
+}
+
 void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
 {
+    // TODO: Use PlaceHandicap() in implementation of InitHandicap() to
+    // avoid redundancy
+
     // Add handicap properties.
     if (2 <= rules.Handicap())
     {
