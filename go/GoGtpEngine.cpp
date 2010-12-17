@@ -903,7 +903,6 @@ void GoGtpEngine::CmdPlay(GtpCommand& cmd)
 
 /** Play a sequence of moves.
     Extension to standard play command used by GoGui.
-
     This command is registered with the command name @c gogui-play_sequence
     as used in newer versions of GoGui and for a transition period also
     with @c play_sequence as used by older versions of GoGui */

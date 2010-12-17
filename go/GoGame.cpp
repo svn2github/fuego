@@ -583,7 +583,13 @@ void GoGame::UpdatePlayer(SgBlackWhite color)
     if (player == 0)
         return;
     player->UpdateSubscriber();
-    player->SetCurrentNode(CurrentNode());
+    // TODO: The player should not be given non-const access to the tree,
+    // because it could mess up the class invariants of GoGameRecord. Right
+    // now, we have to trust the player to only so benign things like appending
+    // search trace subtrees. In the future, there should be an explicit
+    // function in GoGameRecord that the player has to call to append a
+    // subtree to the current node.
+    player->SetCurrentNode(const_cast<SgNode*>(CurrentNode()));
 }
 
 void GoGame::UpdatePlayers()

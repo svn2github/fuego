@@ -1,11 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGame.h
-    GoGameRecord class, play and replay moves in a game tree.
-
-    GoGame implements the GoGameRecord class, which provides functions for
-    playing and replaying moves in a game tree.
-    Derived from it is the GoGame class, which allows two Player objects
-    to play a game against each other. */
+    GoGameRecord class, play and replay moves in a game tree. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GAME_H
