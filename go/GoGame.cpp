@@ -64,7 +64,7 @@ GoGame::GoGame(int boardSize)
     // Make sure GoInit was called to avoid silent failure of ExecuteMove
     // because of unregistered move property
     GoInitCheck();
-    InitFromRoot(0);
+    Init(0);
 }
 
 GoGame::~GoGame()
@@ -219,7 +219,7 @@ void GoGame::Init(int size, const GoRules& rules)
     GoToNode(root);
 }
 
-void GoGame::InitFromRoot(SgNode* root)
+void GoGame::Init(SgNode* root)
 {
     DeleteTreeAndInitState();
     if (root)

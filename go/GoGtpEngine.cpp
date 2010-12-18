@@ -650,7 +650,7 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     }
     if (Board().MoveNumber() > 0)
         GameFinished();
-    m_game.InitFromRoot(root);
+    m_game.Init(root);
     if (! GoGameUtil::GotoBeforeMove(&m_game, moveNumber))
         throw GtpFailure("invalid move number");
     GoRules rules = m_defaultRules;

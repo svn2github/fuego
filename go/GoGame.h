@@ -38,8 +38,9 @@ public:
 
     ~GoGame();
 
-    /** Init from an existing game tree */
-    void InitFromRoot(SgNode* root);
+    /** Init from an existing game tree.
+        Takes the ownership of the tree. */
+    void Init(SgNode* root);
 
     /** Delete the old game record and start with a fresh one.
         Init the board with the given parameters, and create a root node
