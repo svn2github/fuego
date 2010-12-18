@@ -322,23 +322,7 @@ public:
         called only once, but both players will be set to null. */
     void DeletePlayer(SgBlackWhite color);
 
-    /** Whether the human move at 'move' can be played at this point.
-        The move must be legal, and either it's a human player to play
-        or the clock is inactive. */
-    bool CanPlayHumanMove(SgMove move, SgBlackWhite player) const;
-
-    /** Adds a move to the game record and tells all other players to update
-        their boards.
-        Returns whether the move was added to the game record.
-        @todo AR: to be replaced by HumanPlayer. */
-    bool PlayHumanMove(SgMove move, SgBlackWhite player);
-
-    void PlayComputerMove(const GoPlayerMove* playerMove);
-
     GoPlayer* Player(SgBlackWhite player);
-
-    /** Compute and play one move using the given player. */
-    GoPlayerMove PlayOneMove(SgBlackWhite playerColor);
 
 private:
     /** Black and white player. */

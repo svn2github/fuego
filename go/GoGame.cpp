@@ -475,14 +475,6 @@ GoGame::~GoGame()
     DeletePlayer(SG_WHITE);
 }
 
-bool GoGame::CanPlayHumanMove(SgMove move, SgBlackWhite player) const
-{
-    return    (  m_player[player] == 0
-              || ! ClockIsRunning()
-              )
-           && Board().IsLegal(move, player);
-}
-
 void GoGame::DeletePlayer(SgBlackWhite color)
 {
     SG_ASSERT_BW(color);
@@ -529,38 +521,6 @@ void GoGame::OnGoToNode(SgNode* dest)
 {
     SG_UNUSED(dest);
     UpdatePlayers();
-}
-
-void GoGame::PlayComputerMove(const GoPlayerMove* playerMove)
-{
-    SgBlackWhite toPlay = playerMove->Color();
-    SgPoint move = playerMove->Point();
-    SgNode* node = AddMove(move, toPlay, 0);
-    GoToNode(node);
-}
-
-GoPlayerMove GoGame::PlayOneMove(SgBlackWhite color)
-{
-    TurnClockOn(false);
-    SgTimeRecord time(/*fOneMoveOnly*/true, 20);
-    GoPlayer* player = m_player[color];
-    UpdatePlayer(color);
-    SgBlackWhite toPlay = Board().ToPlay();
-    SgMove move = player->GenMove(time, toPlay);
-    return GoPlayerMove(toPlay, move);
-}
-
-bool GoGame::PlayHumanMove(SgMove move, SgBlackWhite player)
-{
-    if (CanPlayHumanMove(move, player))
-    {
-        // Add the move to the tree.
-        SgNode* node = AddMove(move, player);
-        GoToNode(node);
-        return true;
-    }
-    // Illegal move, or not human player's turn to play.
-    return false;
 }
 
 void GoGame::SetPlayer(SgBlackWhite color, GoPlayer* player)
