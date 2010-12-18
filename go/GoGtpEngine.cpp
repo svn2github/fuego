@@ -207,7 +207,10 @@ void GoGtpEngine::BoardChanged()
     if (m_autoShowBoard)
         SgDebug() << Board();
     if (m_player != 0)
+    {
         m_player->UpdateSubscriber();
+        m_player->SetCurrentNode(m_game.CurrentNode());
+    }
     AutoSave();
 }
 
