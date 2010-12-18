@@ -18,20 +18,27 @@ class SgTimeRecord;
 
 //----------------------------------------------------------------------------
 
-/** Player. */
+/** Player.
+    The player owns an internal Go board for computations during move
+    generation. However, the player is linked to an external game board and
+    needs to synchronize its internal board to the game board by calling
+    UpdateSubscriber() inherited from its parent class GoBoardSynchronizer
+    before calling GoPlayer::GenMove() */
 class GoPlayer
     : public GoBoardSynchronizer
 {
 public:
-    /** Constructor. */
+    /** Constructor.
+        @param bd The external game board. */
     GoPlayer(const GoBoard& bd);
 
     virtual ~GoPlayer();
 
-    /** See m_board */
+    /** Deprecated.
+        Non-const access to player board will be removed in the future. */
     GoBoard& Board();
 
-    /** See m_board */
+    /** The player's own Go board */
     const GoBoard& Board() const;
 
     /** Generate a move. */
@@ -103,7 +110,7 @@ protected:
     SgNode* m_currentNode;
 
 private:
-    /** The player's own Go board */
+    /** See Board() */
     GoBoard m_bd;
 
     /** Player variant. Used for short-term testing of small modifications.
