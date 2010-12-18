@@ -221,8 +221,8 @@ protected:
         set. This member is accessible by subclasses of GoGtpEngine to allow
         them to register external classes, which handle player specific GTP
         commands. These external classes can be constructed with a reference
-        to this pointer, such that they can access the player they need.
-        They have to check first, that the current player is the expected one. */
+        to this pointer, such that they can access the player they need. They
+        have to check first, that the current player is the expected one. */
     GoPlayer* m_player;
 
     boost::scoped_ptr<GoAutoBook> m_autoBook;

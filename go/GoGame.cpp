@@ -35,7 +35,7 @@ void AddStatisticsToNode(const SgSearchStatistics* stat, SgNode* node)
 /** Add up to 4 handicap stones to '*stones', and reduce '*handicap'
     by that amount. */
 void AddHandicap(int size, int row, int col, int* handicap,
-                               SgVector<SgPoint>* stones)
+                 SgVector<SgPoint>* stones)
 {
     SG_ASSERT(2 <= *handicap);
     stones->PushBack(SgPointUtil::Pt(size + 1 - col, row));
@@ -54,7 +54,7 @@ void AddHandicap(int size, int row, int col, int* handicap,
 
 //----------------------------------------------------------------------------
 
-GoGameRecord::GoGameRecord(int boardSize)
+GoGame::GoGame(int boardSize)
     : m_board(boardSize),
       m_current(0),
       m_time(),
@@ -67,14 +67,14 @@ GoGameRecord::GoGameRecord(int boardSize)
     InitFromRoot(0);
 }
 
-GoGameRecord::~GoGameRecord()
+GoGame::~GoGame()
 {
     m_current->Root()->DeleteTree();
 }
 
 
-SgNode* GoGameRecord::AddMove(SgMove move, SgBlackWhite player,
-                              const SgSearchStatistics* stat)
+SgNode* GoGame::AddMove(SgMove move, SgBlackWhite player,
+                        const SgSearchStatistics* stat)
 {
     // Check whether a node with that move already exists.
     SgNode* node = m_current->LeftMostSon();
@@ -108,7 +108,7 @@ SgNode* GoGameRecord::AddMove(SgMove move, SgBlackWhite player,
     return node;
 }
 
-SgNode* GoGameRecord::AddResignNode(SgBlackWhite player)
+SgNode* GoGame::AddResignNode(SgBlackWhite player)
 {
     SgNode* node = m_current->NewRightMostSon();
     ostringstream comment;
@@ -117,13 +117,13 @@ SgNode* GoGameRecord::AddResignNode(SgBlackWhite player)
     return node;
 }
 
-bool GoGameRecord::CanGoInDirection(SgNode::Direction dir) const
+bool GoGame::CanGoInDirection(SgNode::Direction dir) const
 {
     SgNode* node = m_current->NodeInDirection(dir);
     return node && node != m_current;
 }
 
-SgMove GoGameRecord::CurrentMove() const
+SgMove GoGame::CurrentMove() const
 {
     const SgNode* node = CurrentNode();
     if (node)
@@ -136,7 +136,7 @@ SgMove GoGameRecord::CurrentMove() const
     return SG_NULLMOVE;
 }
 
-int GoGameRecord::CurrentMoveNumber() const
+int GoGame::CurrentMoveNumber() const
 {
     // TODO: once the transition of GoBoard to only support setup stones
     // in the initial position is finished, it will be more efficient to
@@ -144,7 +144,7 @@ int GoGameRecord::CurrentMoveNumber() const
     return SgNodeUtil::GetMoveNumber(m_current);
 }
 
-void GoGameRecord::DeleteTreeAndInitState()
+void GoGame::DeleteTreeAndInitState()
 {
     if (m_current)
         m_current->Root()->DeleteTree();
@@ -152,7 +152,7 @@ void GoGameRecord::DeleteTreeAndInitState()
     m_oldCommentNode = 0;
 }
 
-bool GoGameRecord::EndOfGame() const
+bool GoGame::EndOfGame() const
 {
     return GoBoardUtil::EndOfGame(m_board);
 }
@@ -160,7 +160,7 @@ bool GoGameRecord::EndOfGame() const
 /** Find the game info node with a game info property that determines
     this property for the current node.
     Returns an empty string, if no such node exists. */
-std::string GoGameRecord::GetGameInfoStringProp(SgPropID id) const
+std::string GoGame::GetGameInfoStringProp(SgPropID id) const
 {
     const SgNode* node = m_current->TopProp(id);
     if (node->HasProp(id))
@@ -172,30 +172,30 @@ std::string GoGameRecord::GetGameInfoStringProp(SgPropID id) const
         return "";
 }
 
-std::string GoGameRecord::GetGameName() const
+std::string GoGame::GetGameName() const
 {
     return GetGameInfoStringProp(SG_PROP_GAME_NAME);
 }
 
-std::string GoGameRecord::GetPlayerName(SgBlackWhite player) const
+std::string GoGame::GetPlayerName(SgBlackWhite player) const
 {
     SgPropID id = SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, player);
     return GetGameInfoStringProp(id);
 }
 
-std::string GoGameRecord::GetResult() const
+std::string GoGame::GetResult() const
 {
     return GetGameInfoStringProp(SG_PROP_RESULT);
 }
 
-void GoGameRecord::GoInDirection(SgNode::Direction dir)
+void GoGame::GoInDirection(SgNode::Direction dir)
 {
     SgNode* node = m_current->NodeInDirection(dir);
     if (node != m_current)
         GoToNode(node);
 }
 
-void GoGameRecord::GoToNode(SgNode* dest)
+void GoGame::GoToNode(SgNode* dest)
 {
     m_updater.Update(dest, m_board);
     SgNodeUtil::UpdateTime(Time(), dest);
@@ -203,10 +203,9 @@ void GoGameRecord::GoToNode(SgNode* dest)
     if (GoBoardUtil::RemainingChineseHandicap(m_board))
         m_board.SetToPlay(SG_BLACK);
     m_time.EnterNode(*m_current, m_board.ToPlay());
-    OnGoToNode(dest);
 }
 
-void GoGameRecord::Init(int size, const GoRules& rules)
+void GoGame::Init(int size, const GoRules& rules)
 {
     DeleteTreeAndInitState();
     m_board.Init(size, rules);
@@ -220,7 +219,7 @@ void GoGameRecord::Init(int size, const GoRules& rules)
     GoToNode(root);
 }
 
-void GoGameRecord::InitFromRoot(SgNode* root)
+void GoGame::InitFromRoot(SgNode* root)
 {
     DeleteTreeAndInitState();
     if (root)
@@ -255,12 +254,7 @@ void GoGameRecord::InitFromRoot(SgNode* root)
     GoToNode(root);
 }
 
-void GoGameRecord::OnGoToNode(SgNode* dest)
-{
-    SG_UNUSED(dest);
-}
-
-void GoGameRecord::PlaceHandicap(const SgVector<SgPoint>& stones)
+void GoGame::PlaceHandicap(const SgVector<SgPoint>& stones)
 {
     SG_ASSERT(m_board.TotalNumStones(SG_BLACK)
               + m_board.TotalNumStones(SG_WHITE) > 0);
@@ -278,7 +272,7 @@ void GoGameRecord::PlaceHandicap(const SgVector<SgPoint>& stones)
     GoToNode(node);
 }
 
-void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
+void GoGame::InitHandicap(const GoRules& rules, SgNode* root)
 {
     // TODO: Use PlaceHandicap() in implementation of InitHandicap() to
     // avoid redundancy
@@ -347,7 +341,7 @@ void GoGameRecord::InitHandicap(const GoRules& rules, SgNode* root)
     }
 }
 
-void GoGameRecord::SetKomiGlobal(GoKomi komi)
+void GoGame::SetKomiGlobal(GoKomi komi)
 {
     SgNode& root = *(m_current->Root());
     SgNodeUtil::RemovePropInSubtree(root, SG_PROP_KOMI);
@@ -356,15 +350,15 @@ void GoGameRecord::SetKomiGlobal(GoKomi komi)
     m_board.Rules().SetKomi(komi);
 }
 
-void GoGameRecord::SetRulesGlobal(const GoRules& rules)
+void GoGame::SetRulesGlobal(const GoRules& rules)
 {
     m_board.Rules() = rules;
     // TODO: Create description of rules and store it in RU property of root
     SetKomiGlobal(rules.Komi());
 }
 
-void GoGameRecord::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
-                                         double overhead)
+void GoGame::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
+                                   double overhead)
 {
     m_timeSettings = timeSettings;
     SgNode& root = *(m_current->Root());
@@ -397,7 +391,7 @@ void GoGameRecord::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
     m_time.TurnClockOn(true);
 }
 
-void GoGameRecord::SetToPlay(SgBlackWhite toPlay)
+void GoGame::SetToPlay(SgBlackWhite toPlay)
 {
     if (toPlay == m_board.ToPlay())
         return;
@@ -406,38 +400,36 @@ void GoGameRecord::SetToPlay(SgBlackWhite toPlay)
     m_time.EnterNode(*m_current, toPlay);
 }
 
-void GoGameRecord::UpdateDate(const std::string& date)
+void GoGame::UpdateDate(const std::string& date)
 {
     UpdateGameInfoStringProp(SG_PROP_DATE, date);
 }
 
-void GoGameRecord::UpdateGameInfoStringProp(SgPropID id,
-                                            const std::string& value)
+void GoGame::UpdateGameInfoStringProp(SgPropID id, const std::string& value)
 {
     SgNode* node = m_current->TopProp(id);
     node->SetStringProp(id, value);
 }
 
-void GoGameRecord::UpdateGameName(const std::string& name)
+void GoGame::UpdateGameName(const std::string& name)
 {
     UpdateGameInfoStringProp(SG_PROP_GAME_NAME, name);
 }
 
-void GoGameRecord::UpdatePlayerName(SgBlackWhite color,
-                                    const std::string& name)
+void GoGame::UpdatePlayerName(SgBlackWhite color, const std::string& name)
 {
     SgPropID id = SgProp::PlayerProp(SG_PROP_PLAYER_BLACK, color);
     UpdateGameInfoStringProp(id, name);
 }
 
-void GoGameRecord::UpdateResult(const std::string& result)
+void GoGame::UpdateResult(const std::string& result)
 {
     UpdateGameInfoStringProp(SG_PROP_RESULT, result);
 }
 
 //----------------------------------------------------------------------------
 
-bool GoGameUtil::GotoBeforeMove(GoGameRecord* game, int moveNumber)
+bool GoGameUtil::GotoBeforeMove(GoGame* game, int moveNumber)
 {
     SG_ASSERT(game->CurrentNode() == &game->Root());
     SG_ASSERT(moveNumber == -1 || moveNumber > 0);
@@ -462,102 +454,3 @@ bool GoGameUtil::GotoBeforeMove(GoGameRecord* game, int moveNumber)
 }
 
 //----------------------------------------------------------------------------
-
-GoGame::GoGame(int boardSize)
-    : GoGameRecord(boardSize),
-      m_player(0)
-{
-}
-
-GoGame::~GoGame()
-{
-    DeletePlayer(SG_BLACK);
-    DeletePlayer(SG_WHITE);
-}
-
-void GoGame::DeletePlayer(SgBlackWhite color)
-{
-    SG_ASSERT_BW(color);
-    if (m_player[SG_BLACK] == m_player[SG_WHITE])
-    {
-        delete m_player[SG_BLACK];
-        m_player[SG_BLACK] = 0;
-        m_player[SG_WHITE] = 0;
-        return;
-    }
-    delete m_player[color];
-    m_player[color] = 0;
-}
-
-void GoGame::Init(int size, const GoRules& rules)
-{
-    GoGameRecord::Init(size, rules);
-    UpdatePlayers();
-}
-
-void GoGame::Init(SgNode* root, bool fDeletePlayers)
-{
-    if (fDeletePlayers)
-    {
-        DeletePlayer(SG_BLACK);
-        DeletePlayer(SG_WHITE);
-    }
-    GoGameRecord::InitFromRoot(root);
-    UpdatePlayers();
-}
-
-void GoGame::Init(int size, const GoRules& rules, bool fDeletePlayers)
-{
-    if (fDeletePlayers)
-    {
-        DeletePlayer(SG_BLACK);
-        DeletePlayer(SG_WHITE);
-    }
-    GoGameRecord::Init(size, rules);
-    UpdatePlayers();
-}
-
-void GoGame::OnGoToNode(SgNode* dest)
-{
-    SG_UNUSED(dest);
-    UpdatePlayers();
-}
-
-void GoGame::SetPlayer(SgBlackWhite color, GoPlayer* player)
-{
-    SG_ASSERT_BW(color);
-    if (! (m_player[SG_BLACK] == m_player[SG_WHITE]))
-        DeletePlayer(color);
-    m_player[color] = player;
-    UpdatePlayers();
-}
-
-void GoGame::TurnClockOn(bool turnOn)
-{
-    Time().TurnClockOn(turnOn);
-}
-
-void GoGame::UpdatePlayer(SgBlackWhite color)
-{
-    GoPlayer* player = m_player[color];
-    if (player == 0)
-        return;
-    player->UpdateSubscriber();
-    // TODO: The player should not be given non-const access to the tree,
-    // because it could mess up the class invariants of GoGameRecord. Right
-    // now, we have to trust the player to only so benign things like appending
-    // search trace subtrees. In the future, there should be an explicit
-    // function in GoGameRecord that the player has to call to append a
-    // subtree to the current node.
-    player->SetCurrentNode(const_cast<SgNode*>(CurrentNode()));
-}
-
-void GoGame::UpdatePlayers()
-{
-    UpdatePlayer(SG_BLACK);
-    if (m_player[SG_BLACK] != m_player[SG_WHITE])
-        UpdatePlayer(SG_WHITE);
-}
-
-//----------------------------------------------------------------------------
-

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoGame.h
-    GoGameRecord class, play and replay moves in a game tree. */
+    GoGame class, play and replay moves in a game tree. */
 //----------------------------------------------------------------------------
 
 #ifndef GO_GAME_H
@@ -30,35 +30,21 @@ class SgSearchStatistics;
     tree, current node and board will only be modifiable through member
     functions of this class. Non-const accessors to these member variables
     will be removed. */
-class GoGameRecord
+class GoGame
 {
 public:
     /** Create a game record for replaying games on the given board. */
-    explicit GoGameRecord(int boardSize = GO_DEFAULT_SIZE);
+    explicit GoGame(int boardSize = GO_DEFAULT_SIZE);
 
-    virtual ~GoGameRecord();
-
-    /** @name Virtual functions
-        @note Still needed because subclass GoGame tracks changes to the
-        current node by callback (virtual) functions. This functionality of
-        GoGameRecord may be removed in the future, it is not recommended to
-        create more such subclasses. */
-    // @{
+    ~GoGame();
 
     /** Init from an existing game tree */
-    virtual void InitFromRoot(SgNode* root);
+    void InitFromRoot(SgNode* root);
 
     /** Delete the old game record and start with a fresh one.
         Init the board with the given parameters, and create a root node
         to start with. */
-    virtual void Init(int size, const GoRules& rules);
-
-    /** Hook for subclasses.
-        Default implementation does nothing. */
-    virtual void OnGoToNode(SgNode* dest);
-
-    // @} // name
-
+    void Init(int size, const GoRules& rules);
 
     /** Get the board associated with this game record. */
     const GoBoard& Board() const;
@@ -198,10 +184,10 @@ private:
     int m_numMovesToInsert;
 
     /** Not implemented. */
-    GoGameRecord(const GoGameRecord&);
+    GoGame(const GoGame&);
 
     /** Not implemented. */
-    GoGameRecord& operator=(const GoGameRecord&);
+    GoGame& operator=(const GoGame&);
 
     /** Delete the tree and initialize the state associated with the position
         in the tree. */
@@ -214,45 +200,45 @@ private:
     void UpdateGameInfoStringProp(SgPropID id, const std::string& value);
 };
 
-inline const GoBoard& GoGameRecord::Board() const
+inline const GoBoard& GoGame::Board() const
 {
     return m_board;
 }
 
-inline const SgNode& GoGameRecord::Root() const
+inline const SgNode& GoGame::Root() const
 {
     SG_ASSERT(m_current);
     return *m_current->Root();
 }
 
-inline SgTimeRecord& GoGameRecord::Time()
+inline SgTimeRecord& GoGame::Time()
 {
     return m_time;
 }
 
-inline const SgTimeRecord& GoGameRecord::Time() const
+inline const SgTimeRecord& GoGame::Time() const
 {
     return m_time;
 }
 
-inline const GoTimeSettings& GoGameRecord::TimeSettings() const
+inline const GoTimeSettings& GoGame::TimeSettings() const
 {
     return m_timeSettings;
 }
 
-inline SgNode* GoGameRecord::CurrentNode()
+inline SgNode* GoGame::CurrentNode()
 {
     return m_current;
 }
 
-inline const SgNode* GoGameRecord::CurrentNode() const
+inline const SgNode* GoGame::CurrentNode() const
 {
     return m_current;
 }
 
 //----------------------------------------------------------------------------
 
-/** Utility functions for GoGameRecord. */
+/** Utility functions for GoGame. */
 namespace GoGameUtil
 {
     /** Goto last node in main variation before move number.
@@ -261,87 +247,7 @@ namespace GoGameUtil
         @param moveNumber move number (-1 means goto last node in main
         variation)
         @return false if moveNumber greater than moves in main variation */
-    bool GotoBeforeMove(GoGameRecord* game, int moveNumber);
-}
-
-//----------------------------------------------------------------------------
-
-/** Game record played between two players.
-    A GoGame object handles the synchronization between the players
-    and the board they are playing on.
-    @deprecated There is no real reason to tie the players to a game record
-    and always synchronize them immediately to the current node when
-    navigating in the tree. Therefore, this class and the corresponding
-    virtual functions in GoGameRecord may be removed in the future (and
-    GoGameRecord be renamed to GoGame). In new code, use only GoGameRecord
-    and call GoPlayer::UpdateSubscriber() and GoPlayer::SetCurrentNode()
-    explicitely. Note that you already need to call UpdateSubscriber() if the
-    rules or komi is changed in GoGameRecord, because GoGame does not
-    automatically update the players in these cases. */
-class GoGame
-    : public GoGameRecord
-{
-public:
-    explicit GoGame(int boardSize = GO_DEFAULT_SIZE);
-
-    virtual ~GoGame();
-
-    /** Needed to avoid hiding of inherited virtual function by the
-        other variants of GoGame::Init. */
-    virtual void InitFromRoot(SgNode* root)
-    {
-        GoGameRecord::InitFromRoot(root);
-    }
-
-    /** Needed to avoid hiding of inherited virtual function by the
-        other variants of GoGame::Init. */
-    void Init(int size, const GoRules& rules);
-
-    void Init(SgNode* root, bool fDeletePlayers);
-
-    void Init(int size, const GoRules& rules, bool fDeletePlayers);
-
-    void OnGoToNode(SgNode* dest);
-
-    /** Turn the clock on or off.
-        Call this method instead of Time().TurnClockOn
-        so that computer player is started and stopped appropriately. */
-    void TurnClockOn(bool turnOn);
-
-    /** Return whether the clock is running (not stopped or suspended). */
-    bool ClockIsRunning() const { return Time().ClockIsRunning(); }
-
-    /** Set the player 'color' to the player algorithm 'player'.
-        The old player of that color is stopped and deleted, and the new
-        player is initialized to the current board state.
-        A 0 player means user interaction. */
-    void SetPlayer(SgBlackWhite color, GoPlayer* player);
-
-    /** Delete the player 'color' (set it to interactive input).
-        @note If black and white point to the same player, delete will be
-        called only once, but both players will be set to null. */
-    void DeletePlayer(SgBlackWhite color);
-
-    GoPlayer* Player(SgBlackWhite player);
-
-private:
-    /** Black and white player. */
-    SgBWArray<GoPlayer*> m_player;
-
-    /** Not implemented. */
-    GoGame(const GoGame&);
-
-    /** Not implemented. */
-    GoGame& operator=(const GoGame&);
-
-    void UpdatePlayer(SgBlackWhite color);
-
-    void UpdatePlayers();
-};
-
-inline GoPlayer* GoGame::Player(SgBlackWhite player)
-{
-    return m_player[player];
+    bool GotoBeforeMove(GoGame* game, int moveNumber);
 }
 
 //----------------------------------------------------------------------------

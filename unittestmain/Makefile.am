@@ -9,7 +9,6 @@ fuego_unittest_SOURCES = \
 ../go/test/GoBookTest.cpp \
 ../go/test/GoEyeUtilTest.cpp \
 ../go/test/GoGameTest.cpp \
-../go/test/GoGameRecordTest.cpp \
 ../go/test/GoGtpCommandUtilTest.cpp \
 ../go/test/GoGtpEngineTest.cpp \
 ../go/test/GoKomiTest.cpp \

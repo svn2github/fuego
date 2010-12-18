@@ -1,15 +1,16 @@
 //----------------------------------------------------------------------------
-/** @file GoGameRecordTest.cpp
-    Unit tests for GoGameRecord. */
+/** @file GoGameTest.cpp
+    Unit tests for GoGame. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
 
 #include <boost/test/auto_unit_test.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 #include "GoGame.h"
-#include "GoPlayer.h"
 
 using namespace std;
+using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------
 
@@ -17,52 +18,27 @@ namespace {
 
 //----------------------------------------------------------------------------
 
-/** Test player to test that GoGame calls GoPlayer::UpdateSubscriber */
-class TestPlayer
-    : public GoPlayer
+/** Test executing and undoing a node with setup stones. */
+BOOST_AUTO_TEST_CASE(GoGameTest_Setup)
 {
-public:
-    int m_nuBoardChangeCalls;
-
-    TestPlayer(const GoBoard& bd);
-
-    SgMove GenMove(const SgTimeRecord& time, SgBlackWhite toPlay);
-
-protected:
-    /** Implementation of GoBoardSynchronizer::OnBoardChange */
-    void OnBoardChange();
-};
-
-TestPlayer::TestPlayer(const GoBoard& bd)
-    : GoPlayer(bd)
-{
-    m_nuBoardChangeCalls = 0;
-}
-
-SgMove TestPlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
-{
-    SG_UNUSED(time);
-    SG_UNUSED(toPlay);
-    return SG_NULLPOINT;
-}
-
-void TestPlayer::OnBoardChange()
-{
-    ++m_nuBoardChangeCalls;
-}
-
-//----------------------------------------------------------------------------
-
-/** Test that GoGame::Init updates the players. */
-BOOST_AUTO_TEST_CASE(GoGameTest_UpdatePlayers)
-{
-    GoGame game(19);
-    TestPlayer* player = new TestPlayer(game.Board());
-    BOOST_CHECK_EQUAL(player->m_nuBoardChangeCalls, 0);
-    game.SetPlayer(SG_BLACK, player);
-    BOOST_CHECK_EQUAL(player->m_nuBoardChangeCalls, 0); // no boardsize change
-    game.Init(9, GoRules());
-    BOOST_CHECK_EQUAL(player->m_nuBoardChangeCalls, 1);
+    GoGame game;
+    SgNode* node = game.CurrentNode()->NewRightMostSon();
+    SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
+    addBlack->PushBack(Pt(1, 1));
+    SgPropAddStone* addWhite = new SgPropAddStone(SG_PROP_ADD_WHITE);
+    addWhite->PushBack(Pt(2, 2));
+    addWhite->PushBack(Pt(3, 3));
+    node->Add(addBlack);
+    node->Add(addWhite);
+    game.GoToNode(node);
+    const GoBoard& bd = game.Board();
+    BOOST_CHECK_EQUAL(SG_BLACK, bd.GetColor(Pt(1, 1)));
+    BOOST_CHECK_EQUAL(SG_WHITE, bd.GetColor(Pt(2, 2)));
+    BOOST_CHECK_EQUAL(SG_WHITE, bd.GetColor(Pt(3, 3)));
+    game.GoToNode(node->Father());
+    BOOST_CHECK_EQUAL(SG_EMPTY, bd.GetColor(Pt(1, 1)));
+    BOOST_CHECK_EQUAL(SG_EMPTY, bd.GetColor(Pt(2, 2)));
+    BOOST_CHECK_EQUAL(SG_EMPTY, bd.GetColor(Pt(3, 3)));
 }
 
 //----------------------------------------------------------------------------

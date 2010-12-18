@@ -157,9 +157,7 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
 
 GoGtpEngine::~GoGtpEngine()
 {
-#ifndef NDEBUG
-    m_player = 0;
-#endif
+    delete m_player;
 }
 
 void GoGtpEngine::AddPlayStatistics()
@@ -208,6 +206,8 @@ void GoGtpEngine::BoardChanged()
 {
     if (m_autoShowBoard)
         SgDebug() << Board();
+    if (m_player != 0)
+        m_player->UpdateSubscriber();
     AutoSave();
 }
 
@@ -381,7 +381,7 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
     BoardChanged();
 }
 
-/** Show clock info from GoGameRecord::Time() */
+/** Show clock info from GoGame::Time() */
 void GoGtpEngine::CmdClock(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -647,7 +647,7 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     }
     if (Board().MoveNumber() > 0)
         GameFinished();
-    m_game.Init(root, false);
+    m_game.InitFromRoot(root);
     if (! GoGameUtil::GotoBeforeMove(&m_game, moveNumber))
         throw GtpFailure("invalid move number");
     GoRules rules = m_defaultRules;
@@ -916,7 +916,11 @@ void GoGtpEngine::CmdPlaySequence(GtpCommand& cmd)
     }
     catch (GtpFailure fail)
     {
-        m_game.GoToNode(oldCurrentNode);
+        if (oldCurrentNode != m_game.CurrentNode())
+        {
+            m_game.GoToNode(oldCurrentNode);
+            BoardChanged();
+        }
         throw fail;
     }
     BoardChanged();
@@ -1148,8 +1152,6 @@ void GoGtpEngine::CmdSetupPlayer(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     m_game.SetToPlay(BlackWhiteArg(cmd, 0));
-    if (m_player != 0)
-        m_player->UpdateSubscriber();
     BoardChanged();
 }
 
@@ -1495,9 +1497,11 @@ inline void GoGtpEngine::SetStatisticsFile(const std::string& fileName)
 
 void GoGtpEngine::SetPlayer(GoPlayer* player)
 {
-    m_player = player;
-    m_game.SetPlayer(SG_BLACK, player);
-    m_game.SetPlayer(SG_WHITE, player);
+    if (player != m_player)
+    {
+        delete m_player;
+        m_player = player;
+    }
     if (m_player != 0)
         m_player->OnNewGame();
     InitStatistics();
