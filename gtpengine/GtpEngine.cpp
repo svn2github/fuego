@@ -435,20 +435,20 @@ const string& GtpCommand::Arg() const
 template<>
 std::size_t GtpCommand::Arg<std::size_t>(std::size_t i) const
 {
-    std::string arg = Arg(i);
+    string arg = Arg(i);
     // Workaround for bug in standard library of some GCC versions (e.g. GCC
     // 4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
     // size_t, which should be unsigned
     bool fail = (! arg.empty() && arg[0] == '-');
-    std::size_t result;
+    size_t result;
     if (! fail)
     {
-        std::istringstream in(arg);
+        istringstream in(arg);
         in >> result;
         fail = ! in;
     }
     if (fail)
-        throw GtpFailure() << "argument " << (i + 1) << " (" << result
+        throw GtpFailure() << "argument " << (i + 1) << " (" << arg
                            << ") must be of type size_t";
     return result;
 }
