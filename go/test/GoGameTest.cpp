@@ -19,23 +19,19 @@ namespace {
 //----------------------------------------------------------------------------
 
 /** Test executing and undoing a node with setup stones. */
-BOOST_AUTO_TEST_CASE(GoGameTest_Setup)
+BOOST_AUTO_TEST_CASE(GoGameTest_SetupPosition)
 {
     GoGame game;
-    SgNode* node = game.CurrentNode()->NewRightMostSon();
-    SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
-    addBlack->PushBack(Pt(1, 1));
-    SgPropAddStone* addWhite = new SgPropAddStone(SG_PROP_ADD_WHITE);
-    addWhite->PushBack(Pt(2, 2));
-    addWhite->PushBack(Pt(3, 3));
-    node->Add(addBlack);
-    node->Add(addWhite);
-    game.GoToNode(node);
+    SgBWArray<SgPointSet> stones;
+    stones[SG_BLACK].Include(Pt(1, 1));
+    stones[SG_WHITE].Include(Pt(2, 2));
+    stones[SG_WHITE].Include(Pt(3, 3));
+    game.SetupPosition(stones);
     const GoBoard& bd = game.Board();
     BOOST_CHECK_EQUAL(SG_BLACK, bd.GetColor(Pt(1, 1)));
     BOOST_CHECK_EQUAL(SG_WHITE, bd.GetColor(Pt(2, 2)));
     BOOST_CHECK_EQUAL(SG_WHITE, bd.GetColor(Pt(3, 3)));
-    game.GoToNode(node->Father());
+    game.GoToNode(game.CurrentNode()->Father());
     BOOST_CHECK_EQUAL(SG_EMPTY, bd.GetColor(Pt(1, 1)));
     BOOST_CHECK_EQUAL(SG_EMPTY, bd.GetColor(Pt(2, 2)));
     BOOST_CHECK_EQUAL(SG_EMPTY, bd.GetColor(Pt(3, 3)));
