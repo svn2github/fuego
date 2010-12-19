@@ -29,6 +29,7 @@ doc/doxygen/general/Makefile \
 doc/doxygen/general/doxygen.cfg \
 doc/doxygen/general/pages/autotools.cpp \
 doc/doxygen/general/pages/generalreleases.cpp \
+doc/doxygen/general/pages/generalunittests.cpp \
 doc/doxygen/general/pages/mainpage.cpp \
 doc/doxygen/general/pages/modules.cpp \
 doc/doxygen/general/pages/portability.cpp \
