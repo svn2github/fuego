@@ -7,7 +7,6 @@
 #define GO_INFLUENCE_H
 
 #include "GoBoard.h"
-#include "GoGame.h"
 #include "SgPointArray.h"
 
 //----------------------------------------------------------------------------
