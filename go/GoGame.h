@@ -15,8 +15,6 @@
 #include "SgPoint.h"
 #include "SgTimeRecord.h"
 
-class GoPlayer;
-class GoPlayerMove;
 class SgSearchStatistics;
 
 //----------------------------------------------------------------------------

@@ -13,6 +13,7 @@
 #include "GoBook.h"
 #include "GoAutoBook.h"
 #include "GoGame.h"
+#include "GoPlayer.h"
 #include "GoStaticLadder.h"
 #include "GoTimeSettings.h"
 #include "GtpEngine.h"
