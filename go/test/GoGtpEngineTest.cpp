@@ -44,14 +44,13 @@ BOOST_AUTO_TEST_CASE(GoGtpEngineTest_CmdClearBoard_KomiInGameAfterClearBoard)
 BOOST_AUTO_TEST_CASE(GoGtpEngineTest_CmdKomi)
 {
     GoGtpEngine engine;
-    const SgNode& root = engine.Game().Root();
     Execute(engine, "komi 1");
-    BOOST_CHECK_EQUAL(GoKomi(1), GoNodeUtil::GetKomi(&root));
+    BOOST_CHECK_EQUAL(GoKomi(1), GoNodeUtil::GetKomi(&engine.Game().Root()));
     Execute(engine, "play b a1");
     Execute(engine, "komi 2");
-    BOOST_CHECK_EQUAL(GoKomi(2), GoNodeUtil::GetKomi(&root));
+    BOOST_CHECK_EQUAL(GoKomi(2), GoNodeUtil::GetKomi(&engine.Game().Root()));
     Execute(engine, "clear_board");
-    BOOST_CHECK_EQUAL(GoKomi(2), GoNodeUtil::GetKomi(&root));
+    BOOST_CHECK_EQUAL(GoKomi(2), GoNodeUtil::GetKomi(&engine.Game().Root()));
 }
 
 } // namespace
