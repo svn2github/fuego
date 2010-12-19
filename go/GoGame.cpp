@@ -56,20 +56,22 @@ void AddHandicap(int size, int row, int col, int* handicap,
 
 GoGame::GoGame(int boardSize)
     : m_board(boardSize),
-      m_current(0),
+      m_root(new SgNode()),
       m_time(),
-      m_oldCommentNode(0),
       m_numMovesToInsert(0)
 {
     // Make sure GoInit was called to avoid silent failure of ExecuteMove
     // because of unregistered move property
     GoInitCheck();
-    Init(0);
+    Init(boardSize, GoRules());
 }
 
 GoGame::~GoGame()
 {
-    m_current->Root()->DeleteTree();
+    m_root->DeleteTree();
+#ifndef NDEBUG
+    m_root = 0;
+#endif
 }
 
 
@@ -125,14 +127,9 @@ bool GoGame::CanGoInDirection(SgNode::Direction dir) const
 
 SgMove GoGame::CurrentMove() const
 {
-    const SgNode* node = CurrentNode();
-    if (node)
-    {
-        // Get the move from the property.
-        SgPropMove* prop = static_cast<SgPropMove*>(node->Get(SG_PROP_MOVE));
-        if (prop)
-            return prop->Value();
-    }
+    SgPropMove* prop = static_cast<SgPropMove*>(m_current->Get(SG_PROP_MOVE));
+    if (prop)
+        return prop->Value();
     return SG_NULLMOVE;
 }
 
@@ -142,14 +139,6 @@ int GoGame::CurrentMoveNumber() const
     // in the initial position is finished, it will be more efficient to
     // call m_board.MoveNumber() instead of SgNodeUtil::GetMoveNumber()
     return SgNodeUtil::GetMoveNumber(m_current);
-}
-
-void GoGame::DeleteTreeAndInitState()
-{
-    if (m_current)
-        m_current->Root()->DeleteTree();
-    m_current = 0;
-    m_oldCommentNode = 0;
 }
 
 bool GoGame::EndOfGame() const
@@ -207,51 +196,40 @@ void GoGame::GoToNode(SgNode* dest)
 
 void GoGame::Init(int size, const GoRules& rules)
 {
-    DeleteTreeAndInitState();
     m_board.Init(size, rules);
-    SgNode* root = new SgNode();
-    SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
-    root->Add(boardSize);
+    m_root->DeleteTree();
+    m_root = new SgNode();
+    SgPropInt* boardSizeProp = new SgPropInt(SG_PROP_SIZE, size);
+    m_root->Add(boardSizeProp);
     GoKomi komi = rules.Komi();
     if (! komi.IsUnknown())
-        root->SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
-    InitHandicap(rules, root);
-    GoToNode(root);
+        m_root->SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+    InitHandicap(rules, m_root);
+    GoToNode(m_root);
 }
 
 void GoGame::Init(SgNode* root)
 {
-    DeleteTreeAndInitState();
-    if (root)
+    m_root->DeleteTree();
+    m_root = root;
+    int size = GO_DEFAULT_SIZE;
+    SgPropInt* boardSizeProp =
+        static_cast<SgPropInt*>(m_root->Get(SG_PROP_SIZE));
+    if (boardSizeProp)
     {
-        int size = GO_DEFAULT_SIZE;
-        SgPropInt* boardSize =
-            static_cast<SgPropInt*>(root->Get(SG_PROP_SIZE));
-        if (boardSize)
-        {
-            size = boardSize->Value();
-            ForceInRange(SG_MIN_SIZE, &size, SG_MAX_SIZE);
-        }
-        const GoRules& rules = m_board.Rules();
-        m_board.Init(size, GoRules(rules.Handicap(), rules.Komi()));
+        size = boardSizeProp->Value();
+        ForceInRange(SG_MIN_SIZE, &size, SG_MAX_SIZE);
     }
-    else
-    {
-        // Create a new game tree, use current board.
-        root = new SgNode();
-
-        // Add root property: board size.
-        SgPropInt* boardSize = new SgPropInt(SG_PROP_SIZE, m_board.Size());
-        root->Add(boardSize);
-    }
+    const GoRules& rules = m_board.Rules();
+    m_board.Init(size, GoRules(rules.Handicap(), rules.Komi()));
 
     // Add root property: Go game identifier.
     const int GAME_ID = 1;
     SgPropInt* gameId = new SgPropInt(SG_PROP_GAME, GAME_ID);
-    root->Add(gameId);
+    m_root->Add(gameId);
 
     // Go to the root node.
-    GoToNode(root);
+    GoToNode(m_root);
 }
 
 void GoGame::PlaceHandicap(const SgVector<SgPoint>& stones)
@@ -343,10 +321,9 @@ void GoGame::InitHandicap(const GoRules& rules, SgNode* root)
 
 void GoGame::SetKomiGlobal(GoKomi komi)
 {
-    SgNode& root = *(m_current->Root());
-    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_KOMI);
+    SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_KOMI);
     if (! komi.IsUnknown())
-        root.SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
+        m_root->SetRealProp(SG_PROP_KOMI, komi.ToFloat(), 1);
     m_board.Rules().SetKomi(komi);
 }
 
@@ -361,10 +338,9 @@ void GoGame::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
                                    double overhead)
 {
     m_timeSettings = timeSettings;
-    SgNode& root = *(m_current->Root());
-    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_TIME);
-    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_OT_NU_MOVES);
-    SgNodeUtil::RemovePropInSubtree(root, SG_PROP_OT_PERIOD);
+    SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_TIME);
+    SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_OT_NU_MOVES);
+    SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_OT_PERIOD);
     if (timeSettings.IsUnknown())
     {
         // TODO: What to do with m_time? What to do with time left properties
@@ -372,12 +348,12 @@ void GoGame::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
         return;
     }
     double mainTime = timeSettings.MainTime();
-    root.Add(new SgPropTime(SG_PROP_TIME, mainTime));
+    m_root->Add(new SgPropTime(SG_PROP_TIME, mainTime));
     double overtime = timeSettings.Overtime();
     if (overtime > 0)
     {
-        root.Add(new SgPropTime(SG_PROP_OT_PERIOD, overtime));
-        root.SetIntProp(SG_PROP_OT_NU_MOVES, timeSettings.OvertimeMoves());
+        m_root->Add(new SgPropTime(SG_PROP_OT_PERIOD, overtime));
+        m_root->SetIntProp(SG_PROP_OT_NU_MOVES, timeSettings.OvertimeMoves());
     }
     // TODO: What if the current node is not the root? What if nodes on the
     // path from the root to the current node contain time left properties?

@@ -166,6 +166,9 @@ public:
 private:
     GoBoard m_board;
 
+    /** The root node of the current tree. */
+    SgNode* m_root;
+
     /** The position in the current tree. */
     SgNode* m_current;
 
@@ -176,9 +179,6 @@ private:
     /** A record of the clock settings and time left. */
     SgTimeRecord m_time;
 
-    /** Comment display. */
-    SgNode* m_oldCommentNode;
-
     /** Moves inserted into a line of play instead of added at the end. */
     int m_numMovesToInsert;
 
@@ -187,10 +187,6 @@ private:
 
     /** Not implemented. */
     GoGame& operator=(const GoGame&);
-
-    /** Delete the tree and initialize the state associated with the position
-        in the tree. */
-    void DeleteTreeAndInitState();
 
     std::string GetGameInfoStringProp(SgPropID id) const;
 
@@ -206,8 +202,7 @@ inline const GoBoard& GoGame::Board() const
 
 inline const SgNode& GoGame::Root() const
 {
-    SG_ASSERT(m_current);
-    return *m_current->Root();
+    return *m_root;
 }
 
 inline SgTimeRecord& GoGame::Time()
