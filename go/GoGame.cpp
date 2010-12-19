@@ -119,6 +119,11 @@ SgNode* GoGame::AddResignNode(SgBlackWhite player)
     return node;
 }
 
+void GoGame::AppendChild(SgNode* child)
+{
+    child->AppendTo(m_current);
+}
+
 bool GoGame::CanGoInDirection(SgNode::Direction dir) const
 {
     SgNode* node = m_current->NodeInDirection(dir);

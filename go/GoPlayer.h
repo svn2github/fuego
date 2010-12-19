@@ -23,7 +23,14 @@ class SgTimeRecord;
     generation. However, the player is linked to an external game board and
     needs to synchronize its internal board to the game board by calling
     UpdateSubscriber() inherited from its parent class GoBoardSynchronizer
-    before calling GoPlayer::GenMove() */
+    before calling GoPlayer::GenMove()
+    @todo Remove non-const access to Board(). Currently still needed, because
+    GenMove() has no toPlay argument, so if one wants to generate a move for
+    the color not to play in the current position, one has to call
+    Board().SetToPlay() before the GenMove().
+    Also, this class makes too many assumptions about the player. Not every
+    player needs a local board for computations or needs to derive from
+    GoBoardSynchronizer to update its state incrementally to the game board. */
 class GoPlayer
     : public GoBoardSynchronizer
 {
@@ -49,11 +56,14 @@ public:
         Default implementation returns "Unknown" */
     virtual std::string Name() const;
 
-    /** Get node for appending search traces */
+    /** Get node for appending search traces.
+        @todo Rename to something more meaningful, like SearchTraces() */
     SgNode* CurrentNode() const;
 
-    /** Set node for appending search traces */
-    void SetCurrentNode(SgNode* node);
+    void ClearSearchTraces();
+
+    /** Get node with search traces and transfer ownership to the caller. */
+    SgNode* TransferSearchTraces();
 
     /** Return value for a move.
         Not all players assign values to moves.
@@ -139,11 +149,6 @@ inline const GoBoard& GoPlayer::Board() const
 inline SgNode* GoPlayer::CurrentNode() const
 {
     return m_currentNode;
-}
-
-inline void GoPlayer::SetCurrentNode(SgNode* node)
-{
-    m_currentNode = node;
 }
 
 inline int GoPlayer::Variant() const

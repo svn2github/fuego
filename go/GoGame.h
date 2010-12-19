@@ -20,14 +20,13 @@ class SgSearchStatistics;
 //----------------------------------------------------------------------------
 
 /** Game state and move history including variations.
-    Contains a game tree, a pointer to a current node, a board and records
+    Contains a game tree, a pointer to a current node, a board and information
     of the time left. The current node is always a valid node of the tree and
     the board and time records reflect the game state at the current node.
-    @note This class is in the process of being refactored to provide
-    encapsulation and to guarantee its class invariants. In the future, the
-    tree, current node and board will only be modifiable through member
-    functions of this class. Non-const accessors to these member variables
-    will be removed. */
+    @todo Remove non-const function Time() and decouple time measurement from
+    tracking the time left at a node. This class should not have to deal with
+    time measurement, instead add a time parameter to AddMove() that informs
+    the game about the time that needs to be subtracted from the time left. */
 class GoGame
 {
 public:
@@ -80,6 +79,12 @@ public:
         the current node. */
     SgNode* AddResignNode(SgBlackWhite player);
 
+    /** Append a node as a new child to the current node.
+        @param child The new child. The ownership is transferes. The user is
+        responsible that the subtree is consistent and contains no lines with
+        illegal moves with respect to the position at the current node. */
+    void AppendChild(SgNode* child);
+
     /** Play to the given node.
         @c dest must be in this tree, or 0.
         Also updates the clock. */
@@ -98,15 +103,14 @@ public:
     /** Return whether the game is finished. */
     bool EndOfGame() const;
 
-    /** The time left in the game at the current position. */
+    /** Deprecated.
+        Non-const access to time left records will be removed in the future
+        because its part of the class invariants of this class that they
+        reflect the state corresponding to the current node. */
     SgTimeRecord& Time();
 
     /** The time left in the game at the current position. */
     const SgTimeRecord& Time() const;
-
-    /** Deprecated.
-        Non-const access to the game tree will be removed in the future. */
-    SgNode* CurrentNode();
 
     /** Return the current position in the tree.
         @todo changed from protected to public because of getting
@@ -226,11 +230,6 @@ inline const SgTimeRecord& GoGame::Time() const
 inline const GoTimeSettings& GoGame::TimeSettings() const
 {
     return m_timeSettings;
-}
-
-inline SgNode* GoGame::CurrentNode()
-{
-    return m_current;
 }
 
 inline const SgNode* GoGame::CurrentNode() const

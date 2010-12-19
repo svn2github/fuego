@@ -19,7 +19,11 @@ Current development version
   parameter --enable-uct-value-type
 * Added generic argument parsing function GtpCommand::Arg<T> and declared
   old function (GtpCommand::IntArg() etc.) as deprecated
-* Old class GoGame was removed, GoGameRecord renamed to GoGame
+* Old class GoGame was removed, GoGameRecord renamed to GoGame. GoGame
+  does no longer provide non-const access to the tree and game state to
+  guarantee its class invariants
+* Made GoPlayer to store its search traces instead of appending them directly
+  to the game tree
 
 Version 0.4.1 - 2009 Dec 23
 ===========================

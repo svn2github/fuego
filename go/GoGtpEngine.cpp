@@ -207,10 +207,7 @@ void GoGtpEngine::BoardChanged()
     if (m_autoShowBoard)
         SgDebug() << Board();
     if (m_player != 0)
-    {
         m_player->UpdateSubscriber();
-        m_player->SetCurrentNode(m_game.CurrentNode());
-    }
     AutoSave();
 }
 
@@ -1300,7 +1297,11 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     else
         AddStatistics("BOOK", 0);
     if (move == SG_NULLMOVE)
+    {
+        player.ClearSearchTraces();
         move = player.GenMove(time, color);
+        m_game.AppendChild(player.TransferSearchTraces());
+    }
     m_mpiSynchronizer->SynchronizeMove(move);
     m_timeLastMove = SgTime::Get() - startTime;
     AddStatistics("TIME", m_timeLastMove);

@@ -8,6 +8,7 @@
 
 #include <limits>
 #include "GoBoard.h"
+#include "SgNode.h"
 
 using namespace std;
 
@@ -20,10 +21,19 @@ GoPlayer::GoPlayer(const GoBoard& bd)
       m_variant(0)
 {
     SetSubscriber(m_bd);
+    ClearSearchTraces();
 }
 
 GoPlayer::~GoPlayer()
 {
+}
+
+void GoPlayer::ClearSearchTraces()
+{
+    if (m_currentNode != 0)
+        delete m_currentNode;
+    m_currentNode = new SgNode();
+    m_currentNode->AddComment("Search traces");
 }
 
 int GoPlayer::MoveValue(SgPoint p)
@@ -47,6 +57,14 @@ void GoPlayer::OnNewGame()
 
 void GoPlayer::Ponder()
 {
+}
+
+SgNode* GoPlayer::TransferSearchTraces()
+{
+    SgNode* node = m_currentNode;
+    m_currentNode = 0;
+    ClearSearchTraces();
+    return node;
 }
 
 //----------------------------------------------------------------------------
