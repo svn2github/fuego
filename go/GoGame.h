@@ -60,6 +60,13 @@ public:
         @pre Board is empty */
     void PlaceHandicap(const SgVector<SgPoint>& stones);
 
+    /** Set up a position on the board.
+        Creates a new child node of the current node and adds the appropriate
+        AB, AW and AE properties to change the board position to the
+        position defined by the given stone lists. Makes the new child node
+        the current node. */
+    void SetupPosition(const SgBWArray<SgPointSet>& stones);
+
     /** Add move to the game record.
         Add move as the next move at the current position.
         If a node with that move already exists, then don't add a new one.
@@ -97,9 +104,8 @@ public:
     /** The time left in the game at the current position. */
     const SgTimeRecord& Time() const;
 
-    /** Return the current position in the tree.
-        @todo changed from protected to public because of getting
-        the current time left. */
+    /** Deprecated.
+        Non-const access to the game tree will be removed in the future. */
     SgNode* CurrentNode();
 
     /** Return the current position in the tree.

@@ -1115,7 +1115,7 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
 }
 
 /** Place setup stones.
-    Command will be used by future versions of GoGui. <br>
+    GTP extension command used by GoGui.<br>
     Argument: color point [color point ...] <br>
     With color: b, black, w, white */
 void GoGtpEngine::CmdSetup(GtpCommand& cmd)
@@ -1134,22 +1134,12 @@ void GoGtpEngine::CmdSetup(GtpCommand& cmd)
             points[*it].Exclude(p);
         points[c].Include(p);
     }
-    SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
-    SgPropAddStone* addWhite = new SgPropAddStone(SG_PROP_ADD_WHITE);
-    for (SgSetIterator it(points[SG_BLACK]); it; ++it)
-        if (bd.GetColor(*it) != SG_BLACK)
-            addBlack->PushBack(*it);
-    for (SgSetIterator it(points[SG_WHITE]); it; ++it)
-        if (bd.GetColor(*it) != SG_WHITE)
-            addWhite->PushBack(*it);
-    SgNode* node = m_game.CurrentNode()->NewRightMostSon();
-    node->Add(addBlack);
-    node->Add(addWhite);
-    m_game.GoToNode(node);
+    m_game.SetupPosition(points);
     BoardChanged();
 }
 
 /** Set color to play.
+    GTP extension command used by GoGui.<br>
     Argument: color <br> */
 void GoGtpEngine::CmdSetupPlayer(GtpCommand& cmd)
 {
@@ -1531,7 +1521,7 @@ SgPoint GoGtpEngine::StoneArg(const GtpCommand& cmd, std::size_t number) const
 void GoGtpEngine::Undo(int n)
 {
     SG_ASSERT(n >= 0);
-    SgNode* node = m_game.CurrentNode();
+    const SgNode* node = m_game.CurrentNode();
     for (int i = 0; i < n; ++i)
     {
         if (! node->HasNodeMove() || ! node->HasFather())

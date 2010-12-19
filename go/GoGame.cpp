@@ -389,6 +389,22 @@ void GoGame::SetToPlay(SgBlackWhite toPlay)
     m_time.EnterNode(*m_current, toPlay);
 }
 
+void GoGame::SetupPosition(const SgBWArray<SgPointSet>& stones)
+{
+    SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
+    SgPropAddStone* addWhite = new SgPropAddStone(SG_PROP_ADD_WHITE);
+    for (SgSetIterator it(stones[SG_BLACK]); it; ++it)
+        if (m_board.GetColor(*it) != SG_BLACK)
+            addBlack->PushBack(*it);
+    for (SgSetIterator it(stones[SG_WHITE]); it; ++it)
+        if (m_board.GetColor(*it) != SG_WHITE)
+            addWhite->PushBack(*it);
+    SgNode* node = m_current->NewRightMostSon();
+    node->Add(addBlack);
+    node->Add(addWhite);
+    GoToNode(node);
+}
+
 void GoGame::UpdateDate(const std::string& date)
 {
     UpdateGameInfoStringProp(SG_PROP_DATE, date);
