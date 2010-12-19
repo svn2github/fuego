@@ -29,7 +29,7 @@ Version 0.4.1 - 2009 Dec 23
 ===========================
 [Note that the numbering for this version is misleading. This is not a
 bugfix release from the stable branch after version 0.4 (VERSION_0_4_FIXES),
-but a new release with new features from the main branch.]
+but a new release with new and incompatible features from the main branch.]
 
 * Replaced linked list SgList and related functions by SgVector - a wrapper
   around std:vector with the same interface as SgList. Changed implementations
