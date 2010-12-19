@@ -5,8 +5,7 @@ Fuego uses the
 for its unit tests. The source code files for the tests of a Fuego library
 are located in a subdirectory named <tt>test</tt> in the source code directory
 of the library. All tests are global functions registered with the
-@c BOOST_AUTO_TEST_CASE macro. It is mandatory to check that the unit tests
-succeed before committing new code to the main Fuego repository.
+@c BOOST_AUTO_TEST_CASE macro.
 
 There is an application named <tt>unittestmain</tt> that compiles all unit
 tests of all Fuego libraries to a single executable located in
@@ -22,4 +21,12 @@ configuration parameters of the Boost Unit Test Framework</a> as options to
 @c SgArrayTest_Assign, run:
 @verbatim
 fuego_unittest --run_test=SgArrayTest_Assign
+@endverbatim
+
+It is mandatory to check that the unit tests succeed before committing new
+code to the main Fuego repository. Furthermore, it is recommended to regularly
+run the unit tests with the memory checker
+<a href="http://valgrind.org">Valgrind</a> using the command:
+@verbatim
+valgrind fuego_unittest
 @endverbatim */
