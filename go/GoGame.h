@@ -76,7 +76,7 @@ public:
     /** Play to the given node.
         @c dest must be in this tree, or 0.
         Also updates the clock. */
-    void GoToNode(SgNode* dest);
+    void GoToNode(const SgNode* dest);
 
     /** Play to the next node in the given direction. */
     void GoInDirection(SgNode::Direction dir);
@@ -191,6 +191,8 @@ private:
     std::string GetGameInfoStringProp(SgPropID id) const;
 
     void InitHandicap(const GoRules& rules, SgNode* root);
+
+    SgNode* NonConstNode(const SgNode* node) const;
 
     void UpdateGameInfoStringProp(SgPropID id, const std::string& value);
 };

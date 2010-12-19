@@ -184,11 +184,11 @@ void GoGame::GoInDirection(SgNode::Direction dir)
         GoToNode(node);
 }
 
-void GoGame::GoToNode(SgNode* dest)
+void GoGame::GoToNode(const SgNode* dest)
 {
     m_updater.Update(dest, m_board);
     SgNodeUtil::UpdateTime(Time(), dest);
-    m_current = dest;
+    m_current = NonConstNode(dest);
     if (GoBoardUtil::RemainingChineseHandicap(m_board))
         m_board.SetToPlay(SG_BLACK);
     m_time.EnterNode(*m_current, m_board.ToPlay());
@@ -230,6 +230,19 @@ void GoGame::Init(SgNode* root)
 
     // Go to the root node.
     GoToNode(m_root);
+}
+
+/** Convert a const reference of a node received by the user of this class
+    to a non-const reference.
+    The user should not be able to modify the game tree directly, so he can
+    only be given const references to nodes. This function exists to convert
+    such a user reference to non-const for internal usage and avoids the
+    spreading of const casts all over the code. It also contains an assertion
+    that the node is part of the current game tree. */
+SgNode* GoGame::NonConstNode(const SgNode* node) const
+{
+    SG_ASSERT(node->Root() == m_root);
+    return const_cast<SgNode*>(node);
 }
 
 void GoGame::PlaceHandicap(const SgVector<SgPoint>& stones)

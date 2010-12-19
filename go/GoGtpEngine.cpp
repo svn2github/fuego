@@ -911,7 +911,7 @@ void GoGtpEngine::CmdPlay(GtpCommand& cmd)
     with @c play_sequence as used by older versions of GoGui */
 void GoGtpEngine::CmdPlaySequence(GtpCommand& cmd)
 {
-    SgNode* oldCurrentNode = m_game.CurrentNode();
+    const SgNode* oldCurrentNode = m_game.CurrentNode();
     try
     {
         for (size_t i = 0; i < cmd.NuArg(); i += 2)
