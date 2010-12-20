@@ -552,7 +552,10 @@ void GtpCallback<ENGINE>::operator()(GtpCommand& cmd)
     Existing commands can be overridden by registering a new handler for
     the command or by overriding the command handler member function
     in subclasses.
-    @see @ref gtpenginecommands, @ref gtpenginesimulatedelay */
+    @see @ref gtpenginecommands, @ref gtpenginesimulatedelay
+    @bug With newer versions of Boost, there is an assertion triggered in
+    debug mode if a GTP command handler throws an exception other than
+    GtpFailure. See http://sourceforge.net/apps/trac/fuego/ticket/59 */
 class GtpEngine
 {
 public:
