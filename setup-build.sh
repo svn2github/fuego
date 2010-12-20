@@ -24,6 +24,7 @@ autoreconf -i
 
 setup() {
     TARGET="$1"
+    CXX="g++"
     case "$TARGET" in
 	dbg)
 	    CXXFLAGS="-g -pipe"
@@ -63,8 +64,9 @@ setup() {
     mkdir -p "build/$TARGET"
     (
 	cd "build/$TARGET"
-	env CXXFLAGS="$CXXFLAGS" ../../configure \
-          --enable-maintainer-mode $CONFIGUREFLAGS
+	export CXX      # Used by configure script
+	export CXXFLAGS # Used by configure script
+	../../configure --enable-maintainer-mode $CONFIGUREFLAGS
 	make clean
     )
 }
