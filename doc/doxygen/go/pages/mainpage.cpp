@@ -7,7 +7,7 @@
     - GoBoard is a general usable and fast Go board implementation,
       which keeps track of liberty and stone lists
     - GoPlayer is a base class for players
-    - GoGameRecord, GoGame represent a game with a tree of game nodes
+    - GoGame represents a game with a tree of game nodes
     - The regions code represents some higher level objects on the board
       (GoRegion, GoBlock, GoChain, GoRegionBoard, GoRegionUtil)
     - The static safety solver code is based on regions (GoBensonSolver,
