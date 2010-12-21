@@ -26,7 +26,10 @@ class SgSearchStatistics;
     @todo Remove non-const function Time() and decouple time measurement from
     tracking the time left at a node. This class should not have to deal with
     time measurement, instead add a time parameter to AddMove() that informs
-    the game about the time that needs to be subtracted from the time left. */
+    the game about the time that needs to be subtracted from the time left.
+    @todo Also ensure in GoGame that the time settings and time left records
+    always reflect the state at the current node. This should be implemented
+    in GoBoardUpdater::Update(), which is used by GoGame. */
 class GoGame
 {
 public:
