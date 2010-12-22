@@ -26,12 +26,14 @@ GoPlayer::GoPlayer(const GoBoard& bd)
 
 GoPlayer::~GoPlayer()
 {
+    if (m_currentNode != 0)
+        m_currentNode->DeleteTree();
 }
 
 void GoPlayer::ClearSearchTraces()
 {
     if (m_currentNode != 0)
-        delete m_currentNode;
+        m_currentNode->DeleteTree();
     m_currentNode = new SgNode();
     m_currentNode->AddComment("Search traces");
 }
