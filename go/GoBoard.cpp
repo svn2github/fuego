@@ -668,9 +668,6 @@ void GoBoard::AddStoneForUndo(SgPoint p, SgBlackWhite c)
     SG_ASSERT_BW(c);
     SG_ASSERT_BOARDRANGE(p);
     m_state.m_isFirst[p] = false;
-    // If this is the first time a point is played here,
-    // then repetition is impossible until the next capture
-    m_state.m_isNewPosition = m_state.m_isNewPosition || m_state.m_isFirst[p];
     m_state.m_hash.XorStone(p, c);
     AddStone(p, c);
 }
@@ -799,7 +796,8 @@ void GoBoard::Play(SgPoint p, SgBlackWhite player)
     if (! entry.m_killed.IsEmpty())
     {
         m_moveInfo.set(GO_MOVEFLAG_CAPTURING);
-        // Repetition now possible, unless its the first play here
+        // If this is the first time a point is played here, then repetition
+        // is impossible until the next capture
         m_state.m_isNewPosition = m_state.m_isNewPosition && wasFirstStone;
     }
     UpdateBlocksAfterAddStone(p, player, entry);
