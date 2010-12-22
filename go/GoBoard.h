@@ -854,10 +854,6 @@ private:
 
     void RemoveStone(SgPoint p);
 
-    void AddStoneForUndo(SgPoint p, SgBlackWhite c);
-
-    void RemoveStoneForUndo(SgPoint p);
-
     void KillBlock(const Block* block);
 
     bool HasLiberties(SgPoint p) const;
@@ -877,7 +873,8 @@ private:
 public:
     /** Iterate through all the stones of a block.
         Point 'p' must be occupied.
-        Also, the stones can only be accessed for the current board position. */
+        Also, the stones can only be accessed for the current board
+        position. */
     class StoneIterator
     {
     public:

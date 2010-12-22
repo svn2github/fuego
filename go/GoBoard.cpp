@@ -663,22 +663,6 @@ void GoBoard::RemoveStone(SgPoint p)
     --nuNeighbors[p + SG_NS];
 }
 
-void GoBoard::AddStoneForUndo(SgPoint p, SgBlackWhite c)
-{
-    SG_ASSERT_BW(c);
-    SG_ASSERT_BOARDRANGE(p);
-    m_state.m_isFirst[p] = false;
-    m_state.m_hash.XorStone(p, c);
-    AddStone(p, c);
-}
-
-void GoBoard::RemoveStoneForUndo(SgPoint p)
-{
-    SG_ASSERT_BOARDRANGE(p);
-    m_state.m_hash.XorStone(p, GetStone(p));
-    RemoveStone(p);
-}
-
 void GoBoard::KillBlock(const Block* block)
 {
     SgBlackWhite c = block->Color();
@@ -687,7 +671,8 @@ void GoBoard::KillBlock(const Block* block)
     {
         SgPoint stn = *it;
         AddLibToAdjBlocks(stn, opp);
-        RemoveStoneForUndo(stn);
+        m_state.m_hash.XorStone(stn, c);
+        RemoveStone(stn);
         m_capturedStones.PushBack(stn);
         m_state.m_block[stn] = 0;
     }
@@ -790,7 +775,9 @@ void GoBoard::Play(SgPoint p, SgBlackWhite player)
     // first time a stone gets played at that point to speed up check
     // for full-board repetition below.
     bool wasFirstStone = IsFirst(p);
-    AddStoneForUndo(p, player);
+    m_state.m_isFirst[p] = false;
+    m_state.m_hash.XorStone(p, player);
+    AddStone(p, player);
     ++m_state.m_numStones[player];
     RemoveLibAndKill(p, opp, entry);
     if (! entry.m_killed.IsEmpty())
