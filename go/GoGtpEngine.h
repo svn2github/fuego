@@ -144,6 +144,13 @@ public:
 
     const GoBoard& Board() const;
 
+    /** Set player.
+        Takes ownership of player. */
+    void SetPlayer(GoPlayer* player);
+
+    /** Throws GtpFailure if no player set. */
+    GoPlayer& Player() const;
+
     /** Write game and player boards. */
     void DumpState(std::ostream& out) const;
 
@@ -250,19 +257,12 @@ protected:
 
     SgPoint GenMove(SgBlackWhite color, bool ignoreClock);
 
-    /** Throws GtpFailure if no player set. */
-    GoPlayer& Player() const;
-
     /** Write integer array response to command.
         Elements with the value numeric_limits<int>::min() are considered to
         have no defined value and are written as "" for compatibility with
         GoGui. */
     void RespondNumberArray(GtpCommand& cmd, const SgPointArray<int>& array,
                             int scale);
-
-    /** Set player.
-        Takes ownership of player. */
-    void SetPlayer(GoPlayer* player);
 
     void Init(int size);
 

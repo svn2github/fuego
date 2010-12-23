@@ -942,7 +942,7 @@ void GoUctPlayer<SEARCH, THREAD>::Ponder()
     // hogging the machine immediately after startup (and before the game has
     // even started). The first move will be from the opening book in
     // tournaments anyway.
-    if (bd.TotalNumStones(SG_BLACK) == 0 && bd.TotalNumStones(SG_WHITE) == 0)
+    if (GoBoardUtil::IsBoardEmpty(bd))
         return;
     if (! m_reuseSubtree)
     {

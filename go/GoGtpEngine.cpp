@@ -224,8 +224,7 @@ void GoGtpEngine::BeforeWritingResponse()
 
 void GoGtpEngine::CheckBoardEmpty() const
 {
-    const GoBoard& bd = Board();
-    if (bd.TotalNumStones(SG_BLACK) + bd.TotalNumStones(SG_WHITE) > 0)
+    if (! GoBoardUtil::IsBoardEmpty(Board()))
         throw GtpFailure("board is not empty");
 }
 

@@ -252,8 +252,7 @@ SgNode* GoGame::NonConstNode(const SgNode* node) const
 
 void GoGame::PlaceHandicap(const SgVector<SgPoint>& stones)
 {
-    SG_ASSERT(m_board.TotalNumStones(SG_BLACK)
-              + m_board.TotalNumStones(SG_WHITE) > 0);
+    SG_ASSERT(GoBoardUtil::IsBoardEmpty(m_board));
     SgNode* node = m_current;
     if (node->HasSon())
         node = node->NewRightMostSon();

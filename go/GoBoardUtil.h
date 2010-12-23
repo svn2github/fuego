@@ -149,6 +149,9 @@ namespace GoBoardUtil
     bool HasStonesOfBothColors(const GoBoard& bd,
                                const SgVector<SgPoint>& stones);
 
+    template<class BOARD>
+    bool IsBoardEmpty(const BOARD& bd);
+
     /** Return if point is surrounded by one color and no adjacent block is
         in atari.
         Good criterion for move generation in Monte-Carlo. See:
@@ -247,7 +250,8 @@ namespace GoBoardUtil
     void RegionCode(const GoBoard& bd, const SgVector<SgPoint>& region,
                     SgHashCode* c);
 
-    /** Returns true iff during the first N moves of a Chinese handicap game. */
+    /** Returns true iff during the first N moves of a Chinese handicap
+        game. */
     bool RemainingChineseHandicap(const GoBoard& bd);
 
     /** Check if move would be self-atari.
@@ -398,6 +402,12 @@ inline void GoBoardUtil::GetCoordString(const GoBoard& board, SgMove move,
                                         std::string* s)
 {
     GetCoordString(move, s, board.Size());
+}
+
+template<class BOARD>
+bool GoBoardUtil::IsBoardEmpty(const BOARD& bd)
+{
+    return bd.TotalNumStones(SG_BLACK) + bd.TotalNumStones(SG_WHITE) == 0;
 }
 
 template<class BOARD>
