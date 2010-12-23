@@ -1324,6 +1324,7 @@ void GoGtpEngine::Init(int size)
     m_game.UpdateDate(dateBuffer);
     ApplyTimeSettings();
     CreateAutoSaveFileName();
+    BoardChanged();
 }
 
 void GoGtpEngine::InitStatistics()
@@ -1496,7 +1497,10 @@ void GoGtpEngine::SetPlayer(GoPlayer* player)
         m_player = player;
     }
     if (m_player != 0)
+    {
+        m_player->UpdateSubscriber();
         m_player->OnNewGame();
+    }
     InitStatistics();
 }
 
