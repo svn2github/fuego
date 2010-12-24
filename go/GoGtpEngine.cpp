@@ -434,10 +434,9 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     }
     else
     {
-        SgNode* node = m_game.AddMove(move, color);
+        m_game.AddMove(move, color);
         if (debugStrToString.get() != 0)
-            node->AddComment(debugStrToString->GetString());
-        m_game.GoToNode(node);
+            m_game.AddComment(debugStrToString->GetString());
         BoardChanged();
         cmd << SgWritePoint(move);
     }
@@ -1390,8 +1389,7 @@ void GoGtpEngine::Play(SgBlackWhite color, SgPoint move)
     if (move == SG_RESIGN)
         return;
     CheckLegal("illegal move: ", color, move, m_acceptIllegal);
-    SgNode* node = m_game.AddMove(move, color);
-    m_game.GoToNode(node);
+    m_game.AddMove(move, color);
 }
 
 GoPlayer& GoGtpEngine::Player() const

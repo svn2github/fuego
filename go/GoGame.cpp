@@ -75,8 +75,8 @@ GoGame::~GoGame()
 }
 
 
-SgNode* GoGame::AddMove(SgMove move, SgBlackWhite player,
-                        const SgSearchStatistics* stat)
+void GoGame::AddMove(SgMove move, SgBlackWhite player,
+                     const SgSearchStatistics* stat, bool makeMainVariation)
 {
     // Check whether a node with that move already exists.
     SgNode* node = m_current->LeftMostSon();
@@ -107,7 +107,9 @@ SgNode* GoGame::AddMove(SgMove move, SgBlackWhite player,
     if (stat)
         AddStatisticsToNode(stat, node);
     m_time.PlayedMove(*node, player);
-    return node;
+    if (makeMainVariation)
+        node->PromoteNode();
+    GoToNode(node);
 }
 
 SgNode* GoGame::AddResignNode(SgBlackWhite player)

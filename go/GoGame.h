@@ -69,13 +69,17 @@ public:
         the current node. */
     void SetupPosition(const SgBWArray<SgPointSet>& stones);
 
-    /** Add move to the game record.
+    /** Add move to the game record and make it the current node.
         Add move as the next move at the current position.
         If a node with that move already exists, then don't add a new one.
         Return the node with that move.
         Also add any statistics from 'stat' and time left to that node. */
-    SgNode* AddMove(SgMove move, SgBlackWhite player,
-                    const SgSearchStatistics* stat = 0);
+    void AddMove(SgMove move, SgBlackWhite player,
+                 const SgSearchStatistics* stat = 0,
+                 bool makeMainVariation = true);
+
+    /** Add a comment to the current node. */
+    void AddComment(const std::string& comment);
 
     /** Add a node with a comment that a player resigned.
         For informational purposes only, the resign node will not be made
@@ -209,6 +213,11 @@ private:
 
     void UpdateGameInfoStringProp(SgPropID id, const std::string& value);
 };
+
+inline void GoGame::AddComment(const std::string& comment)
+{
+    m_current->AddComment(comment);
+}
 
 inline const GoBoard& GoGame::Board() const
 {
