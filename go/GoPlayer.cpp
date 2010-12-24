@@ -64,6 +64,8 @@ void GoPlayer::Ponder()
 SgNode* GoPlayer::TransferSearchTraces()
 {
     SgNode* node = m_currentNode;
+    if (node->NumSons() == 0)
+        return 0;
     m_currentNode = 0;
     ClearSearchTraces();
     return node;

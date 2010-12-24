@@ -62,7 +62,9 @@ public:
 
     void ClearSearchTraces();
 
-    /** Get node with search traces and transfer ownership to the caller. */
+    /** Get node with search traces and transfer ownership to the caller.
+        @return A node that has all search traces as children, or 0 if there
+        are no search traces. */
     SgNode* TransferSearchTraces();
 
     /** Return value for a move.

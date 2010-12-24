@@ -1284,7 +1284,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
             SgDebug() << "GoGtpEngine: Checking AutoBook instead of book\n";
             move = m_autoBook->LookupMove(Board());
         }
-        else 
+        else
             move = m_book.LookupMove(Board());
     }
     m_mpiSynchronizer->SynchronizeMove(move);
@@ -1299,7 +1299,9 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     {
         player.ClearSearchTraces();
         move = player.GenMove(time, color);
-        m_game.AppendChild(player.TransferSearchTraces());
+        SgNode* searchTraces = player.TransferSearchTraces();
+        if (searchTraces != 0)
+            m_game.AppendChild(searchTraces);
     }
     m_mpiSynchronizer->SynchronizeMove(move);
     m_timeLastMove = SgTime::Get() - startTime;
