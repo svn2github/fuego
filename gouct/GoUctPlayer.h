@@ -191,7 +191,7 @@ public:
     /** Reuse subtree from last search.
         Reuses the subtree from the last search, if the current position is
         a number of regular game moves later than the position that the
-        previous search corresponds to. */
+        previous search corresponds to. Default is true. */
     bool ReuseSubtree() const;
 
     /** See ReuseSubtree() */
@@ -522,7 +522,7 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(const GoBoard& bd)
       m_ignoreClock(false),
       m_enablePonder(false),
       m_useRootFilter(true),
-      m_reuseSubtree(false),
+      m_reuseSubtree(true),
       m_earlyPass(true),
       m_lastBoardSize(-1),
       m_maxGames(std::numeric_limits<SgUctValue>::max()),

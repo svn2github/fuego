@@ -562,8 +562,10 @@ public:
 
     void EndSearch();
 
-    /** Calls StartSearch() and then maxGames times PlayGame().
-        @param maxGames The maximum number of games (greater or equal one).
+    /** Calls StartSearch() and then PlayGame() in a loop.
+        @param maxGames The maximum number of games (greater or equal
+        one). The number of games includes the ones already counted in
+        the initialization tree (see parameter initTree).
         @param maxTime The maximum time in seconds.
         @param[out] sequence The move sequence with the best value.
         @param rootFilter Moves to filter at the root node

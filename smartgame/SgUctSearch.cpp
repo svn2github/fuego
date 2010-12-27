@@ -271,8 +271,8 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
         Debug(state, "SgUctSearch: floating point type precision reached");
         return true;
     }
-    SgUctValue gamesPlayed = GamesPlayed();
-    if (gamesPlayed >= m_maxGames)
+    SgUctValue rootCount = root.MoveCount();
+    if (rootCount >= m_maxGames)
     {
         Debug(state, "SgUctSearch: max games reached");
         return true;
@@ -287,7 +287,7 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
     }
     const bool isEarlyAbort = CheckEarlyAbort();
     if (   isEarlyAbort
-        && m_earlyAbort->m_reductionFactor * gamesPlayed >= m_maxGames
+        && m_earlyAbort->m_reductionFactor * rootCount >= m_maxGames
        )
     {
         Debug(state, "SgUctSearch: max games reached (early abort)");
@@ -313,7 +313,7 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
         UpdateCheckTimeInterval(time);
         if (m_moveSelect == SG_UCTMOVESELECT_COUNT)
         {
-            double remainingGamesDouble = m_maxGames - gamesPlayed - 1;
+            double remainingGamesDouble = m_maxGames - rootCount - 1;
             // Use time based count abort, only if time > 1, otherwise
             // m_gamesPerSecond is unreliable
             if (time > 1.)
