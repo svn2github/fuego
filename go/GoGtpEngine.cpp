@@ -424,11 +424,11 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
     if (move == SG_RESIGN)
     {
         cmd << "resign";
-        SgNode* node = m_game.AddResignNode(color);
+        const SgNode& node = m_game.AddResignNode(color);
         if (debugStrToString.get() != 0)
         {
-            node->AddComment("\n\n");
-            node->AddComment(debugStrToString->GetString());
+            m_game.AddComment(node, "\n\n");
+            m_game.AddComment(node, debugStrToString->GetString());
         }
         AutoSave();
     }

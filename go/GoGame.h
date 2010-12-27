@@ -81,13 +81,16 @@ public:
     /** Add a comment to the current node. */
     void AddComment(const std::string& comment);
 
+    /** Add a comment to any node. */
+    void AddComment(const SgNode& node, const std::string& comment);
+
     /** Add a node with a comment that a player resigned.
         For informational purposes only, the resign node will not be made
         the current node. */
-    SgNode* AddResignNode(SgBlackWhite player);
+    const SgNode& AddResignNode(SgBlackWhite player);
 
     /** Append a node as a new child to the current node.
-        @param child The new child. The ownership is transferes. The user is
+        @param child The new child. The ownership is transfered. The user is
         responsible that the subtree is consistent and contains no lines with
         illegal moves with respect to the position at the current node. */
     void AppendChild(SgNode* child);
@@ -209,7 +212,9 @@ private:
 
     void InitHandicap(const GoRules& rules, SgNode* root);
 
-    SgNode* NonConstNode(const SgNode* node) const;
+    SgNode* NonConstNodePtr(const SgNode* node) const;
+
+    SgNode& NonConstNodeRef(const SgNode& node) const;
 
     void UpdateGameInfoStringProp(SgPropID id, const std::string& value);
 };

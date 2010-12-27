@@ -74,6 +74,10 @@ GoGame::~GoGame()
 #endif
 }
 
+void GoGame::AddComment(const SgNode& node, const std::string& comment)
+{
+    NonConstNodeRef(node).AddComment(comment);
+}
 
 void GoGame::AddMove(SgMove move, SgBlackWhite player,
                      const SgSearchStatistics* stat, bool makeMainVariation)
@@ -112,12 +116,12 @@ void GoGame::AddMove(SgMove move, SgBlackWhite player,
     GoToNode(node);
 }
 
-SgNode* GoGame::AddResignNode(SgBlackWhite player)
+const SgNode& GoGame::AddResignNode(SgBlackWhite player)
 {
-    SgNode* node = m_current->NewRightMostSon();
+    SgNode& node = *m_current->NewRightMostSon();
     ostringstream comment;
     comment << (player == SG_BLACK ? "Black" : "White") << " resigned";
-    node->AddComment(comment.str());
+    node.AddComment(comment.str());
     return node;
 }
 
@@ -195,7 +199,7 @@ void GoGame::GoToNode(const SgNode* dest)
 {
     m_updater.Update(dest, m_board);
     SgNodeUtil::UpdateTime(Time(), dest);
-    m_current = NonConstNode(dest);
+    m_current = NonConstNodePtr(dest);
     if (GoBoardUtil::RemainingChineseHandicap(m_board))
         m_board.SetToPlay(SG_BLACK);
     m_time.EnterNode(*m_current, m_board.ToPlay());
@@ -246,10 +250,17 @@ void GoGame::Init(SgNode* root)
     such a user reference to non-const for internal usage and avoids the
     spreading of const casts all over the code. It also contains an assertion
     that the node is part of the current game tree. */
-SgNode* GoGame::NonConstNode(const SgNode* node) const
+SgNode* GoGame::NonConstNodePtr(const SgNode* node) const
 {
     SG_ASSERT(node->Root() == m_root);
     return const_cast<SgNode*>(node);
+}
+
+/** See NonConstNodePtr(). */
+SgNode& GoGame::NonConstNodeRef(const SgNode& node) const
+{
+    SG_ASSERT(node.Root() == m_root);
+    return const_cast<SgNode&>(node);
 }
 
 void GoGame::PlaceHandicap(const SgVector<SgPoint>& stones)
