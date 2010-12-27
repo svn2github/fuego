@@ -1428,6 +1428,7 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
 void SgUctSearch::WriteStatistics(ostream& out) const
 {
     out << SgWriteLabel("Count") << m_tree.Root().MoveCount() << '\n'
+        << SgWriteLabel("GamesPlayed") << GamesPlayed() << '\n'
         << SgWriteLabel("Nodes") << m_tree.NuNodes() << '\n';
     if (!m_knowledgeThreshold.empty())
         out << SgWriteLabel("Knowledge") 
