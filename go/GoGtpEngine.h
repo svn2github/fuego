@@ -339,6 +339,16 @@ private:
     /** See SetDebugToComment() */
     bool m_debugToComment;
 
+    bool m_useBook;
+
+    /** Flag set to false if pondering in current position would be a waste
+        of CPU time.
+        This flag is set to false if the game has not really started yet
+        (current position is an empty board or still in the opening book) or
+        is already finished (two passes, resign or the game result was just
+        set with <tt>go_set_info result</tt>). */
+    bool m_isPonderPosition;
+
     int m_fixedBoardSize;
 
     /** Maximum number of clear_board commands.
@@ -400,6 +410,8 @@ private:
     void CreateAutoSaveFileName();
 
     void GameFinished();
+
+    SgPoint GenBookMove(SgBlackWhite toPlay);
 
     void InitStatistics();
 

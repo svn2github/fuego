@@ -86,6 +86,8 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
       m_autoSave(false),
       m_autoShowBoard(false),
       m_debugToComment(false),
+      m_useBook(true),
+      m_isPonderPosition(true),
       m_fixedBoardSize(fixedBoardSize),
       m_maxClearBoard(-1),
       m_numberClearBoard(0),
@@ -204,11 +206,15 @@ void GoGtpEngine::AutoSave() const
 
 void GoGtpEngine::BoardChanged()
 {
+    const GoBoard& bd = Board();
     if (m_autoShowBoard)
-        SgDebug() << Board();
+        SgDebug() << bd;
     if (m_player != 0)
         m_player->UpdateSubscriber();
     AutoSave();
+    m_isPonderPosition = (! GoBoardUtil::IsBoardEmpty(bd)
+                          && ! GoBoardUtil::EndOfGame(bd)
+                          && GenBookMove(bd.ToPlay()) == SG_NULLMOVE);
 }
 
 void GoGtpEngine::BeforeHandleCommand()
@@ -683,6 +689,7 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
     {
         cmd << "[bool] accept_illegal " << m_acceptIllegal << '\n'
             << "[bool] debug_to_comment " << m_debugToComment << '\n'
+            << "[bool] use_book " << m_useBook << '\n'
             << "[string] auto_save " << (m_autoSave ? m_autoSavePrefix : "")
             << '\n'
             << "[string] overhead " << m_overhead << '\n'
@@ -696,6 +703,8 @@ void GoGtpEngine::CmdParam(GtpCommand& cmd)
             m_acceptIllegal = cmd.Arg<bool>(1);
         else if (name == "debug_to_comment")
             m_debugToComment = cmd.Arg<bool>(1);
+        else if (name == "use_book")
+            m_useBook = cmd.Arg<bool>(1);
         else if (name == "auto_save")
         {
             string prefix = cmd.RemainingLine(0);
@@ -1105,7 +1114,10 @@ void GoGtpEngine::CmdSetInfo(GtpCommand& cmd)
     else if (key == "player_white")
         m_game.UpdatePlayerName(SG_WHITE, value);
     else if (key == "result")
+    {
         m_game.UpdateResult(value);
+        m_isPonderPosition = false;
+    }
     AutoSave();
 }
 
@@ -1261,6 +1273,15 @@ void GoGtpEngine::GameFinished()
         m_player->OnGameFinished();
 }
 
+SgPoint GoGtpEngine::GenBookMove(SgBlackWhite toPlay)
+{
+    if (! m_useBook || toPlay != Board().ToPlay())
+        return SG_NULLMOVE;
+    if (m_autoBook.get() != 0)
+        return m_autoBook->LookupMove(Board());
+    return m_book.LookupMove(Board());
+}
+
 SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
 {
     SG_ASSERT_BW(color);
@@ -1275,17 +1296,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
         time = m_game.Time();
     AddStatistics("GAME", m_autoSaveFileName);
     AddStatistics("MOVE", m_game.CurrentMoveNumber() + 1);
-    SgPoint move = SG_NULLMOVE;
-    if (color == Board().ToPlay())
-    {
-        if (m_autoBook.get() != 0)
-        {
-            SgDebug() << "GoGtpEngine: Checking AutoBook instead of book\n";
-            move = m_autoBook->LookupMove(Board());
-        }
-        else
-            move = m_book.LookupMove(Board());
-    }
+    SgPoint move = GenBookMove(color);
     m_mpiSynchronizer->SynchronizeMove(move);
     if (move != SG_NULLMOVE)
     {
@@ -1307,7 +1318,9 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     AddStatistics("TIME", m_timeLastMove);
     if (move == SG_NULLMOVE)
         throw GtpFailure() << player.Name() << " generated NULLMOVE";
-    if (move != SG_RESIGN)
+    if (move == SG_RESIGN)
+        m_isPonderPosition = false;
+    else
         CheckLegal(player.Name() + " generated illegal move: ", color, move,
                    false);
     AddPlayStatistics();
@@ -1382,12 +1395,16 @@ void GoGtpEngine::PlaceHandicap(const SgVector<SgPoint>& stones)
 
 void GoGtpEngine::Play(SgBlackWhite color, SgPoint move)
 {
-    CheckMoveStackOverflow();
-    // Play "resign" is not allowed by the GTP standard (draft version 2),
-    // but there could be controllers that send it (e.g. CGOS did in a
-    // previous version ), so we just ignore it.
     if (move == SG_RESIGN)
+    {
+        // Argument "resign" for a play command is not allowed by the GTP
+        // standard (draft version 2), but no harm is done if the controller
+        // sends it anyway (like older versions of the CGOS script did) and
+        // we can use this information (e.g. to stop pondering)
+        m_isPonderPosition = false;
         return;
+    }
+    CheckMoveStackOverflow();
     CheckLegal("illegal move: ", color, move, m_acceptIllegal);
     m_game.AddMove(move, color);
 }
@@ -1576,7 +1593,7 @@ void GoGtpEngine::WriteBoardInfo(GtpCommand& cmd, const GoBoard& bd)
 
 void GoGtpEngine::Ponder()
 {
-    if (m_player == 0)
+    if (m_player == 0 || ! m_isPonderPosition)
         return;
     // Call GoPlayer::Ponder() after 0.2 seconds delay to avoid calls in very
     // short intervals between received commands
@@ -1588,7 +1605,7 @@ void GoGtpEngine::Ponder()
         if (SgUserAbort())
         {
             aborted = true;
-                break;
+            break;
         }
         time.nsec += 1000000; // 1 msec
         boost::thread::sleep(time);

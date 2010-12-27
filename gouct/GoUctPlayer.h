@@ -167,11 +167,19 @@ public:
 
     /** Think during the opponents time.
         For enabling pondering, ReuseSubtree() also has to be true.
-        Pondering search will be terminated after MaxGames() or 60 min. */
+        Pondering search will be terminated after MaxGames() or
+        MaxPonderTime(). */
     bool EnablePonder() const;
 
     /** See EnablePonder() */
     void SetEnablePonder(bool enable);
+
+    /** Maximum ponder time in seconds.
+        @see EnablePonder() */
+    double MaxPonderTime() const;
+
+    /** See MaxPonderTime() */
+    void SetMaxPonderTime(double seconds);
 
     /** Minimum number of simulations to check for resign.
         This minimum number of simulations is also required to apply the
@@ -278,6 +286,8 @@ public:
 
     SgUctValue m_resignMinGames;
 
+    double m_maxPonderTime;
+
     SEARCH m_search;
 
     GoTimeControl m_timeControl;
@@ -286,7 +296,8 @@ public:
 
     boost::scoped_ptr<GoUctRootFilter> m_rootFilter;
 
-    /** Playout policy used if search mode is GOUCT_SEARCHMODE_PLAYOUTPOLICY. */
+    /** Playout policy used if search mode is
+        GOUCT_SEARCHMODE_PLAYOUTPOLICY. */
     boost::scoped_ptr<GoUctPlayoutPolicy<GoBoard> > m_playoutPolicy;
 
     SgMpiSynchronizerHandle m_mpiSynchronizer;
@@ -355,6 +366,12 @@ template <class SEARCH, class THREAD>
 inline SgUctValue GoUctPlayer<SEARCH, THREAD>::MaxGames() const
 {
     return m_maxGames;
+}
+
+template <class SEARCH, class THREAD>
+inline double GoUctPlayer<SEARCH, THREAD>::MaxPonderTime() const
+{
+    return m_maxPonderTime;
 }
 
 template <class SEARCH, class THREAD>
@@ -427,6 +444,12 @@ template <class SEARCH, class THREAD>
 inline void GoUctPlayer<SEARCH, THREAD>::SetMaxGames(SgUctValue maxGames)
 {
     m_maxGames = maxGames;
+}
+
+template <class SEARCH, class THREAD>
+inline void GoUctPlayer<SEARCH, THREAD>::SetMaxPonderTime(double seconds)
+{
+    m_maxPonderTime = seconds;
 }
 
 template <class SEARCH, class THREAD>
@@ -527,6 +550,7 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(const GoBoard& bd)
       m_lastBoardSize(-1),
       m_maxGames(std::numeric_limits<SgUctValue>::max()),
       m_resignMinGames(5000),
+      m_maxPonderTime(300),
       m_search(Board(),
                new GoUctPlayoutPolicyFactory<GoUctBoard>(
                                                  m_playoutPolicyParam),
@@ -935,14 +959,7 @@ template <class SEARCH, class THREAD>
 void GoUctPlayer<SEARCH, THREAD>::Ponder()
 {
     const GoBoard& bd = Board();
-    if (! m_enablePonder || GoBoardUtil::EndOfGame(bd)
-        || m_searchMode != GOUCT_SEARCHMODE_UCT)
-        return;
-    // Don't start pondering if board is empty. Avoids that the program starts
-    // hogging the machine immediately after startup (and before the game has
-    // even started). The first move will be from the opening book in
-    // tournaments anyway.
-    if (GoBoardUtil::IsBoardEmpty(bd))
+    if (! m_enablePonder || m_searchMode != GOUCT_SEARCHMODE_UCT)
         return;
     if (! m_reuseSubtree)
     {
@@ -952,9 +969,7 @@ void GoUctPlayer<SEARCH, THREAD>::Ponder()
         return;
     }
     SgDebug() << "GoUctPlayer::Ponder: start\n";
-    // Don't ponder forever to avoid hogging the machine
-    double maxTime = 3600; // 60 min
-    DoSearch(bd.ToPlay(), maxTime, true);
+    DoSearch(bd.ToPlay(), m_maxPonderTime, true);
     SgDebug() << "GoUctPlayer::Ponder: end\n";
 }
 

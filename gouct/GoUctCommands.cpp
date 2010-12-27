@@ -406,9 +406,11 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
     @arg @c early_pass See GoUctPlayer::EarlyPass
     @arg @c forced_opening_moves See GoUctPlayer::ForcedOpeningMoves
     @arg @c ignore_clock See GoUctPlayer::IgnoreClock
+    @arg @c ponder See GoUctPlayer::EnablePonder
     @arg @c reuse_subtree See GoUctPlayer::ReuseSubtree
     @arg @c use_root_filter See GoUctPlayer::UseRootFilter
     @arg @c max_games See GoUctPlayer::MaxGames
+    @arg @c max_ponder_time See GoUctPlayer::MaxPonderTime
     @arg @c resign_min_games See GoUctPlayer::ResignMinGames
     @arg @c resign_threshold See GoUctPlayer::ResignThreshold
     @arg @c search_mode @c playout|uct|one_ply See GoUctPlayer::SearchMode */
@@ -428,6 +430,7 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             << "[bool] reuse_subtree " << p.ReuseSubtree() << '\n'
             << "[bool] use_root_filter " << p.UseRootFilter() << '\n'
             << "[string] max_games " << p.MaxGames() << '\n'
+            << "[string] max_ponder_time " << p.MaxPonderTime() << '\n'
             << "[string] resign_min_games " << p.ResignMinGames() << '\n'
             << "[string] resign_threshold " << p.ResignThreshold() << '\n'
             << "[list/playout_policy/uct/one_ply] search_mode "
@@ -452,6 +455,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetUseRootFilter(cmd.Arg<bool>(1));
         else if (name == "max_games")
             p.SetMaxGames(cmd.ArgMin<SgUctValue>(1, SgUctValue(1)));
+        else if (name == "max_ponder_time")
+            p.SetMaxPonderTime(cmd.ArgMin<SgUctValue>(1, 0));
         else if (name == "resign_min_games")
             p.SetResignMinGames(cmd.ArgMin<SgUctValue>(1, SgUctValue(0)));
         else if (name == "resign_threshold")
