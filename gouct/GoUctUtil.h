@@ -31,12 +31,14 @@ namespace GoUctUtil
 {
     /** reject random move if it was self atari */
     const bool REMOVE_SELF_ATARI = false;
+
     /** reject random move if it was both atari and self atari */
     const bool REMOVE_MUTUAL_ATARI = true;
 
     const int SELF_ATARI_LIMIT = 8;
+
     const int MUTUAL_ATARI_LIMIT = 2;
-    
+
     /** Conservative clump correction.
         Only "very clumpy" moves are replaced.
         If false, more "clumps" are replaced. */
@@ -450,7 +452,7 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
         int length = emptyPts.Length();
         if (length == 0)
             break;
-        int index = random.Int(length);
+        int index = random.SmallInt(length);
         SgPoint p = emptyPts[index];
         SG_ASSERT(bd.IsEmpty(p));
         if (GeneratePoint(bd, balancer, p, toPlay))

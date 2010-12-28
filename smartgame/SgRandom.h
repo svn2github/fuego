@@ -56,12 +56,22 @@ public:
 
     /** Get a random integer in an interval.
         @param range The upper limit of the interval (exclusive)
-        @pre range range <= SgRandom::Max()
+        @pre range > 0
+        @pre range <= SgRandom::Max()
         @return An integer in <tt> [0..range - 1]</tt> */
     int Int(int range);
 
     /** See SgRandom::Int(int) */
     std::size_t Int(std::size_t range);
+
+    /** Get a small random integer in an interval.
+        Lower quality than SgRandom::Int(int) because it uses only the lower
+        16 bits, but faster because it avoids the expensive modulo operation.
+        @param range The upper limit of the interval (exclusive)
+        @pre range > 0
+        @pre range <= (1 << 16)
+        @return An integer in <tt> [0..range - 1]</tt> */
+    int SmallInt(int range);
 
     /** Get a random integer in [min, max - 1] */
     int Range(int min, int max);
@@ -140,6 +150,15 @@ inline bool SgRandom::RandomEvent(unsigned int threshold)
 inline int SgRandom::Range(int min, int max)
 {
     return min + Int(max - min);
+}
+
+inline int SgRandom::SmallInt(int range)
+{
+    SG_ASSERT(range > 0);
+    SG_ASSERT(range <= (1 << 16));
+    int i = ((Int() & 0xffff) * range) >> 16;
+    SG_ASSERTRANGE(i, 0, range - 1);
+    return i;
 }
 
 //----------------------------------------------------------------------------
