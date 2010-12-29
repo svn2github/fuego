@@ -65,8 +65,8 @@ public:
     std::size_t Int(std::size_t range);
 
     /** Get a small random integer in an interval.
-        Lower quality than SgRandom::Int(int) because it uses only the lower
-        16 bits, but faster because it avoids the expensive modulo operation.
+        Uses only the lower 16 bits. Faster than SgRandom::Int(int) because it
+        avoids the expensive modulo operation.
         @param range The upper limit of the interval (exclusive)
         @pre range > 0
         @pre range <= (1 << 16)
