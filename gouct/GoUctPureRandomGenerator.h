@@ -186,7 +186,7 @@ inline SgPoint GoUctPureRandomGenerator<BOARD>::GenerateFillboardMove(
         effectiveTries -= 1.f;
     }
     // Remaning fractional number of tries
-    if (m_random.Int(100) > 100 * effectiveTries)
+    if (m_random.SmallInt(100) > 100 * effectiveTries)
         return SG_NULLMOVE;
     while (true)
     {
@@ -235,7 +235,7 @@ inline void GoUctPureRandomGenerator<BOARD>::Insert(SgPoint p)
         m_candidates.push_back(p);
     else
     {
-        SgPoint& swapPoint = m_candidates[m_random.Int(size)];
+        SgPoint& swapPoint = m_candidates[m_random.SmallInt(size)];
         m_candidates.push_back(swapPoint);
         swapPoint = p;
     }

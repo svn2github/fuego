@@ -73,6 +73,9 @@ public:
         @return An integer in <tt> [0..range - 1]</tt> */
     int SmallInt(int range);
 
+    /** See SgRandom::SmallInt(int) */
+    std::size_t SmallInt(std::size_t range);
+
     /** Get a random integer in [min, max - 1] */
     int Range(int min, int max);
 
@@ -158,6 +161,14 @@ inline int SgRandom::SmallInt(int range)
     SG_ASSERT(range <= (1 << 16));
     int i = ((Int() & 0xffff) * range) >> 16;
     SG_ASSERTRANGE(i, 0, range - 1);
+    return i;
+}
+
+inline std::size_t SgRandom::SmallInt(std::size_t range)
+{
+    SG_ASSERT(range <= (1 << 16));
+    std::size_t i = ((Int() & 0xffff) * range) >> 16;
+    SG_ASSERT(i < range);
     return i;
 }
 

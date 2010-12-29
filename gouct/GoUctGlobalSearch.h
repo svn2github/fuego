@@ -397,7 +397,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
     // to the front, because the first move in a Go board iteration is often
     // a bad corner move
     if (moves.size() > 1)
-        std::swap(moves[0], moves[m_random.Int(moves.size())]);
+        std::swap(moves[0], moves[m_random.SmallInt(moves.size())]);
     moves.push_back(SgMoveInfo(SG_PASS));
 }
 

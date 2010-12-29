@@ -109,7 +109,7 @@ SgPoint GoUctUtil::GenForcedOpeningMove(const GoBoard& bd)
         moves.PushBack(Pt(sz - 3, sz - 3));
     if (moves.IsEmpty())
         return SG_NULLMOVE;
-    return moves[SgRandom::Global().Int(moves.Length())];
+    return moves[SgRandom::Global().SmallInt(moves.Length())];
 }
 
 void GoUctUtil::GfxBestMove(const SgUctSearch& search, SgBlackWhite toPlay,
