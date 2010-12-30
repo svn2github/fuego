@@ -89,7 +89,7 @@ class GoAutoBook
 {
 public:
     GoAutoBook(const std::string& filename,
-               const GoAutoBookParam& param) throw();
+               const GoAutoBookParam& param);
 
     ~GoAutoBook();
 

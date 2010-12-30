@@ -75,7 +75,7 @@ GoAutoBookParam::GoAutoBookParam()
 //----------------------------------------------------------------------------
 
 GoAutoBook::GoAutoBook(const std::string& filename,
-                       const GoAutoBookParam& param) throw()
+                       const GoAutoBookParam& param)
     : m_param(param), 
       m_filename(filename)
 {
