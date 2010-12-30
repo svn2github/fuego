@@ -11,6 +11,8 @@
 
 //----------------------------------------------------------------------------
 
+const float SgBookNode::LEAF_PRIORITY = 0.0;
+
 bool SgBookNode::IsTerminal() const
 {
     if (m_value < -100 || m_value > 100)
