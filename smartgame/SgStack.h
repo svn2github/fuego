@@ -118,7 +118,7 @@ int SgStack<T,SIZE>::Size() const
 }
 
 template<typename T, int SIZE>
-void SgStack<T,SIZE>::SgStack::SwapWith(SgStack<T,SIZE>& other)
+void SgStack<T,SIZE>::SwapWith(SgStack<T,SIZE>& other)
 {
     int nuSwap = std::min(Size(), other.Size());
     for(int i = 0; i < nuSwap; ++i)
