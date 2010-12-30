@@ -235,7 +235,7 @@ private:
     /** Try to correct the proposed move, typically by moving it to a
         'better' point such as other liberty or neighbor.
         Examples implemented: self-ataries, clumps. */
-    bool CorrectMove(GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
+    bool CorrectMove(typename GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
                      SgPoint& mv, GoUctPlayoutPolicyType moveType);
 
     /** Captures if last move was self-atari */
@@ -361,7 +361,7 @@ void GoUctPlayoutPolicy<BOARD>::ClearStatistics()
 
 template<class BOARD>
 bool GoUctPlayoutPolicy<BOARD>::CorrectMove(
-                    GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
+                    typename GoUctPlayoutPolicy<BOARD>::Corrector& corrFunction,
                     SgPoint& mv, GoUctPlayoutPolicyType moveType)
 {
 #if DEBUG
