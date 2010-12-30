@@ -13,12 +13,15 @@
 #include <iostream>
 #include <sstream>
 #include <errno.h>
-#include <sys/time.h>
 #include <sys/times.h>
 #include <unistd.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "SgException.h"
 
 using namespace std;
+using boost::posix_time::microsec_clock;
+using boost::posix_time::ptime;
+using boost::posix_time::time_duration;
 
 //----------------------------------------------------------------------------
 
@@ -32,6 +35,8 @@ clock_t g_ticksPerSecond;
 
 clock_t g_ticksPerMinute;
 
+ptime g_start;
+
 void Init()
 {
     long ticksPerSecond = sysconf(_SC_CLK_TCK);
@@ -41,6 +46,7 @@ void Init()
     }
     g_ticksPerSecond = static_cast<clock_t>(ticksPerSecond);
     g_ticksPerMinute = 60 * g_ticksPerSecond;
+    g_start = microsec_clock::universal_time();
     g_isInitialized = true;
 }
 
@@ -89,10 +95,8 @@ double SgTime::Get(SgTimeMode mode)
         }
     case SG_TIME_REAL:
         {
-            struct timeval timeVal;
-            if (gettimeofday(&timeVal, 0) != 0)
-                throw SgException(string("gettimeofday: ") + strerror(errno));
-            return (double(timeVal.tv_sec) + double(timeVal.tv_usec) / 1e6);
+            time_duration diff = microsec_clock::universal_time() - g_start;
+            return double(diff.total_nanoseconds()) * 1e-9;
         }
     default:
         SG_ASSERT(false);
