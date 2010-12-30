@@ -18,7 +18,7 @@ class SgUctSearch;
 
 class SgUctThreadState;
 
-class SgUctGameInfo;
+struct SgUctGameInfo;
 
 /** Interface for mpi synchronizers.
     @note This class and related functions are needed for the way the cluster
