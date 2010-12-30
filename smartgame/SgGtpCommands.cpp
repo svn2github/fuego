@@ -8,7 +8,9 @@
 
 #include <iomanip>
 #include <iostream>
+#if ! WIN32
 #include <unistd.h>
+#endif
 #include "SgDebug.h"
 #include "SgRandom.h"
 #include "SgTime.h"
@@ -146,6 +148,9 @@ void SgGtpCommands::CmdCpuTimeReset(GtpCommand& cmd)
     - gdb_gnome GDB in GNOME terminal */
 void SgGtpCommands::CmdDebugger(GtpCommand& cmd)
 {
+#if WIN32
+    throw GtpFailure("command not implemented on Windows");
+#else
     string type = cmd.Arg();
     const char* path = m_programPath;
     if (path == 0)
@@ -162,6 +167,7 @@ void SgGtpCommands::CmdDebugger(GtpCommand& cmd)
     int retval = system(s.str().c_str());
     if (retval != 0)
         throw GtpFailure() << "command returned " << retval;
+#endif
 }
 
 /** Echo command argument line as response.
@@ -227,8 +233,12 @@ void SgGtpCommands::CmdParam(GtpCommand& cmd)
 /** Return the process ID. */
 void SgGtpCommands::CmdPid(GtpCommand& cmd)
 {
+#if WIN32
+    throw GtpFailure("command not implemented on Windows");
+#else
     cmd.CheckArgNone();
     cmd << getpid();
+#endif
 }
 
 /** Set and store random seed.

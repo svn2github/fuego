@@ -5,6 +5,9 @@
 #ifndef SG_PROCESS_H
 #define SG_PROCESS_H
 
+// Not yet implemented for Windows
+#ifndef WIN32
+
 #include <ext/stdio_filebuf.h> // GCC specific
 #include <iosfwd>
 #include <memory>
@@ -50,5 +53,7 @@ inline std::ostream& SgProcess::Output()
 }
 
 //----------------------------------------------------------------------------
+
+#endif // ifndef WIN32
 
 #endif // SG_PROCESS_H

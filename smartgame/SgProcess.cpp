@@ -6,6 +6,9 @@
 #include "SgSystem.h"
 #include "SgProcess.h"
 
+// Not yet implemented for Windows
+#ifndef WIN32
+
 #include <errno.h>
 #include <fstream>
 #include <iostream>
@@ -109,3 +112,5 @@ SgProcess::~SgProcess()
 }
 
 //----------------------------------------------------------------------------
+
+#endif // ifndef WIN32
