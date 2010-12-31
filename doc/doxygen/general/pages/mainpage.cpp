@@ -7,5 +7,6 @@
     - @ref generalportability
     - @ref generalstyle
     - @ref generalautotools
+    - @ref generalvisualcplusplus
     - @ref generalunittests
     - @ref generalreleases */
