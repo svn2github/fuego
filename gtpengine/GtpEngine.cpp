@@ -431,14 +431,12 @@ const string& GtpCommand::Arg() const
     return Arg(0);
 }
 
-/** Specialization of Arg<T> for T=size_t to work around a GCC bug */
 template<>
 std::size_t GtpCommand::Arg<std::size_t>(std::size_t i) const
 {
+    // See the function declaration in GtpEngine.h for the rationale why this
+    // template specialization is necessary.
     string arg = Arg(i);
-    // Workaround for bug in standard library of some GCC versions (e.g. GCC
-    // 4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
-    // size_t, which should be unsigned
     bool fail = (! arg.empty() && arg[0] == '-');
     size_t result;
     if (! fail)

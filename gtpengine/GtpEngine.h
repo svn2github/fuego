@@ -409,6 +409,16 @@ T GtpCommand::Arg(std::size_t i) const
     return result;
 }
 
+/** Specialization of Arg<T> for T=size_t to work around a GCC bug.
+    Workaround for bug in standard library of some GCC versions (e.g. GCC
+    4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
+    size_t. The definition of this function is in GtpEngine.cpp, otherwise
+    GCC 4.5.5 produces a link error, but there must be the function
+    declaration in this header file, otherwise Visual Studio 2010 produces a
+    link error. */
+template<>
+std::size_t GtpCommand::Arg<std::size_t>(std::size_t i) const;
+
 template<typename T>
 inline T GtpCommand::Arg() const
 {
