@@ -24,6 +24,7 @@ Current development version
   guarantee its class invariants
 * Made GoPlayer to store its search traces instead of appending them directly
   to the game tree
+* Fuego now can be compiled natively on Windows with Visual C++.
 
 Version 0.4.1 - 2009 Dec 23
 ===========================
