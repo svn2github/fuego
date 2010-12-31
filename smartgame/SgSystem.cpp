@@ -52,7 +52,7 @@ SgAssertionHandler::~SgAssertionHandler()
 
 /** Set the shell variable SMARTGAME_ASSERT_CONTINUE to drop into the debugger
     instead of aborting the program whenever an SG_ASSERT fails */
-static bool s_assertContinue = std::getenv("SMARTGAME_ASSERT_CONTINUE");
+static bool s_assertContinue = (std::getenv("SMARTGAME_ASSERT_CONTINUE") != 0);
 
 void SgHandleAssertion(const char* expr, const char* file, int line)
 {
