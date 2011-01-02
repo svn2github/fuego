@@ -93,7 +93,7 @@ double SgTime::Get(SgTimeMode mode)
             FILETIME exitTime;
             FILETIME kernelTime;
             FILETIME userTime;
-	        HANDLE handle = GetCurrentProcess();
+            HANDLE handle = GetCurrentProcess();
             if (! GetProcessTimes(handle, &creationTime, &exitTime, &kernelTime, &userTime))
                 throw SgException("GetProcessTimes() returned an error");
             // Do not cast FILETIME to ULARGE_INTEGER because it can cause alignment
