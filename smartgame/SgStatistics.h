@@ -54,7 +54,7 @@ public:
 
     void Clear();
 
-    const COUNT& Count() const;
+    COUNT Count() const;
 
     /** Initialize with values.
         Equivalent to calling Clear() and calling @c count times
@@ -68,7 +68,7 @@ public:
         point count types. */
     bool IsDefined() const;
 
-    const VALUE& Mean() const;
+    VALUE Mean() const;
 
     /** Write in human readable format. */
     void Write(std::ostream& out) const;
@@ -173,7 +173,7 @@ inline void SgStatisticsBase<VALUE,COUNT>::Clear()
 }
 
 template<typename VALUE, typename COUNT>
-inline const COUNT& SgStatisticsBase<VALUE,COUNT>::Count() const
+inline COUNT SgStatisticsBase<VALUE,COUNT>::Count() const
 {
     return m_count;
 }
@@ -202,7 +202,7 @@ void SgStatisticsBase<VALUE,COUNT>::LoadFromText(std::istream& in)
 }
 
 template<typename VALUE, typename COUNT>
-inline const VALUE& SgStatisticsBase<VALUE,COUNT>::Mean() const
+inline VALUE SgStatisticsBase<VALUE,COUNT>::Mean() const
 {
     SG_ASSERT(IsDefined());
     return m_mean;
@@ -245,9 +245,9 @@ public:
 
     bool IsDefined() const;
 
-    const VALUE& Mean() const;
+    VALUE Mean() const;
 
-    const COUNT& Count() const;
+    COUNT Count() const;
 
     VALUE Deviation() const;
 
@@ -311,7 +311,7 @@ inline void SgStatistics<VALUE,COUNT>::Clear()
 }
 
 template<typename VALUE, typename COUNT>
-inline const COUNT& SgStatistics<VALUE,COUNT>::Count() const
+inline COUNT SgStatistics<VALUE,COUNT>::Count() const
 {
     return m_statisticsBase.Count();
 }
@@ -336,7 +336,7 @@ void SgStatistics<VALUE,COUNT>::LoadFromText(std::istream& in)
 }
 
 template<typename VALUE, typename COUNT>
-inline const VALUE& SgStatistics<VALUE,COUNT>::Mean() const
+inline VALUE SgStatistics<VALUE,COUNT>::Mean() const
 {
     return m_statisticsBase.Mean();
 }
@@ -381,9 +381,9 @@ public:
 
     bool IsDefined() const;
 
-    const VALUE& Mean() const;
+    VALUE Mean() const;
 
-    const COUNT& Count() const;
+    COUNT Count() const;
 
     VALUE Max() const;
 
@@ -428,7 +428,7 @@ inline void SgStatisticsExt<VALUE,COUNT>::Clear()
 }
 
 template<typename VALUE, typename COUNT>
-inline const COUNT& SgStatisticsExt<VALUE,COUNT>::Count() const
+inline COUNT SgStatisticsExt<VALUE,COUNT>::Count() const
 {
     return m_statistics.Count();
 }
@@ -452,7 +452,7 @@ inline VALUE SgStatisticsExt<VALUE,COUNT>::Max() const
 }
 
 template<typename VALUE, typename COUNT>
-inline const VALUE& SgStatisticsExt<VALUE,COUNT>::Mean() const
+inline VALUE SgStatisticsExt<VALUE,COUNT>::Mean() const
 {
     return m_statistics.Mean();
 }
