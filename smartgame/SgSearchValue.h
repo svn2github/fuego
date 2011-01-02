@@ -86,9 +86,6 @@ public:
     /** is value == +MAX_VALUE or -MAX_VALUE? */
     static inline bool IsSolved(int value);
 
-    /** return +MAX_VALUE for win,  -MAX_VALUE for loss */
-    static inline bool SolvedValue(bool isWin);
-    
     bool IsSureValue() const;
 
     int KoLevel() const;
@@ -179,11 +176,6 @@ inline bool SgSearchValue::IsSureValue() const
 inline bool SgSearchValue::IsSolved(int value)
 {
     return abs(value) == MAX_VALUE;
-}
-
-inline bool SgSearchValue::SolvedValue(bool isWin)
-{
-    return isWin ? +MAX_VALUE : -MAX_VALUE;
 }
 
 inline void SgSearchValue::SetValueForPlayer(SgBlackWhite player)
