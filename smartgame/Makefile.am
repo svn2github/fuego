@@ -103,6 +103,7 @@ SgSortedArray.h \
 SgSortedMoves.h \
 SgStack.h \
 SgStatistics.h \
+SgStatisticsVlt.h \
 SgStrategy.h \
 SgStringUtil.h \
 SgMpiSynchronizer.h \

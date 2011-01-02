@@ -10,6 +10,7 @@
 #include <limits>
 #include <boost/static_assert.hpp>
 #include "SgStatistics.h"
+#include "SgStatisticsVlt.h"
 
 //----------------------------------------------------------------------------
 
@@ -33,8 +34,7 @@ BOOST_STATIC_ASSERT(! std::numeric_limits<SgUctValue>::is_exact);
 
 typedef SgStatisticsBase<SgUctValue,SgUctValue> SgUctStatistics;
 
-typedef SgStatisticsBase<volatile SgUctValue,volatile SgUctValue>
-  SgUctStatisticsVolatile;
+typedef SgStatisticsVltBase<SgUctValue,SgUctValue> SgUctStatisticsVolatile;
 
 //----------------------------------------------------------------------------
 

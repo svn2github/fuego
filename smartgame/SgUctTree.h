@@ -11,6 +11,7 @@
 #include <boost/shared_ptr.hpp>
 #include "SgMove.h"
 #include "SgStatistics.h"
+#include "SgStatisticsVlt.h"
 #include "SgUctValue.h"
 
 class SgTimer;
@@ -19,8 +20,7 @@ class SgTimer;
 
 typedef SgStatisticsBase<float,std::size_t> SgUctStatisticsBase;
 
-typedef SgStatisticsBase<volatile float,volatile std::size_t>
-    SgUctStatisticsBaseVolatile;
+typedef SgStatisticsVltBase<float,std::size_t> SgUctStatisticsBaseVolatile;
 
 //----------------------------------------------------------------------------
 
