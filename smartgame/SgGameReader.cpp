@@ -48,7 +48,7 @@ bool SgGameReader::GetIntProp(const SgGameReader::RawProperties& properties,
         return false;
     istringstream in(it->second[0]);
     in >> value;
-    return in;
+    return ! in.fail();
 }
 
 /** Create SgProp instances and add them to node.

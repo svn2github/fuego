@@ -28,7 +28,7 @@ bool GtpInputStream::EndOfInput()
 
 bool GtpInputStream::GetLine(string &line)
 {
-    return getline(m_in, line);
+    return ! getline(m_in, line).fail();
 }
 
 //----------------------------------------------------------------------------
