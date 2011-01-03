@@ -121,6 +121,7 @@ const bool SG_HEAVYCHECK = false;
 // Disable Visual C++ warnings about unsafe functions from the standard
 // C++ library
 #define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 
 #endif // defined(WIN32) && defined(_MSC_VER)
 
