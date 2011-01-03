@@ -2,6 +2,7 @@
 /** @file SgMpiSynchronizer.cpp */
 //----------------------------------------------------------------------------
 
+#include "SgSystem.h"
 #include "SgMpiSynchronizer.h"
 
 using namespace std;

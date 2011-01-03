@@ -3,11 +3,12 @@
     See GoSetupUtil.h */
 //----------------------------------------------------------------------------
 
-#include <cstdio>
 #include "SgSystem.h"
+#include "GoSetupUtil.h"
+
+#include <cstdio>
 #include "GoBoard.h"
 #include "GoSetup.h"
-#include "GoSetupUtil.h"
 
 using SgPointUtil::Pt;
 

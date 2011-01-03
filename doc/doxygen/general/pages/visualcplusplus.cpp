@@ -35,9 +35,6 @@
     the Fuego source directory to Additional Include Directories in the
     Project properties (right click on the project in the solution explorer
     to get to the Project properties).
-    -# Add @c _HAS_CPP0X=0 to Preprocessor Defines in the project properties
-    to avoid a conflict between Boost and the new C++0x classes that Visual
-    C++ already includes in namespace std by default.
     -# Add the subdirectories for all necessary boost libraries to
     Additional Linker Libraries in the project properties. This needs to
     be done differently for Debug and Release configuration.
