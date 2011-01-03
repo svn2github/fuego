@@ -720,7 +720,7 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
         if (i == 0)
             out << "|";
         if (i < MAX_SEQ_PRINT_LENGTH)
-            out << " " << SgWritePoint(current->Move());
+            out << " " << MoveString(current->Move());
         else
             out << " *";
     }
@@ -1134,7 +1134,7 @@ SgPoint SgUctSearch::SearchOnePly(SgUctValue maxGames, double maxTime,
     SgMove bestMove = SG_NULLMOVE;
     for (size_t i = 0; i < moves.size(); ++i)
     {
-        SgDebug() << SgWritePoint(moves[i].m_move) 
+        SgDebug() << MoveString(moves[i].m_move) 
                   << ' ' << statistics[i].Mean() << '\n';
         if (bestMove == SG_NULLMOVE || statistics[i].Mean() > value)
         {
