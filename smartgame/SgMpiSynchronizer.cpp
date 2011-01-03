@@ -71,7 +71,7 @@ void SgMpiNullSynchronizer::OnSearchIteration(SgUctSearch &search,
     SG_UNUSED(gameNumber);
     SG_UNUSED(threadId);
     SG_UNUSED(info);
-};
+}
 
 void SgMpiNullSynchronizer::OnStartPonder()
 {
