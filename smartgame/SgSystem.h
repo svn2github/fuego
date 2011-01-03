@@ -109,14 +109,20 @@ const bool SG_HEAVYCHECK = false;
 
 //----------------------------------------------------------------------------
 
-#ifdef WIN32
+#if defined(WIN32) && defined(_MSC_VER)
+
 // Don't report Visual C++ warning 4355 ('this' : used in base member
 // initializer list) in default warning level 3. Storing a reference to
 // 'this' is used at several places in the Fuego code (e.g. constructors of
 // thread functions). This is not a problem as long as 'this' is not used
 // yet.
 #pragma warning(4:4355)
-#endif
+
+// Disable Visual C++ warnings about unsafe functions from the standard
+// C++ library
+#define _CRT_SECURE_NO_WARNINGS
+
+#endif // defined(WIN32) && defined(_MSC_VER)
 
 //----------------------------------------------------------------------------
 
