@@ -2,12 +2,14 @@
 /** @file SgBookBuilder.cpp  */
 //----------------------------------------------------------------------------
 
+#include "SgSystem.h"
 #include "SgBookBuilder.h"
+
+#include <sstream>
+#include <boost/numeric/conversion/bounds.hpp>
 #include "SgDebug.h"
 #include "SgPoint.h"
 #include "SgTimer.h"
-#include <sstream>
-#include <boost/numeric/conversion/bounds.hpp>
 
 //----------------------------------------------------------------------------
 

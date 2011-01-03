@@ -9,7 +9,6 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "SgMove.h"
-#include "SgSystem.h"
 #include "SgUctValue.h"
 
 //----------------------------------------------------------------------------

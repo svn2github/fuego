@@ -5,12 +5,11 @@
 #ifndef SG_BOOKBUILDER_HPP
 #define SG_BOOKBUILDER_HPP
 
-#include "SgSystem.h"
-#include "SgMove.h"
 #include <cmath>
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include "SgMove.h"
 
 //----------------------------------------------------------------------------
 
