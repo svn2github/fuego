@@ -83,7 +83,10 @@ fi
 
 
 AX_CXXFLAGS_WARN_ALL
+dnl AX_CXXFLAGS_WARN_ALL should enable -pedantic and -ansi for GCC compilers
+dnl but it doesn't always work 
 AX_CXXFLAGS_GCC_OPTION(-pedantic)
+AX_CXXFLAGS_GCC_OPTION(-ansi)
 AX_CXXFLAGS_GCC_OPTION(-Wextra)
 AX_CXXFLAGS_GCC_OPTION(-Wconversion)
 
