@@ -41,6 +41,8 @@ namespace SgTime
     /** Set default time mode. */
     void SetDefaultMode(SgTimeMode mode);
 
+    /** Get today's date in a format compatible with the DT property
+        of the SGF standard. */
     std::string TodaysDate();
 }
 

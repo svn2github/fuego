@@ -1331,11 +1331,7 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
 void GoGtpEngine::Init(int size)
 {
     m_game.Init(size, m_defaultRules);
-    time_t timeValue = time(0);
-    struct tm* timeStruct = localtime(&timeValue);
-    char dateBuffer[128];
-    strftime(dateBuffer, sizeof(dateBuffer), "%Y-%m-%d", timeStruct);
-    m_game.UpdateDate(dateBuffer);
+    m_game.UpdateDate(SgTime::TodaysDate());
     ApplyTimeSettings();
     CreateAutoSaveFileName();
     BoardChanged();
