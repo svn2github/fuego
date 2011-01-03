@@ -27,11 +27,12 @@ using boost::xtime_get;
 
 using namespace std;
 
-#if WIN32
-// Disable Visual C++ 2005 warning 4355 ('this' : used in base member
-// initializer list). The constructors of ReadThread and PonderThread store a
-// reference of 'this', which is allowed as long as 'this' is not used yet
-#pragma warning( disable : 4355 )
+#ifdef WIN32
+// Don't report Visual C++ warning 4355 ('this' : used in base member
+// initializer list) in default warning level 3. The constructors of
+// ReadThread and PonderThread store a reference to 'this', which is
+// allowed as long as 'this' is not used yet.
+#pragma warning(4:4355)
 #endif
 
 //----------------------------------------------------------------------------

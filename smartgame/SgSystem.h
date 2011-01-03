@@ -109,6 +109,17 @@ const bool SG_HEAVYCHECK = false;
 
 //----------------------------------------------------------------------------
 
+#ifdef WIN32
+// Don't report Visual C++ warning 4355 ('this' : used in base member
+// initializer list) in default warning level 3. Storing a reference to
+// 'this' is used at several places in the Fuego code (e.g. constructors of
+// thread functions). This is not a problem as long as 'this' is not used
+// yet.
+#pragma warning(4:4355)
+#endif
+
+//----------------------------------------------------------------------------
+
 /** Sets the global user abort flag.
     This flag should be set to false at the beginning of each user event,
     e.g. each GUI event or GTP command.
