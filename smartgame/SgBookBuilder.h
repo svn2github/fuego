@@ -254,6 +254,9 @@ protected:
 
     //------------------------------------------------------------------------
 
+    /** Converts move to a string (game dependent). */
+    virtual std::string MoveString(SgMove move) const = 0;
+
     /** Print a message to a log/debug stream. */
     virtual void PrintMessage(std::string msg) = 0;
 

@@ -74,6 +74,8 @@ public:
     float Value(const SgBookNode& node) const;
 
 protected:
+    std::string MoveString(SgMove move) const;
+
     void PrintMessage(std::string msg);
 
     void PlayMove(SgMove move);
@@ -320,6 +322,12 @@ inline void GoUctBookBuilder<PLAYER>::SetState(GoAutoBook& book)
 {
     m_book = &book;
     m_state.Synchronize();
+}
+
+template<class PLAYER>
+inline std::string GoUctBookBuilder<PLAYER>::MoveString(SgMove move) const
+{
+    return SgPointUtil::PointToString(move);
 }
 
 template<class PLAYER>

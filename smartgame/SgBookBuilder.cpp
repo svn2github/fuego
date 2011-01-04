@@ -536,7 +536,7 @@ bool SgBookBuilder::Refresh(bool root)
         if (root)
         {
             std::ostringstream os;
-            os << "Finished " << SgWritePoint(legal[i]) << '\n';
+            os << "Finished " << MoveString(legal[i]) << '\n';
             PrintMessage(os.str());
         }
         UndoMove(legal[i]);
@@ -576,7 +576,7 @@ void SgBookBuilder::IncreaseWidth(bool root)
         if (root)
         {
             std::ostringstream os;
-            os << "Finished " << SgWritePoint(legal[i]) << '\n';
+            os << "Finished " << MoveString(legal[i]) << '\n';
             PrintMessage(os.str());
         }
         UndoMove(legal[i]);
