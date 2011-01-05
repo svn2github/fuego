@@ -6,19 +6,20 @@
 #include "SgPlatform.h"
 
 #ifdef WIN32
-#include <Windows.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif
 
 //----------------------------------------------------------------------------
 
-long SgPlatform::TotalMemory()
+std::size_t SgPlatform::TotalMemory()
 {
 #ifdef WIN32
     MEMORYSTATUSEX status;
-    GetMemoryStatusEx(&status);
-    return status.ullTotalPhys;
+    status.dwLength = sizeof (status);
+    GlobalMemoryStatusEx(&status);
+    return static_cast<size_t>(status.ullTotalPhys);
 #else
     return sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
 #endif
