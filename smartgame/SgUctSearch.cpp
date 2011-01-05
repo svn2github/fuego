@@ -33,6 +33,22 @@ namespace {
 
 const bool DEBUG_THREADS = false;
 
+/** Get a default value for lock-free mode.
+    Lock-free mode works only on IA-32/Intel-64 architectures or if the macro
+    ENABLE_CACHE_SYNC from Fuego's configure script is defined. The
+    architecture is determined by using the macro HOST_CPU from Fuego's
+    configure script. On Windows, an Intel architecture is always assumed. */
+bool GetLockFreeDefault()
+{
+#if defined(WIN32) || defined(ENABLE_CACHE_SYNC)
+    return true;
+#else
+    string hostCpu(HOST_CPU);
+    return hostCpu == "i386" || hostCpu == "i486" || hostCpu == "i586"
+        || hostCpu == "i586" || hostCpu == "x86_64";
+#endif
+}
+
 void Notify(mutex& aMutex, condition& aCondition)
 {
     mutex::scoped_lock lock(aMutex);
@@ -211,7 +227,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
       m_randomizeRaveFrequency(20),
-      m_lockFree(false),
+      m_lockFree(GetLockFreeDefault()),
       m_weightRaveUpdates(true),
       m_pruneFullTree(true),
       m_checkFloatPrecision(true),

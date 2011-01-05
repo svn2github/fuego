@@ -7,6 +7,7 @@
 
 #include <limits>
 #include <boost/scoped_ptr.hpp>
+#include <boost/version.hpp>
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoEyeUtil.h"
@@ -15,6 +16,9 @@
 #include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctSearch.h"
 #include "GoUctUtil.h"
+
+#define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
+#define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
 
 //----------------------------------------------------------------------------
 
@@ -650,6 +654,25 @@ GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
                                                           m_safe, m_allSafe);
     SetThreadStateFactory(stateFactory);
     SetDefaultParameters(bd.Size());
+
+    // Set a reasonable default value for the number of threads. The default
+    // value is the the number of CPUs/cores of the current machine (but only
+    // if the default value of lock-free mode is true) and not higher than 16.
+    // Multi-threaded search can be detrimental if lock-free mode is not used
+    // and the default value should be good on all board sizes. The code uses
+    // thread::hardware_concurrency() which was introduced in Boost 1.35.
+    // TODO: Test if the maximum default value can be set higher than 16
+    // by checking the maximum number of threads on the smallest board size
+    // that still improves the playing strength.
+#if BOOST_VERSION_MAJOR == 1 && BOOST_VERSION_MINOR >= 35
+    if (LockFree())
+    {
+        unsigned int nuThreads = boost::thread::hardware_concurrency();
+        if (nuThreads > 16)
+            nuThreads = 16;
+        SetNumberThreads(nuThreads);
+    }
+#endif
 }
 
 template<class POLICY, class FACTORY>

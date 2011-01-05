@@ -26,6 +26,9 @@ Current development version
   to the game tree
 * Several optimizations to speed up the Monte-Carlo searches.
 * Fuego now can be compiled natively on Windows with Visual C++.
+* The Monte-Carlo search automatically sets reasonable default values for
+  memory, number of threads and lock-free mode depending on the current
+  machine.
 
 Version 0.4.1 - 2009 Dec 23
 ===========================

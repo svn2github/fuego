@@ -81,6 +81,11 @@ if test "$enable_uct_value_type" ; then
    AC_DEFINE_UNQUOTED(SG_UCT_VALUE_TYPE, $enable_uct_value_type)
 fi
 
+AC_CANONICAL_HOST
+AC_SUBST(host_cpu)
+AC_DEFINE_UNQUOTED(HOST_CPU, "$host_cpu",
+  [Define the canonical host CPU type.]
+)
 
 AX_CXXFLAGS_WARN_ALL
 dnl AX_CXXFLAGS_WARN_ALL should enable -pedantic and -ansi for GCC compilers
