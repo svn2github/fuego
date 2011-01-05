@@ -18,10 +18,17 @@ std::size_t SgPlatform::TotalMemory()
 #ifdef WIN32
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(status);
-    GlobalMemoryStatusEx(&status);
+    if (! GlobalMemoryStatusEx(&status))
+        return 0;
     return static_cast<size_t>(status.ullTotalPhys);
 #else
-    return sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
+    long pages = sysconf(_SC_PHYS_PAGES);
+    if (pages < 0)
+        return 0;
+    long pageSize = sysconf(_SC_PAGE_SIZE);
+    if (pageSize < 0)
+        return 0;
+    return static_cast<size_t>(pages) * static_cast<size_t>(pageSize);
 #endif
 }
 

@@ -13,6 +13,9 @@
 namespace SgPlatform
 {
 
+    /** Get total amount of memory available on the system.
+        @return The total memory in bytes or 0 if the memory cannot be
+        determined. */
     std::size_t TotalMemory();
 
 }
