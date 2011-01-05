@@ -74,7 +74,7 @@ performance, if the lock-free mode is not used, depends on the board size.
 <dd>
 Determines the maximum amount of memory in the search tree, and thus the
 maximum memory to use.
-The default is a third of the total memory available on the system.
+The default is half of the total memory available on the system.
 The example above is using 6GB. Fuego maintains two search trees internally, so
 setting max_memory to 512MB gives 256MB to each tree. The second tree is used
 for work space if using reuse_subtree, or if the search tree fills up and nodes

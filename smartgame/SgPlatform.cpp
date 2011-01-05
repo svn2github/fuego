@@ -17,7 +17,7 @@ std::size_t SgPlatform::TotalMemory()
 {
 #ifdef WIN32
     MEMORYSTATUSEX status;
-    status.dwLength = sizeof (status);
+    status.dwLength = sizeof(status);
     GlobalMemoryStatusEx(&status);
     return static_cast<size_t>(status.ullTotalPhys);
 #else

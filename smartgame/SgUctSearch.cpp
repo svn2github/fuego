@@ -52,16 +52,16 @@ bool GetLockFreeDefault()
 
 /** Get a default value for the tree size.
     The default value is that both trees used by SgUctSearch take no more than
-    a third of the total amount of memory on the system (but no less than
+    half of the total amount of memory on the system (but no less than
     128 MB). */
 size_t GetMaxNodesDefault()
 {
-    long totalMemory = SgPlatform::TotalMemory();
+    size_t totalMemory = SgPlatform::TotalMemory();
     if (totalMemory < 128000000)
         totalMemory = 128000000;
-    long searchMemory = totalMemory / 3;
-    long memoryPerTree = searchMemory / 2;
-    long nodesPerTree = memoryPerTree / sizeof(SgUctNode);
+    size_t searchMemory = totalMemory / 2;
+    size_t memoryPerTree = searchMemory / 2;
+    size_t nodesPerTree = memoryPerTree / sizeof(SgUctNode);
     return nodesPerTree;
 }
 
