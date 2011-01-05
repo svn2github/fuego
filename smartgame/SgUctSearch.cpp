@@ -1164,13 +1164,20 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     SgUctValue logPosCount = Log(posCount);
     const SgUctNode* bestChild = 0;
     SgUctValue bestUpperBound = 0;
+    const SgUctValue epsilon = 1e-7;
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
         if (!child.IsProvenWin()) // Avoid losing moves
         {
             SgUctValue bound = GetBound(useRave, logPosCount, child);
-            if (bestChild == 0 || bound > bestUpperBound)
+            // Compare bound to best bound using a not too small epsilon
+            // because the unit tests rely on the fact that the first child is
+            // chosen if children have the same bounds and on some platforms
+            // the result of the comparison is not well-defined and depends on
+            // the compiler settings and the type of SgUctValue even if count
+            // and value of the children are exactly the same.
+            if (bestChild == 0 || bound > bestUpperBound + epsilon)
             {
                 bestChild = &child;
                 bestUpperBound = bound;
