@@ -133,7 +133,6 @@ void SgStatisticsVltBase<VALUE,COUNT>::Remove(VALUE val)
 template<typename VALUE, typename COUNT>
 void SgStatisticsVltBase<VALUE,COUNT>::Remove(VALUE val, COUNT n)
 {
-    SG_ASSERT(m_count >= n);
     // Write order dependency: at least on class (SgUctSearch in lock-free
     // mode) uses SgStatisticsVltBase concurrently without locking and assumes
     // that m_mean is valid, if m_count is greater zero
