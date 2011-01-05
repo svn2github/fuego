@@ -25,11 +25,8 @@ also be useful for users.
 <h2>Configuring Fuego for Your Machine</h2>
 
 <p>
-The default configuration for Fuego makes conservative assumptions about
-the available computing power and memory.
-You can increase the playing strength of Fuego by using parallel search
-on a multi-core or multi-CPU machine and by increasing the amount of memory
-to use.
+Fuego tries to use a reasonable default configuration with respect to memory
+usage and usage of parallel search on a multi-core or multi-CPU machine.
 Parameters can be changed with certain commands in the analyze window of
 GoGui, but this will affect only the current session.
 To optimize the default configuration for a certain machine in a persistent
@@ -58,16 +55,14 @@ The meaning of these GTP commands is:
 <dt><tt>uct_param_search number_threads</tt></dt>
 <dd>
 The number of threads to use.
-The default is 1.
-This should be set to the number of cores or CPUs available on the system
-for maximum performance. It has been tested with up to 8 cores.
+The default is the number of hardware threads available on the current machine.
 </dd>
 
 <dt><tt>uct_param_search lock_free</tt></dt>
 <dd>
 Whether to enable lock-free multithreading.
-The default is 0 (=no).
-You should enable this on modern Intel or AMD CPUs (with IA-32 and Intel-64
+The default is 1 (=yes) for modern Intel or AMD CPUs.
+This should be enabled on modern Intel or AMD CPUs (with IA-32 and Intel-64
 architecture) if more than two threads are used.
 Note that without lock-free search the performance of Fuego can even decrease
 if you use more threads.
@@ -79,18 +74,18 @@ performance, if the lock-free mode is not used, depends on the board size.
 <dd>
 Determines the maximum amount of memory in the search tree, and thus the
 maximum memory to use.
-The default is 512MB. The example above is using 6GB.
-Fuego maintains two search trees internally, so setting max_memory to
-512MG gives 256MB to each tree. The second tree is used for work
-space if using reuse_subtree, or if the search tree fills up and nodes
+The default is a third of the total memory available on the system.
+The example above is using 6GB. Fuego maintains two search trees internally, so
+setting max_memory to 512MB gives 256MB to each tree. The second tree is used
+for work space if using reuse_subtree, or if the search tree fills up and nodes
 with small counts are removed.  </dd>
 
 <dt><tt>uct_param_player reuse_subtree</tt></dt>
 <dd>
 Whether to reuse the reusable part of the tree from a previous move
 generation.
-The default is 0 (=no).
-Setting this to 1 (=yes) is required if pondering is used, but it also gives
+The default is 1 (=yes).
+Setting this to 1 is required if pondering is used, but it also gives
 a small improvement in playing strength if pondering is not used.
 </dd>
 
@@ -99,7 +94,8 @@ a small improvement in playing strength if pondering is not used.
 Whether to continue the search while waiting for the opponent's move.
 The default is 0 (=no).
 If this is set to 1, <tt>uct_param_player reuse_subtree</tt> must also be
-enabled.
+enabled. Note that with some versions of Fuego built with Cygwin pondering
+does not work and Fuego might hang on subsequent commands if it is enabled.
 </dd>
 
 </dl>
