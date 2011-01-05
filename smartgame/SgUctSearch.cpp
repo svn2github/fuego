@@ -14,6 +14,7 @@
 #include "SgDebug.h"
 #include "SgHashTable.h"
 #include "SgMath.h"
+#include "SgPlatform.h"
 #include "SgWrite.h"
 
 using namespace std;
@@ -47,6 +48,21 @@ bool GetLockFreeDefault()
     return hostCpu == "i386" || hostCpu == "i486" || hostCpu == "i586"
         || hostCpu == "i586" || hostCpu == "x86_64";
 #endif
+}
+
+/** Get a default value for the tree size.
+    The default value is that both trees used by SgUctSearch take no more than
+    a third of the total amount of memory on the system (but no less than
+    128 MB). */
+size_t GetMaxNodesDefault()
+{
+    long totalMemory = SgPlatform::TotalMemory();
+    if (totalMemory < 128000000)
+        totalMemory = 128000000;
+    long searchMemory = totalMemory / 3;
+    long memoryPerTree = searchMemory / 2;
+    long nodesPerTree = memoryPerTree / sizeof(SgUctNode);
+    return nodesPerTree;
 }
 
 void Notify(mutex& aMutex, condition& aCondition)
@@ -233,7 +249,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_checkFloatPrecision(true),
       m_numberThreads(1),
       m_numberPlayouts(1),
-      m_maxNodes(4000000),
+      m_maxNodes(GetMaxNodesDefault()),
       m_pruneMinCount(16),
       m_moveRange(moveRange),
       m_maxGameLength(numeric_limits<size_t>::max()),

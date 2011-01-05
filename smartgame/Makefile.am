@@ -38,6 +38,7 @@ SgSearchValue.cpp \
 SgStrategy.cpp \
 SgStringUtil.cpp \
 SgMpiSynchronizer.cpp \
+SgPlatform.cpp \
 SgSystem.cpp \
 SgTime.cpp \
 SgTimeControl.cpp \
@@ -82,6 +83,7 @@ SgMove.h \
 SgNbIterator.h \
 SgNode.h \
 SgNodeUtil.h \
+SgPlatform.h \
 SgPoint.h \
 SgPointArray.h \
 SgPointIterator.h \
