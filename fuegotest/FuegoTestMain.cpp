@@ -59,8 +59,8 @@ void Help(po::options_description& desc)
 void ParseOptions(int argc, char** argv)
 {
     int srand;
-    po::options_description options_desc;
-    options_desc.add_options()
+    po::options_description desc;
+    desc.add_options()
         ("config", 
          po::value<std::string>(&g_config)->default_value(""),
          "execuate GTP commands from file before starting main command loop")
@@ -73,15 +73,17 @@ void ParseOptions(int argc, char** argv)
          po::value<int>(&srand)->default_value(0),
          "set random seed (-1:none, 0:time(0))");
     po::variables_map vm;
-    try {
-        po::store(po::parse_command_line(argc, argv, options_desc), vm);
+    try
+    {
+        po::store(po::parse_command_line(argc, argv, desc), vm);
         po::notify(vm);
     }
-    catch(...) {
-        Help(options_desc);
+    catch (...)
+    {
+        Help(desc);
     }
     if (vm.count("help"))
-        Help(options_desc);
+        Help(desc);
     if (vm.count("quiet"))
         g_quiet = true;
     if (vm.count("srand"))

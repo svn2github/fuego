@@ -7,18 +7,17 @@
 
 #include <iostream>
 #include <boost/filesystem/path.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/cmdline.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/utility.hpp>
 #include "FuegoMainEngine.h"
 #include "FuegoMainUtil.h"
 #include "GoInit.h"
 #include "SgDebug.h"
 #include "SgException.h"
 #include "SgInit.h"
-
-#include <boost/utility.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/cmdline.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/parsers.hpp>
 
 using namespace std;
 using boost::filesystem::path;
@@ -84,8 +83,8 @@ void Help(po::options_description& desc)
 
 void ParseOptions(int argc, char** argv)
 {
-    po::options_description options_desc;
-    options_desc.add_options()
+    po::options_description desc;
+    desc.add_options()
         ("config", 
          po::value<std::string>(&g_config)->default_value(""),
          "execuate GTP commands from file before starting main command loop")
@@ -103,15 +102,17 @@ void ParseOptions(int argc, char** argv)
          po::value<int>(&g_fixedBoardSize)->default_value(0),
          "initial (and fixed) board size");
     po::variables_map vm;
-    try {
-        po::store(po::parse_command_line(argc, argv, options_desc), vm);
+    try
+    {
+        po::store(po::parse_command_line(argc, argv, desc), vm);
         po::notify(vm);
     }
-    catch(...) {
-        Help(options_desc);
+    catch (...)
+    {
+        Help(desc);
     }
     if (vm.count("help"))
-        Help(options_desc);
+        Help(desc);
     if (vm.count("nobook"))
         g_noBook = true;
     if (vm.count("nohandicap"))
