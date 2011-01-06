@@ -6,6 +6,8 @@
 #include "SgSystem.h"
 
 #include <iostream>
+#include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/cmdline.hpp>
@@ -21,6 +23,7 @@
 
 using namespace std;
 using boost::filesystem::path;
+using boost::format;
 namespace po = boost::program_options;
 
 //----------------------------------------------------------------------------
@@ -48,6 +51,8 @@ const char* g_programPath;
 
 int g_srand;
 
+vector<string> g_inputFiles;
+
 // @} // @name
 
 /** Get program directory from program path.
@@ -60,31 +65,16 @@ path GetProgramDir(const char* programPath)
     return path(programPath, boost::filesystem::native).branch_path();
 }
 
-void MainLoop()
+void Help(po::options_description& desc, ostream& out)
 {
-    FuegoMainEngine engine(g_fixedBoardSize, g_programPath, g_noHandicap);
-    GoGtpAssertionHandler assertionHandler(engine);
-    if (g_maxGames >= 0)
-        engine.SetMaxClearBoard(g_maxGames);
-    if (! g_noBook)
-        FuegoMainUtil::LoadBook(engine.Book(), g_programDir);
-    if (g_config != "")
-        engine.ExecuteFile(g_config);
-    GtpInputStream in(cin);
-    GtpOutputStream out(cout);
-    engine.MainLoop(in, out);
-}
-
-void Help(po::options_description& desc)
-{
-    cout << "Options:\n" << desc << "\n";
+    out << "Usage: fuego [options] [input files]\n" << desc << "\n";
     exit(0);
 }
 
 void ParseOptions(int argc, char** argv)
 {
-    po::options_description desc;
-    desc.add_options()
+    po::options_description normalOptions("Options");
+    normalOptions.add_options()
         ("config", 
          po::value<std::string>(&g_config)->default_value(""),
          "execuate GTP commands from file before starting main command loop")
@@ -101,18 +91,27 @@ void ParseOptions(int argc, char** argv)
         ("size", 
          po::value<int>(&g_fixedBoardSize)->default_value(0),
          "initial (and fixed) board size");
+    po::options_description hiddenOptions;
+    hiddenOptions.add_options()
+        ("input-file", po::value<vector<string> >(&g_inputFiles),
+         "input file");
+    po::options_description allOptions;
+    allOptions.add(normalOptions).add(hiddenOptions);
+    po::positional_options_description positionalOptions;
+    positionalOptions.add("input-file", -1);
     po::variables_map vm;
     try
     {
-        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::store(po::command_line_parser(argc, argv).options(allOptions).
+                                     positional(positionalOptions).run(), vm);
         po::notify(vm);
     }
     catch (...)
     {
-        Help(desc);
+        Help(normalOptions, cerr);
     }
     if (vm.count("help"))
-        Help(desc);
+        Help(normalOptions, cout);
     if (vm.count("nobook"))
         g_noBook = true;
     if (vm.count("nohandicap"))
@@ -159,9 +158,32 @@ int main(int argc, char** argv)
         GoInit();
         PrintStartupMessage();
         SgRandom::SetSeed(g_srand);
-        MainLoop();
-        GoFini();
-        SgFini();
+        FuegoMainEngine engine(g_fixedBoardSize, g_programPath, g_noHandicap);
+        GoGtpAssertionHandler assertionHandler(engine);
+        if (g_maxGames >= 0)
+            engine.SetMaxClearBoard(g_maxGames);
+        if (! g_noBook)
+            FuegoMainUtil::LoadBook(engine.Book(), g_programDir);
+        if (g_config != "")
+            engine.ExecuteFile(g_config);
+        if (! g_inputFiles.empty())
+        {
+            BOOST_FOREACH(string file, g_inputFiles)
+            {
+                ifstream fin(file.c_str());
+                if (! fin)
+                    throw SgException(format("Error file '%1%'") % file);
+                GtpInputStream in(fin);
+                GtpOutputStream out(cout);
+                engine.MainLoop(in, out);
+            }
+        }
+        else
+        {
+            GtpInputStream in(cin);
+            GtpOutputStream out(cout);
+            engine.MainLoop(in, out);
+        }
     }
     catch (const GtpFailure& e)
     {
