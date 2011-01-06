@@ -98,8 +98,7 @@ void SgUctGameInfo::Clear(std::size_t numberPlayouts)
 SgUctThreadState::SgUctThreadState(unsigned int threadId, int moveRange)
     : m_threadId(threadId),
       m_isSearchInitialized(false),
-      m_isTreeOutOfMem(false),
-      m_randomizeCounter(0)
+      m_isTreeOutOfMem(false)
 {
     if (moveRange > 0)
     {
@@ -1181,11 +1180,10 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
                                           const SgUctNode& node)
 {
     bool useRave = m_rave;
-    if (m_randomizeRaveFrequency > 0)
+    if (m_randomizeRaveFrequency > 0 && --randomizeCounter == 0)
     {
-        ++randomizeCounter;
-        if (randomizeCounter % m_randomizeRaveFrequency == 0)
-            useRave = false;
+        useRave = false;
+        randomizeCounter = m_randomizeRaveFrequency;
     }
     SG_ASSERT(node.HasChildren());
     SgUctValue posCount = node.PosCount();
@@ -1289,7 +1287,11 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
     m_startRootMoveCount = m_tree.Root().MoveCount();
 
     for (unsigned int i = 0; i < m_threads.size(); ++i)
-        ThreadState(i).StartSearch();
+    {
+        SgUctThreadState& state = ThreadState(i);
+        state.m_randomizeCounter = m_randomizeRaveFrequency;
+        state.StartSearch();
+    }
 }
 
 void SgUctSearch::EndSearch()
