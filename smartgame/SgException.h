@@ -8,6 +8,7 @@
 
 #include <exception>
 #include <string>
+#include <boost/format.hpp>
 
 //----------------------------------------------------------------------------
 
@@ -21,7 +22,9 @@ public:
 
     /** Construct with message. */
     SgException(const std::string& message);
-    
+
+    SgException(const boost::format& f);
+
     /** Destructor. */
     virtual ~SgException() throw();
 
