@@ -125,7 +125,7 @@ void PrintStartupMessage()
 {
     SgDebug() <<
         "Fuego " << FuegoMainUtil::Version() << "\n"
-        "Copyright (C) 2009-10 by the authors of the Fuego project.\n"
+        "Copyright (C) 2009-2011 by the authors of the Fuego project.\n"
         "This program comes with ABSOLUTELY NO WARRANTY. This is\n"
         "free software and you are welcome to redistribute it under\n"
         "certain conditions. Type `fuego-license' for details.\n\n";
