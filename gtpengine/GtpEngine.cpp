@@ -792,7 +792,7 @@ void GtpEngine::MainLoop(GtpInputStream& in, GtpOutputStream& out)
 #if GTPENGINE_INTERRUPT
         bool isStreamGood = readThread.ReadCommand(cmd);
 #else
-        bool isStreamGood = ReadCommand(cmd, m_in);
+        bool isStreamGood = ReadCommand(cmd, in);
 #endif
 #if GTPENGINE_PONDER
         ponderThread.StopPonder();
