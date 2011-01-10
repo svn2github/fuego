@@ -62,7 +62,9 @@ private:
 inline SgTimer::SgTimer()
     : m_isStopped(false),
       m_isTimeOut(false),
-      m_counter(0)
+      m_counter(0),
+      m_timeStart(0),
+      m_timeStop(0)
 {
     Start();
 }
