@@ -302,8 +302,6 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
         score = (SgUctValue)GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoardPtr);
     else
     {
-        if (m_param.m_mercyRule && m_mercyRuleTriggered)
-            return m_mercyRuleResult;
         score =
             SgUctValue(GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
                                                            false,
