@@ -711,7 +711,8 @@ public:
         the given time */
     void ExtractSubtree(SgUctTree& target, const SgUctNode& node,
                    bool warnTruncate,
-                   double maxTime = std::numeric_limits<double>::max()) const;
+                   double maxTime = std::numeric_limits<double>::max(),
+                   SgUctValue minCount = 0) const;
 
     /** Get a copy of the tree with low count nodes pruned.
         The tree will be truncated if one of the allocators overflows (can

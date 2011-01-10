@@ -820,7 +820,7 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
         return;
     }
     SgUctTreeUtil::ExtractSubtree(m_search.Tree(), initTree, sequence, true,
-                                  maxTime);
+                                  maxTime, m_search.PruneMinCount());
     size_t initTreeNodes = initTree.NuNodes();
     size_t oldTreeNodes = m_search.Tree().NuNodes();
     if (oldTreeNodes > 1 && initTreeNodes >= 1)

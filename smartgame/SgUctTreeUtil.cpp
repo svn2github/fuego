@@ -78,7 +78,8 @@ std::ostream& operator<<(ostream& out, const SgUctTreeStatistics& stat)
 
 void SgUctTreeUtil::ExtractSubtree(const SgUctTree& tree, SgUctTree& target,
                                    const std::vector<SgMove>& sequence,
-                                   bool warnTruncate, double maxTime)
+                                   bool warnTruncate, double maxTime,
+                                   SgUctValue minCount)
 {
     target.Clear();
     const SgUctNode* node = &tree.Root();
@@ -90,7 +91,7 @@ void SgUctTreeUtil::ExtractSubtree(const SgUctTree& tree, SgUctTree& target,
         if (node == 0)
             return;
     }
-    tree.ExtractSubtree(target, *node, warnTruncate, maxTime);
+    tree.ExtractSubtree(target, *node, warnTruncate, maxTime, minCount);
 }
 
 const SgUctNode* SgUctTreeUtil::FindChildWithMove(const SgUctTree& tree,
