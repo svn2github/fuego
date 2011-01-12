@@ -168,8 +168,9 @@ int main(int argc, char** argv)
             engine.ExecuteFile(g_config);
         if (! g_inputFiles.empty())
         {
-            BOOST_FOREACH(string file, g_inputFiles)
+            for(size_t i = 0; i < g_inputFiles.size(); i++)
             {
+                string file = g_inputFiles[i];
                 ifstream fin(file.c_str());
                 if (! fin)
                     throw SgException(format("Error file '%1%'") % file);
