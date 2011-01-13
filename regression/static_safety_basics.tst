@@ -410,7 +410,7 @@ loadsgf sgf/safetytest/static-safety.10.sgf
 #? [19 .*]
 
 971 go_safe benson white
-#? [28 .*]
+#? [38 .*]
 
 980 go_safe static black
 #? [19 .*]
@@ -456,3 +456,71 @@ loadsgf sgf/safetytest/static-safety-bug.2.sgf
 
 1032 go_safe_dame_static
 #? []
+
+loadsgf sgf/safetytest/benson-safe-separate-healthy.1.sgf
+1040 go_safe benson black
+#? [26 .*]
+
+1041 go_safe benson white
+#? [17 .*]
+
+1050 go_safe static black
+#? [0]
+
+1051 go_safe static white
+#? [31 .*]
+
+1052 go_safe_dame_static
+#? []
+
+loadsgf sgf/safetytest/benson-safe-separate-healthy.2.sgf 1
+1060 go_safe benson black
+#? [50 .*]
+
+1061 go_safe benson white
+#? [0]
+
+1070 go_safe static black
+#? [0]
+
+1071 go_safe static white
+#? [14 .*]
+
+1072 go_safe_dame_static
+#? []
+
+
+loadsgf sgf/safetytest/benson-safe-separate-healthy.2.sgf 2
+1080 go_safe benson black
+#? [50 .*]
+
+1081 go_safe benson white
+#? [0]
+
+1090 go_safe static black
+#? [58 .*]
+
+1091 go_safe static white
+#? [14 .*]
+
+1092 go_safe_dame_static
+#? []
+
+
+loadsgf sgf/safetytest/benson-safe-separate-healthy.2.sgf 3
+1100 go_safe benson black
+#? [50 .*]
+
+1101 go_safe benson white
+#? [0]
+
+1110 go_safe static black
+#? [0]
+
+1111 go_safe static white
+#? [14 .*]
+
+1112 go_safe_dame_static
+#? []
+
+

@@ -171,7 +171,7 @@ void GoStaticSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
             for (SgVectorIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
             {
                 const GoBlock* b2 = *it;
-                if (! blocks->Contains(b2) && b2->ContainsHealthy(r))
+                if (! blocks->Contains(b2))
                 {
                     blocks->PushBack(b2);
                     toTest.PushBack(b2);
