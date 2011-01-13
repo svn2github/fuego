@@ -31,29 +31,30 @@
     -# Compile Boost with MinGW in the MSYS shell with the following command
     (this compiles only the libraries used by Fuego):
     @verbatim
-    ./bjam.exe --toolset=gcc --layout=tagged --with-thread \
+    bjam.exe --toolset=gcc --layout=tagged --with-thread \
       --with-program_options --with-filesystem --with-system \
-      --with-date_time --prefix=/usr install @endverbatim
+      --with-date_time --with-test --prefix=/usr install @endverbatim
     This should create static libraries, for example:
     @verbatim
     /usr/lib/libboost_thread-mt.a @endverbatim
-    -# Compile Fuego in the MSYS shell. Theoretically, there is support
-    for running the configure scripts and using make in MSYS, but currently
-    there are problems with the boost detection scripts with MinGW, so we
-    simply invoke the compiler in a single command:
+    -# Compile Fuego in the MSYS shell.
     @verbatim
     cd fuego
     mkdir mingw
     cd mingw
-    g++ -o Fuego -DNDEBUG -O3 -ffast-math -DBOOST_THREAD_USE_LIB \
-      -D_WIN32_WINNT=0x0500 -static-libgcc -static-libstdc++ -I/usr/include \
-      -L/usr/lib -I../gtpengine -I../smartgame -I../go -I../gouct \
-      ../gtpengine/*.cpp ../smartgame/*.cpp ../go/*.cpp ../gouct/*.cpp \
-      ../fuegomain/*.cpp -lboost_thread-mt -lboost_program_options-mt \
-      -lboost_date_time-mt -lboost_filesystem-mt -lboost_system-mt @endverbatim
-    The macro BOOST_THREAD_USE_LIB is a workaround for a compilation problem
-    with Boost 1.45.0 that may not be necessary in the future.
-    This should create an executable named Fuego.exe in the current directory.
-    -# Copy the file fuego/book/book.dat into the directory of Fuego.exe
+    env CXXFLAGS="-O3 -ffast-math -DBOOST_THREAD_USE_LIB -static-libgcc -static-libstdc++" \
+      ../configure \
+      --with-boost-thread=boost_thread-mt \
+      --with-boost-program-options=boost_program_options-mt \
+      --with-boost-date-time=boost_date_time-mt \
+      --with-boost-filesystem=boost_filesystem-mt \
+      --with-boost-system=boost_system-mt \
+      --with-boost-unit-test-framework=boost_unit_test_framework-mt
+    make @endverbatim
+    The explicit boost library options are currently necessary because the automatic
+    detection of the library fails. The macro BOOST_THREAD_USE_LIB is a workaround
+    for a compilation problem with Boost 1.45.0 that may not be necessary in the future.
+    This should create an executable named fuegomain/fuego.exe.
+    -# Copy the file fuego/book/book.dat into the directory of fuego.exe
 */
 

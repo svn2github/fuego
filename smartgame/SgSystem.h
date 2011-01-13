@@ -132,6 +132,18 @@ const bool SG_HEAVYCHECK = false;
 
 //----------------------------------------------------------------------------
 
+#ifdef __MINGW32__
+
+#define WIN32 1
+
+// Enable Windows2000 (0x0500) compatibility in MinGW header files
+#define WINVER 0x0500
+#define _WIN32_WINNT 0x0500
+
+#endif // __MINGW32__
+
+//----------------------------------------------------------------------------
+
 /** Sets the global user abort flag.
     This flag should be set to false at the beginning of each user event,
     e.g. each GUI event or GTP command.
