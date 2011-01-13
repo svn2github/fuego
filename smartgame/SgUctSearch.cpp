@@ -1192,7 +1192,7 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     SgUctValue logPosCount = Log(posCount);
     const SgUctNode* bestChild = 0;
     SgUctValue bestUpperBound = 0;
-    const SgUctValue epsilon = 1e-7;
+    const SgUctValue epsilon = SgUctValue(1e-7);
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
