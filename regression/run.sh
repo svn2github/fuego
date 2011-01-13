@@ -27,7 +27,7 @@ usage() {
 Usage: $0 [options] [testsuite]
 
 Options:
-  -d Append date to name of ouput directory
+  -d Append date to name of output directory
   -h Print help and exit
   -l Long output
   -p Program, using full command or a program abbreviation
