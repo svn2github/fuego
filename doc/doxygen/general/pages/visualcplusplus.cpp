@@ -47,5 +47,7 @@
 
     -# Enable Insert Spaces in the Tab Settings of the editor in the project
     settings (see @ref generalstyle).
+    -# Enable additional optimization options for the release version:
+    Maximize Speed, Favor fast code, Whole program optimization
 */
 

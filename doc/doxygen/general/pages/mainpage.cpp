@@ -8,5 +8,6 @@
     - @ref generalstyle
     - @ref generalautotools
     - @ref generalvisualcplusplus
+    - @ref generalmingw
     - @ref generalunittests
     - @ref generalreleases */
