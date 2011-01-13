@@ -42,6 +42,7 @@
     there are problems with the boost detection scripts with MinGW, so we
     simply invoke the compiler in a single command:
     @verbatim
+    cd fuego
     mkdir mingw
     cd mingw
     g++ -o Fuego -DNDEBUG -O3 -ffast-math -DBOOST_THREAD_USE_LIB \
