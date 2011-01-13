@@ -668,6 +668,8 @@ GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
         unsigned int nuThreads = boost::thread::hardware_concurrency();
         if (nuThreads > 16)
             nuThreads = 16;
+        SgDebug() << "GoUctGlobalSearch: setting default number of threads to "
+                  << nuThreads << '\n';
         SetNumberThreads(nuThreads);
     }
 #endif
