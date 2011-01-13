@@ -33,7 +33,7 @@
     @verbatim
     ./bjam.exe --toolset=gcc --layout=tagged --with-thread \
       --with-program_options --with-filesystem --with-system \
-      --with-date_time --prefix=use install @endverbatim
+      --with-date_time --prefix=/usr install @endverbatim
     This should create static libraries, for example:
     @verbatim
     /usr/lib/libboost_thread-mt.a @endverbatim
@@ -52,7 +52,7 @@
       -lboost_date_time-mt -lboost_filesystem-mt -lboost_system-mt @endverbatim
     The macro BOOST_THREAD_USE_LIB is a workaround for a compilation problem
     with Boost 1.45.0 that may not be necessary in the future.
-    This should create an executable named Fuego.exe in the current durectory.
+    This should create an executable named Fuego.exe in the current directory.
     -# Copy the file fuego/book/book.dat into the directory of Fuego.exe
 */
 
