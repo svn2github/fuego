@@ -783,10 +783,6 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     bool isTerminal;
     bool abortInTree = ! PlayInTree(state, isTerminal);
 
-    // add a virtual loss to all nodes in path
-    if (m_virtualLoss)
-        m_tree.AddVirtualLoss(info.m_nodes);
-
     // The playout phase is always unlocked
     if (lock != 0)
         lock->unlock();
@@ -840,10 +836,6 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     if (lock != 0)
         lock->lock();
 
-    // Remove the virtual loss
-    if (m_virtualLoss)
-        m_tree.RemoveVirtualLoss(info.m_nodes);
-
     UpdateTree(info);
     if (m_rave)
         UpdateRaveValues(state);
@@ -896,6 +888,9 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     vector<const SgUctNode*>& nodes = state.m_gameInfo.m_nodes;
     const SgUctNode* root = &m_tree.Root();
     const SgUctNode* current = root;
+    const SgUctNode *parent = 0;
+    if (m_virtualLoss && m_numberThreads > 1)
+        m_tree.AddVirtualLoss(*current, parent);
     nodes.push_back(current);
     bool breakAfterSelect = false;
     isTerminal = false;
@@ -967,7 +962,10 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             if (! deepenTree)
                 breakAfterSelect = true;
         }
+        parent = current;
         current = &SelectChild(state.m_randomizeCounter, *current);
+        if (m_virtualLoss && m_numberThreads > 1)
+            m_tree.AddVirtualLoss(*current, parent);
         nodes.push_back(current);
         SgMove move = current->Move();
         state.Execute(move);
@@ -1463,6 +1461,9 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
         const SgUctNode* father = (i > 0 ? nodes[i - 1] : 0);
         m_tree.AddGameResults(node, father, i % 2 == 0 ? eval : inverseEval,
                               count);
+        // Remove the virtual loss
+        if (m_virtualLoss && m_numberThreads > 1)
+            m_tree.RemoveVirtualLoss(node, father);
     }
 }
 

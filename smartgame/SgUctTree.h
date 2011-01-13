@@ -360,7 +360,7 @@ inline void SgUctNode::DecPosCount()
     SgUctValue posCount = m_posCount;
     if (posCount > 0)
     {
-	m_posCount = posCount - 1;
+        m_posCount = posCount - 1;
     }
 }
 
@@ -369,7 +369,7 @@ inline void SgUctNode::DecPosCount(SgUctValue count)
     SgUctValue posCount = m_posCount;
     if (posCount >= count)
     {
-	m_posCount = posCount - count;
+        m_posCount = posCount - count;
     }
 }
 
@@ -658,11 +658,11 @@ public:
     void RemoveGameResults(const SgUctNode& node, const SgUctNode* father,
                            SgUctValue eval, SgUctValue count);
 
-    /** Adds a virtual loss to the given nodes. */
-    void AddVirtualLoss(const std::vector<const SgUctNode*>& nodes);
+    /** Adds a virtual loss to the given node. */
+    void AddVirtualLoss(const SgUctNode &node, const SgUctNode* father);
 
-    /** Removes a virtual loss to the given nodes. */
-    void RemoveVirtualLoss(const std::vector<const SgUctNode*>& nodes);
+    /** Removes a virtual loss to the given node. */
+    void RemoveVirtualLoss(const SgUctNode &node, const SgUctNode* father);
 
     void Clear();
 
@@ -902,6 +902,22 @@ inline void SgUctTree::RemoveGameResults(const SgUctNode& node,
         const_cast<SgUctNode*>(father)->DecPosCount(count);
     const_cast<SgUctNode&>(node).RemoveGameResults(eval, count);
 }
+
+inline void SgUctTree::AddVirtualLoss(const SgUctNode& node, const SgUctNode* father)
+{
+    AddGameResult(node, father, 1); // loss for us = win for child
+    AddRaveValue(node, 0, 1); // loss for us
+}
+
+
+
+inline void SgUctTree::RemoveVirtualLoss(const SgUctNode& node, const SgUctNode* father)
+{
+    RemoveGameResult(node, father, 1); // loss for us = win for child
+    RemoveRaveValue(node, 0, 1); // loss for us
+}
+
+
 
 inline void SgUctTree::AddRaveValue(const SgUctNode& node, SgUctValue value,
                                     SgUctValue weight)

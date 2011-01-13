@@ -60,16 +60,6 @@ SgUctTree::SgUctTree()
 {
 }
 
-void SgUctTree::AddVirtualLoss(const std::vector<const SgUctNode*>& nodes)
-{
-    for (size_t i = 0; i < nodes.size(); ++i)
-    {
-        const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
-        AddGameResult(*nodes[i], father, 1); // loss for us = win for child
-        AddRaveValue(*nodes[i], 0, 1); // loss for us
-    }
-}
-
 void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                             const vector<SgMove>& rootFilter)
 {
@@ -296,7 +286,7 @@ void SgUctTree::DumpDebugInfo(std::ostream& out) const
 
 void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
                                bool warnTruncate, double maxTime,
-			       SgUctValue minCount) const
+                               SgUctValue minCount) const
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(&target != this);
@@ -387,16 +377,6 @@ std::size_t SgUctTree::NuNodes() const
     for (size_t i = 0; i < NuAllocators(); ++i)
         nuNodes += Allocator(i).NuNodes();
     return nuNodes;
-}
-
-void SgUctTree::RemoveVirtualLoss(const std::vector<const SgUctNode*>& nodes)
-{
-    for (size_t i = 0; i < nodes.size(); ++i)
-    {
-        const SgUctNode* father = (i > 0 ? nodes[i-1] : 0);
-        RemoveGameResult(*nodes[i], father, 1); // see AddVirtualLoss()
-        RemoveRaveValue(*nodes[i], 0, 1);
-    }
 }
 
 void SgUctTree::SetMaxNodes(std::size_t maxNodes)
