@@ -30,7 +30,8 @@ typedef SG_UCT_VALUE_TYPE SgUctValue;
 typedef double SgUctValue;
 #endif
 
-BOOST_STATIC_ASSERT(! std::numeric_limits<SgUctValue>::is_exact);
+BOOST_STATIC_ASSERT(! std::numeric_limits<SgUctValue>::is_integer
+);
 
 typedef SgStatisticsBase<SgUctValue,SgUctValue> SgUctStatistics;
 
