@@ -626,10 +626,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "expand_threshold")
-            s.SetExpandThreshold(cmd.ArgMin<SgUctValue>(1,
-                                     numeric_limits<SgUctValue>::is_integer
-                                     ? SgUctValue(1)
-                                     : numeric_limits<SgUctValue>::epsilon()));
+            s.SetExpandThreshold(cmd.ArgMin<SgUctValue>(1, 0));
         else if (name == "first_play_urgency")
             s.SetFirstPlayUrgency(cmd.Arg<SgUctValue>(1));
         else if (name == "live_gfx")
