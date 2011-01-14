@@ -8,13 +8,16 @@
 #include <iomanip>
 #include <iostream>
 #include <boost/io/ios_state.hpp>
+#include <boost/format.hpp>
 #include "SgBWSet.h"
 #include "SgPointSet.h"
 #include "SgProp.h"
 #include "SgUctSearch.h"
 
 using namespace std;
+using boost::format;
 using boost::io::ios_all_saver;
+using SgPointUtil::PointToString;
 using SgPointUtil::Pt;
 using SgPropUtil::PointToSgfString;
 
@@ -137,8 +140,8 @@ void GoUctUtil::GfxCounts(const SgUctTree& tree, ostream& out)
         {
             const SgUctNode& child = *it;
             if (child.HasMean())
-                out << ' ' << SgWritePoint(child.Move()) << ' '
-                    << child.MoveCount();
+                out << (format(" %s %.0f")
+                        % PointToString(child.Move()) % child.MoveCount());
         }
     out << '\n';
 }
@@ -187,14 +190,12 @@ void GoUctUtil::GfxStatus(const SgUctSearch& search, ostream& out)
     const SgUctTree& tree = search.Tree();
     const SgUctNode& root = tree.Root();
     const SgUctSearchStat& stat = search.Statistics();
-    int abortPercent = static_cast<int>(stat.m_aborted.Mean() * 100);
-    out << "TEXT N=" << root.MoveCount()
-        << " V=" << setprecision(2) << root.Mean()
-        << " Len=" << static_cast<int>(stat.m_gameLength.Mean())
-        << " Tree=" << setprecision(1) << stat.m_movesInTree.Mean()
-        << "/" << static_cast<int>(stat.m_movesInTree.Max())
-        << " Abrt=" << abortPercent << '%'
-        << " Gm/s=" << static_cast<int>(stat.m_gamesPerSecond) << '\n';
+    SgUctValue abortPercent = stat.m_aborted.Mean() * SgUctValue(100);
+    out << (format(
+          "TEXT N=%.0f V=%.2f Len=%.0f Tree=%.1f/%.1f Abrt=%.0f%% Gm/s=%.0f\n")
+            % root.MoveCount() % root.Mean() % stat.m_gameLength.Mean()
+            % stat.m_movesInTree.Mean() % stat.m_movesInTree.Max()
+            % abortPercent % stat.m_gamesPerSecond);
 }
 
 void GoUctUtil::GfxTerritoryStatistics(
