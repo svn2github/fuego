@@ -465,7 +465,7 @@ loadsgf sgf/safetytest/benson-safe-separate-healthy.1.sgf
 #? [17 .*]
 
 1050 go_safe static black
-#? [0]
+#? [26 .*]
 
 1051 go_safe static white
 #? [31 .*]
@@ -481,7 +481,7 @@ loadsgf sgf/safetytest/benson-safe-separate-healthy.2.sgf 1
 #? [0]
 
 1070 go_safe static black
-#? [0]
+#? [67 .*]
 
 1071 go_safe static white
 #? [14 .*]
@@ -499,6 +499,7 @@ loadsgf sgf/safetytest/benson-safe-separate-healthy.2.sgf 2
 
 1090 go_safe static black
 #? [58 .*]
+# should be all 67 like in 1070 - need to improve extend-safe?
 
 1091 go_safe static white
 #? [14 .*]
@@ -515,7 +516,7 @@ loadsgf sgf/safetytest/benson-safe-separate-healthy.2.sgf 3
 #? [0]
 
 1110 go_safe static black
-#? [0]
+#? [67 .*]
 
 1111 go_safe static white
 #? [14 .*]
