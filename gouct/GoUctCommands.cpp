@@ -339,7 +339,7 @@ void GoUctCommands::CmdMaxMemory(GtpCommand& cmd)
 void GoUctCommands::CmdMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    vector<SgMoveInfo> moves;
+    vector<SgUctMoveInfo> moves;
     Search().GenerateAllMoves(moves);
     for (std::size_t i = 0; i < moves.size(); ++i)
         cmd << SgWritePoint(moves[i].m_move) << ' ';
@@ -700,8 +700,8 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
-    vector<SgMoveInfo> moves;
-    SgProvenNodeType provenType;
+    vector<SgUctMoveInfo> moves;
+    SgUctProvenType provenType;
     state.GenerateAllMoves(count, moves, provenType);
 
     cmd << "INFLUENCE ";

@@ -135,8 +135,8 @@ public:
 
     SgUctValue Evaluate();
 
-    bool GenerateAllMoves(SgUctValue count, std::vector<SgMoveInfo>& moves,
-                          SgProvenNodeType& provenType);
+    bool GenerateAllMoves(SgUctValue count, std::vector<SgUctMoveInfo>& moves,
+                          SgUctProvenType& provenType);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -209,7 +209,7 @@ private:
     SgUctValue EvaluateBoard(const BOARD& bd, float komi);
 
     /** Generates all legal moves with no knowledge values. */
-    void GenerateLegalMoves(std::vector<SgMoveInfo>& moves);
+    void GenerateLegalMoves(std::vector<SgUctMoveInfo>& moves);
 
     float GetKomi() const;
 };
@@ -362,7 +362,7 @@ void GoUctGlobalSearchState<POLICY>::GameStart()
 
 template<class POLICY>
 void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
-                                            std::vector<SgMoveInfo>& moves)
+                                            std::vector<SgUctMoveInfo>& moves)
 {
     //SG_ASSERT(! IsInPlayout());
     const GoBoard& bd = Board();
@@ -390,7 +390,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
             && ! GoEyeUtil::IsSimpleEye(bd, p, toPlay)
             && ! m_allSafe[p]
             && bd.IsLegal(p, toPlay))
-            moves.push_back(SgMoveInfo(p));
+            moves.push_back(SgUctMoveInfo(p));
     }
 
     // Full randomization is too expensive and in most cases not necessary,
@@ -400,13 +400,13 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
     // a bad corner move
     if (moves.size() > 1)
         std::swap(moves[0], moves[m_random.SmallInt(moves.size())]);
-    moves.push_back(SgMoveInfo(SG_PASS));
+    moves.push_back(SgUctMoveInfo(SG_PASS));
 }
 
 template<class POLICY>
 bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(SgUctValue count, 
-                                             std::vector<SgMoveInfo>& moves,
-                                             SgProvenNodeType& provenType)
+                                             std::vector<SgUctMoveInfo>& moves,
+                                             SgUctProvenType& provenType)
 {
     provenType = SG_NOT_PROVEN;
     moves.clear();  // FIXME: needed?

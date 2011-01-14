@@ -85,8 +85,8 @@ public:
 
     void ExecutePlayout(SgMove move);
 
-    bool GenerateAllMoves(SgUctValue count, vector<SgMoveInfo>& moves,
-                          SgProvenNodeType& provenType);
+    bool GenerateAllMoves(SgUctValue count, vector<SgUctMoveInfo>& moves,
+                          SgUctProvenType& provenType);
 
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
@@ -161,8 +161,8 @@ SgUctValue TestThreadState::Evaluate()
 }
 
 bool TestThreadState::GenerateAllMoves(SgUctValue count, 
-                                       vector<SgMoveInfo>& moves,
-                                       SgProvenNodeType& provenType)
+                                       vector<SgUctMoveInfo>& moves,
+                                       SgUctProvenType& provenType)
 {
     SG_UNUSED(provenType);
     if (WRITE)
@@ -172,7 +172,7 @@ bool TestThreadState::GenerateAllMoves(SgUctValue count,
     {
         if (WRITE)
             SgDebug() << Node(child).m_move << ' ';
-        moves.push_back(SgMoveInfo(Node(child).m_move));
+        moves.push_back(SgUctMoveInfo(Node(child).m_move));
         child = Node(child).m_sibling;
     }
 
@@ -187,7 +187,7 @@ bool TestThreadState::GenerateAllMoves(SgUctValue count,
             moves[i].m_value = 1.0;
             moves[i].m_count = 1;
         }
-        moves.push_back(SgMoveInfo(100, 1.0, 10, 0, 0));
+        moves.push_back(SgUctMoveInfo(100, 1.0, 10, 0, 0));
     }
 
     if (WRITE)
@@ -200,8 +200,8 @@ SgMove TestThreadState::GeneratePlayoutMove(bool& skipRaveUpdate)
 {
     SG_UNUSED(skipRaveUpdate);
     // Search does not use randomness
-    vector<SgMoveInfo> moves;
-    SgProvenNodeType provenType = SG_NOT_PROVEN;
+    vector<SgUctMoveInfo> moves;
+    SgUctProvenType provenType = SG_NOT_PROVEN;
     GenerateAllMoves(0, moves, provenType);
     if (moves.empty())
         return SG_NULLMOVE;

@@ -279,11 +279,11 @@ SgUctSearch::~SgUctSearch()
     DeleteThreads();
 }
 
-void SgUctSearch::ApplyRootFilter(vector<SgMoveInfo>& moves)
+void SgUctSearch::ApplyRootFilter(vector<SgUctMoveInfo>& moves)
 {
     // Filter without changing the order of the unfiltered moves
-    vector<SgMoveInfo> filteredMoves;
-    for (vector<SgMoveInfo>::const_iterator it = moves.begin();
+    vector<SgUctMoveInfo> filteredMoves;
+    for (vector<SgUctMoveInfo>::const_iterator it = moves.begin();
          it != moves.end(); ++it)
         if (find(m_rootFilter.begin(), m_rootFilter.end(), it->m_move)
             == m_rootFilter.end())
@@ -540,7 +540,7 @@ void SgUctSearch::FindBestSequence(vector<SgMove>& sequence) const
     }
 }
 
-void SgUctSearch::GenerateAllMoves(std::vector<SgMoveInfo>& moves)
+void SgUctSearch::GenerateAllMoves(std::vector<SgUctMoveInfo>& moves)
 {
     if (m_threads.size() == 0)
         CreateThreads();
@@ -548,7 +548,7 @@ void SgUctSearch::GenerateAllMoves(std::vector<SgMoveInfo>& moves)
     OnStartSearch();
     SgUctThreadState& state = ThreadState(0);
     state.StartSearch();
-    SgProvenNodeType type;
+    SgUctProvenType type;
     state.GenerateAllMoves(0, moves, type);
 }
 
@@ -856,7 +856,7 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
     while (true)
     {
         const SgUctNode& parent = *nodes[i];
-        SgProvenNodeType type = SG_PROVEN_LOSS;
+        SgUctProvenType type = SG_PROVEN_LOSS;
         for (SgUctChildIterator it(m_tree, parent); it; ++it)
         {
             const SgUctNode& child = *it;
@@ -871,7 +871,7 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
         if (type == SG_NOT_PROVEN)
             break;
         else
-            m_tree.SetProvenNodeType(parent, type);
+            m_tree.SetProvenType(parent, type);
         if (i == 0)
             break;
         --i;
@@ -905,13 +905,13 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
         if (! current->HasChildren())
         {
             state.m_moves.clear();
-            SgProvenNodeType provenType = SG_NOT_PROVEN;
+            SgUctProvenType provenType = SG_NOT_PROVEN;
             state.GenerateAllMoves(0, state.m_moves, provenType);
             if (current == root)
                 ApplyRootFilter(state.m_moves);
             if (provenType != SG_NOT_PROVEN)
             {
-                m_tree.SetProvenNodeType(*current, provenType);
+                m_tree.SetProvenType(*current, provenType);
                 PropagateProvenStatus(nodes);
                 break;
             }
@@ -938,7 +938,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
         {
             m_statistics.m_knowledge++;
             deepenTree = false;
-            SgProvenNodeType provenType = SG_NOT_PROVEN;
+            SgUctProvenType provenType = SG_NOT_PROVEN;
             bool truncate = state.GenerateAllMoves(current->KnowledgeCount(), 
                                                    state.m_moves,
                                                    provenType);
@@ -947,7 +947,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             CreateChildren(state, *current, truncate);
             if (provenType != SG_NOT_PROVEN)
             {
-                m_tree.SetProvenNodeType(*current, provenType);
+                m_tree.SetProvenType(*current, provenType);
                 PropagateProvenStatus(nodes);
                 break;
             }
@@ -1123,8 +1123,8 @@ SgPoint SgUctSearch::SearchOnePly(SgUctValue maxGames, double maxTime,
     // It uses the state of the first thread.
     SgUctThreadState& state = ThreadState(0);
     state.StartSearch();
-    vector<SgMoveInfo> moves;
-    SgProvenNodeType provenType;
+    vector<SgUctMoveInfo> moves;
+    SgUctProvenType provenType;
     state.GameStart();
     state.GenerateAllMoves(0, moves, provenType);
     vector<SgUctStatistics> statistics(moves.size());

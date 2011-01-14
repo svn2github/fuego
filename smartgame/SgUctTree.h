@@ -25,7 +25,7 @@ typedef SgStatisticsVltBase<float,std::size_t> SgUctStatisticsBaseVolatile;
 //----------------------------------------------------------------------------
 
 /** Used for node creation. */
-struct SgMoveInfo
+struct SgUctMoveInfo
 {
     /** Move for the child. */
     SgMove m_move;
@@ -47,15 +47,15 @@ struct SgMoveInfo
     /** Rave count of move after node is created. */
     SgUctValue m_raveCount;
 
-    SgMoveInfo();
+    SgUctMoveInfo();
 
-    SgMoveInfo(SgMove move);
+    SgUctMoveInfo(SgMove move);
 
-    SgMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
+    SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
                SgUctValue raveValue, SgUctValue raveCount);
 };
 
-inline SgMoveInfo::SgMoveInfo()
+inline SgUctMoveInfo::SgUctMoveInfo()
     : m_value(0),
       m_count(0),
       m_raveValue(0),
@@ -63,7 +63,7 @@ inline SgMoveInfo::SgMoveInfo()
 {
 }
 
-inline SgMoveInfo::SgMoveInfo(SgMove move)
+inline SgUctMoveInfo::SgUctMoveInfo(SgMove move)
     : m_move(move),
       m_value(0),
       m_count(0),
@@ -72,7 +72,7 @@ inline SgMoveInfo::SgMoveInfo(SgMove move)
 {
 }
 
-inline SgMoveInfo::SgMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
+inline SgUctMoveInfo::SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
                               SgUctValue raveValue, SgUctValue raveCount)
     : m_move(move),
       m_value(value),
@@ -96,7 +96,7 @@ typedef enum
     /** Node is a proven loss. */
     SG_PROVEN_LOSS
 
-} SgProvenNodeType;
+} SgUctProvenType;
 
 //----------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ class SgUctNode
 {
 public:
     /** Initializes node with given move, value and count. */
-    SgUctNode(const SgMoveInfo& info);
+    SgUctNode(const SgUctMoveInfo& info);
 
     /** Add game result.
         @param eval The game result (e.g. score or 0/1 for win loss) */
@@ -234,9 +234,9 @@ public:
 
     bool IsProvenLoss() const;
 
-    SgProvenNodeType ProvenNodeType() const;
+    SgUctProvenType ProvenType() const;
 
-    void SetProvenNodeType(SgProvenNodeType type);
+    void SetProvenType(SgUctProvenType type);
 
 private:
     SgUctStatisticsVolatile m_statistics;
@@ -256,10 +256,10 @@ private:
 
     volatile SgUctValue m_knowledgeCount;
 
-    volatile SgProvenNodeType m_provenType;
+    volatile SgUctProvenType m_provenType;
 };
 
-inline SgUctNode::SgUctNode(const SgMoveInfo& info)
+inline SgUctNode::SgUctNode(const SgUctMoveInfo& info)
     : m_statistics(info.m_value, info.m_count),
       m_nuChildren(0),
       m_move(info.m_move),
@@ -460,12 +460,12 @@ inline bool SgUctNode::IsProvenLoss() const
     return m_provenType == SG_PROVEN_LOSS;
 }
 
-inline SgProvenNodeType SgUctNode::ProvenNodeType() const
+inline SgUctProvenType SgUctNode::ProvenType() const
 {
     return m_provenType;
 }
 
-inline void SgUctNode::SetProvenNodeType(SgProvenNodeType type)
+inline void SgUctNode::SetProvenType(SgUctProvenType type)
 {
     m_provenType = type;
 }
@@ -518,7 +518,7 @@ public:
         the storage. Returns the sum of counts of moves.
         REQUIRES: HasCapacity(moves.size())
         @param moves The list of moves. */
-    SgUctValue Create(const std::vector<SgMoveInfo>& moves);
+    SgUctValue Create(const std::vector<SgUctMoveInfo>& moves);
 
     /** Create a number of new nodes at the end of the storage.
         REQUIRES: HasCapacity(n)
@@ -563,11 +563,11 @@ inline SgUctNode* SgUctAllocator::CreateOne(SgMove move)
 }
 
 inline SgUctValue SgUctAllocator::Create(
-                                         const std::vector<SgMoveInfo>& moves)
+                                         const std::vector<SgUctMoveInfo>& moves)
 {
     SG_ASSERT(HasCapacity(moves.size()));
     SgUctValue count = 0;
-    for (std::vector<SgMoveInfo>::const_iterator it = moves.begin();
+    for (std::vector<SgUctMoveInfo>::const_iterator it = moves.begin();
          it != moves.end(); ++it, ++m_finish)
     {
         new(m_finish) SgUctNode(*it);
@@ -664,7 +664,7 @@ public:
     /** Removes a virtual loss to the given node. */
     void RemoveVirtualLoss(const SgUctNode &node, const SgUctNode* father);
 
-    void SetProvenNodeType(const SgUctNode& node, SgProvenNodeType type);
+    void SetProvenType(const SgUctNode& node, SgUctProvenType type);
 
     void SetKnowledgeCount(const SgUctNode& node, SgUctValue count);
 
@@ -695,12 +695,12 @@ public:
     /** Create children nodes.
         Requires: Allocator(allocatorId).HasCapacity(moves.size()) */
     void CreateChildren(std::size_t allocatorId, const SgUctNode& node,
-                        const std::vector<SgMoveInfo>& moves);
+                        const std::vector<SgUctMoveInfo>& moves);
 
     /** Merge new children with old.
         Requires: Allocator(allocatorId).HasCapacity(moves.size()) */
     void MergeChildren(std::size_t allocatorId, const SgUctNode& node,
-                       const std::vector<SgMoveInfo>& moves,
+                       const std::vector<SgUctMoveInfo>& moves,
                        bool deleteChildTrees);
 
     /** Extract subtree to a different tree.
@@ -854,7 +854,7 @@ inline void SgUctTree::AddGameResults(const SgUctNode& node,
 
 inline void SgUctTree::CreateChildren(std::size_t allocatorId,
                                       const SgUctNode& node,
-                                      const std::vector<SgMoveInfo>& moves)
+                                      const std::vector<SgUctMoveInfo>& moves)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
@@ -1016,13 +1016,13 @@ inline void SgUctTree::SetPosCount(const SgUctNode& node,
     const_cast<SgUctNode&>(node).SetPosCount(posCount);
 }
 
-inline void SgUctTree::SetProvenNodeType(const SgUctNode &node,
-                                         SgProvenNodeType type)
+inline void SgUctTree::SetProvenType(const SgUctNode &node,
+                                     SgUctProvenType type)
 {
     SG_ASSERT(Contains(node));
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
-    const_cast<SgUctNode&>(node).SetProvenNodeType(type);
+    const_cast<SgUctNode&>(node).SetProvenType(type);
 }
 
 //----------------------------------------------------------------------------

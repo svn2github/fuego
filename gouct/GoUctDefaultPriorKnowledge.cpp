@@ -62,7 +62,7 @@ void GoUctKnowledge::ClearValues()
         m_values[i].Clear();
 }
 
-void GoUctKnowledge::TransferValues(std::vector<SgMoveInfo>& outmoves) const
+void GoUctKnowledge::TransferValues(std::vector<SgUctMoveInfo>& outmoves) const
 {
     for (std::size_t i = 0; i < outmoves.size(); ++i) 
     {
@@ -151,7 +151,7 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
 }
 
 void 
-GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgMoveInfo>& outmoves)
+GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves)
 {
     m_policy.StartPlayout();
     m_policy.GenerateMove();

@@ -34,10 +34,10 @@ BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_Simple)
     SgUctTree tree;
     tree.CreateAllocators(1);
     tree.SetMaxNodes(10);
-    vector<SgMoveInfo> moves;
-    moves.push_back(SgMoveInfo(10));
-    moves.push_back(SgMoveInfo(20));
-    moves.push_back(SgMoveInfo(30));
+    vector<SgUctMoveInfo> moves;
+    moves.push_back(SgUctMoveInfo(10));
+    moves.push_back(SgUctMoveInfo(20));
+    moves.push_back(SgUctMoveInfo(30));
     const SgUctNode& root = tree.Root();
     tree.CreateChildren(0, root, moves);
     const SgUctNode& node1 = *FindChildWithMove(tree, root, 10);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_Simple)
     const SgUctNode& node3 = *FindChildWithMove(tree, root, 30);
 
     moves.clear();
-    moves.push_back(SgMoveInfo(40));
+    moves.push_back(SgUctMoveInfo(40));
     tree.CreateChildren(0, node2, moves);
     const SgUctNode& node4 = *FindChildWithMove(tree, node2, 40);
 
@@ -81,10 +81,10 @@ BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_ApplyFilter)
     SgUctTree tree;
     tree.CreateAllocators(1);
     tree.SetMaxNodes(100);
-    vector<SgMoveInfo> moves;
-    moves.push_back(SgMoveInfo(10));
-    moves.push_back(SgMoveInfo(20));
-    moves.push_back(SgMoveInfo(30));
+    vector<SgUctMoveInfo> moves;
+    moves.push_back(SgUctMoveInfo(10));
+    moves.push_back(SgUctMoveInfo(20));
+    moves.push_back(SgUctMoveInfo(30));
     const SgUctNode& root = tree.Root();
     tree.CreateChildren(0, root, moves);
     const SgUctNode& node1 = *FindChildWithMove(tree, root, 10);

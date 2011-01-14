@@ -300,7 +300,7 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
 }
 
 void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
-                              const std::vector<SgMoveInfo>& moves,
+                              const std::vector<SgUctMoveInfo>& moves,
                               bool deleteChildTrees)
 {
     SG_ASSERT(Contains(node));

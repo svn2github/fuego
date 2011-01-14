@@ -295,7 +295,7 @@ public:
 
     /** Local variable for SgUctSearch::PlayInTree().
         Reused for efficiency. */
-    std::vector<SgMoveInfo> m_moves;
+    std::vector<SgUctMoveInfo> m_moves;
 
     /** Local variable for SgUctSearch::CheckCountAbort().
         Reused for efficiency. */
@@ -335,8 +335,8 @@ public:
         based computations.
         @param[out] moves The generated moves or empty list at end of game */
     virtual bool GenerateAllMoves(SgUctValue count, 
-                                  std::vector<SgMoveInfo>& moves,
-                                  SgProvenNodeType& provenType) = 0;
+                                  std::vector<SgUctMoveInfo>& moves,
+                                  SgUctProvenType& provenType) = 0;
 
     /** Generate random move.
         Generate a random move in the play-out phase (outside the UCT tree).
@@ -544,7 +544,7 @@ public:
     /** Get a list of all generated moves.
         Sets up thread state 0 for a seach and calls GenerateAllMoves
         of the thread state. */
-    void GenerateAllMoves(std::vector<SgMoveInfo>& moves);
+    void GenerateAllMoves(std::vector<SgUctMoveInfo>& moves);
 
     /** Play a single game.
         Plays a single game using the thread state of the first thread.
@@ -1063,7 +1063,7 @@ private:
     boost::shared_ptr<SgMpiSynchronizer> m_mpiSynchronizer;
 
 
-    void ApplyRootFilter(std::vector<SgMoveInfo>& moves);
+    void ApplyRootFilter(std::vector<SgUctMoveInfo>& moves);
 
     void PropagateProvenStatus(const vector<const SgUctNode*>& nodes);
 

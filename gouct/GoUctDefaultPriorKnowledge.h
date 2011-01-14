@@ -18,7 +18,7 @@ public:
 
     virtual ~GoUctKnowledge();
 
-    virtual void ProcessPosition(std::vector<SgMoveInfo>& moves)=0;
+    virtual void ProcessPosition(std::vector<SgUctMoveInfo>& moves)=0;
 
 protected:
     const GoBoard& m_bd;
@@ -31,7 +31,7 @@ protected:
 
     void ClearValues();
 
-    void TransferValues(std::vector<SgMoveInfo>& outmoves) const;
+    void TransferValues(std::vector<SgUctMoveInfo>& outmoves) const;
 };
 
 //----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public:
     GoUctDefaultPriorKnowledge(const GoBoard& bd,
                                const GoUctPlayoutPolicyParam& param);
 
-    void ProcessPosition(std::vector<SgMoveInfo>& moves);
+    void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
 
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari,

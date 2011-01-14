@@ -24,7 +24,7 @@ void GoUctEstimatorStat::Compute(GoUctSearch& search,
                                  const std::string& fileName)
 {
     double maxTime = numeric_limits<double>::max();
-    vector<SgMoveInfo> moves;
+    vector<SgUctMoveInfo> moves;
     search.GenerateAllMoves(moves);
     SgArray<SgUctValue,SG_PASS + 1> trueValues;
     for (size_t i = 0; i < moves.size(); ++i)
