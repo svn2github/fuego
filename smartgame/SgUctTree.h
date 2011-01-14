@@ -664,6 +664,10 @@ public:
     /** Removes a virtual loss to the given node. */
     void RemoveVirtualLoss(const SgUctNode &node, const SgUctNode* father);
 
+    void SetProvenNodeType(const SgUctNode& node, SgProvenNodeType type);
+
+    void SetKnowledgeCount(const SgUctNode& node, SgUctValue count);
+
     void Clear();
 
     /** Return the current maximum number of nodes.
@@ -994,6 +998,15 @@ inline const SgUctNode& SgUctTree::Root() const
     return m_root;
 }
 
+inline void SgUctTree::SetKnowledgeCount(const SgUctNode& node,
+                                         SgUctValue count)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    const_cast<SgUctNode&>(node).SetKnowledgeCount(count);
+}
+
 inline void SgUctTree::SetPosCount(const SgUctNode& node,
                                    SgUctValue posCount)
 {
@@ -1001,6 +1014,15 @@ inline void SgUctTree::SetPosCount(const SgUctNode& node,
     // Parameters are const-references, because only the tree is allowed
     // to modify nodes
     const_cast<SgUctNode&>(node).SetPosCount(posCount);
+}
+
+inline void SgUctTree::SetProvenNodeType(const SgUctNode &node,
+                                         SgProvenNodeType type)
+{
+    SG_ASSERT(Contains(node));
+    // Parameters are const-references, because only the tree is allowed
+    // to modify nodes
+    const_cast<SgUctNode&>(node).SetProvenNodeType(type);
 }
 
 //----------------------------------------------------------------------------

@@ -716,8 +716,7 @@ bool SgUctSearch::NeedToComputeKnowledge(const SgUctNode* current)
                 // Mark knowledge computed immediately so other
                 // threads fall through and do not waste time
                 // re-computing this knowledge.
-                SgUctNode* node = const_cast<SgUctNode*>(current);
-                node->SetKnowledgeCount(threshold);
+                m_tree.SetKnowledgeCount(*current, threshold);
                 SG_ASSERT(current->MoveCount());
                 return true;
             }
@@ -872,10 +871,7 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
         if (type == SG_NOT_PROVEN)
             break;
         else
-        {
-            SgUctNode* node = const_cast<SgUctNode*>(&parent);
-            node->SetProvenNodeType(type);
-        }
+            m_tree.SetProvenNodeType(parent, type);
         if (i == 0)
             break;
         --i;
@@ -915,8 +911,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                 ApplyRootFilter(state.m_moves);
             if (provenType != SG_NOT_PROVEN)
             {
-                SgUctNode* node = const_cast<SgUctNode*>(current);
-                node->SetProvenNodeType(provenType);
+                m_tree.SetProvenNodeType(*current, provenType);
                 PropagateProvenStatus(nodes);
                 break;
             }
@@ -952,8 +947,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             CreateChildren(state, *current, truncate);
             if (provenType != SG_NOT_PROVEN)
             {
-                SgUctNode* node = const_cast<SgUctNode*>(current);
-                node->SetProvenNodeType(provenType);
+                m_tree.SetProvenNodeType(*current, provenType);
                 PropagateProvenStatus(nodes);
                 break;
             }
