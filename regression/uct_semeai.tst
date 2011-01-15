@@ -511,3 +511,12 @@ loadsgf sgf/semeai-exact/semeai-2pteye-1shared-0+3ext.sgf 7
 1710 sg_compare_float 0.9 uct_value
 #? [1]
 
+loadsgf sgf/games/2011/LittleGolem/1226980.sgf 26
+1720 reg_genmove w
+#? [J2]*
+# Fuego cannot read the semeai. W can win it.
+
+1730 sg_compare_float 0.5 uct_value
+#? [1]*
+# W is totally winning if wins semeai
+

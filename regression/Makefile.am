@@ -26,6 +26,7 @@ performance_eval_pro_9x9.tst \
 performance_middlegame_hard_9x9.tst \
 performance_pro_9x9.tst \
 repetition.tst \
+semeai_big.tst \
 simpleplayers.tst \
 static_safety_basics.tst \
 static_safety_from_semeai.tst \
@@ -220,6 +221,8 @@ sgf/games/2010/FuegoGB-Barcelona/Tsai-FuegoGB.sgf \
 sgf/games/2010/FuegoGB-Barcelona/Yen-FuegoGB.sgf \
 sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
+sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
+sgf/games/2011/LittleGolem/1226980.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
