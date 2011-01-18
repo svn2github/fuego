@@ -206,7 +206,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
     SG_ASSERT(target.Contains(targetNode));
     targetNode.CopyDataFrom(node);
 
-    if (! node.HasChildren() || node.MoveCount() < minCount || node.IsProven())
+    if (! node.HasChildren() || node.MoveCount() < minCount)
         return;
 
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
