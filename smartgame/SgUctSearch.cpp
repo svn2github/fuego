@@ -791,6 +791,17 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     if (lock != 0)
         lock->unlock();
 
+    if (!info.m_nodes.empty() && isTerminal)
+    {
+        const SgUctNode& terminalNode = *info.m_nodes.back();
+        SgUctValue eval = state.Evaluate();
+        if (eval > 0.6) 
+            m_tree.SetProvenType(terminalNode, SG_PROVEN_WIN);
+        else if (eval < 0.6)
+            m_tree.SetProvenType(terminalNode, SG_PROVEN_LOSS);
+        PropagateProvenStatus(info.m_nodes);
+    }
+
     size_t nuMovesInTree = info.m_inTreeSequence.size();
 
     // Play some "fake" playouts if node is a proven node
