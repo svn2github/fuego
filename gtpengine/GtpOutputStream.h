@@ -11,7 +11,10 @@
 //----------------------------------------------------------------------------
 
 /** Base class for output streams used by GtpEngine.
-    This implementation only forwards calls to std::ostream. */
+    This implementation only forwards calls to std::ostream.
+    @todo Why does it need this class if users can write their own streams
+    compatible with the standard library? See also
+    https://sourceforge.net/apps/trac/fuego/ticket/66 */
 class GtpOutputStream
 {
 public:
