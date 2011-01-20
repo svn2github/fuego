@@ -420,7 +420,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     search.StartSearch();
 
     /* Game 1
-       Sequence: 1, 5 (no expand)
+       Sequence: [ 1, 5 ] (no expand)
        Tree: [nodeIndex](count,value)
        0[0](0,0) */
     search.PlayGame();
@@ -438,7 +438,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     }
 
     /* Game 2
-       Sequence: 1, 5 (expand 0)
+       Sequence: [ 1, 5 ] (expand 0)
        Tree: [nodeIndex](count,value)
        0[0](2,0)--1[1](1,1)
        \----------2[2]
@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     }
 
     /* Game 3
-       Sequence: 2, 7 (no expand)
+       Sequence: [ 2, 7 ] (no expand)
        Tree: [nodeIndex](count,value)
        0[0](3,0.33)--1[1](1,1)
        \-------------2[2](1,0)
@@ -484,7 +484,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     }
 
     /* Game 4
-       Sequence: 3, 9 (no expand)
+       Sequence: [ 3, 9 ] (no expand)
        Tree: [nodeIndex](count,value)
        0[0](4,0.5)--1[1](1,1)
        \------------2[2](1,0)
@@ -507,7 +507,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     }
 
     /* Game 5
-       Sequence: 4, 11 (no expand)
+       Sequence: [ 4, 11 ] (no expand)
        Tree: [nodeIndex](count,value)
        0[0](5,0.4)--1[1](1,1)
        \------------2[2](1,0)
@@ -556,9 +556,9 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
     search.StartSearch();
 
     /* Game 1
-       Sequence: 1 (no expand)
-       Tree: [nodeIndex](count,value)
-       0[0](1,0) */
+       Sequence: [ 1 ] (no expand)
+       Tree: [nodeIndex](count,value,proven)
+       0[0](1,0,?) */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -570,14 +570,15 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
         BOOST_CHECK_EQUAL(1u, tree.NuNodes());
         BOOST_CHECK_EQUAL(1u, tree.Root().MoveCount());
         BOOST_CHECK_CLOSE(SgUctValue(0.0), tree.Root().Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(SG_NOT_PROVEN, tree.Root().ProvenType());
     }
 
     /* Game 2
-       Sequence: 1 (expand 0)
-       Tree: [nodeIndex](count,value)
-       0[0](2,0)--1[1](1,1)
-       \----------2[2]
-       \----------3[3] */
+       Sequence: [ 1 ] (expand 0)
+       Tree: [nodeIndex](count,value,proven)
+       0[0](2,0,?)--1[1](1,1,?)
+       \------------2[2]
+       \------------3[3] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -589,16 +590,18 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
         BOOST_CHECK_EQUAL(4u, tree.NuNodes());
         BOOST_CHECK_EQUAL(2u, tree.Root().MoveCount());
         BOOST_CHECK_CLOSE(SgUctValue(0.0), tree.Root().Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(SG_NOT_PROVEN, tree.Root().ProvenType());
         BOOST_CHECK_EQUAL(1u, GetNode(tree, 1)->MoveCount());
         BOOST_CHECK_CLOSE(SgUctValue(1.0), GetNode(tree, 1)->Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(SG_NOT_PROVEN, GetNode(tree, 1)->ProvenType());
     }
 
     /* Game 3
-       Sequence: 2 (no expand)
-       Tree: [nodeIndex](count,value)
-       0[0](3,0.33)--1[1](1,1)
-       \-------------2[2](1,0)
-       \-------------3[3] */
+       Sequence: [ 2 ] (no expand)
+       Tree: [nodeIndex](count,value,proven)
+       0[0](3,0.33,W)--1[1](1,1,?)
+       \---------------2[2](1,0,L)
+       \---------------3[3] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
@@ -610,62 +613,30 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
         BOOST_CHECK_EQUAL(4u, tree.NuNodes());
         BOOST_CHECK_EQUAL(3u, tree.Root().MoveCount());
         BOOST_CHECK_CLOSE(SgUctValue(0.33), tree.Root().Mean(), 2.f);
+        BOOST_CHECK_EQUAL(SG_PROVEN_WIN, tree.Root().ProvenType());
         BOOST_CHECK_EQUAL(1u, GetNode(tree, 2)->MoveCount());
         BOOST_CHECK_CLOSE(SgUctValue(0.0), GetNode(tree, 2)->Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(SG_PROVEN_LOSS, GetNode(tree, 2)->ProvenType());
     }
 
     /* Game 4
-       Sequence: 3 (no expand)
-       Tree: [nodeIndex](count,value)
-       0[0](4,0.5)--1[1](1,1)
-       \------------2[2](1,0)
-       \------------3[3](1,0) */
+       Sequence: [] (root proven)
+       Tree: [nodeIndex](count,value,proven)
+       0[0](4,0.5,W)--1[1](1,1,?)
+       \--------------2[2](1,0,L)
+       \--------------3[3] */
     search.PlayGame();
     {
         const SgUctGameInfo& info = search.LastGameInfo();
         BOOST_CHECK_CLOSE(SgUctValue(1.0), info.m_eval[0], 1e-3f);
         const vector<SgMove>& sequence = info.m_sequence[0];
-        BOOST_CHECK_EQUAL(1u, sequence.size());
-        BOOST_CHECK_EQUAL(3, sequence[0]);
+        BOOST_CHECK_EQUAL(0u, sequence.size());
         const SgUctTree& tree = search.Tree();
         BOOST_CHECK_EQUAL(4u, tree.NuNodes());
         BOOST_CHECK_EQUAL(4u, tree.Root().MoveCount());
-        BOOST_CHECK_EQUAL(3u, tree.Root().PosCount());
+        BOOST_CHECK_EQUAL(2u, tree.Root().PosCount());
         BOOST_CHECK_CLOSE(SgUctValue(0.5), tree.Root().Mean(), 1e-3f);
-        BOOST_CHECK_EQUAL(1u, GetNode(tree, 3)->MoveCount());
-        BOOST_CHECK_CLOSE(SgUctValue(0.0), GetNode(tree, 3)->Mean(), 1e-3f);
-    }
-
-    /* Game 5
-       Sequence: 2 (no expand)
-       Tree: [nodeIndex](count,value)
-       0[0](5,0.6)--1[1](2,1.0)
-       \------------2[2](3,0.33)
-       \------------100[100](10,1.0)
-
-       Node 1 receives its 1 win bonus. Node 2 is chosen for the
-       playout, and is a loss, but it also receives a bonus of a
-       single win. Node 100 is a new node and is given a large bonus. */
-    search.PlayGame();
-    {
-        const SgUctGameInfo& info = search.LastGameInfo();
-        BOOST_CHECK_CLOSE(SgUctValue(1.0), info.m_eval[0], 1e-3f);
-        const vector<SgMove>& sequence = info.m_sequence[0];
-        BOOST_CHECK_EQUAL(1u, sequence.size());
-        BOOST_CHECK_EQUAL(2, sequence[0]);
-        const SgUctTree& tree = search.Tree();
-        // tree size is now 7: root + 3 old children + 3 new children
-        BOOST_CHECK_EQUAL(7u, tree.NuNodes());
-        BOOST_CHECK_EQUAL(5u, tree.Root().MoveCount());
-        BOOST_CHECK_EQUAL(15u, tree.Root().PosCount());
-        BOOST_CHECK_CLOSE(SgUctValue(0.6), tree.Root().Mean(), 1e-3f);
-        BOOST_CHECK_EQUAL(2u, GetNode(tree, 1)->MoveCount());
-        BOOST_CHECK_CLOSE(SgUctValue(1.0), GetNode(tree, 1)->Mean(), 1e-3f);
-        BOOST_CHECK_EQUAL(3u, GetNode(tree, 2)->MoveCount());
-        BOOST_CHECK_CLOSE(SgUctValue(0.33333333), GetNode(tree, 2)->Mean(), 1e-3f);
-        BOOST_CHECK(! GetNode(tree, 3));
-        BOOST_CHECK_EQUAL(10u, GetNode(tree, 100)->MoveCount());
-        BOOST_CHECK_CLOSE(SgUctValue(1.0), GetNode(tree, 100)->Mean(), 1e-3f);
+        BOOST_CHECK_EQUAL(SG_PROVEN_WIN, tree.Root().ProvenType());
     }
 }
 
