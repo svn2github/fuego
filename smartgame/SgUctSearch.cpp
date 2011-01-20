@@ -495,16 +495,14 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             bestChild = &child;
             break;
         }
-        SgUctValue moveValue = InverseEstimate((SgUctValue)child.Mean());
-        SgUctValue moveCount = child.MoveCount();
         SgUctValue value;
         switch (m_moveSelect)
         {
         case SG_UCTMOVESELECT_VALUE:
-            value = moveValue;
+            value = InverseEstimate((SgUctValue)child.Mean());
             break;
         case SG_UCTMOVESELECT_COUNT:
-            value = moveCount;
+            value = child.MoveCount();
             break;
         case SG_UCTMOVESELECT_BOUND:
             value = GetBound(m_rave, node, child);
