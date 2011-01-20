@@ -101,11 +101,11 @@ BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_ApplyFilter)
     SgUctChildIterator it(tree, root);
     BOOST_CHECK_EQUAL((*it).Move(), 10);
     BOOST_CHECK_EQUAL((*it).MoveCount(), 1u);
-    BOOST_CHECK_CLOSE((*it).Mean(), 1.f, 1e-4);
+    BOOST_CHECK_CLOSE((*it).Mean(), SgUctValue(1.0), 1e-4);
     ++it;
     BOOST_CHECK_EQUAL((*it).Move(), 30);
     BOOST_CHECK_EQUAL((*it).MoveCount(), 2u);
-    BOOST_CHECK_CLOSE((*it).Mean(), 0.5f, 1e-4);
+    BOOST_CHECK_CLOSE((*it).Mean(), SgUctValue(0.5), 1e-4);
 }
 
 } // namespace
