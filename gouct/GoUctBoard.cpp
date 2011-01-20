@@ -174,14 +174,14 @@ bool GoUctBoard::IsAdjacentTo(SgPoint p,
           || m_block[p + SG_NS] == block;
 }
 
-void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
+void GoUctBoard::MergeBlocks(SgPoint p, const SgArrayList<Block*,4>& adjBlocks)
 {
     // Stone already placed
     SG_ASSERT(IsColor(p, adjBlocks[0]->m_color));
     SG_ASSERT(NumNeighbors(p, adjBlocks[0]->m_color) > 1);
     Block* largestBlock = 0;
     int largestBlockStones = 0;
-    for (SgSList<Block*,4>::Iterator it(adjBlocks); it; ++it)
+    for (SgArrayList<Block*,4>::Iterator it(adjBlocks); it; ++it)
     {
         Block* adjBlock = *it;
         int numStones = adjBlock->m_stones.Length();
@@ -196,7 +196,7 @@ void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
     m_marker.Clear();
     for (Block::LibertyIterator lib(largestBlock->m_liberties); lib; ++lib)
         m_marker.Include(*lib);
-    for (SgSList<Block*,4>::Iterator it(adjBlocks); it; ++it)
+    for (SgArrayList<Block*,4>::Iterator it(adjBlocks); it; ++it)
     {
         Block* adjBlock = *it;
         if (adjBlock == largestBlock)
@@ -222,7 +222,7 @@ void GoUctBoard::MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks)
 }
 
 void GoUctBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
-                                           const SgSList<Block*,4>& adjBlocks)
+                                        const SgArrayList<Block*,4>& adjBlocks)
 {
     // Stone already placed
     SG_ASSERT(IsColor(p, c));
@@ -338,7 +338,7 @@ void GoUctBoard::AddStone(SgPoint p, SgBlackWhite c)
     As a side effect, computes adjacent blocks of own color to avoid a
     second call to GetAdjacentBlocks() in UpdateBlocksAfterAddStone(). */
 void GoUctBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
-                                  SgSList<Block*,4>& ownAdjBlocks)
+                                  SgArrayList<Block*,4>& ownAdjBlocks)
 {
     SgReserveMarker reserve(m_marker);
     m_marker.Clear();
@@ -430,7 +430,7 @@ void GoUctBoard::Play(SgPoint p)
     if (p != SG_PASS)
     {
         AddStone(p, m_toPlay);
-        SgSList<Block*,4> adjBlocks;
+        SgArrayList<Block*,4> adjBlocks;
         if (NumNeighbors(p, SG_BLACK) > 0 || NumNeighbors(p, SG_WHITE) > 0)
             RemoveLibAndKill(p, opp, adjBlocks);
         UpdateBlocksAfterAddStone(p, m_toPlay, adjBlocks);

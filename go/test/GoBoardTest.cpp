@@ -1018,7 +1018,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Undo)
 void GoBoardIteratorTest_AtSize(int size)
 {
     GoBoard bd(size);
-    SgSList<SgPoint,SG_MAXPOINT> points;
+    SgArrayList<SgPoint,SG_MAXPOINT> points;
     for (GoBoard::Iterator it(bd); it; ++it)
         points.PushBack(*it);
     BOOST_CHECK_EQUAL(points.Length(), size * size);
@@ -1049,7 +1049,7 @@ BOOST_AUTO_TEST_CASE(GoBoardLibertyIteratorTest)
     GoBoard bd(19, setup);
     bd.Play(Pt(2, 2), SG_WHITE);
     bd.Play(Pt(1, 2), SG_BLACK);
-    SgSList<SgPoint,SG_MAXPOINT> libs;
+    SgArrayList<SgPoint,SG_MAXPOINT> libs;
     for (GoBoard::LibertyIterator it(bd, Pt(1, 2)); it; ++it)
         libs.PushBack(*it);
     BOOST_CHECK_EQUAL(libs.Length(), 3);
@@ -1079,7 +1079,7 @@ BOOST_AUTO_TEST_CASE(GoBoardStoneIteratorTest)
     bd.Play(Pt(2, 3), SG_WHITE);
     bd.Play(Pt(3, 3), SG_WHITE);
     bd.Play(Pt(2, 2), SG_BLACK);
-    SgSList<SgPoint,SG_MAXPOINT> stones;
+    SgArrayList<SgPoint,SG_MAXPOINT> stones;
     for (GoBoard::StoneIterator it(bd, Pt(2, 2)); it; ++it)
         stones.PushBack(*it);
     BOOST_CHECK_EQUAL(stones.Length(), 4);

@@ -101,7 +101,7 @@ SgPoint GoUctUtil::GenForcedOpeningMove(const GoBoard& bd)
     if (sz < 13 || bd.TotalNumStones(SG_BLACK) > 5
         || bd.TotalNumStones(SG_WHITE) > 5)
         return SG_NULLMOVE;
-    SgSList<SgPoint,4> moves;
+    SgArrayList<SgPoint,4> moves;
     if (IsRectEmpty(bd, 1, 5, 1, 5))
         moves.PushBack(Pt(4, 4));
     if (IsRectEmpty(bd, 1, 5, sz - 4, sz))

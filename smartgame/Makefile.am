@@ -52,6 +52,7 @@ SgWrite.cpp
 
 noinst_HEADERS = \
 SgArray.h \
+SgArrayList.h \
 SgBookBuilder.h \
 SgBWArray.h \
 SgBWSet.h \
@@ -95,7 +96,6 @@ SgProp.h \
 SgRandom.h \
 SgRect.h \
 SgRestorer.h \
-SgSList.h \
 SgSearch.h \
 SgSearchControl.h \
 SgSearchStatistics.h \

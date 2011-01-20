@@ -530,10 +530,10 @@ bool GoBoardUtil::ManySecondaryLibs(const GoBoard& bd, SgPoint block)
     return (nu >= LIBERTY_LIMIT);
 }
 
-SgSList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd, SgPoint p,
-                                                 int c)
+SgArrayList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd,
+                                                     SgPoint p, int c)
 {
-    SgSList<SgPoint,4> result;
+    SgArrayList<SgPoint,4> result;
     if (bd.IsColor(p - SG_NS, c))
         result.PushBack(p - SG_NS);
     if (bd.IsColor(p - SG_WE, c))
@@ -607,7 +607,7 @@ void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
 
 void GoBoardUtil::ReduceToAnchors(const GoBoard& bd,
                                   const SgVector<SgPoint>& stones,
-                                  SgSList<SgPoint,SG_MAXPOINT>& anchors)
+                                  SgArrayList<SgPoint,SG_MAXPOINT>& anchors)
 {
     anchors.Clear();
     for (SgVectorIterator<SgPoint> it(stones); it; ++it)

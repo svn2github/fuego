@@ -211,7 +211,7 @@ int GoLadder::PlayPreyMove(int depth, SgPoint move, SgPoint lib1,
         SG_ASSERT(! neighbors.IsEmpty());
         lib1 = neighbors[0];
         SG_ASSERT(m_bd->IsEmpty(lib1));
-        SgSList<SgPoint,4> temp =
+        SgArrayList<SgPoint,4> temp =
             NeighborsOfColor(*m_bd, move, m_hunterColor);
         newAdj.PushBackList(temp);
         FilterAdjacent(newAdj);

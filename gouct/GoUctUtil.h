@@ -18,7 +18,7 @@
 #include "SgUtil.h"
 
 class SgBWSet;
-template<typename T,int N> class SgSList;
+template<typename T,int N> class SgArrayList;
 class SgUctNode;
 class SgUctTree;
 

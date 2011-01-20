@@ -14,6 +14,7 @@
 #include "GoBoardUtil.h"
 #include "GoPlayerMove.h"
 #include "SgArray.h"
+#include "SgArrayList.h"
 #include "SgBoardConst.h"
 #include "SgBoardColor.h"
 #include "SgMarker.h"
@@ -22,7 +23,6 @@
 #include "SgPoint.h"
 #include "SgPointArray.h"
 #include "SgPointIterator.h"
-#include "SgSList.h"
 
 //----------------------------------------------------------------------------
 
@@ -275,7 +275,7 @@ private:
             Proof? */
         static const int MAX_LIBERTIES = (SG_MAX_SIZE / 3) * 2 * SG_MAX_SIZE;
 
-        typedef SgSList<SgPoint,MAX_LIBERTIES> LibertyList;
+        typedef SgArrayList<SgPoint,MAX_LIBERTIES> LibertyList;
 
         typedef LibertyList::Iterator LibertyIterator;
 
@@ -364,13 +364,13 @@ private:
 
     bool IsAdjacentTo(SgPoint p, const Block* block) const;
 
-    void MergeBlocks(SgPoint p, const SgSList<Block*,4>& adjBlocks);
+    void MergeBlocks(SgPoint p, const SgArrayList<Block*,4>& adjBlocks);
 
     void RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
-                          SgSList<Block*,4>& ownAdjBlocks);
+                          SgArrayList<Block*,4>& ownAdjBlocks);
 
     void UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
-                                   const SgSList<Block*,4>& adjBlocks);
+                                   const SgArrayList<Block*,4>& adjBlocks);
 
     void CheckConsistencyBlock(SgPoint p) const;
 

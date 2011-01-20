@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(1, 2));
     GoBoard bd(19, setup);
-    SgSList<SgPoint,4> neighbors;
+    SgArrayList<SgPoint,4> neighbors;
     neighbors = NeighborsOfColor(bd, Pt(1, 1), SG_BLACK);
     BOOST_CHECK_EQUAL(neighbors.Length(), 0);
     neighbors = NeighborsOfColor(bd, Pt(1, 1), SG_WHITE);

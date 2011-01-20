@@ -44,7 +44,7 @@ private:
 
     GoSetup m_setup;
 
-    SgSList<GoPlayerMove,GO_MAX_NUM_MOVES> m_moves;
+    SgArrayList<GoPlayerMove,GO_MAX_NUM_MOVES> m_moves;
 
     SgBlackWhite m_toPlay;
 };

@@ -189,7 +189,7 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
     SgBlackWhite opp = SgOppBW(c);
     if (bd.HasEmptyNeighbors(p) || bd.HasNeighbors(p, opp))
         return false;
-    SgSList<SgPoint,2> anchors;
+    SgArrayList<SgPoint,2> anchors;
     for (SgNb4Iterator it(p); it; ++it)
     {
         SgPoint nbPoint = *it;
@@ -212,7 +212,7 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
         if (lib == p)
             continue;
         bool isSecondSharedEye = true;
-        SgSList<SgPoint,2> foundAnchors;
+        SgArrayList<SgPoint,2> foundAnchors;
         for (SgNb4Iterator it2(lib); it2; ++it2)
         {
             SgPoint nbPoint = *it2;

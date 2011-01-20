@@ -25,7 +25,7 @@ namespace {
     time. */
 const bool CONSISTENCY = false;
 
-void UpdateChanges(SgPoint p, SgSList<SgPoint,SG_MAXPOINT>& changes,
+void UpdateChanges(SgPoint p, SgArrayList<SgPoint,SG_MAXPOINT>& changes,
                    int& nuChanges)
 {
     if (! changes.Exclude(p))
@@ -40,8 +40,8 @@ void UpdateChanges(SgPoint p, SgSList<SgPoint,SG_MAXPOINT>& changes,
 GoBoard::GoBoard(int size, const GoSetup& setup, const GoRules& rules)
     : m_snapshot(new Snapshot()),
       m_const(size),
-      m_blockList(new SgSList<Block,GO_MAX_NUM_MOVES>()),
-      m_moves(new SgSList<StackEntry,GO_MAX_NUM_MOVES>())
+      m_blockList(new SgArrayList<Block,GO_MAX_NUM_MOVES>()),
+      m_moves(new SgArrayList<StackEntry,GO_MAX_NUM_MOVES>())
 
 {
     GoInitCheck();
@@ -162,8 +162,8 @@ void GoBoard::AddLibToAdjBlocks(SgPoint p)
 {
     if (NumNeighbors(p, SG_BLACK) + NumNeighbors(p, SG_WHITE) == 0)
         return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    SgArrayList<Block*,4> blocks = GetAdjacentBlocks(p);
+    for (SgArrayList<Block*,4>::Iterator it(blocks); it; ++it)
     {
         Block* block = *it;
         if (block != 0)
@@ -175,8 +175,8 @@ void GoBoard::AddLibToAdjBlocks(SgPoint p, SgBlackWhite c)
 {
     if (NumNeighbors(p, c) == 0)
         return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p, c);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    SgArrayList<Block*,4> blocks = GetAdjacentBlocks(p, c);
+    for (SgArrayList<Block*,4>::Iterator it(blocks); it; ++it)
     {
         Block* block = *it;
         if (block != 0)
@@ -243,9 +243,9 @@ void GoBoard::CreateSingleStoneBlock(SgPoint p, SgBlackWhite c)
     m_state.m_block[p] = &block;
 }
 
-SgSList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p) const
+SgArrayList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p) const
 {
-    SgSList<Block*,4> result;
+    SgArrayList<Block*,4> result;
     if (NumNeighbors(p, SG_BLACK) > 0 || NumNeighbors(p, SG_WHITE) > 0)
     {
         Block* block;
@@ -264,10 +264,10 @@ SgSList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p) const
     return result;
 }
 
-SgSList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p,
-                                                      SgBlackWhite c) const
+SgArrayList<GoBoard::Block*,4> GoBoard::GetAdjacentBlocks(SgPoint p,
+                                                          SgBlackWhite c) const
 {
-    SgSList<Block*,4> result;
+    SgArrayList<Block*,4> result;
     if (NumNeighbors(p, c) > 0)
     {
         Block* block;
@@ -295,7 +295,7 @@ bool GoBoard::IsAdjacentTo(SgPoint p, const GoBoard::Block* block) const
 }
 
 void GoBoard::MergeBlocks(SgPoint p, SgBlackWhite c,
-                          const SgSList<Block*,4>& adjBlocks)
+                          const SgArrayList<Block*,4>& adjBlocks)
 {
     // Stone already placed
     SG_ASSERT(IsColor(p, c));
@@ -305,7 +305,7 @@ void GoBoard::MergeBlocks(SgPoint p, SgBlackWhite c,
     SgReserveMarker reserve(m_marker);
     SG_UNUSED(reserve);
     m_marker.Clear();
-    for (SgSList<Block*,4>::Iterator it(adjBlocks); it; ++it)
+    for (SgArrayList<Block*,4>::Iterator it(adjBlocks); it; ++it)
     {
         Block* adjBlock = *it;
         for (Block::StoneIterator stn(adjBlock->Stones()); stn; ++stn)
@@ -333,8 +333,8 @@ void GoBoard::RemoveLibFromAdjBlocks(SgPoint p, SgBlackWhite c)
 {
     if (NumNeighbors(p, c) == 0)
         return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p, c);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    SgArrayList<Block*,4> blocks = GetAdjacentBlocks(p, c);
+    for (SgArrayList<Block*,4>::Iterator it(blocks); it; ++it)
         (*it)->ExcludeLiberty(p);
 }
 
@@ -367,7 +367,7 @@ void GoBoard::UpdateBlocksAfterAddStone(SgPoint p, SgBlackWhite c,
     }
     else
     {
-        SgSList<Block*,4> adjBlocks = GetAdjacentBlocks(p, c);
+        SgArrayList<Block*,4> adjBlocks = GetAdjacentBlocks(p, c);
         if (adjBlocks.Length() == 1)
         {
             Block* block = adjBlocks[0];
@@ -399,13 +399,13 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
     if (stoneAddedTo != 0)
     {
         stoneAddedTo->PopStone();
-        for (SgSList<SgPoint,4>::Iterator it(entry.m_newLibs); it; ++it)
+        for (SgArrayList<SgPoint,4>::Iterator it(entry.m_newLibs); it; ++it)
             stoneAddedTo->ExcludeLiberty(*it);
         stoneAddedTo->SetAnchor(entry.m_oldAnchor);
     }
     else
     {
-        for (SgSList<Block*,4>::Iterator it(entry.m_merged); it; ++it)
+        for (SgArrayList<Block*,4>::Iterator it(entry.m_merged); it; ++it)
         {
             Block* block = *it;
             for (Block::StoneIterator stn(block->Stones()); stn; ++stn)
@@ -413,7 +413,7 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
         }
         m_blockList->PopBack();
     }
-    for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
+    for (SgArrayList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
         RestoreKill(*it, SgOppBW(entry.m_color));
     AddLibToAdjBlocks(p);
 }
@@ -696,7 +696,7 @@ bool GoBoard::FullBoardRepetition() const
         const StackEntry& entry = (*m_moves)[nuMoves - 1];
         return (entry.m_point == entry.m_koPoint);
     }
-    SgBWArray<SgSList<SgPoint,SG_MAXPOINT> > changes;
+    SgBWArray<SgArrayList<SgPoint,SG_MAXPOINT> > changes;
     int nuChanges = 0;
     int moveNumber = m_moves->Length() - 1;
     bool requireSameToPlay = (koRule == GoRules::SUPERKO);
@@ -714,7 +714,7 @@ bool GoBoard::FullBoardRepetition() const
         if (! IsPass(entry.m_point))
         {
             UpdateChanges(entry.m_point, changes[entry.m_color], nuChanges);
-            for (SgSList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
+            for (SgArrayList<Block*,4>::Iterator it(entry.m_killed); it; ++it)
             {
                 Block* killed = *it;
                 for (GoPointList::Iterator stn(killed->Stones()); stn; ++stn)
@@ -828,8 +828,8 @@ void GoBoard::RemoveLibAndKill(SgPoint p, SgBlackWhite opp,
     entry.m_killed.Clear();
     if (NumNeighbors(p, SG_BLACK) == 0 && NumNeighbors(p, SG_WHITE) == 0)
         return;
-    SgSList<Block*,4> blocks = GetAdjacentBlocks(p);
-    for (SgSList<Block*,4>::Iterator it(blocks); it; ++it)
+    SgArrayList<Block*,4> blocks = GetAdjacentBlocks(p);
+    for (SgArrayList<Block*,4>::Iterator it(blocks); it; ++it)
     {
         Block* b = *it;
         b->ExcludeLiberty(p);

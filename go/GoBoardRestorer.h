@@ -18,7 +18,7 @@ public:
     ~GoBoardRestorer();
 
 private:
-    typedef SgSList<GoPlayerMove,GO_MAX_NUM_MOVES> MoveList;
+    typedef SgArrayList<GoPlayerMove,GO_MAX_NUM_MOVES> MoveList;
 
     GoBoard& m_bd;
 

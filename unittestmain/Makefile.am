@@ -23,6 +23,7 @@ fuego_unittest_SOURCES = \
 ../gouct/test/GoUctUtilTest.cpp \
 ../gtpengine/test/GtpEngineTest.cpp \
 ../smartgame/test/SgArrayTest.cpp \
+../smartgame/test/SgArrayListTest.cpp \
 ../smartgame/test/SgBlackWhiteTest.cpp \
 ../smartgame/test/SgBoardColorTest.cpp \
 ../smartgame/test/SgBoardConstTest.cpp \
@@ -50,7 +51,6 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgRectTest.cpp \
 ../smartgame/test/SgRestorerTest.cpp \
 ../smartgame/test/SgSearchTest.cpp \
-../smartgame/test/SgSListTest.cpp \
 ../smartgame/test/SgSortedArrayTest.cpp \
 ../smartgame/test/SgStackTest.cpp \
 ../smartgame/test/SgStatisticsTest.cpp \

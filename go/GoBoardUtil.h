@@ -206,7 +206,8 @@ namespace GoBoardUtil
         @param p The point.
         @param c The color.
         @return Resulting point list. */
-    SgSList<SgPoint,4> NeighborsOfColor(const GoBoard& bd, SgPoint p, int c);
+    SgArrayList<SgPoint,4> NeighborsOfColor(const GoBoard& bd, SgPoint p,
+                                            int c);
 
     /** Get adjacent points with a color (SgVector version).
         @param bd The board.
@@ -244,7 +245,7 @@ namespace GoBoardUtil
         contain duplicate stones; these will be thrown out. The returned list
         will not be sorted by anchors. */
     void ReduceToAnchors(const GoBoard& bd, const SgVector<SgPoint>& stones,
-                         SgSList<SgPoint,SG_MAXPOINT> &anchors);
+                         SgArrayList<SgPoint,SG_MAXPOINT> &anchors);
 
     /** Compute the hash code for region of this board position. */
     void RegionCode(const GoBoard& bd, const SgVector<SgPoint>& region,

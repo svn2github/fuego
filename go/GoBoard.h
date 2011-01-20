@@ -18,6 +18,7 @@
 #include "GoRules.h"
 #include "GoSetup.h"
 #include "SgArray.h"
+#include "SgArrayList.h"
 #include "SgBoardConst.h"
 #include "SgBoardColor.h"
 #include "SgMarker.h"
@@ -29,7 +30,6 @@
 #include "SgPointArray.h"
 #include "SgPointIterator.h"
 #include "SgPointSet.h"
-#include "SgSList.h"
 
 //----------------------------------------------------------------------------
 
@@ -66,11 +66,11 @@ typedef std::bitset<_GO_NU_MOVEFLAG> GoMoveInfo;
 //----------------------------------------------------------------------------
 
 /** Static list having enough room for all points on board and SG_PASS. */
-typedef SgSList<SgPoint,SG_MAX_ONBOARD + 1> GoPointList;
+typedef SgArrayList<SgPoint,SG_MAX_ONBOARD + 1> GoPointList;
 
 /** Static list having enough room for longest move sequence supported by
     GoBoard. */
-typedef SgSList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
+typedef SgArrayList<SgPoint,GO_MAX_NUM_MOVES> GoSequence;
 
 //----------------------------------------------------------------------------
 
@@ -514,7 +514,7 @@ private:
             Proof? */
         static const int MAX_LIBERTIES = (SG_MAX_SIZE / 3) * 2 * SG_MAX_SIZE;
 
-        typedef SgSList<SgPoint,MAX_LIBERTIES> LibertyList;
+        typedef SgArrayList<SgPoint,MAX_LIBERTIES> LibertyList;
 
         typedef LibertyList::Iterator LibertyIterator;
 
@@ -644,9 +644,9 @@ private:
 
         SgPoint m_oldAnchor;
 
-        SgSList<SgPoint,4> m_newLibs;
+        SgArrayList<SgPoint,4> m_newLibs;
 
-        SgSList<Block*,4> m_merged;
+        SgArrayList<Block*,4> m_merged;
 
         //@}
 
@@ -676,7 +676,7 @@ private:
 
         Block* m_suicide;
 
-        SgSList<Block*,4> m_killed;
+        SgArrayList<Block*,4> m_killed;
         //@}
     };
 
@@ -766,7 +766,7 @@ private:
 
     /** Block data (stored in a stack).
         Maximum number: A move can create zero or one new block. */
-    SgSList<Block,GO_MAX_NUM_MOVES>* m_blockList;
+    SgArrayList<Block,GO_MAX_NUM_MOVES>* m_blockList;
 
     // The following members are mutable since they're used while computing
     // stones and liberties, but are either restored to their previous setting
@@ -791,7 +791,7 @@ private:
 
     SgArray<bool,SG_MAXPOINT> m_isBorder;
 
-    SgSList<StackEntry,GO_MAX_NUM_MOVES>* m_moves;
+    SgArrayList<StackEntry,GO_MAX_NUM_MOVES>* m_moves;
 
     static bool IsPass(SgPoint p);
 
@@ -818,16 +818,16 @@ private:
 
     void CreateSingleStoneBlock(SgPoint p, SgBlackWhite c);
 
-    SgSList<Block*,4> GetAdjacentBlocks(SgPoint p) const;
+    SgArrayList<Block*,4> GetAdjacentBlocks(SgPoint p) const;
 
-    SgSList<Block*,4> GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const;
+    SgArrayList<Block*,4> GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const;
 
     void InitBlock(GoBoard::Block& block, SgBlackWhite c, SgPoint anchor);
 
     bool IsAdjacentTo(SgPoint p, const Block* block) const;
 
     void MergeBlocks(SgPoint p, SgBlackWhite c,
-                     const SgSList<Block*,4>& adjBlocks);
+                     const SgArrayList<Block*,4>& adjBlocks);
 
     void RemoveLibAndKill(SgPoint p, SgBlackWhite opp, StackEntry& entry);
 

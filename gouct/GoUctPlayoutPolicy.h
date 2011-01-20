@@ -408,7 +408,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
     SgBlackWhite toPlay = m_bd.ToPlay();
     if (m_bd.NumNeighbors(m_lastMove, toPlay) == 0)
         return false;
-    SgSList<SgPoint,4> anchorList;
+    SgArrayList<SgPoint,4> anchorList;
     for (SgNb4Iterator it(m_lastMove); it; ++it)
     {
         if (m_bd.GetColor(*it) != toPlay || ! m_bd.InAtari(*it))
@@ -471,7 +471,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     if (m_bd.NumNeighbors(lastMove, toPlay) != 0)
     {
         // play liberties of neighbor blocks
-        SgSList<SgPoint,4> ourLowLibBlocks;
+        SgArrayList<SgPoint,4> ourLowLibBlocks;
         for (SgNb4Iterator it(lastMove); it; ++it)
         {
             if (m_bd.GetColor(*it) == toPlay

@@ -13,9 +13,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "SgArrayList.h"
 #include "SgBoardColor.h"
 #include "SgPoint.h"
-#include "SgSList.h"
 #include "SgVector.h"
 
 //----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ template<int SIZE>
 class SgWriteSPointList
 {
 public:
-    SgWriteSPointList(const SgSList<SgPoint,SIZE>& list,
+    SgWriteSPointList(const SgArrayList<SgPoint,SIZE>& list,
                       std::string label = "", bool writeSize = true);
 
     std::ostream& Write(std::ostream& out) const;
@@ -79,7 +79,7 @@ public:
 private:
     bool m_writeSize;
 
-    const SgSList<SgPoint,SIZE>& m_list;
+    const SgArrayList<SgPoint,SIZE>& m_list;
 
     std::string m_label;
 };
@@ -90,8 +90,9 @@ std::ostream& operator<<(std::ostream& out,
                          const SgWriteSPointList<SIZE>& write);
 
 template<int SIZE>
-SgWriteSPointList<SIZE>::SgWriteSPointList(const SgSList<SgPoint,SIZE>& list,
-                                           std::string label, bool writeSize)
+SgWriteSPointList<SIZE>::SgWriteSPointList(
+                                        const SgArrayList<SgPoint,SIZE>& list,
+                                        std::string label, bool writeSize)
     : m_writeSize(writeSize),
       m_list(list),
       m_label(label)
@@ -102,7 +103,7 @@ template<int SIZE>
 std::ostream& SgWriteSPointList<SIZE>::Write(std::ostream& out) const
 {
     std::vector<SgPoint> list;
-    for (typename SgSList<SgPoint,SIZE>::Iterator it(m_list); it; ++it)
+    for (typename SgArrayList<SgPoint,SIZE>::Iterator it(m_list); it; ++it)
         list.push_back(*it);
     return (out << SgWritePointList(list, m_label, m_writeSize));
 }
