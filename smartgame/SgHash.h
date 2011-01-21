@@ -249,7 +249,7 @@ std::string SgHash<N>::ToString() const
     std::ostringstream buffer;
     buffer.fill('0');
     std::bitset<N> mask(0xff);
-    for (int i = N / 8; i >= 0; --i)
+    for (int i = (N + 7) / 8 - 1; i >= 0; --i)
     {
         std::bitset<N> b = ((m_code >> (i * 8)) & mask);
         buffer << std::hex << std::setw(2) << b.to_ulong();
