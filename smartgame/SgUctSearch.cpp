@@ -62,7 +62,7 @@ size_t GetMaxNodesDefault()
         SgDebug() << "unknown";
     else
         SgDebug() << totalMemory;
-    if (totalMemory < 512000000)
+    if (totalMemory < 384000000)
         totalMemory = 512000000;
     size_t searchMemory = totalMemory / 2;
     size_t memoryPerTree = searchMemory / 2;
