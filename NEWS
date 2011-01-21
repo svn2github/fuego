@@ -8,6 +8,8 @@ history.
 Current development version
 ===========================
 
+* Command line option parsing is now done with boost::program_options.
+  Deprecated SgCmdLineOpt is no longer used. Options start with "--". 
 * Game-independent autobook builder to generate opening books
 * Support for propagating proven wins and losses in the UCT tree
 * Initial support for static win/loss detection in Go
@@ -25,10 +27,24 @@ Current development version
 * Made GoPlayer to store its search traces instead of appending them directly
   to the game tree
 * Several optimizations to speed up the Monte-Carlo searches.
-* Fuego now can be compiled natively on Windows with Visual C++.
+* Fuego now can be compiled natively on Windows with Visual C++ and MinGW.
 * The Monte-Carlo search automatically sets reasonable default values for
   memory, number of threads and lock-free mode depending on the current
   machine.
+* New parameters "go_param use_book" and "uct_param_player max_ponder_time"
+* Updated opening books
+* Play forced opening moves on board size 13 as well
+* Fixed bug in SgStatisticsExt::Variance()
+* Support for multiple knowledge thresholds
+* Renamed some classes (SgSList to SgArrayList, SgProvenNodeType to
+  SgUctProvenType, SgMoveInfo to SgUctMoveInfo, SgVectorUtility to
+  SgVectorUtil, GoGtpTimeSettings to GoTimeSettings)
+* reuse_subtree is now enabled by default. The interpretation of max_games
+  changed such that it includes the count of simulations from reused trees.
+* Fixes and improvements related to lock-free search, tree pruning, virtual
+  loss and multiple playouts in SgUctSearch.
+* Fix bug #58: Static safety solver misses some unconditionally alive groups
+* Other small fixes and improvements.
 
 Version 0.4.1 - 2009 Dec 23
 ===========================
