@@ -358,6 +358,8 @@ template<class POLICY>
 void GoUctGlobalSearchState<POLICY>::GameStart()
 {
     GoUctState::GameStart();
+    m_passMovesPlayoutPhase = 0;
+    m_mercyRuleTriggered = false;
 }
 
 template<class POLICY>
