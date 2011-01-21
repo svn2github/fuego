@@ -1,19 +1,19 @@
 //----------------------------------------------------------------------------
-/** @file SgVectorUtility.h
+/** @file SgVectorUtil.h
     %SgVector utility classes.
     
     SgVector operations that are useful but not basic enough to be included 
     in SgVector itself. */
 //----------------------------------------------------------------------------
 
-#ifndef SG_VECTORUTILITY_H
-#define SG_VECTORUTILITY_H
+#ifndef SG_VECTORUTIL_H
+#define SG_VECTORUTIL_H
 
 #include "SgVector.h"
 
 //----------------------------------------------------------------------------
 
-namespace SgVectorUtility
+namespace SgVectorUtil
 {
     /** Exclude all elements of vector2 from vector */
     void Difference(SgVector<int>* vector, const SgVector<int>& vector2);
@@ -29,4 +29,4 @@ namespace SgVectorUtility
 
 //----------------------------------------------------------------------------
 
-#endif // SG_VECTORUTILITY_H
+#endif // SG_VECTORUTIL_H

@@ -1,15 +1,17 @@
 //----------------------------------------------------------------------------
-/** @file SgVectorUtilityTest.cpp
-    Unit tests for SgVectorUtility. */
+/** @file SgVectorUtilTest.cpp
+    Unit tests for SgVectorUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
 
 #include <boost/test/auto_unit_test.hpp>
-#include "SgVectorUtility.h"
+#include "SgVectorUtil.h"
 
 //----------------------------------------------------------------------------
+
 namespace {
+
 //----------------------------------------------------------------------------
 
 void AddToVector(int from, int to, SgVector<int>& vector)
@@ -20,7 +22,7 @@ void AddToVector(int from, int to, SgVector<int>& vector)
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(SgVectorUtilityTestDifference)
+BOOST_AUTO_TEST_CASE(SgVectorUtilTest_Difference)
 {
     SgVector<int> a;
     a.PushBack(5);
@@ -37,20 +39,20 @@ BOOST_AUTO_TEST_CASE(SgVectorUtilityTestDifference)
     b.PushBack(10);
     b.PushBack(11);
     b.PushBack(12);
-    SgVectorUtility::Difference(&a, b);
+    SgVectorUtil::Difference(&a, b);
     BOOST_CHECK_EQUAL(a.Length(), 3);
     BOOST_CHECK_EQUAL(a[0], 5);
     BOOST_CHECK_EQUAL(a[1], 6);
     BOOST_CHECK_EQUAL(a[2], 7);
 }
 
-BOOST_AUTO_TEST_CASE(SgVectorUtilityTestIntersection)
+BOOST_AUTO_TEST_CASE(SgVectorUtilTest_Intersection)
 {
     SgVector<int> a;
     AddToVector(5,10,a);
     SgVector<int> b;
     AddToVector(8,12,b);
-    SgVectorUtility::Intersection(&a, b);
+    SgVectorUtil::Intersection(&a, b);
     BOOST_CHECK_EQUAL(a.Length(), 3);
     BOOST_CHECK_EQUAL(a[0], 8);
     BOOST_CHECK_EQUAL(a[1], 9);
@@ -58,6 +60,8 @@ BOOST_AUTO_TEST_CASE(SgVectorUtilityTestIntersection)
 }
 
 //----------------------------------------------------------------------------
+
 } // namespace
+
 //----------------------------------------------------------------------------
 

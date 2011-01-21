@@ -63,7 +63,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgUctValueTest.cpp \
 ../smartgame/test/SgUtilTest.cpp \
 ../smartgame/test/SgVectorTest.cpp \
-../smartgame/test/SgVectorUtilityTest.cpp \
+../smartgame/test/SgVectorUtilTest.cpp \
 ../smartgame/test/SgWriteTest.cpp \
 ../unittestmain/UnitTestMain.cpp
 

@@ -47,7 +47,7 @@ SgUctSearch.cpp \
 SgUctTree.cpp \
 SgUctTreeUtil.cpp \
 SgUtil.cpp \
-SgVectorUtility.cpp \
+SgVectorUtil.cpp \
 SgWrite.cpp
 
 noinst_HEADERS = \
@@ -121,7 +121,7 @@ SgUctTreeUtil.h \
 SgUtil.h \
 SgUctValue.h \
 SgVector.h \
-SgVectorUtility.h \
+SgVectorUtil.h \
 SgWrite.h
 
 libfuego_smartgame_a_CPPFLAGS = \
