@@ -18,12 +18,8 @@
 //----------------------------------------------------------------------------
 
 /** Expands a Book using the given player to evaluate game positions.
-
     Supports multithreaded evaluation of children.
-
-    @todo Copy settings from passed player to other players.
-
-    @ingroup openingbook */
+    @todo Copy settings from passed player to other players. */
 template<class PLAYER>
 class GoUctBookBuilder : public SgBookBuilder
 {

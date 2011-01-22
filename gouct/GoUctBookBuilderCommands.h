@@ -20,8 +20,7 @@ class GoUctSearch;
 
 //----------------------------------------------------------------------------
 
-/** Commands for autobook. 
-    @ingroup openingbook */
+/** Commands for autobook. */
 template<class PLAYER>
 class GoUctBookBuilderCommands
 {

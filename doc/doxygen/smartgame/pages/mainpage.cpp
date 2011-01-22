@@ -29,5 +29,5 @@
 
     - @ref sgnotes
     - @ref sgboardrepresentation
-    - @ref sguctgroup */
-
+    - @ref sguctgroup
+    - @ref sgopeningbook */

@@ -13,7 +13,7 @@
 
 //----------------------------------------------------------------------------
 
-/** @defgroup openingbook Automatic Opening Book Construction
+/** @defgroup sgopeningbook Automatic Opening Book Construction
     Game independent Opening Book Construction.
 
     Code is based on Thomas R. Lincke's paper "Strategies for the
@@ -36,7 +36,7 @@
 //----------------------------------------------------------------------------
 
 /** State in the Opening Book.
-    @ingroup openingbook */
+    @ingroup sgopeningbook */
 class SgBookNode
 {
 public:
@@ -119,7 +119,7 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
 //----------------------------------------------------------------------------
 
 /** @page bookrefresh Book Refresh
-    @ingroup openingbook
+    @ingroup sgopeningbook
 
     Due to transpositions, it is possible that a node's value changes,
     but because the node has not been revisited yet the information is
@@ -132,7 +132,7 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
     if it has children in the book (ie, children from transpositions) */
 
 /** @page bookcover Book Cover
-    @ingroup openingbook
+    @ingroup sgopeningbook
 
     The book cover operation ensures that a given set of lines is
     covered with the required number of expansions. When completed,
@@ -153,8 +153,7 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
 //----------------------------------------------------------------------------
 
 /** Base class for automated book building.
-
-    @ingroup openingbook */
+    @ingroup sgopeningbook */
 class SgBookBuilder
 {
 public:
