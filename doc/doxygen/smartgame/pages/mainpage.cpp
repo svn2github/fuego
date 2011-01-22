@@ -10,7 +10,7 @@
       two-player games (Black and White):
       SgBoardConst, SgBWIterator, SgBWArray, SgPoint, SgPointSet
     - Container classes:
-      SgArray, SgSList, SgStack
+      SgArray, SgArrayList, SgStack
     - Utility classes and platform dependent functionality:
       SgStatistics, SgTime
     - Search algorithms:

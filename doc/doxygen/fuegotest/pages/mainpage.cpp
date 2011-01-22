@@ -6,9 +6,8 @@
     testing purposes. It avoids that it is necessary to include GTP commands
     into the main Fuego GTP interface for functionality that is not used by
     the main Fuego player used in the FuegoMain module. This engine also
-    provides a switchable simple player from the SimplePlayers module, with
-    can be set using the @c -player option or the @c fuegotest_player GTP
-    command.
+    provides a switchable simple player from the SimplePlayers module, which
+    can be set using the @c --player option.
 
     @section fuegotestdependencies Dependencies
 
