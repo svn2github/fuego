@@ -557,7 +557,7 @@ SgUctValue SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
     int virtualLossCount = node.VirtualLossCount();
     if (virtualLossCount > 0)
     {
-        posCount += virtualLossCount;
+        posCount += SgUctValue(virtualLossCount);
     }
     return GetBound(useRave, Log(posCount), child);
 }
@@ -613,7 +613,7 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
     int virtualLossCount = child.VirtualLossCount();
     if (virtualLossCount > 0)
     {
-        uctStats.Add(InverseEstimate(0), virtualLossCount);
+        uctStats.Add(InverseEstimate(0), SgUctValue(virtualLossCount));
     }
 
     if (uctStats.IsDefined())
@@ -633,7 +633,7 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
         }
         if (virtualLossCount > 0)
         {
-            raveStats.Add(0, virtualLossCount);
+            raveStats.Add(0, SgUctValue(virtualLossCount));
         }
         if (raveStats.IsDefined())
         {
@@ -676,8 +676,8 @@ SgUctValue SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     int virtualLossCount = child.VirtualLossCount();
     if (virtualLossCount > 0)
     {
-      uctStats.Add(InverseEstimate(0), virtualLossCount);
-      raveStats.Add(0, virtualLossCount);
+        uctStats.Add(InverseEstimate(0), SgUctValue(virtualLossCount));
+        raveStats.Add(0, SgUctValue(virtualLossCount));
     }
     bool hasRave = raveStats.IsDefined();
     
@@ -1243,7 +1243,7 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     {
         // Note: must remove the virtual loss already added to
         // node for the current thread.
-        posCount += virtualLossCount - 1;
+        posCount += SgUctValue(virtualLossCount - 1);
     }
 
     if (posCount == 0)
