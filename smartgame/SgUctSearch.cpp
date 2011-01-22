@@ -555,7 +555,8 @@ SgUctValue SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
 {
     SgUctValue posCount = node.PosCount();
     int virtualLossCount = node.VirtualLossCount();
-    if (virtualLossCount > 0) {
+    if (virtualLossCount > 0)
+    {
         posCount += virtualLossCount;
     }
     return GetBound(useRave, Log(posCount), child);
@@ -605,11 +606,13 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
     bool hasValue = false;
 
     SgUctStatistics uctStats;
-    if (child.HasMean()) {
+    if (child.HasMean())
+    {
         uctStats.Initialize(child.Mean(), child.MoveCount());
     }
     int virtualLossCount = child.VirtualLossCount();
-    if (virtualLossCount > 0) {
+    if (virtualLossCount > 0)
+    {
         uctStats.Add(InverseEstimate(0), virtualLossCount);
     }
 
@@ -621,12 +624,15 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
         hasValue = true;
     }
 
-    if (useRave) {
+    if (useRave)
+    {
         SgUctStatistics raveStats;
-        if (child.HasRaveValue()) {
+        if (child.HasRaveValue())
+        {
             raveStats.Initialize(child.RaveValue(), child.RaveCount());
         }
-        if (virtualLossCount > 0) {
+        if (virtualLossCount > 0)
+        {
             raveStats.Add(0, virtualLossCount);
         }
         if (raveStats.IsDefined())
@@ -658,15 +664,18 @@ SgUctValue SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     SG_ASSERT(m_rave);
     SgUctValue value;
     SgUctStatistics uctStats;
-    if (child.HasMean()) {
+    if (child.HasMean())
+    {
         uctStats.Initialize(child.Mean(), child.MoveCount());
     }
     SgUctStatistics raveStats;
-    if (child.HasRaveValue()) {
+    if (child.HasRaveValue())
+    {
         raveStats.Initialize(child.RaveValue(), child.RaveCount());
     }
     int virtualLossCount = child.VirtualLossCount();
-    if (virtualLossCount > 0) {
+    if (virtualLossCount > 0)
+    {
       uctStats.Add(InverseEstimate(0), virtualLossCount);
       raveStats.Add(0, virtualLossCount);
     }
@@ -1230,7 +1239,8 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     SG_ASSERT(node.HasChildren());
     SgUctValue posCount = node.PosCount();
     int virtualLossCount = node.VirtualLossCount();
-    if (virtualLossCount > 1) {
+    if (virtualLossCount > 1)
+    {
         // Note: must remove the virtual loss already added to
         // node for the current thread.
         posCount += virtualLossCount - 1;
