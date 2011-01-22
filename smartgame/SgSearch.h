@@ -455,8 +455,7 @@ public:
 
     /** Core Alpha-beta search. Usually not called directly -
         call DepthFirstSearch or IteratedSearch instead. */
-    int SearchEngine(int depth, int alpha, int beta,
-                     SgStack<SgMove, SgSearch::MAX_DEPTH>& stack,
+    int SearchEngine(int depth, int alpha, int beta, SgSearchStack& stack,
                      bool* isExactValue, bool lastNullMove = false);
 
 private:
