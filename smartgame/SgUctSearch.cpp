@@ -554,6 +554,10 @@ SgUctValue SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
                                  const SgUctNode& child) const
 {
     SgUctValue posCount = node.PosCount();
+    int virtualLossCount = node.VirtualLossCount();
+    if (virtualLossCount > 0) {
+        posCount += virtualLossCount;
+    }
     return GetBound(useRave, Log(posCount), child);
 }
 
@@ -599,24 +603,44 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
     SgUctValue value = 0;
     SgUctValue weightSum = 0;
     bool hasValue = false;
-    if (child.HasMean())
+
+    SgUctStatistics uctStats;
+    if (child.HasMean()) {
+        uctStats.Initialize(child.Mean(), child.MoveCount());
+    }
+    int virtualLossCount = child.VirtualLossCount();
+    if (virtualLossCount > 0) {
+        uctStats.Add(InverseEstimate(0), virtualLossCount);
+    }
+
+    if (uctStats.IsDefined())
     {
-        SgUctValue weight = static_cast<SgUctValue>(child.MoveCount());
-        value += weight * InverseEstimate((SgUctValue)child.Mean());
+        SgUctValue weight = static_cast<SgUctValue>(uctStats.Count());
+        value += weight * InverseEstimate((SgUctValue)uctStats.Mean());
         weightSum += weight;
         hasValue = true;
     }
-    if (useRave && child.HasRaveValue())
-    {
-        SgUctValue raveCount = child.RaveCount();
-        SgUctValue weight =
-            raveCount
-            / (  m_raveWeightParam1
-                 + m_raveWeightParam2 * raveCount
-                 );
-        value += weight * child.RaveValue();
-        weightSum += weight;
-        hasValue = true;
+
+    if (useRave) {
+        SgUctStatistics raveStats;
+        if (child.HasRaveValue()) {
+            raveStats.Initialize(child.RaveValue(), child.RaveCount());
+        }
+        if (virtualLossCount > 0) {
+            raveStats.Add(0, virtualLossCount);
+        }
+        if (raveStats.IsDefined())
+        {
+            SgUctValue raveCount = raveStats.Count();
+            SgUctValue weight =
+                raveCount
+                / (  m_raveWeightParam1
+                     + m_raveWeightParam2 * raveCount
+                     );
+            value += weight * raveStats.Mean();
+            weightSum += weight;
+            hasValue = true;
+        }
     }
     if (hasValue)
         return value / weightSum;
@@ -632,21 +656,35 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
 SgUctValue SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
 {
     SG_ASSERT(m_rave);
-    bool hasRave = child.HasRaveValue();
     SgUctValue value;
-    if (child.HasMean())
+    SgUctStatistics uctStats;
+    if (child.HasMean()) {
+        uctStats.Initialize(child.Mean(), child.MoveCount());
+    }
+    SgUctStatistics raveStats;
+    if (child.HasRaveValue()) {
+        raveStats.Initialize(child.RaveValue(), child.RaveCount());
+    }
+    int virtualLossCount = child.VirtualLossCount();
+    if (virtualLossCount > 0) {
+      uctStats.Add(InverseEstimate(0), virtualLossCount);
+      raveStats.Add(0, virtualLossCount);
+    }
+    bool hasRave = raveStats.IsDefined();
+    
+    if (uctStats.IsDefined())
     {
-        SgUctValue moveValue = InverseEstimate((SgUctValue)child.Mean());
+        SgUctValue moveValue = InverseEstimate((SgUctValue)uctStats.Mean());
         if (hasRave)
         {
-            SgUctValue moveCount = child.MoveCount();
-            SgUctValue raveCount = child.RaveCount();
+            SgUctValue moveCount = uctStats.Count();
+            SgUctValue raveCount = raveStats.Count();
             SgUctValue weight =
                 raveCount
                 / (moveCount
                    * (m_raveWeightParam1 + m_raveWeightParam2 * raveCount)
                    + raveCount);
-            value = weight * child.RaveValue() + (1 - weight) * moveValue;
+            value = weight * raveStats.Mean() + (1.f - weight) * moveValue;
         }
         else
         {
@@ -659,7 +697,7 @@ SgUctValue SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
         }
     }
     else if (hasRave)
-        value = child.RaveValue();
+        value = raveStats.Mean();
     else
         value = m_firstPlayUrgency;
     SG_ASSERT(m_numberThreads > 1
@@ -898,9 +936,8 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     vector<const SgUctNode*>& nodes = state.m_gameInfo.m_nodes;
     const SgUctNode* root = &m_tree.Root();
     const SgUctNode* current = root;
-    const SgUctNode *parent = 0;
     if (m_virtualLoss && m_numberThreads > 1)
-        m_tree.AddVirtualLoss(*current, parent);
+        m_tree.AddVirtualLoss(*current);
     nodes.push_back(current);
     bool breakAfterSelect = false;
     isTerminal = false;
@@ -970,10 +1007,9 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             if (! deepenTree)
                 breakAfterSelect = true;
         }
-        parent = current;
         current = &SelectChild(state.m_randomizeCounter, *current);
         if (m_virtualLoss && m_numberThreads > 1)
-            m_tree.AddVirtualLoss(*current, parent);
+            m_tree.AddVirtualLoss(*current);
         nodes.push_back(current);
         SgMove move = current->Move();
         state.Execute(move);
@@ -1193,6 +1229,12 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     }
     SG_ASSERT(node.HasChildren());
     SgUctValue posCount = node.PosCount();
+    int virtualLossCount = node.VirtualLossCount();
+    if (virtualLossCount > 1) {
+        // Note: must remove the virtual loss already added to
+        // node for the current thread.
+        posCount += virtualLossCount - 1;
+    }
 
     if (posCount == 0)
         // If position count is zero, return first child
@@ -1471,7 +1513,7 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
                               count);
         // Remove the virtual loss
         if (m_virtualLoss && m_numberThreads > 1)
-            m_tree.RemoveVirtualLoss(node, father);
+            m_tree.RemoveVirtualLoss(node);
     }
 }
 

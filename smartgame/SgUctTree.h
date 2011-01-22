@@ -221,6 +221,12 @@ public:
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(SgUctValue value,  SgUctValue count);
 
+    int VirtualLossCount() const;
+
+    void AddVirtualLoss();
+
+    void RemoveVirtualLoss();
+
     /** Returns the last time knowledge was computed. */
     SgUctValue KnowledgeCount() const;
 
@@ -257,6 +263,8 @@ private:
     volatile SgUctValue m_knowledgeCount;
 
     volatile SgUctProvenType m_provenType;
+
+    volatile int m_virtualLossCount;
 };
 
 inline SgUctNode::SgUctNode(const SgUctMoveInfo& info)
@@ -266,7 +274,8 @@ inline SgUctNode::SgUctNode(const SgUctMoveInfo& info)
       m_raveValue(info.m_raveValue, info.m_raveCount),
       m_posCount(0),
       m_knowledgeCount(0),
-      m_provenType(SG_NOT_PROVEN)
+      m_provenType(SG_NOT_PROVEN),
+      m_virtualLossCount(0)
 {
     // m_firstChild is not initialized, only defined if m_nuChildren > 0
 }
@@ -322,6 +331,7 @@ inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
     m_posCount = node.m_posCount;
     m_knowledgeCount = node.m_knowledgeCount;
     m_provenType = node.m_provenType;
+    m_virtualLossCount = node.m_virtualLossCount;
 }
 
 inline const SgUctNode* SgUctNode::FirstChild() const
@@ -343,6 +353,24 @@ inline bool SgUctNode::HasMean() const
 inline bool SgUctNode::HasRaveValue() const
 {
     return m_raveValue.IsDefined();
+}
+
+inline int SgUctNode::VirtualLossCount() const
+{
+    return m_virtualLossCount;
+}
+
+inline void SgUctNode::AddVirtualLoss()
+{
+    m_virtualLossCount++;
+}
+
+inline void SgUctNode::RemoveVirtualLoss()
+{
+    // May become negative with lock-free multithreading.  Negative
+    // values are allowed so that errors introduced by multithreading
+    // will tend to average out.
+    m_virtualLossCount--;
 }
 
 inline void SgUctNode::IncPosCount()
@@ -659,10 +687,10 @@ public:
                            SgUctValue eval, SgUctValue count);
 
     /** Adds a virtual loss to the given node. */
-    void AddVirtualLoss(const SgUctNode &node, const SgUctNode* father);
+    void AddVirtualLoss(const SgUctNode &node);
 
     /** Removes a virtual loss to the given node. */
-    void RemoveVirtualLoss(const SgUctNode &node, const SgUctNode* father);
+    void RemoveVirtualLoss(const SgUctNode &node);
 
     void SetProvenType(const SgUctNode& node, SgUctProvenType type);
 
@@ -908,21 +936,15 @@ inline void SgUctTree::RemoveGameResults(const SgUctNode& node,
     const_cast<SgUctNode&>(node).RemoveGameResults(eval, count);
 }
 
-inline void SgUctTree::AddVirtualLoss(const SgUctNode& node, const SgUctNode* father)
+inline void SgUctTree::AddVirtualLoss(const SgUctNode& node)
 {
-    AddGameResult(node, father, 1); // loss for us = win for child
-    AddRaveValue(node, 0, 1); // loss for us
+    const_cast<SgUctNode&>(node).AddVirtualLoss();
 }
 
-
-
-inline void SgUctTree::RemoveVirtualLoss(const SgUctNode& node, const SgUctNode* father)
+inline void SgUctTree::RemoveVirtualLoss(const SgUctNode& node)
 {
-    RemoveGameResult(node, father, 1); // loss for us = win for child
-    RemoveRaveValue(node, 0, 1); // loss for us
+    const_cast<SgUctNode&>(node).RemoveVirtualLoss();
 }
-
-
 
 inline void SgUctTree::AddRaveValue(const SgUctNode& node, SgUctValue value,
                                     SgUctValue weight)
