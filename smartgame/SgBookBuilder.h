@@ -131,7 +131,7 @@ inline std::ostream& operator<<(std::ostream& os, const SgBookNode& node)
     which SgBookNode::IsLeaf() is true is treated as a leaf even
     if it has children in the book (ie, children from transpositions) */
 
-/** @page bookcover Book Cover
+/** @page bookcover "Book Cover
     @ingroup sgopeningbook
 
     The book cover operation ensures that a given set of lines is

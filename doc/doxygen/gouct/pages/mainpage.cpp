@@ -12,5 +12,6 @@
   
     @section gouctdocumentation Documentation
 
-    - @ref gouctgtpcommands "GTP Commands (from GoUctCommands)" */
+    - @ref gouctgtpcommands "GTP Commands (from GoUctCommands)"
+    - @ref gouctbookbuildergtpcommands */
 

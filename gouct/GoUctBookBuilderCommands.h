@@ -316,7 +316,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExpand(GtpCommand& cmd)
 }
 
 /** Covers the given set of lines in the current book.
-    @ref bookcover */
+    See Book Cover in @ref sgopeningbook */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
 {
@@ -340,7 +340,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
 }
 
 /** Covers the given set of lines in the current book.
-    @ref bookcover */
+    See Book Cover in @ref sgopeningbook */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
 {
@@ -364,7 +364,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
 }
 
 /** Refreshes the current book.
-    @ref bookrefresh */
+    See Book Refresh in @ref sgopeningbook */
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::CmdRefresh(GtpCommand& cmd)
 {
