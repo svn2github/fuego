@@ -585,7 +585,7 @@ bool SgSearch::TrySpecialMove(SgMove move, SgVector<SgMove>& specialMoves,
     return executed;
 }
 
-int SgSearch::SearchEngine(const int depth, int alpha, int beta,
+int SgSearch::SearchEngine(int depth, int alpha, int beta,
                            SgSearchStack& stack, bool* isExactValue,
                            bool lastNullMove)
 {

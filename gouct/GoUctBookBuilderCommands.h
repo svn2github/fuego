@@ -31,7 +31,8 @@ public:
         @param player Reference to pointer to current player, this player can
         be null or a different player, but those commands of this class that
         need a GoUctPlayer will fail, if the current player is not a
-        PLAYER. */
+        PLAYER.
+        @param book */
     GoUctBookBuilderCommands(const GoBoard& bd, GoPlayer*& player,
                              boost::scoped_ptr<GoAutoBook>& book);
 

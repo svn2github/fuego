@@ -333,7 +333,8 @@ public:
         If return is true, trees under children will be deleted.
         @param count Number of times node has been visited. For knowledge-
         based computations.
-        @param[out] moves The generated moves or empty list at end of game */
+        @param[out] moves The generated moves or empty list at end of game
+        @param[out] provenType */
     virtual bool GenerateAllMoves(SgUctValue count, 
                                   std::vector<SgUctMoveInfo>& moves,
                                   SgUctProvenType& provenType) = 0;

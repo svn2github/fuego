@@ -60,7 +60,8 @@ namespace SgUctTreeUtil
         @param[out] target The target tree (will be cleared before using it).
         @param sequence The sequence of moves.
         @param warnTruncate See SgUctTree::ExtractSubtree
-        @param maxTime See SgUctTree::ExtractSubtree */
+        @param maxTime See SgUctTree::ExtractSubtree
+        @param minCount */
     void ExtractSubtree(const SgUctTree& tree, SgUctTree& target,
                         const std::vector<SgMove>& sequence,
                         bool warnTruncate,

@@ -212,7 +212,7 @@ public:
         This function allows to parse any argument type that implements
         <tt>operator<<(istream)</tt>.
         @param i Argument index starting with 0
-        @param i The minimum value
+        @param min The minimum value
         @return The converted argument
         @throws Failure If no such argument, argument cannot be converted,
         or is less than the minimum value */
@@ -223,8 +223,8 @@ public:
         This function allows to parse any argument type that implements
         <tt>operator<<(istream)</tt>.
         @param i Argument index starting with 0
-        @param i The minimum value of the range
-        @param i The maximum value of the range
+        @param min The minimum value of the range
+        @param max The maximum value of the range
         @return The converted argument
         @throws Failure If no such argument, argument cannot be converted,
         or is not contained in the range. */

@@ -121,7 +121,7 @@ public:
         construction; but then a policy has to be set with SetPolicy(), before
         the search is used.
         @param param Parameters. Stores a reference to the argument.
-        @param policyParam. Stores a reference to the argument.
+        @param policyParam Stores a reference to the argument.
         @param safe Safety information. Stores a reference to the argument.
         @param allSafe Safety information. Stores a reference to the argument. */
     GoUctGlobalSearchState(unsigned int threadId, const GoBoard& bd,

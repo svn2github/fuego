@@ -1523,7 +1523,7 @@ inline int GoBoard::MoveNumber() const
     return m_moves->Length();
 }
 
-inline int GoBoard::Num8Neighbors(SgPoint p, int c) const
+inline int GoBoard::Num8Neighbors(SgPoint p, SgBlackWhite c) const
 {
     return NumNeighbors(p, c) + NumDiagonals(p, c);
 }

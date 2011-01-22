@@ -740,7 +740,8 @@ public:
         @param node The start node of the subtree.
         @param warnTruncate Print warning to SgDebug() if tree was truncated
         @param maxTime Truncate the tree, if the extraction takes longer than
-        the given time */
+        the given time
+        @param minCount */
     void ExtractSubtree(SgUctTree& target, const SgUctNode& node,
                    bool warnTruncate,
                    double maxTime = std::numeric_limits<double>::max(),
