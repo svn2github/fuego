@@ -820,10 +820,11 @@ private:
 
     const SgUctAllocator& Allocator(std::size_t i) const;
 
-    void CopySubtree(SgUctTree& target, SgUctNode& targetNode,
+    bool CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                      const SgUctNode& node, SgUctValue minCount,
                      std::size_t& currentAllocatorId, bool warnTruncate,
-                     bool& abort, SgTimer& timer, double maxTime) const;
+                     bool& abort, SgTimer& timer, double maxTime,
+                     bool alwaysKeepProven) const;
 
     void ThrowConsistencyError(const std::string& message) const;
 };

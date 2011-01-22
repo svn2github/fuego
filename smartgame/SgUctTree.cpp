@@ -177,7 +177,9 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
     SgTimer timer;
     bool abort = false;
     CopySubtree(target, target.m_root, m_root, minCount, allocatorId,
-                warnTruncate, abort, timer, maxTime);
+                warnTruncate, abort, timer, maxTime,
+                /* alwaysKeepProven */ false);
+    SgSynchronizeThreadMemory();
 }
 
 /** Recursive function used by SgUctTree::ExtractSubtree and
@@ -195,19 +197,35 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
     @param[in,out] abort Flag to abort copying. Must be initialized to false
     by top-level caller
     @param timer
-    @param maxTime See ExtractSubtree() */
-void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
+    @param maxTime See ExtractSubtree() 
+    @param alwaysKeepProven Copy proven nodes even if below minCount */
+ bool SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                             const SgUctNode& node, SgUctValue minCount,
                             std::size_t& currentAllocatorId,
                             bool warnTruncate, bool& abort, SgTimer& timer,
-                            double maxTime) const
+                            double maxTime, bool alwaysKeepProven) const
+
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(target.Contains(targetNode));
     targetNode.CopyDataFrom(node);
 
-    if (! node.HasChildren() || node.MoveCount() < minCount)
-        return;
+    if (! node.HasChildren())
+        return true;
+
+    if (node.IsProven())
+    {
+        if (!alwaysKeepProven && node.MoveCount() < minCount)
+        {
+            targetNode.SetProvenType(SG_NOT_PROVEN);
+            return false;
+        }
+    }
+    else
+    {
+        if (node.MoveCount() < minCount) 
+            return false;
+    }
 
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
     int nuChildren = node.NuChildren();
@@ -240,7 +258,9 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         // Don't copy the children and set the pos count to zero (should
         // reflect the sum of children move counts)
         targetNode.SetPosCount(0);
-        return;
+        if (targetNode.IsProven())
+            targetNode.SetProvenType(SG_NOT_PROVEN);
+        return false;
     }
 
     SgUctNode* firstTargetChild = targetAllocator.Finish();
@@ -251,6 +271,7 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
     targetAllocator.CreateN(nuChildren);
 
     // Recurse
+    bool copiedCompleteTree = true;
     SgUctNode* targetChild = firstTargetChild;
     for (SgUctChildIterator it(*this, node); it; ++it, ++targetChild)
     {
@@ -258,9 +279,14 @@ void SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         ++currentAllocatorId; // Cycle to use allocators uniformly
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
-        CopySubtree(target, *targetChild, child, minCount, currentAllocatorId,
-                    warnTruncate, abort, timer, maxTime);
+        copiedCompleteTree &= CopySubtree(target, *targetChild, child, 
+                                          minCount, currentAllocatorId,
+                                          warnTruncate, abort, timer,
+                                          maxTime, alwaysKeepProven);
     }
+    if (!copiedCompleteTree && targetNode.IsProven())
+        targetNode.SetProvenType(SG_NOT_PROVEN);
+    return copiedCompleteTree;
 }
 
 void SgUctTree::CreateAllocators(std::size_t nuThreads)
@@ -296,7 +322,8 @@ void SgUctTree::ExtractSubtree(SgUctTree& target, const SgUctNode& node,
     SgTimer timer;
     bool abort = false;
     CopySubtree(target, target.m_root, node, minCount, allocatorId, warnTruncate,
-                abort, timer, maxTime);
+                abort, timer, maxTime, /* alwaysKeepProven */ true);
+    SgSynchronizeThreadMemory();
 }
 
 void SgUctTree::MergeChildren(std::size_t allocatorId, const SgUctNode& node,
