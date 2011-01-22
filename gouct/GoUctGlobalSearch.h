@@ -588,7 +588,8 @@ public:
         @param playoutPolicyFactory Creates multiple instances of the playout
         policies. Takes ownership. playoutPolicyFactory should not have
         SetSafe() and SetAllSafe() already set, because the search will call
-        these functions using its own safety information. */
+        these functions using its own safety information.
+        @param policyParam */
     GoUctGlobalSearch(GoBoard& bd,
                       FACTORY* playoutPolicyFactory,
                       const GoUctPlayoutPolicyParam& policyParam);
