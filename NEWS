@@ -5,8 +5,8 @@ of changes in the main development branch, consult the version control
 history.
 
 
-Current development version
-===========================
+Version 1.0 - 2010 Jan 23
+=========================
 
 * Command line option parsing is now done with boost::program_options.
   Deprecated SgCmdLineOpt is no longer used. Options start with "--". 
