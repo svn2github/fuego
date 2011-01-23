@@ -31,9 +31,11 @@ doc/doxygen/general/pages/autotools.cpp \
 doc/doxygen/general/pages/generalreleases.cpp \
 doc/doxygen/general/pages/generalunittests.cpp \
 doc/doxygen/general/pages/mainpage.cpp \
+doc/doxygen/general/pages/mingw.cpp \
 doc/doxygen/general/pages/modules.cpp \
 doc/doxygen/general/pages/portability.cpp \
 doc/doxygen/general/pages/style.cpp \
+doc/doxygen/general/pages/visualcplusplus.cpp \
 doc/doxygen/go/Makefile \
 doc/doxygen/go/doxygen.cfg \
 doc/doxygen/go/pages/goboardhash.cpp \
