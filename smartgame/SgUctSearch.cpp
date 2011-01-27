@@ -46,7 +46,7 @@ bool GetLockFreeDefault()
 #elif defined(HOST_CPU)
     string hostCpu(HOST_CPU);
     return hostCpu == "i386" || hostCpu == "i486" || hostCpu == "i586"
-        || hostCpu == "i586" || hostCpu == "x86_64";
+        || hostCpu == "i686" || hostCpu == "x86_64";
 #else
     return false;
 #endif
