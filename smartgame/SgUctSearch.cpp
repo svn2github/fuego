@@ -43,10 +43,12 @@ bool GetLockFreeDefault()
 {
 #if defined(WIN32) || defined(ENABLE_CACHE_SYNC)
     return true;
-#else
+#elif defined(HOST_CPU)
     string hostCpu(HOST_CPU);
     return hostCpu == "i386" || hostCpu == "i486" || hostCpu == "i586"
         || hostCpu == "i586" || hostCpu == "x86_64";
+#else
+    return false;
 #endif
 }
 
