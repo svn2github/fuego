@@ -16,7 +16,7 @@
 #include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctSearch.h"
 #include "GoUctUtil.h"
-#include "GoUctDefaultRootFilter.h"
+#include "GoUctDefaultMoveFilter.h"
 
 #define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
 #define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
@@ -131,7 +131,7 @@ public:
                            POLICY* policy,
                            const GoUctGlobalSearchStateParam& param,
                            const GoUctPlayoutPolicyParam& policyParam,
-                           const GoUctDefaultRootFilterParam& treeFilterParam,
+                           const GoUctDefaultMoveFilterParam& treeFilterParam,
                            const SgBWSet& safe,
                            const SgPointArray<bool>& allSafe);
 
@@ -169,7 +169,7 @@ private:
 
     const GoUctPlayoutPolicyParam& m_policyParam;
 
-    const GoUctDefaultRootFilterParam& m_treeFilterParam;
+    const GoUctDefaultMoveFilterParam& m_treeFilterParam;
 
     /** See SetMercyRule() */
     bool m_mercyRuleTriggered;
@@ -203,7 +203,7 @@ private:
 
     boost::scoped_ptr<POLICY> m_policy;
 
-    GoUctDefaultRootFilter m_treeFilter;
+    GoUctDefaultMoveFilter m_treeFilter;
 
     /** Not implemented */
     GoUctGlobalSearchState(const GoUctGlobalSearchState& search);
@@ -229,7 +229,7 @@ GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(unsigned int threadId,
          const GoBoard& bd, POLICY* policy,
          const GoUctGlobalSearchStateParam& param,
          const GoUctPlayoutPolicyParam& policyParam,
-         const GoUctDefaultRootFilterParam& treeFilterParam,                                                   
+         const GoUctDefaultMoveFilterParam& treeFilterParam,                                                   
          const SgBWSet& safe, const SgPointArray<bool>& allSafe)
     : GoUctState(threadId, bd),
       m_safe(safe),
@@ -573,7 +573,7 @@ public:
     GoUctGlobalSearchStateFactory(GoBoard& bd,
                                   FACTORY& playoutPolicyFactory,
                                   const GoUctPlayoutPolicyParam& policyParam,
-                                  const GoUctDefaultRootFilterParam& treeFilterParam,
+                                  const GoUctDefaultMoveFilterParam& treeFilterParam,
                                   const SgBWSet& safe,
                                   const SgPointArray<bool>& allSafe);
 
@@ -586,7 +586,7 @@ private:
 
     const GoUctPlayoutPolicyParam& m_policyParam;
 
-    const GoUctDefaultRootFilterParam& m_treeFilterParam;
+    const GoUctDefaultMoveFilterParam& m_treeFilterParam;
 
     const SgBWSet& m_safe;
 
@@ -598,7 +598,7 @@ GoUctGlobalSearchStateFactory<POLICY,FACTORY>
 ::GoUctGlobalSearchStateFactory(GoBoard& bd,
                   FACTORY& playoutPolicyFactory,
                   const GoUctPlayoutPolicyParam& policyParam,
-                  const GoUctDefaultRootFilterParam& treeFilterParam,
+                  const GoUctDefaultMoveFilterParam& treeFilterParam,
                   const SgBWSet& safe,
                   const SgPointArray<bool>& allSafe)
     : m_bd(bd),
@@ -632,7 +632,7 @@ public:
     GoUctGlobalSearch(GoBoard& bd,
                       FACTORY* playoutPolicyFactory,
                       const GoUctPlayoutPolicyParam& policyParam,
-                      const GoUctDefaultRootFilterParam& treeFilterParam);
+                      const GoUctDefaultMoveFilterParam& treeFilterParam);
 
     /** @name Pure virtual functions of SgUctSearch */
     // @{
@@ -683,7 +683,7 @@ template<class POLICY, class FACTORY>
 GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
                                                      FACTORY* playoutFactory,
                                                      const GoUctPlayoutPolicyParam& policyParam,
-                                                     const GoUctDefaultRootFilterParam& rootFilterParam)
+                                                     const GoUctDefaultMoveFilterParam& rootFilterParam)
     : GoUctSearch(bd, 0),
       m_playoutPolicyFactory(playoutFactory),
       m_regions(bd),

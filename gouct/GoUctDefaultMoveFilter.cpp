@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
-/** @file GoUctDefaultRootFilter.cpp
-    See GoUctDefaultRootFilter.h */
+/** @file GoUctDefaultMoveFilter.cpp
+    See GoUctDefaultMoveFilter.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "GoUctDefaultRootFilter.h"
+#include "GoUctDefaultMoveFilter.h"
 
 #include "GoBensonSolver.h"
 #include "GoBoard.h"
@@ -44,7 +44,7 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
 
 //----------------------------------------------------------------------------
 
-GoUctDefaultRootFilterParam::GoUctDefaultRootFilterParam()
+GoUctDefaultMoveFilterParam::GoUctDefaultMoveFilterParam()
     :  m_checkLadders(true),
        m_checkOffensiveLadders(false),
        m_minLadderLength(6),
@@ -55,14 +55,14 @@ GoUctDefaultRootFilterParam::GoUctDefaultRootFilterParam()
 
 //----------------------------------------------------------------------------
 
-GoUctDefaultRootFilter::GoUctDefaultRootFilter(const GoBoard& bd, const GoUctDefaultRootFilterParam &param)
+GoUctDefaultMoveFilter::GoUctDefaultMoveFilter(const GoBoard& bd, const GoUctDefaultMoveFilterParam &param)
     : m_bd(bd),
       m_param(param)
 
 {
 }
 
-vector<SgPoint> GoUctDefaultRootFilter::Get()
+vector<SgPoint> GoUctDefaultMoveFilter::Get()
 {
     vector<SgPoint> rootFilter;
     SgBlackWhite toPlay = m_bd.ToPlay();

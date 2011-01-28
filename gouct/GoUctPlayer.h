@@ -12,7 +12,7 @@
 #include "GoBoardRestorer.h"
 #include "GoPlayer.h"
 #include "GoTimeControl.h"
-#include "GoUctDefaultRootFilter.h"
+#include "GoUctDefaultMoveFilter.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctObjectWithSearch.h"
 #include "GoUctPlayoutPolicy.h"
@@ -75,9 +75,9 @@ public:
 
     GoUctPlayoutPolicyParam m_playoutPolicyParam;
 
-    GoUctDefaultRootFilterParam m_rootFilterParam;
+    GoUctDefaultMoveFilterParam m_rootFilterParam;
 
-    GoUctDefaultRootFilterParam m_treeFilterParam;
+    GoUctDefaultMoveFilterParam m_treeFilterParam;
 
     /** Constructor.
         @param bd The board. */
@@ -561,7 +561,7 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(const GoBoard& bd)
                m_playoutPolicyParam, m_treeFilterParam),
       
       m_timeControl(Board()),
-      m_rootFilter(new GoUctDefaultRootFilter(Board(), m_rootFilterParam)),
+      m_rootFilter(new GoUctDefaultMoveFilter(Board(), m_rootFilterParam)),
       m_mpiSynchronizer(SgMpiNullSynchronizer::Create()),
       m_writeDebugOutput(true)
 {

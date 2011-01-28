@@ -12,7 +12,7 @@
 #include "GoBoardUtil.h"
 #include "GoSafetySolver.h"
 #include "GoUctDefaultPriorKnowledge.h"
-#include "GoUctDefaultRootFilter.h"
+#include "GoUctDefaultMoveFilter.h"
 #include "GoUctEstimatorStat.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctPatterns.h"
@@ -516,14 +516,14 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c check_ladders See GoUctDefaultRootFilter::CheckLadders() 
-    @arg @c check_offensive_ladders See GoUctDefaultRootFilter::CheckOffensiveLadders() 
-    @arg @c check_safety See GoUctDefaultRootFilter::CheckSafety()
-    @arg @c check_filter_first_line See GoUctDefaultRootFilter::FilterFirstLine() */
+    @arg @c check_ladders See GoUctDefaultMoveFilter::CheckLadders() 
+    @arg @c check_offensive_ladders See GoUctDefaultMoveFilter::CheckOffensiveLadders() 
+    @arg @c check_safety See GoUctDefaultMoveFilter::CheckSafety()
+    @arg @c check_filter_first_line See GoUctDefaultMoveFilter::FilterFirstLine() */
 void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctDefaultRootFilterParam& p = Player().m_rootFilterParam;
+    GoUctDefaultMoveFilterParam& p = Player().m_rootFilterParam;
     if (cmd.NuArg() == 0)
     {
         // Boolean parameters first for better layout of GoGui parameter
@@ -555,14 +555,14 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c check_ladders See GoUctDefaultRootFilter::CheckLadders() 
-    @arg @c check_offensive_ladders See GoUctDefaultRootFilter::CheckOffensiveLadders() 
-    @arg @c check_safety See GoUctDefaultRootFilter::CheckSafety()
-    @arg @c check_filter_first_line See GoUctDefaultRootFilter::FilterFirstLine() */
+    @arg @c check_ladders See GoUctDefaultMoveFilter::CheckLadders() 
+    @arg @c check_offensive_ladders See GoUctDefaultMoveFilter::CheckOffensiveLadders() 
+    @arg @c check_safety See GoUctDefaultMoveFilter::CheckSafety()
+    @arg @c check_filter_first_line See GoUctDefaultMoveFilter::FilterFirstLine() */
 void GoUctCommands::CmdParamTreeFilter(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    GoUctDefaultRootFilterParam& p = Player().m_treeFilterParam;
+    GoUctDefaultMoveFilterParam& p = Player().m_treeFilterParam;
     if (cmd.NuArg() == 0)
     {
         // Boolean parameters first for better layout of GoGui parameter

@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctDefaultRootFilter.h */
+/** @file GoUctDefaultMoveFilter.h */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_DEFAULTROOTFILTER_H
@@ -12,11 +12,11 @@ class GoBoard;
 
 //----------------------------------------------------------------------------
 
-class GoUctDefaultRootFilterParam
+class GoUctDefaultMoveFilterParam
 {
  public:
 
-    GoUctDefaultRootFilterParam();
+    GoUctDefaultMoveFilterParam();
 
     /** Prune unsuccesful ladder defense moves (unless the ladder would be
         short). */
@@ -68,52 +68,52 @@ class GoUctDefaultRootFilterParam
     bool m_checkSafety;
 };
 
-inline bool GoUctDefaultRootFilterParam::CheckLadders() const
+inline bool GoUctDefaultMoveFilterParam::CheckLadders() const
 {
     return m_checkLadders;
 }
 
-inline void GoUctDefaultRootFilterParam::SetCheckLadders(bool enable)
+inline void GoUctDefaultMoveFilterParam::SetCheckLadders(bool enable)
 {
     m_checkLadders = enable;
 }
 
-inline bool GoUctDefaultRootFilterParam::CheckOffensiveLadders() const
+inline bool GoUctDefaultMoveFilterParam::CheckOffensiveLadders() const
 {
     return m_checkOffensiveLadders;
 }
 
-inline void GoUctDefaultRootFilterParam::SetCheckOffensiveLadders(bool enable)
+inline void GoUctDefaultMoveFilterParam::SetCheckOffensiveLadders(bool enable)
 {
     m_checkOffensiveLadders = enable;
 }
 
-inline bool GoUctDefaultRootFilterParam::FilterFirstLine() const
+inline bool GoUctDefaultMoveFilterParam::FilterFirstLine() const
 {
     return m_filterFirstLine;
 }
 
-inline void GoUctDefaultRootFilterParam::SetFilterFirstLine(bool flag)
+inline void GoUctDefaultMoveFilterParam::SetFilterFirstLine(bool flag)
 {
     m_filterFirstLine = flag;
 }
 
-inline bool GoUctDefaultRootFilterParam::CheckSafety() const
+inline bool GoUctDefaultMoveFilterParam::CheckSafety() const
 {
     return m_checkSafety;
 }
 
-inline void GoUctDefaultRootFilterParam::SetCheckSafety(bool flag)
+inline void GoUctDefaultMoveFilterParam::SetCheckSafety(bool flag)
 {
     m_checkSafety = flag;
 }
 
-inline int GoUctDefaultRootFilterParam::MinLadderLength() const
+inline int GoUctDefaultMoveFilterParam::MinLadderLength() const
 {
     return m_minLadderLength;
 }
 
-inline void GoUctDefaultRootFilterParam::SetMinLadderLength(int length)
+inline void GoUctDefaultMoveFilterParam::SetMinLadderLength(int length)
 {
     m_minLadderLength = length;
 }
@@ -121,11 +121,11 @@ inline void GoUctDefaultRootFilterParam::SetMinLadderLength(int length)
 //----------------------------------------------------------------------------
 
 /** Default root filter used by GoUctPlayer. */
-class GoUctDefaultRootFilter
+class GoUctDefaultMoveFilter
     : public GoUctRootFilter
 {
 public:
-    GoUctDefaultRootFilter(const GoBoard& bd, const GoUctDefaultRootFilterParam &param);
+    GoUctDefaultMoveFilter(const GoBoard& bd, const GoUctDefaultMoveFilterParam &param);
 
     /** @name Pure virtual functions of GoUctRootFilter */
     // @{
@@ -140,7 +140,7 @@ public:
 private:
     const GoBoard& m_bd;
 
-    const GoUctDefaultRootFilterParam &m_param;
+    const GoUctDefaultMoveFilterParam &m_param;
 
     GoLadder m_ladder;
 

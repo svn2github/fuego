@@ -4,7 +4,7 @@ libfuego_gouct_a_SOURCES = \
 GoUctBoard.cpp \
 GoUctCommands.cpp \
 GoUctDefaultPriorKnowledge.cpp \
-GoUctDefaultRootFilter.cpp \
+GoUctDefaultMoveFilter.cpp \
 GoUctEstimatorStat.cpp \
 GoUctGlobalSearch.cpp \
 GoUctObjectWithSearch.cpp \
@@ -19,7 +19,7 @@ GoUctBookBuilder.h \
 GoUctBookBuilderCommands.h \
 GoUctCommands.h \
 GoUctDefaultPriorKnowledge.h \
-GoUctDefaultRootFilter.h \
+GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
 GoUctGlobalSearch.h \
 GoUctObjectWithSearch.h \
