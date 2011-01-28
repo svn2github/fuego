@@ -75,6 +75,10 @@ public:
 
     GoUctPlayoutPolicyParam m_playoutPolicyParam;
 
+    GoUctDefaultRootFilterParam m_rootFilterParam;
+
+    GoUctDefaultRootFilterParam m_treeFilterParam;
+
     /** Constructor.
         @param bd The board. */
     GoUctPlayer(const GoBoard& bd);
@@ -554,15 +558,16 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(const GoBoard& bd)
       m_search(Board(),
                new GoUctPlayoutPolicyFactory<GoUctBoard>(
                                                  m_playoutPolicyParam),
-               m_playoutPolicyParam),
+               m_playoutPolicyParam, m_treeFilterParam),
       
       m_timeControl(Board()),
-      m_rootFilter(new GoUctDefaultRootFilter(Board())),
+      m_rootFilter(new GoUctDefaultRootFilter(Board(), m_rootFilterParam)),
       m_mpiSynchronizer(SgMpiNullSynchronizer::Create()),
       m_writeDebugOutput(true)
 {
     SetDefaultParameters(Board().Size());
     m_search.SetMpiSynchronizer(m_mpiSynchronizer);
+    m_treeFilterParam.SetCheckSafety(false);
 }
 
 template <class SEARCH, class THREAD>

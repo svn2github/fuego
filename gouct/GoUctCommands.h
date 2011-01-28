@@ -48,6 +48,7 @@ public:
         - @link CmdParamPlayer() @c uct_param_player @endlink
         - @link CmdParamRootFilter() @c uct_param_rootfilter @endlink
         - @link CmdParamSearch() @c uct_param_search @endlink
+        - @link CmdParamTreeFilter() @c uct_param_treefilter @endlink
         - @link CmdPatterns() @c uct_patterns @endlink
         - @link CmdPolicyMoves() @c uct_policy_moves @endlink
         - @link CmdPriorKnowledge() @c uct_prior_knowledge @endlink
@@ -81,6 +82,7 @@ public:
     void CmdParamPlayer(GtpCommand& cmd);
     void CmdParamRootFilter(GtpCommand& cmd);
     void CmdParamSearch(GtpCommand& cmd);
+    void CmdParamTreeFilter(GtpCommand& cmd);
     void CmdPatterns(GtpCommand& cmd);
     void CmdPolicyMoves(GtpCommand& cmd);
     void CmdPriorKnowledge(GtpCommand& cmd);

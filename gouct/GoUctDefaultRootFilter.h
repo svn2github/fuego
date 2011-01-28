@@ -12,12 +12,120 @@ class GoBoard;
 
 //----------------------------------------------------------------------------
 
+class GoUctDefaultRootFilterParam
+{
+ public:
+
+    GoUctDefaultRootFilterParam();
+
+    /** Prune unsuccesful ladder defense moves (unless the ladder would be
+        short). */
+    bool CheckLadders() const;
+
+    /** See CheckLadders() */
+    void SetCheckLadders(bool enable);
+
+    bool CheckOffensiveLadders() const;
+
+    /** See CheckOffensiveLadders() */
+    void SetCheckOffensiveLadders(bool enable);
+
+    /** Minimum ladder length necessary to prune loosing ladder defense moves.
+        @see m_checkLadders */
+    int MinLadderLength() const;
+
+    /** See MinLadderLength() */
+    void SetMinLadderLength(int length);
+
+    /** Prune moves on the first line if there is no stone within a
+        manhattan distance of 4 */
+    bool FilterFirstLine() const;
+
+    /** See FilterFirstLine() */
+    void SetFilterFirstLine(bool enable);
+
+    /** Prune moves based on group safety */
+    bool CheckSafety() const;
+    
+    /** See CheckSafety() */
+    void SetCheckSafety(bool enable);
+
+ public:
+
+    /** See CheckLadders() */
+    bool m_checkLadders;
+
+    /** See CheckOffensiveLadders() */
+    bool m_checkOffensiveLadders;
+
+    /** See MinLadderLength() */
+    int m_minLadderLength;
+
+    /** See FilterFiltLine() */
+    bool m_filterFirstLine;
+
+    /** See CheckSafety() */
+    bool m_checkSafety;
+};
+
+inline bool GoUctDefaultRootFilterParam::CheckLadders() const
+{
+    return m_checkLadders;
+}
+
+inline void GoUctDefaultRootFilterParam::SetCheckLadders(bool enable)
+{
+    m_checkLadders = enable;
+}
+
+inline bool GoUctDefaultRootFilterParam::CheckOffensiveLadders() const
+{
+    return m_checkOffensiveLadders;
+}
+
+inline void GoUctDefaultRootFilterParam::SetCheckOffensiveLadders(bool enable)
+{
+    m_checkOffensiveLadders = enable;
+}
+
+inline bool GoUctDefaultRootFilterParam::FilterFirstLine() const
+{
+    return m_filterFirstLine;
+}
+
+inline void GoUctDefaultRootFilterParam::SetFilterFirstLine(bool flag)
+{
+    m_filterFirstLine = flag;
+}
+
+inline bool GoUctDefaultRootFilterParam::CheckSafety() const
+{
+    return m_checkSafety;
+}
+
+inline void GoUctDefaultRootFilterParam::SetCheckSafety(bool flag)
+{
+    m_checkSafety = flag;
+}
+
+inline int GoUctDefaultRootFilterParam::MinLadderLength() const
+{
+    return m_minLadderLength;
+}
+
+inline void GoUctDefaultRootFilterParam::SetMinLadderLength(int length)
+{
+    m_minLadderLength = length;
+}
+
+//----------------------------------------------------------------------------
+
 /** Default root filter used by GoUctPlayer. */
 class GoUctDefaultRootFilter
     : public GoUctRootFilter
 {
 public:
-    GoUctDefaultRootFilter(const GoBoard& bd);
+    GoUctDefaultRootFilter(const GoBoard& bd, const GoUctDefaultRootFilterParam &param);
 
     /** @name Pure virtual functions of GoUctRootFilter */
     // @{
@@ -29,45 +137,17 @@ public:
 
     // @} // @name
 
-
-    /** @name Parameters */
-    // @{
-
-    /** Prune unsuccesful ladder defense moves (unless the ladder would be
-        short). */
-    bool CheckLadders() const;
-
-    /** See CheckLadders() */
-    void SetCheckLadders(bool enable);
-
-    // @} // @name
-
 private:
     const GoBoard& m_bd;
 
+    const GoUctDefaultRootFilterParam &m_param;
+
     GoLadder m_ladder;
-
-    /** See CheckLadders() */
-    bool m_checkLadders;
-
-    /** Minimum ladder length necessary to prune loosing ladder defense moves.
-        @see m_checkLadders */
-    int m_minLadderLength;
 
     /** Local variable in Get().
         Reused for efficiency. */
     mutable SgVector<SgPoint> m_ladderSequence;
 };
-
-inline bool GoUctDefaultRootFilter::CheckLadders() const
-{
-    return m_checkLadders;
-}
-
-inline void GoUctDefaultRootFilter::SetCheckLadders(bool enable)
-{
-    m_checkLadders = enable;
-}
 
 //----------------------------------------------------------------------------
 

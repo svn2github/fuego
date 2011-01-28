@@ -44,10 +44,21 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
 
 //----------------------------------------------------------------------------
 
-GoUctDefaultRootFilter::GoUctDefaultRootFilter(const GoBoard& bd)
+GoUctDefaultRootFilterParam::GoUctDefaultRootFilterParam()
+    :  m_checkLadders(true),
+       m_checkOffensiveLadders(false),
+       m_minLadderLength(6),
+       m_filterFirstLine(true),
+       m_checkSafety(true)
+{
+}
+
+//----------------------------------------------------------------------------
+
+GoUctDefaultRootFilter::GoUctDefaultRootFilter(const GoBoard& bd, const GoUctDefaultRootFilterParam &param)
     : m_bd(bd),
-      m_checkLadders(true),
-      m_minLadderLength(6)
+      m_param(param)
+
 {
 }
 
@@ -62,47 +73,50 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
     GoModBoard modBoard(m_bd);
     GoBoard& bd = modBoard.Board();
 
-    SgBWSet alternateSafe;
-    bool isAllAlternateSafe = false;
-    // Alternate safety is used to prune moves only in opponent territory
-    // and only if everything is alive under alternate play. This ensures that
-    // capturing moves that are not liberties of dead blocks and ko threats
-    // will not be pruned. This alternate safety pruning is not going to
-    // improve or worsen playing strength, but may cause earlier passes,
-    // which is nice in games against humans
-    GoSafetySolver safetySolver(bd);
-    safetySolver.FindSafePoints(&alternateSafe);
-    isAllAlternateSafe = (alternateSafe.Both() == bd.AllPoints());
+    if (m_param.m_checkSafety) {
+        SgBWSet alternateSafe;
+        bool isAllAlternateSafe = false;
+        // Alternate safety is used to prune moves only in opponent territory
+        // and only if everything is alive under alternate play. This ensures that
+        // capturing moves that are not liberties of dead blocks and ko threats
+        // will not be pruned. This alternate safety pruning is not going to
+        // improve or worsen playing strength, but may cause earlier passes,
+        // which is nice in games against humans
+        GoSafetySolver safetySolver(bd);
+        safetySolver.FindSafePoints(&alternateSafe);
+        isAllAlternateSafe = (alternateSafe.Both() == bd.AllPoints());
 
-    // Benson solver guarantees that capturing moves of dead blocks are
-    // liberties of the dead blocks and that no move in Benson safe territory
-    // is a ko threat
-    GoBensonSolver bensonSolver(bd);
-    SgBWSet unconditionalSafe;
-    bensonSolver.FindSafePoints(&unconditionalSafe);
+        // Benson solver guarantees that capturing moves of dead blocks are
+        // liberties of the dead blocks and that no move in Benson safe territory
+        // is a ko threat
+        GoBensonSolver bensonSolver(bd);
+        SgBWSet unconditionalSafe;
+        bensonSolver.FindSafePoints(&unconditionalSafe);
 
-    for (GoBoard::Iterator it(bd); it; ++it)
-    {
-        SgPoint p = *it;
-        if (m_bd.IsLegal(p))
+        for (GoBoard::Iterator it(bd); it; ++it)
         {
-            bool isUnconditionalSafe = unconditionalSafe[toPlay].Contains(p);
-            bool isUnconditionalSafeOpp = unconditionalSafe[opp].Contains(p);
-            bool isAlternateSafeOpp = alternateSafe[opp].Contains(p);
-            bool hasOppNeighbors = bd.HasNeighbors(p, opp);
-            // Always generate capturing moves in own safe territory, even
-            // if current rules do no use CaptureDead(), because the UCT
-            // player always scores with Tromp-Taylor after two passes in the
-            // in-tree phase
-            if ((isAllAlternateSafe && isAlternateSafeOpp)
-                || isUnconditionalSafeOpp
-                || (isUnconditionalSafe && ! hasOppNeighbors))
-                rootFilter.push_back(p);
+            SgPoint p = *it;
+            if (m_bd.IsLegal(p))
+            {
+                bool isUnconditionalSafe = unconditionalSafe[toPlay].Contains(p);
+                bool isUnconditionalSafeOpp = unconditionalSafe[opp].Contains(p);
+                bool isAlternateSafeOpp = alternateSafe[opp].Contains(p);
+                bool hasOppNeighbors = bd.HasNeighbors(p, opp);
+                // Always generate capturing moves in own safe territory, even
+                // if current rules do no use CaptureDead(), because the UCT
+                // player always scores with Tromp-Taylor after two passes in the
+                // in-tree phase
+                if ((isAllAlternateSafe && isAlternateSafeOpp)
+                    || isUnconditionalSafeOpp
+                    || (isUnconditionalSafe && ! hasOppNeighbors))
+                    rootFilter.push_back(p);
+            }
         }
     }
 
     // Loosing ladder defense moves
-    if (m_checkLadders)
+    if (m_param.m_checkLadders)
+    {
         for (GoBlockIterator it(m_bd); it; ++it)
         {
             SgPoint p = *it;
@@ -111,19 +125,42 @@ vector<SgPoint> GoUctDefaultRootFilter::Get()
                 if (m_ladder.Ladder(m_bd, p, toPlay, &m_ladderSequence,
                                     false/*twoLibIsEscape*/) < 0)
                 {
-                    if (m_ladderSequence.Length() >= m_minLadderLength)
+                    if (m_ladderSequence.Length() >= m_param.m_minLadderLength)
                         rootFilter.push_back(m_bd.TheLiberty(p));
                 }
             }
 
         }
+    }
 
-    // Moves on edge line, if no stone is near
-    for (GoBoard::Iterator it(m_bd); it; ++it)
+    if (m_param.m_checkOffensiveLadders)
     {
-        SgPoint p = *it;
-        if (IsEmptyEdge(m_bd, p))
-            rootFilter.push_back(p);
+        for (GoBlockIterator it(m_bd); it; ++it)
+        {
+            SgPoint p = *it;
+            if (m_bd.GetStone(p) == opp && m_bd.NumStones(p) >= 5 && m_bd.NumLiberties(p) == 2)
+            {
+                if (m_ladder.Ladder(m_bd, p, toPlay, &m_ladderSequence,
+                                    false/*twoLibIsEscape*/) > 0)
+                {
+                    if (m_ladderSequence.Length() >= m_param.m_minLadderLength) 
+                        rootFilter.push_back(m_ladderSequence[0]);
+                }
+            }
+        }
+    }
+
+
+
+    if (m_param.m_filterFirstLine)
+    {
+        // Moves on edge line, if no stone is near
+        for (GoBoard::Iterator it(m_bd); it; ++it)
+        {
+            SgPoint p = *it;
+            if (IsEmptyEdge(m_bd, p))
+                rootFilter.push_back(p);
+        }
     }
 
     return rootFilter;
