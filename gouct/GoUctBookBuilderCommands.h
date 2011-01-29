@@ -12,6 +12,7 @@
 #include "GoUctGlobalSearch.h"
 #include "GoUctPlayer.h"
 #include "GoUctBookBuilder.h"
+#include "SgGameReader.h"
 
 class GoBoard;
 class GoPlayer;
@@ -44,6 +45,7 @@ public:
         - @link CmdExpand() @c autobook_expand @endlink
         - @link CmdCover() @c autobook_cover @endlink
         - @link CmdAdditiveCover() @c autobook_additive_cover @endlink
+        - @link CmdAdditiveCoverSgf() @c autobook_additive_cover_sgf @endlink
         - @link CmdRefresh() @c autobook_refresh @endlink
         - @link CmdMerge() @c autobook_merge @endlink
         - @link CmdParam()  @c autobook_param @endlink
@@ -64,6 +66,7 @@ public:
     void CmdExpand(GtpCommand& cmd);
     void CmdCover(GtpCommand& cmd);
     void CmdAdditiveCover(GtpCommand& cmd);
+    void CmdAdditiveCoverSgf(GtpCommand& cmd);
     void CmdRefresh(GtpCommand& cmd);
     void CmdMerge(GtpCommand& cmd);
     void CmdParam(GtpCommand& cmd);
@@ -123,6 +126,7 @@ void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd << 
         "none/AutoBook Additive Cover/autobook_additive_cover\n"
+        "none/AutoBook Additive Cover Sgf/autobook_additive_cover_sgf\n"
         "none/AutoBook Close/autobook_close\n"
         "none/AutoBook Cover/autobook_cover\n"
         "none/AutoBook Expand/autobook_expand\n"
@@ -149,9 +153,11 @@ void GoUctBookBuilderCommands<PLAYER>::Register(GtpEngine& e)
     Register(e, "autobook_counts", 
              &GoUctBookBuilderCommands<PLAYER>::CmdCounts);
     Register(e, "autobook_cover",
-             &GoUctBookBuilderCommands<PLAYER>::CmdCover);             
+             &GoUctBookBuilderCommands<PLAYER>::CmdCover);     
     Register(e, "autobook_additive_cover",
-             &GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover);             
+             &GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover);
+    Register(e, "autobook_additive_cover_sgf",
+             &GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCoverSgf);
     Register(e, "autobook_expand", 
              &GoUctBookBuilderCommands<PLAYER>::CmdExpand);
     Register(e, "autobook_export",
@@ -358,6 +364,58 @@ void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
             throw GtpFailure() << "Empty worklist! No action performed";
     }
     int expansionsRequired = cmd.ArgMin<int>(1, 1);
+    m_bookBuilder.SetPlayer(Player());
+    m_bookBuilder.SetState(*m_book);
+    m_bookBuilder.Cover(expansionsRequired, true, workList);
+}
+
+/** Covers the mainline in the given sgf.
+    See Book Cover in @ref sgopeningbook */
+template<class PLAYER>
+void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCoverSgf(GtpCommand& cmd)
+{
+    if (m_book.get() == 0)
+        throw GtpFailure() << "No opened autobook!\n";
+    cmd.CheckNuArgLessEqual(3);
+    int expansionsRequired = cmd.ArgMin<int>(0, 1);
+    std::string fileName = cmd.Arg(1);
+    int moveNumber = -1;
+    if (cmd.NuArg() == 3)
+        moveNumber = cmd.ArgMin<int>(2, 1);
+    std::ifstream in(fileName.c_str());
+    if (! in)
+        throw GtpFailure("could not open file");
+    SgGameReader reader(in);
+    SgNode* root = reader.ReadGame();
+    if (root == 0)
+        throw GtpFailure("no games in file");
+    if (reader.GetWarnings().any())
+    {
+        SgWarning() << fileName << ":\n";
+        reader.PrintWarnings(SgDebug());
+    }
+    if (moveNumber == -1)
+        moveNumber = std::numeric_limits<int>::max();
+    std::vector<SgMove> gameLine;
+    SgNode* cur = root;
+    for (int i = 0; i < moveNumber;)
+    {
+        if (cur->HasProp(SG_PROP_MOVE))
+        {
+            SgPropMove* prop = static_cast<SgPropMove*>(cur->Get(SG_PROP_MOVE));
+            SG_ASSERT(prop);
+            gameLine.push_back(prop->Value());
+            ++i;
+        }
+        if (!cur->NodeInDirection(SgNode::NEXT))
+            break;
+        SgNode* next = cur->NodeInDirection(SgNode::NEXT);
+        if (next == cur)
+            break;
+        cur = next;
+    }
+    std::vector< std::vector<SgMove> > workList;
+    workList.push_back(gameLine);
     m_bookBuilder.SetPlayer(Player());
     m_bookBuilder.SetState(*m_book);
     m_bookBuilder.Cover(expansionsRequired, true, workList);
