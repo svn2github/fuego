@@ -249,6 +249,8 @@ void GoUctBookBuilder<PLAYER>::CreateWorkers()
         newPlayer->Search().SetMoveSelect(SG_UCTMOVESELECT_ESTIMATE);
         // Should be enough for a 100k search. Needs 10GB 8 threaded.
         newPlayer->Search().SetMaxNodes(8500000);
+        newPlayer->Search().SetNumberThreads(1);
+        newPlayer->SetReuseSubtree(false);
         newPlayer->SetWriteDebugOutput(false);
 
         m_players.push_back(newPlayer);
