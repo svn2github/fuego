@@ -16,7 +16,7 @@
 #include "GoUctGlobalSearch.h"
 #include "GoUctObjectWithSearch.h"
 #include "GoUctPlayoutPolicy.h"
-#include "GoUctRootFilter.h"
+#include "GoUctMoveFilter.h"
 #include "SgArrayList.h"
 #include "SgDebug.h"
 #include "SgNbIterator.h"
@@ -245,11 +245,11 @@ public:
     const SEARCH& GlobalSearch() const;
 
     /** Return the current root filter. */
-    GoUctRootFilter& RootFilter();
+    GoUctMoveFilter& RootFilter();
 
     /** Set a new root filter.
         Deletes the old root filter and takes ownership of the new filter. */
-    void SetRootFilter(GoUctRootFilter* filter);
+    void SetRootFilter(GoUctMoveFilter* filter);
 
     void SetMpiSynchronizer(const SgMpiSynchronizerHandle &synchronizerHandle);
 
@@ -298,7 +298,7 @@ public:
 
     Statistics m_statistics;
 
-    boost::scoped_ptr<GoUctRootFilter> m_rootFilter;
+    boost::scoped_ptr<GoUctMoveFilter> m_rootFilter;
 
     /** Playout policy used if search mode is
         GOUCT_SEARCHMODE_PLAYOUTPOLICY. */
@@ -403,7 +403,7 @@ inline bool GoUctPlayer<SEARCH, THREAD>::ReuseSubtree() const
 }
 
 template <class SEARCH, class THREAD>
-inline GoUctRootFilter& GoUctPlayer<SEARCH, THREAD>::RootFilter()
+inline GoUctMoveFilter& GoUctPlayer<SEARCH, THREAD>::RootFilter()
 {
     return *m_rootFilter;
 }
@@ -475,7 +475,7 @@ inline void GoUctPlayer<SEARCH, THREAD>::SetResignThreshold(SgUctValue threshold
 }
 
 template <class SEARCH, class THREAD>
-inline void GoUctPlayer<SEARCH, THREAD>::SetRootFilter(GoUctRootFilter*
+inline void GoUctPlayer<SEARCH, THREAD>::SetRootFilter(GoUctMoveFilter*
                                                        filter)
 {
     m_rootFilter.reset(filter);

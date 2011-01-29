@@ -1,16 +1,16 @@
 //----------------------------------------------------------------------------
-/** @file GoUctRootFilter.cpp
-    See GoUctRootFilter.h */
+/** @file GoUctMoveFilter.cpp
+    See GoUctMoveFilter.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "GoUctRootFilter.h"
+#include "GoUctMoveFilter.h"
 
 using namespace std;
 
 //----------------------------------------------------------------------------
 
-GoUctRootFilter::~GoUctRootFilter()
+GoUctMoveFilter::~GoUctMoveFilter()
 {
 }
 

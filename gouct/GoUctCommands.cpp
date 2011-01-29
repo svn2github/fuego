@@ -808,7 +808,7 @@ void GoUctCommands::CmdRaveValues(GtpCommand& cmd)
 }
 
 /** Return filtered root moves.
-    @see GoUctRootFilter::Get() */
+    @see GoUctMoveFilter::Get() */
 void GoUctCommands::CmdRootFilter(GtpCommand& cmd)
 {
     cmd.CheckArgNone();

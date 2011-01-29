@@ -6,7 +6,7 @@
 #define GOUCT_DEFAULTROOTFILTER_H
 
 #include "GoLadder.h"
-#include "GoUctRootFilter.h"
+#include "GoUctMoveFilter.h"
 
 class GoBoard;
 
@@ -122,12 +122,12 @@ inline void GoUctDefaultMoveFilterParam::SetMinLadderLength(int length)
 
 /** Default root filter used by GoUctPlayer. */
 class GoUctDefaultMoveFilter
-    : public GoUctRootFilter
+    : public GoUctMoveFilter
 {
 public:
     GoUctDefaultMoveFilter(const GoBoard& bd, const GoUctDefaultMoveFilterParam &param);
 
-    /** @name Pure virtual functions of GoUctRootFilter */
+    /** @name Pure virtual functions of GoUctMoveFilter */
     // @{
 
     /** Get moves to filter in the current position.

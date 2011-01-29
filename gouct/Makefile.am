@@ -9,7 +9,7 @@ GoUctEstimatorStat.cpp \
 GoUctGlobalSearch.cpp \
 GoUctObjectWithSearch.cpp \
 GoUctPlayoutPolicy.cpp \
-GoUctRootFilter.cpp \
+GoUctMoveFilter.cpp \
 GoUctSearch.cpp \
 GoUctUtil.cpp
 
@@ -27,7 +27,7 @@ GoUctPatterns.h \
 GoUctPlayer.h \
 GoUctPlayoutPolicy.h \
 GoUctPureRandomGenerator.h \
-GoUctRootFilter.h \
+GoUctMoveFilter.h \
 GoUctSearch.h \
 GoUctUtil.h
 
