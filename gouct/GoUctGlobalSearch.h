@@ -276,15 +276,17 @@ void GoUctGlobalSearchState<POLICY>::ApplyFilter(std::vector<SgUctMoveInfo>& mov
 {
     std::vector<SgPoint> filtered = m_treeFilter.Get();
     
-    // Filter without changing the order of the unfiltered moves.
-    // Copied from SgUctSearch::ApplyRootFilter()
-    std::vector<SgUctMoveInfo> filteredMoves;
-    for (std::vector<SgUctMoveInfo>::const_iterator it = moves.begin();
-         it != moves.end(); ++it)
-        if (find(filtered.begin(), filtered.end(), it->m_move)
-            == filtered.end())
-            filteredMoves.push_back(*it);
-    moves = filteredMoves;
+    if (filtered.size() > 0) {
+        // Filter without changing the order of the unfiltered moves.
+        // Copied from SgUctSearch::ApplyRootFilter()
+        std::vector<SgUctMoveInfo> filteredMoves;
+        for (std::vector<SgUctMoveInfo>::const_iterator it = moves.begin();
+             it != moves.end(); ++it)
+            if (find(filtered.begin(), filtered.end(), it->m_move)
+                == filtered.end())
+                filteredMoves.push_back(*it);
+        moves = filteredMoves;
+    }
 }
 
 template<class POLICY>

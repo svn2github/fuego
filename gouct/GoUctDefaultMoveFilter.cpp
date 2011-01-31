@@ -69,11 +69,9 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
     SgBlackWhite opp = SgOppBW(toPlay);
 
     // Safe territory
-
-    GoModBoard modBoard(m_bd);
-    GoBoard& bd = modBoard.Board();
-
     if (m_param.m_checkSafety) {
+        GoModBoard modBoard(m_bd);
+        GoBoard& bd = modBoard.Board();
         SgBWSet alternateSafe;
         bool isAllAlternateSafe = false;
         // Alternate safety is used to prune moves only in opponent territory
