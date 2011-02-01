@@ -636,6 +636,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
             << "[string] knowledge_threshold "
             << KnowledgeThresholdToString(s.KnowledgeThreshold()) << '\n'
+            << "[string] max_knowledge_threads " << s.MaxKnowledgeThreads() << '\n'
             << "[list/none/counts/sequence] live_gfx "
             << LiveGfxToString(s.LiveGfx()) << '\n'
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
@@ -661,6 +662,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetKeepGames(cmd.Arg<bool>(1));
         else if (name == "knowledge_threshold")
             s.SetKnowledgeThreshold(KnowledgeThresholdFromString(cmd.Arg(1)));
+        else if (name == "max_knowledge_threads")
+            s.SetMaxKnowledgeThreads(cmd.Arg<unsigned int>(1));
         else if (name == "lock_free")
             s.SetLockFree(cmd.Arg<bool>(1));
         else if (name == "log_games")

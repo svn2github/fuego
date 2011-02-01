@@ -248,6 +248,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_logGames(false),
       m_rave(false),
       m_knowledgeThreshold(),
+      m_maxKnowledgeThreads(1024),
       m_moveSelect(SG_UCTMOVESELECT_COUNT),
       m_raveCheckSame(false),
       m_randomizeRaveFrequency(20),
@@ -991,7 +992,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             else
                 break;
         }
-        else if (NeedToComputeKnowledge(current))
+        else if (state.m_threadId < m_maxKnowledgeThreads && NeedToComputeKnowledge(current))
         {
             m_statistics.m_knowledge++;
             deepenTree = false;

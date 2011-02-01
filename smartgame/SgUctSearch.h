@@ -666,6 +666,10 @@ public:
     /** See KnowledgeThreshold() */
     void SetKnowledgeThreshold(const std::vector<SgUctValue>& counts);
 
+    unsigned int MaxKnowledgeThreads() const;
+
+    void SetMaxKnowledgeThreads(unsigned int threads);
+
     /** Maximum number of nodes in the tree.
         @note The search owns two trees, one of which is used as a temporary
         tree for some operations (see GetTempTree()). This functions sets
@@ -928,6 +932,8 @@ private:
    
     /** See KnowledgeThreshold() */
     std::vector<SgUctValue> m_knowledgeThreshold;
+    
+    unsigned int m_maxKnowledgeThreads;
 
     /** Flag indicating that the search was terminated because the maximum
         time or number of games was reached. */
@@ -1289,6 +1295,17 @@ inline void
 SgUctSearch::SetKnowledgeThreshold(const std::vector<SgUctValue>& t)
 {
     m_knowledgeThreshold = t;
+}
+
+inline unsigned int SgUctSearch::MaxKnowledgeThreads() const
+{
+    return m_maxKnowledgeThreads;
+}
+
+inline void
+SgUctSearch::SetMaxKnowledgeThreads(unsigned int threads)
+{
+    m_maxKnowledgeThreads = threads;
 }
 
 inline void SgUctSearch::SetNumberPlayouts(std::size_t n)
