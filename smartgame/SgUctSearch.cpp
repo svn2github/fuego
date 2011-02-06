@@ -992,10 +992,12 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             else
                 break;
         }
-        else if (state.m_threadId < m_maxKnowledgeThreads && NeedToComputeKnowledge(current))
+        else if (state.m_threadId < m_maxKnowledgeThreads 
+                 && NeedToComputeKnowledge(current))
         {
             m_statistics.m_knowledge++;
             deepenTree = false;
+            state.m_moves.clear();
             SgUctProvenType provenType = SG_NOT_PROVEN;
             bool truncate = state.GenerateAllMoves(current->KnowledgeCount(), 
                                                    state.m_moves,
