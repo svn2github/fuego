@@ -24,3 +24,10 @@ loadsgf sgf/final_moves/play-in-benson-safe.2.sgf 2
 30 reg_genmove b
 #? [J1|F5|F8]*
 # Black must fill own eye since passing and other moves lose
+
+loadsgf sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf 81
+40 reg_genmove b
+#? [A9|A8|G1|G2|H1|H2]*
+# Black must not pass, must play somewhere in own territory since pass loses.
+# to do: make a similar but harder test case where B has no such free moves 
+# and must play differently earlier on.
