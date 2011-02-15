@@ -221,6 +221,7 @@ sgf/games/2010/FuegoGB-Barcelona/Tsai-FuegoGB.sgf \
 sgf/games/2010/FuegoGB-Barcelona/Yen-FuegoGB.sgf \
 sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
+sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf \
 sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
 sgf/games/2011/LittleGolem/1226980.sgf \
 sgf/games/pro-9x9/mz1.sgf \
