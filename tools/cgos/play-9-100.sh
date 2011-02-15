@@ -23,9 +23,10 @@ cat <<EOF >config-9-100.gtp
 go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
 
-uct_max_memory 64000000
+uct_max_memory 640000
 uct_param_search number_threads 1
 uct_param_player max_games 100
+uct_param_player early_pass 0
 
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos

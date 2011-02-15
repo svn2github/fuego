@@ -30,6 +30,7 @@ go_param auto_save $GAMES_DIR/$NAME-
 uct_max_memory 7300000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
+uct_param_player early_pass 0
 
 uct_param_search virtual_loss 1
 
