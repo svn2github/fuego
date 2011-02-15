@@ -4,7 +4,7 @@
 
 FUEGO="../../build/opt-9/fuegomain/fuego"
 VERSION=$(cd ../..; svnversion) || exit 1
-DEFAULT_NAME=Fuego-$VERSION-10000sim
+DEFAULT_NAME=Fuego-$VERSION-10ksim
 
 echo "Enter CGOS name (default=$DEFAULT_NAME):"
 read NAME
