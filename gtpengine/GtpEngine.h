@@ -32,7 +32,10 @@
 #include <vector>
 #include <limits>
 #include <typeinfo>
-
+#ifdef __GNUC__
+#include <cstdlib>
+#include <cxxabi.h>
+#endif
 #include "GtpInputStream.h"
 #include "GtpOutputStream.h"
 
@@ -361,6 +364,9 @@ private:
     /** Arguments of command. */
     std::vector<Argument> m_arguments;
 
+    template<typename T>
+    static std::string TypeName();
+
     void ParseCommandId();
 
     void SplitLine(const std::string& line);
@@ -405,7 +411,7 @@ T GtpCommand::Arg(std::size_t i) const
     in >> result;
     if (! in)
         throw GtpFailure() << "argument " << (i + 1) << " (" << s
-                           << ") must be of type " << typeid(T).name();
+                           << ") must be of type " << TypeName<T>();
     return result;
 }
 
@@ -479,6 +485,25 @@ inline std::string GtpCommand::Response() const
 inline std::ostringstream& GtpCommand::ResponseStream()
 {
     return m_response;
+}
+
+template<typename T>
+std::string GtpCommand::TypeName()
+{
+#ifdef __GNUC__
+    int status;
+    char* namePtr = abi::__cxa_demangle(typeid(T).name(), 0, 0, &status);
+    if (status == 0)
+    {
+        std::string result(namePtr);
+        std::free(namePtr);
+        return result;
+    }
+    else
+        return typeid(T).name();
+#else
+    return typeid(T).name()
+#endif
 }
 
 //----------------------------------------------------------------------------
