@@ -26,13 +26,9 @@ cat <<EOF >config-9-8c.gtp
 go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
 
-# Use 7.3 GB for both trees (search and the init tree used for reuse_subtree)
-uct_max_memory 7300000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
 uct_param_player early_pass 0
-
-uct_param_search virtual_loss 1
 
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos
@@ -40,6 +36,7 @@ go_rules cgos
 sg_param time_mode real
 uct_param_search number_threads 8
 uct_param_search lock_free 1
+uct_param_search virtual_loss 1
 EOF
 
 # Append 2>/dev/stderr to invocation, otherwise cgos3.tcl will not pass

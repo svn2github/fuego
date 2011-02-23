@@ -24,9 +24,10 @@ go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
 
 uct_max_memory 256000000
-uct_param_search number_threads 1
 uct_param_player max_games 10000
 uct_param_player early_pass 0
+
+uct_param_search number_threads 1
 
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos

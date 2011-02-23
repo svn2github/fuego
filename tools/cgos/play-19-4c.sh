@@ -26,10 +26,9 @@ cat <<EOF >config-19-4c.gtp
 go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
 
-# Use 3.2 GB for two trees (search and the init tree used for reuse_subtree)
-uct_max_memory 3200000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
+uct_param_player early_pass 0
 
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos

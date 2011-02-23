@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script for playing Fuego on 19x19 CGOS on a machine with 8 cores / 8 GB
+# Script for playing Fuego on 19x19 CGOS on a machine with 8 cores
 
 FUEGO="../../build/opt/fuegomain/fuego"
 VERSION=$(cd ../..; svnversion) || exit 1
@@ -26,10 +26,9 @@ cat <<EOF >config-19-8c.gtp
 go_param debug_to_comment 1
 go_param auto_save $GAMES_DIR/$NAME-
 
-# Use 7.3 GB for both trees (search and the init tree used for reuse_subtree)
-uct_max_memory 7300000000
 uct_param_player reuse_subtree 1
 uct_param_player ponder 1
+uct_param_player early_pass 0
 
 # Set CGOS rules (Tromp-Taylor, positional superko)
 go_rules cgos
