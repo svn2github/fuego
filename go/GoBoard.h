@@ -36,9 +36,10 @@
 /** Board size to choose at startup. */
 const int GO_DEFAULT_SIZE = (SG_MAX_SIZE >= 19 ? 19 : SG_MAX_SIZE);
 
-/** Maximum number of moves in game.
-    HEURISTIC: Longest possible game. */
-const int GO_MAX_NUM_MOVES = (3 * SG_MAX_SIZE * SG_MAX_SIZE);
+/** Maximum allowed number of moves in game. Heuristic only.
+    3 * SG_MAX_SIZE * SG_MAX_SIZE was reached in several CGOS games. 
+*/
+const int GO_MAX_NUM_MOVES = (4 * SG_MAX_SIZE * SG_MAX_SIZE);
 
 //----------------------------------------------------------------------------
 
