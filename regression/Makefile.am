@@ -31,7 +31,7 @@ simpleplayers.tst \
 static_safety_basics.tst \
 static_safety_from_semeai.tst \
 static_safety_fullboard.tst \
-static_safety_fullboard_benson.tst
+static_safety_fullboard_benson.tst \
 static_safety_seki.tst \
 static_winner.tst \
 tactics_19.tst \
