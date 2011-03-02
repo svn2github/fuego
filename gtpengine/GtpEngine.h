@@ -502,7 +502,7 @@ std::string GtpCommand::TypeName()
     else
         return typeid(T).name();
 #else
-    return typeid(T).name()
+    return typeid(T).name();
 #endif
 }
 
