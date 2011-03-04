@@ -522,7 +522,7 @@ public:
 /** Member function command handlers.
     For registering member functions in GtpEngine::Register().
     @note Instances keep a pointer to the object containing the member
-    function. If the object does is not a subclass of GtpEngine and registers
+    function. If the object is not a subclass of GtpEngine and registers
     only its own members, you have to make sure that the object's lifetime
     exceeds the lifetime of the GtpEngine. */
 template<class ENGINE>
