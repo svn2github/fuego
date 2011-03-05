@@ -56,6 +56,7 @@ public:
         - @link CmdSetup() @c gogui-setup @endlink
         - @link CmdSetupPlayer() @c gogui-setup_player @endlink
         - @link CmdIsLegal() @c is_legal @endlink
+        - @link CmdGameOver() @c cgos-gameover @endlink
         - @link CmdGenMoveCleanup() @c kgs-genmove_cleanup @endlink
         - @link CmdKgsTimeSettings() @c kgs-time_settings @endlink
         - @link CmdKomi() @c komi @endlink
@@ -85,6 +86,7 @@ public:
     virtual void CmdClock(GtpCommand&);
     virtual void CmdFinalScore(GtpCommand&);
     virtual void CmdFixedHandicap(GtpCommand&);
+    virtual void CmdGameOver(GtpCommand&);
     virtual void CmdGenMove(GtpCommand&);
     virtual void CmdGenMoveCleanup(GtpCommand&);
     virtual void CmdGetKomi(GtpCommand&);

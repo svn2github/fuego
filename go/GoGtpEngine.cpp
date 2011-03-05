@@ -104,6 +104,7 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
     Register("all_legal", &GoGtpEngine::CmdAllLegal, this);
     Register("boardsize", &GoGtpEngine::CmdBoardSize, this);
     Register("clear_board", &GoGtpEngine::CmdClearBoard, this);
+    Register("cgos-gameover", &GoGtpEngine::CmdGameOver, this);
     Register("get_komi", &GoGtpEngine::CmdGetKomi, this);
     Register("gg-undo", &GoGtpEngine::CmdGGUndo, this);
     Register("go_board", &GoGtpEngine::CmdBoard, this);
@@ -416,6 +417,19 @@ void GoGtpEngine::CmdFixedHandicap(GtpCommand& cmd)
     int size = Board().Size();
     SgVector<SgPoint> stones = GoGtpCommandUtil::GetHandicapStones(size, n);
     PlaceHandicap(stones);
+}
+
+/** Implementation of cgos-gameover as used by the CGOS Python client.
+    See http://cgos.sourceforge.net/client-python/doc/index.html
+    Stores the game result in the root node of internal SGF tree and sets
+    a flag that prevents the engine from pondering. */
+void GoGtpEngine::CmdGameOver(GtpCommand& cmd)
+{
+    cmd.CheckNuArg(1);
+    string result = cmd.Arg(0);
+    m_game.UpdateResult(result);
+    m_isPonderPosition = false;
+    AutoSave();
 }
 
 /** Generate and play a move. */
