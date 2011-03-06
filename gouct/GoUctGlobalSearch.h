@@ -370,7 +370,7 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
             + lengthMod;
     else
         // Draw. Can happen if komi is an integer
-        return 0;
+        return 0.5;
 }
 
 template<class POLICY>
