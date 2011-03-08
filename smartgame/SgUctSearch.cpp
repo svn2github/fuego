@@ -795,8 +795,8 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
     SgUctValue rootMean = m_tree.Root().Mean();
     ostringstream out;
     const SgUctNode* current = &m_tree.Root();
-    out << (format("%s | %.3f | %.0f ")
-            % SgTime::Format(currTime, true) % rootMean % rootMoveCount);
+    out << (format("%s | %.3f | %.0f | %.1f ")
+            % SgTime::Format(currTime, true) % rootMean % rootMoveCount % m_statistics.m_movesInTree.Mean());
     for (int i = 0; i <= MAX_SEQ_PRINT_LENGTH && current->HasChildren(); ++i)
     {
         current = FindBestChild(*current);
