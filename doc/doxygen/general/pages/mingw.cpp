@@ -23,9 +23,12 @@
     -# Check out the Fuego code from SVN or download a distribution of Fuego.
     On Windows, <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a> is
     an excellent SVN client. 
-    -# Install MinGW and MSYS using the MinGW installer.
+	-# Determine whether you want to compile Fuego for a 32-bit or 64-bit system.
+	The Fuego source code can be compiled for either version, but will require either the 32-bit
+	or 64-bit versions of the Boost Libraries and MinGW depending on which one you choose.
+    -# Install MinGW and MSYS using the MinGW installer. (For 64-bit you will need <a href="http://mingw-w64.sourceforge.net/">MinGW-w64</a>, but this is not yet tested)
     -# Download the source for the <a href="http://www.boost.org/">Boost
-    libraries</a> and a pre-compiled version of BJam (e.g. 
+    libraries</a> and (if not already included in the Boost download) a pre-compiled version of BJam (e.g. 
     boost-jam-3.1.18-1-ntx86.zip). Unpack the files and copy bjam.exe in the
     Boost source directory.
     -# Compile Boost with MinGW in the MSYS shell with the following command
@@ -37,7 +40,11 @@
     This should create static libraries, for example:
     @verbatim
     /usr/lib/libboost_thread-mt.a @endverbatim
-    -# Compile Fuego in the MSYS shell.
+    -# Compile Fuego in the MSYS shell.  Note that if you are compiling as a 32-bit program you may want to set the /LARGEADDRESSAWARE flag to YES. This allows up to
+	~3.5 GB of memory usage (as opposed to 2 GB) and can be done by adding 
+	@verbatim
+	LDFLAGS="-Wl,--large-address-aware" @endverbatim
+	between env and CXXFLAGS below.
     @verbatim
     cd fuego
     mkdir mingw
