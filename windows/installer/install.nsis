@@ -50,6 +50,10 @@ WriteUninstaller $INSTDIR\Uninstall.exe
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
   "DisplayName" "Fuego"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
+  "DisplayIcon" "$INSTDIR\gogui.ico"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
+  "URLInfoAbout" "http://fuego.sourceforge.net/"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
   "UninstallString" "$INSTDIR\Uninstall.exe"
 
 SectionEnd
