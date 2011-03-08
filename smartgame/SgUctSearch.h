@@ -302,7 +302,10 @@ public:
     std::vector<SgMove> m_excludeMoves;
 
     /** Thread's counter for Randomized Rave in SgUctSearch::SelectChild(). */
-    int m_randomizeCounter;
+    int m_randomizeRaveCounter;
+
+    /** Thread's counter for Randomized Bias in SgUctSearch::PlayInTree(). */
+    int m_randomizeBiasCounter;
 
     SgUctThreadState(unsigned int threadId, int moveRange = 0);
 
@@ -653,6 +656,10 @@ public:
 
     /** See BiasTermConstant() */
     void SetBiasTermConstant(float biasTermConstant);
+
+    int BiasTermFrequency() const;
+
+    void SetBiasTermFrequency(int frequency);
 
     /** Points at which to recompute children.  
         Specifies the number of visits at which GenerateAllMoves() is
@@ -1015,6 +1022,8 @@ private:
     /** See BiasTermConstant() */
     float m_biasTermConstant;
 
+    int m_biasTermFrequency;
+
     /** See FirstPlayUrgency() */
     SgUctValue m_firstPlayUrgency;
 
@@ -1090,8 +1099,9 @@ private:
     void CreateChildren(SgUctThreadState& state, const SgUctNode& node,
                         bool deleteChildTrees);
 
-    SgUctValue GetBound(bool useRave, SgUctValue logPosCount,
-                        const SgUctNode& child) const;
+    SgUctValue GetBound(bool useRave, bool useBiasTerm,
+		   SgUctValue logPosCount, 
+                   const SgUctNode& child) const;
 
     SgUctValue GetValueEstimate(bool useRave, const SgUctNode& child) const;
 
@@ -1111,7 +1121,7 @@ private:
     
     void SearchLoop(SgUctThreadState& state, GlobalLock* lock);
 
-    const SgUctNode& SelectChild(int& randomizeCounter, const SgUctNode& node);
+    const SgUctNode& SelectChild(int& randomizeCounter, bool useBiasTerm, const SgUctNode& node);
 
     std::string SummaryLine(const SgUctGameInfo& info) const;
 
@@ -1146,6 +1156,16 @@ inline bool SgUctSearch::CheckFloatPrecision() const
 inline SgUctValue SgUctSearch::ExpandThreshold() const
 {
     return m_expandThreshold;
+}
+
+inline int SgUctSearch::BiasTermFrequency() const
+{
+    return m_biasTermFrequency;
+}
+
+inline void SgUctSearch::SetBiasTermFrequency(int frequency) 
+{
+    m_biasTermFrequency = frequency;
 }
 
 inline SgUctValue SgUctSearch::FirstPlayUrgency() const

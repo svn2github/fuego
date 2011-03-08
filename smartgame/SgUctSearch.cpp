@@ -264,6 +264,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_maxGameLength(numeric_limits<size_t>::max()),
       m_expandThreshold(numeric_limits<SgUctValue>::is_integer ? (SgUctValue)1 : numeric_limits<SgUctValue>::epsilon()),
       m_biasTermConstant(0.7f),
+      m_biasTermFrequency(1),
       m_firstPlayUrgency(10000),
       m_raveWeightInitial(0.9f),
       m_raveWeightFinal(20000),
@@ -562,18 +563,19 @@ SgUctValue SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
     {
         posCount += SgUctValue(virtualLossCount);
     }
-    return GetBound(useRave, Log(posCount), child);
+    return GetBound(useRave, true, Log(posCount), child);
 }
 
-SgUctValue SgUctSearch::GetBound(bool useRave, SgUctValue logPosCount,
-                                 const SgUctNode& child) const
+SgUctValue SgUctSearch::GetBound(bool useRave, bool useBiasTerm,
+			    SgUctValue logPosCount, 
+                            const SgUctNode& child) const
 {
     SgUctValue value;
     if (useRave)
         value = GetValueEstimateRave(child);
     else
         value = GetValueEstimate(false, child);
-    if (m_biasTermConstant == 0.0)
+    if (m_biasTermConstant == 0.0 || !useBiasTerm)
         return value;
     else
     {
@@ -954,6 +956,11 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     bool breakAfterSelect = false;
     isTerminal = false;
     bool deepenTree = false;
+    bool useBiasTerm = false;
+    if (--state.m_randomizeBiasCounter == 0) {
+	useBiasTerm = true;
+	state.m_randomizeBiasCounter = m_biasTermFrequency;
+    }
     while (true)
     {
         if (sequence.size() == m_maxGameLength)
@@ -1021,7 +1028,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             if (! deepenTree)
                 breakAfterSelect = true;
         }
-        current = &SelectChild(state.m_randomizeCounter, *current);
+        current = &SelectChild(state.m_randomizeRaveCounter, useBiasTerm, *current);
         if (m_virtualLoss && m_numberThreads > 1)
             m_tree.AddVirtualLoss(*current);
         nodes.push_back(current);
@@ -1233,6 +1240,7 @@ SgPoint SgUctSearch::SearchOnePly(SgUctValue maxGames, double maxTime,
 }
 
 const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter, 
+					  bool useBiasTerm,
                                           const SgUctNode& node)
 {
     bool useRave = m_rave;
@@ -1263,7 +1271,7 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
         const SgUctNode& child = *it;
         if (!child.IsProvenWin()) // Avoid losing moves
         {
-            SgUctValue bound = GetBound(useRave, logPosCount, child);
+            SgUctValue bound = GetBound(useRave, useBiasTerm, logPosCount, child);
             // Compare bound to best bound using a not too small epsilon
             // because the unit tests rely on the fact that the first child is
             // chosen if children have the same bounds and on some platforms
@@ -1352,7 +1360,8 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
     for (unsigned int i = 0; i < m_threads.size(); ++i)
     {
         SgUctThreadState& state = ThreadState(i);
-        state.m_randomizeCounter = m_randomizeRaveFrequency;
+        state.m_randomizeRaveCounter = m_randomizeRaveFrequency;
+	state.m_randomizeBiasCounter = m_biasTermFrequency;
         state.StartSearch();
     }
 }

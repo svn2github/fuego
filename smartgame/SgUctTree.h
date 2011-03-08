@@ -342,7 +342,22 @@ inline const SgUctNode* SgUctNode::FirstChild() const
 
 inline bool SgUctNode::HasChildren() const
 {
-    return (m_nuChildren > 0);
+    // Read-order dependency.  Calls to HasChildren() are often used
+    // to decide whether a node has children and whether those
+    // children can safely be iterated over.  A problem can occur if
+    // the compiler or the processor's out-of-order execution engine
+    // executes the iterator constructor before the test for children
+    // when the node's children are being allocated in parallel.  The
+    // iterator constructor can be executed before the children are
+    // created and thereby receive a null pointer, but the test for
+    // children can be called after allocation completes and therefore
+    // succeeds.  The end result is a null pointer exception.  The
+    // memory synchronization below is necessary on architectures that
+    // do not guarantee read order consistency.
+
+    bool retval = (m_nuChildren > 0);
+    SgSynchronizeThreadMemory();
+    return retval;
 }
 
 inline bool SgUctNode::HasMean() const
