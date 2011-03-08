@@ -63,7 +63,8 @@ doc/doxygen/smartgame/doxygen.cfg \
 doc/doxygen/smartgame/pages/mainpage.cpp \
 doc/doxygen/smartgame/pages/sgnotes.cpp \
 doc/manual/index.html \
+windows/installer/README-installer.txt \
 windows/installer/License.txt \
-windows/installer/README.txt \
+windows/installer/Readme.txt \
 windows/installer/gogui.ico \
 windows/installer/install.nsis
