@@ -5,6 +5,8 @@
 #include "SgSystem.h"
 #include "SgPlatform.h"
 
+#include <algorithm>
+
 #ifdef WIN32
 #include <windows.h>
 #else
@@ -13,6 +15,8 @@
 #ifdef HW_PHYSMEM
 #include <sys/sysctl.h>
 #endif
+
+using namespace std;
 
 //----------------------------------------------------------------------------
 
