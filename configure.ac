@@ -88,11 +88,6 @@ AC_DEFINE_UNQUOTED(HOST_CPU, "$host_cpu",
 )
 
 AX_CXXFLAGS_WARN_ALL
-dnl AX_CXXFLAGS_WARN_ALL should enable -pedantic and -ansi for GCC compilers
-dnl but it doesn't always work 
-dnl AX_CXXFLAGS_GCC_OPTION(-pedantic)
-dnl AX_CXXFLAGS_GCC_OPTION(-ansi)
 AX_CXXFLAGS_GCC_OPTION(-Wextra)
-dnl AX_CXXFLAGS_GCC_OPTION(-Wconversion)
 
 AC_OUTPUT([Makefile book/Makefile regression/Makefile misctests/Makefile fuegomain/Makefile fuegotest/Makefile go/Makefile gouct/Makefile gtpengine/Makefile simpleplayers/Makefile smartgame/Makefile unittestmain/Makefile])
