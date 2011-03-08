@@ -23,7 +23,7 @@ std::size_t SgPlatform::TotalMemory()
     status.dwLength = sizeof(status);
     if (! GlobalMemoryStatusEx(&status))
         return 0;
-    return static_cast<size_t>(status.ullTotalPhys);
+    return static_cast<size_t>(status.ullAvailVirtual);
 #elif defined _SC_PHYS_PAGES
     long pages = sysconf(_SC_PHYS_PAGES);
     if (pages < 0)
