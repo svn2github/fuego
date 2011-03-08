@@ -1,0 +1,94 @@
+; Script for creating a Windows installer with NSIS
+; (http://nsis.sourceforge.net)
+
+Name "Fuego"
+Caption "Fuego Installer"
+Icon "gogui.ico"
+OutFile "Install.exe"
+InstallDir "$PROGRAMFILES\Fuego"
+LicenseData "License.txt"
+
+; Set admin level, needed for shortcut removal on Vista
+; (http://nsis.sourceforge.net/Shortcuts_removal_fails_on_Windows_Vista)
+RequestExecutionLevel admin
+
+Page license
+Page components
+Page directory
+Page instfiles
+UninstPage uninstConfirm
+UninstPage instfiles
+
+Var /GLOBAL JAVA_VERSION
+Var /GLOBAL JAVA_HOME
+Var /GLOBAL JAVA
+
+Function .onInit
+ReadRegStr $JAVA_VERSION HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" \
+  "CurrentVersion"
+ReadRegStr $JAVA_HOME HKLM \
+  "SOFTWARE\JavaSoft\Java Runtime Environment\$JAVA_VERSION" "JavaHome"
+StrCpy $JAVA "$JAVA_HOME\bin\javaw.exe"
+IfFileExists $JAVA javafound
+MessageBox MB_ICONSTOP \
+  "Java not found. Please install Java before installing Fuego."
+Quit
+javafound:
+FunctionEnd
+
+Section
+
+SetOutPath "$INSTDIR"
+File "fuego.exe"
+File "book.dat"
+File "gogui.jar"
+File "gogui.ico"
+File "Readme.txt"
+File "License.txt"
+
+WriteUninstaller $INSTDIR\Uninstall.exe
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
+  "DisplayName" "Fuego"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
+  "UninstallString" "$INSTDIR\Uninstall.exe"
+
+SectionEnd
+ 
+Section "Add start menu entry"
+
+SetShellVarContext all
+CreateDirectory "$SMPROGRAMS\Games"
+CreateShortCut "$SMPROGRAMS\Games\Fuego.lnk" "$JAVA" \
+  "-jar $\"$INSTDIR\gogui.jar$\" -program $\"$INSTDIR\fuego.exe$\"" \
+  "$INSTDIR\gogui.ico"
+
+SectionEnd
+
+Section "Create desktop shortcut"
+
+SetShellVarContext all
+CreateShortCut "$Desktop\Fuego.lnk" "$JAVA" \
+  "-jar $\"$INSTDIR\gogui.jar$\" -program $\"$INSTDIR\fuego.exe$\"" \
+  "$INSTDIR\gogui.ico"
+
+SectionEnd
+
+Section "Uninstall"
+
+Delete "$INSTDIR\Uninstall.exe"
+Delete "$INSTDIR\gogui.jar"
+Delete "$INSTDIR\gogui.ico"
+Delete "$INSTDIR\fuego.exe"
+Delete "$INSTDIR\book.dat"
+Delete "$INSTDIR\License.txt"
+Delete "$INSTDIR\Readme.txt"
+RmDir "$INSTDIR"
+
+SetShellVarContext all
+Delete "$SMPROGRAMS\Games\Fuego.lnk"
+Delete "$Desktop\Fuego.lnk"
+
+DeleteRegKey HKLM "Software\Fuego"
+DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego"
+
+SectionEnd
