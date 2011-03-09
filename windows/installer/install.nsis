@@ -64,7 +64,7 @@ Section "Add start menu entry"
 SetShellVarContext all
 CreateDirectory "$SMPROGRAMS\Games"
 CreateShortCut "$SMPROGRAMS\Games\Fuego.lnk" "$JAVA" \
-  "-jar $\"$INSTDIR\gogui.jar$\" -program $\"$INSTDIR\fuego.exe$\"" \
+  "-jar $\"$INSTDIR\gogui.jar$\" -program $\"$INSTDIR\fuego.exe$\" -register" \
   "$INSTDIR\gogui.ico"
 
 SectionEnd
@@ -73,7 +73,7 @@ Section "Create desktop shortcut"
 
 SetShellVarContext all
 CreateShortCut "$Desktop\Fuego.lnk" "$JAVA" \
-  "-jar $\"$INSTDIR\gogui.jar$\" -program $\"$INSTDIR\fuego.exe$\"" \
+  "-jar $\"$INSTDIR\gogui.jar$\" -program $\"$INSTDIR\fuego.exe$\" -register" \
   "$INSTDIR\gogui.ico"
 
 SectionEnd
