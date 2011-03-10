@@ -109,7 +109,7 @@ const bool SG_HEAVYCHECK = false;
 
 //----------------------------------------------------------------------------
 
-#if defined(WIN32) && defined(_MSC_VER)
+#ifdef _MSC_VER
 
 // Visual C++ already includes classes from the coming standard C++0x into
 // namespace std by default, which conflicts with classes from Boost
@@ -128,7 +128,7 @@ const bool SG_HEAVYCHECK = false;
 #define _CRT_SECURE_NO_WARNINGS
 #define _SCL_SECURE_NO_WARNINGS
 
-#endif // defined(WIN32) && defined(_MSC_VER)
+#endif // _MSC_VER
 
 //----------------------------------------------------------------------------
 
