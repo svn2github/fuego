@@ -87,6 +87,7 @@ AC_DEFINE_UNQUOTED(HOST_CPU, "$host_cpu",
   [Define the canonical host CPU type.]
 )
 
+AC_CHECK_HEADERS([sys/sysctl.h])
 AX_CXXFLAGS_WARN_ALL
 AX_CXXFLAGS_GCC_OPTION(-Wextra)
 

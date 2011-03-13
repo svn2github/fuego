@@ -12,7 +12,7 @@
 #else
 #include <unistd.h>
 #endif
-#ifdef HW_PHYSMEM
+#ifdef HAVE_SYS_SYSCTL_H
 #include <sys/sysctl.h>
 #endif
 
