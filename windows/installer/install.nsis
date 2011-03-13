@@ -46,6 +46,7 @@ File "gogui.jar"
 File "gogui.ico"
 File "Readme.txt"
 File "License.txt"
+File "index.html"
 
 WriteUninstaller $INSTDIR\Uninstall.exe
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Fuego" \
@@ -87,6 +88,7 @@ Delete "$INSTDIR\fuego.exe"
 Delete "$INSTDIR\book.dat"
 Delete "$INSTDIR\License.txt"
 Delete "$INSTDIR\Readme.txt"
+Delete "$INSTDIR\index.html"
 RmDir "$INSTDIR"
 
 SetShellVarContext all
