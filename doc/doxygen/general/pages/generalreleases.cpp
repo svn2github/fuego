@@ -19,7 +19,6 @@ svn copy  \
 https://fuego.svn.sourceforge.net/svnroot/fuego/branches/VERSION_1_FIXES  \
 https://fuego.svn.sourceforge.net/svnroot/fuego/tags/VERSION_1_3 \
 -m "Tag release 1.3"
-@verbatim
 @endverbatim
    Example 2: for release 2.0 (a new major release), the command would be:
 @verbatim
