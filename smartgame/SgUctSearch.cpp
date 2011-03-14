@@ -269,6 +269,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_expandThreshold(numeric_limits<SgUctValue>::is_integer ? (SgUctValue)1 : numeric_limits<SgUctValue>::epsilon()),
       m_biasTermConstant(0.7f),
       m_biasTermFrequency(1),
+      m_biasTermDepth(0),
       m_firstPlayUrgency(10000),
       m_raveWeightInitial(0.9f),
       m_raveWeightFinal(20000),
@@ -571,7 +572,7 @@ SgUctValue SgUctSearch::GetBound(bool useRave, const SgUctNode& node,
 }
 
 SgUctValue SgUctSearch::GetBound(bool useRave, bool useBiasTerm,
-			    SgUctValue logPosCount, 
+                            SgUctValue logPosCount, 
                             const SgUctNode& child) const
 {
     SgUctValue value;
@@ -962,11 +963,14 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     bool deepenTree = false;
     bool useBiasTerm = false;
     if (--state.m_randomizeBiasCounter == 0) {
-	useBiasTerm = true;
-	state.m_randomizeBiasCounter = m_biasTermFrequency;
+        useBiasTerm = true;
+        state.m_randomizeBiasCounter = m_biasTermFrequency;
     }
     while (true)
     {
+        if (m_biasTermDepth > 0 && sequence.size() == m_biasTermDepth) {
+            useBiasTerm = false;
+        }
         if (sequence.size() == m_maxGameLength)
             return false;
         if (current->IsProven())
@@ -1244,7 +1248,7 @@ SgPoint SgUctSearch::SearchOnePly(SgUctValue maxGames, double maxTime,
 }
 
 const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter, 
-					  bool useBiasTerm,
+                                          bool useBiasTerm,
                                           const SgUctNode& node)
 {
     bool useRave = m_rave;
@@ -1365,7 +1369,7 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
     {
         SgUctThreadState& state = ThreadState(i);
         state.m_randomizeRaveCounter = m_randomizeRaveFrequency;
-	state.m_randomizeBiasCounter = m_biasTermFrequency;
+        state.m_randomizeBiasCounter = m_biasTermFrequency;
         state.StartSearch();
     }
 }

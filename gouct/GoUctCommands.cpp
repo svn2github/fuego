@@ -633,7 +633,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
-	    << "[string] bias_term_frequency " << s.BiasTermFrequency() << '\n'
+            << "[string] bias_term_frequency " << s.BiasTermFrequency() << '\n'
+            << "[string] bias_term_depth " << s.BiasTermDepth() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
             << "[string] knowledge_threshold "
@@ -684,6 +685,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "bias_term_frequency")
             s.SetBiasTermFrequency(cmd.IntArg(1));
+        else if (name == "bias_term_depth")
+            s.SetBiasTermDepth(cmd.Arg<size_t>(1));
         else if (name == "expand_threshold")
             s.SetExpandThreshold(cmd.ArgMin<SgUctValue>(1, 0));
         else if (name == "first_play_urgency")

@@ -661,6 +661,10 @@ public:
 
     void SetBiasTermFrequency(int frequency);
 
+    int BiasTermDepth() const;
+
+    void SetBiasTermDepth(int depth);
+
     /** Points at which to recompute children.  
         Specifies the number of visits at which GenerateAllMoves() is
         called again at the node. This is to allow multiple knowledge
@@ -1024,6 +1028,8 @@ private:
 
     int m_biasTermFrequency;
 
+    std::size_t m_biasTermDepth;
+
     /** See FirstPlayUrgency() */
     SgUctValue m_firstPlayUrgency;
 
@@ -1100,7 +1106,7 @@ private:
                         bool deleteChildTrees);
 
     SgUctValue GetBound(bool useRave, bool useBiasTerm,
-		   SgUctValue logPosCount, 
+                   SgUctValue logPosCount, 
                    const SgUctNode& child) const;
 
     SgUctValue GetValueEstimate(bool useRave, const SgUctNode& child) const;
@@ -1166,6 +1172,16 @@ inline int SgUctSearch::BiasTermFrequency() const
 inline void SgUctSearch::SetBiasTermFrequency(int frequency) 
 {
     m_biasTermFrequency = frequency;
+}
+
+inline int SgUctSearch::BiasTermDepth() const
+{
+    return m_biasTermDepth;
+}
+
+inline void SgUctSearch::SetBiasTermDepth(int depth) 
+{
+    m_biasTermDepth = depth;
 }
 
 inline SgUctValue SgUctSearch::FirstPlayUrgency() const
