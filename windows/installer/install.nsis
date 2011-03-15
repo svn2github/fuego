@@ -39,6 +39,9 @@ FunctionEnd
 
 Section
 
+IfFileExists "$INSTDIR\Uninstall.exe" 0 +2
+ExecWait '"$INSTDIR\Uninstall.exe" /S _?=$INSTDIR'
+
 SetOutPath "$INSTDIR"
 File "fuego.exe"
 File "book.dat"
