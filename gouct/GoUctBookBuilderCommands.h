@@ -500,6 +500,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             << "[string] expand_width " << m_bookBuilder.ExpandWidth() << '\n'
             << "[string] expand_threshold " 
             << m_bookBuilder.ExpandThreshold() << '\n'
+            << "[string] max_memory " << m_bookBuilder.MaxMemory() << '\n'
+            << "[string] num_players " << m_bookBuilder.NumPlayers() << '\n'
             << "[string] num_threads " << m_bookBuilder.NumThreads() << '\n'
             << "[string] num_games_per_evaluation " 
             << m_bookBuilder.NumGamesPerEvaluation() << '\n'
@@ -513,7 +515,11 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         std::string name = cmd.Arg(0);
-        if (name == "num_threads")
+        if (name == "max_memory")
+            m_bookBuilder.SetMaxMemory(cmd.ArgMin<std::size_t>(1, 1));
+        else if (name == "num_players")
+            m_bookBuilder.SetNumPlayers(cmd.ArgMin<int>(1, 1));
+        else if (name == "num_threads")
             m_bookBuilder.SetNumThreads(cmd.ArgMin<int>(1, 1));
         else if (name == "num_games_per_evaluation")
             m_bookBuilder.SetNumGamesPerEvaluation(
