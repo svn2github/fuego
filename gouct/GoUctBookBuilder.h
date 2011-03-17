@@ -41,22 +41,22 @@ public:
 
     //---------------------------------------------------------------------    
 
-    /** Number of players to use during leaf expansion. Each player
+    /** Number of workers to use during leaf expansion. Each worker
         may use a multi-threaded search. Should speed up the expansion
-        of leaf states by a factor of (very close to) NumPlayers(). */
-    std::size_t NumPlayers() const;
+        of leaf states by a factor of (very close to) NumWorkers(). */
+    std::size_t NumWorkers() const;
 
-    /** See NumPlayers() */
-    void SetNumPlayers(std::size_t num);
+    /** See NumWorkers() */
+    void SetNumWorkers(std::size_t num);
 
     /** Number of threads to use for each search */
-    std::size_t NumThreads() const;
+    std::size_t NumThreadsPerWorker() const;
 
-    /** See NumPlayers() */
-    void SetNumThreads(std::size_t num);
+    /** See NumThreadsPerWorker() */
+    void SetNumThreadsPerWorker(std::size_t num);
 
     /** Maximum amount of memory to use for the search.  The memory
-        will be divided equally among all the players. */
+        will be divided equally among all the workers. */
     std::size_t MaxMemory() const;
 
     /** See MaxMemory */
@@ -150,11 +150,11 @@ private:
     /** See MaxMemory() */
     std::size_t m_maxMemory;
 
-    /** See NumberPlayers() */
-    std::size_t m_numPlayers;
+    /** See NumWorkers() */
+    std::size_t m_numWorkers;
 
-    /** See NumberThreads() */
-    std::size_t m_numThreads;
+    /** See NumThreadsPerWorker() */
+    std::size_t m_numThreadsPerWorker;
 
     /** See NumGamesPerEvaluation. */
     SgUctValue m_numGamesPerEvaluation;
@@ -192,15 +192,15 @@ private:
 //----------------------------------------------------------------------------
 
 template<class PLAYER>
-inline std::size_t GoUctBookBuilder<PLAYER>::NumPlayers() const
+inline std::size_t GoUctBookBuilder<PLAYER>::NumWorkers() const
 {
-    return m_numPlayers;
+    return m_numWorkers;
 }
 
 template<class PLAYER>
-inline void GoUctBookBuilder<PLAYER>::SetNumPlayers(std::size_t num)
+inline void GoUctBookBuilder<PLAYER>::SetNumWorkers(std::size_t num)
 {
-    m_numPlayers = num;
+    m_numWorkers = num;
 }
 
 template<class PLAYER>
@@ -216,15 +216,15 @@ inline void GoUctBookBuilder<PLAYER>::SetMaxMemory(std::size_t memory)
 }
 
 template<class PLAYER>
-inline std::size_t GoUctBookBuilder<PLAYER>::NumThreads() const
+inline std::size_t GoUctBookBuilder<PLAYER>::NumThreadsPerWorker() const
 {
-    return m_numThreads;
+    return m_numThreadsPerWorker;
 }
 
 template<class PLAYER>
-inline void GoUctBookBuilder<PLAYER>::SetNumThreads(std::size_t num)
+inline void GoUctBookBuilder<PLAYER>::SetNumThreadsPerWorker(std::size_t num)
 {
-    m_numThreads = num;
+    m_numThreadsPerWorker = num;
 }
 
 template<class PLAYER>
@@ -260,8 +260,8 @@ GoUctBookBuilder<PLAYER>::GoUctBookBuilder(const GoBoard& bd)
       m_origPlayer(0),
       m_state(bd),
       m_maxMemory(8500000 * 2 * sizeof(SgUctNode)),
-      m_numPlayers(1),
-      m_numThreads(1),
+      m_numWorkers(1),
+      m_numThreadsPerWorker(1),
       m_numGamesPerEvaluation(10000),
       m_numGamesPerSort(10000)
 {
@@ -281,7 +281,7 @@ template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::CreateWorkers()
 {
     PrintMessage("GoUctBookBuilder::CreateWorkers()\n");
-    for (std::size_t i = 0; i < m_numPlayers; ++i)
+    for (std::size_t i = 0; i < m_numWorkers; ++i)
     {
         PLAYER* newPlayer = new PLAYER(m_state.Board());
 
@@ -292,8 +292,8 @@ void GoUctBookBuilder<PLAYER>::CreateWorkers()
         newPlayer->SetForcedOpeningMoves(false);
         // Ensure all games are played; ie, do not use early count abort.
         newPlayer->Search().SetMoveSelect(SG_UCTMOVESELECT_ESTIMATE);
-        newPlayer->Search().SetMaxNodes(m_maxMemory / (m_numPlayers * 2 * sizeof(SgUctNode)));
-        newPlayer->Search().SetNumberThreads(m_numThreads);
+        newPlayer->Search().SetMaxNodes(m_maxMemory / (m_numWorkers * 2 * sizeof(SgUctNode)));
+        newPlayer->Search().SetNumberThreads(m_numThreadsPerWorker);
         newPlayer->SetReuseSubtree(false);
         newPlayer->SetWriteDebugOutput(false);
 
@@ -309,7 +309,7 @@ template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::DestroyWorkers()
 {
     PrintMessage("GoUctBookBuilder::DestroyWorkers()\n");
-    for (std::size_t i = 0; i < m_numPlayers; ++i)
+    for (std::size_t i = 0; i < m_numWorkers; ++i)
         delete m_players[i];
     delete m_threadedWorker;
     m_workers.clear();
@@ -489,7 +489,7 @@ bool GoUctBookBuilder<PLAYER>::GenerateMoves(std::vector<SgMove>& moves,
 template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::BeforeEvaluateChildren()
 {
-    for (std::size_t i = 0; i < m_numPlayers; ++i)
+    for (std::size_t i = 0; i < m_numWorkers; ++i)
         m_players[i]->SetMaxGames(m_numGamesPerEvaluation);
 }
 

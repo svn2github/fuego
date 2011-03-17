@@ -501,8 +501,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
             << "[string] expand_threshold " 
             << m_bookBuilder.ExpandThreshold() << '\n'
             << "[string] max_memory " << m_bookBuilder.MaxMemory() << '\n'
-            << "[string] num_players " << m_bookBuilder.NumPlayers() << '\n'
-            << "[string] num_threads " << m_bookBuilder.NumThreads() << '\n'
+            << "[string] num_workers " << m_bookBuilder.NumWorkers() << '\n'
+            << "[string] num_threads_per_worker " << m_bookBuilder.NumThreadsPerWorker() << '\n'
             << "[string] num_games_per_evaluation " 
             << m_bookBuilder.NumGamesPerEvaluation() << '\n'
             << "[string] num_games_per_sort "
@@ -517,10 +517,10 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
         std::string name = cmd.Arg(0);
         if (name == "max_memory")
             m_bookBuilder.SetMaxMemory(cmd.ArgMin<std::size_t>(1, 1));
-        else if (name == "num_players")
-            m_bookBuilder.SetNumPlayers(cmd.ArgMin<int>(1, 1));
-        else if (name == "num_threads")
-            m_bookBuilder.SetNumThreads(cmd.ArgMin<int>(1, 1));
+        else if (name == "num_workers")
+            m_bookBuilder.SetNumWorkers(cmd.ArgMin<int>(1, 1));
+        else if (name == "num_threads_per_worker")
+            m_bookBuilder.SetNumThreadsPerWorker(cmd.ArgMin<int>(1, 1));
         else if (name == "num_games_per_evaluation")
             m_bookBuilder.SetNumGamesPerEvaluation(
                                                 cmd.ArgMin<SgUctValue>(1, 1));
@@ -543,6 +543,8 @@ void GoUctBookBuilderCommands<PLAYER>::CmdParam(GtpCommand& cmd)
                 throw GtpFailure("Alpha must be greater than 0!");
             m_bookBuilder.SetAlpha(alpha);
         }
+        else
+            throw GtpFailure() << "unknown parameter: " << name;
     }
     else
         throw GtpFailure() << "Expected 0 or 2 arguments!\n";
