@@ -199,11 +199,11 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
     @param timer
     @param maxTime See ExtractSubtree() 
     @param alwaysKeepProven Copy proven nodes even if below minCount */
- bool SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
-                            const SgUctNode& node, SgUctValue minCount,
-                            std::size_t& currentAllocatorId,
-                            bool warnTruncate, bool& abort, SgTimer& timer,
-                            double maxTime, bool alwaysKeepProven) const
+SgUctProvenType SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
+                                       const SgUctNode& node, SgUctValue minCount,
+                                       std::size_t& currentAllocatorId,
+                                       bool warnTruncate, bool& abort, SgTimer& timer,
+                                       double maxTime, bool alwaysKeepProven) const
 
 {
     SG_ASSERT(Contains(node));
@@ -211,22 +211,15 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
     targetNode.CopyDataFrom(node);
 
     if (! node.HasChildren())
-        return true;
+        return node.ProvenType();
 
-    if (node.IsProven())
-    {
-        if (!alwaysKeepProven && node.MoveCount() < minCount)
-        {
+    if (node.MoveCount() < minCount) {
+        if (!node.IsProven() || !alwaysKeepProven) {
             targetNode.SetProvenType(SG_NOT_PROVEN);
-            return false;
+            return SG_NOT_PROVEN;
         }
     }
-    else
-    {
-        if (node.MoveCount() < minCount) 
-            return false;
-    }
-
+            
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
     int nuChildren = node.NuChildren();
     if (! abort)
@@ -258,9 +251,8 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
         // Don't copy the children and set the pos count to zero (should
         // reflect the sum of children move counts)
         targetNode.SetPosCount(0);
-        if (targetNode.IsProven())
-            targetNode.SetProvenType(SG_NOT_PROVEN);
-        return false;
+        targetNode.SetProvenType(SG_NOT_PROVEN);
+        return SG_NOT_PROVEN;
     }
 
     SgUctNode* firstTargetChild = targetAllocator.Finish();
@@ -271,7 +263,8 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
     targetAllocator.CreateN(nuChildren);
 
     // Recurse
-    bool copiedCompleteTree = true;
+    SgUctProvenType childProvenType;
+    SgUctProvenType parentProvenType = SG_PROVEN_LOSS;
     SgUctNode* targetChild = firstTargetChild;
     for (SgUctChildIterator it(*this, node); it; ++it, ++targetChild)
     {
@@ -279,14 +272,18 @@ void SgUctTree::CopyPruneLowCount(SgUctTree& target, SgUctValue minCount,
         ++currentAllocatorId; // Cycle to use allocators uniformly
         if (currentAllocatorId >= target.NuAllocators())
             currentAllocatorId = 0;
-        copiedCompleteTree &= CopySubtree(target, *targetChild, child, 
-                                          minCount, currentAllocatorId,
-                                          warnTruncate, abort, timer,
-                                          maxTime, alwaysKeepProven);
+        childProvenType = CopySubtree(target, *targetChild, child, 
+                                      minCount, currentAllocatorId,
+                                      warnTruncate, abort, timer,
+                                      maxTime, alwaysKeepProven);
+        if (childProvenType == SG_PROVEN_LOSS) {
+            parentProvenType = SG_PROVEN_WIN;
+        } else if (parentProvenType != SG_PROVEN_WIN && childProvenType == SG_NOT_PROVEN) {
+            parentProvenType = SG_NOT_PROVEN;
+        }
     }
-    if (!copiedCompleteTree && targetNode.IsProven())
-        targetNode.SetProvenType(SG_NOT_PROVEN);
-    return copiedCompleteTree;
+    targetNode.SetProvenType(parentProvenType);
+    return parentProvenType;
 }
 
 void SgUctTree::CreateAllocators(std::size_t nuThreads)
