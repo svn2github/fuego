@@ -852,7 +852,7 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
         SgUctValue eval = state.Evaluate();
         if (eval > 0.6) 
             m_tree.SetProvenType(terminalNode, SG_PROVEN_WIN);
-        else if (eval < 0.6)
+        else if (eval < 0.4)
             m_tree.SetProvenType(terminalNode, SG_PROVEN_LOSS);
         PropagateProvenStatus(info.m_nodes);
     }
