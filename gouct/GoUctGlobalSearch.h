@@ -5,6 +5,7 @@
 #ifndef GOUCT_GLOBALSEARCH_H
 #define GOUCT_GLOBALSEARCH_H
 
+#include <cstdlib>
 #include <limits>
 #include <boost/scoped_ptr.hpp>
 #include <boost/version.hpp>
@@ -546,7 +547,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     GoUctState::StartSearch();
     const GoBoard& bd = Board();
     int size = bd.Size();
-    float maxScore = float(size * size) + GetKomi();
+    float maxScore = float(size * size) + std::abs(GetKomi());
     m_invMaxScore = (SgUctValue)(1 / maxScore);
     m_initialMoveNumber = bd.MoveNumber();
     m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
