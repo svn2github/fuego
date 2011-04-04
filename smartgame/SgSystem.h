@@ -88,7 +88,7 @@ void SgHandleAssertion(const char* expr, const char* file, int line);
 #define SG_ASSERT(x) \
     do \
     { \
-        if(! (x)) \
+        if (! (x)) \
             ::SgHandleAssertion(#x, __FILE__, __LINE__); \
     } while (false)
 #else

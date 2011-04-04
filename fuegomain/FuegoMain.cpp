@@ -168,7 +168,7 @@ int main(int argc, char** argv)
             engine.ExecuteFile(g_config);
         if (! g_inputFiles.empty())
         {
-            for(size_t i = 0; i < g_inputFiles.size(); i++)
+            for (size_t i = 0; i < g_inputFiles.size(); i++)
             {
                 string file = g_inputFiles[i];
                 ifstream fin(file.c_str());

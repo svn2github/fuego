@@ -679,7 +679,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdMainLine(GtpCommand& cmd)
     state.Synchronize();
     cmd << "VAR";
     SgBookNode node;
-    while(true)
+    while (true)
     {
         SgMove move = m_book->FindBestChild(state);
         if (move == SG_NULLMOVE)

@@ -273,7 +273,7 @@ void GoUctPatterns<BOARD>::InitEdgePatternTable(
     for (int i = 0; i < GOUCT_POWER3_5; ++i)
     {
         int count = SetupCodedEdgePosition(bd, i);
-        for(SgBWIterator it; it; ++it)
+        for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
             edgeTable[*it][i] = MatchAnyPattern(bd, p) ? 1 : 0;
@@ -292,7 +292,7 @@ void GoUctPatterns<BOARD>::InitCenterPatternTable(
     for (int i = 0; i < GOUCT_POWER3_8; ++i)
     {
         int count = SetupCodedPosition(bd, i);
-        for(SgBWIterator it; it; ++it)
+        for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
             table[*it][i] = MatchAnyPattern(bd, p) ? 1 : 0;

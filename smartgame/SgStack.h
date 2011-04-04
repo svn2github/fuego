@@ -73,7 +73,7 @@ void SgStack<T,SIZE>::Clear()
 template<typename T, int SIZE>
 void SgStack<T,SIZE>::CopyFrom(const SgStack<T,SIZE>& other)
 {
-    for(int i=0; i < other.Size(); ++i)
+    for (int i = 0; i < other.Size(); ++i)
         m_stack[i] = other.m_stack[i];
     m_sp = other.m_sp;
 }
@@ -107,7 +107,7 @@ void SgStack<T,SIZE>::Push(T data)
 template<typename T, int SIZE>
 void SgStack<T,SIZE>::PushAll(const SgStack<T,SIZE>& other)
 {
-    for(int i=0; i < other.Size(); ++i)
+    for (int i = 0; i < other.Size(); ++i)
         Push(other.m_stack[i]);
 }
 
@@ -121,13 +121,13 @@ template<typename T, int SIZE>
 void SgStack<T,SIZE>::SwapWith(SgStack<T,SIZE>& other)
 {
     int nuSwap = std::min(Size(), other.Size());
-    for(int i = 0; i < nuSwap; ++i)
+    for (int i = 0; i < nuSwap; ++i)
         std::swap(m_stack[i], other.m_stack[i]);
     if (Size() < other.Size())
-        for(int i = Size(); i < other.Size(); ++i)
+        for (int i = Size(); i < other.Size(); ++i)
             m_stack[i] = other.m_stack[i];
     else if (other.Size() < Size())
-        for(int i = other.Size(); i < Size(); ++i)
+        for (int i = other.Size(); i < Size(); ++i)
             other.m_stack[i] = m_stack[i];
     std::swap(m_sp, other.m_sp);
 }
