@@ -188,7 +188,7 @@ void GoGtpEngine::AddStatistics(const std::string& key,
 void GoGtpEngine::ApplyTimeSettings()
 {
     SG_ASSERT(Board().MoveNumber() == 0);
-    m_game.SetTimeSettingsGlobal(m_timeSettings);
+    m_game.SetTimeSettingsGlobal(m_timeSettings, m_overhead);
 }
 
 void GoGtpEngine::AutoSave() const

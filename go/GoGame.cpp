@@ -371,6 +371,7 @@ void GoGame::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
     SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_TIME);
     SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_OT_NU_MOVES);
     SgNodeUtil::RemovePropInSubtree(*m_root, SG_PROP_OT_PERIOD);
+    m_time.SetOverhead(overhead);
     if (timeSettings.IsUnknown())
     {
         // TODO: What to do with m_time? What to do with time left properties
@@ -391,7 +392,6 @@ void GoGame::SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
     // them for setting the time left in the current position?
     m_time.SetOTPeriod(overtime);
     m_time.SetOTNumMoves(timeSettings.OvertimeMoves());
-    m_time.SetOverhead(overhead);
     m_time.SetClock(*m_current, SG_BLACK, mainTime);
     m_time.SetClock(*m_current, SG_WHITE, mainTime);
     m_time.TurnClockOn(true);
