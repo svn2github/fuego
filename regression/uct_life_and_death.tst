@@ -229,3 +229,15 @@ loadsgf sgf/games/2009/CGOS/702960.sgf 37
 610 reg_genmove b
 #? [D2]
 # keep corner ko
+
+loadsgf sgf/games/2011/KGS/FuegoBot2-laska0-3.sgf 40
+620 reg_genmove w
+#? [D2|H7]*
+
+621 reg_genmove w
+#? [!G1]*
+
+622 reg_genmove w
+#? [!C1]
+# make seki, or just leave it. G1 and C1 are self-kill.
+
