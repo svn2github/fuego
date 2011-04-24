@@ -1,0 +1,23 @@
+(;FF[4]CA[UTF-8]AP[GoGui:1.2.1]SZ[9]
+KM[6.5]TM[1800]OT[5 moves / 30 sec]PB[laska0]PW[FuegoBot2]BR[1d]DT[2011-04-17]
+RE[B+Resign]RU[Japanese]
+C[FuegoBot2 [-\]: GTP Engine for FuegoBot2 (white): Fuego version 0.4.1
+]
+PC[The KGS Go Server at http://www.gokgs.com/]ST[2];B[ee]BL[1796.54];W[dg]
+WL[1799.844];B[cf]BL[1793.329];W[ff]WL[1799.679];B[gd]BL[1787.74];W[dc]
+WL[1799.509];B[hf]BL[1761.602];W[cg]WL[1726.109];B[cd]BL[1738.001];W[cc]
+WL[1659.596]
+;B[bc]BL[1696.126];W[bb]WL[1599.246];B[be]BL[1690.506];W[ac]WL[1540.9];B[bd]
+BL[1684.064];W[eb]WL[1464.609];B[bg]BL[1673.098];W[gg]WL[1410.91];B[hg]
+BL[1669.835];W[bh]WL[1348.904]
+;B[ah]BL[1666.926];W[hh]WL[1287.424];B[ef]BL[1652.676];W[he]WL[1203.441];B[gf]
+BL[1635.121];W[fg]WL[1150.922];B[ge]BL[1623.512];W[ch]WL[1106.262];B[ih]
+BL[1614.206];W[hi]WL[1065.828]
+;B[eh]BL[1565.661];W[eg]WL[1029.581];B[fh]BL[1541.77];W[gh]WL[991.47];B[fi]
+BL[1526.789];W[gb]WL[938.6];B[ed]BL[1515.946];W[bi]WL[898.236];B[di]
+BL[1513.509];W[dh]WL[-871.0]
+;B[ei]BL[-491.0];W[hb]WL[-1135.0];B[fe]BL[-625.0];W[fb]WL[-1137.0];B[df]
+BL[-626.0];W[hc]WL[-1139.0];B[ig]BL[-627.0];W[ii]WL[-1143.0];B[ag]BL[-639.0];
+W[bf]WL[-1146.0]
+;B[af]BL[-640.0];W[ae]WL[-1150.0];B[ad]BL[-640.0];W[ai]WL[-1153.0];B[dd]
+BL[-640.0])

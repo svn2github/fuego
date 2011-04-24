@@ -57,3 +57,33 @@ loadsgf sgf/seki/static-safety-seki-bug.sgf
 
 # 43 go_safe_shared_liberties_in_seki
 # F9 J7
+
+loadsgf sgf/seki/safety-solver-seki-problem.sgf 41
+
+50 go_safe static black
+#? [0]
+# B 4 stones are at-most-seki, so cannot count them
+
+51 go_safe static white
+#? [13 .*]*
+# W group is at-least-seki
+
+loadsgf sgf/seki/safety-solver-seki-problem.sgf 42
+60 go_safe static black
+#? [0]
+# B 5 stones are at-most-seki, so cannot count them
+
+61 go_safe static white
+#? [13 .*]*
+# W group is at-least-seki
+
+loadsgf sgf/seki/safety-solver-seki-problem.sgf 56
+70 go_safe static black
+#? [32 .*]*
+# B 5 stones are seki now
+# misclassifies seki as safe black
+
+71 go_safe static white
+#? [15 .*]*
+# W group is seki
+

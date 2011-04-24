@@ -388,6 +388,7 @@ sgf/safetytest/static-safety.9.sgf \
 sgf/safetytest/static-safety.10.sgf \
 sgf/safetytest/static-safety.11.sgf \
 sgf/safetytest/static-safety-bug.2.sgf \
+sgf/seki/safety-solver-seki-problem.sgf \
 sgf/seki/seki-eye-vs-eye.1.sgf \
 sgf/seki/seki-eye-vs-no-eye.1.sgf \
 sgf/seki/sheppard-seki.sgf \
