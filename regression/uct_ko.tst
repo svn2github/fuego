@@ -1,9 +1,5 @@
 #-----------------------------------------------------------------------------
-# Ko fighting tests for GoUctGlobalSearchPlayer.
-#-----------------------------------------------------------------------------
-
-uct_param_player max_games 50000
-
+# Ko fighting tests.
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/games/2007/CGOS/199550.sgf 29
@@ -99,4 +95,21 @@ loadsgf sgf/ko/remove-ko-threat.1.sgf 2
 200 reg_genmove w
 #? [H7]
 # Eliminate ko threat.
+
+loadsgf sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf 2
+
+210 reg_genmove w
+#? [D2]*
+# D2 is blind spot, why??? If D2, W can win ko.
+
+loadsgf sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf 4
+
+220 reg_genmove w
+#? [B7|B8]
+# Winning, only ko threat on board
+
+loadsgf sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf 6
+
+230 reg_genmove w
+#? [D9]
 

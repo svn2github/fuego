@@ -20,6 +20,7 @@ final_moves.tst \
 free_handicap.tst \
 kgs-genmove_cleanup.tst \
 ladder.tst \
+life_and_death_nakade.tst \
 performance_barcelona2010.tst \
 performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
@@ -224,6 +225,7 @@ sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
 sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-3.sgf \
+sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf \
 sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
 sgf/games/2011/LittleGolem/1226980.sgf \
 sgf/games/pro-9x9/mz1.sgf \

@@ -4,6 +4,7 @@ cleanup_japanese_rules.tst
 eval_life_and_death.tst
 eval_seki.tst
 kgs-genmove_cleanup.tst
+life_and_death_nakade.tst
 semeai_big.tst
 uct_basics.tst
 uct_blunder.tst
