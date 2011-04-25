@@ -242,29 +242,37 @@ void WriteSafeTotal(std::ostream& stream, std::string text,
 
 void GoSafetyUtil::AddToSafe(const GoBoard& board, const SgPointSet& pts,
                              SgBlackWhite color, SgBWSet* safe,
-                             const char* reason, int depth, bool addBoundary)
+                             const std::string& reason, 
+                             int depth, bool addBoundary)
 {
-    SG_UNUSED(reason);
-    SG_UNUSED(depth);
+    SG_DEBUG_ONLY(reason);
+    SG_DEBUG_ONLY(depth);
 
     (*safe)[color] |= pts;
     safe->AssertDisjoint();
     SgPointSet empty = board.AllEmpty();
 
     const int size = board.Size();
+    if (DEBUG_SAFETY)
+        SgDebug() << "AddToSafe " << reason
+                  << " depth = " << depth << " points = "
+                  << SgWritePointSetID(pts) << '\n';
+
     if (addBoundary)
     {
         SgPointSet dep(pts.Border(size) - empty); // pts can be zone (open!)
         GoBoardUtil::ExpandToBlocks(board, dep);
         SG_ASSERT(dep.SubsetOf(board.All(color)));
+	    if (DEBUG_SAFETY)
+        {
+        	const SgPointSet newPts = dep - (*safe)[color];
+	        SgDebug() << "Also AddBoundary "
+                      << SgWritePointSetID(newPts) << '\n';
+        }
         (*safe)[color] |= dep;
         safe->AssertDisjoint();
     }
 
-    if (DEBUG_SAFETY)
-        SgDebug() << "AddToSafe " << reason
-                  << " depth = " << depth << " points = "
-                  << SgWritePointSetID(pts) << '\n';
 }
 
 bool GoSafetyUtil::ExtendedMightMakeLife(const GoBoard& board,
@@ -519,7 +527,8 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
                                        GoRegionBoard* regions,
                                        const SgPointSet& pts,
                                        const SgPointSet& safe,
-                                       SgBlackWhite color)
+                                       SgBlackWhite color,
+                                       std::string& reason)
 {
     SG_ASSERT(! pts.Overlaps(safe));
     const int size = board.Size();
@@ -528,10 +537,13 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
     {
         SgBlackWhite opp = SgOppBW(color);
         if (! ExtendedMightMakeLife(board, regions, pts, safe, opp))
+        {
+            reason = "Boundary-safe-opp-cannot-live";
             /* */ return true; /* */
+        }
     }
 
-    return IsTerritory(board, pts, safe, color);
+    return IsTerritory(board, pts, safe, color, reason);
 }
                         
 SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
@@ -548,7 +560,8 @@ SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
 }
 
 bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
-                               const SgPointSet& safe, SgBlackWhite color)
+                               const SgPointSet& safe, SgBlackWhite color,
+                               std::string& reason)
 {
     SG_ASSERT(! pts.Overlaps(safe));
     const int size = board.Size();
@@ -557,13 +570,19 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
     {
         SgBlackWhite opp = SgOppBW(color);
         if (! GoSafetyUtil::MightMakeLife(board, pts, safe, opp))
+        {
+            reason = "IsTerritory-opp-cannot-live";
             /* */ return true; /* */
+        }
     }
 
     if (  boundary.SubsetOf(board.All(color))
        && Find2ConnectionsForAll(board, pts, safe, color, 1)
        )
+    {
+        reason = "IsTerritory-Find2ConnectionsForAll";
        /* */ return true; /* */
+    }
     return false;
 }
 

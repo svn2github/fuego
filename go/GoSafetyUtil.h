@@ -6,6 +6,7 @@
 #ifndef GO_SAFETYUTIL_H
 #define GO_SAFETYUTIL_H
 
+#include <string>
 #include "SgBlackWhite.h"
 #include "SgBoardColor.h"
 #include "SgMiaiStrategy.h"
@@ -25,7 +26,7 @@ namespace GoSafetyUtil
 
     /** Add pts to *safe[color] */
     void AddToSafe(const GoBoard& board, const SgPointSet& pts,
-                   SgBlackWhite color, SgBWSet* safe, const char* reason,
+                   SgBlackWhite color, SgBWSet* safe, const std::string& reason,
                    int depth, bool addBoundary);
 
     /** Stronger version of IsTerritory that uses region information
@@ -33,7 +34,8 @@ namespace GoSafetyUtil
         Useful for proving safe semeai test cases after resolving semeai. */
     bool ExtendedIsTerritory(const GoBoard& board, GoRegionBoard* regions,
                              const SgPointSet& pts,
-                             const SgPointSet& safe, SgBlackWhite color);
+                             const SgPointSet& safe, SgBlackWhite color,
+                             std::string& reason);
 
     /** See FindDameAndUnsurroundablePoints */
     SgPointSet FindDamePoints(const GoBoard& board, const SgPointSet& empty,
@@ -60,7 +62,8 @@ namespace GoSafetyUtil
     
    /** Simple static territory check for surrounded area */
     bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
-                     const SgPointSet& safe, SgBlackWhite color);
+                     const SgPointSet& safe, SgBlackWhite color,
+                     std::string& reason);
 
     /** Given set of stones, reduce to block anchors */
     void ReduceToAnchors(const GoBoard& board, const SgPointSet& stones,

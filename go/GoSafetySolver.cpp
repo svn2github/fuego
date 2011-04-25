@@ -158,11 +158,13 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
            )
         {
             const SgPointSet unionSet(r1->Points() | r2->Points());
+            std::string reason;
             if (GoSafetyUtil::IsTerritory(Board(), unionSet,
-                                          (*safe)[color], color))
+                                          (*safe)[color], color, reason))
             {
+                std::string fullReason = "surr-safe-2-" + reason;
                 GoSafetyUtil::AddToSafe(Board(), unionSet, color, safe,
-                          "surr-safe-2", 0, true);
+                          fullReason, 0, true);
                 Regions()->SetSafeFlags(*safe); 
                 safe->AssertDisjoint();
                 return true;
@@ -198,17 +200,20 @@ bool GoSafetySolver::FindSurroundedSingleRegion(SgBWSet* safe,
          it(Regions()->AllRegions(color)); it; ++it)
     {
         GoRegion* r = *it;
+        std::string reason;
         if (  ! r->GetFlag(GO_REGION_SAFE)
            && r->SomeBlockIsSafe()
            && ! r->Points().Overlaps(anySafe)
            && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
                                    r->PointsPlusInteriorBlocks(),
                                    (*safe)[color],
-                                   color)
+                                   color,
+                                   reason)
            )
         {
+            std::string fullReason = "surr-safe-1-" + reason;
             GoSafetyUtil::AddToSafe(Board(), r->Points(), color, safe,
-                      "surr-safe-1", 0, true);
+                      				fullReason, 0, true);
             Regions()->SetSafeFlags(*safe); 
             return true;
         }

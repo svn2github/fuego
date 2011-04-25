@@ -7,6 +7,8 @@
 
 #include <boost/test/auto_unit_test.hpp>
 #include "GoEyeUtil.h"
+#include "GoRegion.h"
+#include "GoRegionBoard.h"
 #include "GoSetupUtil.h"
 
 using namespace std;
@@ -172,6 +174,42 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_MakesNakadeShape)
         BOOST_CHECK(! MakesNakadeShape(bd, Pt(2,4), color));
         BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,6), color));
     }
+}
+
+BOOST_AUTO_TEST_CASE(GoEyeUtilTest_SekiWithBulkyFiveNakade)
+{
+    std::string s(
+                    "O . X X X\n"
+                    "O O O X X\n"
+                    "X X O O .\n"
+                    ". O O O O\n"
+                    ". . . . .\n"
+                 );
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK_EQUAL(boardSize, 5);
+
+	SgPoint p = Pt(2, 5); // (col,row) - rows start at bottom
+    GoRegionBoard r(bd);
+    r.GenBlocksRegions();
+    GoRegion* region = r.RegionAt(p, SG_WHITE);
+    BOOST_REQUIRE(region);
+    BOOST_CHECK_EQUAL(region->Points().Size(), 7);
+
+	const bool isFullyEnclosed = true;
+    bool isNakade, makeNakade, makeFalse, maybeSeki, sureSeki;
+    SgPoint vital;
+    TestNakade(region->Points(), bd,
+               SG_WHITE, isFullyEnclosed, 
+               isNakade, makeNakade, makeFalse, maybeSeki,
+               sureSeki, &vital);
+    
+    BOOST_CHECK(! isNakade);
+    BOOST_CHECK(! makeNakade);
+    BOOST_CHECK(! makeFalse);
+    BOOST_CHECK(maybeSeki);
+    // not yet implemented BOOST_CHECK(sureSeki);
 }
 
 } // namespace

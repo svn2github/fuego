@@ -905,8 +905,12 @@ void GoEyeUtil::TestNakade(const SgPointSet& points,
     }
     else if (nuMakeNakade > 0) 
         isNakade = false;
-    else if (nuVitalOccupied < 3)
+    else if (nuVitalOccupied < 3 && nuPoints <= 6) 
+    // @todo: hack, not sure if this even works for <= 6 points. It sure fails for 7,
+    // e.g. bulky five shape plus two liberties. 
+    {
         isNakade = true;
+    }
     else
     {
         maybeSeki = true;
@@ -967,8 +971,8 @@ bool GoEyeUtil::CheckInterior(const GoBoard& bd, const SgPointSet& area,
         }
         else if (p == bd.Anchor(p))
         {
-            if (bd.GetColor(p) != opp)
             // if own stones on inside: not a tree shape.
+            if (bd.GetColor(p) != opp)
                 return false;
             int nuLibs = bd.NumLiberties(p);
             if (nuLibs == 1)
