@@ -19,9 +19,12 @@ namespace GoSetupUtil
                    'x', 'X', '@' for black stones,
                    '.' and '+' for empty points.
         Blanks ' ' and tabs are ignored.
-        Lines must be separated by a '\n' character. */
+        Lines must be separated by a '\n' character. 
+        By convention, the bottom row is row 1.
+    */
     GoSetup CreateSetupFromStream(std::streambuf& in, int& boardSize);
 
+    /** Convenience function, calls CreateSetupFromStream */
     GoSetup CreateSetupFromString(std::string& in, int& boardSize);
 
     /** Get a setup instance with the current position on board. */
