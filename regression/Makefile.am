@@ -262,6 +262,13 @@ sgf/lifeanddeath/4x4nakade.sgf \
 sgf/lifeanddeath/eye-tricky.sgf \
 sgf/lifeanddeath/good-selfatari.1.sgf \
 sgf/lifeanddeath/good-selfatari.2.sgf \
+sgf/lifeanddeath/nakade-5plus-seki.sgf \
+sgf/lifeanddeath/nakade-5pts-1.sgf \
+sgf/lifeanddeath/nakade-5pts-2.sgf \
+sgf/lifeanddeath/nakade-6pts-1.sgf \
+sgf/lifeanddeath/nakade-6pts-2.sgf \
+sgf/lifeanddeath/nakade-6pts-3.sgf \
+sgf/lifeanddeath/no-nakade-6pts-1.sgf \
 sgf/pass/tromp-taylor-pass.sgf \
 sgf/rave-problems/823341-variation-rave-bug.sgf \
 sgf/rave-problems/results-105.sgf \

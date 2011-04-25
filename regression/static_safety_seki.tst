@@ -81,9 +81,65 @@ loadsgf sgf/seki/safety-solver-seki-problem.sgf 56
 70 go_safe static black
 #? [32 .*]*
 # B 5 stones are seki now
-# misclassifies seki as safe black
 
 71 go_safe static white
 #? [15 .*]*
 # W group is seki
+
+loadsgf sgf/lifeanddeath/nakade-5pts-1.sgf
+80 go_safe static black
+#? [65 .*]
+
+81 go_safe static white
+#? [16 .*]
+
+loadsgf sgf/lifeanddeath/nakade-5pts-2.sgf
+90 go_safe static black
+#? [65 .*]
+
+91 go_safe static white
+#? [16 .*]
+
+loadsgf sgf/lifeanddeath/nakade-5plus-seki.sgf
+# cannot solve this seki statically without database?
+
+100 go_safe static black
+#? [42 .*]
+
+101 go_safe static white
+#? [16 .*]
+
+loadsgf sgf/lifeanddeath/nakade-6pts-1.sgf
+
+110 go_safe static black
+#? [65 .*]*
+
+111 go_safe static white
+#? [16 .*]
+
+loadsgf sgf/lifeanddeath/nakade-6pts-2.sgf
+
+120 go_safe static black
+#? [65 .*]
+
+121 go_safe static white
+#? [16 .*]
+
+loadsgf sgf/lifeanddeath/nakade-6pts-3.sgf
+
+130 go_safe static black
+#? [65 .*]*
+
+131 go_safe static white
+#? [16 .*]
+
+loadsgf sgf/lifeanddeath/no-nakade-6pts-1.sgf
+# W is safe, but not statically
+
+140 go_safe static black
+#? [42 .*]
+
+141 go_safe static white
+#? [16 .*]
+
 
