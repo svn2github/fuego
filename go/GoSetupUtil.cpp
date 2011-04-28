@@ -6,7 +6,6 @@
 #include "SgSystem.h"
 #include "GoSetupUtil.h"
 
-#include <cstdio>
 #include "GoBoard.h"
 #include "GoSetup.h"
 

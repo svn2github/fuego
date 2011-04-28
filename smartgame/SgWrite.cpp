@@ -6,7 +6,6 @@
 #include "SgSystem.h"
 #include "SgWrite.h"
 
-#include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <sstream>

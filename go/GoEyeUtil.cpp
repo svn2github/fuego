@@ -855,6 +855,7 @@ void GoEyeUtil::TestNakade(const SgPointSet& points,
         && AlmostFilledByNakade(bd, points, opp)
        )
     {
+        SgDebug() << "AlmostFilledByNakade: isNakade = true\n";
         isNakade = true;
         /* */ return; /* */
     }
@@ -909,6 +910,7 @@ void GoEyeUtil::TestNakade(const SgPointSet& points,
     // @todo: hack, not sure if this even works for <= 6 points. It sure fails for 7,
     // e.g. bulky five shape plus two liberties. 
     {
+        SgDebug() << "nuVitalOccupied < 3: isNakade = true\n";
         isNakade = true;
     }
     else

@@ -7,7 +7,6 @@
 #include "GoRegion.h"
 
 #include <iostream>
-#include <cstdio>
 #include "GoBlock.h"
 #include "GoBoard.h"
 #include "GoChain.h"

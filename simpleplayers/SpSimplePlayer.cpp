@@ -7,7 +7,6 @@
 #include "SpSimplePlayer.h"
 
 #include <limits>
-#include <cstdio>
 #include <iostream>
 #include <string>
 #include "GoSafetySolver.h"
