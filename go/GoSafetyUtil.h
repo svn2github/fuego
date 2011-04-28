@@ -63,7 +63,7 @@ namespace GoSafetyUtil
    /** Simple static territory check for surrounded area */
     bool IsTerritory(const GoBoard& board, const SgPointSet& pts,
                      const SgPointSet& safe, SgBlackWhite color,
-                     std::string& reason);
+                     std::string* reason);
 
     /** Given set of stones, reduce to block anchors */
     void ReduceToAnchors(const GoBoard& board, const SgPointSet& stones,

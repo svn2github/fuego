@@ -160,7 +160,7 @@ bool GoSafetySolver::FindSafePair(SgBWSet* safe,
             const SgPointSet unionSet(r1->Points() | r2->Points());
             std::string reason;
             if (GoSafetyUtil::IsTerritory(Board(), unionSet,
-                                          (*safe)[color], color, reason))
+                                          (*safe)[color], color, &reason))
             {
                 std::string fullReason = "surr-safe-2-" + reason;
                 GoSafetyUtil::AddToSafe(Board(), unionSet, color, safe,

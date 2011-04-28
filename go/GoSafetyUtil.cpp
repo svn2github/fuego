@@ -543,7 +543,7 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
         }
     }
 
-    return IsTerritory(board, pts, safe, color, reason);
+    return IsTerritory(board, pts, safe, color, &reason);
 }
                         
 SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
@@ -561,7 +561,7 @@ SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
 
 bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
                                const SgPointSet& safe, SgBlackWhite color,
-                               std::string& reason)
+                               std::string* reason)
 {
     SG_ASSERT(! pts.Overlaps(safe));
     const int size = board.Size();
@@ -571,7 +571,8 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
         SgBlackWhite opp = SgOppBW(color);
         if (! GoSafetyUtil::MightMakeLife(board, pts, safe, opp))
         {
-            reason = "IsTerritory-opp-cannot-live";
+            if (reason)
+            	*reason = "IsTerritory-opp-cannot-live";
             /* */ return true; /* */
         }
     }
@@ -580,8 +581,9 @@ bool GoSafetyUtil::IsTerritory(const GoBoard& board, const SgPointSet& pts,
        && Find2ConnectionsForAll(board, pts, safe, color, 1)
        )
     {
-        reason = "IsTerritory-Find2ConnectionsForAll";
-       /* */ return true; /* */
+        if (reason)
+            *reason = "IsTerritory-Find2ConnectionsForAll";
+        /* */ return true; /* */
     }
     return false;
 }
