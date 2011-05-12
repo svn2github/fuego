@@ -52,6 +52,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgRestorerTest.cpp \
 ../smartgame/test/SgSearchTest.cpp \
 ../smartgame/test/SgSortedArrayTest.cpp \
+../smartgame/test/SgSortedMovesTest.cpp \
 ../smartgame/test/SgStackTest.cpp \
 ../smartgame/test/SgStatisticsTest.cpp \
 ../smartgame/test/SgStringUtilTest.cpp \

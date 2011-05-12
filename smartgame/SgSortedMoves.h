@@ -10,6 +10,9 @@
 #define SG_SORTEDMOVES_H
 
 #include <iostream>
+#include <limits>
+#include <boost/numeric/conversion/bounds.hpp>
+#include <boost/limits.hpp>
 #include "SgRandom.h"
 #include "SgVector.h"
 
@@ -73,18 +76,27 @@ public:
     void SetMaxNuMoves(int max);
 
     /** Lower bound for accepting moves */
-    void SetLowerBound(VALUE bound) {m_lowerBound = bound;};
+    void SetLowerBound(VALUE bound) 
+    {
+    	m_lowerBound = bound;
+    }
 
     /** See m_initLowerBound */
-    void SetInitLowerBound(VALUE bound) {m_initLowerBound = bound;};
+    void SetInitLowerBound(VALUE bound) 
+    {
+    	m_initLowerBound = bound;
+    }
 
-    /**  */
-    int LowerBound() const {return m_lowerBound;}
+    /** See m_initLowerBound */
+    VALUE InitLowerBound() const {return m_initLowerBound;}
 
-    /**  */
+    /** See m_lowerBound */
+    VALUE LowerBound() const {return m_lowerBound;}
+
+    /** See m_nuMoves */
     int NuMoves() const {return m_nuMoves;}
 
-    /**  */
+    /** See m_maxNuMoves */
     int MaxNuMoves() const {return m_maxNuMoves;}
 
     /** Get move at given index i */
@@ -93,10 +105,14 @@ public:
     /** The best move is sorted first in the table */
     const MOVE& BestMove() const {return Move(0);}
 
-    /**  */
-    VALUE Value(int i) const {AssertIndexRange(i); return m_value[i];}
+    /** See m_value */
+    VALUE Value(int i) const 
+    {
+    	AssertIndexRange(i);
+        return m_value[i];
+    }
 
-    /**  */
+    /** best value, at array index 0. */
     VALUE BestValue() const
     {
         SG_ASSERT(m_nuMoves > 0);
@@ -165,7 +181,7 @@ SgSortedMoves<MOVE, VALUE, SIZE>::SgSortedMoves(int maxNuMoves)
 template<typename MOVE, typename VALUE, int SIZE>
 void SgSortedMoves<MOVE, VALUE, SIZE>::Clear()
 {
-    m_initLowerBound = INT_MIN;
+    m_initLowerBound = boost::numeric::bounds<VALUE>::lowest();
     SG_ASSERT(m_maxNuMoves >= 1);
     m_lowerBound = m_initLowerBound;
     m_nuMoves = 0;
