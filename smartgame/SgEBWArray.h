@@ -12,7 +12,7 @@
 
 /** An array of three values of type T, indexed by SG_EMPTY, SG_BLACK and
     SG_WHITE.
-    Stores index SG_EMPTY (=4) at array[0]. */
+    Stores index SG_EMPTY ( = 4) at array[0]. */
 template <class T>
 class SgEBWArray
 {

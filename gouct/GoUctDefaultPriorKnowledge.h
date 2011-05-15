@@ -18,7 +18,7 @@ public:
 
     virtual ~GoUctKnowledge();
 
-    virtual void ProcessPosition(std::vector<SgUctMoveInfo>& moves)=0;
+    virtual void ProcessPosition(std::vector<SgUctMoveInfo>& moves) = 0;
 
 protected:
     const GoBoard& m_bd;

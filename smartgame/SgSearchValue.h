@@ -32,7 +32,7 @@ public:
         /** The best possible search result - highest possible value.
         A win in n ply is encoded with a value of MAX_VALUE - n.
         A loss is encoded as -value if the win would be encoded as value.
-        MAX_VALUE==32000. */
+        MAX_VALUE == 32000. */
         MAX_VALUE = MAX_LEVEL * SgSearch::MAX_DEPTH,
         
         /** The worst possible search result. 
@@ -45,7 +45,7 @@ public:
         /** KO_VALUE is the result for win by ko.
             Similarly with MAX_VALUE, a win by Ko in n ply is encoded as 
             KO_VALUE - n.
-            KO_VALUE==32000 - 256 = 31744. */
+            KO_VALUE == 32000 - 256 = 31744. */
         KO_VALUE = MAX_VALUE - SgSearch::MAX_DEPTH,
 
         /** MIN_PROVEN_VALUE is the lowest score that indicates a proven win.

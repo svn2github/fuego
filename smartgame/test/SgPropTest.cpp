@@ -200,7 +200,7 @@ void SgPropRealTest_ToString(double value, const char* targetValue,
 
 BOOST_AUTO_TEST_CASE(SgPropRealTest_ToString_All)
 {
-    // 0: default precision for C++ streams (=6)
+    // 0: default precision for C++ streams (= 6)
     SgPropRealTest_ToString(10.5, "10.500000", 0);
     SgPropRealTest_ToString(10.123456, "10.1", 1);
     SgPropRealTest_ToString(10.123456, "10.12346", 5);

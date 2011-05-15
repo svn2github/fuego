@@ -114,7 +114,7 @@ void SgEvaluatedMovesArray::Write() const
 {
     int i, j;
     SgDebug() << "      ";
-    for (j=1; j <= m_boardSize; ++j)
+    for (j = 1; j <= m_boardSize; ++j)
     {
         SgDebug() << SgPointUtil::Letter(j) << "    ";
     }

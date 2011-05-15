@@ -882,7 +882,7 @@ void SgSearch::StartOfDepth(int depth)
     if (DEBUG_SEARCH)
         SgDebug() << "SgSearch::StartOfDepth: " << depth << '\n';
     // add another separate search tree. We are either at the root of the
-    // previous depth tree or, if depth==0, one level higher at the
+    // previous depth tree or, if depth == 0, one level higher at the
     // linking node.
     if (m_tracer && ! m_aborted)
         m_tracer->StartOfDepth(depth);

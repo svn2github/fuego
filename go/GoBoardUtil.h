@@ -379,7 +379,7 @@ namespace GoBoardUtil
 inline bool GoBoardUtil::ContainsAnchor(const SgPoint anchor[],
                                         const SgPoint p)
 {
-    for (int i=0; anchor[i] != SG_ENDPOINT; ++i)
+    for (int i = 0; anchor[i] != SG_ENDPOINT; ++i)
         if (p == anchor[i])
             return true;
     return false;
@@ -466,7 +466,7 @@ bool GoBoardUtil::IsSimpleChain(const BOARD& bd,
     SgPoint anchors2[4 + 1];
     bd.NeighborBlocks(lib1, color, anchors1);
     bd.NeighborBlocks(lib2, color, anchors2);
-    for (int i=0; anchors1[i] != SG_ENDPOINT; ++i)
+    for (int i = 0; anchors1[i] != SG_ENDPOINT; ++i)
     {
         const SgPoint anchor = anchors1[i];
         if (  anchor != block

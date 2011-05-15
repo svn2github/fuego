@@ -139,7 +139,7 @@ public:
         m_maybeLocalSeki = true;
     }
     
-    /** Make sure all eye counts are <=2 and consistent */
+    /** Make sure all eye counts are <= 2 and consistent */
     void Normalize();
     
     /** Compute total eye count of two independent areas.

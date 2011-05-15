@@ -28,10 +28,10 @@ BOOST_AUTO_TEST_CASE(GoTimeControlTest_AbsoluteTime)
     // Fill the board to > 70%, so that expected remaining number of moves
     // is close to zero
     GoSetup setup;
-    for (int row = 1; row <= 19; row +=2)
+    for (int row = 1; row <= 19; row += 2)
         for (int col = 1; col <= 19; ++col)
             setup.AddBlack(Pt(row, col));
-    for (int row = 2; row <= 18; row +=2)
+    for (int row = 2; row <= 18; row += 2)
         for (int col = 1; col <= 19; col += 3)
             setup.AddBlack(Pt(row, col));
     GoBoard bd(19, setup);
