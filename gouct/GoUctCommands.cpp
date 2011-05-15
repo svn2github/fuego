@@ -289,7 +289,7 @@ void GoUctCommands::CmdFinalStatusList(GtpCommand& cmd)
     else
         throw GtpFailure("invalid final status argument");
     SgPointSet deadPoints = DoFinalStatusSearch();
-    // According to GTP standard the response should be one string(=block)
+    // According to GTP standard the response should be one string ( = block)
     // per line
     for (GoBlockIterator it(m_bd); it; ++it)
     {

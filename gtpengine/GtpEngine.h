@@ -415,7 +415,7 @@ T GtpCommand::Arg(std::size_t i) const
     return result;
 }
 
-/** Specialization of Arg<T> for T=size_t to work around a GCC bug.
+/** Specialization of Arg<T> for T = size_t to work around a GCC bug.
     Workaround for bug in standard library of some GCC versions (e.g. GCC
     4.4.1 on Ubuntu 9.10): negative numbers are parsed without error as
     size_t. The definition of this function is in GtpEngine.cpp, otherwise

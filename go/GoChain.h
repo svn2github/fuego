@@ -42,7 +42,7 @@ public:
           m_lib1(SG_NULLPOINT),
           m_lib2(SG_NULLPOINT)
     {
-        SG_ASSERT(type==GO_CHAIN_BY_SEARCH);
+        SG_ASSERT(type == GO_CHAIN_BY_SEARCH);
     }
 
     /** A condition depending on two liberties */
@@ -52,7 +52,7 @@ public:
           m_lib2(lib2)
     {
         SG_ASSERT(type == GO_CHAIN_TWO_LIBERTIES_IN_REGION);
-        // @todo: || type==GO_CHAIN_TWO_SEPARATE_LIBERTIES
+        // @todo: || type == GO_CHAIN_TWO_SEPARATE_LIBERTIES
     }
 
     /** Is there a potential conflict between this and condition? */

@@ -386,7 +386,7 @@ namespace {
 
 /** Search simple test tree.
     @verbatim
-    Numbers are node indices; L=Loss, W=Win for player at root
+    Numbers are node indices; L = Loss, W = Win for player at root
     0--1--5  L
     |  \--6  W
     \--2--7  W
@@ -402,7 +402,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
     search.SetExpandThreshold(1);
     //search.m_write = true;
 
-    // Add nodes. Parameters: father, move (=target node), [eval]
+    // Add nodes. Parameters: father, move ( = target node), [eval]
     search.AddNode(NO_NODE, SG_NULLMOVE);
     search.AddNode(0, 1);
     search.AddNode(0, 2);
@@ -534,7 +534,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Simple)
 
 /** Search simple test tree.
     @verbatim
-    Numbers are node indices; L=Loss, W=Win for player at root
+    Numbers are node indices; L = Loss, W = Win for player at root
     0--1  L
     \--2  W
     \--3  W
@@ -547,7 +547,7 @@ BOOST_AUTO_TEST_CASE(SgUctSearchTest_Knowledge)
     search.SetKnowledgeThreshold(thresholds);
     //search.m_write = true;
 
-    // Add nodes. Parameters: father, move (=target node), [eval]
+    // Add nodes. Parameters: father, move ( = target node), [eval]
     search.AddNode(NO_NODE, SG_NULLMOVE);
     search.AddLeafNode(0, 1, 1.f);
     search.AddLeafNode(0, 2, 0.f);

@@ -14,7 +14,7 @@
 /** Simple data structure keeps a best move value and a list of all moves
     with that value.
     @todo  Originally worked with any SgMove, but introduction of SgPointSet
-    relevant now requires SgMove=SgPoint. Should be made independent of that
+    relevant now requires SgMove = SgPoint. Should be made independent of that
     again, otherwise, why not merge with SgEvaluatedMovesArray? */
 class SgEvaluatedMoves
 {
