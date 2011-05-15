@@ -287,7 +287,7 @@ class SgHashZobrist
 {
 public:
     /** Hash index.
-        The hash index ranges from [0..MAX_HASH_INDEX-1]. For board games with
+        The hash index ranges from [0..MAX_HASH_INDEX - 1]. For games with
         black and white pieces, MAX_HASH_INDEX needs to be bigger than twice
         the number of points on the board. It's up to the client to map points
         to this range.
@@ -296,7 +296,10 @@ public:
 
     SgHashZobrist();
 
-    const SgHash<N>& Get(int index) const { return m_hash[index]; }
+    const SgHash<N>& Get(int index) const 
+    { 
+    	return m_hash[index]; 
+    }
 
     /** Global table for this size of hash code. */
     static const SgHashZobrist& GetTable();

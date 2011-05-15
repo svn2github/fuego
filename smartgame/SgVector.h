@@ -697,7 +697,7 @@ void SgVector<T>::SortedRemoveDuplicates()
         else shifted = true;
     }
     if (shifted)
-        LimitListLength(prev+1);
+        LimitListLength(prev + 1);
     SG_ASSERT(IsSortedAndUnique());
 }
 

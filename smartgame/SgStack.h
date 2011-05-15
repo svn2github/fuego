@@ -136,7 +136,7 @@ template<typename T, int SIZE>
 const T& SgStack<T,SIZE>::Top() const
 {
     SG_ASSERT(0 < m_sp);
-    return m_stack[m_sp-1];
+    return m_stack[m_sp - 1];
 }
 
 template<typename T, int SIZE>

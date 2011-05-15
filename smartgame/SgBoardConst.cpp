@@ -133,7 +133,7 @@ SgBoardConst::BoardConstImpl::BoardConstImpl(SgGrid size)
         int lineIndex = 0;
         for (SgGrid line = 1; line <= (SG_MAX_SIZE / 2) + 1; ++line)
         {
-            m_lineIterAddress[line-1] = &m_lineIter[lineIndex];
+            m_lineIterAddress[line - 1] = &m_lineIter[lineIndex];
             for (SgPoint p = m_firstBoardPoint; p <= m_lastBoardPoint; ++p)
             {
                 if (m_gridToLine[p] == line)
@@ -154,7 +154,7 @@ SgBoardConst::BoardConstImpl::BoardConstImpl(SgGrid size)
     m_cornerIter[4] = SG_ENDPOINT;
 
     m_sideExtensions = m_line[2 - 1] | m_line[3 - 1] | m_line[4 - 1];
-    // LineSet(line)  == m_line[line-1], see .h
+    // LineSet(line)  == m_line[line - 1], see .h
     // exclude diagonals, so that different sides from corner are in different
     // sets.
     m_sideExtensions.Exclude(Pt(2, 2));

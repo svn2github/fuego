@@ -80,11 +80,11 @@ public:
 
     void SortMaximize()
     {
-        for (int i = 0; i < m_numElt-1; ++i)
+        for (int i = 0; i < m_numElt - 1; ++i)
         {
             int maxIndex = i;
             K maxKey = m_key[maxIndex];
-            for (int j = i+1; j <= m_numElt-1; ++j)
+            for (int j = i + 1; j <= m_numElt - 1; ++j)
             {
                 if (maxKey < m_key[j])
                 {
@@ -99,11 +99,11 @@ public:
 
     void SortMinimize()
     {
-        for (int i = 0; i < m_numElt-1; ++i)
+        for (int i = 0; i < m_numElt - 1; ++i)
         {
             int minIndex = i;
             K minKey = m_key[minIndex];
-            for (int j = i+1; j <= m_numElt-1; ++j)
+            for (int j = i + 1; j <= m_numElt - 1; ++j)
             {
                 if (m_key[j] < minKey)
                 {

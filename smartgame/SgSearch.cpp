@@ -595,7 +595,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
     // Only place we check whether the search has been newly aborted. In all
     // other places, just check whether search was aborted before.
     // AR: what to return here?
-    // if - (SG_INFINITY-1), then will be positive on next level?
+    // if - (SG_INFINITY - 1), then will be positive on next level?
     if (AbortSearch())
     {
         *isExactValue = false;
@@ -704,7 +704,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
                )
             {
                 bool childIsExact = true;
-                loValue = -SearchEngine(depth-delta, -beta, -alpha, stack,
+                loValue = -SearchEngine(depth - delta, -beta, -alpha, stack,
                                         &childIsExact);
                 if (TraceIsOn())
                     m_tracer->TraceComment("tryFirst");
@@ -745,7 +745,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
         }
 
         // 'hiValue' is equal to 'beta' for alpha-beta algorithm, and gets set
-        // to alpha+1 for Scout, except for the first move.
+        // to alpha + 1 for Scout, except for the first move.
         int hiValue =
             (hasMove && m_useScout) ? max(loValue, alpha) + 1 : beta;
         bool foundCutoff = false;

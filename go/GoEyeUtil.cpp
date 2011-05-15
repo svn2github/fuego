@@ -23,7 +23,7 @@ int NuEdgePoints(const GoBoard& bd, const SgPointSet& points)
 /** Recognizes 2x2 block of points.
     Relies on the current implementation 
     where SgSetIterator produces set members in sorted order,
-    such that bulky four points have values p, p+WE, p+NS, p+WE+NS */
+    such that bulky four points have values p, p + WE, p + NS, p + WE + NS */
 bool IsBulkyFour(const SgPointSet& points)
 {
     SG_ASSERT(points.IsSize(4));
@@ -260,23 +260,25 @@ GoEyeStatus Special2x3Cases(const GoBoard& bd,
     return EYE_UNKNOWN; // no special case. Default rules work, just use them.
 }
 
-/** is p+ns, p+we locally split? */
+/** is p + ns, p + we locally split? */
 inline bool TestDiagonal(const SgPointSet& set, SgPoint p, int ns, int we)
 { 
-    return     ! set[p+ns+we] // connected the short way
-            && ! (   set[p+ns-we]
-                  && set[p-we]
-                  && set[p-ns-we] 
-                  && set[p-ns]
-                  && set[p-ns+we]
-                 ); // connected the long way
+    return     ! set[p + ns + we] // connected the short way
+            && ! (   set[p + ns - we] // connected the long way
+                  && set[p - we]
+                  && set[p - ns - we] 
+                  && set[p - ns]
+                  && set[p - ns + we]
+                 );
 }
 
-/** is p+ns, p-ns locally split? */
+/** is p + ns, p - ns locally split? */
 inline bool TestOpposite(const SgPointSet& set, SgPoint p, int ns, int we)
 {
-    return    ! (set[p-ns-we] && set[p-we] && set[p+ns-we])  // connected west
-           && ! (set[p-ns+we] && set[p+we] && set[p+ns+we]); // connected east
+    return // connected west
+           ! (set[p - ns - we] && set[p - we] && set[p + ns - we])  
+           // connected east
+        && ! (set[p - ns + we] && set[p + we] && set[p + ns + we]);
 }
 
 

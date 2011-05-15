@@ -137,7 +137,7 @@ SgHashTable<DATA>::~SgHashTable()
 template <class DATA>
 void SgHashTable<DATA>::Age()
 {
-    for (int i = m_maxHash-1; i >= 0; --i)
+    for (int i = m_maxHash - 1; i >= 0; --i)
     {
         m_entry[i].m_data.AgeData();
     }
@@ -146,7 +146,7 @@ void SgHashTable<DATA>::Age()
 template <class DATA>
 void SgHashTable<DATA>::Clear()
 {
-    for (int i = m_maxHash-1; i >= 0; --i)
+    for (int i = m_maxHash - 1; i >= 0; --i)
     {
         m_entry[i].m_data.Invalidate();
     }

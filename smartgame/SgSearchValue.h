@@ -51,7 +51,7 @@ public:
         /** MIN_PROVEN_VALUE is the lowest score that indicates a proven win.
             1. values in the range [MIN_VALUE..-MIN_PROVEN_VALUE] are 
                proven losses (possibly by ko).
-            2. values in the range [-MIN_PROVEN_VALUE+1..MIN_PROVEN_VALUE-1] 
+            2. values in range [-MIN_PROVEN_VALUE + 1..MIN_PROVEN_VALUE - 1] 
                are heuristic scores.
             3. values in range [MIN_PROVEN_VALUE..MAX_VALUE] 
                are proven wins (possibly by ko). */

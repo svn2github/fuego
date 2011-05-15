@@ -26,12 +26,12 @@ bool SgProbCut::ProbCut(SgSearch& search, int depth, int alpha, int beta,
         bool isExact;
         float threshold = GetThreshold();
 
-        if (beta < SgSearch::SG_INFINITY-1)
+        if (beta < SgSearch::SG_INFINITY - 1)
         {
             float b = (+threshold * c.sigma + float(beta) - c.b) / c.a;
             int bound = SgMath::RoundToInt(b);
             int res = search.SearchEngine(c.shallow * SgSearch::DEPTH_UNIT,
-                                   bound-1, bound, newStack, &isExact);
+                                   bound - 1, bound, newStack, &isExact);
             if (res >= bound)
             {
                 SetEnabled(true);
@@ -48,7 +48,7 @@ bool SgProbCut::ProbCut(SgSearch& search, int depth, int alpha, int beta,
             float b = (-threshold * c.sigma + float(alpha) - c.b) / c.a;
             int bound = SgMath::RoundToInt(b);
             int res = search.SearchEngine(c.shallow * SgSearch::DEPTH_UNIT,
-                                   bound, bound+1, newStack, &isExact);
+                                   bound, bound + 1, newStack, &isExact);
 
             if (res <= bound)
             {

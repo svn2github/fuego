@@ -62,7 +62,7 @@ private:
     @verbatim
     0     1
      \   /
-       p       e.g. next[0] = -NS-WE
+       p       e.g. next[0] = -NS - WE
      /   \
     2     3
     @endverbatim */

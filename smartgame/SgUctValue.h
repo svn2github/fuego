@@ -20,8 +20,8 @@
     the node size and to get some performance gains (especially on 32-bit
     systems). However, using @c float sets a practical limit on the number of
     simulations before the count and mean values go into "saturation". This
-    maximum is given by 2^d-1 with d being the digits in the mantissa (=23 for
-    IEEE 754 float's). The search will terminate when this number is
+    maximum is given by 2^d - 1 with d being the digits in the mantissa 
+    (=23 for IEEE 754 float's). The search will terminate when this number is
     reached. */
 
 #ifdef SG_UCT_VALUE_TYPE

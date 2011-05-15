@@ -167,7 +167,6 @@ void SgTimeRecord::EnterNode(SgNode& node, SgBlackWhite player)
         m_atNode = &node;
         m_timeLeft = GetTimeFromTree(node);
         m_movesLeft = GetOTMovesFromTree(node);
-        // AR: commented out in Modula-2: fTimeOfLastUpdate := Ticks();
     }
 }
 

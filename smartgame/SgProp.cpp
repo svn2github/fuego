@@ -85,7 +85,7 @@ string SgPropUtil::EscapeSpecialCharacters(const string& s, bool escapeColon)
     for (size_t i = 0; i < s.size(); ++i)
     {
         char c = s[i];
-        if (c == ']' || c =='\\' || (c == ':' && escapeColon))
+        if (c == ']' || c == '\\' || (c == ':' && escapeColon))
             buffer << '\\' << c;
         else if (c == '\r' || c == '\t')
             buffer << ' ';
@@ -428,7 +428,7 @@ SgPropID SgProp::Register(SgProp* prop, const char* label, SgPropFlags flags)
         }
         // Black and white properties must be created in pairs, black first.
         if (flags & SG_PROPCLASS_WHITE)
-            SG_ASSERT(s_flags[s_numPropClasses-1] & SG_PROPCLASS_BLACK);
+            SG_ASSERT(s_flags[s_numPropClasses - 1] & SG_PROPCLASS_BLACK);
 
         return s_numPropClasses;
     }

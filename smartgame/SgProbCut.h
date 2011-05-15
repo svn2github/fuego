@@ -53,15 +53,15 @@ private:
     float m_threshold;
     bool m_enabled;
 
-    SgArray<SgArray<Cutoff, MAX_PROBCUT+1>, MAX_PROBCUT+1> m_cutoffs;
-    SgArray<int, MAX_PROBCUT+1> m_cutoff_sizes;
+    SgArray<SgArray<Cutoff, MAX_PROBCUT + 1>, MAX_PROBCUT + 1> m_cutoffs;
+    SgArray<int, MAX_PROBCUT + 1> m_cutoff_sizes;
 };
 
 inline SgProbCut::SgProbCut()
 {
     m_threshold = 1.0;
     m_enabled = false;
-    for (int i = 0; i < MAX_PROBCUT+1; ++i) m_cutoff_sizes[i] = 0;
+    for (int i = 0; i < MAX_PROBCUT + 1; ++i) m_cutoff_sizes[i] = 0;
 }
 
 inline void SgProbCut::AddCutoff(const Cutoff &c)
