@@ -90,7 +90,7 @@ namespace GoUctUtil
 
     /** Generate a forced opening move.
         This function can be used to generate opening moves instead of doing a
-        Monte-Carlo tree search, which often returns random looking moves in
+        Monte Carlo tree search, which often returns random looking moves in
         the opening on large boards. Experiments showed also an improvement in
         playing strength if this function is used. The function currently
         generates a move on the 4-4 point of an empty corner under the

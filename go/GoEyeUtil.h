@@ -56,7 +56,7 @@ namespace GoEyeUtil
     /** Check if point is a single point eye with one or two adjacent blocks.
         This is a fast eye detection routine, which can be used instead of
         Benson's static life detection, when end-of-game detection is a
-        performance bottle-neck (e.g. for machine-learning or monte-carlo).
+        performance bottle-neck (e.g. for machine-learning or Monte Carlo).
         It detects single-point eyes surrounded by a single block or by two
         blocks that share another single point eye.
         Larger eyes can be reduced to simple eyes (assuming chinese rules,
@@ -121,7 +121,7 @@ namespace GoEyeUtil
     /** Does removing p split s into two or more parts? */
     bool IsSplitPt(SgPoint p, const SgPointSet& s);
 
-    /** Does p locally,within a 3x3 region, split its neighbors in s?
+    /** Does p locally, within a 3x3 region, split its neighbors in s?
         Even if the reply is 'yes', s might still be connected outside
         the region. */
     bool IsLocalSplitPt(SgPoint p, const SgPointSet& set);

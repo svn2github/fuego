@@ -60,7 +60,8 @@ public:
         On 12x12 boards and larger, this includes 5x5 area from corner
         except the 5,5 point itself (the classical opening moves and below).
         See SgBoardConst::BoardConstImpl::BoardConstImpl for details.
-        On smaller boards, includes the 4x4 area except the 4,4 point itself. */
+        On smaller boards, includes the 4x4 area except the 4,4 point itself.
+    */
     const SgPointSet& Corners() const;
 
     /** Set of points on edge but not in corners of the board.

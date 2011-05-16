@@ -204,7 +204,7 @@ Intel 64 and IA-32 Architectures Software Developer's Manual</a>, chapter
 
 //----------------------------------------------------------------------------
 
-/** Game result, sequence and nodes of one Monte-Carlo game in SgUctSearch.
+/** Game result, sequence and nodes of one Monte Carlo game in SgUctSearch.
     @ingroup sguctgroup */
 struct SgUctGameInfo
 {
@@ -585,7 +585,7 @@ public:
                       SgUctTree* initTree = 0,
                       SgUctEarlyAbortParam* earlyAbort = 0);
 
-    /** Do a one-ply Monte-Carlo search instead of the UCT search.
+    /** Do a one-ply Monte Carlo search instead of the UCT search.
         @param maxGames
         @param maxTime
         @param[out] value The value of the best move */

@@ -615,7 +615,7 @@ GoUctGlobalSearchStateFactory<POLICY,FACTORY>
 
 //----------------------------------------------------------------------------
 
-/** Full board Monte-Carlo tree search.
+/** Full board Monte Carlo tree search.
     @tparam POLICY The playout policy
     @tparam FACTORY The factory for the playout policy */
 template<class POLICY, class FACTORY>

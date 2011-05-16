@@ -24,36 +24,36 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_IsNakadeShape)
 {
     SgPointSet area;
     BOOST_CHECK(! IsNakadeShape(area));
-    area.Include(Pt(5,5)); // single stone
+    area.Include(Pt(5, 5)); // single stone
     BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(5,6)); // two in a row
+    area.Include(Pt(5, 6)); // two in a row
     BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(5,4)); // three in a row
+    area.Include(Pt(5, 4)); // three in a row
     BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(6,5)); // T-shape
+    area.Include(Pt(6, 5)); // T-shape
     BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(4,5)); // cross
+    area.Include(Pt(4, 5)); // cross
     BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(4,4)); // rabbity six
+    area.Include(Pt(4, 4)); // rabbity six
     BOOST_CHECK(IsNakadeShape(area));
-    area.Exclude(Pt(6,5)); // bulky five
+    area.Exclude(Pt(6, 5)); // bulky five
     BOOST_CHECK(IsNakadeShape(area));
-    area.Exclude(Pt(5,6)); // bulky four, 2x2 block
+    area.Exclude(Pt(5, 6)); // bulky four, 2x2 block
     BOOST_CHECK(IsNakadeShape(area));
     
     area.Clear();
-    area.Include(Pt(5,4));
-    area.Include(Pt(5,5));
-    area.Include(Pt(5,6));
-    area.Include(Pt(5,7)); // 4 in a row
+    area.Include(Pt(5, 4));
+    area.Include(Pt(5, 5));
+    area.Include(Pt(5, 6));
+    area.Include(Pt(5, 7)); // 4 in a row
     BOOST_CHECK(! IsNakadeShape(area));
-    area.Exclude(Pt(5,7));
+    area.Exclude(Pt(5, 7));
     BOOST_CHECK(IsNakadeShape(area));
-    area.Include(Pt(6,6)); // L-shape
+    area.Include(Pt(6, 6)); // L-shape
     BOOST_CHECK(! IsNakadeShape(area));
-    area.Include(Pt(4,6)); // U-shape
+    area.Include(Pt(4, 6)); // U-shape
     BOOST_CHECK(! IsNakadeShape(area));
-    area.Include(Pt(5,6)); // 2x3 block
+    area.Include(Pt(5, 6)); // 2x3 block
     BOOST_CHECK(! IsNakadeShape(area));
 }
 
@@ -148,31 +148,31 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_MakesNakadeShape)
         GoBoard bd;
         SgBlackWhite color = *it;
         SgBlackWhite opp = SgOppBW(color);
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), color));
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
-        bd.Play(Pt(4,5), color);
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), color));
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
-        bd.Play(Pt(3,5), color);
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), color));
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
-        bd.Play(Pt(2,5), color); // 3 in row
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(5,5), color)); // 4 in row
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(3,4), color)); // T
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,6), color)); // diagonal away
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,4), color)); // L
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(5,5), opp));
-        bd.Play(Pt(3,4), color); // T
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(2,4), color)); // bulky five
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(4,4), color)); // bulky five, too
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(3,6), color)); // cross
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(2,6), color));
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,6), color));
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(5,5), color));
-        bd.Play(Pt(2,6), color); 
-        BOOST_CHECK(MakesNakadeShape(bd, Pt(3,6), color)); // rabbity six
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(2,4), color));
-        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4,6), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), opp));
+        bd.Play(Pt(4, 5), color);
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), opp));
+        bd.Play(Pt(3, 5), color);
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), color));
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), opp));
+        bd.Play(Pt(2, 5), color); // 3 in row
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(5, 5), color)); // 4 in row
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(3, 4), color)); // T
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 6), color)); // diagonal away
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4, 4), color)); // L
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(5, 5), opp));
+        bd.Play(Pt(3, 4), color); // T
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(2, 4), color)); // bulky five
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(4, 4), color)); // bulky five, too
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(3, 6), color)); // cross
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(2, 6), color));
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4, 6), color));
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(5, 5), color));
+        bd.Play(Pt(2, 6), color); 
+        BOOST_CHECK(MakesNakadeShape(bd, Pt(3, 6), color)); // rabbity six
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(2, 4), color));
+        BOOST_CHECK(! MakesNakadeShape(bd, Pt(4, 6), color));
     }
 }
 
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_SekiWithBulkyFiveNakade)
     GoBoard bd(boardSize, setup);
     BOOST_CHECK_EQUAL(boardSize, 5);
 
-	SgPoint p = Pt(2, 5); // (col,row) - rows start at bottom
+	SgPoint p = Pt(2, 5); // (col, row) - rows start at bottom
     GoRegionBoard r(bd);
     r.GenBlocksRegions();
     GoRegion* region = r.RegionAt(p, SG_WHITE);

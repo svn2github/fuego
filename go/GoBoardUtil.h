@@ -154,7 +154,7 @@ namespace GoBoardUtil
 
     /** Return if point is surrounded by one color and no adjacent block is
         in atari.
-        Good criterion for move generation in Monte-Carlo. See:
+        Good criterion for move generation in Monte Carlo. See:
         Remi Coulom: Efficient selectivity and backup operators in
         Monte-Carlo tree search, CG2006, Appendix A.1,
         http://remi.coulom.free.fr/CG2006/ */
@@ -300,7 +300,7 @@ namespace GoBoardUtil
     SgEmptyBlackWhite ScorePoint(const BOARD& bd, SgPoint p, bool noCheck);
 
     /** Score position with given safe stones and only simple eyes.
-        This is a fast scoring function (e.g. suitable for Monte-Carlo),
+        This is a fast scoring function (e.g. suitable for Monte Carlo),
         that can be used if playing continues as long as there are legal moves
         which do not fill the player's single point eyes.
         Precomputed safety status of points is used, all other empty points
@@ -322,7 +322,7 @@ namespace GoBoardUtil
                                  SgPointArray<SgEmptyBlackWhite>* scoreBoard);
 
     /** Score position with all stones safe and only simple eyes.
-        This is a fast scoring function (e.g. suitable for Monte-Carlo),
+        This is a fast scoring function (e.g. suitable for Monte Carlo),
         that can be used if playing continues as long as there are legal moves
         which do not fill the player's single point eyes.
         All stones are considered safe, all empty points must be single

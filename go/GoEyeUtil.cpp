@@ -394,7 +394,7 @@ inline bool ProcessStatus(GoEyeStatus status,
 
 int GoEyeUtil::DegreeCode(const SgPointSet& points)
 {
-    int degrees[5] = {0,0,0,0,0};
+    int degrees[5] = {0, 0, 0, 0, 0};
     
     for (SgSetIterator it(points); it; ++it)
     {
@@ -416,7 +416,7 @@ int GoEyeUtil::DegreeCode(const SgPointSet& points)
 
 long GoEyeUtil::DegreeCode8(const SgPointSet& points)
 {
-    int degrees[9] = {0,0,0,0,0};
+    int degrees[9] = {0, 0, 0, 0, 0};
     
     for (SgSetIterator it(points); it; ++it)
     {

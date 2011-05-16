@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestPopFront)
 BOOST_AUTO_TEST_CASE(SgVectorTestMerge)
 {
     SgVector<int> a;
-    for (int i = 0; i < 10; i += 2) // 0,2,4,6,8
+    for (int i = 0; i < 10; i += 2) // 0, 2, 4, 6, 8
         a.PushBack(i);
     SgVector<int> b;
     b.PushBack(1);
@@ -361,7 +361,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestMerge)
 BOOST_AUTO_TEST_CASE(SgVectorTestMerge_2)
 {
     SgVector<int> a;
-    for (int i = 0; i < 10; i += 2) // 0,2,4,6,8
+    for (int i = 0; i < 10; i += 2) // 0, 2, 4, 6, 8
         a.PushBack(i);
     SgVector<int> b;
     b.PushBack(-10);
@@ -381,7 +381,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestMerge_3)
 {
     SgVector<int> a;
     SgVector<int> b;
-    for (int i = 0; i < 10; i += 2) // 0,2,4,6,8
+    for (int i = 0; i < 10; i += 2) // 0, 2, 4, 6, 8
         b.PushBack(i);
     a.Merge(b);
     BOOST_CHECK_EQUAL(a.Length(), 5);
@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestMerge_4)
     a.PushBack(3);
     a.PushBack(4);
     SgVector<int> b;
-    for (int i = 0; i < 10; i += 2) // 0,2,4,6,8
+    for (int i = 0; i < 10; i += 2) // 0, 2, 4, 6, 8
         b.PushBack(i);
     a.Merge(b);
     BOOST_CHECK_EQUAL(a.Length(), 6);
@@ -533,7 +533,7 @@ BOOST_AUTO_TEST_CASE(SgVectorTestSort)
 BOOST_AUTO_TEST_CASE(SgVectorTestSortedRemoveDuplicates)
 {
     SgVector<int> a;
-    for (int i = 0; i < 10; i += 2) // 0,2,4,6,8
+    for (int i = 0; i < 10; i += 2) // 0, 2, 4, 6, 8
     {
         a.PushBack(i);
         a.PushBack(i);

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoUctBoard.h
-    Go board optimized for Monte-Carlo. */
+    Go board optimized for Monte Carlo tree search. */
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_BOARD_H
@@ -26,9 +26,9 @@
 
 //----------------------------------------------------------------------------
 
-/** Go board optimized for Monte-Carlo.
+/** Go board optimized for Monte Carlo simulations.
     In contrast to class GoBoard, this board makes certain assumptions
-    that are usually true for Monte-Carlo simulations for better efficiency:
+    that are usually true for Monte Carlo simulations for better efficiency:
     - No undo
     - Alternating play
     - Simple-Ko rule
@@ -200,7 +200,7 @@ public:
     /** Return a reference point in the block at a point.
         @note In contrast to GoBoard, the anchor point is not guaranteed
         to be the smallest point (this functionality is not needed in
-        Monte-Carlo)
+        Monte Carlo simulations)
         Requires: Occupied(p). */
     SgPoint Anchor(SgPoint p) const;
 

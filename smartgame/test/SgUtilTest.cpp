@@ -18,19 +18,19 @@ namespace {
 BOOST_AUTO_TEST_CASE(SgUtil_ForceInRange)
 {
     int i(1200);
-    ForceInRange(0,&i,2000);
+    ForceInRange(0, &i, 2000);
     BOOST_CHECK_EQUAL(i, 1200);
-    ForceInRange(0,&i,1000);
+    ForceInRange(0, &i, 1000);
     BOOST_CHECK_EQUAL(i, 1000);
-    ForceInRange(5000,&i,10000);
+    ForceInRange(5000, &i, 10000);
     BOOST_CHECK_EQUAL(i, 5000);
     
     double d(1.5);
     const double epsilon(1.0e-6);
-    ForceInRange(0.0,&d,2.0);
+    ForceInRange(0.0, &d, 2.0);
     BOOST_CHECK(d < 1.5 + epsilon);
     BOOST_CHECK(d > 1.5 - epsilon);
-    ForceInRange(0.0,&d,1.0);
+    ForceInRange(0.0, &d, 1.0);
     BOOST_CHECK(d < 1.0 + epsilon);
     BOOST_CHECK(d > 1.0 - epsilon);
 }
