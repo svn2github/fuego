@@ -56,15 +56,6 @@ inline void SG_UNUSED(const T&)
 
 //----------------------------------------------------------------------------
 
-#include <sys/types.h>
-#if (BYTE_ORDER == BIG_ENDIAN)
-#define OTHER_BYTE_ORDER 0
-#else
-#define OTHER_BYTE_ORDER 1
-#endif
-
-//----------------------------------------------------------------------------
-
 /** Additional code to run in debug mode after an assertion failed. */
 class SgAssertionHandler
 {
