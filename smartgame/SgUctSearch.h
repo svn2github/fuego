@@ -473,7 +473,7 @@ public:
     static SgUctValue InverseEstimate(SgUctValue eval);
 
     /** Constructor.
-        @param threadStateFactory The tread state factory (takes ownership).
+        @param threadStateFactory The thread state factory (takes ownership).
         Can be null and set later (before using the search) with
         SetThreadStateFactory to allow multi-step construction.
         @param moveRange Upper integer limit (exclusive) used for move
@@ -481,7 +481,8 @@ public:
         need to store data in arrays using the move as an index for
         efficient implementation. If the game does not use a small integer
         range for its move representation, this parameter should be 0.
-        Then, enhancements that require a small move range cannot be enabled. */
+        Then, enhancements that require a small move range cannot be enabled. 
+    */
     SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
                 int moveRange = 0);
 
