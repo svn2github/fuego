@@ -19,8 +19,7 @@ SgWritePointSet::SgWritePointSet(const SgPointSet& pointSet, string label,
     : m_writeSize(writeSize),
       m_pointSet(pointSet),
       m_label(label)
-{
-}
+{ }
 
 ostream& SgWritePointSet::Write(ostream& out) const
 {
@@ -78,12 +77,7 @@ ostream& operator<<(ostream& stream, const SgWritePointSetID& w)
 
 //----------------------------------------------------------------------------
 
-SgReadPointSet::SgReadPointSet(SgPointSet& pointSet)
-    : m_pointSet(pointSet)
-{
-}
-
-istream& SgReadPointSet::Read(istream& in) const
+istream& operator>>(istream& in, SgPointSet& pointSet)
 {
     string pointstr;
     int size;
@@ -99,20 +93,10 @@ istream& SgReadPointSet::Read(istream& in) const
             int row = toupper(pointstr[1]) - '0';
             if (pointstr.size() == 3)
                 row = row * 10 + pointstr[2] - '0';
-            m_pointSet.Include(SgPointUtil::Pt(col, row));
+            pointSet.Include(SgPointUtil::Pt(col, row));
         }
     }
     return in;
-}
-
-istream& operator>>(istream& in, const SgReadPointSet& read)
-{
-    return read.Read(in);
-}
-
-istream& operator>>(istream& in, SgPointSet& pointSet)
-{
-    return in >> SgReadPointSet(pointSet);
 }
 
 //----------------------------------------------------------------------------
