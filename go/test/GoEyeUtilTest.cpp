@@ -198,16 +198,15 @@ BOOST_AUTO_TEST_CASE(GoEyeUtilTest_SekiWithBulkyFiveNakade)
     BOOST_CHECK_EQUAL(region->Points().Size(), 7);
 
 	const bool isFullyEnclosed = true;
-    bool isNakade, makeNakade, makeFalse, maybeSeki, sureSeki;
+    bool isNakade, makeNakade, ignoreMakeFalse, maybeSeki, sureSeki;
     SgPoint vital;
     TestNakade(region->Points(), bd,
                SG_WHITE, isFullyEnclosed, 
-               isNakade, makeNakade, makeFalse, maybeSeki,
+               isNakade, makeNakade, ignoreMakeFalse, maybeSeki,
                sureSeki, &vital);
     
     BOOST_CHECK(! isNakade);
     BOOST_CHECK(! makeNakade);
-    BOOST_CHECK(! makeFalse);
     BOOST_CHECK(maybeSeki);
     // not yet implemented BOOST_CHECK(sureSeki);
 }
