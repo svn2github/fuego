@@ -98,3 +98,9 @@ loadsgf sgf/seki/sheppard-seki-2.sgf
 470 reg_genmove b
 #? [J3]
 # program played A1 which is silly but not fatal.
+
+loadsgf sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego-2.sgf 69
+480 reg_genmove b
+#? [B2]*
+# B2 avoids seki and makes jigo
+
