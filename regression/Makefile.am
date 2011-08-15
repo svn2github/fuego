@@ -5,6 +5,8 @@ basics.suite \
 performance.suite \
 static_safety.suite \
 uct.suite \
+9x9-blunder-endgame.tst \
+9x9-opening.tst \
 backfill.tst \
 blunder_long_ladder_19.tst \
 blunder_play_near_dead_19.tst \
@@ -227,6 +229,8 @@ sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-3.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf \
 sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
+sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego-2.sgf \
+sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego.sgf \
 sgf/games/2011/LittleGolem/1226980.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
