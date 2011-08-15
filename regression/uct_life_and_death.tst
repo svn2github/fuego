@@ -2,8 +2,6 @@
 # Life and Death tests for GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
-
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/games/2008/CGOS/248520.sgf 25

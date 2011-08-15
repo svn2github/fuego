@@ -2,7 +2,6 @@
 # Tests for bug fixes in playouts of GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
 uct_stat_player_clear
 
 #-----------------------------------------------------------------------------
@@ -138,11 +137,9 @@ loadsgf sgf/eyes/1.5/make-nakade.1.sgf 5
 loadsgf sgf/eyes/1.5/make-nakade.2.sgf 1
 1600 reg_genmove b
 #? [B9|D8]
-# new PASS 2008-12-05
 
 1610 reg_genmove w
 #? [B9|D8]*
-# new FAIL 2008-02-19
 
 loadsgf sgf/eyes/1.5/make-nakade.2.sgf 3
 1620 reg_genmove b
@@ -167,7 +164,7 @@ reg_genmove b
 loadsgf sgf/uct/capture.1.sgf 17
 1660 reg_genmove w
 #? [G5]
-# G5 is an obvious capture but GoUctGlobalSearchPlayer had trouble finding it.
+# G5 is an obvious capture but Fuego had trouble finding it.
 
 1661 sg_compare_float 0.6 uct_value
 #? [1]
@@ -202,7 +199,6 @@ loadsgf sgf/games/2007/CGOS/107457.sgf 11
 1730 reg_genmove b
 #? [E2|E3]*
 # must live on bottom edge now.
-# new FAIL 20081106
 
 loadsgf sgf/eyes/1/nakade.1.sgf 1
 reg_genmove b
@@ -228,7 +224,6 @@ reg_genmove w
 #? [-1]
 # W lost. 
 # Too many targets to try to capture but nothing works.
-# new PASS 20081106
 
 loadsgf sgf/games/2007/simulation-bug-107407.sgf 62
 reg_genmove w
@@ -241,13 +236,11 @@ reg_genmove w
 1790 sg_compare_float 0.4 uct_value
 #? [-1]
 # W is lost. 
-# new PASS 20081106
 
 loadsgf sgf/games/2007/simulation-bug-107407.2.sgf 67
 1800 reg_genmove b
 #? [A4]
 # Continuation of 1770.
-# new PASS 20081106
 
 1810 sg_compare_float 0.8 uct_value
 #? [1]*
@@ -295,13 +288,11 @@ loadsgf sgf/games/2007/CGOS/189676.sgf 46
 #? [B9|J4|J1|F9|G7]
 # must attack corner
 # B7 may be playable but really risky - not added
-# new PASS 20081106
 
 loadsgf sgf/games/2007/CGOS/189582.sgf 48
 1960 reg_genmove w
 #? [G7]
 # must make eye here, otherwise loses lots of points in corner
-# new PASS 20081106
 
 loadsgf sgf/games/2007/CGOS/188524-variation-filling-bug.sgf 57
 1970 reg_genmove b
@@ -333,7 +324,6 @@ loadsgf sgf/games/2007/move88-selfatari-eval-bug.sgf 88
 reg_genmove w
 2010 sg_compare_float 0.9 uct_value
 #? [1]*
-# new FAIL 20081106
 
 loadsgf sgf/games/2007/bookwhite-4.sgf
 2020 reg_genmove w
@@ -348,7 +338,6 @@ loadsgf sgf/games/2007/uct160K-mogo10K-2.sgf 87
 
 2040 sg_compare_float 0.8 uct_value
 #? [1]*
-# new FAIL 20081106
 
 loadsgf sgf/games/2007/uct160K-mogo10K-2.sgf 89
 2050 reg_genmove b
@@ -360,7 +349,6 @@ loadsgf sgf/games/2007/uct160K-mogo10K-2.sgf 89
 
 2060 sg_compare_float 0.9 uct_value
 #? [1]*
-# new FAIL 20081106
 
 loadsgf sgf/games/2007/CGOS/199550.sgf 27
 2070 reg_genmove b

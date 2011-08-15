@@ -2,11 +2,6 @@
 # Blunder avoidance tests for GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-# removed 2011-08-14. uct_param_player max_games 50000
-# removed 2011-08-14. @todo check all sgf files for komi. komi 7.5
-
-#-----------------------------------------------------------------------------
-
 loadsgf sgf/games/2007/CGOS/191282.sgf 10
 10 reg_genmove w
 #? [C7]

@@ -2,7 +2,6 @@
 # Tests for opening book of GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
 book_load ../book/book.dat
 
 #-----------------------------------------------------------------------------

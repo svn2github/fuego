@@ -2,11 +2,7 @@
 # Position evaluation tests for Fuego.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
-
 #-----------------------------------------------------------------------------
-
-uct_param_player max_games 10000
 
 loadsgf sgf/evaluation/miseval.1.sgf
 reg_genmove w

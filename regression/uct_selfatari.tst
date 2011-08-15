@@ -2,8 +2,6 @@
 # Tests involving self-atari.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
-
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/lifeanddeath/good-selfatari.1.sgf

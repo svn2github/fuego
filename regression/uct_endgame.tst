@@ -2,8 +2,6 @@
 # Endgame tests for GoUctGlobalSearchPlayer.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
-
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/games/2007/194557.variation.sgf 47

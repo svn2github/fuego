@@ -2,8 +2,6 @@
 # Misplayed Semeai with small number of moves/liberties tests.
 #-----------------------------------------------------------------------------
 
-uct_param_player max_games 50000
-
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/games/2009/May/Fuego9-Fuego-27.sgf 48

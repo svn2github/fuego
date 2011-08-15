@@ -1,8 +1,6 @@
 #-----------------------------------------------------------------------------
-# kgs-genmove_cleanup tests for GoUctGlobalSearchPlayer
+# kgs-genmove_cleanup tests
 #-----------------------------------------------------------------------------
-
-uct_param_player max_games 10000
 
 loadsgf sgf/games/2008/KGS/9/16/Fuego-masaician.sgf 296
 
