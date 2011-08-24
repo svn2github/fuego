@@ -3,8 +3,16 @@ run.sh \
 19.suite \
 basics.suite \
 performance.suite \
+playout.suite \
 static_safety.suite \
 uct.suite \
+19.list \
+basics_fuegotest.list \
+basics_uct.list \
+performance.list \
+playout.list \
+static_safety.list \
+uct.list \
 9x9-blunder-endgame.tst \
 9x9-opening.tst \
 backfill.tst \
@@ -28,6 +36,9 @@ performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
 performance_middlegame_hard_9x9.tst \
 performance_pro_9x9.tst \
+playout_2_liberties.tst \
+playout_approach_move.tst \
+playout_atari_capture.tst \
 repetition.tst \
 semeai_big.tst \
 simpleplayers.tst \
@@ -51,18 +62,11 @@ uct_ko.tst \
 uct_life_and_death.tst \
 uct_move.tst \
 uct_pass_basics.tst \
-uct_playout.tst \
 uct_rootfilter.tst \
 uct_seki.tst \
 uct_selfatari.tst \
 uct_semeai.tst \
 uct_semeai_blunder.tst \
-19.list \
-basics_fuegotest.list \
-basics_uct.list \
-performance.list \
-static_safety.list \
-uct.list \
 sgf/approach_move/backfill.1.sgf \
 sgf/book_test/book.0.sgf \
 sgf/book_test/book.1.sgf \
@@ -274,6 +278,12 @@ sgf/lifeanddeath/nakade-6pts-2.sgf \
 sgf/lifeanddeath/nakade-6pts-3.sgf \
 sgf/lifeanddeath/no-nakade-6pts-1.sgf \
 sgf/pass/tromp-taylor-pass.sgf \
+sgf/playout/playout_atari_defense_1.sgf \
+sgf/playout/playout_atari_defense_2.sgf \
+sgf/playout/playout_atari_defense_3.sgf \
+sgf/playout/playout_capture_1.sgf \
+sgf/playout/playout_nakade_approach.sgf \
+sgf/playout/playout_two_liberties_throw_in.sgf \
 sgf/rave-problems/823341-variation-rave-bug.sgf \
 sgf/rave-problems/results-105.sgf \
 sgf/repetition/long-life.sgf \
@@ -437,8 +447,4 @@ sgf/uct/mogo-tr6062-fig4-right.sgf \
 sgf/uct/patterns-cut2.sgf \
 sgf/uct/patterns-edge1.sgf \
 sgf/uct/patterns-edge4.sgf \
-sgf/uct/vital-1.sgf \
-sgf/uct_playout/uct_playout_atari_defense_1.sgf \
-sgf/uct_playout/uct_playout_atari_defense_2.sgf \
-sgf/uct_playout/uct_playout_atari_defense_3.sgf \
-sgf/uct_playout/uct_playout_capture_1.sgf
+sgf/uct/vital-1.sgf
