@@ -161,6 +161,17 @@ namespace GoBoardUtil
     template<class BOARD>
     bool IsCompletelySurrounded(const BOARD& bd, SgPoint p);
 
+    /** Similar to NumNeighbors, but count each block only once. */
+    template<class BOARD>
+    int NumNeighborBlocks(const BOARD& bd, SgPoint p,
+                          SgBlackWhite blockColor);
+
+    /** Cutting point if has at least two neighbor blocks. 
+    	Does not do any tactical checks.
+    */
+    template<class BOARD>
+    bool IsCuttingPoint(const BOARD& bd, SgPoint p, SgBlackWhite blockColor);
+
     bool IsHandicapPoint(SgGrid size, SgGrid col, SgGrid row);
 
     template<class BOARD>
@@ -428,6 +439,27 @@ inline bool GoBoardUtil::IsCompletelySurrounded(const BOARD& bd, SgPoint p)
     if (! bd.IsBorder(p + SG_NS) && bd.NumLiberties(p + SG_NS) == 1)
         return false;
     return true;
+}
+
+template<class BOARD>
+inline int GoBoardUtil::NumNeighborBlocks(const BOARD& bd, SgPoint p,
+                                        SgBlackWhite blockColor)
+{
+    SG_ASSERT(bd.GetColor(p) != blockColor);
+    SgPoint anchors[4 + 1];
+    bd.NeighborBlocks(p, blockColor, anchors);
+    for (int i = 0; i < 5; ++i)
+    	if (anchors[i] == SG_ENDPOINT)
+        	return i;
+    SG_ASSERT(false);
+    return 4;
+}
+
+template<class BOARD>
+inline bool GoBoardUtil::IsCuttingPoint(const BOARD& bd, SgPoint p,
+                                        SgBlackWhite blockColor)
+{
+	return NumNeighborBlocks(bd, p, blockColor) >= 2;
 }
 
 template<class BOARD>
