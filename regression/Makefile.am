@@ -39,6 +39,7 @@ performance_pro_9x9.tst \
 playout_2_liberties.tst \
 playout_approach_move.tst \
 playout_atari_capture.tst \
+playout_nakade.tst \
 repetition.tst \
 semeai_big.tst \
 simpleplayers.tst \
@@ -282,7 +283,13 @@ sgf/playout/playout_atari_defense_1.sgf \
 sgf/playout/playout_atari_defense_2.sgf \
 sgf/playout/playout_atari_defense_3.sgf \
 sgf/playout/playout_capture_1.sgf \
+sgf/playout/playout_nakade.1.sgf \
 sgf/playout/playout_nakade_approach.sgf \
+sgf/playout/playout_two_liberties_semeai.1.sgf \
+sgf/playout/playout_two_liberties_semeai.2.sgf \
+sgf/playout/playout_two_liberties_semeai.3.sgf \
+sgf/playout/playout_two_liberties_semeai.4.sgf \
+sgf/playout/playout_two_liberties_semeai.5.sgf \
 sgf/playout/playout_two_liberties_throw_in.sgf \
 sgf/rave-problems/823341-variation-rave-bug.sgf \
 sgf/rave-problems/results-105.sgf \
