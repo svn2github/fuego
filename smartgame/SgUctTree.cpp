@@ -214,7 +214,7 @@ SgUctProvenType SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
         return node.ProvenType();
 
     if (node.MoveCount() < minCount) {
-        if (!node.IsProven() || !alwaysKeepProven) {
+        if (! node.IsProven() || ! alwaysKeepProven) {
             targetNode.SetProvenType(SG_NOT_PROVEN);
             return SG_NOT_PROVEN;
         }

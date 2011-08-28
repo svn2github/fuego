@@ -303,7 +303,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdStateInfo(GtpCommand& cmd)
     GoAutoBookState state(m_bd);
     state.Synchronize();
     SgBookNode node;
-    if (!m_book->Get(state, node))
+    if (! m_book->Get(state, node))
         throw GtpFailure() << "State not in autobook.\n";
     cmd << node;
 }
@@ -333,7 +333,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdCover(GtpCommand& cmd)
     {
         std::string filename = cmd.Arg(0);
         std::ifstream in(filename.c_str());
-        if (!in)
+        if (! in)
             throw GtpFailure() << "Could not open '" << filename << "'\n";
         workList = GoAutoBook::ParseWorkList(in);
         if (workList.empty())
@@ -357,7 +357,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCover(GtpCommand& cmd)
     {
         std::string filename = cmd.Arg(0);
         std::ifstream in(filename.c_str());
-        if (!in)
+        if (! in)
             throw GtpFailure() << "Could not open '" << filename << "'\n";
         workList = GoAutoBook::ParseWorkList(in);
         if (workList.empty())
@@ -407,7 +407,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdAdditiveCoverSgf(GtpCommand& cmd)
             gameLine.push_back(prop->Value());
             ++i;
         }
-        if (!cur->NodeInDirection(SgNode::NEXT))
+        if (! cur->NodeInDirection(SgNode::NEXT))
             break;
         SgNode* next = cur->NodeInDirection(SgNode::NEXT);
         if (next == cur)
@@ -454,7 +454,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdImport(GtpCommand& cmd)
         throw GtpFailure() << "No opened autobook!\n";
     std::string filename = cmd.Arg();
     std::ifstream in(filename.c_str());
-    if (!in)
+    if (! in)
         throw GtpFailure() << "Could not open '" << filename << "'\n";
     m_book->ImportHashValuePairs(in);
 }
@@ -467,7 +467,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdExport(GtpCommand& cmd)
         throw GtpFailure() << "No opened autobook!\n";
     std::string filename = cmd.Arg();
     std::ofstream of(filename.c_str());
-    if (!of)
+    if (! of)
         throw GtpFailure() << "Could not open '" << filename << "'\n";
     GoAutoBookState state(m_bd);
     state.Synchronize();
@@ -561,7 +561,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdLoadDisabled(GtpCommand& cmd)
     {
         std::string filename = cmd.Arg();
         std::ifstream in(filename.c_str());
-        if (!in)
+        if (! in)
             throw GtpFailure() << "Could not open '" << filename << "'\n";
         workList = GoAutoBook::ParseWorkList(in);
     }
@@ -645,7 +645,7 @@ void GoUctBookBuilderCommands<PLAYER>::CmdPriority(GtpCommand& cmd)
     GoAutoBookState state(m_bd);
     state.Synchronize();
     SgBookNode parent;
-    if (!m_book->Get(state, parent))
+    if (! m_book->Get(state, parent))
         throw GtpFailure("Current state not in book!");
     ShowInfluence(cmd, state);
     cmd << "\nLABEL ";

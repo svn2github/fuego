@@ -886,7 +886,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
             maxTime = std::numeric_limits<double>::max();
         else
             maxTime = m_timeControl.TimeForCurrentMove(time,
-                                                       !m_writeDebugOutput);
+                                                       ! m_writeDebugOutput);
         SgUctValue value;
         if (m_searchMode == GOUCT_SEARCHMODE_ONEPLY)
         {

@@ -168,7 +168,7 @@ void SgBookBuilder::Cover(int requiredExpansions, bool additive,
             SgBookNode node;
             if (GetNode(node))
             {
-                if (!additive)
+                if (! additive)
                     expansionsToDo = requiredExpansions - node.m_count;
             }
             else
@@ -270,7 +270,7 @@ void SgBookBuilder::Refresh()
 
 void SgBookBuilder::IncreaseWidth()
 {
-    if (!m_useWidening)
+    if (! m_useWidening)
     {
         PrintMessage("Widening not enabled!\n");
         return;
@@ -325,11 +325,11 @@ bool SgBookBuilder::ExpandChildren(std::size_t count)
     {
         PlayMove(children[i]);
         SgBookNode child;
-        if (!GetNode(child))
+        if (! GetNode(child))
             childrenToDo.push_back(children[i]);
         UndoMove(children[i]);
     }
-    if (!childrenToDo.empty())
+    if (! childrenToDo.empty())
     {
         BeforeEvaluateChildren();
         std::vector<std::pair<SgMove, float> > scores;
@@ -396,7 +396,7 @@ void SgBookBuilder::UpdateValue(SgBookNode& node)
         std::vector<SgMove> legal;
         GetAllLegalMoves(legal);
         UpdateValue(node, legal);
-        if (!IsLoss(Value(node)))
+        if (! IsLoss(Value(node)))
             break;
         // Round up to next nearest multiple of m_expandWidth that is
         // larger than the current number of children.
@@ -408,7 +408,7 @@ void SgBookBuilder::UpdateValue(SgBookNode& node)
             os << "Forced Widening[" << numChildren << "->" << width << "]\n";
             PrintMessage(os.str());
         }
-        if (!ExpandChildren(width))
+        if (! ExpandChildren(width))
             break;
         ++m_numWidenings;
     }
@@ -462,7 +462,7 @@ SgMove SgBookBuilder::UpdatePriority(SgBookNode& node)
 void SgBookBuilder::DoExpansion(std::vector<SgMove>& pv)
 {
     SgBookNode node;
-    if (!GetNode(node))
+    if (! GetNode(node))
         SG_ASSERT(false);
     if (node.IsTerminal())
         return;
@@ -488,7 +488,7 @@ void SgBookBuilder::DoExpansion(std::vector<SgMove>& pv)
         WriteNode(node);
 
         // Recurse on most urgent child only if non-terminal.
-        if (!node.IsTerminal())
+        if (! node.IsTerminal())
         {
             PlayMove(mostUrgent);
             pv.push_back(mostUrgent);
@@ -516,7 +516,7 @@ bool SgBookBuilder::Refresh(bool root)
         return true;
     MarkAsVisited();
     SgBookNode node;
-    if (!GetNode(node))
+    if (! GetNode(node))
         return false;
     if (node.IsLeaf())
     {
@@ -563,7 +563,7 @@ void SgBookBuilder::IncreaseWidth(bool root)
         return;
     MarkAsVisited();
     SgBookNode node;
-    if (!GetNode(node))
+    if (! GetNode(node))
         return;
     if (node.IsTerminal() || node.IsLeaf())
         return;

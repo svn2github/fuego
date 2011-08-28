@@ -441,7 +441,7 @@ template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::EnsureRootExists()
 {
     SgBookNode root;
-    if (!GetNode(root))
+    if (! GetNode(root))
     {
         BeforeEvaluateChildren();
         PrintMessage("Creating root node...\n");

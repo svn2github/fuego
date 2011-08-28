@@ -580,7 +580,7 @@ SgUctValue SgUctSearch::GetBound(bool useRave, bool useBiasTerm,
         value = GetValueEstimateRave(child);
     else
         value = GetValueEstimate(false, child);
-    if (m_biasTermConstant == 0.0 || !useBiasTerm)
+    if (m_biasTermConstant == 0.0 || ! useBiasTerm)
         return value;
     else
     {
@@ -846,7 +846,7 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
     if (lock != 0)
         lock->unlock();
 
-    if (!info.m_nodes.empty() && isTerminal)
+    if (! info.m_nodes.empty() && isTerminal)
     {
         const SgUctNode& terminalNode = *info.m_nodes.back();
         SgUctValue eval = state.Evaluate();
@@ -926,7 +926,7 @@ void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
         for (SgUctChildIterator it(m_tree, parent); it; ++it)
         {
             const SgUctNode& child = *it;
-            if (!child.IsProven())
+            if (! child.IsProven())
                 type = SG_NOT_PROVEN;
             else if (child.IsProvenLoss())
             {
@@ -1277,7 +1277,7 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
-        if (!child.IsProvenWin()) // Avoid losing moves
+        if (! child.IsProvenWin()) // Avoid losing moves
         {
             SgUctValue bound = GetBound(useRave, useBiasTerm, logPosCount, child);
             // Compare bound to best bound using a not too small epsilon
@@ -1554,7 +1554,7 @@ void SgUctSearch::WriteStatistics(ostream& out) const
     out << SgWriteLabel("Count") << m_tree.Root().MoveCount() << '\n'
         << SgWriteLabel("GamesPlayed") << GamesPlayed() << '\n'
         << SgWriteLabel("Nodes") << m_tree.NuNodes() << '\n';
-    if (!m_knowledgeThreshold.empty())
+    if (! m_knowledgeThreshold.empty())
         out << SgWriteLabel("Knowledge") 
             << m_statistics.m_knowledge << " (" << fixed << setprecision(1) 
             << m_statistics.m_knowledge * 100.0 / m_tree.Root().MoveCount()

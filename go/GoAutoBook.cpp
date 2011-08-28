@@ -81,10 +81,10 @@ GoAutoBook::GoAutoBook(const std::string& filename,
       m_filename(filename)
 {
     std::ifstream is(filename.c_str());
-    if (!is)
+    if (! is)
     {
         std::ofstream of(filename.c_str());
-        if (!of)
+        if (! of)
             throw SgException("Invalid file name!");
         of.close();
     }
@@ -175,7 +175,7 @@ void GoAutoBook::Merge(const GoAutoBook& other)
                 m_data[it->first] = newNode;
                 leafsInCommon++;
             }
-            else if (!newNode.IsLeaf())
+            else if (! newNode.IsLeaf())
             {
                 // Take the max of the count; can't just add them
                 // together because then merging a book with itself
@@ -186,7 +186,7 @@ void GoAutoBook::Merge(const GoAutoBook& other)
                 // that much.
                 newNode.m_count = std::max(newNode.m_count, oldNode.m_count);
                 m_data[it->first] = newNode;
-                if (!oldNode.IsLeaf())
+                if (! oldNode.IsLeaf())
                     internalInCommon++;
                 else 
                     leafToInternal++;
@@ -217,7 +217,7 @@ void GoAutoBook::TruncateByDepth(int depth, GoAutoBookState& state,
     if (seen.count(state.GetHashCode()))
         return;
     SgBookNode node;
-    if (!Get(state, node))
+    if (! Get(state, node))
         return;
     seen.insert(state.GetHashCode());
     if (depth == 0)
@@ -256,7 +256,7 @@ void GoAutoBook::ImportHashValuePairs(std::istream& in)
         in >> hashStr;
         hash.FromString(hashStr);
         float value;
-        if (!in) 
+        if (! in) 
             break;
         in >> value;
         if (m_data.count(hash) == 0)
@@ -283,7 +283,7 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
     SgMove bestMove = SG_NULLMOVE;
     float bestScore = 100.0f;
     SgBookNode node;
-    if (!Get(state, node))
+    if (! Get(state, node))
         return SG_NULLMOVE;
     if (node.IsLeaf())
         return SG_NULLMOVE;
@@ -298,7 +298,7 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
             // NOTE: Terminal nodes aren't supported at this time, so 
             // we ignore them here.
             else if (Get(state, node) 
-                     && !node.IsTerminal() 
+                     && ! node.IsTerminal() 
                      && node.m_count >= m_param.m_usageCountThreshold)
             {
                 if (m_param.m_selectType == GO_AUTOBOOK_SELECT_COUNT)
@@ -351,7 +351,7 @@ void GoAutoBook::ExportToOldFormat(GoAutoBookState& state, std::ostream& out,
     if (seen.count(state.GetHashCode()))
         return;
     SgBookNode node;
-    if (!Get(state, node))
+    if (! Get(state, node))
         return;
     if (node.IsTerminal() || node.IsLeaf())
         return;
