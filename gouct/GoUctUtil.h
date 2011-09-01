@@ -111,7 +111,7 @@ namespace GoUctUtil
         on the board that this function would return true for, then the
         end position can be scored with GoBoardUtil::ScoreSimpleEndPosition(). */
     template<class BOARD>
-    bool GeneratePoint(const BOARD& bd, SgBalancer& balancer, SgPoint p, 
+    bool GeneratePoint(const BOARD& bd, SgPoint p, 
                        SgBlackWhite toPlay);
 
     /** Print information about search as Gfx commands for GoGui.
@@ -173,8 +173,7 @@ namespace GoUctUtil
 
     /** selfatari of a larger number of stones and also atari on opponent. */
     template<class BOARD>
-    bool IsMutualAtari(const BOARD& bd, SgBalancer& balancer, SgPoint p, 
-                       SgBlackWhite toPlay);
+    bool IsMutualAtari(const BOARD& bd, SgPoint p, SgBlackWhite toPlay);
                                  
     /** Save tree contained in a search as a Go SGF file.
         The SGF file is written directly without using SgGameWriter to avoid
@@ -199,13 +198,12 @@ namespace GoUctUtil
         @param emptyPts The list of empty points (will potentially be modified
         in this function for efficiency reasons)
         @param random The random generator
-        @param balancer The balancer used in GeneratePoint()
         @return The move or SG_NULLMOVE if no empty point is a legal move that
         should be generated */
     template<class BOARD>
     SgPoint SelectRandom(const BOARD& bd, SgBlackWhite toPlay,
                          GoPointList& emptyPts,
-                         SgRandom& random, SgBalancer& balancer);
+                         SgRandom& random);
 
     /** Utility function used in DoClumpCorrection() */
     template<class BOARD>
@@ -381,7 +379,7 @@ bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
 }
 
 template<class BOARD>
-inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgBalancer& balancer, 
+inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, 
                                      SgPoint p, SgBlackWhite toPlay)
 {
     int nuStones = 0;
@@ -397,21 +395,14 @@ inline bool GoUctUtil::IsMutualAtari(const BOARD& bd, SgBalancer& balancer,
         bool selfatari =
                 bd.HasNeighbors(p, opp) &&
                 GoBoardUtil::SelfAtariForColor(bd, p, opp);
-        if (selfatari && balancer.Play(toPlay))
-        {
-            /*
-            static int count = 0;
-            if (++count < 30)
-                SgDebug() << bd << "Removed mutual atari"
-                << SgWriteMove(p, bd.ToPlay()) << '\n'; */
+        if (selfatari)
             return true;
-        }
     }
     return false;
 }
 
 template<class BOARD>
-inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgBalancer& balancer,
+inline bool GoUctUtil::GeneratePoint(const BOARD& bd,
                                      SgPoint p, SgBlackWhite toPlay)
 {
     SG_ASSERT(bd.IsEmpty(p));
@@ -429,13 +420,11 @@ inline bool GoUctUtil::GeneratePoint(const BOARD& bd, SgBalancer& balancer,
             // todo: check for nakade shapes here.
            )
         {
-            //SgDebug() << bd << "Removed selfatari"
-            //<< SgWriteMove(p, toPlay);
             return false;
         }
     }
     
-    if (REMOVE_MUTUAL_ATARI && IsMutualAtari(bd, balancer, p, toPlay))
+    if (REMOVE_MUTUAL_ATARI && IsMutualAtari(bd, p, toPlay))
         return false;
     return true;
 }
@@ -444,8 +433,7 @@ template<class BOARD>
 inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
                                        SgBlackWhite toPlay,
                                        GoPointList& emptyPts,
-                                       SgRandom& random,
-                                       SgBalancer& balancer)
+                                       SgRandom& random)
 {
     while (true)
     {
@@ -455,7 +443,7 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
         int index = random.SmallInt(length);
         SgPoint p = emptyPts[index];
         SG_ASSERT(bd.IsEmpty(p));
-        if (GeneratePoint(bd, balancer, p, toPlay))
+        if (GeneratePoint(bd, p, toPlay))
             return p;
         emptyPts[index] = emptyPts[length - 1];
         emptyPts.PopBack();

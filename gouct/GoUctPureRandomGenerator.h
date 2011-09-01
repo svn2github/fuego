@@ -51,7 +51,7 @@ public:
         Randomly select an empty point on the board that fulfills
         GoUctUtil::GeneratePoint() for the color currently to play on the
         board. */
-    SgPoint Generate(SgBalancer& balancer);
+    SgPoint Generate();
 
     /** Generate a move using the fillboard heuristic.
         Tries @c numberTries times to select a point on the board and
@@ -135,7 +135,7 @@ inline bool GoUctPureRandomGenerator<BOARD>::Empty3x3(SgPoint p)
 }
 
 template<class BOARD>
-inline SgPoint GoUctPureRandomGenerator<BOARD>::Generate(SgBalancer& balancer)
+inline SgPoint GoUctPureRandomGenerator<BOARD>::Generate()
 {
     CheckConsistency();
     SgBlackWhite toPlay = m_bd.ToPlay();
@@ -152,7 +152,7 @@ inline SgPoint GoUctPureRandomGenerator<BOARD>::Generate(SgBalancer& balancer)
             m_candidates.pop_back();
             continue;
         }
-        if (GoUctUtil::GeneratePoint(m_bd, balancer, p, toPlay))
+        if (GoUctUtil::GeneratePoint(m_bd, p, toPlay))
         {
             CheckConsistency();
             return p;
