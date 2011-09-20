@@ -960,7 +960,6 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     nodes.push_back(current);
     bool breakAfterSelect = false;
     isTerminal = false;
-    bool deepenTree = false;
     bool useBiasTerm = false;
     if (--state.m_randomizeBiasCounter == 0) {
         useBiasTerm = true;
@@ -993,16 +992,12 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                 isTerminal = true;
                 break;
             }
-            if (  deepenTree
-               || current->MoveCount() >= m_expandThreshold
-               )
+            if (current->MoveCount() >= m_expandThreshold)
             {
-                deepenTree = false;
                 ExpandNode(state, *current);
                 if (state.m_isTreeOutOfMem)
                     return true;
-                if (! deepenTree)
-                    breakAfterSelect = true;
+                breakAfterSelect = true;
             }
             else
                 break;
@@ -1011,7 +1006,6 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
                  && NeedToComputeKnowledge(current))
         {
             m_statistics.m_knowledge++;
-            deepenTree = false;
             state.m_moves.clear();
             SgUctProvenType provenType = SG_NOT_PROVEN;
             bool truncate = state.GenerateAllMoves(current->KnowledgeCount(), 
@@ -1033,8 +1027,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
             }
             if (state.m_isTreeOutOfMem)
                 return true;
-            if (! deepenTree)
-                breakAfterSelect = true;
+            breakAfterSelect = true;
         }
         current = &SelectChild(state.m_randomizeRaveCounter, useBiasTerm, *current);
         if (m_virtualLoss && m_numberThreads > 1)
