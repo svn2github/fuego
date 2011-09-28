@@ -14,6 +14,7 @@
 #include <limits>
 #include <time.h>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem.hpp>
 #include "GoEyeUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoModBoard.h"
@@ -377,8 +378,19 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
     cmd.CheckArgNone();
     CheckMaxClearBoard();
     if (! m_sentinelFile.empty() && exists(m_sentinelFile))
-        throw GtpFailure() << "Detected sentinel file '"
+    {
+        # if defined(BOOST_FILESYSTEM_VERSION)
+	   SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
+        #endif
+
+        #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
+           throw GtpFailure() << "Detected sentinel file '"
+                           << m_sentinelFile.string() << "'";
+	#else		   
+           throw GtpFailure() << "Detected sentinel file '"
                            << m_sentinelFile.native_file_string() << "'";
+	#endif
+    }
     if (Board().MoveNumber() > 0)
         GameFinished();
     Init(Board().Size());

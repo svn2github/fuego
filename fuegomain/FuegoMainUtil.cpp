@@ -5,7 +5,7 @@
 
 #include "SgSystem.h"
 #include "FuegoMainUtil.h"
-
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <sstream>
 #include "GoBook.h"
@@ -22,7 +22,15 @@ bool LoadBookFile(GoBook& book, const path& file)
 {
     path normalizedFile = file;
     normalizedFile.normalize();
-    string nativeFile = normalizedFile.native_file_string();
+    # if defined(BOOST_FILESYSTEM_VERSION)
+       SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
+    #endif
+
+    #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
+        string nativeFile = normalizedFile.string();
+    #else
+        string nativeFile = normalizedFile.native_file_string();
+    #endif	
     SgDebug() << "Loading opening book from '" << nativeFile << "'... ";
     ifstream in(nativeFile.c_str());
     if (! in)

@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -62,7 +63,15 @@ path GetProgramDir(const char* programPath)
 {
     if (programPath == 0)
         return "";
-    return path(programPath, boost::filesystem::native).branch_path();
+    # if defined(BOOST_FILESYSTEM_VERSION)
+        SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
+    #endif
+
+    #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
+        return path(programPath);
+    #else
+        return path(programPath, boost::filesystem::native).branch_path();
+    #endif	
 }
 
 void Help(po::options_description& desc, ostream& out)
