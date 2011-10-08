@@ -613,6 +613,7 @@ bool GoLadderUtil::IsLadderCaptureMove(const GoBoard& constBd,
     GoBoard& bd = mbd.Board();
     const SgBlackWhite defender = bd.GetStone(prey);
     const SgBlackWhite attacker = SgOppBW(defender);
+    GoRestoreToPlay r(bd);
     bd.SetToPlay(attacker);
     if (PlayIfLegal(bd, firstMove, attacker))
     {
@@ -626,6 +627,54 @@ bool GoLadderUtil::IsLadderCaptureMove(const GoBoard& constBd,
     else
     	return false;
 }
+
+bool GoLadderUtil::IsLadderEscapeMove(const GoBoard& constBd, 
+									   SgPoint prey, SgPoint firstMove)
+{
+    SG_ASSERT(constBd.NumLiberties(prey) == 1);
+    GoModBoard mbd(constBd);
+    GoBoard& bd = mbd.Board();
+    const SgBlackWhite defender = bd.GetStone(prey);
+    const SgBlackWhite attacker = SgOppBW(defender);
+    GoRestoreToPlay r(bd);
+    bd.SetToPlay(defender);
+    if (PlayIfLegal(bd, firstMove, defender))
+    {
+	    GoLadder ladder;
+        bool isCapture = ladder.Ladder(bd, prey, attacker, 
+                                       0, false/*twoLibIsEscape*/
+                                      ) < 0;
+    	bd.Undo();
+        return ! isCapture;
+    }
+    else
+    	return false;
+
+}
+
+void GoLadderUtil::FindLadderEscapeMoves(const GoBoard& bd, SgPoint prey, 
+                           SgVector<SgPoint>& escapeMoves)
+{
+    SG_ASSERT(bd.NumLiberties(prey) == 1);
+    SG_ASSERT(escapeMoves.IsEmpty());
+    
+    SgPoint p = bd.TheLiberty(prey);
+    SgVector<SgPoint> candidates;
+    candidates.PushBack(p);
+    if (IsLadderEscapeMove(bd, prey, p))
+    	escapeMoves.PushBack(p);
+    for (GoAdjBlockIterator<GoBoard> it(bd, prey, 1); it; ++it)
+    {
+        // check if prey can escape by capturing *it on p.
+        SgPoint p = bd.TheLiberty(*it);
+        if (! candidates.Contains(p))
+        {
+		    candidates.PushBack(p);
+        	if (IsLadderEscapeMove(bd, prey, p))
+            	escapeMoves.PushBack(p);
+        }
+    }
+}                           
 
 bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd, SgPoint liberty,
                                       SgBlackWhite color)

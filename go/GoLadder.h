@@ -151,6 +151,15 @@ SgPoint TryLadder(const GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
 */
 bool IsLadderCaptureMove(const GoBoard& bd, SgPoint prey, SgPoint firstMove);
 
+bool IsLadderEscapeMove(const GoBoard& bd, SgPoint prey, SgPoint firstMove);
+
+/** Find moves that can escape a block in atari from a ladder:
+	1. the liberty
+    2. Capturing opponent neighbors
+*/
+void FindLadderEscapeMoves(const GoBoard& bd, SgPoint prey, 
+                           SgVector<SgPoint>& escapeMoves);
+
 } // namespace GoLadderUtil
 
 //----------------------------------------------------------------------------

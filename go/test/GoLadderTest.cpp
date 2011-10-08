@@ -241,6 +241,85 @@ BOOST_AUTO_TEST_CASE(GoLadderTest_IsLadderCaptureMove_2)
     bd.CheckConsistency();
 }
 
+BOOST_AUTO_TEST_CASE(GoLadderTest_IsLadderEscapeMove_1)
+{
+    std::string s("......\n"
+                  ".XOX..\n"
+                  "..X...\n"
+                  "......\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    const GoBoard bd(boardSize, setup);
+
+    bool result = GoLadderUtil::IsLadderEscapeMove(bd, Pt(3, 5), Pt(3, 6));
+    BOOST_CHECK_EQUAL(result, false);
+    bd.CheckConsistency();
+    
+    SgVector<SgPoint> escapeMoves;
+    GoLadderUtil::FindLadderEscapeMoves(bd, Pt(3, 5), escapeMoves);
+    BOOST_CHECK(escapeMoves.IsEmpty());
+}
+
+BOOST_AUTO_TEST_CASE(GoLadderTest_IsLadderEscapeMove_2)
+{
+    std::string s("......\n"
+                  "......\n"
+                  ".XOX..\n"
+                  "..X...\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    const GoBoard bd(boardSize, setup);
+
+    bool result = GoLadderUtil::IsLadderEscapeMove(bd, Pt(3, 4), Pt(3, 5));
+    BOOST_CHECK_EQUAL(result, true);
+    bd.CheckConsistency();
+    
+    result = GoLadderUtil::IsLadderEscapeMove(bd, Pt(3, 4), Pt(2, 3));
+    BOOST_CHECK_EQUAL(result, false);
+    bd.CheckConsistency();
+    
+    SgVector<SgPoint> escapeMoves;
+    GoLadderUtil::FindLadderEscapeMoves(bd, Pt(3, 4), escapeMoves);
+    BOOST_CHECK_EQUAL(escapeMoves.Length(), 1);
+    BOOST_CHECK_EQUAL(escapeMoves[0], Pt(3, 5));
+}
+
+BOOST_AUTO_TEST_CASE(GoLadderTest_IsLadderEscapeMove_3)
+{
+    std::string s("..X...\n"
+                  ".XO...\n"
+                  ".XOX..\n"
+                  ".OXO..\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    const GoBoard bd(boardSize, setup);
+
+    bool result = GoLadderUtil::IsLadderEscapeMove(bd, Pt(3, 4), Pt(4, 5));
+    BOOST_CHECK_EQUAL(result, true);
+    bd.CheckConsistency();
+    
+    result = GoLadderUtil::IsLadderEscapeMove(bd, Pt(3, 4), Pt(3, 2));
+    BOOST_CHECK_EQUAL(result, true);
+    bd.CheckConsistency();
+    
+    SgVector<SgPoint> escapeMoves;
+    GoLadderUtil::FindLadderEscapeMoves(bd, Pt(3, 4), escapeMoves);
+    BOOST_CHECK_EQUAL(escapeMoves.Length(), 2);
+    BOOST_CHECK(escapeMoves[0] == Pt(4, 5) || escapeMoves[0] == Pt(3, 2));
+    BOOST_CHECK(escapeMoves[1] == Pt(4, 5) || escapeMoves[1] == Pt(3, 2));
+    BOOST_CHECK(escapeMoves[0] != escapeMoves[1]);
+}
+
+
 //----------------------------------------------------------------------------
 
 } // namespace
