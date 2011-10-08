@@ -197,6 +197,49 @@ BOOST_AUTO_TEST_CASE(GoLadderTest_SnapBack_1)
     BOOST_CHECK_EQUAL(status, GO_LADDER_CAPTURED);
 }
 
+BOOST_AUTO_TEST_CASE(GoLadderTest_IsLadderCaptureMove_1)
+{
+    std::string s("......\n"
+                  ".XO...\n"
+                  "..X...\n"
+                  "......\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    const GoBoard bd(boardSize, setup);
+
+    bool result1 = GoLadderUtil::IsLadderCaptureMove(bd, Pt(3, 5), Pt(4, 5));
+    BOOST_CHECK_EQUAL(result1, true);
+    bd.CheckConsistency();
+
+    bool result2 = GoLadderUtil::IsLadderCaptureMove(bd, Pt(3, 5), Pt(3, 6));
+    BOOST_CHECK_EQUAL(result2, false);
+    bd.CheckConsistency();
+}
+
+BOOST_AUTO_TEST_CASE(GoLadderTest_IsLadderCaptureMove_2)
+{
+    std::string s("......\n"
+                  "......\n"
+                  "......\n"
+                  ".XOOX.\n"
+                  "..XX..\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    const GoBoard bd(boardSize, setup);
+
+    bool result1 = GoLadderUtil::IsLadderCaptureMove(bd, Pt(3, 3), Pt(3, 4));
+    BOOST_CHECK_EQUAL(result1, true);
+    bd.CheckConsistency();
+
+    bool result2 = GoLadderUtil::IsLadderCaptureMove(bd, Pt(3, 3), Pt(4, 4));
+    BOOST_CHECK_EQUAL(result2, true);
+    bd.CheckConsistency();
+}
 
 //----------------------------------------------------------------------------
 

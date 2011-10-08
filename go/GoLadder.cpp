@@ -603,6 +603,30 @@ GoLadderStatus GoLadderUtil::LadderStatus(const GoBoard& bd, SgPoint prey,
     return status;
 }
 
+bool GoLadderUtil::IsLadderCaptureMove(const GoBoard& constBd, 
+									   SgPoint prey, SgPoint firstMove)
+{
+    SG_ASSERT(constBd.NumLiberties(prey) == 2);
+    SG_ASSERT(constBd.IsLibertyOfBlock(firstMove, constBd.Anchor(prey)));
+    
+    GoModBoard mbd(constBd);
+    GoBoard& bd = mbd.Board();
+    const SgBlackWhite defender = bd.GetStone(prey);
+    const SgBlackWhite attacker = SgOppBW(defender);
+    bd.SetToPlay(attacker);
+    if (PlayIfLegal(bd, firstMove, attacker))
+    {
+	    GoLadder ladder;
+        bool isCapture = ladder.Ladder(bd, prey, defender, 
+                                       0, false/*twoLibIsEscape*/
+                                      ) < 0;
+    	bd.Undo();
+        return isCapture;
+    }
+    else
+    	return false;
+}
+
 bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd, SgPoint liberty,
                                       SgBlackWhite color)
 {
@@ -669,11 +693,6 @@ bool GoLadderUtil::IsProtectedLiberty(const GoBoard& bd1, SgPoint liberty,
     return isProtected;
 }
 
-/** try to escape/capture prey block
-    Possible return values:
-    - SG_PASS if already escaped/captured
-    - the point to play
-    - SG_NULLMOVE in case of failure */
 SgPoint GoLadderUtil::TryLadder(const GoBoard& bd, SgPoint prey,
                                 SgBlackWhite firstPlayer)
 {

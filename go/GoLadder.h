@@ -136,7 +136,20 @@ bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col,
 /** Simple form, calls the complex form and ignores bool results */
 bool IsProtectedLiberty(const GoBoard& bd, SgPoint liberty, SgBlackWhite col);
 
+/** try to escape/capture prey block
+    Possible return values:
+    - SG_PASS if already escaped/captured
+    - the point to play
+    - SG_NULLMOVE in case of failure
+*/
 SgPoint TryLadder(const GoBoard& bd, SgPoint prey, SgBlackWhite firstPlayer);
+
+/** Can prey be captured if opponent starts with firstMove?
+	Preconditions:
+    1. prey has 2 liberties
+    2. firstMove is one of those two liberties.
+*/
+bool IsLadderCaptureMove(const GoBoard& bd, SgPoint prey, SgPoint firstMove);
 
 } // namespace GoLadderUtil
 
