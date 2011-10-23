@@ -9,7 +9,18 @@ Current development version
 ===========================
 
 * Deterministic mode to make search results reproducible
+* Fixed bugs for handling negative (reverse) komi
+* Support both boost filesystem v2 and v3
 
+Version 1.1 - 2011 Mar 13
+=========================
+
+* Change root filter to move filter - can be called in any tree node
+* Improved ladder handling in node filter
+* Implemented cgos-gameover to stop pondering
+* Handle integer komi - draw possible - in search
+* Windows installer
+* Limited default memory to 1GB and default threads to 4
 
 Version 1.0 - 2010 Jan 23
 =========================
@@ -23,7 +34,7 @@ Version 1.0 - 2010 Jan 23
   is no longer supported. The new script setup-build.sh can be used to set up
   some commonly used build configurations.
 * Use only the same floating point type for all counts and values in
-  SgUctSearch. The floating point type cane be set with the configure
+  SgUctSearch. The floating point type can be set with the configure
   parameter --enable-uct-value-type
 * Added generic argument parsing function GtpCommand::Arg<T> and declared
   old function (GtpCommand::IntArg() etc.) as deprecated
