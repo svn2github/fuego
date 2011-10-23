@@ -55,6 +55,12 @@ inline void SG_UNUSED(const T&)
 #endif
 
 //----------------------------------------------------------------------------
+/** Deterministic mode gives reproducible search results */
+namespace SgDeterministic
+{
+   void SetDeterministicMode(bool flag);
+   bool DeterministicMode();
+}
 
 /** Additional code to run in debug mode after an assertion failed. */
 class SgAssertionHandler
@@ -162,7 +168,5 @@ inline void SgSynchronizeThreadMemory()
 
 #endif
 }
-
-//----------------------------------------------------------------------------
 
 #endif // SG_SYSTEM_H

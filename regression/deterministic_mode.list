@@ -1,0 +1,13 @@
+# Tests for deterministic mode of Fuego. In deterministic mode,
+# The outcome of MCTS should be reproducible.
+
+play_deterministic_srand1.tst
+play_deterministic_srand2.tst
+play_deterministic_srand3.tst
+play_deterministic_srand4.tst
+play_deterministic_srand5.tst
+play_deterministic_srand6.tst
+play_deterministic_srand7.tst
+play_deterministic_srand8.tst
+play_deterministic_srand9.tst
+play_deterministic_srand1_maxgames1M.tst

@@ -698,6 +698,18 @@ public:
     /** See SetNumberThreads() */
     void SetNumberThreads(unsigned int n);
 
+    /** Interval in number of games in which to check time abort.
+        Avoids that the potentially expensive SgTime::Get() is called after
+        every game. The interval is updated dynamically according to the
+        current games/sec, such that it is called ten times per second
+        (if the total search time is at least one second, otherwise ten times
+        per total maximum search time)
+    */
+    SgUctValue CheckTimeInterval() const;
+
+    /** See SetCheckTimeInterval() */
+    void SetCheckTimeInterval(SgUctValue n);
+
     /** Lock-free usage of multi-threaded search.
         @ref sguctsearchlockfree */
     bool LockFree() const;
@@ -1012,12 +1024,7 @@ private:
 
     SgUctValue m_startRootMoveCount;
 
-    /** Interval in number of games in which to check time abort.
-        Avoids that the potentially expensive SgTime::Get() is called after
-        every game. The interval is updated dynamically according to the
-        current games/sec, such that it is called ten times per second
-        (if the total search time is at least one second, otherwise ten times
-        per total maximum search time) */
+    /** See CheckTimeInterval() */
     SgUctValue m_checkTimeInterval;
 
     volatile SgUctValue m_nextCheckTime;
@@ -1233,6 +1240,11 @@ inline SgUctMoveSelect SgUctSearch::MoveSelect() const
 inline unsigned int SgUctSearch::NumberThreads() const
 {
     return m_numberThreads;
+}
+
+inline SgUctValue SgUctSearch::CheckTimeInterval() const
+{
+    return m_checkTimeInterval;
 }
 
 inline std::size_t SgUctSearch::NumberPlayouts() const

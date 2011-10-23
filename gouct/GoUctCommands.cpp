@@ -42,6 +42,14 @@ typedef GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
 
 namespace {
 
+bool IsBlockedInDeterministicMode(const string& name)
+{
+	return name == "ignore_clock"
+    	|| name == "reuse_subtree"
+        || name == "number_threads"
+        ;
+}
+
 GoUctLiveGfx LiveGfxArg(const GtpCommand& cmd, size_t number)
 {
     string arg = cmd.ArgToLower(number);
@@ -171,6 +179,7 @@ GoUctCommands::GoUctCommands(const GoBoard& bd, GoPlayer*& player)
 void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
+        "none/Deterministic Mode/deterministic_mode\n"
         "gfx/Uct Bounds/uct_bounds\n"
         "plist/Uct Default Policy/uct_default_policy\n"
         "gfx/Uct Gfx/uct_gfx\n"
@@ -241,6 +250,33 @@ void GoUctCommands::CmdDefaultPolicy(GtpCommand& cmd)
     GoPointList empty;
     knowledge.FindGlobalPatternAndAtariMoves(pattern, atari, empty);
     cmd << SgWritePointSet(atari, "", false) << '\n';
+}
+
+/* Set Fuego to play in deterministic mode. srand must be set. 
+   number of threads =1 and m_checkInterval must not depend on clock. */
+void GoUctCommands::CmdDeterministicMode(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    GoUctSearch& s = Search();
+    GoUctPlayerType& p = Player();
+    SgDeterministic::SetDeterministicMode(true); 
+    SgDebug() << 
+    "This command irreversibly puts the player into deterministic mode.\n"
+    "It also enforces and fixes the following parameters:\n"
+    "uct_param_player ignore_clock true\n"
+    "uct_param_player reuse_subtree false\n"
+    "uct_param_search number_threads 1\n";
+    p.SetIgnoreClock(true);
+    p.SetReuseSubtree(false);
+    s.SetNumberThreads(1);
+    SgRandom::SetSeed(1);
+    s.SetCheckTimeInterval(SgUctValue(1500));
+
+    cmd << "ignore_clock " << p.IgnoreClock() << '\n'
+        << "reuse_subtree " << p.ReuseSubtree() << '\n'
+        << "number_threads " << s.NumberThreads() << '\n'
+        << "set_random_seed " << SgRandom::Seed() << '\n'
+        << "m_check_time_interval " << s.CheckTimeInterval() << '\n';
 }
 
 /** Compute estimator statistics.
@@ -402,6 +438,7 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         throw GtpFailure() << "need 0 or 2 arguments";
 }
 
+
 /** Get and set GoUctPlayer parameters.
     This command is compatible with the GoGui analyze command type "param".
 
@@ -443,6 +480,12 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
     else if (cmd.NuArg() >= 1 && cmd.NuArg() <= 2)
     {
         string name = cmd.Arg(0);
+        if (  SgDeterministic::DeterministicMode()
+           && IsBlockedInDeterministicMode(name)
+           )
+            throw GtpFailure() << "Command " 
+                    << name << " is blocked in deterministic mode."; 
+
         if (name == "auto_param")
             p.SetAutoParam(cmd.Arg<bool>(1));
         else if (name == "early_pass")
@@ -639,7 +682,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
             << "[string] knowledge_threshold "
             << KnowledgeThresholdToString(s.KnowledgeThreshold()) << '\n'
-            << "[string] max_knowledge_threads " << s.MaxKnowledgeThreads() << '\n'
+            << "[string] max_knowledge_threads " 
+            << s.MaxKnowledgeThreads() << '\n'
             << "[list/none/counts/sequence] live_gfx "
             << LiveGfxToString(s.LiveGfx()) << '\n'
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
@@ -659,6 +703,12 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
+        if (  SgDeterministic::DeterministicMode()
+           && IsBlockedInDeterministicMode(name)
+           )
+            throw GtpFailure() << "Command " 
+                    << name << " is blocked in deterministic mode."; 
+
         if (name == "check_float_precision")
             s.SetCheckFloatPrecision(cmd.Arg<bool>(1));
         else if (name == "keep_games")
@@ -700,7 +750,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "move_select")
             s.SetMoveSelect(MoveSelectArg(cmd, 1));
         else if (name == "number_threads")
-            s.SetNumberThreads(cmd.ArgMin<unsigned int>(1, 1));
+             s.SetNumberThreads(cmd.ArgMin<unsigned int>(1, 1));
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.ArgMin<int>(1, 1));
         else if (name == "prune_min_count")
@@ -944,14 +994,29 @@ void GoUctCommands::CmdStatPolicyClear(GtpCommand& cmd)
     @see SgUctSearch::WriteStatistics() */
 void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
 {
-    cmd.CheckArgNone();
+    cmd.CheckNuArgLessEqual(1);
     const GoUctSearch& search = Search();
     SgUctTreeStatistics treeStatistics;
     treeStatistics.Compute(search.Tree());
-    cmd << "SearchStatistics:\n";
-    search.WriteStatistics(cmd);
-    cmd << "TreeStatistics:\n"
-        << treeStatistics;
+    if (cmd.NuArg() == 0)
+    {
+       cmd << "SearchStatistics:\n";
+       search.WriteStatistics(cmd);
+       cmd << "TreeStatistics:\n"
+           << treeStatistics;
+    }
+    else
+    {
+        string name = cmd.Arg(0);
+        if (name == "count")
+            cmd << search.Tree().Root().MoveCount() << '\n';
+        else if (name == "games_played")
+            cmd << search.GamesPlayed() << '\n';
+        else if (name == "nodes")
+            cmd << search.Tree().NuNodes() << '\n';
+        else
+            throw GtpFailure() << "unknown parameter: " << name;
+    }
 }
 
 /** Write average point status.
@@ -1105,6 +1170,7 @@ GoUctCommands::Policy(unsigned int threadId)
 
 void GoUctCommands::Register(GtpEngine& e)
 {
+    Register(e, "deterministic_mode", &GoUctCommands::CmdDeterministicMode);
     Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);

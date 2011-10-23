@@ -357,7 +357,8 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
             m_wasEarlyAbort = true;
             return true;
         }
-        UpdateCheckTimeInterval(time);
+        if (! SgDeterministic::DeterministicMode())
+           UpdateCheckTimeInterval(time);
         if (m_moveSelect == SG_UCTMOVESELECT_COUNT)
         {
             double remainingGamesDouble = m_maxGames - rootCount - 1;
@@ -1304,6 +1305,12 @@ void SgUctSearch::SetNumberThreads(unsigned int n)
     CreateThreads();
 }
 
+void SgUctSearch::SetCheckTimeInterval(SgUctValue n)
+{
+    SG_ASSERT(n >= 0);
+    m_checkTimeInterval = n;
+}
+
 void SgUctSearch::SetRave(bool enable)
 {
     if (enable && m_moveRange <= 0)
@@ -1350,12 +1357,13 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
     m_statistics.Clear();
     m_aborted = false;
     m_wasEarlyAbort = false;
-    m_checkTimeInterval = 1;
+    if (! SgDeterministic::DeterministicMode())
+       m_checkTimeInterval = 1;
     m_numberGames = 0;
     m_lastScoreDisplayTime = m_timer.GetTime();
     OnStartSearch();
     
-    m_nextCheckTime = (SgUctValue)m_checkTimeInterval;
+    m_nextCheckTime = SgUctValue(m_checkTimeInterval);
     m_startRootMoveCount = m_tree.Root().MoveCount();
 
     for (unsigned int i = 0; i < m_threads.size(); ++i)

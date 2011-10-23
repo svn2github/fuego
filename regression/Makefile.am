@@ -2,6 +2,7 @@ EXTRA_DIST = \
 run.sh \
 19.suite \
 basics.suite \
+deterministic_mode.suite \
 performance.suite \
 playout.suite \
 static_safety.suite \
@@ -9,6 +10,7 @@ uct.suite \
 19.list \
 basics_fuegotest.list \
 basics_uct.list \
+deterministic_mode.list \
 performance.list \
 playout.list \
 static_safety.list \
@@ -36,6 +38,16 @@ performance_icgc2008.tst \
 performance_eval_pro_9x9.tst \
 performance_middlegame_hard_9x9.tst \
 performance_pro_9x9.tst \
+play_deterministic_srand1.tst \
+play_deterministic_srand1_maxgames1M.tst \
+play_deterministic_srand2.tst \
+play_deterministic_srand3.tst \
+play_deterministic_srand4.tst \
+play_deterministic_srand5.tst \
+play_deterministic_srand6.tst \
+play_deterministic_srand7.tst \
+play_deterministic_srand8.tst \
+play_deterministic_srand9.tst \
 playout_2_liberties.tst \
 playout_approach_move.tst \
 playout_atari_capture.tst \

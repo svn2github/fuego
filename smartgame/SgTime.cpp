@@ -77,7 +77,10 @@ string SgTime::Format(double time, bool minsAndSecs)
 
 double SgTime::Get()
 {
-    return Get(g_defaultMode);
+    if (SgDeterministic::DeterministicMode())
+        return Get(SG_TIME_NONE);
+    else
+        return Get(g_defaultMode);
 }
 
 double SgTime::Get(SgTimeMode mode)
@@ -105,7 +108,7 @@ double SgTime::Get(SgTimeMode mode)
             userInteger.LowPart = userTime.dwLowDateTime;
             userInteger.HighPart = userTime.dwHighDateTime;
             ULARGE_INTEGER totalTime;
-            totalTime.QuadPart= kernelInteger.QuadPart + userInteger.QuadPart;
+            totalTime.QuadPart = kernelInteger.QuadPart + userInteger.QuadPart;
             return double(totalTime.QuadPart * 1e-7);
 #else
             // Implementation using POSIX functions
@@ -126,6 +129,11 @@ double SgTime::Get(SgTimeMode mode)
             time_duration diff = microsec_clock::universal_time() - g_start;
             return double(diff.total_nanoseconds()) * 1e-9;
         }
+    case SG_TIME_NONE:
+        {
+ 	        SG_ASSERT(SgDeterministic::DeterministicMode());
+            return 0;
+ 	    }
     default:
         SG_ASSERT(false);
         return 0;

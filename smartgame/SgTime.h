@@ -18,7 +18,10 @@ enum SgTimeMode
     SG_TIME_CPU,
 
     /** Measure real time. */
-    SG_TIME_REAL
+    SG_TIME_REAL,
+
+    /** For deterministic mode. Time stands still at constant 0. */
+    SG_TIME_NONE
 };
 
 //----------------------------------------------------------------------------

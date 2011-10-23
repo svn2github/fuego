@@ -14,8 +14,23 @@
 #include <list>
 #include "SgTime.h"
 
-using namespace std;
+namespace SgDeterministic {
 
+bool g_deterministicMode = false;
+
+void SetDeterministicMode(bool flag)
+{
+    g_deterministicMode = flag;
+}
+
+bool DeterministicMode()
+{
+    return g_deterministicMode;
+}
+
+} // namespace SgDeterministic
+
+using namespace std;
 //----------------------------------------------------------------------------
 
 namespace {

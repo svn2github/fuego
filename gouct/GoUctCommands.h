@@ -39,6 +39,7 @@ public:
         - @link CmdFinalStatusList() @c final_status_list @endlink
         - @link CmdBounds() @c uct_bounds @endlink
         - @link CmdDefaultPolicy() @c uct_default_policy @endlink
+        - @link CmdDeterministicMode() @c deterministic_mode @endlink
         - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
         - @link CmdMaxMemory() @c uct_max_memory @endlink
@@ -71,6 +72,7 @@ public:
     // The callback functions are documented in the cpp file
     void CmdBounds(GtpCommand& cmd);
     void CmdDefaultPolicy(GtpCommand& cmd);
+    void CmdDeterministicMode(GtpCommand&);
     void CmdEstimatorStat(GtpCommand& cmd);
     void CmdFinalScore(GtpCommand&);
     void CmdFinalStatusList(GtpCommand&);

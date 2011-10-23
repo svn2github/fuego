@@ -2,6 +2,7 @@
 # Tests in basics should be fast, specific and produce no unexpected fails
 # or passes.
 uct_basics.tst
+play_deterministic_srand1.tst
 playout_atari_capture.tst
 uct_pass_basics.tst
 uct_rootfilter.tst
