@@ -32,8 +32,8 @@ struct SgHashEntry
 
 //----------------------------------------------------------------------------
 
-/** HashTable implements an array of DATA */
-template <class DATA>
+/** SgHashTable implements an array of DATA */
+template <class DATA, int BLOCK_SIZE = 1>
 class SgHashTable
 {
 public:
@@ -115,8 +115,8 @@ private:
     SgHashTable& operator=(const SgHashTable&);
 };
 
-template <class DATA>
-SgHashTable<DATA>::SgHashTable(int maxHash)
+template <class DATA, int BLOCK_SIZE>
+SgHashTable<DATA, BLOCK_SIZE>::SgHashTable(int maxHash)
  : m_entry(0),
    m_maxHash(maxHash),
    m_nuCollisions(0),
@@ -124,77 +124,95 @@ SgHashTable<DATA>::SgHashTable(int maxHash)
    m_nuLookups(0),
    m_nuFound(0)
 {
-    m_entry = new SgHashEntry<DATA>[m_maxHash];
+    m_entry = new SgHashEntry<DATA>[m_maxHash + BLOCK_SIZE - 1];
     Clear();
 }
 
-template <class DATA>
-SgHashTable<DATA>::~SgHashTable()
+template <class DATA, int BLOCK_SIZE>
+SgHashTable<DATA, BLOCK_SIZE>::~SgHashTable()
 {
     delete[] m_entry;
 }
 
-template <class DATA>
-void SgHashTable<DATA>::Age()
+template <class DATA, int BLOCK_SIZE>
+void SgHashTable<DATA, BLOCK_SIZE>::Age()
 {
-    for (int i = m_maxHash - 1; i >= 0; --i)
-    {
+    for (int i = m_maxHash + BLOCK_SIZE - 2; i >= 0; --i)
         m_entry[i].m_data.AgeData();
-    }
 }
 
-template <class DATA>
-void SgHashTable<DATA>::Clear()
+template <class DATA, int BLOCK_SIZE>
+void SgHashTable<DATA, BLOCK_SIZE>::Clear()
 {
-    for (int i = m_maxHash - 1; i >= 0; --i)
+    for (int i = m_maxHash + BLOCK_SIZE - 2; i >= 0; --i)
     {
         m_entry[i].m_data.Invalidate();
     }
 }
 
-template <class DATA>
-int SgHashTable<DATA>::MaxHash() const
+template <class DATA, int BLOCK_SIZE>
+int SgHashTable<DATA, BLOCK_SIZE>::MaxHash() const
 {
     return m_maxHash;
 }
 
-template <class DATA>
-bool SgHashTable<DATA>::Store(const SgHashCode& code, const DATA& data)
+template <class DATA, int BLOCK_SIZE>
+bool SgHashTable<DATA, BLOCK_SIZE>::Store(const SgHashCode& code, const DATA& data)
 {
     ++m_nuStores;
     int h = code.Hash(m_maxHash);
-    SgHashEntry<DATA>& entry = m_entry[h];
-    if (entry.m_data.IsValid() && code != entry.m_hash)
-        ++m_nuCollisions;
-    if (! entry.m_data.IsValid() || data.IsBetterThan(entry.m_data))
+    int best = -1;
+    bool collision = true;
+    for (int i = h; i < h + BLOCK_SIZE; i++)
     {
-        entry.m_hash = code;
-        entry.m_data = data;
-        return true;
+        if (! m_entry[i].m_data.IsValid() || m_entry[i].m_hash == code)
+        {
+            best = i;
+            collision = false;
+            break;
+        }
+        else if (  best == -1 
+                || m_entry[best].m_data.IsBetterThan(m_entry[i].m_data)
+                )
+            best = i;
     }
-    return false;
+    if (collision)
+    	++m_nuCollisions;
+    SG_ASSERTRANGE(best, h, h + BLOCK_SIZE - 1);
+    SgHashEntry<DATA>& entry = m_entry[best];
+    entry.m_hash = code;
+    entry.m_data = data;
+    return true;
 }
 
-template <class DATA>
-bool SgHashTable<DATA>::Lookup(const SgHashCode& code, DATA* data) const
+template <class DATA, int BLOCK_SIZE>
+bool SgHashTable<DATA, BLOCK_SIZE>::Lookup(const SgHashCode& code, DATA* data) const
 {
     ++m_nuLookups;
     int h = code.Hash(m_maxHash);
-    const SgHashEntry<DATA>& entry = m_entry[h];
-    if (entry.m_data.IsValid() && entry.m_hash == code)
-    {
-        *data = entry.m_data;
-        ++m_nuFound;
-        return true;
-    }
-    return false;
+    for (int i = h; i < h + BLOCK_SIZE; i++)
+     {
+        const SgHashEntry<DATA>& entry = m_entry[i];
+        if (entry.m_data.IsValid())
+        {
+            if (entry.m_hash == code)
+            {
+                *data = entry.m_data;
+                ++m_nuFound;
+                return true;
+            }
+        }
+        else
+            return false;
+     }
+     return false;
 }
 
 //----------------------------------------------------------------------------
 
 /** Writes statistics on hash table use (not the content) */
-template <class DATA>
-std::ostream& operator<<(std::ostream& out, const SgHashTable<DATA>& hash)
+template <class DATA, int BLOCK_SIZE>
+std::ostream& operator<<(std::ostream& out, const SgHashTable<DATA, BLOCK_SIZE>& hash)
 {    
     out << "HashTableStatistics:\n"
         << SgWriteLabel("Stores") << hash.NuStores() << '\n'

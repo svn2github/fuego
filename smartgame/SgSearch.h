@@ -18,7 +18,7 @@
 #include "SgTimer.h"
 #include "SgVector.h"
 
-template <class DATA> class SgHashTable;
+template <class DATA, int BLOCK_SIZE> class SgHashTable;
 class SgNode;
 class SgProbCut;
 class SgSearchControl;
@@ -122,7 +122,7 @@ private:
     SgMove m_bestMove;
 };
 
-typedef SgHashTable<SgSearchHashData> SgSearchHashTable;
+typedef SgHashTable<SgSearchHashData, 4> SgSearchHashTable;
 
 inline SgSearchHashData::SgSearchHashData()
     : m_depth(0),
