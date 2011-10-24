@@ -32,7 +32,17 @@ struct SgHashEntry
 
 //----------------------------------------------------------------------------
 
-/** SgHashTable implements an array of DATA */
+/** SgHashTable implements an array of DATA.
+	The implementation probes the table in BLOCK_SIZE consecutive locations,
+    as in the Fruit chess program.
+	See http://arctrix.com/nas/chess/fruit/fruit_21_linux.zip, file trans.cpp
+    (accessed on Oct 23, 2011).
+    The new entry is always written, overwriting the least valuable among
+    the BLOCK_SIZE entries.
+    The table size is increased by BLOCK_SIZE - 1 entries to avoid
+    an expensive modulo operation in the scan.
+    A good value for BLOCK_SIZE is 4.
+*/
 template <class DATA, int BLOCK_SIZE = 1>
 class SgHashTable
 {
