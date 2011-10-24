@@ -68,7 +68,7 @@ path GetProgramDir(const char* programPath)
     #endif
 
     #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
-        return path(programPath);
+        return path(programPath).branch_path();
     #else
         return path(programPath, boost::filesystem::native).branch_path();
     #endif	
