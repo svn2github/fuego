@@ -19,7 +19,7 @@ SgRandom::GlobalData::GlobalData()
 
 //----------------------------------------------------------------------------
 
-SgRandom::SgRandom()
+SgRandom::SgRandom() : m_floatGenerator(m_generator)
 {
     SetSeed();
     GetGlobalData().m_allGenerators.push_back(this);
@@ -72,14 +72,6 @@ void SgRandom::SetSeed(int seed)
              GetGlobalData().m_allGenerators.end(),
              std::mem_fun(&SgRandom::SetSeed));
     srand(GetGlobalData().m_seed);
-}
-
-//----------------------------------------------------------------------------
-
-float SgRandomFloat(float min, float max)
-{
-    return (max - min) * static_cast<float>(std::rand())
-        / static_cast<float>(RAND_MAX) + min;
 }
 
 //----------------------------------------------------------------------------

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <list>
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_01.hpp>
 #include "SgArray.h"
 
 //----------------------------------------------------------------------------
@@ -48,6 +49,12 @@ public:
         See SetSeed(int) for the special meaning of zero and negative values. */
     static int Seed();
 
+    /** Generate a float number in [0,range). */
+    float Float(float range);
+
+    /** Generate a float number in [0,1). */
+    float Float_01();
+    
     /** Get a random integer.
         Uses a fast random generator (the Mersenne Twister boost::mt19937),
         because in games and Monte Carlo simulations, speed is more important
@@ -63,7 +70,7 @@ public:
 
     /** See SgRandom::Int(int) */
     std::size_t Int(std::size_t range);
-
+    
     /** Get a small random integer in an interval.
         Uses only the lower 16 bits. Faster than SgRandom::Int(int) because it
         avoids the expensive modulo operation.
@@ -110,8 +117,28 @@ private:
 
     boost::mt19937 m_generator;
 
+    /*	Random number generator for Float() and Float_01(). 
+    	Uses m_generator internally.
+    	See http://www.boost.org/doc/libs/1_39_0/libs/random/
+        random-distributions.html#uniform_01 
+	*/
+    boost::uniform_01<boost::mt19937, float> m_floatGenerator;
+
     void SetSeed();
 };
+
+inline float SgRandom::Float_01()
+{
+    return m_floatGenerator();
+}
+
+inline float SgRandom::Float(float range)
+{
+    float v = m_floatGenerator() * range;
+    SG_ASSERT(v <= range); 
+    // @todo: should be < range? Worried about rounding issues.
+    return v;
+}
 
 inline unsigned int SgRandom::Int()
 {
@@ -171,13 +198,5 @@ inline std::size_t SgRandom::SmallInt(std::size_t range)
     SG_ASSERT(i < range);
     return i;
 }
-
-//----------------------------------------------------------------------------
-
-/** Get a random float in [min, max].
-    Used std::rand() */
-float SgRandomFloat(float min, float max);
-
-//----------------------------------------------------------------------------
 
 #endif // SG_RANDOM_H
