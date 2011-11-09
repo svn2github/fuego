@@ -130,6 +130,11 @@ public:
         FindBestChild() from the parent state.  */
     void AddDisabledLines(const std::set<SgHashCode>& disabled);
 
+    /** Add states to be forced. 
+        These states will alway be chosen for selection in
+        FindBestChild() from the parent state.  */
+    void AddForcedLines(const std::set<SgHashCode>& forced);
+    
     /** Copies a truncated version of the book into other. */
     void TruncateByDepth(int depth, GoAutoBookState& state,
                          GoAutoBook& other) const;
@@ -157,6 +162,8 @@ private:
 
     std::set<SgHashCode> m_disabled;
 
+    std::set<SgHashCode> m_forced;
+
     std::string m_filename;
 
     void TruncateByDepth(int depth, GoAutoBookState& state, 
@@ -167,6 +174,12 @@ private:
                            std::set<SgHashCode>& seen) const;
 
 };
+
+inline void GoAutoBook::AddForcedLines(const std::set<SgHashCode>& forced)
+{
+    m_forced.insert(forced.begin(), forced.end());
+    SgDebug() << "Forced " << forced.size() << " lines.\n";
+}
 
 inline void GoAutoBook::AddDisabledLines(const std::set<SgHashCode>& disabled)
 {

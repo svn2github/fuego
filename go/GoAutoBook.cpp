@@ -283,6 +283,23 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
     SgMove bestMove = SG_NULLMOVE;
     float bestScore = 100.0f;
     SgBookNode node;
+    // Check for forced moves first
+    // Note this will check for forced moves even if the current
+    // state is not in the book.
+    for (GoBoard::Iterator it(state.Board()); it; ++it)
+    {
+        if (state.Board().IsLegal(*it))
+        {
+            state.Play(*it);
+            if (m_forced.count(state.GetHashCode()) > 0)
+            {
+                SgDebug() << "Playing forced move " 
+                          << SgWritePoint(*it) << '\n';
+                return *it;
+            }
+            state.Undo();
+        }
+    }
     if (! Get(state, node))
         return SG_NULLMOVE;
     if (node.IsLeaf())
