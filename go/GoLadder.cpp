@@ -257,7 +257,7 @@ int GoLadder::PreyLadder(int depth, SgPoint lib1,
     {
         SgPoint block = *iter;
         SgPoint move = *GoBoard::LibertyIterator(*m_bd, block);
-        if (BlockIsAdjToPrey(block, 2))
+        if (BlockIsAdjToPrey(block, 3))
         {
             if (sequence)
                 sequence->SetTo(move);
