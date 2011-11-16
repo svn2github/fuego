@@ -2,6 +2,7 @@
 /** @file GoAutoBook.cpp  */
 //----------------------------------------------------------------------------
 
+#include <iomanip>
 #include "SgSystem.h"
 #include "GoAutoBook.h"
 
@@ -281,7 +282,9 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
 {
     std::size_t bestCount = 0;
     SgMove bestMove = SG_NULLMOVE;
+    SgMove bestIgnoredMove = SG_NULLMOVE;
     float bestScore = 100.0f;
+    float bestIgnoredMoveScore = 100.0f;
     SgBookNode node;
     // Check for forced moves first
     // Note this will check for forced moves even if the current
@@ -314,41 +317,66 @@ SgMove GoAutoBook::FindBestChild(GoAutoBookState& state) const
                           << SgWritePoint(*it) << '\n';
             // NOTE: Terminal nodes aren't supported at this time, so 
             // we ignore them here.
-            else if (Get(state, node) 
-                     && ! node.IsTerminal() 
-                     && node.m_count >= m_param.m_usageCountThreshold)
+            else if (  Get(state, node) 
+                    && ! node.IsTerminal() 
+                    )
             {
-                if (m_param.m_selectType == GO_AUTOBOOK_SELECT_COUNT)
+            	if (node.m_count >= m_param.m_usageCountThreshold)
                 {
-                    // Select by count, tiebreak by value.
-                    if (node.m_count > bestCount)
+                    if (m_param.m_selectType == GO_AUTOBOOK_SELECT_COUNT)
                     {
-                        bestCount = node.m_count;
-                        bestMove = *it;
-                        bestScore = node.m_value;
+                        // Select by count, tiebreak by value.
+                        if (node.m_count > bestCount)
+                        {
+                            bestCount = node.m_count;
+                            bestMove = *it;
+                            bestScore = node.m_value;
+                        }
+                        // NOTE: do not have access to inverse function,
+                        // so we're minimizing here as a temporary solution. 
+                        else if (node.m_count == bestCount
+                                 && node.m_value < bestScore)
+                        {
+                            bestMove = *it;
+                            bestScore = node.m_value;
+                        }
                     }
-                    // NOTE: do not have access to inverse function,
-                    // so we're minimizing here as a temporary solution. 
-                    else if (node.m_count == bestCount
-                             && node.m_value < bestScore)
+                    else if (m_param.m_selectType == GO_AUTOBOOK_SELECT_VALUE)
                     {
-                        bestMove = *it;
-                        bestScore = node.m_value;
+                        // NOTE: do not have access to inverse function,
+                        // so we're minimizing here as a temporary solution. 
+                        if (node.m_value < bestScore)
+                        {
+                            bestMove = *it;
+                            bestScore = node.m_value;
+                        }
                     }
                 }
-                else if (m_param.m_selectType == GO_AUTOBOOK_SELECT_VALUE)
+                else // node.m_count < m_param.m_usageCountThreshold
+                if (  m_param.m_selectType == GO_AUTOBOOK_SELECT_VALUE
+                   && node.m_value < bestIgnoredMoveScore
+                   )
                 {
-                    // NOTE: do not have access to inverse function,
-                    // so we're minimizing here as a temporary solution. 
-                    if (node.m_value < bestScore)
-                    {
-                        bestMove = *it;
-                        bestScore = node.m_value;
-                    }
+                   bestIgnoredMove = *it;
+                   bestIgnoredMoveScore = node.m_value;
                 }
             }
             state.Undo();
         }
+    }
+    if (bestMove != SG_NULLMOVE && bestIgnoredMoveScore < bestScore)
+    {
+        SgDebug() << "Ignoring autobook move "
+        << SgWritePoint(bestMove)
+        << " since best ignored inverse value " 
+        << std::setprecision(5)
+        << bestIgnoredMoveScore
+        << " of move " 
+        << SgWritePoint(bestIgnoredMove)
+        << " is better than best value above usage threshold " 
+        << bestScore << '\n';
+        
+    	return SG_NULLMOVE;
     }
     return bestMove;
 }
