@@ -31,7 +31,8 @@ void GoTimeControl::GetPositionInfo(SgBlackWhite& toPlay,
     movesPlayed = m_bd.Occupied().Size() / 2;
     int finalNumEmpty =
         int(float(m_bd.AllPoints().Size()) * (1.f - m_finalSpace));
-    estimatedRemainingMoves = max(m_bd.TotalNumEmpty() - finalNumEmpty, 0);
+    estimatedRemainingMoves = max(m_bd.TotalNumEmpty() - finalNumEmpty, 
+                                  3 * m_bd.Size());
     estimatedRemainingMoves /= 2;
 }
 
