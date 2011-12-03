@@ -345,6 +345,7 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
     {
         m_nextCheckTime = m_numberGames + m_checkTimeInterval;
         double time = m_timer.GetTime();
+
         if (time > m_maxTime)
         {
             Debug(state, "SgUctSearch: max time reached");
@@ -383,6 +384,10 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
                 return true;
             }
         }
+    }
+    if (m_mpiSynchronizer->CheckAbort()) {
+        Debug(state, "SgUctSearch: parallel mpi search finished");
+        return true;
     }
     return false;
 }

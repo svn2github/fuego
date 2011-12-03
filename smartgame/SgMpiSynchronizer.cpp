@@ -123,4 +123,9 @@ void SgMpiNullSynchronizer::SynchronizeSearchStatus(SgUctValue &value,
     SG_UNUSED(rootMoveCount);
 }
 
+bool SgMpiNullSynchronizer::CheckAbort()
+{
+    return false;
+}
+
 //-----------------------------------------------------------------------------

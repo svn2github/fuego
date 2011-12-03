@@ -67,6 +67,8 @@ public:
 
     virtual void SynchronizeSearchStatus(SgUctValue &value, bool &earlyAbort, 
                                          SgUctValue &rootMoveCount) = 0;
+
+    virtual bool CheckAbort() = 0;
 };
 
 typedef boost::shared_ptr<SgMpiSynchronizer> SgMpiSynchronizerHandle;
@@ -118,6 +120,8 @@ public:
 
     virtual void SynchronizeSearchStatus(SgUctValue &value, bool &earlyAbort, 
                                          SgUctValue &rootMoveCount);
+
+    virtual bool CheckAbort();
 
 };
 
