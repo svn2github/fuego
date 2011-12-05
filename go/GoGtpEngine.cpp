@@ -380,16 +380,16 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
     if (! m_sentinelFile.empty() && exists(m_sentinelFile))
     {
         # if defined(BOOST_FILESYSTEM_VERSION)
-	   SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
+           SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
         #endif
 
         #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
            throw GtpFailure() << "Detected sentinel file '"
                            << m_sentinelFile.string() << "'";
-	#else		   
+        #else              
            throw GtpFailure() << "Detected sentinel file '"
                            << m_sentinelFile.native_file_string() << "'";
-	#endif
+        #endif
     }
     if (Board().MoveNumber() > 0)
         GameFinished();
@@ -403,6 +403,7 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
 void GoGtpEngine::CmdClock(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
+    m_game.Time().UpdateTimeLeft();
     cmd << '\n' << m_game.Time();
 }
 
@@ -1318,8 +1319,10 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     SgTimeRecord time;
     if (ignoreClock || m_timeSettings.IsUnknown())
         time = SgTimeRecord(true, m_timeLimit);
-    else
+    else {
         time = m_game.Time();
+        time.UpdateTimeLeft();
+    }
     AddStatistics("GAME", m_autoSaveFileName);
     AddStatistics("MOVE", m_game.CurrentMoveNumber() + 1);
     SgPoint move = GenBookMove(color);
