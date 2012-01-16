@@ -47,6 +47,7 @@ bool IsBlockedInDeterministicMode(const string& name)
 	return name == "ignore_clock"
     	|| name == "reuse_subtree"
         || name == "number_threads"
+	|| name == "max_nodes"
         ;
 }
 
@@ -265,18 +266,21 @@ void GoUctCommands::CmdDeterministicMode(GtpCommand& cmd)
     "It also enforces and fixes the following parameters:\n"
     "uct_param_player ignore_clock true\n"
     "uct_param_player reuse_subtree false\n"
-    "uct_param_search number_threads 1\n";
+    "uct_param_search number_threads 1\n"
+    "uct_param_search max_nodes 5000000\n";
     p.SetIgnoreClock(true);
     p.SetReuseSubtree(false);
     s.SetNumberThreads(1);
     SgRandom::SetSeed(1);
     s.SetCheckTimeInterval(SgUctValue(1500));
+    s.SetMaxNodes(std::size_t(5000000));
 
     cmd << "ignore_clock " << p.IgnoreClock() << '\n'
         << "reuse_subtree " << p.ReuseSubtree() << '\n'
         << "number_threads " << s.NumberThreads() << '\n'
         << "set_random_seed " << SgRandom::Seed() << '\n'
-        << "m_check_time_interval " << s.CheckTimeInterval() << '\n';
+        << "m_check_time_interval " << s.CheckTimeInterval() << '\n'
+	<< "max_nodes " << s.MaxNodes() << '\n';
 }
 
 /** Compute estimator statistics.
@@ -364,6 +368,9 @@ void GoUctCommands::CmdMaxMemory(GtpCommand& cmd)
         cmd << Search().MaxNodes() * 2 * sizeof(SgUctNode);
     else
     {
+         if (SgDeterministic::DeterministicMode())
+           throw GtpFailure() << "Command is blocked in deterministic mode.";
+
         std::size_t memory = cmd.ArgMin<size_t>(0, 2 * sizeof(SgUctNode));
         Search().SetMaxNodes(memory / 2 / sizeof(SgUctNode));
     }
