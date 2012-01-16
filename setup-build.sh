@@ -13,10 +13,6 @@ fi
 
 # Optimization options for the GCC compiler.
 GCC_OPTIMIZE="-O3 -ffast-math"
-if ! gcc -v 2>&1 | grep -q 'gcc version 4.2' ; then
-    # Value "native" for -march requires at least GCC 4.3
-    GCC_OPTIMIZE="$GCC_OPTIMIZE -march=native"
-fi
 
 aclocal
 autoheader
