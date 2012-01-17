@@ -399,41 +399,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateAtariCaptureMove()
 template<class BOARD>
 bool GoUctPlayoutPolicy<BOARD>::GenerateAtariDefenseMove()
 {
-    SG_ASSERT(m_moves.IsEmpty());
-    SG_ASSERT(! SgIsSpecialMove(m_lastMove));
-    SgBlackWhite toPlay = m_bd.ToPlay();
-    if (m_bd.NumNeighbors(m_lastMove, toPlay) == 0)
-        return false;
-    SgArrayList<SgPoint,4> anchorList;
-    for (SgNb4Iterator it(m_lastMove); it; ++it)
-    {
-        if (m_bd.GetColor(*it) != toPlay || ! m_bd.InAtari(*it))
-            continue;
-        SgPoint anchor = m_bd.Anchor(*it);
-        if (anchorList.Contains(anchor))
-            continue;
-        anchorList.PushBack(anchor);
-
-        // Check if move on last liberty would escape the atari
-        SgPoint theLiberty = m_bd.TheLiberty(anchor);
-        if (! GoBoardUtil::SelfAtari(m_bd, theLiberty))
-            m_moves.PushBack(theLiberty);
-
-        // Capture adjacent blocks
-        for (GoAdjBlockIterator<BOARD> it2(m_bd, anchor, 1); it2; ++it2)
-        {
-            SgPoint oppLiberty = m_bd.TheLiberty(*it2);
-            // If opponent's last liberty is not my last liberty, we know
-            // that we will have two liberties after capturing (my last
-            // liberty + at least one stone captured). If both last liberties
-            // are the same, we already checked above with
-            // GoBoardUtil::SelfAtari(theLiberty), if the move escapes the
-            // atari
-            if (oppLiberty != theLiberty)
-                m_moves.PushBack(oppLiberty);
-        }
-    }
-    return ! m_moves.IsEmpty();
+    return GoBoardUtil::AtariDefenseMoves(m_bd, m_lastMove, m_moves);
 }
 
 template<class BOARD>

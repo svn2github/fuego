@@ -58,6 +58,12 @@ namespace GoBoardUtil
     int Approx2Libs(const GoBoard& board, SgPoint block, SgPoint p,
                     SgBlackWhite color);
 
+    /** Find all atari defense moves in response to lastMove, and put them
+        in the given empty list. Return whether there are any such moves. */
+    template<class BOARD>
+    bool AtariDefenseMoves(const BOARD& bd, const SgPoint lastMove, 
+    					   GoPointList& moves);
+
     /** Return whether 'block1' and 'block2' have at least two shared
         liberties.
         Not defined for empty or border points. */
@@ -745,6 +751,50 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
             numStones += bd.NumStones(anchors[i]);
     }
     return true;
+}
+
+// Need a forward-declaration for function AtariDefenseMoves()
+// @todo move Iterators its their file
+template<class BOARD> class GoAdjBlockIterator;
+
+template<class BOARD>
+inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd, const SgPoint lastMove, GoPointList& moves)
+{
+    SG_ASSERT(moves.IsEmpty());
+    SG_ASSERT(! SgIsSpecialMove(lastMove));
+    SgBlackWhite toPlay = bd.ToPlay();
+    if (bd.NumNeighbors(lastMove, toPlay) == 0)
+        return false;
+    SgArrayList<SgPoint,4> anchorList;
+    for (SgNb4Iterator it(lastMove); it; ++it)
+    {
+        if (bd.GetColor(*it) != toPlay || ! bd.InAtari(*it))
+            continue;
+        SgPoint anchor = bd.Anchor(*it);
+        if (anchorList.Contains(anchor))
+            continue;
+        anchorList.PushBack(anchor);
+
+        // Check if move on last liberty would escape the atari
+        SgPoint theLiberty = bd.TheLiberty(anchor);
+        if (! GoBoardUtil::SelfAtari(bd, theLiberty))
+            moves.PushBack(theLiberty);
+
+        // Capture adjacent blocks
+        for (GoAdjBlockIterator<BOARD> it2(bd, anchor, 1); it2; ++it2)
+        {
+            SgPoint oppLiberty = bd.TheLiberty(*it2);
+            // If opponent's last liberty is not my last liberty, we know
+            // that we will have two liberties after capturing (my last
+            // liberty + at least one stone captured). If both last liberties
+            // are the same, we already checked above with
+            // GoBoardUtil::SelfAtari(theLiberty), if the move escapes the
+            // atari
+            if (oppLiberty != theLiberty)
+                moves.PushBack(oppLiberty);
+        }
+    }
+    return ! moves.IsEmpty();
 }
 
 template<class BOARD>
