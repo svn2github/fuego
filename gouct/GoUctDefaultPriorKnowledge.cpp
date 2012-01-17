@@ -12,6 +12,7 @@ using namespace std;
 
 namespace {
 
+/** Test if playing on p puts any opponent block into atari */
 bool SetsAtari(const GoBoard& bd, SgPoint p)
 {
     SG_ASSERT(bd.IsEmpty(p)); // Already checked
@@ -84,12 +85,10 @@ bool BadSelfAtari(const GoBoard& bd, SgPoint p)
 
 GoUctKnowledge::GoUctKnowledge(const GoBoard& bd)
     : m_bd(bd)
-{
-}
+{ }
 
 GoUctKnowledge::~GoUctKnowledge()
-{
-}
+{ }
 
 void GoUctKnowledge::Add(SgPoint p, SgUctValue value, SgUctValue count)
 {
@@ -129,8 +128,7 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
                               const GoUctPlayoutPolicyParam& param)
     : GoUctKnowledge(bd),
       m_policy(bd, param)
-{
-}
+{ }
 
 void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
                                                   bool isSmallBoard)
