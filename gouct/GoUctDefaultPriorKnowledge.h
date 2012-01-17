@@ -56,6 +56,19 @@ private:
 
     void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
+    void InitializeForRandomPolicyMove(const GoPointList& empty,
+                                       int nuSimulations);
+                                       
+    void InitializeForGlobalHeuristic(const GoPointList& empty,
+                                      const SgPointSet& pattern,
+                                      const SgPointSet& atari,
+                                      int nuSimulations);
+
+	void InitializeForNonRandomPolicyMove(const GoPointList& empty,
+                                          const SgPointSet& pattern,
+                                          const SgPointSet& atari,
+                                          int nuSimulations);
+
 };
 
 //----------------------------------------------------------------------------

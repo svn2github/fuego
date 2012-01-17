@@ -33,6 +33,51 @@ bool SetsAtari(const GoBoard& bd, SgPoint p)
     return false;
 }
 
+/** Test if p is inside a small eye space surrounded by eyeColor.
+	Simple first version: small means <= 3, p not at end point - 
+    only neighbors of p tested. */
+bool InSmallEyeSpace(const GoBoard& bd, SgPoint p, SgBlackWhite eyeColor)
+{
+    SG_ASSERT(bd.IsEmpty(p)); // this is used in the code below
+    SG_ASSERT_BW(eyeColor);
+    const SgBlackWhite attacker = SgOppBW(eyeColor);
+    
+    int size = 1 + bd.NumNeighbors(p, attacker) + bd.NumEmptyNeighbors(p);
+    if (size > 3)
+        return false;
+    for (SgNb4Iterator it(p); it; ++it)
+    {
+    	if (bd.IsEmpty(*it) || bd.IsColor(*it, attacker))
+        {
+            size += bd.NumNeighbors(*it, attacker) 
+                  + bd.NumEmptyNeighbors(*it) 
+                  - 1; 
+            // -1 for p. We are double-counting diagonals. Too bad...
+            if (size > 3)
+                return false;
+        }
+    }
+    return true;
+}
+
+/** Heuristic for bad selfatari moves
+	@todo: should eliminate useless moves, but allow play in nakade. 
+*/
+bool BadSelfAtari(const GoBoard& bd, SgPoint p)
+{
+    int numStones;
+    SgBlackWhite opp = bd.Opponent();
+    if (GoBoardUtil::SelfAtari(bd, p, numStones))
+    {
+    	if (numStones > GoEyeUtil::NAKADE_LIMIT)
+        	return true;
+        if (InSmallEyeSpace(bd, p, opp))
+        	return false;
+        return true;
+    }
+    return false;
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -151,6 +196,70 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
 }
 
 void 
+GoUctDefaultPriorKnowledge::InitializeForGlobalHeuristic(
+	const GoPointList& empty,
+    const SgPointSet& pattern,
+    const SgPointSet& atari,
+    int nuSimulations)
+{
+    for (GoPointList::Iterator it(empty); it; ++it)
+    {
+        const SgPoint p = *it;
+        SG_ASSERT (m_bd.IsEmpty(p));
+        if (BadSelfAtari(m_bd, p))
+            Initialize(p, 0.1f, nuSimulations);
+        else if (atari[p])
+            Initialize(p, 1.0f, 3);
+        else if (pattern[p])
+            Initialize(p, 0.9f, 3);
+		else
+            Initialize(p, 0.5f, 3);
+    }
+}
+
+void 
+GoUctDefaultPriorKnowledge::InitializeForNonRandomPolicyMove(
+	const GoPointList& empty,
+    const SgPointSet& pattern,
+    const SgPointSet& atari,
+    int nuSimulations)
+{
+    for (GoPointList::Iterator it(empty); it; ++it)
+    {
+        const SgPoint p = *it;
+        SG_ASSERT (m_bd.IsEmpty(p));
+        if (BadSelfAtari(m_bd, p))
+            Initialize(p, 0.1f, nuSimulations);
+        else if (atari[p])
+            Initialize(p, 0.8f, nuSimulations);
+        else if (pattern[p])
+            Initialize(p, 0.6f, nuSimulations);
+        else
+            Initialize(p, 0.4f, nuSimulations);
+    }
+    const GoPointList moves = m_policy.GetEquivalentBestMoves();
+    for (GoPointList::Iterator it(moves); it; ++it)
+        Initialize(*it, 1.0, nuSimulations);
+}
+
+
+void 
+GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
+	const GoPointList& empty,
+    int nuSimulations)
+{
+    for (GoPointList::Iterator it(empty); it; ++it)
+    {
+        const SgPoint p = *it;
+        SG_ASSERT (m_bd.IsEmpty(p));
+        if (BadSelfAtari(m_bd, p))
+            Initialize(*it, 0.1f, nuSimulations);
+        else
+            m_values[p].Clear(); // Don't initialize
+    }
+}
+
+void 
 GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves)
 {
     m_policy.StartPlayout();
@@ -169,58 +278,16 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves
     // from the 9x9 experiments are used for board sizes < 15, the ones from
     // 19x19 otherwise.
     const bool isSmallBoard = (m_bd.Size() < 15);
+    const int defaultNuSimulations = isSmallBoard ? 9 : 18;
 
-    Initialize(SG_PASS, 0.1f, isSmallBoard ? 9 : 18);
+    Initialize(SG_PASS, 0.1f, defaultNuSimulations);
     if (isFullBoardRandom && ! anyHeuristic)
-    {
-        for (GoBoard::Iterator it(m_bd); it; ++it)
-        {
-            SgPoint p = *it;
-            if (! m_bd.IsEmpty(p))
-                continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1f, isSmallBoard ? 9 : 18);
-            else
-                m_values[p].Clear(); // Don't initialize
-        }
-    }
+    	InitializeForRandomPolicyMove(empty, defaultNuSimulations);
     else if (isFullBoardRandom && anyHeuristic)
-    {
-        for (GoBoard::Iterator it(m_bd); it; ++it)
-        {
-            SgPoint p = *it;
-            if (! m_bd.IsEmpty(p))
-                continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1f, isSmallBoard ? 9 : 18);
-            else if (atari[*it])
-                Initialize(*it, 1.0f, 3);
-            else if (pattern[*it])
-                Initialize(*it, 0.9f, 3);
-            else
-                Initialize(*it, 0.5f, 3);
-        }
-    }
+    	InitializeForGlobalHeuristic(empty, pattern, atari, defaultNuSimulations);
     else
-    {
-        for (GoBoard::Iterator it(m_bd); it; ++it)
-        {
-            SgPoint p = *it;
-            if (! m_bd.IsEmpty(p))
-                continue;
-            if (GoBoardUtil::SelfAtari(m_bd, *it))
-                Initialize(*it, 0.1f, isSmallBoard ? 9 : 18);
-            else if (atari[*it])
-                Initialize(*it, 0.8f, isSmallBoard ? 9 : 18);
-            else if (pattern[*it])
-                Initialize(*it, 0.6f, isSmallBoard ? 9 : 18);
-            else
-                Initialize(*it, 0.4f, isSmallBoard ? 9 : 18);
-        }
-        GoPointList moves = m_policy.GetEquivalentBestMoves();
-        for (GoPointList::Iterator it(moves); it; ++it)
-            Initialize(*it, 1.0, isSmallBoard ? 9 : 18);
-    }
+    	InitializeForNonRandomPolicyMove(empty, pattern, atari, defaultNuSimulations);
+
     AddLocalityBonus(empty, isSmallBoard);
     m_policy.EndPlayout();
 
