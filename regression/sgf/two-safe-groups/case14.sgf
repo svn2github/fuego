@@ -1,0 +1,20 @@
+(;FF[4]CA[UTF-8]AP[GoGui:1.4.0]SZ[9]
+KM[7.5]DT[2012-01-17]
+AB[dh][dg][eg][ef][fe][ge][he][hc][cd][bd][fb][fc][ee][bg][be][bf][ch][hd][gb][ha][ib]
+AW[fg][gg][hf][eh][fi][cc][bc][dd][ed][ec][eb][fd][de][df][gf][ff][ce][cf][cg][gd][gc]
+PL[W];W[ad]
+C[Count          414648
+GamesPlayed    414648
+Nodes          4846426
+Time           8.6
+GameLen        47.2 dev=10.6 min=9.0 max=99.0
+InTree         11.6 dev=3.1 min=0.0 max=27.0
+Aborted        0%
+Games/s        48027.5
+Value          0.41
+Sequence       J4 G2 D8 E9 C8 B8 H1 H2 J2 J5 B9 C9 J3 H3 J6 B2 B1 A2 A3 A5 A1
+A9 E1
+TimeInitTree   0.00
+TimeRootFilter 0.00
+= J4]
+)
