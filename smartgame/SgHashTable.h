@@ -73,25 +73,25 @@ public:
     bool Store(const SgHashCode& code, const DATA& data);
 
     /** number of collisions on store */
-    int NuCollisions() const
+    size_t NuCollisions() const
     {
         return m_nuCollisions;
     }
 
     /** total number of stores attempted */
-    int NuStores() const
+    size_t NuStores() const
     {
         return m_nuStores;
     }
 
     /** total number of lookups attempted */
-    int NuLookups() const
+    size_t NuLookups() const
     {
         return m_nuLookups;
     }
 
     /** number of successful lookups */
-    int NuFound() const
+    size_t NuFound() const
     {
         return m_nuFound;
     }
@@ -103,20 +103,20 @@ private:
     /** size of hash table */
     int m_maxHash;
 
-    // AR: the following statistics can be made debug only
-    // AR: pass a HashStatistics class to the HashTable when constructed
+    // @todo the following statistics can be made debug only
+    // @todo pass a HashStatistics class to the HashTable when constructed
 
     /** number of collisions on store */
-    mutable int m_nuCollisions;
+    mutable size_t m_nuCollisions;
 
     /** total number of stores attempted */
-    mutable int m_nuStores;
+    mutable size_t m_nuStores;
 
     /** total number of lookups attempted */
-    mutable int m_nuLookups;
+    mutable size_t m_nuLookups;
 
     /** number of successful lookups */
-    mutable int m_nuFound;
+    mutable size_t m_nuFound;
 
     /** not implemented */
     SgHashTable(const SgHashTable&);
