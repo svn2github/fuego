@@ -460,7 +460,7 @@ SgPropID SgProp::OpponentProp(SgPropID id)
 {
     // Relies on the fact that these properties are always created in pairs,
     // with black created before white.
-    // AR: ---> Flags cannot really be overridden
+    // @todo ---> Flags cannot really be overridden
     SgPropFlags flags = s_flags[id];
 
     if (flags & SG_PROPCLASS_BLACK)
@@ -478,7 +478,7 @@ SgPropID SgProp::OpponentProp(SgPropID id)
 
 SgPropID SgProp::PlayerProp(SgPropID id, SgBlackWhite player)
 {
-    // AR: ---> Flags cannot really be overridden
+    // @todo ---> Flags cannot really be overridden
     SgPropFlags flags = s_flags[id];
     SG_ASSERT(flags & (SG_PROPCLASS_BLACK | SG_PROPCLASS_WHITE));
     int mask = (player == SG_WHITE ? SG_PROPCLASS_WHITE : SG_PROPCLASS_BLACK);
@@ -649,7 +649,7 @@ void SgProp::Init()
                                 + SG_PROPCLASS_CUSTOM + SG_PROPCLASS_NOTCLEAN);
 
     //--- statistics
-    // AR: is official property?
+    // @todo is official property?
     SG_PROP_COUNT = Register(0, "CN",
                              SG_PROPCLASS_STAT + SG_PROPCLASS_ABSTRACT);
     SG_PROP_TIME_USED = Register(mSecProp, "TU",
@@ -681,7 +681,7 @@ void SgProp::Init()
     SG_PROP_FORMAT = Register(intProp, "FF", SG_PROPCLASS_ROOT);
     SG_PROP_SIZE = Register(intProp, "SZ", SG_PROPCLASS_ROOT);
     SG_PROP_GAME = Register(intProp, "GM", SG_PROPCLASS_ROOT);
-    // AR: not root props?
+    // @todo not root props?
     SG_PROP_SPEC_BLACK = Register(intProp, "BS", SG_PROPCLASS_CUSTOM);
     SG_PROP_SPEC_WHITE = Register(intProp, "WS", SG_PROPCLASS_CUSTOM);
     SG_PROP_CHINESE = Register(intProp, "CI",

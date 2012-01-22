@@ -52,7 +52,7 @@ SgPoint SgEvaluatedMoves::BestMove()
 void SgEvaluatedMoves::BestMoves(SgVector<SgPoint>& best, int nuMoves) const
 {
     SG_UNUSED(nuMoves);
-    best = m_moveList; // AR: cut off at 'nuMoves'??
+    best = m_moveList; // @todo cut off at nuMoves ?
 }
 
 //----------------------------------------------------------------------------

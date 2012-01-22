@@ -540,11 +540,10 @@ bool GoLadderUtil::Ladder(const GoBoard& bd, SgPoint prey,
 {
     SG_ASSERT(bd.IsValidPoint(prey));
     SG_ASSERT(bd.Occupied(prey));
-    // AR: from Martin: for an unsettled block with 2 liberties, it
+    // @todo for an unsettled block with 2 liberties, it
     // immediately says it can escape, but does not return a move.
-    // Sequence is empty.  So I have to special case this and look for
+    // Sequence is empty.  Have to special case this and look for
     // moves that escape from ladder myself.
-    // ---> need to tell Martin if I find this
 #ifndef NDEBUG
     SgHashCode oldHash = bd.GetHashCode();
 #endif

@@ -72,7 +72,7 @@ SgPointSet SgPointSet::ConnComp(SgPoint p) const
 {
     // alternative connected component algorithm for large diameter sets
     SgPointSet out, in = (*this);
-    SgPoint stack[SG_MAXPOINT]; // AR: use Stack template
+    SgPoint stack[SG_MAXPOINT]; // @todo use Stack template
     out.Include(p);
     in.Exclude(p);
     int current = 0;
@@ -98,7 +98,7 @@ SgPointSet SgPointSet::ConnComp8(SgPoint p) const
 {
     SG_ASSERT(Contains(p));
     SgPointSet out, in = (*this);
-    SgPoint stack[SG_MAXPOINT]; // AR: use Stack template
+    SgPoint stack[SG_MAXPOINT]; // @todo use Stack template
     out.Include(p);
     in.Exclude(p);
     int current = 0;
@@ -251,7 +251,7 @@ SgPointSet SgPointSet::Kernel(int boardSize) const
 {
     // Kernel is computed by growing the complement,
     // and subtracting that from the given set.
-    // AR: would direct implementation be faster?
+    // @todo would direct implementation be faster?
     SgPointSet k = AllPoints(boardSize) - (*this);
     SgPointSet bd = (k >> SG_NS);
     bd |= (k << SG_NS);
@@ -311,16 +311,16 @@ bool SgPointSet::IsConnected() const
     if (p == SG_NULLPOINT)
         return true;
     else
-        return (Component(p) == (*this));
+        return Component(p) == *this;
 }
 
 bool SgPointSet::Is8Connected() const
-{ // AR: slow.
+{  // @todo slow.
     SgPoint p = PointOf();
     if (p == SG_NULLPOINT)
         return true; // Empty set
     else 
-        return (ConnComp8(p) == (*this));
+        return ConnComp8(p) == *this;
 }
 
 //----------------------------------------------------------------------------

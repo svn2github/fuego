@@ -48,7 +48,7 @@ string SgSearchValue::ToString(int unitPerPoint) const
 bool SgSearchValue::FromString(const string& s)
 {
     SG_UNUSED(s);
-    SG_ASSERT(false); // AR: not yet implemented
+    SG_ASSERT(false); // @todo not yet implemented
     return false;
 }
 

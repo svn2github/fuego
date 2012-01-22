@@ -35,7 +35,8 @@ void SgIncrementalStack::PushPts(int type, SgEmptyBlackWhite col,
 }
 
 void SgIncrementalStack::PushPt(int type, SgEmptyBlackWhite col, SgPoint pt)
-// same as PushPts for a single point AR: could be optimized for space by
+// same as PushPts for a single point 
+// @todo could be optimized for space by
 // using different type tags for single and multiple point
 {
     PushPoint(pt);

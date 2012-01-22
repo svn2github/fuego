@@ -594,7 +594,7 @@ int SgSearch::SearchEngine(int depth, int alpha, int beta,
 
     // Only place we check whether the search has been newly aborted. In all
     // other places, just check whether search was aborted before.
-    // AR: what to return here?
+    // @todo what to return here?
     // if - (SG_INFINITY - 1), then will be positive on next level?
     if (AbortSearch())
     {

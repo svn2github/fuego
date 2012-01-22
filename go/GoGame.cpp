@@ -27,7 +27,7 @@ void AddStatisticsToNode(const SgSearchStatistics* stat, SgNode* node)
 {
     node->Add(new SgPropInt(SG_PROP_NUM_NODES, stat->NumNodes()));
     node->Add(new SgPropInt(SG_PROP_NUM_LEAFS, stat->NumEvals()));
-    // AR: moves, pass moves
+    // @todo moves, pass moves
     node->Add(new SgPropMSec(SG_PROP_TIME_USED, stat->TimeUsed()));
     node->Add(new SgPropInt(SG_PROP_MAX_DEPTH, stat->DepthReached()));
 }

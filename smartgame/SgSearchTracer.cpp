@@ -70,7 +70,7 @@ void SgSearchTracer::StartOfDepth(int depth)
     if (depth > 0 && m_traceNode->HasFather())
     {
         // true for each depth except the very first
-        // AR: the 0 should really be the depthMin parameter of iterated
+        // @todo the 0 should really be the depthMin parameter of iterated
         // search. this will break if depthMin != 0 and generate strange
         // trace trees.
         m_traceNode = m_traceNode->Father();

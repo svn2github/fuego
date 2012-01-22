@@ -69,7 +69,7 @@ SgPoint SgRect::Center() const
 
 bool SgRect::InRect(SgPoint p) const
 {
-    //AR: if (BorderSet[p]) return false;
+    //@todo if (BorderSet[p]) return false;
     int x = SgPointUtil::Col(p);
     int y = SgPointUtil::Row(p);
     return (x >= m_left) && (x <= m_right) && (y >= m_top) && (y <= m_bottom);

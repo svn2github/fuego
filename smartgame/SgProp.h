@@ -581,8 +581,8 @@ inline SgPropSimple::SgPropSimple(SgPropID id)
 //----------------------------------------------------------------------------
 
 /** Multiple property.
-    @todo AR: Make sure it's in range[1..2]. Should be deleted if it's 0.
-    @todo AR: could do away with this after all, set flag instead? */
+    @todo Make sure it's in range[1..2]. Should be deleted if it's 0.
+    @todo could do away with this after all, set flag instead? */
 class SgPropMultiple
     : public SgPropInt
 {
