@@ -268,6 +268,8 @@ void GoUctCommands::CmdDeterministicMode(GtpCommand& cmd)
     "uct_param_player reuse_subtree false\n"
     "uct_param_search number_threads 1\n"
     "uct_param_search max_nodes 5000000\n";
+    if ( p.MaxGames() == std::numeric_limits<SgUctValue>::max())
+        SgWarning() << "Set Uct Param Player-> Max Games to finite value in deterministic mode\n";
     p.SetIgnoreClock(true);
     p.SetReuseSubtree(false);
     s.SetNumberThreads(1);
@@ -519,6 +521,9 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             p.SetSearchMode(SearchModeArg(cmd, 1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
+
+        if (SgDeterministic::DeterministicMode())
+            SgWarning() << "changing " << name << " in deterministic mode can affect results\n";
     }
     else
         throw GtpFailure() << "need 0 or 2 arguments";
@@ -768,6 +773,9 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetRaveWeightInitial(cmd.Arg<float>(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
+
+        if (SgDeterministic::DeterministicMode())
+            SgWarning() << "changing " << name << " in deterministic mode can affect results\n";
     }
     else
         throw GtpFailure() << "need 0 or 2 arguments";

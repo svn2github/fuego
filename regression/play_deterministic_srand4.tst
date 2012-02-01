@@ -9,16 +9,16 @@ set_random_seed 4
 reg_genmove b
 
 10 uct_stat_search count
-#? [9000]
+#? [10000]
 
 20 uct_stat_search games_played
-#? [9000]
+#? [10000]
 
 30 uct_stat_search nodes
-#? [680619]
+#? [754860]
 
 40 uct_sequence
-#? [VAR B F6 W E3 B C3 W C4 B B4 W C5 B D4 W D3 B E4 W F4 B E5]
+#? [VAR B D7 W G2 B H7 W D3 B E3 W E4 B F3 W F4 B G4 W G5 B H4 W G3 B E2]
 
 50 uct_value
-#? [0.49991]
+#? [0.498571]

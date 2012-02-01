@@ -15,10 +15,10 @@ reg_genmove b
 #? [10000]
 
 30 uct_stat_search nodes
-#? [753894]
+#? [753179]
 
 40 uct_sequence
-#? [VAR B E6 W F4 B E4 W E3 B F3 W F2 B E2 W D3 B D2 W C3]
+#? [VAR B E6 W D3 B E3 W E4 B F3 W F4 B G3 W G4 B H4 W H5 B J4 W H3 B H2 W J2 B H1 W G2]
 
 50 uct_value
-#? [0.49784]
+#? [0.494355]
