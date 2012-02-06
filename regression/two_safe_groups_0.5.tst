@@ -2,6 +2,11 @@
 # Position evaluation tests involving two safe white groups on the 9x9 board.
 # All these positions are lost for Black so the uct_value should be low.
 #-----------------------------------------------------------------------------
+
+uct_param_player early_pass 0
+# must turn off early pass, otherwise the uct_value could be 
+# from the pass search, not the normal search.
+
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/two-safe-groups/case1.sgf

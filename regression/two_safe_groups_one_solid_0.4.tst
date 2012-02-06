@@ -7,6 +7,10 @@
 # the other group which is not so solid.
 #-----------------------------------------------------------------------------
 
+uct_param_player early_pass 0
+# must turn off early pass, otherwise the uct_value could be 
+# from the pass search, not the normal search.
+
 #-----------------------------------------------------------------------------
 
 loadsgf sgf/two-safe-groups/case1-1.sgf
