@@ -30,7 +30,7 @@ reg_genmove b
 
 loadsgf sgf/two-safe-groups/case2-2.sgf
 reg_genmove b
-20 sg_compare_float 0.5 uct_value
+25 sg_compare_float 0.5 uct_value
 #? [-1]
 
 loadsgf sgf/two-safe-groups/case3-1.sgf
@@ -162,3 +162,4 @@ loadsgf sgf/two-safe-groups/case15-2.sgf
 reg_genmove b
 155 sg_compare_float 0.5 uct_value
 #? [-1]
+
