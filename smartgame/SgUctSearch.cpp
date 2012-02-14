@@ -806,6 +806,7 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
     SgUctValue rootMean = m_tree.Root().Mean();
     ostringstream out;
     const SgUctNode* current = &m_tree.Root();
+    bool hasKnowledge = current->KnowledgeCount() > 0;
     out << (format("%s | %.3f | %.0f | %.1f ")
             % SgTime::Format(currTime, true) % rootMean % rootMoveCount % m_statistics.m_movesInTree.Mean());
     for (int i = 0; i <= MAX_SEQ_PRINT_LENGTH && current->HasChildren(); ++i)
@@ -815,6 +816,11 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
             break;
         if (i == 0)
             out << "|";
+        if (hasKnowledge && current->KnowledgeCount() == 0)
+        {
+            out << " ^";
+            hasKnowledge = false;
+        }
         if (i < MAX_SEQ_PRINT_LENGTH)
             out << " " << MoveString(current->Move());
         else
