@@ -341,9 +341,9 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
         m_wasEarlyAbort = true;
         return true;
     }
-    if (m_numberGames >= m_nextCheckTime)
+    if (GamesPlayed() >= m_nextCheckTime)
     {
-        m_nextCheckTime = m_numberGames + m_checkTimeInterval;
+        m_nextCheckTime = GamesPlayed() + m_checkTimeInterval;
         double time = m_timer.GetTime();
 
         if (time > m_maxTime)
