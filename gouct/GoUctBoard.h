@@ -417,6 +417,13 @@ public:
 
         const GoUctBoard& m_board;
 
+        /** Not implemented.
+            Prevent unintended usage of operator bool() as an int.
+            Detects bug of forgetting to dereference iterator - 
+            it instead of *it
+        */
+        operator int() const;
+
         /** Not implemented. */
         LibertyIterator(const LibertyIterator&);
 
@@ -445,6 +452,13 @@ public:
         GoUctBoard::Block::StoneIterator m_it;
 
         const GoUctBoard& m_board;
+
+        /** Not implemented.
+            Prevent unintended usage of operator bool() as an int.
+            Detects bug of forgetting to dereference iterator - 
+            it instead of *it
+        */
+        operator int() const;
 
         /** Not implemented. */
         StoneIterator(const StoneIterator&);

@@ -1049,13 +1049,21 @@ public:
     operator bool() const
     {
         SgPoint p = *m_p;
-        return (m_board.Occupied(p) && p == m_board.Anchor(p));
+        return m_board.Occupied(p)
+            && p == m_board.Anchor(p);
     }
 
 private:
     const GoBoard& m_board;
 
     GoBoard::Iterator m_p;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 
     /** Not implemented. */
     GoBlockIterator(const GoBlockIterator&);

@@ -90,6 +90,13 @@ public:
 private:
     SgEmptyBlackWhite m_color;
 
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
     /** Not implemented */
     SgEBWIterator(const SgEBWIterator&);
 

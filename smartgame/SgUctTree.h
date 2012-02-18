@@ -1089,6 +1089,13 @@ private:
     const SgUctNode* m_current;
 
     const SgUctNode* m_last;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 };
 
 inline SgUctChildIterator::SgUctChildIterator(const SgUctTree& tree,
@@ -1140,6 +1147,13 @@ private:
         The elements are owned by the stack (shared_ptr is only used because
         auto_ptr should not be used with standard containers) */
     std::stack<boost::shared_ptr<SgUctChildIterator> > m_stack;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 };
 
 //----------------------------------------------------------------------------

@@ -415,6 +415,13 @@ public:
 private:
     SgNode* m_nextNode;
 
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
     /** Not implemented. */
     SgSonNodeIterator(const SgSonNodeIterator&);
 
@@ -450,6 +457,13 @@ public:
 
 private:
     SgNode* m_nextNode;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 
     /** Not implemented. */
     SgSonNodeConstIterator(const SgSonNodeConstIterator&);
@@ -504,6 +518,13 @@ private:
 
     SgNode* m_nextNode;
 
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
     /** Not implemented. */
     SgNodeIterator(const SgNodeIterator&);
 
@@ -556,6 +577,13 @@ private:
     const SgNode* const m_rootOfSubtree;
 
     const SgNode* m_nextNode;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 
     /** Not implemented. */
     SgNodeConstIterator(const SgNodeConstIterator&);

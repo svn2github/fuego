@@ -102,6 +102,13 @@ private:
 
     static const int s_diag[4];
 
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
     /** Not implemented. */
     SgNb4DiagIterator(const SgNb4DiagIterator&);
 
@@ -166,6 +173,13 @@ private:
     SgPoint m_p;
 
     static const int s_nb8[8];
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 
     /** Not implemented. */
     SgNb8Iterator(const SgNb8Iterator&);

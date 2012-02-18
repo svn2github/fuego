@@ -31,6 +31,12 @@ public:
 private:
     const SgPoint* m_point;
 
+    /** Not implemented.
+    	Prevent unintended usage of operator bool() as an int.
+    	Detects bug of forgetting to dereference iterator - it instead of *it
+    */
+    operator int() const;
+
     /** Not implemented. */
     SgPointIterator(const SgPointIterator&);
 
@@ -88,6 +94,12 @@ private:
     const SgPoint* m_point;
 
     const SgPoint* m_end;
+
+    /** Not implemented.
+    	Prevent unintended usage of operator bool() as an int.
+    	Detects bug of forgetting to dereference iterator - it instead of *it
+    */
+    operator int() const;
 
     /** Not implemented. */
     SgPointRangeIterator(const SgPointRangeIterator&);

@@ -41,6 +41,19 @@ private:
     int m_nextPoint;
 
     int m_lastBoardPoint;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
+    /** Not implemented. */
+    SgConnCompIterator(const SgConnCompIterator&);
+
+    /** Not implemented. */
+    SgConnCompIterator& operator=(const SgConnCompIterator&);
 };
 
 //----------------------------------------------------------------------------
@@ -69,6 +82,19 @@ private:
     int m_nextPoint;
 
     int m_lastBoardPoint;
+
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
+    /** Not implemented. */
+    SgConnComp8Iterator(const SgConnComp8Iterator&);
+
+    /** Not implemented. */
+    SgConnComp8Iterator& operator=(const SgConnComp8Iterator&);
 };
 
 //----------------------------------------------------------------------------

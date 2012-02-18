@@ -222,6 +222,13 @@ private:
     SgPoint m_cursor;
 
     SgPoint m_end;
+    
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 };
 
 std::ostream& operator<<(std::ostream& stream, const SgRect& rect);

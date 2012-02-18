@@ -904,6 +904,13 @@ public:
         uint64_t m_countPlay;
 #endif
 
+        /** Not implemented.
+            Prevent unintended usage of operator bool() as an int.
+            Detects bug of forgetting to dereference iterator - 
+            it instead of *it
+        */
+        operator int() const;
+
         /** Not implemented. */
         StoneIterator(const StoneIterator&);
 
@@ -946,6 +953,13 @@ public:
         uint64_t m_countPlay;
 #endif
 
+        /** Not implemented.
+            Prevent unintended usage of operator bool() as an int.
+            Detects bug of forgetting to dereference iterator - 
+            it instead of *it
+        */
+        operator int() const;
+
         /** Not implemented. */
         LibertyIterator(const LibertyIterator&);
 
@@ -987,6 +1001,13 @@ public:
 #ifndef NDEBUG
         SgHashCode m_oldHash;
 #endif
+
+        /** Not implemented.
+            Prevent unintended usage of operator bool() as an int.
+            Detects bug of forgetting to dereference iterator - 
+            it instead of *it
+        */
+        operator int() const;
 
         /** Not implemented. */
         LibertyCopyIterator(const LibertyCopyIterator&);

@@ -453,6 +453,12 @@ public:
     operator bool() const;
 
 private:
+    /** Not implemented.
+    	Prevent unintended usage of operator bool() as an int.
+    	Detects bug of forgetting to dereference iterator 
+    */
+    operator int() const;
+
     const SgPointSet& m_set;
 
     int m_index;

@@ -335,6 +335,13 @@ private:
 
     typename vector<T>::const_iterator m_it;
     
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
+
     /** not implemented */
     SgVectorIterator& operator=(const SgVectorIterator&);
 };
@@ -459,6 +466,14 @@ public:
     {
         return SgVectorIterator<void*>::operator bool();
     }
+
+private:
+    /** Not implemented.
+        Prevent unintended usage of operator bool() as an int.
+        Detects bug of forgetting to dereference iterator - 
+        it instead of *it
+    */
+    operator int() const;
 };
 //----------------------------------------------------------------------------
 
