@@ -47,6 +47,12 @@ struct SgUctMoveInfo
     /** Rave count of move after node is created. */
     SgUctValue m_raveCount;
 
+    /** Value of either single or combined predictor.
+        Use:
+        1. hold return value from one predictor's ProcessPosition.
+        2. store final value combined across all predictors. */
+    float m_predictorValue;
+ 
     SgUctMoveInfo();
 
     SgUctMoveInfo(SgMove move);
@@ -59,18 +65,18 @@ inline SgUctMoveInfo::SgUctMoveInfo()
     : m_value(0),
       m_count(0),
       m_raveValue(0),
-      m_raveCount(0)
-{
-}
+      m_raveCount(0),
+      m_predictorValue(0.0)
+{ }
 
 inline SgUctMoveInfo::SgUctMoveInfo(SgMove move)
     : m_move(move),
       m_value(0),
       m_count(0),
       m_raveValue(0),
-      m_raveCount(0)
-{
-}
+      m_raveCount(0),
+      m_predictorValue(0.0)
+{ }
 
 inline SgUctMoveInfo::SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
                               SgUctValue raveValue, SgUctValue raveCount)
@@ -78,9 +84,9 @@ inline SgUctMoveInfo::SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue co
       m_value(value),
       m_count(count),
       m_raveValue(raveValue),
-      m_raveCount(raveCount)
-{
-}
+      m_raveCount(raveCount),
+      m_predictorValue(0.0)
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -221,6 +227,8 @@ public:
     /** Initialize RAVE value with prior knowledge. */
     void InitializeRaveValue(SgUctValue value,  SgUctValue count);
 
+	float PredictorValue() const;
+
     int VirtualLossCount() const;
 
     void AddVirtualLoss();
@@ -253,6 +261,9 @@ private:
 
     volatile SgMove m_move;
 
+    /* Value of additive predictor */
+    volatile float m_predictorValue;
+
     /** RAVE statistics.
         Uses double for count to allow adding fractional values if RAVE
         updates are weighted. */
@@ -271,6 +282,7 @@ inline SgUctNode::SgUctNode(const SgUctMoveInfo& info)
     : m_statistics(info.m_value, info.m_count),
       m_nuChildren(0),
       m_move(info.m_move),
+      m_predictorValue(info.m_predictorValue),
       m_raveValue(info.m_raveValue, info.m_raveCount),
       m_posCount(0),
       m_knowledgeCount(0),
@@ -327,6 +339,7 @@ inline void SgUctNode::CopyDataFrom(const SgUctNode& node)
 {
     m_statistics = node.m_statistics;
     m_move = node.m_move;
+    m_predictorValue = node.m_predictorValue;
     m_raveValue = node.m_raveValue;
     m_posCount = node.m_posCount;
     m_knowledgeCount = node.m_knowledgeCount;
@@ -450,6 +463,11 @@ inline int SgUctNode::NuChildren() const
 inline SgUctValue SgUctNode::PosCount() const
 {
     return m_posCount;
+}
+
+inline float SgUctNode::PredictorValue() const
+{
+    return m_predictorValue;
 }
 
 inline SgUctValue SgUctNode::RaveCount() const

@@ -1,6 +1,8 @@
 noinst_LIBRARIES = libfuego_gouct.a
 
 libfuego_gouct_a_SOURCES = \
+GoUctAdditiveKnowledge.cpp \
+GoUctAdditiveKnowledgeFuego.cpp \
 GoUctBoard.cpp \
 GoUctCommands.cpp \
 GoUctDefaultPriorKnowledge.cpp \
@@ -14,6 +16,8 @@ GoUctSearch.cpp \
 GoUctUtil.cpp
 
 noinst_HEADERS = \
+GoUctAdditiveKnowledge.h \
+GoUctAdditiveKnowledgeFuego.h \
 GoUctBoard.h \
 GoUctBookBuilder.h \
 GoUctBookBuilderCommands.h \
