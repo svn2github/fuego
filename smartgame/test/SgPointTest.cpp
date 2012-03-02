@@ -21,22 +21,31 @@ BOOST_AUTO_TEST_CASE(SgPointTest_Col)
 {
     BOOST_CHECK_EQUAL(SgPointUtil::Col(SgPointUtil::Pt(1, 1)), 1);
     BOOST_CHECK_EQUAL(SgPointUtil::Col(SgPointUtil::Pt(5, 3)), 5);
-    BOOST_CHECK_EQUAL(SgPointUtil::Col(SgPointUtil::Pt(19, 3)), 19);
-    BOOST_CHECK_EQUAL(SgPointUtil::Col(SgPointUtil::Pt(19, 19)), 19);
+    if (SG_MAX_SIZE >= 19)
+    {
+        BOOST_CHECK_EQUAL(SgPointUtil::Col(SgPointUtil::Pt(19, 3)), 19);
+        BOOST_CHECK_EQUAL(SgPointUtil::Col(SgPointUtil::Pt(19, 19)), 19);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(SgPointTest_Pt)
 {
-    BOOST_CHECK_EQUAL(SgPointUtil::Pt(1, 1), 21);
-    BOOST_CHECK_EQUAL(SgPointUtil::Pt(19, 19), 399);
+    if (SG_MAX_SIZE == 19)
+    {
+	    BOOST_CHECK_EQUAL(SgPointUtil::Pt(19, 19), 399);
+	    BOOST_CHECK_EQUAL(SgPointUtil::Pt(1, 1), 21);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(SgPointTest_Row)
 {
     BOOST_CHECK_EQUAL(SgPointUtil::Row(SgPointUtil::Pt(1, 1)), 1);
     BOOST_CHECK_EQUAL(SgPointUtil::Row(SgPointUtil::Pt(5, 3)), 3);
-    BOOST_CHECK_EQUAL(SgPointUtil::Row(SgPointUtil::Pt(19, 3)), 3);
-    BOOST_CHECK_EQUAL(SgPointUtil::Row(SgPointUtil::Pt(19, 19)), 19);
+    if (SG_MAX_SIZE >= 19)
+    {
+        BOOST_CHECK_EQUAL(SgPointUtil::Row(SgPointUtil::Pt(19, 3)), 3);
+        BOOST_CHECK_EQUAL(SgPointUtil::Row(SgPointUtil::Pt(19, 19)), 19);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -56,7 +65,8 @@ BOOST_AUTO_TEST_CASE(SgReadPointTest_AllValid)
     SgReadPointTest(Pt(1, 1), "A1");
     SgReadPointTest(Pt(8, 1), "H1");
     SgReadPointTest(Pt(9, 1), "J1");
-    SgReadPointTest(Pt(19, 19), "T19");
+    if (SG_MAX_SIZE >= 19)
+	    SgReadPointTest(Pt(19, 19), "T19");
     SgReadPointTest(SG_PASS, "PASS");
 }
 
@@ -95,7 +105,8 @@ BOOST_AUTO_TEST_CASE(SgWritePointTestAll)
     SgWritePointTest(Pt(1, 1), "A1");
     SgWritePointTest(Pt(8, 1), "H1");
     SgWritePointTest(Pt(9, 1), "J1");
-    SgWritePointTest(Pt(19, 19), "T19");
+    if (SG_MAX_SIZE >= 19)
+        SgWritePointTest(Pt(19, 19), "T19");
     SgWritePointTest(SG_PASS, "PASS");
 }
 

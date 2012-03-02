@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_1)
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(3, 2));
     setup.m_player = SG_WHITE;
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgPoint p = Pt(1, 1);
     DoSelfAtariCorrection(bd, p);
     BOOST_CHECK_EQUAL(p, Pt(3, 1));
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_2)
     setup.AddWhite(Pt(2, 3));
     setup.AddWhite(Pt(3, 2));
     setup.m_player = SG_WHITE;
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgPoint p = Pt(1, 1);
     DoSelfAtariCorrection(bd, p);
     BOOST_CHECK_EQUAL(p, Pt(1, 1));
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_3)
     GoSetup setup;
     setup.AddBlack(Pt(1, 2));
     setup.m_player = SG_WHITE;
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     // single stone self-atari is replaced by adjacent empty point
     SgPoint p = Pt(1, 1);
     DoSelfAtariCorrection(bd, p);
@@ -127,134 +127,154 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_DoSelfAtariCorrection_5)
 /** Test that a move on a 4-4 point is generated on an empty 19x19 board. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_EmptyBoard)
 {
-    GoBoard bd(19);
-    SgPoint p = GoUctUtil::GenForcedOpeningMove(bd);
-    BOOST_CHECK(p == Pt(4, 4) || p == Pt(4, 16) || p == Pt(16, 4)
-                || p == Pt(16, 16));
+    if (SG_MAX_SIZE >= 19)
+    {
+        GoBoard bd(19);
+        SgPoint p = GoUctUtil::GenForcedOpeningMove(bd);
+        BOOST_CHECK(   p == Pt(4, 4)
+                    || p == Pt(4, 16)
+                    || p == Pt(16, 4)
+                    || p == Pt(16, 16));
+    }
 }
 
 /** Test that no move is generated if no corner is empty. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_NoEmptyCorner_1)
 {
-    string s(". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . O . . . . . . . . . . . . X . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . X . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . O . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n");
-    int boardSize;
-    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
-    setup.m_player = SG_BLACK;
-    GoBoard bd(boardSize, setup);
-    BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    if (SG_MAX_SIZE >= 19)
+    {
+        string s(". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . O . . . . . . . . . . . . X . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . X . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . O . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_BLACK;
+        GoBoard bd(boardSize, setup);
+        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    }
 }
 
 /** Test that no move is generated if no corner is empty. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_NoEmptyCorner_2)
 {
-    string s(". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . X . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . X . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . X . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . O . . . . . . . . . . . O . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n");
-    int boardSize;
-    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
-    setup.m_player = SG_WHITE;
-    GoBoard bd(boardSize, setup);
-    BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    if (SG_MAX_SIZE >= 19)
+    {
+        string s(". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . X . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . X . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . X . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . O . . . . . . . . . . . O . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    }
 }
 
 /** Test that a move on a 4-4 point is generated in only empty corner. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_OneEmptyCorner)
 {
-    string s(". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . X . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . O . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . X . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n");
-    int boardSize;
-    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
-    setup. m_player = SG_WHITE;
-    GoBoard bd(boardSize, setup);
-    BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), Pt(4, 4));
+    if (SG_MAX_SIZE >= 19)
+    {
+        string s(". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . X . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . O . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . X . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup. m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), Pt(4, 4));
+    }
 }
 
 /** Test that no moves are generated on a board smaller than size 13. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SmallBoard)
 {
-    GoBoard bd(12);
-    BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    if (SG_MAX_SIZE >= 12)
+    {
+        GoBoard bd(12);
+        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    }
 }
 
 /** Test that no moves are generated if more than 5 stones of a color are
     already on a board. */
 BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SetupStones)
 {
-    string s(". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             ". . . . . . . . . . . . . . . . . . .\n"
-             "X X X X . . . . . . . . . . . . . . .\n"
-             ". . . X . . . . . . . . . . . . . . .\n"
-             ". . . X . . . . . . . . . . . . . . .\n");
-    int boardSize;
-    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
-    setup.m_player = SG_WHITE;
-    GoBoard bd(boardSize, setup);
-    BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    if (SG_MAX_SIZE >= 19)
+    {
+        string s(". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 ". . . . . . . . . . . . . . . . . . .\n"
+                 "X X X X . . . . . . . . . . . . . . .\n"
+                 ". . . X . . . . . . . . . . . . . . .\n"
+                 ". . . X . . . . . . . . . . . . . . .\n");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+    }
 }
 
 //----------------------------------------------------------------------------

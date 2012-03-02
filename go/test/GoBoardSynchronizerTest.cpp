@@ -33,15 +33,15 @@ BOOST_AUTO_TEST_CASE(GoBoardSynchronizerTest_Update)
 /** Test GoBoardSynchronizer::Update, if setup changed. */
 BOOST_AUTO_TEST_CASE(GoBoardSynchronizerTest_Update_Setup)
 {
-    GoBoard publisher(19);
-    GoBoard subscriber(19);
+    GoBoard publisher(9);
+    GoBoard subscriber(9);
     GoBoardSynchronizer synchronizer(publisher);
     synchronizer.SetSubscriber(subscriber);
     publisher.Play(Pt(1, 1), SG_BLACK);
     synchronizer.UpdateSubscriber();
     GoSetup setup;
     setup.AddBlack(Pt(2, 2));
-    publisher.Init(19, setup);
+    publisher.Init(9, setup);
     publisher.Play(Pt(1, 1), SG_BLACK);
     synchronizer.UpdateSubscriber();
     BOOST_CHECK_EQUAL(subscriber.MoveNumber(), 1);
@@ -51,15 +51,15 @@ BOOST_AUTO_TEST_CASE(GoBoardSynchronizerTest_Update_Setup)
 
 BOOST_AUTO_TEST_CASE(GoBoardSynchronizerTest_Update_Init)
 {
-    GoBoard publisher(19);
-    GoBoard subscriber(19);
+    GoBoard publisher(9);
+    GoBoard subscriber(9);
     GoBoardSynchronizer synchronizer(publisher);
     synchronizer.SetSubscriber(subscriber);
     publisher.Play(Pt(1, 1), SG_BLACK);
-    publisher.Init(9);
+    publisher.Init(5);
     synchronizer.UpdateSubscriber();
     BOOST_CHECK_EQUAL(subscriber.MoveNumber(), 0);
-    BOOST_CHECK_EQUAL(subscriber.Size(), 9);
+    BOOST_CHECK_EQUAL(subscriber.Size(), 5);
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardSynchronizerTest_Update_ToPlay)

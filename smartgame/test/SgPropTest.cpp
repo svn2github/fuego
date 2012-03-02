@@ -30,17 +30,20 @@ void SgPropMoveTest_ToString_Go(SgPoint p, int boardSize, int fileFormat,
 
 BOOST_AUTO_TEST_CASE(SgPropMoveTest_ToString_GoAll)
 {
-    SgPropMoveTest_ToString_Go(Pt(1, 19), 19, 4, "aa");
-    SgPropMoveTest_ToString_Go(Pt(19, 19), 19, 4, "sa");
-    SgPropMoveTest_ToString_Go(Pt(1, 1), 19, 4, "as");
-    SgPropMoveTest_ToString_Go(Pt(19, 1), 19, 4, "ss");
-    SgPropMoveTest_ToString_Go(Pt(1, 9), 9, 4, "aa");
-    SgPropMoveTest_ToString_Go(Pt(9, 9), 9, 4, "ia");
-    SgPropMoveTest_ToString_Go(Pt(1, 1), 9, 4, "ai");
-    SgPropMoveTest_ToString_Go(Pt(9, 1), 9, 4, "ii");
-    SgPropMoveTest_ToString_Go(SG_PASS, 19, 3, "tt");
-    SgPropMoveTest_ToString_Go(SG_PASS, 9, 3, "tt");
-    SgPropMoveTest_ToString_Go(SG_PASS, 19, 4, "");
+    if (SG_MAX_SIZE >= 19)
+    {
+        SgPropMoveTest_ToString_Go(Pt(1, 19), 19, 4, "aa");
+        SgPropMoveTest_ToString_Go(Pt(19, 19), 19, 4, "sa");
+        SgPropMoveTest_ToString_Go(Pt(1, 1), 19, 4, "as");
+        SgPropMoveTest_ToString_Go(Pt(19, 1), 19, 4, "ss");
+        SgPropMoveTest_ToString_Go(Pt(1, 9), 9, 4, "aa");
+        SgPropMoveTest_ToString_Go(Pt(9, 9), 9, 4, "ia");
+        SgPropMoveTest_ToString_Go(Pt(1, 1), 9, 4, "ai");
+        SgPropMoveTest_ToString_Go(Pt(9, 1), 9, 4, "ii");
+        SgPropMoveTest_ToString_Go(SG_PASS, 19, 3, "tt");
+        SgPropMoveTest_ToString_Go(SG_PASS, 9, 3, "tt");
+        SgPropMoveTest_ToString_Go(SG_PASS, 19, 4, "");
+    }
 }
 
 void SgPropMoveTest_ToString_Hex(SgPoint p, int boardSize,
@@ -56,11 +59,15 @@ void SgPropMoveTest_ToString_Hex(SgPoint p, int boardSize,
 
 BOOST_AUTO_TEST_CASE(SgPropMoveTest_ToString_HexAll)
 {
-    SgPropMoveTest_ToString_Hex(Pt(1, 19), 19, "a1");
-    SgPropMoveTest_ToString_Hex(Pt(19, 19), 19, "s1");
-    SgPropMoveTest_ToString_Hex(Pt(1, 1), 19, "a19");
-    SgPropMoveTest_ToString_Hex(Pt(19, 1), 19, "s19");
-    SgPropMoveTest_ToString_Hex(Pt(10, 10), 10, "j1");
+    if (SG_MAX_SIZE >= 19)
+    {
+        SgPropMoveTest_ToString_Hex(Pt(1, 19), 19, "a1");
+        SgPropMoveTest_ToString_Hex(Pt(19, 19), 19, "s1");
+        SgPropMoveTest_ToString_Hex(Pt(1, 1), 19, "a19");
+        SgPropMoveTest_ToString_Hex(Pt(19, 1), 19, "s19");
+    }
+    if (SG_MAX_SIZE >= 10)
+	    SgPropMoveTest_ToString_Hex(Pt(10, 10), 10, "j1");
     SgPropMoveTest_ToString_Hex(Pt(1, 9), 9, "a1");
     SgPropMoveTest_ToString_Hex(Pt(9, 9), 9, "i1");
     SgPropMoveTest_ToString_Hex(Pt(1, 1), 9, "a9");

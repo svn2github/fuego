@@ -19,7 +19,7 @@ namespace {
     Parts removed that use Undo() */
 BOOST_AUTO_TEST_CASE(GoUctBoardTest_GetLastMove)
 {
-    GoBoard board(19);
+    GoBoard board(9);
     GoUctBoard bd(board);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
     BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(GoUctBoardTest_IsLibertyOfBlock)
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 1));
     setup.AddBlack(Pt(2, 2));
-    GoBoard board(19, setup);
+    GoBoard board(9, setup);
     GoUctBoard bd(board);
     BOOST_CHECK(bd.IsLibertyOfBlock(Pt(1, 1), bd.Anchor(Pt(1, 2))));
     BOOST_CHECK(bd.IsLibertyOfBlock(Pt(1, 1), bd.Anchor(Pt(2, 1))));

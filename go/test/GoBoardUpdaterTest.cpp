@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUpdaterTest_Play)
     SgNode* child = new SgNode();
     child->AddMoveProp(Pt(1, 1), SG_BLACK);
     child->AppendTo(root);
-    GoBoard bd(19);
+    GoBoard bd(9);
     GoBoardUpdater updater;
     updater.Update(child, bd);
     root->DeleteTree();
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUpdaterTest_Setup)
     child->Add(addBlack);
     child->Add(addWhite);
     child->AppendTo(root);
-    GoBoard bd(19);
+    GoBoard bd(9);
     GoBoardUpdater updater;
     updater.Update(child, bd);
     root->DeleteTree();
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUpdaterTest_SetupOnOccupiedMoveTwo)
     SgPropAddStone* addBlack = new SgPropAddStone(SG_PROP_ADD_BLACK);
     addBlack->PushBack(Pt(3, 3));
     node3->Add(addBlack);
-    GoBoard bd(19);
+    GoBoard bd(9);
     GoBoardUpdater updater;
     updater.Update(node3, bd);
     root->DeleteTree();

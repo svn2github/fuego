@@ -25,8 +25,8 @@ BOOST_AUTO_TEST_CASE(SgPointSetTestConnCompIterator)
     a.Include(Pt(1, 1));
     a.Include(Pt(1, 2));
     a.Include(Pt(2, 1));
-    a.Include(Pt(1, 19));
-    SgConnCompIterator it(a, 19);
+    a.Include(Pt(1, SG_MAX_SIZE));
+    SgConnCompIterator it(a, SG_MAX_SIZE);
     BOOST_CHECK(it);
     SgPointSet b = *it;
     BOOST_CHECK_EQUAL(b.Size(), 3);
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(SgPointSetTestConnCompIterator)
     BOOST_CHECK(it);
     b = *it;
     BOOST_CHECK_EQUAL(b.Size(), 1);
-    BOOST_CHECK(a.Contains(Pt(1, 19)));
+    BOOST_CHECK(a.Contains(Pt(1, SG_MAX_SIZE)));
     ++it;
     BOOST_CHECK(! it);
 }

@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor)
     setup.AddBlack(Pt(4, 2));
     setup.AddBlack(Pt(3, 2));
     setup.AddBlack(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     // Check that anchor returns smallest point
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 1)), Pt(4, 1));
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(4, 2)), Pt(4, 1));
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Anchor_2)
     GoSetup setup;
     setup.AddBlack(Pt(1, 2));
     setup.AddBlack(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(1, 2)), Pt(1, 2));
     BOOST_CHECK_EQUAL(bd.Anchor(Pt(2, 1)), Pt(2, 1));
     bd.Play(Pt(1, 1), SG_BLACK);
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Defaults)
 /** Play and undo some moves and remember and compare the hash code. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCode)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     bd.Play(Pt(1, 1), SG_BLACK);
     SgHashCode h1 = bd.GetHashCode();
     bd.Play(Pt(1, 2), SG_WHITE);
@@ -184,6 +184,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCode_EmptyPosition)
         GoBoard bd(9);
         BOOST_CHECK(bd.GetHashCode().IsZero());
     }
+    if (SG_MAX_SIZE >= 19)
     {
         GoBoard bd(19);
         BOOST_CHECK(bd.GetHashCode().IsZero());
@@ -194,7 +195,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCode_EmptyPosition)
     including to play. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCodeInclToPlay)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     bd.Play(Pt(1, 1), SG_BLACK);
     SgHashCode h1 = bd.GetHashCodeInclToPlay();
     bd.Play(Pt(1, 2), SG_WHITE);
@@ -221,7 +222,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_GetHashCodeInclToPlay)
 /** Test GoBoard::GetLastMove() and GoBoard::Get2ndLastMove() */
 BOOST_AUTO_TEST_CASE(GoBoardTest_GetLastMove)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     BOOST_CHECK_EQUAL(bd.GetLastMove(), SG_NULLMOVE);
     BOOST_CHECK_EQUAL(bd.Get2ndLastMove(), SG_NULLMOVE);
     bd.Play(Pt(1, 1), SG_BLACK);
@@ -251,10 +252,10 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_InAtari)
 {
     GoSetup setup;
     setup.AddBlack(Pt(1, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(! bd.InAtari(Pt(1, 1)));
     setup.AddWhite(Pt(1, 2));
-    bd.Init(19, setup);
+    bd.Init(9, setup);
     bd.SetToPlay(SG_BLACK);
     BOOST_CHECK(bd.InAtari(Pt(1, 1)));
     bd.SetToPlay(SG_WHITE);
@@ -263,11 +264,11 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_InAtari)
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_Init)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     bd.Play(Pt(3, 3), SG_BLACK);
-    bd.Init(9);
-    BOOST_CHECK_EQUAL(bd.Size(), 9);
-    BOOST_CHECK(bd.IsBorder(Pt(10, 10)));
+    bd.Init(5);
+    BOOST_CHECK_EQUAL(bd.Size(), 5);
+    BOOST_CHECK(bd.IsBorder(Pt(6, 6)));
     for (GoBoard::Iterator it(bd); it; ++it)
         BOOST_CHECK_MESSAGE(bd.GetColor(*it) == SG_EMPTY,
                             "Point " << SgWritePoint(*it) << " not empty");
@@ -313,7 +314,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Ko)
     setup.AddWhite(Pt(2, 2));
     setup.AddWhite(Pt(3, 1));
     setup.AddBlack(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Play(Pt(2, 1), SG_BLACK);
     BOOST_CHECK(! bd.IsLegal(Pt(1, 1)));
 }
@@ -325,7 +326,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition)
     setup.AddWhite(Pt(2, 1));
     setup.AddBlack(Pt(2, 2));
     setup.AddBlack(Pt(3, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_REQUIRE(! bd.KoRepetitionAllowed());
     bd.Play(Pt(1, 1), SG_BLACK);
     BOOST_CHECK(! bd.IsLegal(Pt(2, 1), SG_WHITE));
@@ -343,7 +344,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition_2)
     setup.AddWhite(Pt(2, 1));
     setup.AddBlack(Pt(2, 2));
     setup.AddBlack(Pt(3, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_REQUIRE(! bd.KoRepetitionAllowed());
     bd.Rules().SetKoRule(GoRules::SIMPLEKO);
     bd.Play(Pt(1, 1), SG_BLACK);
@@ -379,7 +380,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_KoRepetition_3)
     setup.AddBlack(Pt(2, 1));
     setup.AddBlack(Pt(4, 1));
     setup.AddBlack(Pt(4, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_REQUIRE(bd.IsLegal(Pt(3, 2), SG_BLACK));
     bd.Play(Pt(3, 2), SG_BLACK);
     // Capturing back does not violate the Ko rule
@@ -411,7 +412,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Occupied)
 {
     GoSetup setup;
     setup.AddWhite(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(! bd.IsLegal(Pt(1, 2), SG_BLACK));
     BOOST_CHECK(! bd.IsLegal(Pt(1, 2), SG_WHITE));
 }
@@ -423,7 +424,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLegal_Suicide)
     GoSetup setup;
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_REQUIRE(! bd.Rules().AllowSuicide());
     BOOST_CHECK(! bd.IsLegal(Pt(1, 1), SG_BLACK));
 }
@@ -447,7 +448,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsLibertyOfBlock)
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 1));
     setup.AddBlack(Pt(2, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(bd.IsLibertyOfBlock(Pt(1, 1), bd.Anchor(Pt(1, 2))));
     BOOST_CHECK(bd.IsLibertyOfBlock(Pt(1, 1), bd.Anchor(Pt(2, 1))));
     BOOST_CHECK(! bd.IsLibertyOfBlock(Pt(1, 1), bd.Anchor(Pt(2, 2))));
@@ -461,7 +462,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsSuicide_1)
     GoSetup setup;
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.SetToPlay(SG_BLACK);
     BOOST_CHECK(bd.IsSuicide(Pt(1, 1)));
     BOOST_CHECK(! bd.IsSuicide(Pt(3, 1)));
@@ -488,19 +489,19 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_IsSuicide_3)
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_IsValidPoint)
 {
-    GoBoard bd(19);
+    GoBoard bd(SG_MAX_SIZE);
     BOOST_CHECK(bd.IsValidPoint(Pt(1, 1)));
-    BOOST_CHECK(bd.IsValidPoint(Pt(1, 19)));
-    BOOST_CHECK(bd.IsValidPoint(Pt(19, 1)));
-    BOOST_CHECK(bd.IsValidPoint(Pt(19, 19)));
+    BOOST_CHECK(bd.IsValidPoint(Pt(1, SG_MAX_SIZE)));
+    BOOST_CHECK(bd.IsValidPoint(Pt(SG_MAX_SIZE, 1)));
+    BOOST_CHECK(bd.IsValidPoint(Pt(SG_MAX_SIZE, SG_MAX_SIZE)));
     BOOST_CHECK(! bd.IsValidPoint(Pt(1, 1) - SG_NS));
     BOOST_CHECK(! bd.IsValidPoint(Pt(1, 1) - SG_WE));
-    BOOST_CHECK(! bd.IsValidPoint(Pt(1, 19) + SG_NS));
-    BOOST_CHECK(! bd.IsValidPoint(Pt(1, 19) - SG_WE));
-    BOOST_CHECK(! bd.IsValidPoint(Pt(19, 1) - SG_NS));
-    BOOST_CHECK(! bd.IsValidPoint(Pt(19, 1) + SG_WE));
-    BOOST_CHECK(! bd.IsValidPoint(Pt(19, 19) + SG_NS));
-    BOOST_CHECK(! bd.IsValidPoint(Pt(19, 19) + SG_WE));
+    BOOST_CHECK(! bd.IsValidPoint(Pt(1, SG_MAX_SIZE) + SG_NS));
+    BOOST_CHECK(! bd.IsValidPoint(Pt(1, SG_MAX_SIZE) - SG_WE));
+    BOOST_CHECK(! bd.IsValidPoint(Pt(SG_MAX_SIZE, 1) - SG_NS));
+    BOOST_CHECK(! bd.IsValidPoint(Pt(SG_MAX_SIZE, 1) + SG_WE));
+    BOOST_CHECK(! bd.IsValidPoint(Pt(SG_MAX_SIZE, SG_MAX_SIZE) + SG_NS));
+    BOOST_CHECK(! bd.IsValidPoint(Pt(SG_MAX_SIZE, SG_MAX_SIZE) + SG_WE));
     BOOST_CHECK(! bd.IsValidPoint(0));
     BOOST_CHECK(! bd.IsValidPoint(SG_PASS));
     BOOST_CHECK(! bd.IsValidPoint(SG_ENDPOINT));
@@ -523,7 +524,7 @@ void GoBoardTest_Ko(bool allowKoRepetition, bool koModifiesHash)
     setup.AddWhite(Pt(1, 1));
     setup.AddWhite(Pt(2, 2));
     setup.AddWhite(Pt(3, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.AllowKoRepetition(allowKoRepetition);
     bd.SetKoModifiesHash(koModifiesHash);
     bd.SetKoLoser(SG_BLACK);
@@ -580,7 +581,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_KoModifiesHash)
     setup.AddWhite(Pt(2, 1));
     setup.AddBlack(Pt(2, 2));
     setup.AddBlack(Pt(3, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.AllowKoRepetition(true);
     BOOST_CHECK(bd.KoModifiesHash());
     SgHashCode code = bd.GetHashCode();
@@ -602,7 +603,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsCapturing_1)
     GoSetup setup;
     setup.AddBlack(Pt(1, 1));
     setup.AddWhite(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Play(Pt(2, 1), SG_WHITE);
     BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_CAPTURING));
 }
@@ -613,7 +614,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsCapturing_2)
     GoSetup setup;
     setup.AddBlack(Pt(1, 2));
     setup.AddBlack(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Play(Pt(1, 1), SG_WHITE);
     BOOST_CHECK(! bd.LastMoveInfo(GO_MOVEFLAG_CAPTURING));
 }
@@ -634,7 +635,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal_KoRepetition)
     setup.AddWhite(Pt(2, 1));
     setup.AddBlack(Pt(2, 2));
     setup.AddBlack(Pt(3, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_REQUIRE(! bd.KoRepetitionAllowed());
     bd.Play(Pt(1, 1), SG_BLACK);
     bd.Play(Pt(2, 1), SG_WHITE);
@@ -658,7 +659,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsIllegal_Suicide)
     GoSetup setup;
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Rules().SetAllowSuicide(false);
     bd.Play(Pt(1, 1), SG_BLACK);
     BOOST_CHECK(bd.LastMoveInfo(GO_MOVEFLAG_ILLEGAL));
@@ -700,25 +701,31 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Line_9)
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_Line_10)
 {
-    GoBoard bd(10);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(5, 4)), 4);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(5, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(5, 6)), 5);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(5, 7)), 4);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(4, 5)), 4);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(5, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(6, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(7, 5)), 4);
+    if (SG_MAX_SIZE >= 10)
+    {
+        GoBoard bd(10);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(5, 4)), 4);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(5, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(5, 6)), 5);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(5, 7)), 4);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(4, 5)), 4);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(5, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(6, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(7, 5)), 4);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_Line_19)
 {
-    GoBoard bd(19);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(1, 1)), 1);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(3, 4)), 3);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(18, 5)), 2);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(5, 18)), 2);
-    BOOST_CHECK_EQUAL(bd.Line(Pt(19, 19)), 1);
+    if (SG_MAX_SIZE >= 19)
+    {
+        GoBoard bd(19);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(1, 1)), 1);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(3, 4)), 3);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(18, 5)), 2);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(5, 18)), 2);
+        BOOST_CHECK_EQUAL(bd.Line(Pt(19, 19)), 1);
+    }
 }
 
 /** Test GoBoard::NumLiberties after a combination of setup and play */
@@ -726,7 +733,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_1)
 {
     GoSetup setup;
     setup.AddBlack(Pt(1, 3));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Play(Pt(2, 2), SG_WHITE);
     bd.Play(Pt(1, 2), SG_BLACK);
     BOOST_CHECK_EQUAL(bd.NumLiberties(Pt(1, 2)), 3);
@@ -736,7 +743,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_1)
 /** Test GoBoard::NumLiberties after c combination of Play and Undo */
 BOOST_AUTO_TEST_CASE(GoBoardTest_NumLiberties_2)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     bd.Play(Pt(1, 1), SG_BLACK);
     BOOST_CHECK_EQUAL(bd.NumLiberties(Pt(1, 1)), 2);
     bd.Undo();
@@ -914,7 +921,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Occupied)
     GoSetup setup;
     setup.AddWhite(Pt(1, 2));
     setup.AddBlack(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(bd.Occupied(Pt(1, 2)));
     BOOST_CHECK(bd.Occupied(Pt(2, 1)));
     // Occupied should return false for border points
@@ -926,7 +933,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Occupied)
 /** Test some data after creating a single stone block with a Play */
 BOOST_AUTO_TEST_CASE(GoBoardTest_Play_SingleStone)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     SgPoint p = Pt(1, 2);
     bd.Play(p, SG_BLACK);
     BOOST_CHECK_EQUAL(bd.Anchor(p), p);
@@ -946,31 +953,37 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_Pos_9)
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_Pos_10)
 {
-    GoBoard bd(10);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 4)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 6)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 7)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(4, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(6, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(7, 5)), 5);
+    if (SG_MAX_SIZE >= 10)
+    {
+        GoBoard bd(10);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 4)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 6)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 7)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(4, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(6, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(7, 5)), 5);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_Pos_19)
 {
-    GoBoard bd(19);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(1, 1)), 1);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(3, 4)), 4);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(18, 5)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 18)), 5);
-    BOOST_CHECK_EQUAL(bd.Pos(Pt(19, 19)), 1);
+    if (SG_MAX_SIZE >= 19)
+    {
+        GoBoard bd(19);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(1, 1)), 1);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(3, 4)), 4);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(18, 5)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(5, 18)), 5);
+        BOOST_CHECK_EQUAL(bd.Pos(Pt(19, 19)), 1);
+    }
 }
 
 /** Test GoBoard:::SetToPlay. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_SetToPlay)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     bd.Play(Pt(1, 1), SG_BLACK);
     bd.SetToPlay(SG_BLACK);
     BOOST_CHECK_EQUAL(bd.ToPlay(), SG_BLACK);
@@ -983,7 +996,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_SetToPlay)
 
 BOOST_AUTO_TEST_CASE(GoBoardTest_ToPlay)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     BOOST_CHECK_EQUAL(bd.ToPlay(), SG_BLACK);
     bd.Play(Pt(1, 1), SG_BLACK);
     BOOST_CHECK_EQUAL(bd.ToPlay(), SG_WHITE);
@@ -1006,7 +1019,7 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_ToPlay)
 /** Check that board state is correctly restored after an undo. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_Undo)
 {
-    GoBoard bd(19);
+    GoBoard bd(9);
     BOOST_REQUIRE(bd.ToPlay() == SG_BLACK);
     bd.Play(Pt(1, 1), SG_WHITE);
     bd.Undo();
@@ -1034,10 +1047,14 @@ void GoBoardIteratorTest_AtSize(int size)
 
 BOOST_AUTO_TEST_CASE(GoBoardIteratorTest_All)
 {
-    GoBoardIteratorTest_AtSize(9);
-    GoBoardIteratorTest_AtSize(10);
-    GoBoardIteratorTest_AtSize(13);
-    GoBoardIteratorTest_AtSize(19);
+    if (SG_MAX_SIZE >= 9)
+	    GoBoardIteratorTest_AtSize(9);
+    if (SG_MAX_SIZE >= 10)
+        GoBoardIteratorTest_AtSize(10);
+    if (SG_MAX_SIZE >= 13)
+        GoBoardIteratorTest_AtSize(13);
+    if (SG_MAX_SIZE >= 19)
+	    GoBoardIteratorTest_AtSize(19);
 }
 
 //----------------------------------------------------------------------------
@@ -1046,7 +1063,7 @@ BOOST_AUTO_TEST_CASE(GoBoardLibertyIteratorTest)
 {
     GoSetup setup;
     setup.AddBlack(Pt(1, 3));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Play(Pt(2, 2), SG_WHITE);
     bd.Play(Pt(1, 2), SG_BLACK);
     SgArrayList<SgPoint,SG_MAXPOINT> libs;
@@ -1072,7 +1089,7 @@ BOOST_AUTO_TEST_CASE(GoBoardStoneIteratorTest)
     GoSetup setup;
     setup.AddBlack(Pt(3, 2));
     setup.AddBlack(Pt(4, 3));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     bd.Play(Pt(1, 1), SG_BLACK);
     bd.Play(Pt(1, 3), SG_WHITE);
     bd.Play(Pt(1, 2), SG_BLACK);

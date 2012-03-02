@@ -31,8 +31,8 @@ BOOST_AUTO_TEST_CASE(GoBlockIteratorTest)
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(2, 2));
     setup.AddBlack(Pt(3, 7));
-    setup.AddWhite(Pt(19, 19));
-    GoBoard bd(19, setup);
+    setup.AddWhite(Pt(SG_MAX_SIZE, SG_MAX_SIZE));
+    GoBoard bd(SG_MAX_SIZE, setup);
     GoBlockIterator it(bd);
     BOOST_CHECK_EQUAL(*it, Pt(1, 1));
     BOOST_CHECK(it);
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(GoBlockIteratorTest)
     BOOST_CHECK_EQUAL(*it, Pt(3, 7));
     BOOST_CHECK(it);
     ++it;
-    BOOST_CHECK_EQUAL(*it, Pt(19, 19));
+    BOOST_CHECK_EQUAL(*it, Pt(SG_MAX_SIZE, SG_MAX_SIZE));
     BOOST_CHECK(it);
     ++it;
     BOOST_CHECK(! it);
@@ -53,16 +53,19 @@ BOOST_AUTO_TEST_CASE(GoBlockIteratorTest)
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AddWall)
 {
-    GoBoard bd(19);
-    AddWall(bd, SG_BLACK, Pt(3, 3), 10, SG_NS);
-    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 10);
-    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 0);
-    AddWall(bd, SG_WHITE, Pt(4,3), 5, SG_NS + SG_WE);
-    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 10);
-    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 5);
-    AddWall(bd, SG_WHITE, Pt(5,3), 4, SG_NS + 2 * SG_WE);
-    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 10);
-    BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 9);
+    if (SG_MAX_SIZE >= 19)
+    {
+        GoBoard bd(19);
+        AddWall(bd, SG_BLACK, Pt(3, 3), 10, SG_NS);
+        BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 10);
+        BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 0);
+        AddWall(bd, SG_WHITE, Pt(4,3), 5, SG_NS + SG_WE);
+        BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 10);
+        BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 5);
+        AddWall(bd, SG_WHITE, Pt(5,3), 4, SG_NS + 2 * SG_WE);
+        BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_BLACK), 10);
+        BOOST_CHECK_EQUAL(bd.TotalNumStones(SG_WHITE), 9);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_1)
@@ -78,7 +81,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_1)
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(2, 2));
     setup.AddWhite(Pt(3, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgVector<SgPoint> blocks;
     AdjacentBlocks(bd, Pt(2, 1), 10, &blocks);
     BOOST_CHECK_EQUAL(blocks.Length(), 2);
@@ -103,7 +106,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_2)
     setup.AddBlack(Pt(3, 1));
     setup.AddBlack(Pt(4, 1));
     setup.AddBlack(Pt(4, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgVector<SgPoint> blocks;
     AdjacentBlocks(bd, Pt(2, 1), 10, &blocks);
     BOOST_CHECK_EQUAL(blocks.Length(), 2);
@@ -120,7 +123,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiagonalsOfColor)
     setup.AddBlack(Pt(1, 1));
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgVector<SgPoint> diags;
     DiagonalsOfColor(bd, Pt(1, 1), SG_BLACK, &diags);
     BOOST_CHECK_EQUAL(diags.Length(), 0);
@@ -146,10 +149,10 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_HasAdjacentBlocks)
     GoSetup setup;
     setup.AddBlack(Pt(1, 1));
     setup.AddBlack(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(! HasAdjacentBlocks(bd, Pt(2, 1), 2));
     setup.AddWhite(Pt(1, 2));
-    bd.Init(19, setup);
+    bd.Init(9, setup);
     BOOST_CHECK(! HasAdjacentBlocks(bd, Pt(2, 1), 1));
     BOOST_CHECK(HasAdjacentBlocks(bd, Pt(2, 1), 2));
     BOOST_CHECK(HasAdjacentBlocks(bd, Pt(2, 1), 3));
@@ -187,7 +190,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSnapback_1)
     setup.AddBlack(Pt(3, 1));
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(! IsSnapback(bd, Pt(2, 1)));
 }
 
@@ -200,7 +203,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSnapback_2)
     setup.AddWhite(Pt(1, 2));
     setup.AddWhite(Pt(2, 2));
     setup.AddWhite(Pt(3, 1));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     BOOST_CHECK(IsSnapback(bd, Pt(3, 1)));
 }
 
@@ -211,7 +214,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
     setup.AddBlack(Pt(1, 1));
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgArrayList<SgPoint,4> neighbors;
     neighbors = NeighborsOfColor(bd, Pt(1, 1), SG_BLACK);
     BOOST_CHECK_EQUAL(neighbors.Length(), 0);
@@ -241,7 +244,7 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgVector)
     setup.AddBlack(Pt(1, 1));
     setup.AddWhite(Pt(2, 1));
     setup.AddWhite(Pt(1, 2));
-    GoBoard bd(19, setup);
+    GoBoard bd(9, setup);
     SgVector<SgPoint> neighbors;
     NeighborsOfColor(bd, Pt(1, 1), SG_BLACK, &neighbors);
     BOOST_CHECK_EQUAL(neighbors.Length(), 0);
@@ -668,9 +671,13 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore_Empty9)
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore_Empty19)
 {
-    GoBoard bd(19);
-    float komi = 6.5;
-    BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), -6.5f, 1e-4f);
+    if (SG_MAX_SIZE >= 19)
+    {
+        GoBoard bd(19);
+        float komi = 6.5;
+        BOOST_CHECK_CLOSE(GoBoardUtil::TrompTaylorScore(bd, komi), 
+                          -6.5f, 1e-4f);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TwoPasses)

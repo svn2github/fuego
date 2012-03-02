@@ -44,7 +44,8 @@ BOOST_AUTO_TEST_CASE(SgBoardConstTest_Pos)
 
 BOOST_AUTO_TEST_CASE(SgBoardConstTest_Size)
 {
-    BOOST_CHECK_EQUAL(SgBoardConst(19).Size(), 19);
+    if (SG_MAX_SIZE >= 19)
+	    BOOST_CHECK_EQUAL(SgBoardConst(19).Size(), 19);
     BOOST_CHECK_EQUAL(SgBoardConst(6).Size(), 6);
 }
 
@@ -52,15 +53,18 @@ BOOST_AUTO_TEST_CASE(SgBoardConstTest_Size)
 
 BOOST_AUTO_TEST_CASE(SgNbIteratorTest_Corner)
 {
-    SgBoardConst boardConst(19);
-    SgNbIterator it(boardConst, Pt(1, 1));
-    BOOST_CHECK(it);
-    BOOST_CHECK_EQUAL(*it, Pt(2, 1));
-    ++it;
-    BOOST_CHECK(it);
-    BOOST_CHECK_EQUAL(*it, Pt(1, 2));
-    ++it;
-    BOOST_CHECK(! it);
+    if (SG_MAX_SIZE >= 19)
+    {
+        SgBoardConst boardConst(19);
+        SgNbIterator it(boardConst, Pt(1, 1));
+        BOOST_CHECK(it);
+        BOOST_CHECK_EQUAL(*it, Pt(2, 1));
+        ++it;
+        BOOST_CHECK(it);
+        BOOST_CHECK_EQUAL(*it, Pt(1, 2));
+        ++it;
+        BOOST_CHECK(! it);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(SgNbIteratorTest_Edge)
@@ -81,21 +85,24 @@ BOOST_AUTO_TEST_CASE(SgNbIteratorTest_Edge)
 
 BOOST_AUTO_TEST_CASE(SgNbIteratorTest_Middle)
 {
-    SgBoardConst boardConst(13);
-    SgNbIterator it(boardConst, Pt(3, 3));
-    BOOST_CHECK(it);
-    BOOST_CHECK_EQUAL(*it, Pt(3, 2));
-    ++it;
-    BOOST_CHECK(it);
-    BOOST_CHECK_EQUAL(*it, Pt(2, 3));
-    ++it;
-    BOOST_CHECK(it);
-    BOOST_CHECK_EQUAL(*it, Pt(4, 3));
-    ++it;
-    BOOST_CHECK(it);
-    BOOST_CHECK_EQUAL(*it, Pt(3, 4));
-    ++it;
-    BOOST_CHECK(! it);
+    if (SG_MAX_SIZE >= 13)
+    {
+        SgBoardConst boardConst(13);
+        SgNbIterator it(boardConst, Pt(3, 3));
+        BOOST_CHECK(it);
+        BOOST_CHECK_EQUAL(*it, Pt(3, 2));
+        ++it;
+        BOOST_CHECK(it);
+        BOOST_CHECK_EQUAL(*it, Pt(2, 3));
+        ++it;
+        BOOST_CHECK(it);
+        BOOST_CHECK_EQUAL(*it, Pt(4, 3));
+        ++it;
+        BOOST_CHECK(it);
+        BOOST_CHECK_EQUAL(*it, Pt(3, 4));
+        ++it;
+        BOOST_CHECK(! it);
+    }
 }
 
 //----------------------------------------------------------------------------
