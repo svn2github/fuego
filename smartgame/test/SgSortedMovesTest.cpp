@@ -17,7 +17,6 @@ namespace {
 BOOST_AUTO_TEST_CASE(SgSortedMovesTest_1)
 {
     SgSortedMoves<int,int,2> moves(2);
-        //BOOST_CHECK();
     BOOST_CHECK_EQUAL(moves.NuMoves(), 0);
     BOOST_CHECK_EQUAL(moves.MaxNuMoves(), 2);
     BOOST_CHECK_EQUAL(moves.InitLowerBound(), 
