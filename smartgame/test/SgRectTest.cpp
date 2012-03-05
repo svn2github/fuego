@@ -65,11 +65,14 @@ BOOST_AUTO_TEST_CASE(SgRectTestInRect)
     BOOST_CHECK(rect.InRect(SgPointUtil::Pt(2, 7)));
     BOOST_CHECK(rect.InRect(SgPointUtil::Pt(2, 8)));
     BOOST_CHECK(rect.InRect(SgPointUtil::Pt(2, 9)));
-    BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(2, 10)));
+    if (SG_MAX_SIZE >= 10)
+    {
+        BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(2, 10)));
+        BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(5, 10)));
+    }
     BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(3, 5)));
     BOOST_CHECK(rect.InRect(SgPointUtil::Pt(5, 7)));
     BOOST_CHECK(rect.InRect(SgPointUtil::Pt(5, 9)));
-    BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(5, 10)));
 }
 
 BOOST_AUTO_TEST_CASE(SgRectTestMirrorX)

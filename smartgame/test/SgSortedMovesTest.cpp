@@ -32,7 +32,6 @@ BOOST_AUTO_TEST_CASE(SgSortedMovesTest_1)
     BOOST_CHECK_EQUAL(moves.LowerBound(), 3);
     moves.Insert(3,6);
     BOOST_CHECK_EQUAL(moves.LowerBound(), 4);
-
 }
 
 BOOST_AUTO_TEST_CASE(SgSortedMovesTest_2)
