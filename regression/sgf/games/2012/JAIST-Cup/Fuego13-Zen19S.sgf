@@ -1,0 +1,321 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Chinese]SZ[13]KM[7.50]TM[1800]
+PW[Fuego13]PB[Zen19S]BR[5d]DT[2012-03-05]PC[The KGS Go Server at http://www.gokgs.com/]C[Fuego13 [-\]: GTP Engine for Fuego13 (white): Fuego version 1.1.SVN
+Zen19S [5d\]: GTP Engine for Zen19S (black): Zen version 8.8pbd10
+]RE[B+Resign]
+;B[id]BL[1774.07]
+;W[dj]WL[1799.87]C[ajahuang [6d\]: have a nice game
+]
+;B[dd]BL[1750.186]
+;W[jj]WL[1799.735]C[Babibo [1d\]: ha ha ! 4-5 on a 13x13
+]
+;B[kh]BL[1720.938]C[schwiggity [3k?\]: boss
+]
+;W[cf]WL[1766.271]
+;B[ef]BL[1689.34]
+;W[hi]WL[1737.312]C[crossfire [2k\]: komi 7.5 isnt that a little high for 13x13
+Jye [3k\]: invade ALL the corners
+]
+;B[jk]BL[1662.646]
+;W[kk]WL[1704.002]C[Dingo2 [1k\]: how strong is fuego ?
+]
+;B[kj]BL[1637.505]
+;W[ik]WL[1696.516]C[Jibengong [2d\]: komi is same on all boards
+]
+;B[ck]BL[1609.715]
+;W[dk]WL[1662.309]C[Dingo2 [1k\]: nice to see zen invading corners
+Jibengong [2d\]: win percentages??
+]
+;B[jl]BL[1577.436]C[crossfire [2k\]: yeah what are the win percentafes on 13x13 with no komi?
+]
+;W[cc]WL[1620.067]C[medical [2k\]: komi makes difference in play, so it's not easy to measure
+Jibengong [2d\]: no, what do the bots think??
+medical [2k\]: "should i take this ko or not?"
+Pische [2k\]: 70% for black, 60% for white
+Dingo2 [1k\]: probably winrate includes komi anyway
+]
+;B[ji]BL[1542.747]C[Pische [2k\]: in fact, in a 13x13 there is a total of 130% of win percentage
+Jibengong [2d\]: *g+
+]
+;W[ij]WL[1594.177]
+;B[kl]BL[1516.101]
+;W[lk]WL[1583.322]C[Jibengong [2d\]: a bot would never miss m3 =)
+]
+;B[ll]BL[1485.327]
+;W[cd]WL[1554.607]C[schwiggity [3k?\]: there is something strangely endearing about a bot's play
+]
+;B[cj]BL[1454.66]C[Sandalphon [5d\]: heh, zen playing the corners as miai
+Sandalphon [5d\]: upper left is bigger though
+]
+;W[ci]WL[1517.416]C[crossfire [2k\]: double hane w
+Babibo [1d\]: w will double hane ?
+]
+;B[di]BL[1421.361]C[Sandalphon [5d\]: I don't really like the double hane here...
+Sandalphon [5d\]: wha?
+Dingo2 [1k\]: no he wont lol
+invader [1d\]: cross cut
+]
+;W[ch]WL[1497.007]C[invader [1d\]: ha ha
+crossfire [2k\]: well why not san
+Sandalphon [5d\]: this will be super cute if zen plays E5
+]
+;B[fl]BL[1380.784]C[Sandalphon [5d\]: same general idea :)
+Sandalphon [5d\]: let him have the corner
+Sandalphon [5d\]: cut white out of the center
+Jye [3k\]: this sort of trade from a bot amazes me
+]
+;W[fk]WL[1468.23]C[Sandalphon [5d\]: Okay, D5 is an allstar move :P
+Sandalphon [5d\]: (in this particular position)
+]
+;B[gk]BL[1348.985]
+;W[fj]WL[1466.217]C[cata [2k\]: what is the approximate strength of zen on 13x13?
+crossfire [2k\]: white is a bot!?
+dresu [1k\]: zen inventing new joseki
+dresu [1k\]: cute
+]
+;B[dl]BL[1312.576]C[Sandalphon [5d\]: well, here it makes sense because zen saw a way to cut off J4
+Sandalphon [5d\]: or take a larger corner
+alfi [3k\]: g2
+]
+;W[ki]WL[1431.882]C[schwiggity [3k?\]: wat
+cata [2k\]: ??
+gghideki [1k?\]: ???
+Jye [3k\]: timesuji :P
+cata [2k\]: l5, this is the power of bots
+Sandalphon [5d\]: guess white thinks it's behind... honestly, I agree :P
+]
+;B[li]BL[1280.787]
+;W[el]WL[1429.475]C[gghideki [1k?\]: bug?
+]
+;B[em]BL[1250.894]C[invader [1d\]: white losing
+]
+;W[ek]WL[1393.899]C[Sandalphon [5d\]: I don't think w has time to fix his aji on the bottom and expand into the top...
+Sandalphon [5d\]: H2
+]
+;B[gj]BL[1219.33]C[Sandalphon [5d\]: whoa
+Sandalphon [5d\]: directly?
+titeuf119 [5k?\]: trade?
+]
+;W[gl]WL[1370.935]C[Dingo2 [1k\]: bots are not affraid by weak points
+Jibengong [2d\]: just h2 was better for b
+GregorS [5k\]: that shape looks pretty awesome
+]
+;B[hl]BL[1190.52]
+;W[fm]WL[1369.001]C[schwiggity [3k?\]: if b captured it would be a perfeect heart
+Sandalphon [5d\]: wait... doe s this work?
+Sandalphon [5d\]: G5 now?
+]
+;B[gi]BL[1163.268]
+;W[il]WL[1365.111]C[invader [1d\]: j2
+invader [1d\]: b dead 
+Jibengong [2d\]: h1
+invader [1d\]: white conected
+Sandalphon [5d\]: no, b not dead
+]
+;B[hm]BL[1133.973]C[invader [1d\]: h3
+Sandalphon [5d\]: h3 doesn't work
+Jibengong [2d\]: count libs
+invader [1d\]: ah
+Jibengong [2d\]: invader
+Sandalphon [5d\]: shortage, because of e1
+invader [1d\]: f2 fake eye
+invader [1d\]: i see
+]
+;W[jc]WL[1329.751]C[Dingo2 [1k\]: zen is really very strong
+Sandalphon [5d\]: nice play by zen :)
+]
+;B[jd]BL[1107.561]C[cjr [-\]: yes, aji left in lower left as well
+]
+;W[im]WL[1308.044]
+;B[hk]BL[1080.622]
+;W[kc]WL[1306.2]C[Jye [3k\]: k11 k10 seems like a bad trade if it wants to run
+]
+;B[ic]BL[1051.577]
+;W[kd]WL[1285.067]
+;B[fh]BL[1026.582]
+;W[cl]WL[1270.265]
+;B[le]BL[996.709]C[cjr [-\]: j11 is a strange direction too
+cjr [-\]: but i guess, if you want to kill :)
+]
+;W[ke]WL[1248.336]
+;B[lf]BL[970.051]C[Sandalphon [5d\]: Zen really makes me happy, I've always wanted to see how a bot would play at this level, and I wasn't disappointed
+inochi33 [3k\]: k8
+]
+;W[if]WL[1223.202]C[titeuf119 [5k?\]: k8 for b, yes :p
+inochi33 [3k\]: yeah tbats what i mean
+]
+;B[jf]BL[940.185]C[Sandalphon [5d\]: Kill em Zen!
+]
+;W[je]WL[1203.493]
+;B[ie]BL[918.547]C[WWSD [1d\]: has any bot been a challenge for zen?
+]
+;W[kf]WL[1197.646]
+;B[jg]BL[897.201]C[invader [1d\]: ?
+]
+;W[ib]WL[1191.811]
+;B[hb]BL[876.066]C[invader [1d\]: m7 and white alive
+]
+;W[lg]WL[1189.683]
+;B[kg]BL[854.528]
+;W[ia]WL[1175.59]C[titeuf119 [5k?\]: lol
+Sandalphon [5d\]: nice move by fuego
+]
+;B[ha]BL[832.552]
+;W[kb]WL[1147.133]
+;B[gc]BL[809.213]C[cjr [-\]: if it lives in sente, b can get d11
+]
+;W[de]WL[1128.245]C[Sandalphon [5d\]: M10 for b
+]
+;B[ee]BL[789.652]C[invader [1d\]: m10 not bigger than D9
+]
+;W[ed]WL[1110.093]C[Sandalphon [5d\]: hmm, M10 is double sente
+inochi33 [3k\]: the bot needs a new lession in life and death, sente, and ehow to be more efficent
+Sandalphon [5d\]: M10 defintely bigger than D9
+]
+;B[eb]BL[768.511]C[cjr [-\]: it may need more lessons, but it soon needs a pro teacher
+]
+;W[ec]WL[1085.798]C[cjr [-\]: especially on the small board
+]
+;B[db]BL[749.948]
+;W[dc]WL[1082.515]C[inochi33 [3k\]: arent bots tied into a game database
+dresu [1k\]: no
+]
+;B[ld]BL[732.714]C[invader [1d\]: yes M10 bigger
+invader [1d\]: missread
+]
+;W[lc]WL[1065.332]C[invader [1d\]: b M11 then white đie
+invader [1d\]: died
+]
+;B[fd]BL[714.94]
+;W[fb]WL[1038.58]C[invader [1d\]: ?
+cjr [-\]: pretty close though
+Sandalphon [5d\]: F12 is right
+]
+;B[fc]BL[697.44]C[Sandalphon [5d\]: better endgame
+]
+;W[cb]WL[1032.835]C[monyong [?\]: who is leading ?
+invader [1d\]: why not F11 then E17
+]
+;B[gb]BL[677.884]C[cjr [-\]: Zen leading a little
+Sandalphon [5d\]: E17?
+]
+;W[fa]WL[1028.268]C[invader [1d\]: E7
+WWSD [1d\]: lol
+cjr [-\]: f13 not recommended :)
+]
+;B[ga]BL[661.411]
+;W[eg]WL[1025.231]C[Jye [3k\]: seems good to me
+invader [1d\]: i saw aji with F9
+]
+;B[fg]BL[644.996]C[Sandalphon [5d\]: F11 leaves corner endgame aji...
+invader [1d\]: true
+]
+;W[eh]WL[1008.701]
+;B[fi]BL[629.324]C[tesuji [-\]: making seki in the top right is big now
+]
+;W[ff]WL[1001.72]
+;B[fe]BL[613.66]
+;W[md]WL[997.389]C[dresu [1k\]: big, but impossible
+monyong [?\]: lol
+]
+;B[lh]BL[599.097]C[tesuji [-\]: why impossible?
+Sandalphon [5d\]: yeah, can't make the seki because of M7
+]
+;W[me]WL[992.497]
+;B[mg]BL[585.378]
+;W[ei]WL[987.872]C[Sandalphon [5d\]: M13 L13,N12 N11 and black can't play N10
+Sandalphon [5d\]: so white is free to play M12
+]
+;B[la]BL[571.196]C[invader [1d\]: i talk about b M13
+]
+;W[ka]WL[972.453]C[invader [1d\]: he
+Dingo2 [1k\]: what are the winrate ?
+]
+;B[mb]BL[558.222]C[Sandalphon [5d\]: tenuki to E5 not advisable though
+]
+;W[mc]WL[957.592]
+;B[df]BL[545.391]C[Sandalphon [5d\]: now it's seki
+Sandalphon [5d\]: haha
+]
+;W[dg]WL[942.841]C[alfi [3k\]: n8 for seki
+]
+;B[gm]BL[532.353]C[Sandalphon [5d\]: yeah, but Zen is taking all the bigger points first
+jubjub [2k\]: k13 first
+]
+;W[dm]WL[928.637]C[cjr [-\]: k13 no need
+cjr [-\]: can  play it if b takes m12
+]
+;B[ca]BL[518.416]
+;W[ba]WL[924.772]C[Sandalphon [5d\]: k13 unnecessary
+ajahuang [6d\]: Fuego has problems in recognizing seki at m12
+]
+;B[mf]BL[505.884]
+;W[da]WL[915.622]
+;B[ea]BL[494.13]
+;W[ca]WL[906.007]
+;B[ii]BL[482.995]
+;W[bj]WL[897.245]C[Jye [3k\]: eh?
+WWSD [1d\]: b4 big move
+]
+;B[fl]BL[471.587]
+;W[em]WL[888.336]
+;B[gl]BL[460.508]
+;W[ja]WL[879.814]C[ajahuang [6d\]: was a very close game
+]
+;B[gf]BL[449.788]
+;W[hh]WL[871.517]C[Sandalphon [5d\]: it's chinese rules, so they can make these moves
+alfi [3k\]: g8?
+WWSD [1d\]: W+virus
+Dingo2 [1k\]: k13pretty bad
+]
+;B[]BL[449.756]C[Sandalphon [5d\]: K13 is fine
+]
+;W[be]WL[863.168]C[Sandalphon [5d\]: there aren't any dame
+Sandalphon [5d\]: and it's chinese rules
+Cody [2k\]: Doesn't affect the score, right
+]
+;B[]BL[449.734]
+;W[hf]WL[855.174]C[ajahuang [6d\]: early pass is turned off
+]
+;B[]BL[445.181]C[Sandalphon [5d\]: H8 doesn't effect the score either
+]
+;W[hj]WL[847.241]
+;B[]BL[439.388]C[ajahuang [6d\]: I will resign manually
+WWSD [1d\]: lol
+]
+;W[he]WL[839.402]
+;B[hd]BL[429.304]C[Sandalphon [5d\]: wtg zen
+Fuego13 [-\]: thanks for the game
+cjr [-\]: Fuego rather  human appearance ;)
+gghideki [1k?\]: thanks but a so critical game
+unichi [?\]: interesting shape in the corner
+gghideki [1k?\]: actually, Zen was losing
+ajahuang [6d\]: yes seems w was a head a little bit
+gghideki [1k?\]: agree
+ajahuang [6d\]: but was very close
+ajahuang [6d\]: fuego resigns at 100% :)
+gghideki [1k?\]: w could live
+Sandalphon [5d\]: live where?
+ajahuang [6d\]: should make seki works
+gghideki [1k?\]: top right corner
+Sandalphon [5d\]: you mean M12? give up J13 stones?
+ajahuang [6d\]: N9 atari was bad
+Sandalphon [5d\]: it's not better than seki
+gghideki [1k?\]: Zen mis-recognized
+gghideki [1k?\]: 4 pts?
+ajahuang [6d\]: Fuego mis-recognized either....
+gghideki [1k?\]: haha
+ajahuang [6d\]: :)
+Sandalphon [5d\]: gghideki: the corner is worth 4 points capturing J13 is also 4 points
+Sandalphon [5d\]: it balances
+gghideki [1k?\]: ok, later
+ajahuang [6d\]: ....
+ajahuang [6d\]: Sandalphon, there was no seki
+Sandalphon [5d\]: where?
+Sandalphon [5d\]: how?
+ajahuang [6d\]: white can M12 instead of N11
+ajahuang [6d\]: before N10 atari
+ajahuang [6d\]: please check?
+cjr [-\]: before n9 you mean?
+ajahuang [6d\]: N9 atari was bad
+])
