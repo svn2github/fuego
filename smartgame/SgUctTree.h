@@ -62,7 +62,8 @@ struct SgUctMoveInfo
 };
 
 inline SgUctMoveInfo::SgUctMoveInfo()
-    : m_value(0),
+    : m_move(SG_NULLMOVE),
+      m_value(0),
       m_count(0),
       m_raveValue(0),
       m_raveCount(0),
