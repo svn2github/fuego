@@ -83,47 +83,6 @@ bool BadSelfAtari(const GoBoard& bd, SgPoint p)
 
 //----------------------------------------------------------------------------
 
-GoUctKnowledge::GoUctKnowledge(const GoBoard& bd)
-    : m_bd(bd)
-{ }
-
-GoUctKnowledge::~GoUctKnowledge()
-{ }
-
-void GoUctKnowledge::Add(SgPoint p, SgUctValue value, SgUctValue count)
-{
-    m_values[p].Add(value, count);
-}
-
-void GoUctKnowledge::Initialize(SgPoint p, SgUctValue value, SgUctValue count)
-{
-    m_values[p].Initialize(value, count);
-}
-
-void GoUctKnowledge::ClearValues()
-{
-    for (int i = 0; i < SG_PASS + 1; ++i)
-        m_values[i].Clear();
-}
-
-void GoUctKnowledge::TransferValues(std::vector<SgUctMoveInfo>& outmoves) const
-{
-    for (std::size_t i = 0; i < outmoves.size(); ++i) 
-    {
-        SgMove p = outmoves[i].m_move;
-        if (m_values[p].IsDefined())
-        {
-            outmoves[i].m_count = m_values[p].Count();
-            outmoves[i].m_value =
-                 SgUctSearch::InverseEstimate(m_values[p].Mean());
-            outmoves[i].m_raveCount = m_values[p].Count();
-            outmoves[i].m_raveValue = m_values[p].Mean();
-        }
-    }
-}
-
-//----------------------------------------------------------------------------
-
 GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
                               const GoUctPlayoutPolicyParam& param)
     : GoUctKnowledge(bd),
@@ -133,11 +92,12 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
 void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
                                                   bool isSmallBoard)
 {
-    SgPoint last = m_bd.GetLastMove();
+    const GoBoard& bd = Board();
+    SgPoint last = bd.GetLastMove();
     if (last != SG_NULLMOVE && last != SG_PASS)
     {
-        SgPointArray<int> dist = GoBoardUtil::CfgDistance(m_bd, last, 3);
-        const SgUctValue count = (isSmallBoard ? 4 : 5);
+        SgPointArray<int> dist = GoBoardUtil::CfgDistance(bd, last, 3);
+        const SgUctValue count = isSmallBoard ? 4 : 5;
         for (GoPointList::Iterator it(emptyPoints); it; ++it)
         {
             const SgPoint p = *it;
@@ -172,11 +132,12 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
                                                      SgPointSet& atari,
                                                      GoPointList& empty) const
 {
+    const GoBoard& bd = Board();
     SG_ASSERT(empty.IsEmpty());
     const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
     bool result = false;
-    for (GoBoard::Iterator it(m_bd); it; ++it)
-        if (m_bd.IsEmpty(*it))
+    for (GoBoard::Iterator it(bd); it; ++it)
+        if (bd.IsEmpty(*it))
         {
             empty.PushBack(*it);
             if (patterns.MatchAny(*it))
@@ -184,7 +145,7 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
                 pattern.Include(*it);
                 result = true;
             }
-            if (SetsAtari(m_bd, *it))
+            if (SetsAtari(bd, *it))
             {
                 atari.Include(*it);
                 result = true;
@@ -200,11 +161,12 @@ GoUctDefaultPriorKnowledge::InitializeForGlobalHeuristic(
     const SgPointSet& atari,
     int nuSimulations)
 {
+    const GoBoard& bd = Board();
     for (GoPointList::Iterator it(empty); it; ++it)
     {
         const SgPoint p = *it;
-        SG_ASSERT (m_bd.IsEmpty(p));
-        if (BadSelfAtari(m_bd, p))
+        SG_ASSERT (bd.IsEmpty(p));
+        if (BadSelfAtari(bd, p))
             Initialize(p, 0.1f, nuSimulations);
         else if (atari[p])
             Initialize(p, 1.0f, 3);
@@ -222,11 +184,12 @@ GoUctDefaultPriorKnowledge::InitializeForNonRandomPolicyMove(
     const SgPointSet& atari,
     int nuSimulations)
 {
+    const GoBoard& bd = Board();
     for (GoPointList::Iterator it(empty); it; ++it)
     {
         const SgPoint p = *it;
-        SG_ASSERT (m_bd.IsEmpty(p));
-        if (BadSelfAtari(m_bd, p))
+        SG_ASSERT (bd.IsEmpty(p));
+        if (BadSelfAtari(bd, p))
             Initialize(p, 0.1f, nuSimulations);
         else if (atari[p])
             Initialize(p, 0.8f, nuSimulations);
@@ -246,14 +209,15 @@ GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
 	const GoPointList& empty,
     int nuSimulations)
 {
+    const GoBoard& bd = Board();
     for (GoPointList::Iterator it(empty); it; ++it)
     {
         const SgPoint p = *it;
-        SG_ASSERT (m_bd.IsEmpty(p));
-        if (BadSelfAtari(m_bd, p))
+        SG_ASSERT (bd.IsEmpty(p));
+        if (BadSelfAtari(bd, p))
             Initialize(*it, 0.1f, nuSimulations);
         else
-            m_values[p].Clear(); // Don't initialize
+            Clear(p); // Don't initialize
     }
 }
 
@@ -275,7 +239,7 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves
     // If different values are used for the small and large board, the ones
     // from the 9x9 experiments are used for board sizes < 15, the ones from
     // 19x19 otherwise.
-    const bool isSmallBoard = (m_bd.Size() < 15);
+    const bool isSmallBoard = (Board().Size() < 15);
     const int defaultNuSimulations = isSmallBoard ? 9 : 18;
 
     Initialize(SG_PASS, 0.1f, defaultNuSimulations);

@@ -5,34 +5,9 @@
 #ifndef GOUCT_DEFAULTPRIORKNOWLEDGE_H
 #define GOUCT_DEFAULTPRIORKNOWLEDGE_H
 
+#include "GoBoard.h"
+#include "GoUctKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
-#include "SgUctSearch.h"
-
-//----------------------------------------------------------------------------
-
-/** Base knowledge class. */
-class GoUctKnowledge
-{
-public:
-    GoUctKnowledge(const GoBoard& bd);
-
-    virtual ~GoUctKnowledge();
-
-    virtual void ProcessPosition(std::vector<SgUctMoveInfo>& moves) = 0;
-
-protected:
-    const GoBoard& m_bd;
-
-    SgArray<SgStatisticsBase<SgUctValue, SgUctValue>, SG_PASS + 1> m_values;
-
-    void Add(SgPoint p, SgUctValue value, SgUctValue count);
-
-    void Initialize(SgPoint p, SgUctValue value, SgUctValue count);
-
-    void ClearValues();
-
-    void TransferValues(std::vector<SgUctMoveInfo>& outmoves) const;
-};
 
 //----------------------------------------------------------------------------
 

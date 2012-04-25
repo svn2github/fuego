@@ -9,6 +9,7 @@ GoUctDefaultPriorKnowledge.cpp \
 GoUctDefaultMoveFilter.cpp \
 GoUctEstimatorStat.cpp \
 GoUctGlobalSearch.cpp \
+GoUctKnowledge.cpp \
 GoUctObjectWithSearch.cpp \
 GoUctPlayoutPolicy.cpp \
 GoUctMoveFilter.cpp \
@@ -26,6 +27,7 @@ GoUctDefaultPriorKnowledge.h \
 GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
 GoUctGlobalSearch.h \
+GoUctKnowledge.h \
 GoUctObjectWithSearch.h \
 GoUctPatterns.h \
 GoUctPlayer.h \
