@@ -94,7 +94,6 @@ void CheckUndefined(const std::vector<SgUctMoveInfo>& moves, SgPoint p)
 }
 //----------------------------------------------------------------------------
 
-/** Test GoUctUtil::DoSelfAtariCorrection (self-atari) */
 BOOST_AUTO_TEST_CASE(GoUctKnowledgeTest_ProcessPosition)
 {
     GoBoard bd(9);
