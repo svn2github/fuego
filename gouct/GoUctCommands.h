@@ -42,6 +42,7 @@ public:
         - @link CmdDeterministicMode() @c deterministic_mode @endlink
         - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
+        - @link CmdLadderKnowledge() @c uct_ladder_knowledge @endlink
         - @link CmdMaxMemory() @c uct_max_memory @endlink
         - @link CmdMoves() @c uct_moves @endlink
         - @link CmdParamGlobalSearch() @c uct_param_globalsearch @endlink
@@ -77,6 +78,7 @@ public:
     void CmdFinalScore(GtpCommand&);
     void CmdFinalStatusList(GtpCommand&);
     void CmdGfx(GtpCommand& cmd);
+    void CmdLadderKnowledge(GtpCommand& cmd);
     void CmdMaxMemory(GtpCommand& cmd);
     void CmdMoves(GtpCommand& cmd);
     void CmdParamGlobalSearch(GtpCommand& cmd);
@@ -110,6 +112,8 @@ private:
     const GoBoard& m_bd;
 
     GoPlayer*& m_player;
+
+    void DisplayMoveInfo(GtpCommand& cmd, const vector<SgUctMoveInfo>& moves);
 
     SgPointSet DoFinalStatusSearch();
 

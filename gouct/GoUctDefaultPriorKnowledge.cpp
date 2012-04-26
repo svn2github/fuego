@@ -5,11 +5,9 @@
 
 #include "SgSystem.h"
 #include "GoUctDefaultPriorKnowledge.h"
-
-using namespace std;
+#include "GoUctLadderKnowledge.h"
 
 //----------------------------------------------------------------------------
-
 namespace {
 
 /** Test if playing on p puts any opponent block into atari */
@@ -215,7 +213,7 @@ GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
         const SgPoint p = *it;
         SG_ASSERT (bd.IsEmpty(p));
         if (BadSelfAtari(bd, p))
-            Initialize(*it, 0.1f, nuSimulations);
+            Initialize(p, 0.1f, nuSimulations);
         else
             Clear(p); // Don't initialize
     }
@@ -251,8 +249,10 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves
     	InitializeForNonRandomPolicyMove(empty, pattern, atari, defaultNuSimulations);
 
     AddLocalityBonus(empty, isSmallBoard);
-    m_policy.EndPlayout();
+    GoUctLadderKnowledge ladderKnowledge(Board(), *this);
+    ladderKnowledge.ProcessPosition();
 
+    m_policy.EndPlayout();
     TransferValues(outmoves);
 }
 

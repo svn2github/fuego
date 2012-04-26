@@ -15,6 +15,7 @@
 #include "GoUctDefaultMoveFilter.h"
 #include "GoUctEstimatorStat.h"
 #include "GoUctGlobalSearch.h"
+#include "GoUctLadderKnowledge.h"
 #include "GoUctPatterns.h"
 #include "GoUctPlayer.h"
 #include "GoUctPlayoutPolicy.h"
@@ -167,6 +168,24 @@ std::vector<SgUctValue> KnowledgeThresholdFromString(const std::string& val)
     return v;
 }
 
+/** Helper class for displaying ladder knowledge */
+class LadderKnowledge : public GoUctKnowledge
+{
+public:
+    LadderKnowledge(const GoBoard& bd) : GoUctKnowledge(bd)
+    { }
+
+    void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
+};
+
+void LadderKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
+{
+    GoUctLadderKnowledge ladderKnowledge(Board(), *this);
+    ladderKnowledge.ProcessPosition();
+    TransferValues(moves);
+}
+
+
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -184,6 +203,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "gfx/Uct Bounds/uct_bounds\n"
         "plist/Uct Default Policy/uct_default_policy\n"
         "gfx/Uct Gfx/uct_gfx\n"
+        "gfx/Uct Ladder Knowledge/uct_ladder_knowledge\n"
         "none/Uct Max Memory/uct_max_memory %s\n"
         "plist/Uct Moves/uct_moves\n"
         "param/Uct Param GlobalSearch/uct_param_globalsearch\n"
@@ -814,6 +834,23 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
         cmd << ' ' << SgWritePoint(moves[i]);
 }
 
+/** Show ladder knowledge.
+    The response is compatible to the GoGui analyze command type @c
+    gfx and shows the prior knowledge values as influence and the
+    counts as labels. */
+void GoUctCommands::CmdLadderKnowledge(GtpCommand& cmd)
+{
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
+        = ThreadState(0);
+    state.StartSearch(); // Updates thread state board
+    std::vector<SgUctMoveInfo> moves;
+	state.GenerateLegalMoves(moves); // only moves, no default prior knowledge
+
+	LadderKnowledge knowledge(m_bd);
+    knowledge.ProcessPosition(moves);
+    DisplayMoveInfo(cmd, moves);
+}
+
 /** Show prior knowledge.
     The response is compatible to the GoGui analyze command type @c
     gfx and shows the prior knowledge values as influence and the
@@ -828,32 +865,9 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
     vector<SgUctMoveInfo> moves;
-    SgUctProvenType provenType;
-    state.GenerateAllMoves(count, moves, provenType);
-
-    cmd << "INFLUENCE ";
-    for (size_t i = 0; i < moves.size(); ++i) 
-    {
-        SgMove move = moves[i].m_move;
-        SgUctValue value = SgUctSearch::InverseEval(moves[i].m_value);
-        SgUctValue count = moves[i].m_count;
-        if (count > 0)
-        {
-            SgUctValue scaledValue = (value * 2 - 1);
-            if (m_bd.ToPlay() != SG_BLACK)
-                scaledValue *= -1;
-            cmd << ' ' << SgWritePoint(move) << ' ' << scaledValue;
-        }
-    }
-    cmd << "\nLABEL ";
-    for (size_t i = 0; i < moves.size(); ++i)
-    {
-        SgMove move = moves[i].m_move;
-        SgUctValue count = moves[i].m_count;
-        if (count > 0)
-            cmd << ' ' << SgWritePoint(move) << ' ' << count;
-    }
-    cmd << '\n';
+    SgUctProvenType ignoreProvenType;
+    state.GenerateAllMoves(count, moves, ignoreProvenType);
+    DisplayMoveInfo(cmd, moves);
 }
 
 /** Show RAVE values of last search at root position.
@@ -1075,6 +1089,38 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     cmd << value;
 }
 
+/** Graphically display values and counts from SgUctMoveInfo.
+    The response is compatible to the GoGui analyze command type @c
+    gfx and shows the values as influence and the
+    counts as labels. */
+void GoUctCommands::DisplayMoveInfo(GtpCommand& cmd, 
+                                    const vector<SgUctMoveInfo>& moves)
+{
+    cmd << "INFLUENCE ";
+    for (size_t i = 0; i < moves.size(); ++i) 
+    {
+        SgMove move = moves[i].m_move;
+        SgUctValue value = SgUctSearch::InverseEval(moves[i].m_value);
+        SgUctValue count = moves[i].m_count;
+        if (count > 0)
+        {
+            SgUctValue scaledValue = value * 2 - 1;
+            if (m_bd.ToPlay() != SG_BLACK)
+                scaledValue *= -1;
+            cmd << ' ' << SgWritePoint(move) << ' ' << scaledValue;
+        }
+    }
+    cmd << "\nLABEL ";
+    for (size_t i = 0; i < moves.size(); ++i)
+    {
+        SgMove move = moves[i].m_move;
+        SgUctValue count = moves[i].m_count;
+        if (count > 0)
+            cmd << ' ' << SgWritePoint(move) << ' ' << count;
+    }
+    cmd << '\n';
+}
+
 /** Do a small search with territory statistics enabled to determine what
     blocks are dead for the final_status_list and final_score commands.
     @return Point set containing dead stones. */
@@ -1192,6 +1238,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_default_policy", &GoUctCommands::CmdDefaultPolicy);
     Register(e, "uct_estimator_stat", &GoUctCommands::CmdEstimatorStat);
     Register(e, "uct_gfx", &GoUctCommands::CmdGfx);
+    Register(e, "uct_ladder_knowledge", &GoUctCommands::CmdLadderKnowledge);
     Register(e, "uct_max_memory", &GoUctCommands::CmdMaxMemory);
     Register(e, "uct_moves", &GoUctCommands::CmdMoves);
     Register(e, "uct_param_globalsearch",
@@ -1240,9 +1287,9 @@ GoUctSearch& GoUctCommands::Search()
     }
 }
 
-/** Return state of first thread, if search is of type GoUctGlobalSearch.
-    @throws GtpFailure, if search is a different subclass or threads are not
-    yet created. */
+/** Return state with given threadId, if search is of type GoUctGlobalSearch.
+    Tries to create threads if needed.
+    @throws GtpFailure, if search is a different subclass */
 GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
 GoUctCommands::ThreadState(unsigned int threadId)
 {

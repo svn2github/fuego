@@ -143,6 +143,9 @@ public:
     bool GenerateAllMoves(SgUctValue count, std::vector<SgUctMoveInfo>& moves,
                           SgUctProvenType& provenType);
 
+    /** Generates all legal moves with no knowledge values. */
+    void GenerateLegalMoves(std::vector<SgUctMoveInfo>& moves);
+
     SgMove GeneratePlayoutMove(bool& skipRaveUpdate);
 
     void ExecutePlayout(SgMove move);
@@ -218,9 +221,6 @@ private:
 
     template<class BOARD>
     SgUctValue EvaluateBoard(const BOARD& bd, float komi);
-
-    /** Generates all legal moves with no knowledge values. */
-    void GenerateLegalMoves(std::vector<SgUctMoveInfo>& moves);
 
     float GetKomi() const;
 };

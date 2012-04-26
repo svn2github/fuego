@@ -21,6 +21,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoUtilTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
 ../gouct/test/GoUctKnowledgeTest.cpp \
+../gouct/test/GoUctLadderKnowledgeTest.cpp \
 ../gouct/test/GoUctUtilTest.cpp \
 ../gtpengine/test/GtpEngineTest.cpp \
 ../smartgame/test/SgArrayTest.cpp \

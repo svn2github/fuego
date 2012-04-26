@@ -10,6 +10,7 @@ GoUctDefaultMoveFilter.cpp \
 GoUctEstimatorStat.cpp \
 GoUctGlobalSearch.cpp \
 GoUctKnowledge.cpp \
+GoUctLadderKnowledge.cpp \
 GoUctObjectWithSearch.cpp \
 GoUctPlayoutPolicy.cpp \
 GoUctMoveFilter.cpp \
@@ -28,6 +29,7 @@ GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
 GoUctGlobalSearch.h \
 GoUctKnowledge.h \
+GoUctLadderKnowledge.h \
 GoUctObjectWithSearch.h \
 GoUctPatterns.h \
 GoUctPlayer.h \
