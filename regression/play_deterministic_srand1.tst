@@ -1,23 +1,21 @@
 boardsize 9
-
-book_clear 
-
+book_clear
 uct_param_player max_games 10000
 deterministic_mode 
 
 reg_genmove b
 
 10 uct_stat_search count
-#? [10000]
+#? [9000]
 
 20 uct_stat_search games_played
-#? [10000]
+#? [9000]
 
 30 uct_stat_search nodes
-#? [756260]
+#? [679055]
 
 40 uct_sequence
-#? [VAR B D4 W C7 B B6 W C6 B C5 W B5 B B4 W A6 B A5 W A7 B B7 W A8]
+#? [VAR B G6 W C3 B D3 W D2 B E3 W C2 B E2 W D1 B E1 W PASS]
 
 50 uct_value
-#? [0.496352]
+#? [0.497522]
