@@ -15,6 +15,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/thread.hpp>
+#include "SgAdditiveKnowledge.h"
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 #include "SgTimer.h"
@@ -650,6 +651,11 @@ public:
     /** @name Parameters */
     // @{
 
+	/** Additive knowledge used as prior in the nodes of a SgUctTree */
+    SgAdditiveKnowledge& AdditiveKnowledge();
+
+	const SgAdditiveKnowledge& AdditiveKnowledge() const;
+
     /** Constant c in the bias term.
         This constant corresponds to 2 C_p in the original UCT paper.
         The default value is 0.7, which works well in 9x9 Go. */
@@ -671,7 +677,7 @@ public:
         called again at the node. This is to allow multiple knowledge
         computations to occur as a node becomes more
         important. Returned move info will be merged with info in the
-        tree. This is can be used prune, add children, give a bonus to
+        tree. This can be used to prune, add children, give a bonus to
         a move, etc. */
     std::vector<SgUctValue> KnowledgeThreshold() const;
 
@@ -807,11 +813,17 @@ public:
     /** See @ref sguctsearchweights. */
     void SetRaveWeightFinal(float value);
 
+    /** Treat all NumberPlayouts() playouts as a single one for statistics */
+	bool UpdateMultiplePlayoutsAsSingle() const;
+    
+    /** See UpdateMultiplePlayoutsAsSingle() */
+   	void SetUpdateMultiplePlayoutsAsSingle(bool enable);
+
     /** Weight RAVE updates.
         Gives more weight to moves that are closer to the position for which
         the RAVE statistics are stored. The weighting function is linearly
-        decreasing from 2 to 0 with the move number from the position for
-        which the RAVE statistics are stored to the end of the simulated game. */
+        decreasing from 2 to 0 with the move number, from the position for
+        which the RAVE statistics are stored to the end of the simulation. */
     bool WeightRaveUpdates() const;
 
     /** See WeightRaveUpdates() */
@@ -877,10 +889,10 @@ public:
     bool ThreadsCreated() const;
 
     /** Create threads.
-        The threads are created at the beginning of the first search
-        (to allow multi-step construction with setting the policy after
-        the constructor call). This function needs to be called explicitely
-        only, if a thread state is going to be used before the first search. */
+        The threads are created at the beginning of the first search,
+        to allow multi-step construction with setting the policy after
+        the constructor call. This function needs to be called explicitely
+        only if a thread state is going to be used before the first search. */
     void CreateThreads();
 
 private:
@@ -1000,6 +1012,9 @@ private:
 
     /** See NumberPlayouts() */
     std::size_t m_numberPlayouts;
+    
+    /** See UpdateMultiplePlayoutsAsSingle() */
+    bool m_updateMultiplePlayoutsAsSingle;
 
     /** See MaxNodes() */
     std::size_t m_maxNodes;
@@ -1041,6 +1056,9 @@ private:
     /** See FirstPlayUrgency() */
     SgUctValue m_firstPlayUrgency;
 
+    /** See SgAdditiveKnowledge. */
+	SgAdditiveKnowledge m_additiveKnowledge;
+    
     /** See @ref sguctsearchweights. */
     float m_raveWeightInitial;
 
@@ -1091,7 +1109,6 @@ private:
 #endif
 
     boost::shared_ptr<SgMpiSynchronizer> m_mpiSynchronizer;
-
 
     void ApplyRootFilter(std::vector<SgUctMoveInfo>& moves);
 
@@ -1156,6 +1173,16 @@ private:
 
     void UpdateTree(const SgUctGameInfo& info);
 };
+
+inline SgAdditiveKnowledge& SgUctSearch::AdditiveKnowledge()
+{
+    return m_additiveKnowledge;
+}
+
+inline const SgAdditiveKnowledge& SgUctSearch::AdditiveKnowledge() const
+{
+    return m_additiveKnowledge;
+}
 
 inline float SgUctSearch::BiasTermConstant() const
 {
@@ -1250,6 +1277,11 @@ inline SgUctValue SgUctSearch::CheckTimeInterval() const
 inline std::size_t SgUctSearch::NumberPlayouts() const
 {
     return m_numberPlayouts;
+}
+
+inline bool SgUctSearch::UpdateMultiplePlayoutsAsSingle() const
+{
+	return m_updateMultiplePlayoutsAsSingle;
 }
 
 inline void SgUctSearch::PlayGame()
@@ -1361,6 +1393,11 @@ inline void SgUctSearch::SetNumberPlayouts(std::size_t n)
 {
     SG_ASSERT(n >= 1);
     m_numberPlayouts = n;
+}
+
+inline void SgUctSearch::SetUpdateMultiplePlayoutsAsSingle(bool enable)
+{
+    m_updateMultiplePlayoutsAsSingle = enable;
 }
 
 inline void SgUctSearch::SetPruneFullTree(bool enable)

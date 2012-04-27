@@ -51,6 +51,7 @@ SgVectorUtil.cpp \
 SgWrite.cpp
 
 noinst_HEADERS = \
+SgAdditiveKnowledge.h \
 SgArray.h \
 SgArrayList.h \
 SgBookBuilder.h \

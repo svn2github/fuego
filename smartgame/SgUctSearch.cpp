@@ -262,6 +262,7 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_checkFloatPrecision(true),
       m_numberThreads(1),
       m_numberPlayouts(1),
+      m_updateMultiplePlayoutsAsSingle(true),
       m_maxNodes(GetMaxNodesDefault()),
       m_pruneMinCount(16),
       m_moveRange(moveRange),
@@ -385,7 +386,8 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
             }
         }
     }
-    if (m_mpiSynchronizer->CheckAbort()) {
+    if (m_mpiSynchronizer->CheckAbort())
+    {
         Debug(state, "SgUctSearch: parallel mpi search finished");
         return true;
     }
@@ -590,7 +592,7 @@ SgUctValue SgUctSearch::GetBound(bool useRave, bool useBiasTerm,
         return value;
     else
     {
-        SgUctValue moveCount = static_cast<SgUctValue>(child.MoveCount());
+        SgUctValue moveCount = SgUctValue(child.MoveCount());
         SgUctValue bound =
             value + m_biasTermConstant * sqrt(logPosCount / (moveCount + 1));
         return bound;
@@ -634,7 +636,7 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
 
     if (uctStats.IsDefined())
     {
-        SgUctValue weight = static_cast<SgUctValue>(uctStats.Count());
+        SgUctValue weight = SgUctValue(uctStats.Count());
         value += weight * InverseEstimate((SgUctValue)uctStats.Mean());
         weightSum += weight;
         hasValue = true;
@@ -973,13 +975,15 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     bool breakAfterSelect = false;
     isTerminal = false;
     bool useBiasTerm = false;
-    if (--state.m_randomizeBiasCounter == 0) {
+    if (--state.m_randomizeBiasCounter == 0)
+    {
         useBiasTerm = true;
         state.m_randomizeBiasCounter = m_biasTermFrequency;
     }
     while (true)
     {
-        if (m_biasTermDepth > 0 && sequence.size() == m_biasTermDepth) {
+        if (m_biasTermDepth > 0 && sequence.size() == m_biasTermDepth)
+        {
             useBiasTerm = false;
         }
         if (sequence.size() == m_maxGameLength)
@@ -1140,7 +1144,9 @@ SgUctValue SgUctSearch::Search(SgUctValue maxGames, double maxTime,
     if (m_logGames)
         m_log.close();
     FindBestSequence(sequence);
-    return (m_tree.Root().MoveCount() > 0) ? (SgUctValue)m_tree.Root().Mean() : (SgUctValue)0.5;
+    return m_tree.Root().MoveCount() > 0 ? 
+           m_tree.Root().Mean() : 
+           SgUctValue(0.5);
 }
 
 /** Loop invoked by each thread for playing games. */
@@ -1267,24 +1273,29 @@ const SgUctNode& SgUctSearch::SelectChild(int& randomizeCounter,
     int virtualLossCount = node.VirtualLossCount();
     if (virtualLossCount > 1)
     {
-        // Note: must remove the virtual loss already added to
+        // Must remove the virtual loss already added to
         // node for the current thread.
         posCount += SgUctValue(virtualLossCount - 1);
     }
 
+    // If position count is zero, return first child
     if (posCount == 0)
-        // If position count is zero, return first child
         return *SgUctChildIterator(m_tree, node);
-    SgUctValue logPosCount = Log(posCount);
+        
+    const SgUctValue logPosCount = Log(posCount);
     const SgUctNode* bestChild = 0;
     SgUctValue bestUpperBound = 0;
+    const SgUctValue predictorWeight = 
+    	m_additiveKnowledge.PredictorWeight(posCount);
     const SgUctValue epsilon = SgUctValue(1e-7);
     for (SgUctChildIterator it(m_tree, node); it; ++it)
     {
         const SgUctNode& child = *it;
         if (! child.IsProvenWin()) // Avoid losing moves
         {
-            SgUctValue bound = GetBound(useRave, useBiasTerm, logPosCount, child);
+            SgUctValue bound = GetBound(useRave, useBiasTerm, 
+                                        logPosCount, child)
+		                     - predictorWeight * child.PredictorValue();
             // Compare bound to best bound using a not too small epsilon
             // because the unit tests rely on the fact that the first child is
             // chosen if children have the same bounds and on some platforms
@@ -1548,7 +1559,8 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     eval /= SgUctValue(m_numberPlayouts);
     SgUctValue inverseEval = InverseEval(eval);
     const vector<const SgUctNode*>& nodes = info.m_nodes;
-    SgUctValue count = SgUctValue(m_numberPlayouts);
+    const SgUctValue count = 
+    	SgUctValue(m_updateMultiplePlayoutsAsSingle ? 1 : m_numberPlayouts);
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         const SgUctNode& node = *nodes[i];
