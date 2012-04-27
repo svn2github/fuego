@@ -33,14 +33,24 @@ public:
 class GoUctAdditiveKnowledge
 {
 public:
-    GoUctAdditiveKnowledge(const GoBoard& bd);
+    GoUctAdditiveKnowledge(const GoBoard& bd, bool probabilityBased,
+        SgUctValue scale, SgUctValue minimum);
 
     virtual ~GoUctAdditiveKnowledge();
 
     virtual void ProcessPosition(std::vector<SgUctMoveInfo>& moves) = 0;
 
-    const GoBoard& Board() const;
+    virtual const GoBoard& Board() const;
     
+    virtual bool ProbabilityBased() const;
+    
+    /** return value, but lower bound capped by m_minimum */
+    SgUctValue CappedValue(SgUctValue value) const;
+    
+    SgUctValue Minimum() const;
+
+    SgUctValue Scale() const;
+
 	/** Should predictor be appied for given move number? */
     bool InMoveRange(int moveNumber) const;
     
@@ -63,8 +73,15 @@ private:
     /** The board on which prior knowledge is computed */
     const GoBoard& m_bd;
 
-    /* Subclass only. */
-    /* const GoUctAdditiveKnowledgeParam& m_param; */
+    /** Flag: all predictors must share the same type: true for
+    probability-based predictor type (the usual case), false for
+    PUCB-type predictor as in Rosin, Multi-armed bandits with episode context.
+    */
+    bool m_probabilityBased;
+    
+    SgUctValue m_scale;
+
+    SgUctValue m_minimum;
 };
 
 //----------------------------------------------------------------------------
@@ -73,4 +90,26 @@ inline const GoBoard& GoUctAdditiveKnowledge::Board() const
 	return m_bd;
 }
 
-#endif 
+inline bool GoUctAdditiveKnowledge::ProbabilityBased() const
+{
+	return m_probabilityBased;
+}
+
+inline SgUctValue GoUctAdditiveKnowledge::CappedValue(SgUctValue value) const
+{
+	return std::max(value, m_minimum);
+}
+
+inline SgUctValue GoUctAdditiveKnowledge::Minimum() const
+{
+	return m_minimum;
+}
+
+inline SgUctValue GoUctAdditiveKnowledge::Scale() const
+{
+	return m_scale;
+}
+
+//----------------------------------------------------------------------------
+
+#endif // GOUCT_ADDITIVEKNOWLEDGE_H

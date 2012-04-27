@@ -13,14 +13,6 @@
 
 //----------------------------------------------------------------------------
 
-class GoUctAdditiveKnowledgeParamFuego
-    : public GoUctAdditiveKnowledgeParam
-{
-public:
-    GoUctAdditiveKnowledgeParamFuego();
-};
-
-
 class GoUctAdditiveKnowledgeFuego
     : public GoUctAdditiveKnowledge
 {
@@ -28,13 +20,9 @@ public:
 
     static const float VALUE_MULTIPLIER = 4.0f;
 
-    GoUctAdditiveKnowledgeFuego(const GoBoard& bd,
-				const GoUctAdditiveKnowledgeParamFuego& param);
+    GoUctAdditiveKnowledgeFuego(const GoBoard& bd);
 
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
-    
-private:
-    const GoUctAdditiveKnowledgeParamFuego& m_param;
 };
 
 //----------------------------------------------------------------------------

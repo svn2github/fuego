@@ -9,19 +9,19 @@
 
 //----------------------------------------------------------------------------
 
-GoUctAdditiveKnowledgeParamFuego::GoUctAdditiveKnowledgeParamFuego()
-{ }
-
-GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd,
-                             const GoUctAdditiveKnowledgeParamFuego& param)
-    : GoUctAdditiveKnowledge(bd),
-      m_param(param)
+GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd)
+    : GoUctAdditiveKnowledge(bd,
+                             true /* probabilityBased */, 
+    						 0.03f /* scale */,
+                             0.0001f /* minimum */
+                            )
 {
     // Knowledge applies to all moves
     SetMoveRange(0, 10000); 
 }
 
-// Assumes that SgMoveInfo has m_raveValue (and m_raveCount) populated.
+// Assumes that SgMoveInfo has m_raveValue (and m_raveCount) populated by prior knowledge.
+// @todo This is a bit of a hack. Should call prior knowledge directly.
 void 
 GoUctAdditiveKnowledgeFuego::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 {

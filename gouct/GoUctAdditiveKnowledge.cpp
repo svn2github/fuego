@@ -6,7 +6,6 @@
 
 #include "SgSystem.h"
 #include "GoUctAdditiveKnowledge.h"
-
 //----------------------------------------------------------------------------
 
 GoUctAdditiveKnowledgeParam::GoUctAdditiveKnowledgeParam()
@@ -14,9 +13,15 @@ GoUctAdditiveKnowledgeParam::GoUctAdditiveKnowledgeParam()
 
 GoUctAdditiveKnowledgeParam::~GoUctAdditiveKnowledgeParam()
 { }
+//----------------------------------------------------------------------------
 
-GoUctAdditiveKnowledge::GoUctAdditiveKnowledge(const GoBoard& bd)
-    : m_startMove(0), m_endMove(10000), m_bd(bd)
+GoUctAdditiveKnowledge::GoUctAdditiveKnowledge(const GoBoard& bd, 
+                                               bool probabilityBased,
+                                               SgUctValue scale, 
+                                               SgUctValue minimum)
+    : m_startMove(0), m_endMove(10000), m_bd(bd), 
+      m_probabilityBased(probabilityBased),
+      m_scale(scale), m_minimum(minimum)
 { }
 
 bool GoUctAdditiveKnowledge::InMoveRange(int moveNumber) const
@@ -33,7 +38,4 @@ void GoUctAdditiveKnowledge::SetMoveRange(int startMove, int endMove)
 
 GoUctAdditiveKnowledge::~GoUctAdditiveKnowledge()
 { }
-
 //----------------------------------------------------------------------------
-
-
