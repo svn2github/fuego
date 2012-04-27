@@ -705,6 +705,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[bool] log_games " << s.LogGames() << '\n'
             << "[bool] prune_full_tree " << s.PruneFullTree() << '\n'
             << "[bool] rave " << s.Rave() << '\n'
+            << "[bool] update_multiple_playouts_as_single " 
+            << s.UpdateMultiplePlayoutsAsSingle() << '\n'
             << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
@@ -729,7 +731,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << s.RandomizeRaveFrequency() << '\n'
             << "[string] rave_weight_final " << s.RaveWeightFinal() << '\n'
             << "[string] rave_weight_initial "
-            << s.RaveWeightInitial() << '\n';
+            << s.RaveWeightInitial() << '\n'
+            ;
 
     }
     else if (cmd.NuArg() == 2)
@@ -791,6 +794,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             s.SetRaveWeightFinal(cmd.Arg<float>(1));
         else if (name == "rave_weight_initial")
             s.SetRaveWeightInitial(cmd.Arg<float>(1));
+        else if (name == "update_multiple_playouts_as_single")
+            s.SetUpdateMultiplePlayoutsAsSingle(cmd.Arg<bool>(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
 
