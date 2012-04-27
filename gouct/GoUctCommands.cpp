@@ -200,6 +200,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
         "none/Deterministic Mode/deterministic_mode\n"
+        "gfx/Uct Additive Knowledge/uct_additive_knowledge\n"
         "gfx/Uct Bounds/uct_bounds\n"
         "plist/Uct Default Policy/uct_default_policy\n"
         "gfx/Uct Gfx/uct_gfx\n"
@@ -709,8 +710,13 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << s.UpdateMultiplePlayoutsAsSingle() << '\n'
             << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
+            << "[float] additive_knowledge_weight " 
+            << s.AdditiveKnowledge().KnowledgeWeight() << '\n'
+            << "[string] additive_predictor_decay " 
+            << s.AdditiveKnowledge().PredictorDecay() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
-            << "[string] bias_term_frequency " << s.BiasTermFrequency() << '\n'
+            << "[string] bias_term_frequency "
+            << s.BiasTermFrequency() << '\n'
             << "[string] bias_term_depth " << s.BiasTermDepth() << '\n'
             << "[string] expand_threshold " << s.ExpandThreshold() << '\n'
             << "[string] first_play_urgency " << s.FirstPlayUrgency() << '\n'
@@ -733,7 +739,6 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] rave_weight_initial "
             << s.RaveWeightInitial() << '\n'
             ;
-
     }
     else if (cmd.NuArg() == 2)
     {
@@ -744,42 +749,36 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             throw GtpFailure() << "Command " 
                     << name << " is blocked in deterministic mode."; 
 
-        if (name == "check_float_precision")
-            s.SetCheckFloatPrecision(cmd.Arg<bool>(1));
-        else if (name == "keep_games")
-            s.SetKeepGames(cmd.Arg<bool>(1));
-        else if (name == "knowledge_threshold")
-            s.SetKnowledgeThreshold(KnowledgeThresholdFromString(cmd.Arg(1)));
-        else if (name == "max_knowledge_threads")
-            s.SetMaxKnowledgeThreads(cmd.Arg<unsigned int>(1));
-        else if (name == "lock_free")
-            s.SetLockFree(cmd.Arg<bool>(1));
-        else if (name == "log_games")
-            s.SetLogGames(cmd.Arg<bool>(1));
-        else if (name == "prune_full_tree")
-            s.SetPruneFullTree(cmd.Arg<bool>(1));
-        else if (name == "randomize_rave_frequency")
-            s.SetRandomizeRaveFrequency(cmd.ArgMin<int>(1, 0));
-        else if (name == "rave")
-            s.SetRave(cmd.Arg<bool>(1));
-        else if (name == "weight_rave_updates")
-            s.SetWeightRaveUpdates(cmd.Arg<bool>(1));
-        else if (name == "virtual_loss")
-            s.SetVirtualLoss(cmd.Arg<bool>(1));
+        if (name == "additive_knowledge_weight")
+        	s.AdditiveKnowledge().SetKnowledgeWeight(cmd.Arg<float>(1));
+        else if (name == "additive_predictor_decay")
+            s.AdditiveKnowledge().SetPredictorDecay(cmd.Arg<float>(1));
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "bias_term_frequency")
             s.SetBiasTermFrequency(cmd.IntArg(1));
         else if (name == "bias_term_depth")
             s.SetBiasTermDepth(cmd.Arg<size_t>(1));
+        else if (name == "check_float_precision")
+            s.SetCheckFloatPrecision(cmd.Arg<bool>(1));
         else if (name == "expand_threshold")
             s.SetExpandThreshold(cmd.ArgMin<SgUctValue>(1, 0));
         else if (name == "first_play_urgency")
             s.SetFirstPlayUrgency(cmd.Arg<SgUctValue>(1));
+        else if (name == "keep_games")
+            s.SetKeepGames(cmd.Arg<bool>(1));
+        else if (name == "knowledge_threshold")
+            s.SetKnowledgeThreshold(KnowledgeThresholdFromString(cmd.Arg(1)));
         else if (name == "live_gfx")
             s.SetLiveGfx(LiveGfxArg(cmd, 1));
         else if (name == "live_gfx_interval")
             s.SetLiveGfxInterval(cmd.ArgMin<SgUctValue>(1, 1));
+        else if (name == "lock_free")
+            s.SetLockFree(cmd.Arg<bool>(1));
+        else if (name == "log_games")
+            s.SetLogGames(cmd.Arg<bool>(1));
+        else if (name == "max_knowledge_threads")
+            s.SetMaxKnowledgeThreads(cmd.Arg<unsigned int>(1));
         else if (name == "max_nodes")
             s.SetMaxNodes(cmd.ArgMin<size_t>(1, 1));
         else if (name == "move_select")
@@ -788,14 +787,24 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
              s.SetNumberThreads(cmd.ArgMin<unsigned int>(1, 1));
         else if (name == "number_playouts")
             s.SetNumberPlayouts(cmd.ArgMin<int>(1, 1));
+        else if (name == "prune_full_tree")
+            s.SetPruneFullTree(cmd.Arg<bool>(1));
         else if (name == "prune_min_count")
             s.SetPruneMinCount(cmd.ArgMin<SgUctValue>(1, SgUctValue(1)));
+        else if (name == "randomize_rave_frequency")
+            s.SetRandomizeRaveFrequency(cmd.ArgMin<int>(1, 0));
+        else if (name == "rave")
+            s.SetRave(cmd.Arg<bool>(1));
         else if (name == "rave_weight_final")
             s.SetRaveWeightFinal(cmd.Arg<float>(1));
         else if (name == "rave_weight_initial")
             s.SetRaveWeightInitial(cmd.Arg<float>(1));
         else if (name == "update_multiple_playouts_as_single")
             s.SetUpdateMultiplePlayoutsAsSingle(cmd.Arg<bool>(1));
+        else if (name == "virtual_loss")
+            s.SetVirtualLoss(cmd.Arg<bool>(1));
+        else if (name == "weight_rave_updates")
+            s.SetWeightRaveUpdates(cmd.Arg<bool>(1));
         else
             throw GtpFailure() << "unknown parameter: " << name;
 
@@ -853,26 +862,19 @@ void GoUctCommands::CmdLadderKnowledge(GtpCommand& cmd)
 
 	LadderKnowledge knowledge(m_bd);
     knowledge.ProcessPosition(moves);
-    DisplayMoveInfo(cmd, moves);
+    DisplayMoveInfo(cmd, moves, false);
 }
 
-/** Show prior knowledge.
-    The response is compatible to the GoGui analyze command type @c
-    gfx and shows the prior knowledge values as influence and the
-    counts as labels. */
+/** Show total prior knowledge */
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
-    cmd.CheckNuArgLessEqual(1);
-    SgUctValue count = 0;
-    if (cmd.NuArg() == 1)
-        count = SgUctValue(cmd.ArgMin<size_t>(0, 0));
-    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
-        = ThreadState(0);
-    state.StartSearch(); // Updates thread state board
-    vector<SgUctMoveInfo> moves;
-    SgUctProvenType ignoreProvenType;
-    state.GenerateAllMoves(count, moves, ignoreProvenType);
-    DisplayMoveInfo(cmd, moves);
+	DisplayKnowledge(cmd, false);
+}
+
+/** Show additive knowledge */
+void GoUctCommands::CmdAdditiveKnowledge(GtpCommand& cmd)
+{
+	DisplayKnowledge(cmd, true);
 }
 
 /** Show RAVE values of last search at root position.
@@ -1094,18 +1096,41 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     cmd << value;
 }
 
+/** Show prior knowledge.
+    The response is compatible to the GoGui analyze command type @c
+    gfx and shows the prior knowledge values as influence and the
+    counts as labels. */
+void GoUctCommands::DisplayKnowledge(GtpCommand& cmd, 
+                                     bool additiveKnowledge)
+{
+    cmd.CheckNuArgLessEqual(1);
+    SgUctValue count = 0;
+    if (cmd.NuArg() == 1)
+        count = SgUctValue(cmd.ArgMin<size_t>(0, 0));
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
+        = ThreadState(0);
+    state.StartSearch(); // Updates thread state board
+    vector<SgUctMoveInfo> moves;
+    SgUctProvenType ignoreProvenType;
+    state.GenerateAllMoves(count, moves, ignoreProvenType);
+    DisplayMoveInfo(cmd, moves, additiveKnowledge);
+}
+
 /** Graphically display values and counts from SgUctMoveInfo.
     The response is compatible to the GoGui analyze command type @c
     gfx and shows the values as influence and the
     counts as labels. */
 void GoUctCommands::DisplayMoveInfo(GtpCommand& cmd, 
-                                    const vector<SgUctMoveInfo>& moves)
+                                    const vector<SgUctMoveInfo>& moves,
+                                    bool additiveKnowledge)
 {
     cmd << "INFLUENCE ";
     for (size_t i = 0; i < moves.size(); ++i) 
     {
         SgMove move = moves[i].m_move;
-        SgUctValue value = SgUctSearch::InverseEval(moves[i].m_value);
+        SgUctValue value = additiveKnowledge ? moves[i].m_predictorValue
+                           : moves[i].m_value;
+        value = SgUctSearch::InverseEval(value);
         SgUctValue count = moves[i].m_count;
         if (count > 0)
         {
@@ -1192,8 +1217,8 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
             }
             const float threshold = 0.3f;
             isDead =
-                ((c == SG_BLACK && averageStatus.Mean() < threshold)
-                 || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold));
+                    (c == SG_BLACK && averageStatus.Mean() < threshold)
+                 || (c == SG_WHITE && averageStatus.Mean() > 1 - threshold);
         }
         if (isDead)
             for (GoBoard::StoneIterator it2(bd, *it); it2; ++it2)
@@ -1239,6 +1264,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "deterministic_mode", &GoUctCommands::CmdDeterministicMode);
     Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
+    Register(e, "uct_additive_knowledge", &GoUctCommands::CmdAdditiveKnowledge);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);
     Register(e, "uct_default_policy", &GoUctCommands::CmdDefaultPolicy);
     Register(e, "uct_estimator_stat", &GoUctCommands::CmdEstimatorStat);
@@ -1293,7 +1319,7 @@ GoUctSearch& GoUctCommands::Search()
 }
 
 /** Return state with given threadId, if search is of type GoUctGlobalSearch.
-    Tries to create threads if needed.
+    Creates threads if needed.
     @throws GtpFailure, if search is a different subclass */
 GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
 GoUctCommands::ThreadState(unsigned int threadId)

@@ -37,6 +37,7 @@ public:
     /** @page gouctgtpcommands GoUctCommands Commands
         - @link CmdFinalScore() @c final_score @endlink
         - @link CmdFinalStatusList() @c final_status_list @endlink
+        - @link CmdAdditiveKnowledge() @c uct_additive_knowledge @endlink
         - @link CmdBounds() @c uct_bounds @endlink
         - @link CmdDefaultPolicy() @c uct_default_policy @endlink
         - @link CmdDeterministicMode() @c deterministic_mode @endlink
@@ -71,6 +72,7 @@ public:
     /** @name Command Callbacks */
     // @{
     // The callback functions are documented in the cpp file
+    void CmdAdditiveKnowledge(GtpCommand& cmd);
     void CmdBounds(GtpCommand& cmd);
     void CmdDefaultPolicy(GtpCommand& cmd);
     void CmdDeterministicMode(GtpCommand&);
@@ -113,7 +115,16 @@ private:
 
     GoPlayer*& m_player;
 
-    void DisplayMoveInfo(GtpCommand& cmd, const vector<SgUctMoveInfo>& moves);
+	/** Compute and display prior knowledge.
+    	Display either additive knowledge only, or all knowledge */
+    void DisplayKnowledge(GtpCommand& cmd, bool additiveKnowledge);
+
+	/** Display contents of SgUctMoveInfo.
+    	Either show additive knowledge only, or all knowledge
+     */
+    void DisplayMoveInfo(GtpCommand& cmd, 
+                         const vector<SgUctMoveInfo>& moves,
+                         bool additiveKnowledge);
 
     SgPointSet DoFinalStatusSearch();
 
@@ -132,6 +143,7 @@ private:
                   GtpCallback<GoUctCommands>::Method method);
 
     GoUctSearch& Search();
+
 
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
     ThreadState(unsigned int threadId);
