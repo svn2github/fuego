@@ -144,7 +144,6 @@ private:
 
     GoUctSearch& Search();
 
-
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
     ThreadState(unsigned int threadId);
 };
