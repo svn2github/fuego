@@ -15,7 +15,47 @@
 #include "SgVector.h"
 
 //----------------------------------------------------------------------------
+/** GoBoard-related Debugging utilities */
+/* @todo move into its own file. */
+namespace GoBoardDebug
+{
 
+/** Print the first nuInstances occurences of an event on the Go board */
+template<class BOARD>
+class EventPrinter
+{
+public:
+	EventPrinter(int nuInstances);
+    
+    void PrintFirstFew(const BOARD& bd, std::string message, SgPoint move, 
+                       SgPoint move2 = SG_NULLMOVE);
+private:
+    int m_nuInstances;
+};
+
+} // namespace GoBoardDebug
+
+//----------------------------------------------------------------------------
+template<class BOARD>
+GoBoardDebug::EventPrinter<BOARD>::EventPrinter(int nuInstances)
+	: m_nuInstances(nuInstances)
+{ }
+
+template<class BOARD>
+void GoBoardDebug::EventPrinter<BOARD>::PrintFirstFew(
+	const BOARD& bd, std::string message, SgPoint move, SgPoint move2)
+{
+	if (--m_nuInstances >= 0)
+    {
+        SgDebug() << message << SgBW(bd.ToPlay())  << ' '
+        		  << SgWritePoint(move);
+        if (move2 != SG_NULLMOVE)
+        	SgDebug() << ' ' << SgWritePoint(move2);
+        SgDebug() << '\n' << bd;
+    }
+}
+
+//----------------------------------------------------------------------------
 /** Utility functions for users of class GoBoard.
     Some of the functions that the board class as a template argument,
     such that they can be used with specialized variants of GoBoard that
