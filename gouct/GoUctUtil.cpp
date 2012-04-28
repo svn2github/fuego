@@ -16,7 +16,6 @@
 
 using namespace std;
 using boost::format;
-using boost::io::ios_all_saver;
 using SgPointUtil::PointToString;
 using SgPointUtil::Pt;
 using SgPropUtil::PointToSgfString;
@@ -202,7 +201,7 @@ void GoUctUtil::GfxTerritoryStatistics(
                      const SgPointArray<SgUctStatistics>& territoryStatistics,
                      const GoBoard& bd, std::ostream& out)
 {
-    ios_all_saver saver(out);
+    boost::io::ios_all_saver saver(out);
     out << fixed << setprecision(3) << "INFLUENCE";
     for (GoBoard::Iterator it(bd); it; ++it)
         if (territoryStatistics[*it].Count() > 0)

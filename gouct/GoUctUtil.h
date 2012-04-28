@@ -19,8 +19,6 @@
 
 class SgBWSet;
 template<typename T,int N> class SgArrayList;
-class SgUctNode;
-class SgUctTree;
 
 //----------------------------------------------------------------------------
 
@@ -52,6 +50,16 @@ namespace GoUctUtil
 
     void ClearStatistics(SgPointArray<SgUctStatistics>& stats);
 
+    /** Check if move would make an ugly clump. Try to replace by neighbor.
+        If move is close to many own stones: check if neighboring point 
+        looks better. If yes, replace move by neighbor. */
+    template<class BOARD>
+    bool DoClumpCorrection(const BOARD& bd, SgPoint& move);
+
+    /** Check if move would make a false eye. Try to replace by capture. */
+    template<class BOARD>
+    bool DoFalseEyeToCaptureCorrection(const BOARD& bd, SgPoint& move);
+
     /** Check if move is self-atari and find other liberty, if yes.
         This can be applied as a filter in the playout policy, after a move
         was generated. It is a useful correction to the move generation using
@@ -74,13 +82,6 @@ namespace GoUctUtil
         original move. */
     template<class BOARD>
     bool DoSelfAtariCorrection(const BOARD& bd, SgPoint& p);
-
-    /** Check if p makes ugly clump. Possibly replace by neighbor.
-        If p is close to many own stones:
-        check if neighboring point looks better. If
-        yes, replace by neighbor. */
-    template<class BOARD>
-    bool DoClumpCorrection(const BOARD& bd, SgPoint& p);
 
     /** Check, if playing at a lib gains liberties.
         Does not handle capturing moves for efficiency. Not needed, because
@@ -224,55 +225,56 @@ namespace GoUctUtil
 //----------------------------------------------------------------------------
 
 template<class BOARD>
-bool GoUctUtil::DoClumpCorrection(const BOARD& bd, SgPoint& p)
+bool GoUctUtil::DoClumpCorrection(const BOARD& bd, SgPoint& move)
 {
-    // if not a clump, don't correct p.
-    if (bd.NumEmptyNeighbors(p) != 1)
+    // if not a clump, don't correct move.
+    if (bd.NumEmptyNeighbors(move) != 1)
         return false;
     const SgBlackWhite toPlay = bd.ToPlay();
-    if (bd.Line(p) == 1)
+    if (bd.Line(move) == 1)
     {
-        if (   bd.Num8Neighbors(p, toPlay) < LINE_1_LIMIT
-            || bd.NumNeighbors(p, toPlay) != 2
+        if (   bd.Num8Neighbors(move, toPlay) < LINE_1_LIMIT
+            || bd.NumNeighbors(move, toPlay) != 2
            )
             return false;
     }
-    else if (   bd.Num8Neighbors(p, toPlay) < LINE_2_OR_MORE_LIMIT
-             || bd.NumNeighbors(p, toPlay) != 3
+    else if (   bd.Num8Neighbors(move, toPlay) < LINE_2_OR_MORE_LIMIT
+             || bd.NumNeighbors(move, toPlay) != 3
             )
             return false;
 
-    // only swap if nb is better than p
-    const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, p);
-    int edgeCorrection_p = 0;
+    // only swap if nb is better than move
+    const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, move);
+    int edgeCorrection_move = 0;
     int edgeCorrection_nb = 0;
-    SetEdgeCorrection(bd, p, edgeCorrection_p);
+    SetEdgeCorrection(bd, move, edgeCorrection_move);
     SetEdgeCorrection(bd, nb, edgeCorrection_nb);
     if (   bd.Num8Neighbors(nb, toPlay) + edgeCorrection_nb < 
-           bd.Num8Neighbors(p, toPlay) + edgeCorrection_p
-        && bd.NumNeighbors(nb, toPlay) <= bd.NumNeighbors(p, toPlay)
+           bd.Num8Neighbors(move, toPlay) + edgeCorrection_move
+        && bd.NumNeighbors(nb, toPlay) <= bd.NumNeighbors(move, toPlay)
         &&
            (   bd.NumEmptyNeighbors(nb) >= 2
             || ! GoBoardUtil::SelfAtari(bd, nb)
            )
        )
     {
-        if (CONSERVATIVE_CLUMP) // no further tests, nb is good
+        if (CONSERVATIVE_CLUMP) // no further tests, nb is assumed to be good
         {
-            p = nb;
+            move = nb;
             return true;
         }
         else
         {
-            // keep p if it was a connection move and nb does not connect at
-            // least the same blocks
+            // keep move if it was a connection move and nb does not 
+            // connect at least the same blocks
             SgPoint anchor[4 + 1];
-            bd.NeighborBlocks(p, toPlay, anchor);
+            bd.NeighborBlocks(move, toPlay, anchor);
             SG_ASSERT(anchor[0] != SG_ENDPOINT); // at least 1 block
             if (anchor[1] == SG_ENDPOINT // no connection, only 1 block
-                || SubsetOfBlocks<BOARD>(bd, anchor, nb))
+               || SubsetOfBlocks<BOARD>(bd, anchor, nb)
+               )
             {
-                p = nb;
+                move = nb;
                 return true;
             }
         }
@@ -281,23 +283,63 @@ bool GoUctUtil::DoClumpCorrection(const BOARD& bd, SgPoint& p)
 }
 
 template<class BOARD>
-inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
+inline bool GoUctUtil::DoFalseEyeToCaptureCorrection(const BOARD& bd, 
+                                                     SgPoint& move)
+{
+    static GoBoardDebug::EventPrinter<BOARD> printer(30);
+    SG_ASSERT(bd.IsEmpty(move));
+    const SgBlackWhite opp = bd.Opponent();
+    if (bd.HasEmptyNeighbors(move) || bd.HasNeighbors(move, opp))
+    	return false;
+    if (bd.Line(move) == 1)
+    {
+        if (  bd.NumDiagonals(move, SG_EMPTY) > 0 
+           || bd.NumDiagonals(move, opp) > 1
+           )
+        	return false;
+    }
+    else if (  bd.NumDiagonals(move, SG_EMPTY) > 1
+            || bd.NumDiagonals(move, opp) > 2
+            )
+    	return false;
+
+    for (SgNb4DiagIterator it(move); it; ++it)
+    {
+        const SgPoint p = *it;
+        if (bd.GetColor(p) == opp && bd.InAtari(p)) // try to capture p
+        {
+            const SgPoint lib = bd.TheLiberty(p);
+            if (bd.IsLegal(lib))
+            {
+               	printer.PrintFirstFew(bd, "False Eye to Capture ", move, lib);
+               	move = lib;
+        		return true;
+            }
+        }
+    }
+
+    // no replacement found
+    return false;
+}
+
+template<class BOARD>
+inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& move)
 {
     // Function is inline despite its large size, because it returns quickly
     // on average, which makes the function call an overhead
 
     const SgBlackWhite toPlay = bd.ToPlay();
     // no self-atari
-    if (bd.NumEmptyNeighbors(p) >= 2)
+    if (bd.NumEmptyNeighbors(move) >= 2)
         return false;
-    if (bd.NumNeighbors(p, toPlay) > 0) // p part of existing block(s)
+    if (bd.NumNeighbors(move, toPlay) > 0) // move part of existing block(s)
     {
-        if (! GoBoardUtil::SelfAtari(bd, p))
+        if (! GoBoardUtil::SelfAtari(bd, move))
             return false;
         SgBlackWhite opp = SgOppBW(toPlay);
         SgPoint replaceMove = SG_NULLMOVE;
         // ReplaceMove is the liberty we would have after playing at p
-        for (SgNb4Iterator it(p); it; ++it)
+        for (SgNb4Iterator it(move); it; ++it)
         {
             SgBoardColor c = bd.GetColor(*it);
             if (c == SG_EMPTY)
@@ -305,7 +347,7 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
             else if (c == toPlay)
             {
                 for (typename BOARD::LibertyIterator it2(bd, *it); it2; ++it2)
-                    if (*it2 != p)
+                    if (*it2 != move)
                     {
                         replaceMove = *it2;
                         break;
@@ -321,15 +363,15 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
             && ! GoBoardUtil::SelfAtari(bd, replaceMove)
             )
         {
-            p = replaceMove;
+            move = replaceMove;
             return true;
         }
     }
-    else if (bd.NumEmptyNeighbors(p) > 0 && ! bd.CanCapture(p, toPlay))
+    else if (bd.NumEmptyNeighbors(move) > 0 && ! bd.CanCapture(move, toPlay))
     // single stone with empty neighbors - possibly replace
     {
-        // should we shift to nb? Is it better than p?
-        const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, p);
+        // should we shift to nb? Is it better than move?
+        const SgPoint nb = GoEyeUtil::EmptyNeighbor(bd, move);
         // Check if legal, could violate superko (with BOARD = GoBoard in
         // GoUctDefaultPriorKnowledge)
         if (  bd.IsLegal(nb)
@@ -338,8 +380,8 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& p)
               )
            )
         {
-            // nb seems better than p - switch.
-            p = nb;
+            // nb seems better than move - switch.
+            move = nb;
             return true;
         }
     }
@@ -435,7 +477,7 @@ inline SgPoint GoUctUtil::SelectRandom(const BOARD& bd,
                                        GoPointList& emptyPts,
                                        SgRandom& random)
 {
-    while (true)
+    for (;;)
     {
         int length = emptyPts.Length();
         if (length == 0)
@@ -462,7 +504,6 @@ void GoUctUtil::SetEdgeCorrection(const BOARD& bd, SgPoint p,
             edgeCorrection += 2;
     }
 }
-
 
 template<class BOARD>
 bool GoUctUtil::SubsetOfBlocks(const BOARD& bd, const SgPoint anchor[],
