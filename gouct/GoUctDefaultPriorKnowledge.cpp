@@ -220,7 +220,8 @@ GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
 }
 
 void 
-GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves)
+GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& 
+                                            outmoves)
 {
     m_policy.StartPlayout();
     m_policy.GenerateMove();
@@ -244,9 +245,11 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& outmoves
     if (isFullBoardRandom && ! anyHeuristic)
     	InitializeForRandomPolicyMove(empty, defaultNuSimulations);
     else if (isFullBoardRandom && anyHeuristic)
-    	InitializeForGlobalHeuristic(empty, pattern, atari, defaultNuSimulations);
+    	InitializeForGlobalHeuristic(empty, pattern, atari,
+                                     defaultNuSimulations);
     else
-    	InitializeForNonRandomPolicyMove(empty, pattern, atari, defaultNuSimulations);
+    	InitializeForNonRandomPolicyMove(empty, pattern, atari,
+                                         defaultNuSimulations);
 
     AddLocalityBonus(empty, isSmallBoard);
     GoUctLadderKnowledge ladderKnowledge(Board(), *this);
