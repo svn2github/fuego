@@ -286,7 +286,6 @@ template<class BOARD>
 inline bool GoUctUtil::DoFalseEyeToCaptureCorrection(const BOARD& bd, 
                                                      SgPoint& move)
 {
-    static GoBoardDebug::EventPrinter<BOARD> printer(30);
     SG_ASSERT(bd.IsEmpty(move));
     const SgBlackWhite opp = bd.Opponent();
     if (bd.HasEmptyNeighbors(move) || bd.HasNeighbors(move, opp))
@@ -311,7 +310,6 @@ inline bool GoUctUtil::DoFalseEyeToCaptureCorrection(const BOARD& bd,
             const SgPoint lib = bd.TheLiberty(p);
             if (bd.IsLegal(lib))
             {
-               	printer.PrintFirstFew(bd, "False Eye to Capture ", move, lib);
                	move = lib;
         		return true;
             }
