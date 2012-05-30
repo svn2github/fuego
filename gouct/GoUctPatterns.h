@@ -7,15 +7,23 @@
 
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
+#include "GoUctGlobalPatternData.h"
+#include "GoUctPatternData.h"
 #include "SgBoardColor.h"
 #include "SgBWArray.h"
 #include "SgPoint.h"
+#include <cstdio>
+#include <utility>
+#include <string>
 
 //----------------------------------------------------------------------------
 
-/** Some hard-coded pattern matching routines to match patterns used by MoGo.
+/** Hard-coded pattern matching routines to match patterns used by MoGo.
     See <a href="http://hal.inria.fr/docs/00/11/72/66/PDF/MoGoReport.pdf">
     Modification of UCT with Patterns in Monte-Carlo Go</a>.
+    
+    In addition, a machine-learned gamma value for move urgency
+    is used in Fuego.
 
     The move is always in the center of the pattern or at the middle edge
     point (lower line) for edge patterns. The patterns are matched for both
@@ -56,16 +64,62 @@
     X . ?   ? X ?   ? X O    ? X O    ? X O
     O . ?   o . O   ? . ? B  ? . o W  O . X W
     @endverbatim */
+
+/** Hold gamma value and MoGo-pattern flag for one move. */
+class PatternInfo
+{
+public:
+    PatternInfo() : m_gammaValue(0.f), m_isPattern(false)
+    { }
+
+	void SetGammaValue(float value);
+
+	float GetGammaValue() const;
+
+	void SetIsPattern(bool is);
+
+	bool IsPattern() const;
+
+private:
+    float m_gammaValue;
+    
+    bool m_isPattern;
+};
+
 template<class BOARD>
 class GoUctPatterns
 {
 public:
+
+    enum PatternType
+    {
+        PATTERN_GLOBAL,
+        PATTERN_LOCAL
+    };
+
     GoUctPatterns(const BOARD& bd);
 
-    /** Match any of the patterns. */
+    GoUctPatterns(const BOARD& bd, PatternType patternType);
+
+    /** Match any of the standard MoGo patterns. */
     bool MatchAny(SgPoint p) const;
 
+    /** If matches any MoGo pattern, return true and lookup gamma value.*/
+    bool MatchAny(SgPoint p, float& gamma) const;
+
+	float GetPatternGamma(const BOARD& bd, const SgPoint p,
+			const SgBlackWhite toPlay) const;
+
+	/** provide interface of other gamma patterns*/
+	void InitializeGammaPatternFromProcessedData(PatternType patternType);
 private:
+	// Match any of the center patterns, and return gamma
+	float MatchAnyCenterForGamma(SgPoint p, const SgBlackWhite toPlay) const;
+    
+	// Match any of the edge patterns, and return gamma
+	float MatchAnyEdgeForGamma(SgPoint p, const SgBlackWhite toPlay) const;
+	/** The end of functions for Gamma patterns*/
+
     /** 3^5 = size of edge pattern table */
     static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
 
@@ -73,10 +127,10 @@ private:
     static const int GOUCT_POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
 
     /** See m_edgeTable. */
-    typedef SgArray<bool, GOUCT_POWER3_5> GoUctEdgePatternTable;
+    typedef SgArray<PatternInfo, GOUCT_POWER3_5> GoUctEdgePatternTable;
 
     /** See m_table. */
-    typedef SgArray<bool, GOUCT_POWER3_8> GoUctPatternTable;
+    typedef SgArray<PatternInfo, GOUCT_POWER3_8> GoUctPatternTable;
 
     const BOARD& m_bd;
 
@@ -129,9 +183,25 @@ private:
     /** Match any of the center patterns. */
     bool MatchAnyCenter(SgPoint p) const;
 
+    /** Match any of the center patterns, and put value to gamma*/
+    bool MatchAnyCenter(SgPoint p, float& gamma) const;
+
     /** Match any of the edge patterns. */
     bool MatchAnyEdge(SgPoint p) const;
+
+    /** Match any of the edge patterns, and put value to gamma */
+    bool MatchAnyEdge(SgPoint p, float& gammma) const;
 };
+
+template<class BOARD>
+GoUctPatterns<BOARD>::GoUctPatterns(const BOARD& bd, PatternType patternType)
+    : m_bd(bd)
+{
+    //must be initialized before MoGo-style patterns
+    InitializeGammaPatternFromProcessedData(patternType);
+    InitCenterPatternTable(m_table);
+    InitEdgePatternTable(m_edgeTable);
+}
 
 template<class BOARD>
 GoUctPatterns<BOARD>::GoUctPatterns(const BOARD& bd)
@@ -276,7 +346,10 @@ void GoUctPatterns<BOARD>::InitEdgePatternTable(
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            edgeTable[*it][i] = MatchAnyPattern(bd, p) ? 1 : 0;
+            if (MatchAnyPattern(bd, p))
+                edgeTable[*it][i].SetIsPattern(true);
+            else
+                edgeTable[*it][i].SetIsPattern(false);
         }
         while (count-- > 0)
             bd.Undo();
@@ -295,7 +368,10 @@ void GoUctPatterns<BOARD>::InitCenterPatternTable(
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            table[*it][i] = MatchAnyPattern(bd, p) ? 1 : 0;
+            if (MatchAnyPattern(bd, p))
+                table[*it][i].SetIsPattern(true);
+            else
+                table[*it][i].SetIsPattern(false);
         }
         while (count-- > 0)
             bd.Undo();
@@ -493,13 +569,14 @@ bool GoUctPatterns<BOARD>::MatchHane(const GoBoard& bd, SgPoint p,
 template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p) const
 {
-    return m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)];
+    return m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)].IsPattern();
 }
 
 template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p) const
 {
-    return m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
+    return
+        m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)].IsPattern();
 }
 
 template<class BOARD>
@@ -588,6 +665,150 @@ int GoUctPatterns<BOARD>::SetupCodedPosition(GoBoard& bd, int code)
     return count;
 }
 
-//----------------------------------------------------------------------------
+template<class BOARD>
+float GoUctPatterns<BOARD>::GetPatternGamma(const BOARD& bd,
+		const SgPoint p, const SgBlackWhite toPlay) const
+{
+    if (bd.Line(p) > 1)
+        return MatchAnyCenterForGamma(p, toPlay);
+    else if (bd.Pos(p) > 1)
+        return MatchAnyEdgeForGamma(p, toPlay);
+    else
+        return 0;
+}
 
+template<class BOARD>
+void GoUctPatterns<BOARD>
+	::InitializeGammaPatternFromProcessedData(PatternType patternType)
+{
+    m_table[SG_BLACK].Fill(PatternInfo());
+    m_table[SG_WHITE].Fill(PatternInfo());
+    m_edgeTable[SG_BLACK].Fill(PatternInfo());
+    m_edgeTable[SG_WHITE].Fill(PatternInfo());
+
+    if (patternType == PATTERN_LOCAL)
+    {
+        for (int i = 0; i < nuBlackEdgePatterns; ++i)
+        {
+            if (blackEdgePatternTable[i][0] != -1)
+                m_edgeTable[SG_BLACK][blackEdgePatternTable[i][0]].
+                	SetGammaValue(blackEdgePatternTable[i][1]);
+        }
+        for (int i = 0; i < nuBlackCenterPatterns; ++i)
+        {
+            if (blackCenterPatternTable[i][0] != -1)
+            m_table[SG_BLACK][blackCenterPatternTable[i][0]].
+            	SetGammaValue(blackCenterPatternTable[i][1]);
+        }
+        for (int i = 0; i < nuWhiteEdgePatterns; ++i)
+        {
+            if (whiteEdgePatternTable[i][0] != -1)
+            m_edgeTable[SG_WHITE][whiteEdgePatternTable[i][0]].
+            	SetGammaValue(whiteEdgePatternTable[i][1]);
+        }
+        for (int i = 0; i < nuWhiteCenterPatterns; ++i)
+        {
+            if (whiteCenterPatternTable[i][0] != -1)
+            m_table[SG_WHITE][whiteCenterPatternTable[i][0]].
+            	SetGammaValue(whiteCenterPatternTable[i][1]);
+        }
+    }
+    else
+    {
+    	SG_ASSERT(patternType == PATTERN_GLOBAL);
+        for (int i = 0; i < nuBlackGlobalEdgePatterns; ++i)
+        {
+            if (blackGlobalEdgePatternTable[i][0] != -1)
+            	m_edgeTable[SG_BLACK][blackGlobalEdgePatternTable[i][0]].
+                    SetGammaValue(blackGlobalEdgePatternTable[i][1]);
+        }
+        for (int i = 0; i < nuBlackGlobalCenterPatterns; ++i)
+        {
+            if (blackGlobalCenterPatternTable[i][0] != -1)
+                m_table[SG_BLACK][blackGlobalCenterPatternTable[i][0]].
+                	SetGammaValue(blackGlobalCenterPatternTable[i][1]);
+        }
+        for (int i = 0; i < nuWhiteGlobalEdgePatterns; ++i)
+        {
+            if (whiteGlobalEdgePatternTable[i][0] != -1)
+                m_edgeTable[SG_WHITE][whiteGlobalEdgePatternTable[i][0]].
+                	SetGammaValue(whiteGlobalEdgePatternTable[i][1]);
+        }
+        for (int i = 0; i < nuWhiteGlobalCenterPatterns; ++i)
+        {
+            if (whiteGlobalCenterPatternTable[i][0] != -1)
+            	m_table[SG_WHITE][whiteGlobalCenterPatternTable[i][0]].
+                	SetGammaValue(whiteGlobalCenterPatternTable[i][1]);
+        }
+    }
+}
+
+template<class BOARD>
+inline float GoUctPatterns<BOARD>::
+MatchAnyCenterForGamma(SgPoint p, const SgBlackWhite toPlay) const
+{
+    return m_table[toPlay][CodeOf8Neighbors(m_bd, p)].GetGammaValue();
+}
+
+template<class BOARD>
+inline float GoUctPatterns<BOARD>::
+MatchAnyEdgeForGamma(SgPoint p, const SgBlackWhite toPlay) const
+{
+    return m_edgeTable[toPlay][CodeOfEdgeNeighbors(m_bd, p)].GetGammaValue();
+}
+
+template<class BOARD>
+inline bool GoUctPatterns<BOARD>::MatchAny(SgPoint p, float& gamma) const
+{
+    // Quick refutation using the incremental neighbor counts of the board:
+    // all patterns have at least one adjacent stone
+    if (  m_bd.NumNeighbors(p, SG_BLACK) == 0
+       && m_bd.NumNeighbors(p, SG_WHITE) == 0
+       )
+        return false;
+    if (m_bd.Line(p) > 1)
+       return MatchAnyCenter(p, gamma);
+    else if (m_bd.Pos(p) > 1)
+        return MatchAnyEdge(p, gamma);
+    else
+        return false;
+}
+
+template<class BOARD>
+inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p, float& gamma) const
+{
+	const PatternInfo& pi = m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)];
+    gamma = pi.GetGammaValue();
+	return pi.IsPattern();
+}
+
+template<class BOARD>
+inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p, float& gamma) const
+{
+	const PatternInfo& pi = m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
+    gamma = pi.GetGammaValue();
+	return pi.IsPattern();
+}
+
+inline void PatternInfo::SetGammaValue(float value)
+{
+    m_gammaValue = value;
+}
+
+inline float PatternInfo::GetGammaValue() const
+{
+    return m_gammaValue;
+}
+
+inline void PatternInfo::SetIsPattern(bool is)
+{
+    m_isPattern = is;
+}
+
+inline bool PatternInfo::IsPattern() const
+{
+    return m_isPattern;
+}
+
+//----------------------------------------------------------------------------
 #endif // GOUCT_PATTERNS_H

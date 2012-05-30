@@ -27,10 +27,12 @@ GoUctCommands.h \
 GoUctDefaultPriorKnowledge.h \
 GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
+GoUctGlobalPatternData.h \
 GoUctGlobalSearch.h \
 GoUctKnowledge.h \
 GoUctLadderKnowledge.h \
 GoUctObjectWithSearch.h \
+GoUctPatternData.h \
 GoUctPatterns.h \
 GoUctPlayer.h \
 GoUctPlayoutPolicy.h \
