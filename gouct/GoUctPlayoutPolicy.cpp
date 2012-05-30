@@ -8,23 +8,23 @@
 #include <algorithm>
 #include <boost/io/ios_state.hpp>
 
-using namespace std;
-using boost::io::ios_all_saver;
-
 //----------------------------------------------------------------------------
 
 GoUctPlayoutPolicyParam::GoUctPlayoutPolicyParam()
     : m_statisticsEnabled(false),
       m_useNakadeHeuristic(false),
-      m_fillboardTries(0)
-{
-}
+      m_usePatternsInPlayout(true),
+      m_usePatternsInPriorKnowledge(true),
+      m_fillboardTries(0),
+      m_biasPatternGammaThreshold (50.f),
+      m_knowledgeType(KNOWLEDGE_GREENPEEP)
+{ }
 
 //----------------------------------------------------------------------------
 
 const char* GoUctPlayoutPolicyTypeStr(GoUctPlayoutPolicyType type)
 {
-    BOOST_STATIC_ASSERT(_GOUCT_NU_DEFAULT_PLAYOUT_TYPE == 11);
+    BOOST_STATIC_ASSERT(_GOUCT_NU_DEFAULT_PLAYOUT_TYPE == 13);
     switch (type)
     {
     case GOUCT_FILLBOARD:
@@ -39,6 +39,10 @@ const char* GoUctPlayoutPolicyTypeStr(GoUctPlayoutPolicyType type)
         return "LowLib";
     case GOUCT_PATTERN:
         return "Pattern";
+    case GOUCT_GAMMA_PATTERN:
+    	return "GammaPattern";
+    case GOUCT_REPLACE_CAPTURE:
+        return "ReplaceCapture";
     case GOUCT_CAPTURE:
         return "Capture";
     case GOUCT_RANDOM:
@@ -61,13 +65,13 @@ void GoUctPlayoutPolicyStat::Clear()
     m_nuMoves = 0;
     m_nonRandLen.Clear();
     m_moveListLen.Clear();
-    fill(m_nuMoveType.begin(), m_nuMoveType.end(), 0);
+    std::fill(m_nuMoveType.begin(), m_nuMoveType.end(), 0);
 }
 
 void GoUctPlayoutPolicyStat::Write(std::ostream& out) const
 {
-    ios_all_saver saver(out);
-    out << fixed << setprecision(2)
+    boost::io::ios_all_saver saver(out);
+    out << std::fixed << std::setprecision(2)
         << SgWriteLabel("NuMoves") << m_nuMoves << '\n';
     for (int i = 0; i < _GOUCT_NU_DEFAULT_PLAYOUT_TYPE; ++i)
     {

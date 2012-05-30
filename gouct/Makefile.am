@@ -27,6 +27,7 @@ GoUctCommands.h \
 GoUctDefaultPriorKnowledge.h \
 GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
+GoUctGammaMoveGenerator.h \
 GoUctGlobalPatternData.h \
 GoUctGlobalSearch.h \
 GoUctKnowledge.h \
