@@ -216,7 +216,8 @@ inline void SgSearchHashData::AgeData()
 }
 
 //----------------------------------------------------------------------------
-namespace SgSearchLimit {
+namespace SgSearchLimit
+{
     static const int MAX_DEPTH = 256;
 }
 
@@ -286,6 +287,7 @@ public:
     /** Convert move to string (game dependent). */
     virtual std::string MoveString(SgMove move) const = 0;
 
+    /** Set the player whose turn it is. */
     virtual void SetToPlay(SgBlackWhite toPlay) = 0;
 
     /** Hook function called at the beginning of a search.

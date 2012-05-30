@@ -10,8 +10,6 @@
 #include "GoGtpCommandUtil.h"
 #include "GoUctPlayer.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 FuegoMainEngine::FuegoMainEngine(int fixedBoardSize, const char* programPath,
@@ -29,8 +27,7 @@ FuegoMainEngine::FuegoMainEngine(int fixedBoardSize, const char* programPath,
 }
 
 FuegoMainEngine::~FuegoMainEngine()
-{
-}
+{ }
 
 void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
@@ -39,7 +36,7 @@ void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     m_safetyCommands.AddGoGuiAnalyzeCommands(cmd);
     m_autoBookCommands.AddGoGuiAnalyzeCommands(cmd);
     cmd << "string/Fuego License/fuego-license\n";
-    string response = cmd.Response();
+    std::string response = cmd.Response();
     cmd.SetResponse(GoGtpCommandUtil::SortResponseAnalyzeCommands(response));
 }
 
@@ -47,7 +44,7 @@ void FuegoMainEngine::CmdLicense(GtpCommand& cmd)
 {
     cmd << "\n" <<
         "Fuego " << FuegoMainUtil::Version() << "\n" <<
-        "Copyright (C) 2009-2011 by the authors of the Fuego project.\n"
+        "Copyright (C) 2009-2012 by the authors of the Fuego project.\n"
         "See http://fuego.sf.net for information about Fuego. Fuego comes\n"
         "with NO WARRANTY to the extent permitted by law. This program is\n"
         "free software; you can redistribute it and/or modify it under the\n"
