@@ -12,7 +12,10 @@
 #include <iostream>
 #include <limits>
 #include <list>
+#include <string>
 #include "SgTime.h"
+
+using namespace std;
 
 namespace SgDeterministic {
 
@@ -30,7 +33,6 @@ bool DeterministicMode()
 
 } // namespace SgDeterministic
 
-using namespace std;
 //----------------------------------------------------------------------------
 
 namespace {

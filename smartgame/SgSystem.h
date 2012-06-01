@@ -10,7 +10,6 @@
 #define SG_SYSTEM_H
 
 //----------------------------------------------------------------------------
-
 // Used by GNU Autotools
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -22,8 +21,7 @@
     This function is more portable than using a \#pragma directive. */
 template <class T>
 inline void SG_UNUSED(const T&)
-{
-}
+{ }
 
 /** Avoid compiler warnings for variables used only if NDEBUG is not defined.
     This macro is more portable than using a \#pragma directive. */
