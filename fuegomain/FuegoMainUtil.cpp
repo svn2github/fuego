@@ -51,16 +51,16 @@ void FuegoMainUtil::LoadBook(GoBook& book,
                              const boost::filesystem::path& programDir)
 {
     const string fileName = "book.dat";
+    #ifdef ABS_TOP_SRCDIR
+        if (LoadBookFile(book, path(ABS_TOP_SRCDIR) / "book" / fileName))
+            return;
+    #endif
     if (LoadBookFile(book, programDir / fileName))
         return;
-#ifdef ABS_TOP_SRCDIR
-    if (LoadBookFile(book, path(ABS_TOP_SRCDIR) / "book" / fileName))
-        return;
-#endif
-#if defined(DATADIR) && defined(PACKAGE)
-    if (LoadBookFile(book, path(DATADIR) / PACKAGE / fileName))
-        return;
-#endif
+    #if defined(DATADIR) && defined(PACKAGE)
+        if (LoadBookFile(book, path(DATADIR) / PACKAGE / fileName))
+            return;
+    #endif
     throw SgException("Could not find opening book.");
 }
 
