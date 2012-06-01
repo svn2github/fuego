@@ -19,8 +19,7 @@
 enum KnowledgeType
 {
     KNOWLEDGE_GREENPEEP,
-    KNOWLEDGE_RULEBASED,
-    KNOWLEDGE_BOTH
+    KNOWLEDGE_RULEBASED
 };
 
 /** Parameters for GoUctPlayoutPolicy. */
@@ -53,10 +52,10 @@ public:
         Default is 0 */
     int m_fillboardTries;
 
-    /** Pattern Gamma Threshold of Bias Pattern*/
-    float m_biasPatternGammaThreshold;
+    /** Lower threshold of gamma values for which patterns to select */
+    float m_patternGammaThreshold;
 
-    /** Parameter to control knowledge type in GoUctKnowledgeFactory */
+    /** To select knowledge type in GoUctKnowledgeFactory */
     KnowledgeType m_knowledgeType;
 
     GoUctPlayoutPolicyParam();
@@ -399,13 +398,13 @@ void GoUctPlayoutPolicy<BOARD>::CaptureGenerator::Generate(GoPointList& moves)
 
 template<class BOARD>
 GoUctPlayoutPolicy<BOARD>::GoUctPlayoutPolicy(const BOARD& bd,
-                                        const GoUctPlayoutPolicyParam& param)
+    const GoUctPlayoutPolicyParam& param)
     : m_bd(bd),
       m_param(param),
       m_patterns(bd, GoUctPatterns<BOARD>::PATTERN_LOCAL),
       m_globalPatterns(bd, GoUctPatterns<BOARD>::PATTERN_GLOBAL),
       m_checked(false),
-      m_gammaGenerator(bd, param.m_biasPatternGammaThreshold,
+      m_gammaGenerator(bd, param.m_patternGammaThreshold,
                        m_patterns, m_random),
       m_captureGenerator(bd),
       m_pureRandomGenerator(bd, m_random)

@@ -16,7 +16,7 @@ GoUctPlayoutPolicyParam::GoUctPlayoutPolicyParam()
       m_usePatternsInPlayout(true),
       m_usePatternsInPriorKnowledge(true),
       m_fillboardTries(0),
-      m_biasPatternGammaThreshold (50.f),
+      m_patternGammaThreshold(50.f),
       m_knowledgeType(KNOWLEDGE_GREENPEEP)
 { }
 
