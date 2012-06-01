@@ -5,16 +5,11 @@
 #ifndef GOUCTGAMMAMOVEGENERATOR_H
 #define GOUCTGAMMAMOVEGENERATOR_H
 
-#include <boost/array.hpp>
 #include <iostream>
-#include <vector>
-#include "SgSystem.h"
-#include "GoBoard.h"
-#include "SgWrite.h"
 #include "GoBoardUtil.h"
-#include "GoUctUtil.h"
-#include "GoEyeUtil.h"
 #include "GoUctPatterns.h"
+#include "GoUctUtil.h"
+#include "SgWrite.h"
 
 template<class BOARD>
 class GoUctGammaMoveGenerator
@@ -37,7 +32,7 @@ public:
     void WriteMovesAndGammas(std::ostream& stream) const;
 
 private:
-    //generate pattern moves with gamme values
+    /** generate pattern moves with gamma values */
     bool GenerateAllPatternMoves();
     
     void GeneratePatternMove(SgPoint p);
