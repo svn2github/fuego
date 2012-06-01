@@ -16,7 +16,34 @@
 #include <sys/sysctl.h>
 #endif
 
-using namespace std;
+//----------------------------------------------------------------------------
+/** The program directory. Used for finding data files */
+boost::filesystem::path s_programDir;
+
+/** The top-level source directory (fuego). Used for finding data files */
+boost::filesystem::path s_topSourceDir;
+
+//----------------------------------------------------------------------------
+
+const boost::filesystem::path& SgPlatform::GetProgramDir()
+{
+	return s_programDir;
+}
+
+void SgPlatform::SetProgramDir(const boost::filesystem::path& dir)
+{
+    s_programDir = dir;
+}
+
+const boost::filesystem::path& SgPlatform::GetTopSourceDir()
+{
+	return s_topSourceDir;
+}
+
+void SgPlatform::SetTopSourceDir(const boost::filesystem::path& dir)
+{
+    s_topSourceDir = dir;
+}
 
 //----------------------------------------------------------------------------
 
