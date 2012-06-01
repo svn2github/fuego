@@ -16,9 +16,9 @@ class GoUctGammaMoveGenerator
 {
 public:
     GoUctGammaMoveGenerator(const BOARD& bd,
-            float biasPatternGammaThreshold,
+            float patternGammaThreshold,
             GoUctPatterns<BOARD>& patterns,
-            SgRandom& rand);
+            SgRandom& randomGenerator);
 
     /** Generate move with probability according to gamma values */
     SgPoint GenerateBiasedPatternMove();
@@ -32,18 +32,20 @@ public:
     void WriteMovesAndGammas(std::ostream& stream) const;
 
 private:
-    /** generate pattern moves with gamma values */
+    /** Generate pattern moves with gamma values */
     bool GenerateAllPatternMoves();
     
+    /** Generate pattern move on point p (near last move) */
     void GeneratePatternMove(SgPoint p);
     
+    /** Generate pattern move on point p (near 2nd last move) */
     void GeneratePatternMove2(SgPoint p, SgPoint lastMove);
     
     SgPoint SelectAccordingToGammas();
 
     const BOARD& m_bd;
 
-    float m_biasPatternGammaThreshold;
+    float m_patternGammaThreshold;
 
     GoUctPatterns<BOARD>& m_patterns;
 
@@ -92,11 +94,11 @@ inline int GoUctGammaMoveGenerator<BOARD>::NuMoves() const
 template<class BOARD>
 GoUctGammaMoveGenerator<BOARD>::GoUctGammaMoveGenerator(
                                     const BOARD& bd,
-                                    float biasPatternGammaThreshold,
+                                    float patternGammaThreshold,
                                     GoUctPatterns<BOARD>& patterns, 
                                     SgRandom& random) 
 	: m_bd(bd),
-      m_biasPatternGammaThreshold(biasPatternGammaThreshold),
+        m_patternGammaThreshold(patternGammaThreshold),
       m_patterns(patterns),
       m_random(random)
 { }
@@ -139,7 +141,7 @@ bool GoUctGammaMoveGenerator<BOARD>::GenerateAllPatternMoves()
         if (! GoUctUtil::GeneratePoint(m_bd, p, m_bd.ToPlay()))
             continue;
         m_movesGammas.PushBack(p);
-        if (m_gammas[i] > m_biasPatternGammaThreshold)
+        if (m_gammas[i] > m_patternGammaThreshold)
             sum += m_gammas[i];
         else
             sum += 1.f;
