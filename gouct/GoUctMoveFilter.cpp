@@ -6,12 +6,9 @@
 #include "SgSystem.h"
 #include "GoUctMoveFilter.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoUctMoveFilter::~GoUctMoveFilter()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
