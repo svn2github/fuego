@@ -6,8 +6,6 @@
 #define GOUCT_KNOWLEDGE_H
 
 #include "GoBoard.h"
-//#include "GoUctPlayoutPolicy.h"
-//#include "SgUctSearch.h"
 #include "SgUctTree.h"
 #include "SgUctValue.h"
 
@@ -69,7 +67,6 @@ inline void GoUctKnowledge::Clear(SgPoint move)
 {
     m_values[move].Clear();
 }
-
 
 //----------------------------------------------------------------------------
 
