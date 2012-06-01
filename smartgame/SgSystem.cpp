@@ -12,7 +12,6 @@
 #include <iostream>
 #include <limits>
 #include <list>
-#include <string>
 #include "SgTime.h"
 
 using namespace std;
