@@ -1,9 +1,12 @@
 FILES="\
+competitions.html \
+exhibition-games.html \
 favicon.ico \
 fuego-screenshot.html \
 fuego-screenshot.jpg \
 fuego-screenshot-thumb.jpg \
 index.html \
+publications.html \
 "
 
 echo "Enter user id for SourceForge:"
