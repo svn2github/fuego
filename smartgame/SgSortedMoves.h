@@ -29,7 +29,10 @@ public:
     explicit SgSortedMoves(int maxNuMoves);
 
     /**  */
-    void CheckOverflow() {m_checkOverflow = true;}
+    void CheckOverflow()
+    {
+    	m_checkOverflow = true;
+    }
 
     /**  */
     void Clear();

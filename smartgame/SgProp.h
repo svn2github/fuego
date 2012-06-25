@@ -164,7 +164,9 @@ public:
         the list. */
     void Remove(SgPropID id, const SgProp* protectProp);
 
-    void RemoveProp(SgPropID id) { Remove(id, 0); }
+    /** Remove any properties that match 'id' from this list, and
+        dispose them */
+    void RemoveProp(SgPropID id);
 
     /** Add the move annotations at the end of '*string'.
         !! very good move SG_PROP_GOOD_MOVE[2] <br>
@@ -192,6 +194,11 @@ private:
 inline bool SgPropList::IsEmpty() const
 {
     return m_list.IsEmpty();
+}
+
+inline void SgPropList::RemoveProp(SgPropID id)
+{
+    Remove(id, 0);
 }
 
 //----------------------------------------------------------------------------

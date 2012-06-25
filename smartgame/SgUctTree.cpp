@@ -213,11 +213,12 @@ SgUctProvenType SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
     if (! node.HasChildren())
         return node.ProvenType();
 
-    if (node.MoveCount() < minCount) {
-        if (! node.IsProven() || ! alwaysKeepProven) {
-            targetNode.SetProvenType(SG_NOT_PROVEN);
-            return SG_NOT_PROVEN;
-        }
+    if (  node.MoveCount() < minCount
+       && (! node.IsProven() || ! alwaysKeepProven)
+       )
+    {
+        targetNode.SetProvenType(SG_NOT_PROVEN);
+        return SG_NOT_PROVEN;
     }
             
     SgUctAllocator& targetAllocator = target.Allocator(currentAllocatorId);
@@ -276,11 +277,11 @@ SgUctProvenType SgUctTree::CopySubtree(SgUctTree& target, SgUctNode& targetNode,
                                       minCount, currentAllocatorId,
                                       warnTruncate, abort, timer,
                                       maxTime, alwaysKeepProven);
-        if (childProvenType == SG_PROVEN_LOSS) {
+        if (childProvenType == SG_PROVEN_LOSS)
             parentProvenType = SG_PROVEN_WIN;
-        } else if (parentProvenType != SG_PROVEN_WIN && childProvenType == SG_NOT_PROVEN) {
+        else if (  parentProvenType != SG_PROVEN_WIN
+                && childProvenType == SG_NOT_PROVEN)
             parentProvenType = SG_NOT_PROVEN;
-        }
     }
     targetNode.SetProvenType(parentProvenType);
     return parentProvenType;

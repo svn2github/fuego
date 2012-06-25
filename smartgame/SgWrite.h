@@ -66,12 +66,12 @@ std::ostream& operator<<(std::ostream& out, const SgWritePointList& write);
 
 //----------------------------------------------------------------------------
 
-/** Output a SgSList with SgPoint elements to a stream. */
+/** Output a SgArrayList with SgPoint elements to a stream. */
 template<int SIZE>
 class SgWriteSPointList
 {
 public:
-    SgWriteSPointList(const SgArrayList<SgPoint,SIZE>& list,
+    SgWriteSPointList(const SgArrayList<SgPoint, SIZE>& list,
                       std::string label = "", bool writeSize = true);
 
     std::ostream& Write(std::ostream& out) const;
@@ -96,8 +96,7 @@ SgWriteSPointList<SIZE>::SgWriteSPointList(
     : m_writeSize(writeSize),
       m_list(list),
       m_label(label)
-{
-}
+{ }
 
 template<int SIZE>
 std::ostream& SgWriteSPointList<SIZE>::Write(std::ostream& out) const
@@ -154,7 +153,8 @@ public:
 class SgWriteBoolean
 {
 public:
-    explicit SgWriteBoolean(bool value) : m_value(value) {}
+    explicit SgWriteBoolean(bool value) : m_value(value)
+    { }
 
 private:
     friend std::ostream& operator<<(std::ostream& out,

@@ -38,7 +38,8 @@ class SgStrategy
 public:
     SgStrategy(SgBlackWhite player);
     
-    virtual ~SgStrategy() {}
+    virtual ~SgStrategy()
+    { }
 
     /** See m_player */
     SgBlackWhite Player() const

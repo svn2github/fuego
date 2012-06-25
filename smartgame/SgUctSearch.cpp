@@ -267,7 +267,9 @@ SgUctSearch::SgUctSearch(SgUctThreadStateFactory* threadStateFactory,
       m_pruneMinCount(16),
       m_moveRange(moveRange),
       m_maxGameLength(numeric_limits<size_t>::max()),
-      m_expandThreshold(numeric_limits<SgUctValue>::is_integer ? (SgUctValue)1 : numeric_limits<SgUctValue>::epsilon()),
+      m_expandThreshold(numeric_limits<SgUctValue>::is_integer ?
+                        SgUctValue(1) : 
+                        numeric_limits<SgUctValue>::epsilon()),
       m_biasTermConstant(0.7f),
       m_biasTermFrequency(1),
       m_biasTermDepth(0),
@@ -427,8 +429,8 @@ void SgUctSearch::CreateThreads()
     DeleteThreads();
     for (unsigned int i = 0; i < m_numberThreads; ++i)
     {
-        auto_ptr<SgUctThreadState> state(
-                                      m_threadStateFactory->Create(i, *this));
+        auto_ptr<SgUctThreadState>
+        state(m_threadStateFactory->Create(i, *this));
         shared_ptr<Thread> thread(new Thread(*this, state));
         m_threads.push_back(thread);
     }
@@ -516,7 +518,7 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
         switch (m_moveSelect)
         {
         case SG_UCTMOVESELECT_VALUE:
-            value = InverseEstimate((SgUctValue)child.Mean());
+            value = InverseEstimate(SgUctValue(child.Mean()));
             break;
         case SG_UCTMOVESELECT_COUNT:
             value = child.MoveCount();
@@ -637,7 +639,7 @@ SgUctValue SgUctSearch::GetValueEstimate(bool useRave, const SgUctNode& child) c
     if (uctStats.IsDefined())
     {
         SgUctValue weight = SgUctValue(uctStats.Count());
-        value += weight * InverseEstimate((SgUctValue)uctStats.Mean());
+        value += weight * InverseEstimate(SgUctValue(uctStats.Mean()));
         weightSum += weight;
         hasValue = true;
     }
@@ -983,9 +985,7 @@ bool SgUctSearch::PlayInTree(SgUctThreadState& state, bool& isTerminal)
     while (true)
     {
         if (m_biasTermDepth > 0 && sequence.size() == m_biasTermDepth)
-        {
             useBiasTerm = false;
-        }
         if (sequence.size() == m_maxGameLength)
             return false;
         if (current->IsProven())
@@ -1362,8 +1362,8 @@ void SgUctSearch::StartSearch(const vector<SgMove>& rootFilter,
         // machine, because the time, while threads are waiting for a lock
         // does not contribute to the cputime.
         SgWarning() << "SgUctSearch: using cpu time with multiple threads\n";
-    m_raveWeightParam1 = (SgUctValue)(1.0 / m_raveWeightInitial);
-    m_raveWeightParam2 = (SgUctValue)(1.0 / m_raveWeightFinal);
+    m_raveWeightParam1 = SgUctValue(1.0 / m_raveWeightInitial);
+    m_raveWeightParam2 = SgUctValue(1.0 / m_raveWeightFinal);
     if (initTree == 0)
         m_tree.Clear();
     else

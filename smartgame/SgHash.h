@@ -26,13 +26,15 @@ template<int N>
 class SgHash
 {
 public:
-    /** Costruct hash code initialized with zero. */
-    SgHash() {}
+    /** Construct hash code initialized with zero. */
+    SgHash()
+    { }
 
     /** Construct hash code from integer index */
     SgHash(unsigned int key);
 
-    ~SgHash() {}
+    ~SgHash()
+    { }
 
     /** Reinitialize the hash code.
         Caution: after Clear() hash code matches code of empty board. */
@@ -178,7 +180,7 @@ template<int N>
 unsigned int SgHash<N>::GetWord() const
 {
     static const std::bitset<N> mask(0xffffffffUL);
-    return (unsigned int)((m_code & mask).to_ulong());
+    return static_cast<unsigned int>((m_code & mask).to_ulong());
 }
 
 template<int N>
@@ -307,7 +309,7 @@ public:
 private:
     static SgHashZobrist m_globalTable;
 
-    SgArray<SgHash<N>,MAX_HASH_INDEX> m_hash;
+    SgArray<SgHash<N>, MAX_HASH_INDEX> m_hash;
 };
 
 /** For backwards compatibility */

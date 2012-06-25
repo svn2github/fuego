@@ -26,11 +26,13 @@ public:
 
     SgProbCut();
 
-    struct Cutoff {
+    struct Cutoff
+    {
         float a, b, sigma;
         int shallow, deep;
 
-        Cutoff() : shallow(-1), deep(-1) {}
+        Cutoff() : shallow(-1), deep(-1)
+        { }
     };
 
     void AddCutoff(const Cutoff &c);
@@ -61,7 +63,8 @@ inline SgProbCut::SgProbCut()
 {
     m_threshold = 1.0;
     m_enabled = false;
-    for (int i = 0; i < MAX_PROBCUT + 1; ++i) m_cutoff_sizes[i] = 0;
+    for (int i = 0; i < MAX_PROBCUT + 1; ++i)
+    	m_cutoff_sizes[i] = 0;
 }
 
 inline void SgProbCut::AddCutoff(const Cutoff &c)
@@ -73,8 +76,10 @@ inline void SgProbCut::AddCutoff(const Cutoff &c)
 
 inline bool SgProbCut::GetCutoff(int deep, int index, Cutoff &cutoff)
 {
-    if (deep > MAX_PROBCUT) return false;
-    if (index >= m_cutoff_sizes[deep]) return false;
+    if (deep > MAX_PROBCUT)
+    	return false;
+    if (index >= m_cutoff_sizes[deep])
+    	return false;
     cutoff = m_cutoffs[deep][index];
     return true;
 }
