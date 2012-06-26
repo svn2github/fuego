@@ -23,8 +23,10 @@
 #include "SgInit.h"
 #include "SgPlatform.h"
 
-using namespace std;
 using boost::filesystem::path;
+using std::ostream;
+using std::string;
+using std::vector;
 namespace po = boost::program_options;
 
 //----------------------------------------------------------------------------
@@ -34,9 +36,11 @@ namespace {
 /** @name Settings from command line options */
 // @{
 
-bool g_noHandicap = false;
-
+/** Do not use opening book */
 bool g_noBook = false;
+
+/** Do not allow handicap games */
+bool g_noHandicap = false;
 
 bool g_quiet = false;
 
@@ -125,10 +129,10 @@ void ParseOptions(int argc, char** argv)
     }
     catch (...)
     {
-        Help(normalOptions, cerr);
+        Help(normalOptions, std::cerr);
     }
     if (vm.count("help"))
-        Help(normalOptions, cout);
+        Help(normalOptions, std::cout);
     if (vm.count("nobook"))
         g_noBook = true;
     if (vm.count("nohandicap"))
@@ -190,19 +194,19 @@ int main(int argc, char** argv)
             for (size_t i = 0; i < g_inputFiles.size(); i++)
             {
                 string file = g_inputFiles[i];
-                ifstream fin(file.c_str());
+                std::ifstream fin(file.c_str());
                 if (! fin)
                     throw SgException(boost::format("Error file '%1%'") 
                     				  % file);
                 GtpInputStream in(fin);
-                GtpOutputStream out(cout);
+                GtpOutputStream out(std::cout);
                 engine.MainLoop(in, out);
             }
         }
         else
         {
-            GtpInputStream in(cin);
-            GtpOutputStream out(cout);
+            GtpInputStream in(std::cin);
+            GtpOutputStream out(std::cout);
             engine.MainLoop(in, out);
         }
     }
