@@ -30,6 +30,14 @@ public:
 private:
     GoUctCommands m_uctCommands;
 
+    /** A GoUctPlayer player has two template parameters: its search class
+    	and its search state class. The search class GoUctGlobalSearch
+        used has two more template parameters: policy and policy factory.
+        Here, they are GoUctPlayoutPolicy and GoUctPlayoutPolicyFactory
+        The search state uses the same policy class GoUctPlayoutPolicy.
+        Both GoUctPlayoutPolicy and GoUctPlayoutPolicyFactory take the
+        Go board as a template argument - GoUctBoard here.
+    */
     typedef GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                     GoUctPlayoutPolicyFactory<GoUctBoard> >,
                     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> > >

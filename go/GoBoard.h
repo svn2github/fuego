@@ -511,8 +511,7 @@ private:
     class Block
     {
     public:
-        /** Upper limit for liberties.
-            Proof? */
+        /** Upper limit for liberties. @todo Proof? */
         static const int MAX_LIBERTIES = (SG_MAX_SIZE / 3) * 2 * SG_MAX_SIZE;
 
         typedef SgArrayList<SgPoint,MAX_LIBERTIES> LibertyList;
@@ -521,17 +520,36 @@ private:
 
         typedef GoPointList::Iterator StoneIterator;
 
-        SgPoint Anchor() const { return m_anchor; }
+        SgPoint Anchor() const
+        {
+            return m_anchor;
+        }
 
-        void UpdateAnchor(SgPoint p) { if (p < m_anchor) m_anchor = p; }
+        void UpdateAnchor(SgPoint p)
+        {
+        	if (p < m_anchor)
+            	m_anchor = p;
+        }
 
-        void AppendLiberty(SgPoint p) { m_liberties.PushBack(p); }
+        void AppendLiberty(SgPoint p)
+        {
+        	m_liberties.PushBack(p);
+        }
 
-        void AppendStone(SgPoint p) { m_stones.PushBack(p); }
+        void AppendStone(SgPoint p)
+        {
+        	m_stones.PushBack(p);
+        }
 
-        SgBlackWhite Color() const { return m_color; }
+        SgBlackWhite Color() const
+        {
+        	return m_color;
+        }
 
-        void ExcludeLiberty(SgPoint p) { m_liberties.Exclude(p); }
+        void ExcludeLiberty(SgPoint p)
+        {
+        	m_liberties.Exclude(p);
+        }
 
         void Init(SgBlackWhite c, SgPoint anchor)
         {
@@ -553,17 +571,35 @@ private:
             m_liberties = liberties;
         }
 
-        const LibertyList& Liberties() const { return m_liberties; }
+        const LibertyList& Liberties() const
+        {
+        	return m_liberties;
+        }
 
-        int NumLiberties() const { return m_liberties.Length(); }
+        int NumLiberties() const
+        {
+        	return m_liberties.Length();
+        }
 
-        int NumStones() const { return m_stones.Length(); }
+        int NumStones() const
+        {
+        	return m_stones.Length();
+        }
 
-        void PopStone() { m_stones.PopBack(); }
+        void PopStone()
+        {
+        	m_stones.PopBack();
+        }
 
-        void SetAnchor(SgPoint p) { m_anchor = p; }
+        void SetAnchor(SgPoint p)
+        {
+        	m_anchor = p;
+        }
 
-        const GoPointList& Stones() const { return m_stones; }
+        const GoPointList& Stones() const
+        {
+        	return m_stones;
+        }
 
     private:
         SgPoint m_anchor;
@@ -645,9 +681,9 @@ private:
 
         SgPoint m_oldAnchor;
 
-        SgArrayList<SgPoint,4> m_newLibs;
+        SgArrayList<SgPoint, 4> m_newLibs;
 
-        SgArrayList<Block*,4> m_merged;
+        SgArrayList<Block*, 4> m_merged;
 
         //@}
 
@@ -677,7 +713,7 @@ private:
 
         Block* m_suicide;
 
-        SgArrayList<Block*,4> m_killed;
+        SgArrayList<Block*, 4> m_killed;
         //@}
     };
 
@@ -701,7 +737,7 @@ private:
 
         SgPointSet m_empty;
 
-        SgArray<Block*,SG_MAXPOINT> m_block;
+        SgArray<Block*, SG_MAXPOINT> m_block;
 
         /** Number of prisoners of each color */
         SgBWArray<int> m_prisoners;
@@ -716,13 +752,13 @@ private:
         SgArray<int,SG_MAXPOINT> m_color;
 
         /** Number of black and white neighbors. */
-        SgArray<int,SG_MAXPOINT> m_nuNeighborsEmpty;
+        SgArray<int, SG_MAXPOINT> m_nuNeighborsEmpty;
 
         /** Number of black and white neighbors. */
-        SgBWArray<SgArray<int,SG_MAXPOINT> > m_nuNeighbors;
+        SgBWArray<SgArray<int, SG_MAXPOINT> > m_nuNeighbors;
 
         /** Flag if point has not been modified yet. */
-        SgArray<bool,SG_MAXPOINT> m_isFirst;
+        SgArray<bool, SG_MAXPOINT> m_isFirst;
 
         /** Flag if position is definitely new (no possibility of repetition),
             set to true when move is played at any point for the first time,
@@ -767,7 +803,7 @@ private:
 
     /** Block data (stored in a stack).
         Maximum number: A move can create zero or one new block. */
-    SgArrayList<Block,GO_MAX_NUM_MOVES>* m_blockList;
+    SgArrayList<Block, GO_MAX_NUM_MOVES>* m_blockList;
 
     // The following members are mutable since they're used while computing
     // stones and liberties, but are either restored to their previous setting
@@ -790,9 +826,9 @@ private:
     /** m_koLoser can never become m_koColor. */
     SgEmptyBlackWhite m_koLoser;
 
-    SgArray<bool,SG_MAXPOINT> m_isBorder;
+    SgArray<bool, SG_MAXPOINT> m_isBorder;
 
-    SgArrayList<StackEntry,GO_MAX_NUM_MOVES>* m_moves;
+    SgArrayList<StackEntry, GO_MAX_NUM_MOVES>* m_moves;
 
     static bool IsPass(SgPoint p);
 
@@ -819,9 +855,9 @@ private:
 
     void CreateSingleStoneBlock(SgPoint p, SgBlackWhite c);
 
-    SgArrayList<Block*,4> GetAdjacentBlocks(SgPoint p) const;
+    SgArrayList<Block*, 4> GetAdjacentBlocks(SgPoint p) const;
 
-    SgArrayList<Block*,4> GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const;
+    SgArrayList<Block*, 4> GetAdjacentBlocks(SgPoint p, SgBlackWhite c) const;
 
     void InitBlock(GoBoard::Block& block, SgBlackWhite c, SgPoint anchor);
 
