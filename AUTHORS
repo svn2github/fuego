@@ -3,6 +3,7 @@ Fuego authors
 
 Martin Mueller
 Markus Enzenberger
+Fan Xie
 
 Previous authors
 ================
@@ -14,5 +15,9 @@ Contributors
 
 David Silver (SpDumbTactic player, improvements to SgHash)
 Xiaozhen Niu (parts of GoRegionUtil, GoSafetyUtil)
-Broderick Arneson
-Richard Segal
+Broderick Arneson (autobook)
+Richard Segal (improvements to parallel search)
+Chris Rosin (additive knowledge, Greenpeep-style patterns)
+Timothy Yau (Greenpeep-style patterns)
+Saradha Sankaran
+Aja Huang

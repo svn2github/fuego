@@ -8,9 +8,17 @@ history.
 Current development version
 ===========================
 
+* Support for additive knowedge term in UCT child selection formula
+* Use Greenpeep-style patterns for "additive" knowledge in tree
+* Use learned 3x3 pattern weights to bias selection of MoGo-style patterns
+* Extend search if most-simulated and highest-percentage move differ
 * Deterministic mode to make search results reproducible
 * Fixed bugs for handling negative (reverse) komi
 * Support both boost filesystem v2 and v3
+* Capture instead of connecting on false-eye point in playouts
+* More efficient hash table using four probes
+* setup-build.sh script for easier creation of separate dbg, opt bullds
+* Improved ladder prior knowledge
 
 Version 1.1 - 2011 Mar 13
 =========================
