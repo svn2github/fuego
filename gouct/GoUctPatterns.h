@@ -8,6 +8,7 @@
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoUctGlobalPatternData.h"
+#include "GoUctLocalPatternData.h"
 #include "GoUctPatternData.h"
 #include "SgBoardColor.h"
 #include "SgBWArray.h"
@@ -113,13 +114,16 @@ public:
 	/** provide interface of other gamma patterns*/
 	void InitializeGammaPatternFromProcessedData(PatternType patternType);
 private:
-	// Match any of the center patterns, and return gamma
+	/** Match any of the center patterns, and return gamma */
 	float MatchAnyCenterForGamma(SgPoint p, const SgBlackWhite toPlay) const;
     
-	// Match any of the edge patterns, and return gamma
+	/** Match any of the edge patterns, and return gamma */
 	float MatchAnyEdgeForGamma(SgPoint p, const SgBlackWhite toPlay) const;
-	/** The end of functions for Gamma patterns*/
 
+	/** Copy gamma values from pt into table */
+    template<class TABLE>
+    void SetGammaValues(const GoUctPatternData::BWTable& pt, TABLE& table);
+    
     /** 3^5 = size of edge pattern table */
     static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
 
@@ -678,6 +682,24 @@ float GoUctPatterns<BOARD>::GetPatternGamma(const BOARD& bd,
 }
 
 template<class BOARD>
+template<class TABLE>
+void GoUctPatterns<BOARD>
+	::SetGammaValues(const GoUctPatternData::BWTable& pt, TABLE& table)
+{
+    for (SgBWIterator it; it; ++it)
+    {
+        const SgBlackWhite color = *it;
+        for (int i = 0; i < pt[color].m_nuPatterns; ++i)
+        {
+            const int code = pt[color].m_patternArray[i].m_code;
+            if (code != -1)
+                table[color][code].
+                SetGammaValue(pt[color].m_patternArray[i].m_value);
+        }
+	}
+}
+
+template<class BOARD>
 void GoUctPatterns<BOARD>
 	::InitializeGammaPatternFromProcessedData(PatternType patternType)
 {
@@ -686,61 +708,11 @@ void GoUctPatterns<BOARD>
     m_edgeTable[SG_BLACK].Fill(PatternInfo());
     m_edgeTable[SG_WHITE].Fill(PatternInfo());
 
-    if (patternType == PATTERN_LOCAL)
-    {
-        for (int i = 0; i < nuBlackEdgePatterns; ++i)
-        {
-            if (blackEdgePatternTable[i][0] != -1)
-                m_edgeTable[SG_BLACK][blackEdgePatternTable[i][0]].
-                	SetGammaValue(blackEdgePatternTable[i][1]);
-        }
-        for (int i = 0; i < nuBlackCenterPatterns; ++i)
-        {
-            if (blackCenterPatternTable[i][0] != -1)
-            m_table[SG_BLACK][blackCenterPatternTable[i][0]].
-            	SetGammaValue(blackCenterPatternTable[i][1]);
-        }
-        for (int i = 0; i < nuWhiteEdgePatterns; ++i)
-        {
-            if (whiteEdgePatternTable[i][0] != -1)
-            m_edgeTable[SG_WHITE][whiteEdgePatternTable[i][0]].
-            	SetGammaValue(whiteEdgePatternTable[i][1]);
-        }
-        for (int i = 0; i < nuWhiteCenterPatterns; ++i)
-        {
-            if (whiteCenterPatternTable[i][0] != -1)
-            m_table[SG_WHITE][whiteCenterPatternTable[i][0]].
-            	SetGammaValue(whiteCenterPatternTable[i][1]);
-        }
-    }
-    else
-    {
-    	SG_ASSERT(patternType == PATTERN_GLOBAL);
-        for (int i = 0; i < nuBlackGlobalEdgePatterns; ++i)
-        {
-            if (blackGlobalEdgePatternTable[i][0] != -1)
-            	m_edgeTable[SG_BLACK][blackGlobalEdgePatternTable[i][0]].
-                    SetGammaValue(blackGlobalEdgePatternTable[i][1]);
-        }
-        for (int i = 0; i < nuBlackGlobalCenterPatterns; ++i)
-        {
-            if (blackGlobalCenterPatternTable[i][0] != -1)
-                m_table[SG_BLACK][blackGlobalCenterPatternTable[i][0]].
-                	SetGammaValue(blackGlobalCenterPatternTable[i][1]);
-        }
-        for (int i = 0; i < nuWhiteGlobalEdgePatterns; ++i)
-        {
-            if (whiteGlobalEdgePatternTable[i][0] != -1)
-                m_edgeTable[SG_WHITE][whiteGlobalEdgePatternTable[i][0]].
-                	SetGammaValue(whiteGlobalEdgePatternTable[i][1]);
-        }
-        for (int i = 0; i < nuWhiteGlobalCenterPatterns; ++i)
-        {
-            if (whiteGlobalCenterPatternTable[i][0] != -1)
-            	m_table[SG_WHITE][whiteGlobalCenterPatternTable[i][0]].
-                	SetGammaValue(whiteGlobalCenterPatternTable[i][1]);
-        }
-    }
+    const GoUctPatternData::PatternData& pt = patternType == PATTERN_LOCAL ?
+                                              GoUctLocalPatternData::gData :
+                                              GoUctGlobalPatternData::gData;
+    SetGammaValues(pt.m_edgePatterns, m_edgeTable);
+    SetGammaValues(pt.m_centerPatterns, m_table);
 }
 
 template<class BOARD>

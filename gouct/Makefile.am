@@ -3,6 +3,7 @@ noinst_LIBRARIES = libfuego_gouct.a
 libfuego_gouct_a_SOURCES = \
 GoUctAdditiveKnowledge.cpp \
 GoUctAdditiveKnowledgeFuego.cpp \
+GoUctAdditiveKnowledgeGreenpeep.cpp \
 GoUctBoard.cpp \
 GoUctCommands.cpp \
 GoUctDefaultPriorKnowledge.cpp \
@@ -10,6 +11,7 @@ GoUctDefaultMoveFilter.cpp \
 GoUctEstimatorStat.cpp \
 GoUctGlobalSearch.cpp \
 GoUctKnowledge.cpp \
+GoUctKnowledgeFactory.cpp \
 GoUctLadderKnowledge.cpp \
 GoUctObjectWithSearch.cpp \
 GoUctPlayoutPolicy.cpp \
@@ -20,6 +22,7 @@ GoUctUtil.cpp
 noinst_HEADERS = \
 GoUctAdditiveKnowledge.h \
 GoUctAdditiveKnowledgeFuego.h \
+GoUctAdditiveKnowledgeGreenpeep.h \
 GoUctBoard.h \
 GoUctBookBuilder.h \
 GoUctBookBuilderCommands.h \
@@ -31,7 +34,9 @@ GoUctGammaMoveGenerator.h \
 GoUctGlobalPatternData.h \
 GoUctGlobalSearch.h \
 GoUctKnowledge.h \
+GoUctKnowledgeFactory.h \
 GoUctLadderKnowledge.h \
+GoUctLocalPatternData.h \
 GoUctObjectWithSearch.h \
 GoUctPatternData.h \
 GoUctPatterns.h \

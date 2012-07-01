@@ -896,7 +896,7 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
                 move = SG_PASS;
             else
             {
-                SgUctValue value = (SgUctValue)m_search.Tree().Root().Mean();
+                SgUctValue value = SgUctValue(m_search.Tree().Root().Mean());
                 if (value < m_resignThreshold)
                     move = SG_RESIGN;
             }
@@ -998,13 +998,13 @@ void GoUctPlayer<SEARCH, THREAD>::SetDefaultParameters(int boardSize)
     m_timeControl.SetRemainingConstant(0.5);
     if (boardSize < 15)
     {
-        m_resignThreshold = (SgUctValue)0.05;
+        m_resignThreshold = SgUctValue(0.05);
     }
     else
     {
         // Need higher resign threshold, because GoUctGlobalSearch uses
         // length modification on large board
-        m_resignThreshold = (SgUctValue)0.08;
+        m_resignThreshold = SgUctValue(0.08);
     }
 }
 

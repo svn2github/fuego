@@ -229,6 +229,12 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "dboard/Uct Stat Territory/uct_stat_territory\n";
 }
 
+/** Show additive knowledge */
+void GoUctCommands::CmdAdditiveKnowledge(GtpCommand& cmd)
+{
+	DisplayKnowledge(cmd, true);
+}
+
 /** Show UCT bounds of moves in root node.
     This command is compatible with the GoGui analyze command type "gfx".
     Move bounds are shown as labels on the board, the pass move bound is
@@ -290,7 +296,8 @@ void GoUctCommands::CmdDeterministicMode(GtpCommand& cmd)
     "uct_param_search number_threads 1\n"
     "uct_param_search max_nodes 5000000\n";
     if ( p.MaxGames() == std::numeric_limits<SgUctValue>::max())
-        SgWarning() << "Set Uct Param Player-> Max Games to finite value in deterministic mode\n";
+        SgWarning() << "Set Uct Param Player-> Max Games to finite "
+                       "value in deterministic mode\n";
     p.SetIgnoreClock(true);
     p.SetReuseSubtree(false);
     s.SetNumberThreads(1);
@@ -378,6 +385,23 @@ void GoUctCommands::CmdGfx(GtpCommand& cmd)
     GoUctUtil::GfxMoveValues(s, toPlay, cmd);
     GoUctUtil::GfxCounts(s.Tree(), cmd);
     GoUctUtil::GfxStatus(s, cmd);
+}
+
+/** Show ladder knowledge.
+    The response is compatible to the GoGui analyze command type @c
+    gfx and shows the prior knowledge values as influence and the
+    counts as labels. */
+void GoUctCommands::CmdLadderKnowledge(GtpCommand& cmd)
+{
+    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
+        = ThreadState(0);
+    state.StartSearch(); // Updates thread state board
+    std::vector<SgUctMoveInfo> moves;
+	state.GenerateLegalMoves(moves); // only moves, no default prior knowledge
+
+	LadderKnowledge knowledge(m_bd);
+    knowledge.ProcessPosition(moves);
+    DisplayMoveInfo(cmd, moves, false);
 }
 
 /** Computes the maximum number of nodes in search tree given the
@@ -544,7 +568,8 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
             throw GtpFailure() << "unknown parameter: " << name;
 
         if (SgDeterministic::DeterministicMode())
-            SgWarning() << "changing " << name << " in deterministic mode can affect results\n";
+            SgWarning() << "changing " << name 
+                        << " in deterministic mode can affect results\n";
     }
     else
         throw GtpFailure() << "need 0 or 2 arguments";
@@ -570,7 +595,15 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
         // dialog, alphabetically otherwise
         cmd << "[bool] nakade_heuristic " << p.m_useNakadeHeuristic << '\n'
             << "[bool] statistics_enabled " << p.m_statisticsEnabled << '\n'
-            << "fillboard_tries " << p.m_fillboardTries << '\n';
+            << "[bool] use_patterns_in_playout " 
+            << p.m_usePatternsInPlayout << '\n'
+            << "[bool] use_patterns_in_prior_knowledge " 
+            << p.m_usePatternsInPriorKnowledge << '\n'
+            << "[int] fillboard_tries " << p.m_fillboardTries << '\n'
+            << "[int] knowledge_type " << p.m_knowledgeType << '\n'
+            << "[float] pattern_gamma_threshold " 
+            << p.m_patternGammaThreshold << '\n'
+            ;
     }
     else if (cmd.NuArg() == 2)
     {
@@ -579,8 +612,19 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             p.m_useNakadeHeuristic = cmd.Arg<bool>(1);
         else if (name == "statistics_enabled")
             p.m_statisticsEnabled = cmd.Arg<bool>(1);
+        else if (name == "use_patterns_in_playout")
+            p.m_usePatternsInPlayout = cmd.Arg<bool>(1);
+        else if (name == "use_patterns_in_prior_knowledge")
+            p.m_usePatternsInPriorKnowledge = cmd.Arg<bool>(1);
         else if (name == "fillboard_tries")
             p.m_fillboardTries = cmd.Arg<int>(1);
+        else if (name == "knowledge_type")
+        {
+            p.m_knowledgeType = static_cast<KnowledgeType>(cmd.Arg<int>(1));
+            Search().CreateThreads(); // need to regenerate all search states
+        }
+        else if (name == "pattern_gamma_threshold")
+            p.m_patternGammaThreshold = cmd.Arg<float>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -588,14 +632,34 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
         throw GtpFailure() << "need 0 or 2 arguments";
 }
 
+
+    /** Bias pattern moves in playouts by learned probabilities. Default true.
+        This applies to the pattern move generator in the playout policy only.
+    	If true, a probability of choosing each of the matching pattern
+        moves is computed from machine learned 3x3 pattern weights.
+        If false, the playout policy chooses uniformly random among all 
+        matching patterns as in the original MoGo paper */
+    bool m_usePatternsInPlayout;
+
+    /** Use learned pattern probabilities in prior knowledge. Default true. */
+    bool m_usePatternsInPriorKnowledge;
+
+    /** Lower threshold of gamma values for which patterns to select */
+    float m_patternGammaThreshold;
+
+    /** Parameter to control knowledge type in GoUctKnowledgeFactory */
+    KnowledgeType m_knowledgeType;
+
 /** Get and set root filter parameters.
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
     @arg @c check_ladders See GoUctDefaultMoveFilter::CheckLadders() 
-    @arg @c check_offensive_ladders See GoUctDefaultMoveFilter::CheckOffensiveLadders() 
+    @arg @c check_offensive_ladders See 
+            GoUctDefaultMoveFilter::CheckOffensiveLadders() 
     @arg @c check_safety See GoUctDefaultMoveFilter::CheckSafety()
-    @arg @c check_filter_first_line See GoUctDefaultMoveFilter::FilterFirstLine() */
+    @arg @c check_filter_first_line See 
+            GoUctDefaultMoveFilter::FilterFirstLine() */
 void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -605,7 +669,8 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
         cmd << "[bool] check_ladders " << p.CheckLadders() << '\n';
-        cmd << "[bool] check_offensive_ladders " << p.CheckOffensiveLadders() << '\n';
+        cmd << "[bool] check_offensive_ladders " 
+            << p.CheckOffensiveLadders() << '\n';
         cmd << "[bool] check_safety " << p.CheckSafety() << '\n';
         cmd << "[bool] filter_first_line " << p.FilterFirstLine() << '\n';
     }
@@ -632,9 +697,11 @@ void GoUctCommands::CmdParamRootFilter(GtpCommand& cmd)
 
     Parameters:
     @arg @c check_ladders See GoUctDefaultMoveFilter::CheckLadders() 
-    @arg @c check_offensive_ladders See GoUctDefaultMoveFilter::CheckOffensiveLadders() 
+    @arg @c check_offensive_ladders See 
+            GoUctDefaultMoveFilter::CheckOffensiveLadders() 
     @arg @c check_safety See GoUctDefaultMoveFilter::CheckSafety()
-    @arg @c check_filter_first_line See GoUctDefaultMoveFilter::FilterFirstLine() */
+    @arg @c check_filter_first_line See 
+            GoUctDefaultMoveFilter::FilterFirstLine() */
 void GoUctCommands::CmdParamTreeFilter(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
@@ -644,7 +711,8 @@ void GoUctCommands::CmdParamTreeFilter(GtpCommand& cmd)
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
         cmd << "[bool] check_ladders " << p.CheckLadders() << '\n';
-        cmd << "[bool] check_offensive_ladders " << p.CheckOffensiveLadders() << '\n';
+        cmd << "[bool] check_offensive_ladders " 
+            << p.CheckOffensiveLadders() << '\n';
         cmd << "[bool] check_safety " << p.CheckSafety() << '\n';
         cmd << "[bool] filter_first_line " << p.FilterFirstLine() << '\n';
     }
@@ -809,7 +877,8 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             throw GtpFailure() << "unknown parameter: " << name;
 
         if (SgDeterministic::DeterministicMode())
-            SgWarning() << "changing " << name << " in deterministic mode can affect results\n";
+            SgWarning() << "changing " << name 
+                        << " in deterministic mode can affect results\n";
     }
     else
         throw GtpFailure() << "need 0 or 2 arguments";
@@ -839,42 +908,19 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
     policy.GenerateMove();
     cmd << GoUctPlayoutPolicyTypeStr(policy.MoveType());
     GoPointList moves = policy.GetEquivalentBestMoves();
-    // Sort for deterministic response
-    // (GoUctPlayoutPolicy::GetEquivalentBestMoves() does not return
+    // Sort for deterministic response.
+    // GoUctPlayoutPolicy::GetEquivalentBestMoves() does not return
     // a deterministic list, because GoUctUtil::SelectRandom() may modify
-    // the list in a non-deterministic way)
+    // the list in a non-deterministic way.
     moves.Sort();
     for (int i = 0; i < moves.Length(); ++i)
         cmd << ' ' << SgWritePoint(moves[i]);
-}
-
-/** Show ladder knowledge.
-    The response is compatible to the GoGui analyze command type @c
-    gfx and shows the prior knowledge values as influence and the
-    counts as labels. */
-void GoUctCommands::CmdLadderKnowledge(GtpCommand& cmd)
-{
-    GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
-        = ThreadState(0);
-    state.StartSearch(); // Updates thread state board
-    std::vector<SgUctMoveInfo> moves;
-	state.GenerateLegalMoves(moves); // only moves, no default prior knowledge
-
-	LadderKnowledge knowledge(m_bd);
-    knowledge.ProcessPosition(moves);
-    DisplayMoveInfo(cmd, moves, false);
 }
 
 /** Show total prior knowledge */
 void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 {
 	DisplayKnowledge(cmd, false);
-}
-
-/** Show additive knowledge */
-void GoUctCommands::CmdAdditiveKnowledge(GtpCommand& cmd)
-{
-	DisplayKnowledge(cmd, true);
 }
 
 /** Show RAVE values of last search at root position.
@@ -1070,7 +1116,8 @@ void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
         if (territoryStatistics[*it].Count() == 0)
-            throw GtpFailure("no statistics available: enable them and run search first");
+            throw GtpFailure("no statistics available: "
+                             "enable them and run search first");
         array[*it] = territoryStatistics[*it].Mean() * 2 - 1;
     }
     cmd << '\n'
@@ -1264,7 +1311,8 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "deterministic_mode", &GoUctCommands::CmdDeterministicMode);
     Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
-    Register(e, "uct_additive_knowledge", &GoUctCommands::CmdAdditiveKnowledge);
+    Register(e, "uct_additive_knowledge", 
+             &GoUctCommands::CmdAdditiveKnowledge);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);
     Register(e, "uct_default_policy", &GoUctCommands::CmdDefaultPolicy);
     Register(e, "uct_estimator_stat", &GoUctCommands::CmdEstimatorStat);

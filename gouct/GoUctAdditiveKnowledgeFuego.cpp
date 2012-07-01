@@ -10,11 +10,7 @@
 //----------------------------------------------------------------------------
 
 GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd)
-    : GoUctAdditiveKnowledge(bd,
-                             true /* probabilityBased */, 
-    						 0.03f /* scale */,
-                             0.0001f /* minimum */
-                            )
+    : GoUctAdditiveKnowledge(bd)
 {
     // Knowledge applies to all moves
     SetMoveRange(0, 10000); 

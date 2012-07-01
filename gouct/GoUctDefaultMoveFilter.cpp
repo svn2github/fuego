@@ -13,8 +13,6 @@
 #include "GoSafetySolver.h"
 #include "SgWrite.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 /** Return true, if point is on edge line and no stone is within a
@@ -35,8 +33,7 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
                 || row + deltaRow < 1 || row + deltaRow > size
                 || abs(deltaCol) + abs(deltaRow) > 4)
                 continue;
-            if (bd.Occupied(SgPointUtil::Pt(col + deltaCol,
-                                            row + deltaRow)))
+            if (bd.Occupied(SgPointUtil::Pt(col + deltaCol, row + deltaRow)))
                 return false;
         }
     return true;
@@ -50,17 +47,14 @@ GoUctDefaultMoveFilterParam::GoUctDefaultMoveFilterParam()
        m_minLadderLength(6),
        m_filterFirstLine(true),
        m_checkSafety(true)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
 GoUctDefaultMoveFilter::GoUctDefaultMoveFilter(const GoBoard& bd, const GoUctDefaultMoveFilterParam &param)
     : m_bd(bd),
       m_param(param)
-
-{
-}
+{ }
 
 vector<SgPoint> GoUctDefaultMoveFilter::Get()
 {
@@ -69,7 +63,8 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
     SgBlackWhite opp = SgOppBW(toPlay);
 
     // Safe territory
-    if (m_param.m_checkSafety) {
+    if (m_param.m_checkSafety)
+    {
         GoModBoard modBoard(m_bd);
         GoBoard& bd = modBoard.Board();
         SgBWSet alternateSafe;
@@ -104,9 +99,10 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
                 // if current rules do no use CaptureDead(), because the UCT
                 // player always scores with Tromp-Taylor after two passes in the
                 // in-tree phase
-                if ((isAllAlternateSafe && isAlternateSafeOpp)
-                    || isUnconditionalSafeOpp
-                    || (isUnconditionalSafe && ! hasOppNeighbors))
+                if (  (isAllAlternateSafe && isAlternateSafeOpp)
+                   || isUnconditionalSafeOpp
+                   || (isUnconditionalSafe && ! hasOppNeighbors)
+                   )
                     rootFilter.push_back(p);
             }
         }
@@ -147,8 +143,6 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
             }
         }
     }
-
-
 
     if (m_param.m_filterFirstLine)
     {

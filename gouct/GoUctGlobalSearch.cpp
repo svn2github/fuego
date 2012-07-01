@@ -5,8 +5,6 @@
 #include "SgSystem.h"
 #include "GoUctGlobalSearch.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
@@ -15,7 +13,9 @@ GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
       m_lengthModification(0),
       m_scoreModification(0.02f),
       m_useTreeFilter(false)
-{
-}
+{ }
+
+GoUctGlobalSearchStateParam::~GoUctGlobalSearchStateParam()
+{ }
 
 //----------------------------------------------------------------------------
