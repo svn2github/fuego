@@ -245,7 +245,7 @@ SgBlackWhite TestSearch::GetToPlay() const
 
 SgHashCode TestSearch::GetHashCode() const
 {
-    return SgHashCode((unsigned int)m_currentNode);
+    return SgHashCode(static_cast<unsigned int>(m_currentNode));
 }
 
 bool TestSearch::EndOfGame() const

@@ -21,7 +21,7 @@ SgUctTreeStatistics::SgUctTreeStatistics()
 void SgUctTreeStatistics::Clear()
 {
     m_nuNodes = 0;
-    for (size_t i = 0; i < (size_t)MAX_MOVECOUNT; ++i)
+    for (size_t i = 0; i < static_cast<size_t>(MAX_MOVECOUNT); ++i)
         m_moveCounts[i] = 0;
     m_biasRave.Clear();
 }

@@ -91,7 +91,7 @@ SgThreadedWorker<I,O,W>::SgThreadedWorker(std::vector<W>& workers)
 {
     for (std::size_t i = 0; i < workers.size(); ++i)
     {
-        Thread runnable((int)i, workers[i], *this);
+        Thread runnable(i, workers[i], *this);
         boost::shared_ptr<boost::thread> thread(new boost::thread(runnable));
         m_threads.push_back(thread);
     }
