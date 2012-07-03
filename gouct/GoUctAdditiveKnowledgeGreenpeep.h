@@ -16,14 +16,6 @@ const int NUMPATTERNS9X9 = 1<<26;
 /* 24-bit: 16-bit 8-neighbor core, 8-bit liberty & 2-away extension */
 const int NUMPATTERNS19X19 = 1<<24;
 
-const short unsigned int NEUTRALPREDICTION = 512;
-
-const short unsigned int PASSPREDICTION = 2;
-
-/* 19x19-only.  Different scale from PASSPREDICTION. */
-const short unsigned int DEFENSIVEPREDICTION = 5 * NEUTRALPREDICTION; 
-// was 5, only used as DEFENSIVEPREDICTION * NEUTRALPREDICTION
-
 //----------------------------------------------------------------------------
 
 class GoUctAdditiveKnowledgeParamGreenpeep: public GoUctAdditiveKnowledgeParam

@@ -23,33 +23,47 @@ using std::string;
 //----------------------------------------------------------------------------
 namespace {
 
-const unsigned int PASS_CONTEXT = UINT_MAX;
+const short unsigned int NEUTRALPREDICTION = 512;
 
-inline unsigned int IsColorOrBorder(const GoBoard& bd, SgPoint p, int c)
+const short unsigned int PASSPREDICTION = 2;
+
+/* 19x19-only.  Different scale from PASSPREDICTION. */
+const short unsigned int DEFENSIVEPREDICTION = 5 * NEUTRALPREDICTION; 
+// was 5, only used as DEFENSIVEPREDICTION * NEUTRALPREDICTION
+
+const unsigned int PASS_CONTEXT = UINT_MAX;
+const unsigned int KO_BIT = 1U << 24;
+const unsigned int ATARI_BIT = 1U << 25;
+
+/** A bit is set iff point p is either of color c or off the board. */
+inline unsigned int ColorOrBorderBit(const GoBoard& bd, SgPoint p, int c)
 {
 	return static_cast<unsigned int> (bd.IsColor(p,c) || bd.IsBorder(p));
 }
 
+/** 8 bits describing the 8 neighbors of p.
+	A bit is set iff the point is either of color c or off the board. */
 unsigned int SimpleContext(const GoBoard& bd, SgMove p, int c) 
 {
-	return  IsColorOrBorder(bd, p - SG_NS - SG_WE, c)
+	return  ColorOrBorderBit(bd, p - SG_NS - SG_WE, c)
            |
-           (IsColorOrBorder(bd, p - SG_WE        , c) << 1) 
+           (ColorOrBorderBit(bd, p - SG_WE        , c) << 1) 
            |
-           (IsColorOrBorder(bd, p + SG_NS - SG_WE, c) << 2) 
+           (ColorOrBorderBit(bd, p + SG_NS - SG_WE, c) << 2) 
            |
-           (IsColorOrBorder(bd, p - SG_NS        , c) << 3) 
+           (ColorOrBorderBit(bd, p - SG_NS        , c) << 3) 
            |
-           (IsColorOrBorder(bd, p + SG_NS        , c) << 4) 
+           (ColorOrBorderBit(bd, p + SG_NS        , c) << 4) 
            |
-           (IsColorOrBorder(bd, p - SG_NS + SG_WE, c) << 5) 
+           (ColorOrBorderBit(bd, p - SG_NS + SG_WE, c) << 5) 
            |
-           (IsColorOrBorder(bd, p + SG_WE        , c) << 6) 
+           (ColorOrBorderBit(bd, p + SG_WE        , c) << 6) 
            |
-           (IsColorOrBorder(bd, p + SG_NS + SG_WE, c) << 7) 
+           (ColorOrBorderBit(bd, p + SG_NS + SG_WE, c) << 7) 
            ;
 }
 
+/** Build extended context in one direction dir */
 inline unsigned int CheckDirection(const GoBoard &bd, 
                            SgPoint p,
                            int dir, 
@@ -88,6 +102,7 @@ inline unsigned int CheckDirection(const GoBoard &bd,
     return extendedcontext;
 }
 
+/** Build extended context bitset for point p */
 unsigned int ExtendedContext(const GoBoard &bd, 
                              SgMove p,
                              unsigned int occupancy,
@@ -151,10 +166,10 @@ void ComputeContexts(const GoBoard &bd,
             if (use9x9flag) 
             {
                 if (koExists)
-                    context |= (0x1U << 24);
+                    context |= KO_BIT;
         
                 if (! SgIsSpecialMove(p) && atariBits[p])
-                    context |= (0x1U << 25);
+                    context |= ATARI_BIT;
             }
 
             contexts[i] = context;
@@ -310,14 +325,13 @@ GoUctAdditiveKnowledgeGreenpeep::ProcessPosition(
             moves[i].m_predictorValue = PASSPREDICTION;
         else
         {
-            // Really should define constants for these bit offsets
-            if (m_contexts[i] & (0x1U << 25))
+            if (m_contexts[i] & ATARI_BIT)
             {
                 if (use9x9flag) 
                 {
                     // Hmm, we could do this max in the feature weights at the
                     // end of training instead.
-                    int altContext = m_contexts[i] & ~(0x1U << 25);
+                    int altContext = m_contexts[i] & ~ATARI_BIT;
                     moves[i].m_predictorValue = 
                     	std::max(pred[m_contexts[i]], 
                                  pred[altContext]);
@@ -335,7 +349,7 @@ GoUctAdditiveKnowledgeGreenpeep::ProcessPosition(
                 moves[i].m_predictorValue = pred[m_contexts[i]];
             }
         }
-	    moves[i].m_predictorValue /= (float) NEUTRALPREDICTION;
+	    moves[i].m_predictorValue /= static_cast<float>(NEUTRALPREDICTION);
     }
 }
 
@@ -389,7 +403,7 @@ GoUctAdditiveKnowledgeGreenpeep::PrintContext(unsigned int context,
 
     for (int i = 0; i < NUM_PTS; i++)
     {
-        int mask = (0x1 << i);
+        int mask = 1 << i;
 
         int ext = -1;
         int* extPoint;
@@ -439,9 +453,9 @@ GoUctAdditiveKnowledgeGreenpeep::PrintContext(unsigned int context,
         }
     }
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; ++i)
     {
-        for (int j = 0; j < 5; j++)
+        for (int j = 0; j < 5; ++j)
         {
             if (pattern[i][j] < 0)
             	str << std::string(strWidth + 2, ' ');
@@ -451,9 +465,9 @@ GoUctAdditiveKnowledgeGreenpeep::PrintContext(unsigned int context,
         str << '\n';
     }
 
-    if ((context >> 24) & 0x1)
+    if (context & KO_BIT)
     	str << "Ko exists\n";
-    if ((context >> 25) & 0x1)
+    if (context & ATARI_BIT)
     	str << "Atari defense move\n";
 }
 
