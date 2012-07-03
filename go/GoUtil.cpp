@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <sstream>
 
-using namespace std;
+using std::fabs;
 
 //----------------------------------------------------------------------------
 
@@ -21,10 +21,11 @@ std::string GoUtil::ScoreToString(float score)
     const float epsilon = 0.01f;
     if (score < epsilon)
         return "0";
-    ostringstream out;
-    bool isFractional = (fabs(float(int(score)) - score) > epsilon);
+    std::ostringstream out;
+    bool isFractional = fabs(std::floor(score + epsilon) - score) > epsilon;
     int precision = (isFractional ? 1 : 0);
-    out << (blackWin ? "B+" : "W+") << fixed << setprecision(precision)
+    out << (blackWin ? "B+" : "W+") 
+    	<< std::fixed << std::setprecision(precision)
         << score;
     return out.str();
 }
