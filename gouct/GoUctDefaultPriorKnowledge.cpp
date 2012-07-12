@@ -128,20 +128,27 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
 bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
                                                      SgPointSet& pattern,
                                                      SgPointSet& atari,
-                                                     GoPointList& empty) const
+                                                     GoPointList& empty)
 {
+	// Minimum value for pattern gamma to be used.
+    static const float EPSILON = 0.00000000001;
     const GoBoard& bd = Board();
     SG_ASSERT(empty.IsEmpty());
-    const GoUctPatterns<GoBoard>& patterns = m_policy.Patterns();
+    const GoUctPatterns<GoBoard>& patterns = m_policy.GlobalPatterns();
     bool result = false;
+    m_maxPatternGamma = -1.f;
     for (GoBoard::Iterator it(bd); it; ++it)
         if (bd.IsEmpty(*it))
         {
             empty.PushBack(*it);
-            if (patterns.MatchAny(*it))
+            float gamma = patterns.GetPatternGamma(bd, *it, bd.ToPlay());
+            if (gamma > EPSILON)
             {
                 pattern.Include(*it);
                 result = true;
+                m_patternGammas[*it] = gamma;
+                if (gamma > m_maxPatternGamma)
+                    m_maxPatternGamma = gamma;
             }
             if (SetsAtari(bd, *it))
             {
@@ -169,7 +176,9 @@ GoUctDefaultPriorKnowledge::InitializeForGlobalHeuristic(
         else if (atari[p])
             Initialize(p, 1.0f, 3);
         else if (pattern[p])
-            Initialize(p, 0.9f, 3);
+            Initialize(*it, 
+                       0.6 + (m_patternGammas[*it] / m_maxPatternGamma) * 0.4,
+                       3);
 		else
             Initialize(p, 0.5f, 3);
     }
@@ -192,7 +201,9 @@ GoUctDefaultPriorKnowledge::InitializeForNonRandomPolicyMove(
         else if (atari[p])
             Initialize(p, 0.8f, nuSimulations);
         else if (pattern[p])
-            Initialize(p, 0.6f, nuSimulations);
+            Initialize(*it,
+                       0.5 + (m_patternGammas[*it] / m_maxPatternGamma) * 0.3,
+                       nuSimulations);
         else
             Initialize(p, 0.4f, nuSimulations);
     }

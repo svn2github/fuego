@@ -24,7 +24,7 @@ public:
 
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari,
-                                        GoPointList& empty) const;
+                                        GoPointList& empty);
 private:
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
@@ -44,6 +44,11 @@ private:
                                           const SgPointSet& atari,
                                           int nuSimulations);
 
+	/** Temporary variable to hold max. of m_patternGammas for current move */
+	float m_maxPatternGamma;
+
+	/** Gamma values used as prior knowledge for pattern moves */
+	SgArray<float,SG_MAXPOINT> m_patternGammas;
 };
 
 //----------------------------------------------------------------------------
