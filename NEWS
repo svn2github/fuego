@@ -19,6 +19,7 @@ Current development version
 * More efficient hash table using four probes
 * setup-build.sh script for easier creation of separate dbg, opt bullds
 * Improved ladder prior knowledge
+* Game-independent df-pn solver with focused df-pn
 
 Version 1.1 - 2011 Mar 13
 =========================

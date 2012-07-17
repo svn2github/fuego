@@ -6,6 +6,7 @@ SgBookBuilder.cpp \
 SgCmdLineOpt.cpp \
 SgConnCompIterator.cpp \
 SgDebug.cpp \
+SgDfpnSearch.cpp \
 SgEvaluatedMoves.cpp \
 SgException.cpp \
 SgFastLog.cpp \
@@ -63,6 +64,7 @@ SgBoardConst.h \
 SgCmdLineOpt.h \
 SgConnCompIterator.h \
 SgDebug.h \
+SgDfpnSearch.h \
 SgEBWArray.h \
 SgEvaluatedMoves.h \
 SgException.h \
