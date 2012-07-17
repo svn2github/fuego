@@ -78,7 +78,7 @@ void GoUctPlayoutPolicyStat::Write(std::ostream& out) const
         GoUctPlayoutPolicyType type = static_cast<GoUctPlayoutPolicyType>(i);
         size_t n = m_nuMoveType[type];
         out << SgWriteLabel(GoUctPlayoutPolicyTypeStr(type))
-            << (m_nuMoves > 0 ? n * 100 / m_nuMoves : 0) << "%\n";
+            << (m_nuMoves > 0 ? n * 100.0 / m_nuMoves : 0) << "%\n";
     }
     out << SgWriteLabel("NonRandLen");
     m_nonRandLen.Write(out);
