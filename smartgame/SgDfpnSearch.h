@@ -369,7 +369,7 @@ public:
 
     DfpnSolver();
 
-    ~DfpnSolver();
+    virtual ~DfpnSolver();
 
     /** Solve the given state using the given hashtable. 
         Returns the color of the winning player (SG_EMPTY if it could
