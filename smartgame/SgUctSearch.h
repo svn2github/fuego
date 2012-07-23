@@ -497,6 +497,10 @@ public:
     /** Convert move to string (game dependent).
         This function needs to be thread-safe. */
     virtual std::string MoveString(SgMove move) const = 0;
+    
+    /** Used to suppress space between move parts when printing.
+    	Default is false */
+    virtual bool IsPartialMove(SgMove move) const;
 
     /** Evaluation value to use if evaluation is unknown.
         This value will be used, if games are aborted, because they exceed
@@ -1232,6 +1236,12 @@ inline SgUctValue SgUctSearch::InverseEval(SgUctValue eval)
 inline SgUctValue SgUctSearch::InverseEstimate(SgUctValue eval)
 {
     return (1 - eval);
+}
+
+inline bool SgUctSearch::IsPartialMove(SgMove move) const
+{
+    SG_UNUSED(move);
+    return false;
 }
 
 inline bool SgUctSearch::LockFree() const

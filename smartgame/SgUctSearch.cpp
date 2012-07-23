@@ -826,7 +826,11 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
             hasKnowledge = false;
         }
         if (i < MAX_SEQ_PRINT_LENGTH)
-            out << " " << MoveString(current->Move());
+        {
+            if (i == 0 || ! IsPartialMove(current->Move()))
+                out << " ";
+            out << MoveString(current->Move());
+        }
         else
             out << " *";
     }
