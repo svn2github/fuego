@@ -104,3 +104,7 @@ loadsgf sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego-2.sgf 69
 #? [B2]*
 # B2 avoids seki and makes jigo
 
+loadsgf sgf/games/2012/Blubbel-AyaBot4-2.sgf 305
+490 reg_genmove b
+#? [T9|Q8]*
+# Position discussed on computer-go mailing list, August 2012
