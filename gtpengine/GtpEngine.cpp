@@ -349,7 +349,11 @@ void ReadThread::Function::ExecuteSleepLine(const string& line)
     {
         cerr << "GtpEngine: sleep " << seconds << '\n';
         xtime time;
-        xtime_get(&time, boost::TIME_UTC);
+        #if BOOST_VERSION >= 105000
+            xtime_get(&time, boost::TIME_UTC_);
+        #else
+            xtime_get(&time, boost::TIME_UTC);
+        #endif
         time.sec += seconds;
         thread::sleep(time);
         cerr << "GtpEngine: sleep done\n";
