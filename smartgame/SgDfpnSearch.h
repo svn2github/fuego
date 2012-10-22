@@ -9,6 +9,7 @@
 #include "SgHashTable.h"
 #include "SgStatistics.h"
 #include "SgTimer.h"
+#include "SgSearchTracer.h"
 
 #include <limits>
 #include <ostream>
@@ -380,6 +381,10 @@ public:
     SgEmptyBlackWhite 
     StartSearch(DfpnHashTable& positions, PointSequence& pv,
                          const DfpnBounds& maxBounds);
+
+    /** Validate the current position is a win for winner. */
+    bool Validate(DfpnHashTable& positions, const SgBlackWhite winner,
+                  SgSearchTracer& tracer);
 
     /** Returns various histograms pertaining to the evaluation
         function from the last search. */

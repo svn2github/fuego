@@ -4,6 +4,7 @@
 
 #include "SgSystem.h"
 #include "SgDfpnSearch.h"
+#include "SgSearchTracer.h"
 
 #include <cmath>
 #include "SgDebug.h"
@@ -464,6 +465,72 @@ void DfpnSolver::UpdateBounds(DfpnBounds& bounds,
         boundsAll.delta += childBounds.phi;
     }
     bounds = boundsAll;
+}
+
+bool DfpnSolver::Validate(DfpnHashTable& positions, const SgBlackWhite winner,
+                          SgSearchTracer& tracer)
+{
+    SG_ASSERT_BW(winner);
+
+    DfpnData data;
+    if (! TTRead(data))
+    {
+        PointSequence pv;
+        StartSearch(positions, pv);
+        const bool wasRead = TTRead(data);
+        SG_ASSERT(wasRead);
+    }
+
+    std::vector<SgMove> moves;
+    const bool orNode = (winner == GetColorToMove());
+    if (orNode)
+    {
+        if (! data.m_bounds.IsWinning())
+        {
+            SgWarning() << "OR not winning. DfpnData:" << data << std::endl;
+            return false;
+        }
+    }
+    else // AND node
+    {
+        if (! data.m_bounds.IsLosing())
+        {
+            SgWarning() << "AND not losing. DfpnData:" << data << std::endl;
+            return false;
+        }
+	}
+
+    SgEmptyBlackWhite currentWinner;
+    if (TerminalState(GetColorToMove(), currentWinner))
+    {
+        if (winner == currentWinner)
+            return true;
+        else
+        {
+            SgWarning() << "winner disagreement: " 
+                << SgEBW(winner) << ' ' << SgEBW(currentWinner) 
+                << std::endl;
+            return false;
+        }
+    }
+    else if (orNode)
+        moves.push_back(data.m_bestMove);
+    else // AND node
+        GenerateChildren(moves);
+
+    // recurse
+    for (std::vector<SgMove>::const_iterator it = moves.begin();
+        it != moves.end(); ++it)
+    {
+        tracer.AddTraceNode(*it, GetColorToMove());
+        PlayMove(*it);
+        if (! Validate(positions, winner, tracer))
+            return false;
+        UndoMove();
+        tracer.TakeBackTraceNode();
+    }
+
+    return true;
 }
 
 //----------------------------------------------------------------------------
