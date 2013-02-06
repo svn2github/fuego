@@ -478,6 +478,7 @@ bool DfpnSolver::Validate(DfpnHashTable& positions, const SgBlackWhite winner,
         PointSequence pv;
         StartSearch(positions, pv);
         const bool wasRead = TTRead(data);
+        SG_DEBUG_ONLY(wasRead);
         SG_ASSERT(wasRead);
     }
 
