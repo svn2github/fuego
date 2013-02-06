@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT([fuego], [1.1.SVN])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([go/GoBoard.cpp])
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AC_PROG_CXX
@@ -30,7 +30,7 @@ fi
 dnl Check for __sync_synchronize
 dnl
 AC_MSG_CHECKING([for __sync_synchronize])
-AC_LINK_IFELSE([int main (int argc, char** argv) {__sync_synchronize();}],
+AC_LINK_IFELSE([AC_LANG_SOURCE([int main (int argc, char** argv) {__sync_synchronize();}])],
 	       [has_synchronize=yes],
 	       [has_synchronize=no])
 AC_MSG_RESULT([$has_synchronize])
