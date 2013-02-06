@@ -39,6 +39,7 @@ performance_icgc2008.tst \
 performance_JAIST2012.tst \
 performance_middlegame_hard_9x9.tst \
 performance_pro_9x9.tst \
+performance-zen-9x9.tst \
 play_deterministic_srand1.tst \
 play_deterministic_srand1_maxgames1M.tst \
 play_deterministic_srand2.tst \
@@ -256,6 +257,13 @@ sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
 sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego-2.sgf \
 sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego.sgf \
 sgf/games/2011/LittleGolem/1226980.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/1.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/2.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/3.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/4.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/5.sgf \
+sgf/games/2012/2012-11-25-zen-vs-pro/6.sgf \
 sgf/games/2012/Blubbel-AyaBot4-2.sgf \
 sgf/games/2012/JAIST-Cup/Fuego13-Zen19S.sgf \
 sgf/games/pro-9x9/mz1.sgf \
