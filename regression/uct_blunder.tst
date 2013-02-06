@@ -115,3 +115,25 @@ loadsgf sgf/games/2009/CGOS/703006.sgf 112
 220 reg_genmove w
 #? [C4]
 # Passing is a blunder, loses by 0.5
+
+loadsgf sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf 35
+230 reg_genmove b
+#? [G7]*
+# G7 is the only winning move but hard-pruned by root filter
+# since it is running away in a bad ladder...
+
+231 uct_root_filter
+#? []*
+# G7 must not be filtered here.
+
+loadsgf sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf 37
+240 reg_genmove b
+#? [J3|H7]
+# G7 is the only winning move but hard-pruned by root filter
+# since it is running away in a bad ladder...
+
+241 uct_root_filter
+#? []*
+# H7 should not be filtered here.
+
+
