@@ -17,13 +17,16 @@
 #include "SgPlatform.h"
 #include "SgWrite.h"
 
-using namespace std;
 using boost::barrier;
 using boost::condition;
 using boost::format;
 using boost::mutex;
 using boost::shared_ptr;
 using boost::io::ios_all_saver;
+using std::vector;
+using std::setprecision;
+using std::numeric_limits;
+using std::fixed;
 
 #define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
 #define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
@@ -44,7 +47,7 @@ bool GetLockFreeDefault()
 #if defined(WIN32) || defined(ENABLE_CACHE_SYNC)
     return true;
 #elif defined(HOST_CPU)
-    string hostCpu(HOST_CPU);
+    std::string hostCpu(HOST_CPU);
     return hostCpu == "i386" || hostCpu == "i486" || hostCpu == "i586"
         || hostCpu == "i686" || hostCpu == "x86_64";
 #else
@@ -163,7 +166,7 @@ void SgUctSearch::Thread::Function::operator()()
 }
 
 SgUctSearch::Thread::Thread(SgUctSearch& search,
-                            auto_ptr<SgUctThreadState> state)
+                            std::auto_ptr<SgUctThreadState> state)
     : m_state(state),
       m_search(search),
       m_quit(false),
@@ -372,7 +375,7 @@ bool SgUctSearch::CheckAbortSearch(SgUctThreadState& state)
             {
                 double remainingTime = m_maxTime - time;
                 remainingGamesDouble =
-                    min(remainingGamesDouble,
+                        std::min(remainingGamesDouble,
                         remainingTime * m_statistics.m_gamesPerSecond);
             }
             SgUctValue uctCountMax = numeric_limits<SgUctValue>::max();
@@ -429,7 +432,7 @@ void SgUctSearch::CreateThreads()
     DeleteThreads();
     for (unsigned int i = 0; i < m_numberThreads; ++i)
     {
-        auto_ptr<SgUctThreadState>
+        std::auto_ptr<SgUctThreadState>
         state(m_threadStateFactory->Create(i, *this));
         shared_ptr<Thread> thread(new Thread(*this, state));
         m_threads.push_back(thread);
@@ -734,7 +737,7 @@ SgUctValue SgUctSearch::GetValueEstimateRave(const SgUctNode& child) const
     return value;
 }
 
-string SgUctSearch::LastGameSummaryLine() const
+std::string SgUctSearch::LastGameSummaryLine() const
 {
     return SummaryLine(LastGameInfo());
 }
@@ -808,7 +811,7 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
     const SgUctValue MIN_MOVE_COUNT = 10;
     SgUctValue rootMoveCount = m_tree.Root().MoveCount();
     SgUctValue rootMean = m_tree.Root().Mean();
-    ostringstream out;
+    std::ostringstream out;
     const SgUctNode* current = &m_tree.Root();
     bool hasKnowledge = current->KnowledgeCount() > 0;
     out << (format("%s | %.3f | %.0f | %.1f ")
@@ -834,7 +837,7 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
         else
             out << " *";
     }
-    SgDebug() << out.str() << endl;
+    SgDebug() << out.str() << std::endl;
 }
 
 void SgUctSearch::OnSearchIteration(SgUctValue gameNumber,
@@ -1406,9 +1409,9 @@ void SgUctSearch::EndSearch()
     OnEndSearch();
 }
 
-string SgUctSearch::SummaryLine(const SgUctGameInfo& info) const
+std::string SgUctSearch::SummaryLine(const SgUctGameInfo& info) const
 {
-    ostringstream buffer;
+    std::ostringstream buffer;
     const vector<const SgUctNode*>& nodes = info.m_nodes;
     for (size_t i = 1; i < nodes.size(); ++i)
     {
@@ -1462,8 +1465,8 @@ void SgUctSearch::UpdateRaveValues(SgUctThreadState& state,
     SG_ASSERT(m_moveRange > 0);
     size_t* firstPlay = state.m_firstPlay.get();
     size_t* firstPlayOpp = state.m_firstPlayOpp.get();
-    fill_n(firstPlay, m_moveRange, numeric_limits<size_t>::max());
-    fill_n(firstPlayOpp, m_moveRange, numeric_limits<size_t>::max());
+    std::fill_n(firstPlay, m_moveRange, numeric_limits<size_t>::max());
+    std::fill_n(firstPlayOpp, m_moveRange, numeric_limits<size_t>::max());
     const vector<const SgUctNode*>& nodes = info.m_nodes;
     const vector<bool>& skipRaveUpdate = info.m_skipRaveUpdate[playout];
     SgUctValue eval = info.m_eval[playout];
@@ -1577,7 +1580,7 @@ void SgUctSearch::UpdateTree(const SgUctGameInfo& info)
     }
 }
 
-void SgUctSearch::WriteStatistics(ostream& out) const
+void SgUctSearch::WriteStatistics(std::ostream& out) const
 {
     out << SgWriteLabel("Count") << m_tree.Root().MoveCount() << '\n'
         << SgWriteLabel("GamesPlayed") << GamesPlayed() << '\n'
