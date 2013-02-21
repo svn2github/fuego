@@ -257,6 +257,9 @@ sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
 sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego-2.sgf \
 sgf/games/2011/KGS-74-August2011-9x9-fast/pachi2-Fuego.sgf \
 sgf/games/2011/LittleGolem/1226980.sgf \
+sgf/games/2011/UEC/Fuego-LeafQuest.sgf \
+sgf/games/2011/UEC/shikousakugo-Fuego.sgf \
+sgf/games/2011/UEC/katsunari-Fuego.sgf \
 sgf/games/2012/2012-11-25-zen-vs-pro/1.sgf \
 sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf \
 sgf/games/2012/2012-11-25-zen-vs-pro/2.sgf \
