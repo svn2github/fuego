@@ -607,8 +607,11 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
     }
     else
     {
-        SgRestorer<bool> restorer(&m_search.m_param.m_territoryStatistics);
+        SgRestorer<bool> restorer1(&m_search.m_param.m_territoryStatistics);
+        SgRestorer<bool> restorer2(&m_search.m_param.m_mercyRule);
         m_search.m_param.m_territoryStatistics = true;
+        // Mercy rule can prevent territory stats from being collected
+        m_search.m_param.m_mercyRule = false; 
         std::vector<SgPoint> sequence;
         SgUctValue value = m_search.Search(maxGames, maxTime, sequence);
         value = m_search.InverseEstimate(value);
