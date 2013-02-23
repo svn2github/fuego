@@ -85,3 +85,46 @@ loadsgf sgf/games/2011/UEC/shikousakugo-Fuego.sgf 197
 loadsgf sgf/games/2011/UEC/shikousakugo-Fuego.sgf 206
 140 reg_genmove w
 #? [PASS]*
+
+loadsgf sgf/games/2012/KGS/Charles60-FuegoBot.sgf 43
+150 reg_genmove b
+#? [B8]
+
+loadsgf sgf/games/2012/KGS/Charles60-FuegoBot.sgf 45
+160 reg_genmove b
+#? [B8]
+# passing as in the game loses by 0.5
+
+loadsgf sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf 43
+170 reg_genmove b
+#? [PASS]
+# B+0.5, need to pass to win
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 80
+180 reg_genmove w
+#? [G6]
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 82
+190 reg_genmove w
+#? [PASS]
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 84
+200 reg_genmove w
+#? [PASS]
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 86
+210 reg_genmove w
+#? [PASS]
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 88
+220 reg_genmove w
+#? [PASS]
+# Not passing here finally loses the game
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 90
+230 reg_genmove w
+#? [PASS]
+
+loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 92
+240 reg_genmove w
+#? [PASS]*

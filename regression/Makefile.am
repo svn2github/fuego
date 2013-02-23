@@ -251,6 +251,7 @@ sgf/games/2010/FuegoGB-Barcelona/Yen-FuegoGB.sgf \
 sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
 sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf \
+sgf/games/2011/Fuego-1.1-vim-5-variation.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-3.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf \
 sgf/games/2011/KGS-January/PueGo-pachi2.sgf \
@@ -269,6 +270,8 @@ sgf/games/2012/2012-11-25-zen-vs-pro/5.sgf \
 sgf/games/2012/2012-11-25-zen-vs-pro/6.sgf \
 sgf/games/2012/Blubbel-AyaBot4-2.sgf \
 sgf/games/2012/JAIST-Cup/Fuego13-Zen19S.sgf \
+sgf/games/2012/KGS/Charles60-FuegoBot.sgf \
+sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
@@ -290,6 +293,7 @@ sgf/gnugo-games/seki_nakade1.sgf \
 sgf/gnugo-games/seki_nakade2.sgf \
 sgf/ko/remove-ko-threat.1.sgf \
 sgf/ladder/adjacent-blocks.sgf \
+sgf/ladder/ladder-blunder.sgf \
 sgf/ladder/ladder-breaker-2.sgf \
 sgf/ladder/ladder-breaker.sgf \
 sgf/ladder/ladder-edge-breaker.sgf \
