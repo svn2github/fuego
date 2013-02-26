@@ -22,7 +22,7 @@ loadsgf sgf/games/2010/LittleGolem/1173624.sgf 48
 
 loadsgf sgf/games/2010/LittleGolem/1177582.sgf 39
 20 reg_genmove b
-#? [PASS|J6|H6|E8|C9]
+#? [PASS|J6|H6|E8|C9]*
 # Fuego was winning, but cannot afford to play in its own territory.
 # Playing a threat in the opponent's area is silly but OK.
 # good test case for implementing Japanese rules.
@@ -39,7 +39,7 @@ loadsgf sgf/games/2011/UEC/katsunari-Fuego.sgf 301
 
 loadsgf sgf/games/2011/UEC/katsunari-Fuego.sgf 303
 50 reg_genmove b
-#? [K11|L10]
+#? [K11|L10]*
 # last neutral points
 
 loadsgf sgf/games/2011/UEC/katsunari-Fuego.sgf 325
@@ -88,11 +88,11 @@ loadsgf sgf/games/2011/UEC/shikousakugo-Fuego.sgf 206
 
 loadsgf sgf/games/2012/KGS/Charles60-FuegoBot.sgf 43
 150 reg_genmove b
-#? [B8]
+#? [B8]*
 
 loadsgf sgf/games/2012/KGS/Charles60-FuegoBot.sgf 45
 160 reg_genmove b
-#? [B8]
+#? [B8]*
 # passing as in the game loses by 0.5
 
 loadsgf sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf 43
@@ -128,3 +128,88 @@ loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 90
 loadsgf sgf/games/2011/Fuego-1.1-vim-5-variation.sgf 92
 240 reg_genmove w
 #? [PASS]*
+
+loadsgf sgf/final_moves/yamato-example2.sgf 21
+250 reg_genmove b
+#? [PASS]*
+
+251 final_score
+#? [B\+0\.5]
+# escape characters, + and . have special meaning in regular experessions
+
+loadsgf sgf/final_moves/yamato-example2.sgf 22
+260 reg_genmove w
+#? [PASS]*
+
+261 final_score
+#? [W\+0\.5]
+
+loadsgf sgf/final_moves/yamato-example2.sgf 23
+270 reg_genmove b
+#? [PASS]*
+
+271 final_score
+#? [B\+0\.5]
+
+loadsgf sgf/final_moves/yamato-example2.sgf 24
+280 reg_genmove w
+#? [PASS]*
+
+281 final_score
+#? [W\+0\.5]
+
+loadsgf sgf/final_moves/yamato-example2.sgf 25
+290 reg_genmove b
+#? [PASS]*
+
+291 final_score
+#? [B\+0\.5]
+
+loadsgf sgf/final_moves/yamato-example2.sgf 26
+300 reg_genmove w
+#? [PASS]*
+
+301 final_score
+#? [W\+0\.5]
+
+loadsgf sgf/final_moves/aja-example.sgf 21
+310 reg_genmove b
+#? [PASS]*
+
+311 final_score
+#? [B\+0\.5]
+
+loadsgf sgf/final_moves/aja-example.sgf 22
+320 reg_genmove w
+#? [PASS]*
+
+321 final_score
+#? [W\+0\.5]
+
+loadsgf sgf/final_moves/aja-example.sgf 23
+330 reg_genmove b
+#? [PASS]*
+
+331 final_score
+#? [B\+0\.5]
+
+loadsgf sgf/final_moves/aja-example.sgf 24
+340 reg_genmove w
+#? [PASS]*
+
+341 final_score
+#? [W\+0\.5]
+
+loadsgf sgf/final_moves/aja-example.sgf 25
+350 reg_genmove b
+#? [PASS]*
+
+351 final_score
+#? [B\+0\.5]
+
+loadsgf sgf/final_moves/aja-example.sgf 26
+360 reg_genmove w
+#? [PASS]*
+
+361 final_score
+#? [W\+0\.5]

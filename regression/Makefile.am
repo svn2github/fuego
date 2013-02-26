@@ -106,8 +106,10 @@ sgf/evaluation/miseval.1.sgf \
 sgf/eyes/1.5/make-nakade.1.sgf \
 sgf/eyes/1.5/make-nakade.2.sgf \
 sgf/eyes/1/nakade.1.sgf \
+sgf/final_moves/aja-example.sgf \
 sgf/final_moves/play-in-benson-safe.1.sgf \
 sgf/final_moves/play-in-benson-safe.2.sgf \
+sgf/final_moves/yamato-example2.sgf \
 sgf/games/2007/194557.variation.sgf \
 sgf/games/2007/CGOS/107433.sgf \
 sgf/games/2007/CGOS/107439.sgf \
