@@ -33,6 +33,9 @@ public:
     /** Clear value and count for this move */
     inline void Clear(SgPoint move);
 
+    /** Clear value and count for all moves */
+    void ClearValues();
+
     /** The board for which knowledge is computed */
     inline const GoBoard& Board() const;
 
@@ -50,9 +53,6 @@ private:
 
     /** Array holding value and count for each point */
     SgArray<SgStatisticsBase<SgUctValue, SgUctValue>, SG_PASS + 1> m_values;
-
-    /** Clear value and count for all moves */
-    void ClearValues();
 
 };
 
