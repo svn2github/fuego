@@ -22,7 +22,7 @@
 #include "SpRandomPlayer.h"
 #include "SpSafePlayer.h"
 
-using namespace std;
+using std::string;
 using boost::trim_copy;
 
 //----------------------------------------------------------------------------

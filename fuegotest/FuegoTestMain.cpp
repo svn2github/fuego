@@ -18,7 +18,7 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/parsers.hpp>
 
-using namespace std;
+using std::string;
 namespace po = boost::program_options;
 
 //----------------------------------------------------------------------------
@@ -45,14 +45,14 @@ void MainLoop()
     GoGtpAssertionHandler assertionHandler(engine);
     if (g_config != "")
         engine.ExecuteFile(g_config);
-    GtpInputStream in(cin);
-    GtpOutputStream out(cout);
+    GtpInputStream in(std::cin);
+    GtpOutputStream out(std::cout);
     engine.MainLoop(in, out);
 }
 
 void Help(po::options_description& desc)
 {
-    cout << "Options:\n" << desc << '\n';
+    std::cout << "Options:\n" << desc << '\n';
     exit(1);
 }
 
