@@ -9,11 +9,13 @@
 #include "boost/filesystem/path.hpp"
 
 class GoBook;
+using boost::filesystem::path;
 
 //----------------------------------------------------------------------------
 
 namespace FuegoMainUtil
 {
+
     /** Try to load opening book from a set of known paths.
         The file name is "book.dat". The paths tried are (in this order):
         - the directory of the executable
@@ -23,7 +25,7 @@ namespace FuegoMainUtil
         @param programDir the directory of the executable (may be a relative
         path or an empty string)
         @throws SgException, if book is not found */
-    void LoadBook(GoBook& book, const boost::filesystem::path& programDir);
+    void LoadBook(GoBook& book, const path& programDir);
 
     /** Return Fuego version.
         If the macro VERSION was defined by the build system during compile
