@@ -11,12 +11,10 @@
 #include "GoBoardUtil.h"
 #include "SgTime.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 void GoBoardCheckPerformance::CheckPerformance(const GoBoard& board,
-                                               ostream& out)
+                                               std::ostream& out)
 {
     const int NUM_REPETITIONS = 10000;
     int i;

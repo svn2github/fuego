@@ -6,8 +6,6 @@
 #include "SgSystem.h"
 #include "GoBoardHistory.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 void GoBoardHistory::SetFromBoard(const GoBoard& bd)
@@ -22,7 +20,7 @@ void GoBoardHistory::SetFromBoard(const GoBoard& bd)
 }
 
 bool GoBoardHistory::IsAlternatePlayFollowUpOf(const GoBoardHistory& other,
-                                               vector<SgPoint>& sequence)
+                                               std::vector<SgPoint>& sequence)
 {
     if (m_boardSize != other.m_boardSize
         || m_rules != other.m_rules

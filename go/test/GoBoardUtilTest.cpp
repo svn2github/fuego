@@ -13,7 +13,6 @@
 #include "GoSetupUtil.h"
 #include "SgPointSet.h"
 
-using namespace std;
 using namespace GoBoardUtil;
 using SgPointUtil::Pt;
 

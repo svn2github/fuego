@@ -7,19 +7,15 @@
 
 #include "GoBoard.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoBoardSynchronizer::GoBoardSynchronizer(const GoBoard& publisher)
     : m_publisher(publisher),
       m_subscriber(0)
-{
-}
+{ }
 
 GoBoardSynchronizer::~GoBoardSynchronizer()
-{
-}
+{ }
 
 void GoBoardSynchronizer::SetSubscriber(GoBoard& subscriber)
 {
@@ -46,8 +42,7 @@ void GoBoardSynchronizer::ExecuteSubscriber(const GoPlayerMove& move)
 }
 
 void GoBoardSynchronizer::OnBoardChange()
-{
-}
+{ }
 
 void GoBoardSynchronizer::PrePlay(GoPlayerMove move)
 {
@@ -60,12 +55,10 @@ void GoBoardSynchronizer::OnPlay(GoPlayerMove move)
 }
 
 void GoBoardSynchronizer::PreUndo()
-{
-}
+{ }
 
 void GoBoardSynchronizer::OnUndo()
-{
-}
+{ }
 
 void GoBoardSynchronizer::UpdateFromInit()
 {

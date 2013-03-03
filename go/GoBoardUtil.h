@@ -423,7 +423,11 @@ namespace GoBoardUtil
     template<class BOARD>
     float TrompTaylorScore(const BOARD& bd, float komi,
                            SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
+    template<class BOARD>
+    float JapaneseScore(const BOARD& bd, float komi,
+                           SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
 
+ 
     /** Check if the last two moves were two passes in a row, the first pass
         by the current color to play, the second by the opponent. */
     bool TwoPasses(const GoBoard& bd);
@@ -838,8 +842,15 @@ inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd, const SgPoint lastMo
 }
 
 template<class BOARD>
+float GoBoardUtil::JapaneseScore(const BOARD& bd, float komi,
+                                    SgPointArray<SgEmptyBlackWhite>* scoreBoard)
+{
+    return GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoard);
+}
+
+template<class BOARD>
 float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi,
-                                  SgPointArray<SgEmptyBlackWhite>* scoreBoard)
+                                    SgPointArray<SgEmptyBlackWhite>* scoreBoard)
 {
     float score = -komi;
     // Mark empty points visited in one of the (non-overlapping) flood-fills

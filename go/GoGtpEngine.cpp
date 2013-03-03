@@ -408,18 +408,20 @@ void GoGtpEngine::CmdClock(GtpCommand& cmd)
 }
 
 /** Compute final score.
-    Computes a final score only, if Tromp-Taylor rules are used
-    (GoRules::CaptureDead() == true and GoRules::JapaneseScoring() == false).
+    Computes score only if GoRules::CaptureDead() == true.
     Otherwise it returns an error. Override this function for players that
     have enough knowledge to do a better scoring. */
 void GoGtpEngine::CmdFinalScore(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
     const GoBoard& bd = Board();
-    if (! bd.Rules().CaptureDead() || bd.Rules().JapaneseScoring())
-        throw GtpFailure("can only score if Tromp-Taylor rules");
+    if (! bd.Rules().CaptureDead())
+        throw GtpFailure("can only score after capturing dead");
     float komi = bd.Rules().Komi().ToFloat();
-    float score = GoBoardUtil::TrompTaylorScore(bd, komi);
+    float score =
+        bd.Rules().JapaneseScoring() ?
+            GoBoardUtil::JapaneseScore(bd, komi)
+          : GoBoardUtil::TrompTaylorScore(bd, komi);
     cmd << GoUtil::ScoreToString(score);
 }
 

@@ -11,7 +11,8 @@
 #include "GoBoardUtil.h"
 #include "GoBook.h"
 
-using namespace std;
+using std::istringstream;
+using std::vector;
 using GoBoardUtil::UndoAll;
 using SgPointUtil::Pt;
 

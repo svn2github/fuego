@@ -18,7 +18,6 @@
 #include "SgNbIterator.h"
 #include "SgProp.h"
 
-using namespace std;
 using SgPropUtil::PointToSgfString;
 
 //----------------------------------------------------------------------------
@@ -33,7 +32,7 @@ void CfgDistanceCheck(const GoBoard& bd, SgPointArray<int>& array,
     {
         if (bd.Occupied(p))
             p = bd.Anchor(p);
-        if (array[p] == numeric_limits<int>::max())
+        if (array[p] == std::numeric_limits<int>::max())
         {
             array[p] = d;
             pointList.PushBack(p);
@@ -237,7 +236,7 @@ bool GoBoardUtil::BlockIsAdjacentTo(const GoBoard& bd, SgPoint block,
 SgPointArray<int> GoBoardUtil::CfgDistance(const GoBoard& bd, SgPoint p,
                                            int maxDist)
 {
-    SgPointArray<int> array(numeric_limits<int>::max());
+    SgPointArray<int> array(std::numeric_limits<int>::max());
     GoPointList pointList;
     if (bd.Occupied(p))
         p = bd.Anchor(p);
@@ -404,7 +403,7 @@ void GoBoardUtil::GetCoordString(SgMove p, std::string* s, int boardSize)
         int row = SgPointUtil::Row(p);
         if (9 <= col)
             ++col; // skip 'I'
-        ostringstream o;
+        std::ostringstream o;
         o << static_cast<char>('A' + col - 1) << (boardSize + 1 - row);
         *s = o.str();
     }

@@ -17,7 +17,12 @@
 #include "SgException.h"
 #include "SgWrite.h"
 
-using namespace std;
+using std::istringstream;
+using std::ofstream;
+using std::ostringstream;
+using std::pair;
+using std::string;
+using std::vector;
 
 //----------------------------------------------------------------------------
 
@@ -253,9 +258,9 @@ vector<SgPoint> GoBook::LookupAllMoves(const GoBoard& bd) const
     return result;
 }
 
-void GoBook::ParseLine(const string& line, GoBoard& tempBoard)
+void GoBook::ParseLine(const std::string& line, GoBoard& tempBoard)
 {
-    istringstream in(line);
+    std::istringstream in(line);
     int size;
     in >> size;
     if (size < 1)
@@ -274,7 +279,7 @@ void GoBook::ParseLine(const string& line, GoBoard& tempBoard)
     InsertEntry(variation, moves, size, tempBoard, m_lineCount);
 }
 
-void GoBook::Read(istream& in, const string& streamName)
+void GoBook::Read(std::istream& in, const string& streamName)
 {
     Clear();
     m_warningMaxSizeShown = false;
@@ -294,13 +299,13 @@ void GoBook::Read(istream& in, const string& streamName)
 
 void GoBook::Read(const string& filename)
 {
-    ifstream in(filename.c_str());
+    std::ifstream in(filename.c_str());
     if (! in)
         throw SgException("Cannot find file " + filename);
     Read(in, filename);
 }
 
-vector<SgPoint> GoBook::ReadPoints(istream& in) const
+vector<SgPoint> GoBook::ReadPoints(std::istream& in) const
 {
     vector<SgPoint> result;
     while (true)
@@ -309,7 +314,7 @@ vector<SgPoint> GoBook::ReadPoints(istream& in) const
         in >> s;
         if (! in || s == "|")
             break;
-        istringstream in2(s);
+        std::istringstream in2(s);
         SgPoint p;
         in2 >> SgReadPoint(p);
         if (! in2)
@@ -321,14 +326,14 @@ vector<SgPoint> GoBook::ReadPoints(istream& in) const
 
 void GoBook::ThrowError(const string& message) const
 {
-    ostringstream out;
+    std::ostringstream out;
     if (m_streamName != "")
         out << m_streamName << ':';
     out << m_lineCount << ": " << message;
     throw SgException(out.str());
 }
 
-void GoBook::Write(ostream& out) const
+void GoBook::Write(std::ostream& out) const
 {
     for (vector<Entry>::const_iterator it = m_entries.begin();
          it != m_entries.end(); ++it)
@@ -350,7 +355,7 @@ void GoBook::Write(ostream& out) const
     }
 }
 
-void GoBook::WriteInfo(ostream& out) const
+void GoBook::WriteInfo(std::ostream& out) const
 {
     out << SgWriteLabel("NuBasic") << m_entries.size() << '\n'
         << SgWriteLabel("NuTransformed") << m_map.size() << '\n';

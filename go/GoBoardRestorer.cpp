@@ -8,8 +8,6 @@
 
 #include "GoBoardUtil.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoBoardRestorer::GoBoardRestorer(GoBoard& bd)

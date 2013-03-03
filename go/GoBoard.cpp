@@ -12,8 +12,6 @@
 #include "SgNbIterator.h"
 #include "SgStack.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {
