@@ -22,6 +22,7 @@ GoBoardRestorer::GoBoardRestorer(GoBoard& bd)
 GoBoardRestorer::~GoBoardRestorer()
 {
     GoBoardUtil::UndoAll(m_bd);
+    m_bd.Rules() = m_rules;
     if (m_bd.Size() != m_size)
         m_bd.Init(m_size);
     for (MoveList::Iterator it(m_moves); it; ++it)
