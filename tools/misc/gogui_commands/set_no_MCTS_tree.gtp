@@ -1,0 +1,16 @@
+#-----------------------------------------------------------------------------
+# GTP snippet to prevent Fuego from expanding a game tree in MCTS.
+# This results in a flat, "playout-only" behavior. Prior knowledge is
+# still generated, however.
+# @todo bug: does not work very well.
+# only the last line should be needed.
+# However, this fails to expand even the children of the root. 
+# It currently works only if those children have been created by a previous
+# search without the threshold.
+# This file can be loaded into GoGui using the command 
+# GoGui > Tools > Send File
+#-----------------------------------------------------------------------------
+
+uct_param_search expand_threshold 1
+reg_genmove_toplay
+uct_param_search expand_threshold 1000000000

@@ -1,0 +1,7 @@
+# GTP snippet to switch on live-gfx for MCTS, showing counts.
+# This file can be loaded into GoGui using the command 
+# GoGui > Tools > Send File
+#-----------------------------------------------------------------------------
+
+uct_param_search live_gfx counts
+uct_param_search live_gfx_interval 2000

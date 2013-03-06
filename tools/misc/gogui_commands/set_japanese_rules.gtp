@@ -1,0 +1,8 @@
+#-----------------------------------------------------------------------------
+# GTP snippet to set Japanese rules in Fuego
+# This file can be loaded into GoGui using the command 
+# GoGui > Tools > Send File
+#-----------------------------------------------------------------------------
+
+go_rules japanese
+go_param_rules japanese_scoring 1

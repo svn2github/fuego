@@ -1,0 +1,11 @@
+# GTP snippet to switch on live-gfx for MCTS, showing territory ownership.
+# This file can be loaded into GoGui using the command 
+# GoGui > Tools > Send File
+# @todo bug: currently, uct_param_globalsearch live_gfx does not seem to work
+# without also switching uct_param_search live_gfx on. The displays overlap. 
+# This behavior broke at some unknown past time.
+#-----------------------------------------------------------------------------
+
+uct_param_search live_gfx counts
+uct_param_globalsearch live_gfx 1
+uct_param_globalsearch territory_statistics 1
