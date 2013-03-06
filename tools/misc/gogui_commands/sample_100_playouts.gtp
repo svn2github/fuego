@@ -1,0 +1,13 @@
+#-----------------------------------------------------------------------------
+# GTP snippet to create and save 100 playouts in Fuego.
+# This file can be loaded into GoGui using the command 
+# GoGui > Tools > Send File
+#-----------------------------------------------------------------------------
+
+uct_param_player max_games 100
+uct_param_search keep_games 1
+uct_param_search lock_free 0
+uct_param_search number_threads 1
+reg_genmove_toplay
+# run Uct SaveGames now.
+
