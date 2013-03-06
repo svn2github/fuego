@@ -9,6 +9,8 @@
 
 go_rules japanese
 go_param_rules japanese_scoring 1
+# prevent resigning when testing whether pass is generated at the end.
+uct_param_player resign_threshold 0
 
 # uct_param_player early_pass 0
 # Want to switch off early pass since program should play well under Japanese rules

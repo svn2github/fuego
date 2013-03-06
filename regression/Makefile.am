@@ -55,6 +55,7 @@ playout_approach_move.tst \
 playout_atari_capture.tst \
 playout_nakade.tst \
 repetition.tst \
+scoring_static.tst \
 semeai_big.tst \
 simpleplayers.tst \
 static_safety_basics.tst \
@@ -107,6 +108,7 @@ sgf/eyes/1.5/make-nakade.1.sgf \
 sgf/eyes/1.5/make-nakade.2.sgf \
 sgf/eyes/1/nakade.1.sgf \
 sgf/final_moves/aja-example.sgf \
+sgf/final_moves/pass-scoring.sgf \
 sgf/final_moves/play-in-benson-safe.1.sgf \
 sgf/final_moves/play-in-benson-safe.2.sgf \
 sgf/final_moves/yamato-example2.sgf \
@@ -274,6 +276,7 @@ sgf/games/2012/Blubbel-AyaBot4-2.sgf \
 sgf/games/2012/JAIST-Cup/Fuego13-Zen19S.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
+sgf/games/2013/KGS/AyaMC-nomiBot.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
