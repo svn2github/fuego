@@ -10,27 +10,18 @@
 
 //----------------------------------------------------------------------------
 
-/** An array of three values of type T, indexed by SG_EMPTY, SG_BLACK and
-    SG_WHITE.
-    Stores index SG_EMPTY ( = 4) at array[0]. */
+/** Array of three values of type T, indexed by SG_BLACK, SG_WHITE, SG_EMPTY.
+*/
 template <class T>
 class SgEBWArray
 {
 public:
     /** Constructor.
-        Constructs elements with the default constructor of type T.
-        @note Previously, EBWArray automatically initialized primitive types
-        like ints or pointers with 0, and there was a second class
-        EBWConstrArray used for non-primitive types. This has changed,
-        because it is not the standard semantics for container classes in C++,
-        and because it does not allow use cases with incremental
-        initialization after construction. If you want to initialize for
-        example an SgBWArray<int> with 0, use the constructor that takes a
-        default value. */
+        Constructs elements with the default constructor of type T. */
     SgEBWArray()
-    {
-    }
+    { }
 
+    /** Constructor. Sets all three elements to val. */
     SgEBWArray(const T& val)
     {
         m_array[SG_BLACK] = val;
