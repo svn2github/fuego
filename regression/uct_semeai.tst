@@ -518,3 +518,40 @@ loadsgf sgf/games/2011/LittleGolem/1226980.sgf 26
 #? [1]*
 # W is totally winning if wins semeai
 
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 252
+1740 reg_genmove w
+#? [L13]
+# make two eyes here, W is ahead in the fight with the left side group
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 253
+1750 reg_genmove b
+#? [L13]
+# Black can make local seki with the top, win overall killing the left.
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 255
+1760 reg_genmove b
+#? [N13|L12|L14|H18|K18]
+# H19 and K19 probably work too, but odd.
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 257
+1770 reg_genmove b
+#? [L12|L14|H18|K18|K19]
+# H19 may work too, but odd.
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 258
+1780 reg_genmove w
+#? [M6]
+# W can win again. H10 and J14 are also possible but outside first is normal.
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 260
+1790 reg_genmove w
+#? [M6]
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 268
+1800 reg_genmove w
+#? [N8|J14]
+
+loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 269
+1810 reg_genmove b
+#? [N19]*
+# Black still loses but this is the only move.
