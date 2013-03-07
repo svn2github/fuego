@@ -1263,6 +1263,9 @@ GoAdjBlockIterator<BOARD>::GoAdjBlockIterator(const BOARD& board,
 
 //----------------------------------------------------------------------------
 
+/** Iterate through all on-board neighbors of point p. 
+ Compare with SgNb4Iterator which gives off-board SG_BORDER neighbors too.
+*/
 class GoNbIterator
     : public SgNbIterator
 {

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file GoBoardUtilTest.cpp
-    Unit tests for GoBoard. */
+    Unit tests for GoBoardUtil. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
@@ -143,6 +143,45 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiagonalsOfColor)
     BOOST_CHECK(diags.Contains(Pt(3, 3)));
 }
 
+void TestNb(const GoBoard& bd, SgPoint p, int nuNb)
+{
+    int nu = 0;
+    for (GoNbIterator it(bd, p); it; ++it)
+        ++nu;
+    BOOST_CHECK_EQUAL(nu, nuNb);
+}
+
+void TestSize(int size)
+{
+    GoBoard bd(size);
+    TestNb(bd, Pt(1,1), 2);
+    TestNb(bd, Pt(1,size), 2);
+    TestNb(bd, Pt(size,1), 2);
+    TestNb(bd, Pt(size,size), 2);
+    TestNb(bd, Pt(1,2), 3);
+    TestNb(bd, Pt(size - 1,1), 3);
+    TestNb(bd, Pt(size,size - 1), 3);
+    TestNb(bd, Pt(2,2), 4);
+    TestNb(bd, Pt(size - 1,size - 1), 4);
+    if (size > 3)
+    {
+        TestNb(bd, Pt(3, size), 3);
+        TestNb(bd, Pt(3, size - 2), 4);
+    }
+}
+    
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_GoNbIterator)
+{
+    TestSize(3);
+    TestSize(5);
+    if (SG_MAX_SIZE >= 9)
+        TestSize(9);
+    if (SG_MAX_SIZE >= 13)
+        TestSize(13);
+    if (SG_MAX_SIZE >= 19)
+        TestSize(19);
+}
+    
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_HasAdjacentBlocks)
 {
     GoSetup setup;
