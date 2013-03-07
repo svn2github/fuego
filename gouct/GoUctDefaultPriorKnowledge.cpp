@@ -15,20 +15,12 @@ bool SetsAtari(const GoBoard& bd, SgPoint p)
 {
     SG_ASSERT(bd.IsEmpty(p)); // Already checked
     SgBlackWhite opp = SgOppBW(bd.ToPlay());
-    if (bd.NumNeighbors(p, opp) == 0)
-        return false;
-    if (! bd.IsBorder(p + SG_NS) && bd.GetColor(p + SG_NS) == opp
-        && bd.NumLiberties(p + SG_NS) == 2)
-        return true;
-    if (! bd.IsBorder(p - SG_NS) && bd.GetColor(p - SG_NS) == opp
-        && bd.NumLiberties(p - SG_NS) == 2)
-        return true;
-    if (! bd.IsBorder(p + SG_WE) && bd.GetColor(p + SG_WE) == opp
-        && bd.NumLiberties(p + SG_WE) == 2)
-        return true;
-    if (! bd.IsBorder(p - SG_WE) && bd.GetColor(p - SG_WE) == opp
-        && bd.NumLiberties(p - SG_WE) == 2)
-        return true;
+    if (bd.NumNeighbors(p, opp) > 0)
+        for (GoNbIterator it(bd, p); it; ++it)
+            if (   bd.IsColor(*it, opp)
+                && bd.NumLiberties(*it) == 2
+               )
+                return true;
     return false;
 }
 
