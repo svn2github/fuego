@@ -11,6 +11,7 @@
 #include "SgDebug.h"
 #include "SgPoint.h"
 #include "SgPointArray.h"
+#include "SgRandom.h"
 #include "SgStack.h"
 #include "SgVector.h"
 
@@ -21,33 +22,41 @@ namespace GoBoardDebug
 {
 
 /** Print the first nuInstances occurences of an event on the Go board */
-template<class BOARD>
+template<class BOARD = GoBoard>
 class EventPrinter
 {
 public:
-	EventPrinter(int nuInstances);
+	EventPrinter(int maxNuInstances);
     
-    void PrintFirstFew(const BOARD& bd, std::string message, SgPoint move, 
+    void PrintFirstFew(const BOARD& bd, std::string message,
+                       float probability,
+                       SgPoint move,
                        SgPoint move2 = SG_NULLMOVE);
 private:
-    int m_nuInstances;
+    int m_maxNuInstances;
+    SgRandom m_random;
 };
 
 } // namespace GoBoardDebug
 
 //----------------------------------------------------------------------------
 template<class BOARD>
-GoBoardDebug::EventPrinter<BOARD>::EventPrinter(int nuInstances)
-	: m_nuInstances(nuInstances)
+GoBoardDebug::EventPrinter<BOARD>::EventPrinter(int maxNuInstances)
+	: m_maxNuInstances(maxNuInstances)
 { }
 
 template<class BOARD>
-void GoBoardDebug::EventPrinter<BOARD>::PrintFirstFew(
-	const BOARD& bd, std::string message, SgPoint move, SgPoint move2)
+void GoBoardDebug::EventPrinter<BOARD>::
+PrintFirstFew(const BOARD& bd,
+              std::string message,
+              float probability,
+              SgPoint move,
+              SgPoint move2)
 {
-	if (--m_nuInstances >= 0)
+	if (m_random.Float_01() <= probability && --m_maxNuInstances >= 0)
     {
-        SgDebug() << message << SgBW(bd.ToPlay())  << ' '
+        SgDebug() << message << ' '
+                  << SgBW(bd.ToPlay()) << ' '
         		  << SgWritePoint(move);
         if (move2 != SG_NULLMOVE)
         	SgDebug() << ' ' << SgWritePoint(move2);
@@ -275,9 +284,6 @@ namespace GoBoardUtil
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgVector<SgPoint>* neighbors);
 
-    /** Check if Tromp-Taylor rules and pass wins. */
-    bool TrompTaylorPassWins(const GoBoard& bd, SgBlackWhite toPlay);
-
     /** Play a move if legal
         @param bd The board.
         @param p Move to play; SG_PASS or on-board point.
@@ -291,6 +297,9 @@ namespace GoBoardUtil
         @return true if the move was executed. */
     bool PlayIfLegal(GoBoard& bd, SgPoint p);
 
+    bool PointHasAdjacentBlock(const GoBoard& bd, SgPoint p,
+                               SgBlackWhite blockColor, int maxLib);
+    
     /** Keep only the anchor of each block in the list.
         Points not occupied are removed from the list. The initial list may
         contain duplicate stones; these will be thrown out. The returned list
@@ -411,6 +420,9 @@ namespace GoBoardUtil
 
     void TestForChain(GoBoard& bd, SgPoint block, SgPoint block2, SgPoint lib,
                       SgVector<SgPoint>* extended);
+
+    /** Check if Tromp-Taylor rules and pass wins. */
+    bool TrompTaylorPassWins(const GoBoard& bd, SgBlackWhite toPlay);
 
     /** Compute the Tromp-Taylor-score for the current positions.
         The Tromp-Taylor score is a chinese scoring method that assumes that
@@ -1030,8 +1042,7 @@ private:
 inline GoRestoreKoRule::GoRestoreKoRule(GoBoard& board)
     : m_board(board),
       m_koRule(board.Rules().GetKoRule())
-{
-}
+{ }
 
 inline GoRestoreKoRule::~GoRestoreKoRule()
 {
@@ -1275,8 +1286,7 @@ public:
 
 inline GoNbIterator::GoNbIterator(const GoBoard& bd, SgPoint p)
     : SgNbIterator(bd.BoardConst(), p)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -1291,12 +1301,17 @@ public:
     WriteMap(const GoBoard& bd, const SgPointSet& points)
     : m_bd(bd),
       m_points(points)
+    { }
+
+    const GoBoard& Board() const
     {
+        return m_bd;
     }
 
-    const GoBoard& Board() const {return m_bd;}
-
-    const SgPointSet& Points() const { return m_points; }
+    const SgPointSet& Points() const
+    {
+        return m_points;
+    }
 
 private:
     const GoBoard& m_bd;
