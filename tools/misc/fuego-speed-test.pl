@@ -21,7 +21,7 @@ sub printUsage {
     print STDERR "    --games <n>        Number of games in search. (default $games)\n";
     print STDERR "    --playouts <n>     Number of playouts per game. (default $playouts)\n";
     print STDERR "    --threads <n>      Number of threads. (default $threads)\n";
-    print STDERR "    --memory <n>       Set Fuego's maximum memory paramater.\n";
+    print STDERR "    --memory <n>       Set Fuego's maximum memory parameter.\n";
     print STDERR "    --count <n>        Number of tests to average. (default $count)\n";
     print STDERR "    --program <path>   Path to the Fuego executable.\n";
     print STDERR "    --verbose          Display Fuego's output.\n";
