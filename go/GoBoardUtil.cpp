@@ -409,6 +409,7 @@ void GoBoardUtil::GetCoordString(SgMove p, std::string* s, int boardSize)
     }
 }
 
+// @todo rename to BlockHasAdjacentOpponentBlock @see PointHasAdjacentBlock
 bool GoBoardUtil::HasAdjacentBlocks(const GoBoard& bd, SgPoint p,
                                     int maxLib)
 {
@@ -417,6 +418,18 @@ bool GoBoardUtil::HasAdjacentBlocks(const GoBoard& bd, SgPoint p,
     for (GoBoard::StoneIterator stone(bd, p); stone; ++stone)
         for (SgNb4Iterator nb(*stone); nb; ++nb)
             if (bd.IsColor(*nb, other) && bd.AtMostNumLibs(*nb, maxLib))
+                return true;
+    return false;
+}
+
+bool GoBoardUtil::PointHasAdjacentBlock(const GoBoard& bd, SgPoint p,
+                                        SgBlackWhite blockColor, int maxLib)
+{
+    SG_ASSERT(bd.GetColor(p) != blockColor);
+    for (GoNbIterator it(bd, p); it; ++it)
+            if (  bd.IsColor(*it, blockColor)
+               && bd.AtMostNumLibs(*it, maxLib)
+               )
                 return true;
     return false;
 }

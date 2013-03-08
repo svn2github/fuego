@@ -196,6 +196,11 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_HasAdjacentBlocks)
     BOOST_CHECK(HasAdjacentBlocks(bd, Pt(2, 1), 3));
 }
 
+/* @todo
+ add tests for
+    bool GoBoardUtil::PointHasAdjacentBlock(const GoBoard& bd, SgPoint p,
+                                            SgBlackWhite color, int maxLib)
+*/
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSimpleChain_1)
 {
