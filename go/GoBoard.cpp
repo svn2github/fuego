@@ -517,8 +517,8 @@ void GoBoard::InitBlock(GoBoard::Block& block, SgBlackWhite c, SgPoint anchor)
         {
             stones.PushBack(p);
             m_state.m_block[p] = &block;
-            for (SgNb4Iterator it(p); it; ++it)
-                if (! m_isBorder[*it] && m_marker.NewMark(*it))
+            for (GoNbIterator it(*this, p); it; ++it)
+                if (m_marker.NewMark(*it))
                     stack.Push(*it);
         }
     }

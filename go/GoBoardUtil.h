@@ -529,7 +529,7 @@ inline bool GoBoardUtil::IsNeighborOfSome(const BOARD& bd, SgPoint p,
                                           SgPoint anchors[],
                                           SgBlackWhite toPlay)
 {
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNb4Iterator<BOARD> it(bd, p); it; ++it)
     {
         const SgPoint nb = *it;
         if (bd.IsColor(nb, toPlay))
@@ -661,11 +661,10 @@ inline bool GoBoardUtil::SelfAtariForColor(const BOARD& bd, SgPoint p,
     // No self-atari, enough liberties
     if (bd.NumEmptyNeighbors(p) >= 2)
         return false;
-    const SgBlackWhite opp = SgOppBW(toPlay);
     SgPoint lib = SG_NULLPOINT;
     bool hasOwnNb = false;
     bool hasCapture = false;
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNb4Iterator<BOARD> it(bd, p); it; ++it)
     {
         const SgPoint nb = *it;
         const SgBlackWhite nbColor = bd.GetColor(nb);
@@ -693,8 +692,9 @@ inline bool GoBoardUtil::SelfAtariForColor(const BOARD& bd, SgPoint p,
                 }
             hasOwnNb = true;
         }
-        else if (nbColor == opp) // opponent stones - count as lib if in atari
+        else  // opponent stones - count as lib if in atari
         {
+            SG_ASSERT(nbColor == SgOppBW(toPlay));
             if (bd.InAtari(nb))
             {
                 if (lib == SG_NULLPOINT)
@@ -717,7 +717,7 @@ inline bool GoBoardUtil::SelfAtariForColor(const BOARD& bd, SgPoint p,
         // lib == one of the captured stones.
        SgPoint anchors[4 + 1];
        bd.NeighborBlocks(p, toPlay, 1, anchors);
-       SG_ASSERT(bd.IsColor(lib, opp));
+       SG_ASSERT(bd.IsColor(lib, SgOppBW(toPlay)));
        for (typename BOARD::StoneIterator it(bd, lib); it; ++it)
        {
            if (*it != lib && IsNeighborOfSome(bd, *it, anchors, toPlay))
@@ -735,11 +735,10 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
     if (bd.NumEmptyNeighbors(p) >= 2)
         return false;
     const SgBlackWhite toPlay = bd.ToPlay();
-    const SgBlackWhite opp = SgOppBW(toPlay);
     SgPoint lib = SG_NULLPOINT;
     bool hasOwnNb = false;
     bool hasCapture = false;
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNb4Iterator<BOARD> it(bd, p); it; ++it)
     {
         const SgPoint nb = *it;
         const SgBlackWhite nbColor = bd.GetColor(nb);
@@ -767,8 +766,9 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
                 }
             hasOwnNb = true;
         }
-        else if (nbColor == opp) // opponent stones - count as lib if in atari
+        else // opponent stones - count as lib if in atari
         {
+            SG_ASSERT(nbColor == SgOppBW(toPlay));
             if (bd.InAtari(nb))
             {
                 if (lib == SG_NULLPOINT)
@@ -791,7 +791,7 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
         // lib == one of the captured stones.
        SgPoint anchors[4 + 1];
        bd.NeighborBlocks(p, toPlay, 1, anchors);
-       SG_ASSERT(bd.IsColor(lib, opp));
+       SG_ASSERT(bd.IsColor(lib, SgOppBW(toPlay)));
        for (typename BOARD::StoneIterator it(bd, lib); it; ++it)
        {
            if (*it != lib && IsNeighborOfSome(bd, *it, anchors, toPlay))
@@ -814,7 +814,9 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
 template<class BOARD> class GoAdjBlockIterator;
 
 template<class BOARD>
-inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd, const SgPoint lastMove, GoPointList& moves)
+inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd,
+                                           const SgPoint lastMove,
+                                           GoPointList& moves)
 {
     SG_ASSERT(moves.IsEmpty());
     SG_ASSERT(! SgIsSpecialMove(lastMove));
@@ -822,7 +824,7 @@ inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd, const SgPoint lastMo
     if (bd.NumNeighbors(lastMove, toPlay) == 0)
         return false;
     SgArrayList<SgPoint,4> anchorList;
-    for (SgNb4Iterator it(lastMove); it; ++it)
+    for (GoNb4Iterator<BOARD> it(bd, lastMove); it; ++it)
     {
         if (bd.GetColor(*it) != toPlay || ! bd.InAtari(*it))
             continue;
@@ -903,9 +905,10 @@ float GoBoardUtil::TrompTaylorScore(const BOARD& bd, float komi,
                 adjacent[SG_BLACK] = true;
             if (bd.HasNeighbors(p, SG_WHITE))
                 adjacent[SG_WHITE] = true;
-            for (SgNb4Iterator it2(p); it2; ++it2)
-                if (! bd.IsBorder(*it2) && bd.GetColor(*it2) == SG_EMPTY
-                    && ! mark.Contains(*it2))
+            for (GoNb4Iterator<BOARD> it2(bd, p); it2; ++it2)
+                if (  bd.GetColor(*it2) == SG_EMPTY
+                   && ! mark.Contains(*it2)
+                   )
                 {
                     stack.Push(*it2);
                     mark.Include(*it2);
@@ -1271,22 +1274,6 @@ GoAdjBlockIterator<BOARD>::GoAdjBlockIterator(const BOARD& board,
 {
     board.AdjacentBlocks(p, maxLib, m_points, MAX_ADJACENT);
 }
-
-//----------------------------------------------------------------------------
-
-/** Iterate through all on-board neighbors of point p. 
- Compare with SgNb4Iterator which gives off-board SG_BORDER neighbors too.
-*/
-class GoNbIterator
-    : public SgNbIterator
-{
-public:
-    GoNbIterator(const GoBoard& bd, SgPoint p);
-};
-
-inline GoNbIterator::GoNbIterator(const GoBoard& bd, SgPoint p)
-    : SgNbIterator(bd.BoardConst(), p)
-{ }
 
 //----------------------------------------------------------------------------
 

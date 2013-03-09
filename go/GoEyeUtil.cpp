@@ -545,7 +545,7 @@ bool GoEyeUtil::IsSinglePointEye2(const GoBoard& board, SgPoint p,
         return false;
     // All adjacent neighbours must be friendly
     SgBoardColor opp = SgOppBW(color);
-    for (SgNb4Iterator adj(p); adj; ++adj)
+    for (GoNbIterator adj(board, p); adj; ++adj)
     {
         SgBoardColor adjColor = board.GetColor(*adj);
         if (adjColor == opp || adjColor == SG_EMPTY)
@@ -606,16 +606,14 @@ bool GoEyeUtil::NumberOfMoveToEye2(const GoBoard& board, SgBlackWhite color,
     }
 
     // Count immediate adjacencies
-    for (SgNb4Iterator nb(p); nb; ++nb)
+    for (GoNbIterator nb(board, p); nb; ++nb)
     {
         SgPoint adj = *nb;
         
         // Empty points must be filled
         if (board.IsColor(adj, SG_EMPTY))
-        {
             counted.Include(adj);
-        }
-        
+
         // If adjacent opponent then can never be an eye
         else if (board.IsColor(adj, SgOppBW(color)))
         {
@@ -768,7 +766,7 @@ bool GoEyeUtil::CanBecomeSinglePointEye (const GoBoard& board, SgPoint p,
 {
     SG_ASSERT(! oppSafe[p]);
 
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNbIterator it(board, p); it; ++it)
     {
         if (oppSafe[*it])
             return false;

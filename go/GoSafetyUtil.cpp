@@ -380,7 +380,7 @@ void GoSafetyUtil::FindDameAndUnsurroundablePoints(const GoBoard& bd,
     {
         SgPoint p(*it);
         bool isDame = true;
-        for (SgNb4Iterator it(p); it; ++it)
+        for (GoNbIterator it(bd, p); it; ++it)
         {
             SgPoint nb(*it);
             if (empty[nb] && ! unsurroundable->Contains(nb))

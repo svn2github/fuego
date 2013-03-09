@@ -497,7 +497,7 @@ bool GoUctPlayoutPolicy<BOARD>::GenerateLowLibMove(SgPoint lastMove)
     {
         // play liberties of neighbor blocks
         SgArrayList<SgPoint,4> ourLowLibBlocks;
-        for (SgNb4Iterator it(lastMove); it; ++it)
+        for (GoNb4Iterator<BOARD> it(m_bd, lastMove); it; ++it)
         {
             if (m_bd.GetColor(*it) == toPlay
                 && m_bd.NumLiberties(*it) == 2)
@@ -635,11 +635,12 @@ void GoUctPlayoutPolicy<BOARD>::GenerateNakadeMove(SgPoint p)
         if (numEmptyNeighbors == 2)
         {
             int n = 0;
-            for (SgNb4Iterator it(p); it; ++it)
+            for (GoNb4Iterator<BOARD> it(m_bd, p); it; ++it)
                 if (m_bd.IsEmpty(*it))
                 {
-                    if (m_bd.NumEmptyNeighbors(*it) != 1
-                        || m_bd.NumNeighbors(*it, toPlay) > 0)
+                    if (  m_bd.NumEmptyNeighbors(*it) != 1
+                       || m_bd.NumNeighbors(*it, toPlay) > 0
+                       )
                         return;
                     if (++n > 2)
                         break;
@@ -648,17 +649,19 @@ void GoUctPlayoutPolicy<BOARD>::GenerateNakadeMove(SgPoint p)
         }
         else if (numEmptyNeighbors == 1)
         {
-            for (SgNb4Iterator it(p); it; ++it)
+            for (GoNb4Iterator<BOARD> it(m_bd, p); it; ++it)
                 if (m_bd.IsEmpty(*it))
                 {
-                    if (m_bd.NumEmptyNeighbors(*it) != 2
-                        || m_bd.NumNeighbors(*it, toPlay) > 0)
+                    if (  m_bd.NumEmptyNeighbors(*it) != 2
+                       || m_bd.NumNeighbors(*it, toPlay) > 0
+                       )
                         return;
-                    for (SgNb4Iterator it2(*it); it2; ++it2)
+                    for (GoNb4Iterator<BOARD> it2(m_bd, *it); it2; ++it2)
                         if (m_bd.IsEmpty(*it2) && *it2 != p)
                         {
-                            if (m_bd.NumEmptyNeighbors(*it2) == 1
-                                && m_bd.NumNeighbors(*it2, toPlay) == 0)
+                            if (  m_bd.NumEmptyNeighbors(*it2) == 1
+                               && m_bd.NumNeighbors(*it2, toPlay) == 0
+                               )
                                 m_moves.PushBack(*it);
                             break;
                         }

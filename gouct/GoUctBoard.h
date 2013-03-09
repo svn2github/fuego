@@ -26,6 +26,11 @@
 
 //----------------------------------------------------------------------------
 
+class GoUctBoard;
+typedef GoNb4Iterator<GoUctBoard> GoUctNbIterator;
+
+//----------------------------------------------------------------------------
+
 /** Go board optimized for Monte Carlo simulations.
     In contrast to class GoBoard, this board makes certain assumptions
     that are usually true for Monte Carlo simulations for better efficiency:
@@ -468,6 +473,8 @@ public:
     };
 };
 
+//----------------------------------------------------------------------------
+
 inline std::ostream& operator<<(std::ostream& out, const GoUctBoard& bd)
 {
     return GoWriteBoard(out, bd);
@@ -684,7 +691,7 @@ inline bool GoUctBoard::IsLibertyOfBlock(SgPoint p, SgPoint anchor) const
 inline bool GoUctBoard::CanCapture(SgPoint p, SgBlackWhite c) const
 {
     SgBlackWhite opp = SgOppBW(c);
-    for (SgNb4Iterator nb(p); nb; ++nb)
+    for (GoUctNbIterator nb(*this, p); nb; ++nb)
         if (IsColor(*nb, opp) && AtMostNumLibs(*nb, 1))
             return true;
     return false;
@@ -695,10 +702,8 @@ inline bool GoUctBoard::IsSuicide(SgPoint p, SgBlackWhite toPlay) const
     if (HasEmptyNeighbors(p))
         return false;
     SgBlackWhite opp = SgOppBW(toPlay);
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoUctNbIterator it(*this, p); it; ++it)
     {
-        if (IsBorder(*it))
-            continue;
         SgEmptyBlackWhite c = GetColor(*it);
         if (c == toPlay && NumLiberties(*it) > 1)
             return false;

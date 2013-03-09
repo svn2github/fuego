@@ -337,7 +337,7 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& move)
         SgBlackWhite opp = SgOppBW(toPlay);
         SgPoint replaceMove = SG_NULLMOVE;
         // ReplaceMove is the liberty we would have after playing at p
-        for (SgNb4Iterator it(move); it; ++it)
+        for (GoNb4Iterator<BOARD> it(bd, move); it; ++it)
         {
             SgBoardColor c = bd.GetColor(*it);
             if (c == SG_EMPTY)
@@ -394,7 +394,7 @@ bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
     SG_ASSERT(bd.Anchor(anchor) == anchor);
     const SgBlackWhite color = bd.GetStone(anchor);
     int nu = -2; // need 2 new libs (lose 1 lib by playing on lib itself)
-    for (SgNb4Iterator it(lib); it; ++it)
+    for (GoNb4Iterator<BOARD> it(bd, lib); it; ++it)
     {
         SgEmptyBlackWhite c = bd.GetColor(*it);
         if (c == SG_EMPTY)

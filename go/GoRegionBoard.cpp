@@ -135,7 +135,7 @@ void GoRegionBoard::UpdateBlock(int move, SgBlackWhite moveColor)
     if (! Board().IsSingleStone(move)) // find old neighbor blocks
     {
         SgVectorOf<GoBlock> old;
-        for (SgNb4Iterator it(move); it; ++it)
+        for (GoNbIterator it(Board(), move); it; ++it)
         {
             if (IsColor(*it, moveColor))
                 old.Include(BlockAt(*it));
@@ -471,10 +471,10 @@ GoRegion* GoRegionBoard::MergeAll(const SgVectorOf<GoRegion>& regions,
 }
 
 void GoRegionBoard::MergeAdjacentAndAddBlock(SgPoint move,
-                                                  SgBlackWhite capturedColor)
+                                             SgBlackWhite capturedColor)
 {
     SgVector<SgPoint> nb;
-    for (SgNb4Iterator it(move); it; ++it)
+    for (GoNbIterator it(Board(), move); it; ++it)
         if (Board().IsEmpty(*it))
             nb.PushBack(*it);
 

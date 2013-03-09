@@ -142,7 +142,7 @@ bool GoRegion::IsInteriorBlock(const GoBlock* block) const
     SG_ASSERT(m_blocks.Contains(block));
     const SgBlackWhite opp = SgOppBW(block->Color());
     for (GoBoard::StoneIterator it(m_bd, block->Anchor()); it; ++it)
-        for (SgNb4Iterator nb(*it); nb; ++nb)
+        for (GoNbIterator nb(m_bd, *it); nb; ++nb)
         {
             const SgPoint p = *nb;
             if (   (m_bd.IsEmpty(p) || m_bd.IsColor(p, opp))

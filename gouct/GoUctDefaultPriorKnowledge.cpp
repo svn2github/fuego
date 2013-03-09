@@ -36,7 +36,7 @@ bool InSmallEyeSpace(const GoBoard& bd, SgPoint p, SgBlackWhite eyeColor)
     int size = 1 + bd.NumNeighbors(p, attacker) + bd.NumEmptyNeighbors(p);
     if (size > 3)
         return false;
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNbIterator it(bd, p); it; ++it)
     {
     	if (bd.IsEmpty(*it) || bd.IsColor(*it, attacker))
         {

@@ -416,7 +416,7 @@ bool GoBoardUtil::HasAdjacentBlocks(const GoBoard& bd, SgPoint p,
     SG_ASSERT(bd.Occupied(p));
     const SgBlackWhite other = SgOppBW(bd.GetStone(p));
     for (GoBoard::StoneIterator stone(bd, p); stone; ++stone)
-        for (SgNb4Iterator nb(*stone); nb; ++nb)
+        for (GoNbIterator nb(bd, *stone); nb; ++nb)
             if (bd.IsColor(*nb, other) && bd.AtMostNumLibs(*nb, maxLib))
                 return true;
     return false;
@@ -529,17 +529,17 @@ bool GoBoardUtil::ManySecondaryLibs(const GoBoard& bd, SgPoint block)
     for (GoBoard::LibertyIterator it(bd, block); it; ++it)
     {
         SgPoint p(*it);
-        if (m.NewMark(p))
-            if (++nu >= LIBERTY_LIMIT)
+        if (m.NewMark(p) && ++nu >= LIBERTY_LIMIT)
+            return true;
+        for (GoNbIterator itn(bd, p); itn; ++itn)
+            if (  bd.IsEmpty(*itn)
+               && m.NewMark(*itn)
+               && ++nu >= LIBERTY_LIMIT
+               )
                 return true;
-        for (SgNb4Iterator itn(p); itn; ++itn)
-        {
-            if (bd.IsEmpty(*itn) && m.NewMark(*itn))
-                if (++nu >= LIBERTY_LIMIT)
-                    return true;
-        }
     }
-    return (nu >= LIBERTY_LIMIT);
+    SG_ASSERT(nu < LIBERTY_LIMIT);
+    return false;
 }
 
 SgArrayList<SgPoint,4> GoBoardUtil::NeighborsOfColor(const GoBoard& bd,
@@ -896,7 +896,7 @@ SgRect GoBoardUtil::GetDirtyRegion(const GoBoard& bd, SgMove move,
     // This move adjusts libs for all adjacent blocks
     if (checklibs)
     {
-        for (SgNb4Iterator inb(move); inb; ++inb)
+        for (GoNbIterator inb(bd, move); inb; ++inb)
             if (bd.Occupied(*inb))
                 for (GoBoard::StoneIterator istone(bd, *inb); istone;
                      ++istone)
@@ -906,7 +906,7 @@ SgRect GoBoardUtil::GetDirtyRegion(const GoBoard& bd, SgMove move,
     // Check if this move will make a capture
     if (premove)
     {
-        for (SgNb4Iterator inb(move); inb; ++inb)
+        for (GoNbIterator inb(bd, move); inb; ++inb)
         {
             if (bd.IsColor(*inb, opp) && bd.NumLiberties(*inb) == 1)
             {
@@ -917,7 +917,7 @@ SgRect GoBoardUtil::GetDirtyRegion(const GoBoard& bd, SgMove move,
                     // Track blocks who gain libs as a result of capture
                     if (checklibs)
                     {
-                        for (SgNb4Iterator inb2(*icap); inb2; ++inb2)
+                        for (GoNbIterator inb2(bd, *icap); inb2; ++inb2)
                             if (bd.IsColor(*inb2, colour))
                                 blocks.Include(bd.Anchor(*inb2));
                     }
@@ -937,7 +937,7 @@ SgRect GoBoardUtil::GetDirtyRegion(const GoBoard& bd, SgMove move,
             // Track blocks who gained liberties as a result of a capture
             if (checklibs)
             {
-                for (SgNb4Iterator inb(*icaptures); inb; ++inb)
+                for (GoNbIterator inb(bd, *icaptures); inb; ++inb)
                     if (bd.IsColor(*inb, colour))
                         blocks.Include(bd.Anchor(*inb));
             }
@@ -957,16 +957,17 @@ SgRect GoBoardUtil::GetDirtyRegion(const GoBoard& bd, SgMove move,
 }
 
 int GoBoardUtil::Approx2Libs(const GoBoard& board, SgPoint block,
-    SgPoint p, SgBlackWhite color)
+                             SgPoint p, SgBlackWhite color)
 {
     int libs2 = 0;
-    for (SgNb4Iterator inb(p); inb; ++inb)
+    for (GoNbIterator inb(board, p); inb; ++inb)
     {
         SgPoint nb = *inb;
         if (board.IsEmpty(nb))
             libs2++;
-        else if (board.IsColor(nb, color)
-            && board.Anchor(nb) != board.Anchor(block))
+        else if (  board.IsColor(nb, color)
+                && board.Anchor(nb) != board.Anchor(block)
+                )
             libs2 += board.NumLiberties(nb); // May double count libs
     }
 

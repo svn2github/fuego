@@ -190,12 +190,10 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
     if (bd.HasEmptyNeighbors(p) || bd.HasNeighbors(p, opp))
         return false;
     SgArrayList<SgPoint,2> anchors;
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNbIterator it(bd, p); it; ++it)
     {
         SgPoint nbPoint = *it;
-        if (bd.IsBorder(nbPoint))
-            continue;
-        SG_ASSERT(bd.GetColor(nbPoint) == c);
+        SG_ASSERT(bd.IsColor(nbPoint, c));
         SgPoint nbAnchor = bd.Anchor(nbPoint);
         if (! anchors.Contains(nbAnchor))
         {
@@ -213,11 +211,9 @@ inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
             continue;
         bool isSecondSharedEye = true;
         SgArrayList<SgPoint,2> foundAnchors;
-        for (SgNb4Iterator it2(lib); it2; ++it2)
+        for (GoNbIterator it2(bd, lib); it2; ++it2)
         {
             SgPoint nbPoint = *it2;
-            if (bd.IsBorder(nbPoint))
-                continue;
             if (bd.GetColor(nbPoint) != c)
             {
                 isSecondSharedEye = false;
@@ -278,7 +274,7 @@ bool GoEyeUtil::MakesNakadeShape(const BOARD& bd, SgPoint p,
     {
         SgPoint p = toProcess.Back();
         toProcess.PopBack();
-        for (SgNb4Iterator it(p); it; ++it)
+        for (GoNb4Iterator<BOARD> it(bd, p); it; ++it)
             if (bd.IsColor(*it, toPlay) && ! area.Contains(*it))
             {
                 area.Include(*it);

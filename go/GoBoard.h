@@ -1053,6 +1053,27 @@ public:
     };
 };
 
+//----------------------------------------------------------------------------
+
+/** Iterate through all on-board neighbors of point p.
+ Compare with SgNb4Iterator which gives off-board SG_BORDER neighbors too.
+ */
+template<class BOARD>
+class GoNb4Iterator
+: public SgNbIterator
+{
+public:
+    GoNb4Iterator(const BOARD& bd, SgPoint p);
+};
+
+template<class BOARD>
+inline GoNb4Iterator<BOARD>::GoNb4Iterator(const BOARD& bd, SgPoint p)
+: SgNbIterator(bd.BoardConst(), p)
+{ }
+
+typedef GoNb4Iterator<GoBoard> GoNbIterator;
+//----------------------------------------------------------------------------
+
 inline GoBoard::StoneIterator::StoneIterator(const GoBoard& bd, SgPoint p)
     : m_it(bd.m_state.m_block[p]->Stones()),
       m_board(bd)
@@ -1395,7 +1416,7 @@ inline bool GoBoard::IsLibertyOfBlock(SgPoint p, SgPoint anchor) const
 inline bool GoBoard::CanCapture(SgPoint p, SgBlackWhite c) const
 {
     SgBlackWhite opp = SgOppBW(c);
-    for (SgNb4Iterator nb(p); nb; ++nb)
+    for (GoNbIterator nb(*this, p); nb; ++nb)
         if (IsColor(*nb, opp) && AtMostNumLibs(*nb, 1))
             return true;
     return false;
@@ -1421,10 +1442,8 @@ inline bool GoBoard::IsSuicide(SgPoint p, SgBlackWhite toPlay) const
     if (HasEmptyNeighbors(p))
         return false;
     SgBlackWhite opp = SgOppBW(toPlay);
-    for (SgNb4Iterator it(p); it; ++it)
+    for (GoNbIterator it(*this, p); it; ++it)
     {
-        if (IsBorder(*it))
-            continue;
         SgEmptyBlackWhite c = GetColor(*it);
         if (c == toPlay && NumLiberties(*it) > 1)
             return false;

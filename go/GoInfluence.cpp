@@ -12,16 +12,19 @@
 namespace {
 //----------------------------------------------------------------------------
 
-/** Spread influence */
+/** Spread influence, drop off by 0.5 to the neighbors */
 void Spread(const GoBoard& bd, SgPoint p, const SgPointSet& stopPts,
             int val, SgPointArray<int>& influence)
 {
     influence[p] += val;
     val /= 2;
     if (val > 0)
-        for (SgNb4Iterator it(p); it; ++it)
-            if (bd.IsValidPoint(*it) && ! stopPts.Contains(*it))
+        for (GoNbIterator it(bd, p); it; ++it)
+        {
+            SG_ASSERT(bd.IsValidPoint(*it));
+            if (! stopPts.Contains(*it))
                 Spread(bd, *it, stopPts, val, influence);
+        }
 }
 
 //----------------------------------------------------------------------------

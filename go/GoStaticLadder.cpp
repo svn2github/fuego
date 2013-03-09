@@ -28,7 +28,7 @@ bool GoStaticLadder::IsEdgeLadder(const GoBoard& bd, SgPoint target,
         if (toPlay != defender)
             return true;
         SgPoint theLiberty = bd.TheLiberty(target);
-        for (SgNb4Iterator it(theLiberty); it; ++it)
+        for (GoNbIterator it(bd, theLiberty); it; ++it)
             if (bd.IsEmpty(*it))
             {
                 if (attackPoint == SG_NULLMOVE)

@@ -654,15 +654,14 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
                 // Check if neutral point
                 bool isSafeToPlayAdj = false;
                 bool isSafeOppAdj = false;
-                for (SgNb4Iterator it2(*it); it2; ++it2)
-                    if (! bd.IsBorder(*it2))
-                    {
-                        SgUctValue mean = territory[*it2].Mean();
-                        if (mean < threshold)
-                            isSafeToPlayAdj = true;
-                        if (mean > 1 - threshold)
-                            isSafeOppAdj = true;
-                    }
+                for (GoNbIterator it2(bd, *it); it2; ++it2)
+                {
+                    SgUctValue mean = territory[*it2].Mean();
+                    if (mean < threshold)
+                        isSafeToPlayAdj = true;
+                    if (mean > 1 - threshold)
+                        isSafeOppAdj = true;
+                }
                 if (isSafeToPlayAdj && isSafeOppAdj)
                 {
                     if (bd.IsLegal(*it) && ! GoBoardUtil::SelfAtari(bd, *it))
