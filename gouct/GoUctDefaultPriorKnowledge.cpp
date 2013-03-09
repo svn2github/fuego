@@ -38,7 +38,7 @@ bool HasMinNuOfAdjBlocks(const GoBoard& bd, SgPoint p,
 }
 
 // @todo write test cases
-const SgPoint OtherLiberty(const GoBoard& bd, SgPoint ourStone, SgPoint p)
+inline SgPoint OtherLiberty(const GoBoard& bd, SgPoint ourStone, SgPoint p)
 {
     SG_ASSERT(bd.NumLiberties(ourStone) == 2);
     GoBoard::LibertyIterator it(bd, ourStone);
