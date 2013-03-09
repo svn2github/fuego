@@ -4,6 +4,7 @@
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
+#include "GoBoardUtil.h"
 #include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctLadderKnowledge.h"
 
@@ -24,35 +25,271 @@ bool SetsAtari(const GoBoard& bd, SgPoint p)
     return false;
 }
 
-/** Test if p is inside a small eye space surrounded by eyeColor.
-	Simple first version: small means <= 3, p not at end point - 
-    only neighbors of p tested. */
-bool InSmallEyeSpace(const GoBoard& bd, SgPoint p, SgBlackWhite eyeColor)
+bool HasMinNuOfAdjBlocks(const GoBoard& bd, SgPoint p,
+                         int minNuBlocks)
 {
-    SG_ASSERT(bd.IsEmpty(p)); // this is used in the code below
-    SG_ASSERT_BW(eyeColor);
-    const SgBlackWhite attacker = SgOppBW(eyeColor);
-    
-    int size = 1 + bd.NumNeighbors(p, attacker) + bd.NumEmptyNeighbors(p);
-    if (size > 3)
-        return false;
-    for (GoNbIterator it(bd, p); it; ++it)
+    static const int MANY_LIBS = SG_MAX_SIZE * SG_MAX_SIZE;
+    SG_ASSERT(bd.IsSingleStone(p));
+    int nuBlocks = 0;
+    for (GoAdjBlockIterator<GoBoard> it(bd, p, MANY_LIBS); it; ++it)
+        if (++nuBlocks >= minNuBlocks)
+            return true;
+    return false;
+}
+
+// @todo write test cases
+const SgPoint OtherLiberty(const GoBoard& bd, SgPoint ourStone, SgPoint p)
+{
+    SG_ASSERT(bd.NumLiberties(ourStone) == 2);
+    GoBoard::LibertyIterator it(bd, ourStone);
+    SG_ASSERT(it);
+    if (*it == p) // get next
     {
-    	if (bd.IsEmpty(*it) || bd.IsColor(*it, attacker))
-        {
-            size += bd.NumNeighbors(*it, attacker) 
-                  + bd.NumEmptyNeighbors(*it) 
-                  - 1; 
-            // -1 for p. We are double-counting diagonals. Too bad...
-            if (size > 3)
-                return false;
-        }
+        ++it;
+        SG_ASSERT(it);
+        SG_ASSERT(*it != p);
+        return *it;
     }
+    else
+    {
+        SG_ASSERT(bd.IsLibertyOfBlock(p, ourStone));
+        return *it;
+    }
+}
+
+inline SgPoint FindNeighborNotInColor(const GoBoard& bd, SgPoint p,
+                                         SgEmptyBlackWhite c)
+{
+    for (GoNbIterator it(bd, p); it; ++it)
+        if (! bd.IsColor(*it, c))
+            return *it;
+    SG_ASSERT(false);
+    return p;
+}
+
+
+inline bool IsCorridorEndPoint(const GoBoard& bd, SgPoint p,
+                               SgBlackWhite oppColor)
+{
+    return bd.NumNeighbors(p, oppColor) + bd.NumEmptyNeighbors(p) == 1;
+}
+
+inline bool Is2PointEye(const GoBoard& bd, SgPoint p,
+                        SgBlackWhite eyeColor, SgPoint& other)
+{
+    const SgBlackWhite oppColor = SgOppBW(eyeColor);
+    if (! IsCorridorEndPoint(bd, p, oppColor))
+        return false;
+
+    other = FindNeighborNotInColor(bd, p, eyeColor);
+    return IsCorridorEndPoint(bd, other, oppColor);
+}
+
+bool Is3PointEye(const GoBoard& bd, SgPoint p, SgBlackWhite eyeColor,
+                 SgPoint* other)
+{
+    const SgBlackWhite oppColor = SgOppBW(eyeColor);
+    const int nuInsideNb =   bd.NumNeighbors(p, oppColor)
+                           + bd.NumEmptyNeighbors(p);
+    if (nuInsideNb == 2) // check if center point
+    {
+        int index = 0;
+        for (GoNbIterator it(bd, p); it; ++it)
+            if (bd.GetColor(*it) != eyeColor)
+            {
+                SG_ASSERT(bd.GetColor(*it) != SG_BORDER);
+                if (! IsCorridorEndPoint(bd, *it, oppColor))
+                    return false;
+                SG_ASSERT(index < 2);
+                other[index] = *it;
+                ++index;
+            }
+        return true;
+    }
+    else if (nuInsideNb == 1) // end point. check if neighbors are center
+    // and other end point
+    {
+        const SgPoint mid = FindNeighborNotInColor(bd, p, eyeColor);
+        const int midNuInsideNb =  bd.NumNeighbors(mid, oppColor)
+                                 + bd.NumEmptyNeighbors(mid);
+        if (midNuInsideNb != 2)
+            return false;
+        for (GoNbIterator it(bd, mid); it; ++it)
+            // find endpoint other than p. It must exist.
+            if (*it != p && bd.GetColor(*it) != eyeColor)
+            {
+                SG_ASSERT(bd.GetColor(*it) != SG_BORDER);
+                return IsCorridorEndPoint(bd, *it, oppColor);
+            }
+        SG_ASSERT(false);
+    }
+    return false; // nuInsideNb has other value
+}
+
+inline bool IsKoStone(const GoBoard& bd, SgPoint block)
+{
+    SG_ASSERT(bd.InAtari(block));
+    SG_ASSERT(bd.NumStones(block) == 1);
+
+    const SgBlackWhite oppColor = SgOppBW(bd.GetStone(block));
+    const SgPoint lib = bd.TheLiberty(block);
+    if (bd.NumEmptyNeighbors(lib) + bd.NumNeighbors(lib, oppColor) > 0)
+        return false;
+    int nuInAtari = 0;
+    for (GoNbIterator it(bd, lib); it; ++it)
+        if (bd.InAtari(*it) && ++nuInAtari > 1)
+            return false;
     return true;
 }
 
+inline bool CanBeCapturedCleanly(const GoBoard& bd, SgPoint block)
+{
+    return   bd.InAtari(block)
+          && (bd.NumStones(block) > 1 || ! IsKoStone(bd, block));
+}
+
+//  recognize simple one point false eyes:
+//  center        : >= 2 diagonal points occupied by non-dead opponent stones
+//  corner, edge  : >= 1 diagonal points occupied by non-dead opponent stones
+bool IsFalseEyePoint(const GoBoard& bd,
+                     SgPoint p,
+                     SgBlackWhite eyeColor)
+{
+    const SgBlackWhite oppColor = SgOppBW(eyeColor);
+    if (! IsCorridorEndPoint(bd, p, oppColor))
+        return false;
+    int nuForFalse = (bd.Line(p) == 1) ? 1 : 2;
+    int nuDiag = 0;
+    for (SgNb4DiagIterator it(p); it; ++it)
+    {
+        const SgPoint diag(*it);
+        if (bd.IsColor(diag, oppColor) && ! CanBeCapturedCleanly(bd, diag))
+        // @todo could check if those stones have any life
+        // as in Explorer code, ExEyeStatus CheckDiagonals
+        {
+            if (++nuDiag >= nuForFalse)
+                return true;
+        }
+    }
+    return false;
+}
+
+/** Test if p is inside a small eye space surrounded by eyeColor.
+    Case 1:
+    OOOX    OOOX    |OOX
+    O.aO    O.aO    |.aO
+    OOOX    ----    ----
+ 
+    Case 2:
+    OOOOX   OOOOX   |OOOX
+    O.XaO   O.XaO   |.XaO
+    OOOOX   -----   -----
+ 
+    Case 3:
+    OOOOX
+    O.aXO
+
+    Case 4:
+    OOOO <-- no outside liberties
+    O.aO
+
+    Case 5:
+    OOOOO <-- no outside liberties
+    O.XaO
+
+    Case 6:
+    OOOOO <-- no outside liberties
+    O.aXO
+ 
+    @todo add these as test cases.
+*/
+bool MayMakeFalseEye(const GoBoard& bd,
+                     SgPoint p,
+                     SgBlackWhite eyeColor)
+{
+    SG_ASSERT(bd.IsEmpty(p)); // this is used in the code below
+    SG_ASSERT_BW(eyeColor);
+
+    const SgBlackWhite toPlay = SgOppBW(eyeColor);
+    // some cases below fail if we don't check this first
+    //if (bd.CanCapture(p, toPlay))
+    // return true;
+
+
+    // eliminate areas that are not well surrounded
+    const int nuEmpty = bd.NumEmptyNeighbors(p);
+    SG_ASSERT(nuEmpty < 2); // otherwise no selfatari
+        // or just return false; ?? depends if used in more cases later.
+    const int nuInsideNb = bd.NumNeighbors(p, toPlay) + nuEmpty;
+    if (nuInsideNb > 2)
+        return false;
+
+    // Case 4, 5, 6: Our selfatari will also atari the eyeColor block.
+    // @todo we could check further if that eyeColor block
+    // has other captures on the outside - then
+    // our selfatari is probably futile
+    if (false && GoBoardUtil::PointHasAdjacentBlock(bd, p, eyeColor, 2))
+    {
+        return true;
+    }
+
+    if (nuInsideNb == 2) // case 3
+    {
+        SgPoint other[2];
+        if (! Is3PointEye(bd, p, eyeColor, other))
+            return false;
+        if (nuEmpty == 0)// two own nb and selfatari.
+            // Complex case, bailing out.
+            // e.g. A1 empty and both nb are ours.
+            // Might still be false eye, but...
+            return false;
+
+        // Case 3: cutting stone - might be false eye.
+        const SgPoint ourStone = GoBoardUtil::FindNeighbor(bd, p, toPlay);
+        if (  bd.NumEmptyNeighbors(ourStone) > 1
+           || bd.NumStones(ourStone) > 1
+           )
+                return false; // not small eye
+        if (! IsFalseEyePoint(bd, ourStone, eyeColor))
+            return false;
+        return HasMinNuOfAdjBlocks(bd, ourStone, 2);
+    }
+    SG_ASSERT(nuInsideNb == 1); // check case 1 and 2
+    if (! IsFalseEyePoint(bd, p, eyeColor))
+        return false;
+    SgPoint other;
+    if (nuEmpty == 1) // case 1
+    {
+        if (! Is2PointEye(bd, p, eyeColor, other))
+            return false;
+        const SgPoint theEmpty = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);
+        bool result =    bd.NumEmptyNeighbors(theEmpty) == 1 // p
+                      && bd.NumNeighbors(theEmpty, toPlay) == 0;
+        if (result)
+            return true;
+    }
+    else // case 2
+    {
+        SgPoint other[2];
+        if (! Is3PointEye(bd, p, eyeColor, other))
+            return false;
+        const SgPoint ourStone = GoBoardUtil::FindNeighbor(bd, p, toPlay);
+        SG_ASSERT(ourStone == other[0]);
+        if (  bd.NumEmptyNeighbors(ourStone) != 2 // p and the other lib
+           || bd.NumStones(ourStone) != 1
+           )
+            return false;
+        const SgPoint otherLib = OtherLiberty(bd, ourStone, p);
+        bool result =    bd.NumEmptyNeighbors(otherLib) == 0
+                      && bd.NumNeighbors(otherLib, toPlay) == 1;
+        if (result)
+            return true;
+    }
+    return false;
+}
+
 /** Heuristic for bad selfatari moves
-	@todo: should eliminate useless moves, but allow play in nakade. 
+	@todo: should eliminate useless moves, but allow play in nakade.
 */
 bool BadSelfAtari(const GoBoard& bd, SgPoint p)
 {
@@ -62,7 +299,7 @@ bool BadSelfAtari(const GoBoard& bd, SgPoint p)
     {
     	if (numStones > GoEyeUtil::NAKADE_LIMIT)
         	return true;
-        if (InSmallEyeSpace(bd, p, opp))
+        if (MayMakeFalseEye(bd, p, opp))
         	return false;
         return true;
     }
