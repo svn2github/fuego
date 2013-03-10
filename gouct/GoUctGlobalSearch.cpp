@@ -12,7 +12,7 @@ GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
       m_territoryStatistics(false),
       m_lengthModification(0),
       m_scoreModification(0.02f),
-      m_useTreeFilter(false)
+      m_useTreeFilter(true)
 { }
 
 GoUctGlobalSearchStateParam::~GoUctGlobalSearchStateParam()

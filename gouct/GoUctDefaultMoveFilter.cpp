@@ -43,7 +43,7 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
 
 GoUctDefaultMoveFilterParam::GoUctDefaultMoveFilterParam()
     :  m_checkLadders(true),
-       m_checkOffensiveLadders(false),
+       m_checkOffensiveLadders(true),
        m_minLadderLength(6),
        m_filterFirstLine(true),
        m_checkSafety(true)
