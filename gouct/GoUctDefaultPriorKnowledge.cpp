@@ -447,8 +447,57 @@ GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
     }
 }
 
-void 
-GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& 
+namespace
+{
+    bool IsEmpty3x3Box(const GoBoard& bd, SgPoint p)
+    {
+        return bd.IsEmpty(p)
+            && bd.Num8EmptyNeighbors(p) == 8;
+    }
+    
+    int ScanSide(const GoBoard& bd, SgPoint start, int direction)
+    {
+        int dist = 0;
+        for (SgPoint p = start + direction;
+             bd.Pos(p) >= 3 && IsEmpty3x3Box(bd, p);
+             p += direction
+            )
+            ++dist;
+        return dist;
+    }
+}
+
+void
+GoUctDefaultPriorKnowledge::AddOpeningBonus()
+{
+    const GoBoard& bd = Board();
+    const SgBoardConst& bc = bd.BoardConst();
+    // skipping corners for now, we have forced 4-4 moves
+    for (SgLineIterator it(bc, 3); it; ++it)
+    {
+        const SgPoint p = *it;
+        if (  IsEmpty3x3Box(bd, p)
+           && bc.SideExtensions().Contains(p)
+           )
+        {
+            int leftSpace = ScanSide(bd, p, bc.Left(p));
+            int rightSpace = ScanSide(bd, p, bc.Right(p));
+            if (leftSpace >= 1 && rightSpace >= 1)
+            {
+                const int bonus = leftSpace + rightSpace
+                          + std::min(leftSpace, rightSpace);
+                
+                SgUctValue ignoreValue;
+                SgUctValue count;
+                Get(p, ignoreValue, count);
+                Initialize(p, SgUctValue(1.0), count + bonus/2);
+            }
+        }
+    }
+}
+
+void
+GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>&
                                             outmoves)
 {
     m_policy.StartPlayout();
@@ -480,6 +529,8 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>&
                                          defaultNuSimulations);
 
     AddLocalityBonus(empty, isSmallBoard);
+    if (! isSmallBoard)
+        AddOpeningBonus();
     GoUctLadderKnowledge ladderKnowledge(Board(), *this);
     ladderKnowledge.ProcessPosition();
 

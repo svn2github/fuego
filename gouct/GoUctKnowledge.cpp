@@ -21,6 +21,13 @@ void GoUctKnowledge::Add(SgPoint p, SgUctValue value, SgUctValue count)
     m_values[p].Add(value, count);
 }
 
+void
+GoUctKnowledge::Get(SgPoint p, SgUctValue& value, SgUctValue& count) const
+{
+    value = m_values[p].Mean();
+    count = m_values[p].Count();
+}
+
 void GoUctKnowledge::Initialize(SgPoint p, SgUctValue value, SgUctValue count)
 {
     m_values[p].Initialize(value, count);

@@ -39,7 +39,10 @@ public:
     /** The board for which knowledge is computed */
     inline const GoBoard& Board() const;
 
-    /** Initialize knowledge for move. 
+    /** Get the current knowledge for move */
+    void Get(SgPoint move, SgUctValue& value, SgUctValue& count) const;
+
+    /** Initialize knowledge for move.
         Replaces existing knowledge for this move, if any.
     */
     void Initialize(SgPoint move, SgUctValue value, SgUctValue count);

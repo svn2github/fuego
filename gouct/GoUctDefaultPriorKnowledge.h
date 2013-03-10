@@ -31,6 +31,8 @@ private:
 
     void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
+    void AddOpeningBonus();
+    
     void InitializeForRandomPolicyMove(const GoPointList& empty,
                                        int nuSimulations);
                                        
