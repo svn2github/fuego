@@ -175,33 +175,8 @@ bool IsFalseEyePoint(const GoBoard& bd,
 }
 
 /** Test if p is inside a small eye space surrounded by eyeColor.
-    Case 1:
-    OOOX    OOOX    |OOX
-    O.aO    O.aO    |.aO
-    OOOX    ----    ----
- 
-    Case 2:
-    OOOOX   OOOOX   |OOOX
-    O.XaO   O.XaO   |.XaO
-    OOOOX   -----   -----
- 
-    Case 3:
-    OOOOX
-    O.aXO
-
-    Case 4:
-    OOOO <-- no outside liberties
-    O.aO
-
-    Case 5:
-    OOOOO <-- no outside liberties
-    O.XaO
-
-    Case 6:
-    OOOOO <-- no outside liberties
-    O.aXO
- 
-    @todo add these as test cases.
+    @todo program cases 4, 5, 6.
+    @todo add test cases.
 */
 bool MayMakeFalseEye(const GoBoard& bd,
                      SgPoint p,
@@ -209,12 +184,7 @@ bool MayMakeFalseEye(const GoBoard& bd,
 {
     SG_ASSERT(bd.IsEmpty(p)); // this is used in the code below
     SG_ASSERT_BW(eyeColor);
-
     const SgBlackWhite toPlay = SgOppBW(eyeColor);
-    // some cases below fail if we don't check this first
-    //if (bd.CanCapture(p, toPlay))
-    // return true;
-
 
     // eliminate areas that are not well surrounded
     const int nuEmpty = bd.NumEmptyNeighbors(p);
@@ -224,16 +194,31 @@ bool MayMakeFalseEye(const GoBoard& bd,
     if (nuInsideNb > 2)
         return false;
 
+    /*
     // Case 4, 5, 6: Our selfatari will also atari the eyeColor block.
     // @todo we could check further if that eyeColor block
     // has other captures on the outside - then
     // our selfatari is probably futile
-    if (false && GoBoardUtil::PointHasAdjacentBlock(bd, p, eyeColor, 2))
+    Case 4:
+    OOOO <-- no outside liberties
+    O.aO
+    
+    Case 5:
+    OOOOO <-- no outside liberties
+    O.XaO
+    
+    Case 6:
+    OOOOO <-- no outside liberties
+    O.aXO
+    if (GoBoardUtil::PointHasAdjacentBlock(bd, p, eyeColor, 2))
     {
         return true;
     }
+    */
 
-    if (nuInsideNb == 2) // case 3
+    if (nuInsideNb == 2)
+    /*  Case 3: OOOOX
+                O.aXO */
     {
         SgPoint other[2];
         if (! Is3PointEye(bd, p, eyeColor, other))
@@ -258,7 +243,10 @@ bool MayMakeFalseEye(const GoBoard& bd,
     if (! IsFalseEyePoint(bd, p, eyeColor))
         return false;
     SgPoint other;
-    if (nuEmpty == 1) // case 1
+    if (nuEmpty == 1)
+    /*  Case 1: OOOX    OOOX    |OOX
+                O.aO    O.aO    |.aO
+                OOOX    ----    ---- */
     {
         if (! Is2PointEye(bd, p, eyeColor, other))
             return false;
@@ -268,21 +256,21 @@ bool MayMakeFalseEye(const GoBoard& bd,
         if (result)
             return true;
     }
-    else // case 2
+    else
+    /* Case 2: OOOOX   OOOOX   |OOOX
+               O.XaO   O.XaO   |.XaO
+               OOOOX   -----   ----- */
     {
         SgPoint other[2];
         if (! Is3PointEye(bd, p, eyeColor, other))
             return false;
         const SgPoint ourStone = GoBoardUtil::FindNeighbor(bd, p, toPlay);
-        SG_ASSERT(ourStone == other[0]);
         if (  bd.NumEmptyNeighbors(ourStone) != 2 // p and the other lib
-           || bd.NumStones(ourStone) != 1
-           )
+           || bd.NumStones(ourStone) != 1)
             return false;
         const SgPoint otherLib = OtherLiberty(bd, ourStone, p);
-        bool result =    bd.NumEmptyNeighbors(otherLib) == 0
-                      && bd.NumNeighbors(otherLib, toPlay) == 1;
-        if (result)
+        if (  bd.NumEmptyNeighbors(otherLib) == 0
+           && bd.NumNeighbors(otherLib, toPlay) == 1)
             return true;
     }
     return false;
