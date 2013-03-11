@@ -490,7 +490,7 @@ GoUctDefaultPriorKnowledge::AddOpeningBonus()
                 SgUctValue ignoreValue;
                 SgUctValue count;
                 Get(p, ignoreValue, count);
-                Initialize(p, SgUctValue(1.0), count + bonus/2);
+                Initialize(p, SgUctValue(1.0), count + bonus/3);
             }
         }
     }
