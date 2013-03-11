@@ -32,6 +32,8 @@ eval_seki.tst \
 final_moves.tst \
 free_handicap.tst \
 kgs-genmove_cleanup.tst \
+ladder.list \
+ladder.suite \
 ladder.tst \
 life_and_death_nakade.tst \
 performance_barcelona2010.tst \
