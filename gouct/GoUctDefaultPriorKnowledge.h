@@ -12,8 +12,13 @@
 //----------------------------------------------------------------------------
 
 /** Default prior knowledge heuristic.
-    Mainly uses GoUctPlayoutPolicy to generate prior knowledge. */
-class GoUctDefaultPriorKnowledge 
+    Generates prior knowledge from:
+    1. GoUctPlayoutPolicy, including pattern gamma values
+    2. Global pattern gammas
+    3. bonus near block of last move - nearness measured by cfg metric
+    4. bonus for large sideextensions in the opening
+*/
+class GoUctDefaultPriorKnowledge
 : public GoUctKnowledge
 {
 public:
@@ -29,6 +34,15 @@ private:
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
 
+    void AddBonusNearPoint(GoPointList& emptyPoints,
+                           SgUctValue count,
+                           SgPoint focus,
+                           SgUctValue v1,
+                           SgUctValue v2,
+                           SgUctValue v3,
+                           bool addPass
+                           );
+    
     void AddLocalityBonus(GoPointList& emptyPoints, bool isSmallBoard);
 
     void AddOpeningBonus();

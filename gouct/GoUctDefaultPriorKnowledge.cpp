@@ -304,36 +304,60 @@ GoUctDefaultPriorKnowledge::GoUctDefaultPriorKnowledge(const GoBoard& bd,
       m_policy(bd, param)
 { }
 
+void GoUctDefaultPriorKnowledge::AddBonusNearPoint(GoPointList& emptyPoints,
+                                                  SgUctValue count,
+                                                  SgPoint focus,
+                                                  SgUctValue v1,
+                                                  SgUctValue v2,
+                                                  SgUctValue v3,
+                                                  bool addPass
+                                                  )
+{
+    if (focus == SG_NULLMOVE || focus == SG_PASS)
+        return;
+    
+    const GoBoard& bd = Board();
+    SgPointArray<int> dist = GoBoardUtil::CfgDistance(bd, focus, 3);
+    for (GoPointList::Iterator it(emptyPoints); it; ++it)
+    {
+        const SgPoint p = *it;
+        SgUctValue v;
+        switch (dist[p])
+        {
+            case 1:  v = v1;
+                break;
+            case 2:  v = v2;
+                break;
+            case 3:  v = v3;
+                break;
+            default: v = SgUctValue(0.1);
+                break;
+        }
+        Add(p, v, count);
+    }
+    if (addPass)
+        Add(SG_PASS, SgUctValue(0.1), count);
+}
+
 void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
                                                   bool isSmallBoard)
 {
     const GoBoard& bd = Board();
-    SgPoint last = bd.GetLastMove();
-    if (last != SG_NULLMOVE && last != SG_PASS)
-    {
-        SgPointArray<int> dist = GoBoardUtil::CfgDistance(bd, last, 3);
-        const SgUctValue count = isSmallBoard ? 4 : 5;
-        for (GoPointList::Iterator it(emptyPoints); it; ++it)
-        {
-            const SgPoint p = *it;
-            switch (dist[p])
-            {
-            case 1:
-                Add(p, SgUctValue(1.0), count);
-                break;
-            case 2:
-                Add(p, SgUctValue(0.6), count);
-                break;
-            case 3:
-                Add(p, SgUctValue(0.6), count);
-                break;
-            default:
-                Add(p, SgUctValue(0.1), count);
-                break;
-            }
-        }
-        Add(SG_PASS, SgUctValue(0.1), count);
-    }
+    const SgPoint last = bd.GetLastMove();
+    SgUctValue count = isSmallBoard ? 4 : 5;
+    AddBonusNearPoint(emptyPoints, count, last,
+                     SgUctValue(1.0),
+                     SgUctValue(0.6),
+                     SgUctValue(0.6),
+                     true /* addPass*/);
+
+    const SgPoint last2 = bd.Get2ndLastMove();
+    count = isSmallBoard ? 2 : 3;
+    AddBonusNearPoint(emptyPoints, count, last2,
+                     SgUctValue(0.8),
+                     SgUctValue(0.55),
+                     SgUctValue(0.55),
+                     false /* don't addPass*/);
 }
 
 /** Find global moves that match a playout pattern or set a block into atari.
