@@ -1,0 +1,18 @@
+(;FF[4]CA[UTF-8]AP[GoGui:1.4.0]
+KM[7.5]PB[Fuego]PW[Erica]DT[2011-11-04]
+C[Black command: ./fuego --nobook --config fuego_config
+White command: wine ./erica19.exe
+Black version: 1.1.SVN
+White version: 2.1
+Result[Black\]: W+146.5
+Result[White\]: ?
+Host: thorhild (Intel(R) Core(TM)2 Quad  CPU   Q9450  @ 2.66GHz)
+Date: November 4, 2011 12:48:48 PM MDT]
+;B[dd];W[pd];B[dp];W[qp];B[gq];W[cq];B[iq];W[cm];B[hc];W[cp]
+;B[co];W[bo];B[bn];W[cn];B[do];W[bp];B[bm];W[cl];B[cj];W[ci]
+;B[di];W[ch];B[bl];W[bj];B[ck];W[bk];B[dl];W[dk];B[dj];W[dm]
+;B[em];W[el];B[dn];W[dl];B[fl];W[ek];B[fk];W[ej];B[ei];W[fj]
+;B[gj];W[fi];B[fh];W[gi];B[hi];W[gh];B[gg];W[hh];B[ih];W[hg]
+;B[hf];W[ig];B[jg];W[if];B[ie];W[jf];B[kf];W[je];B[jd];W[ke]
+;B[le];W[kd];B[kc];W[ld];B[md];W[lc];B[lb];W[mc];B[nc];W[mb]
+;B[nb];W[ma];B[na];W[la])

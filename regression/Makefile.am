@@ -19,6 +19,7 @@ uct.list \
 9x9-opening.tst \
 backfill.tst \
 blunder_long_ladder_19.tst \
+blunder_long_ladder_19b.tst \
 blunder_play_near_dead_19.tst \
 blunder_rave.tst \
 blunder_selfatari_19.tst \
@@ -298,6 +299,10 @@ sgf/gnugo-games/seki_nakade1.sgf \
 sgf/gnugo-games/seki_nakade2.sgf \
 sgf/ko/remove-ko-threat.1.sgf \
 sgf/ladder/adjacent-blocks.sgf \
+sgf/ladder/bad-ladder.1.sgf \
+sgf/ladder/bad-ladder.2.sgf \
+sgf/ladder/bad-ladder-fuego-erica-1.sgf \
+sgf/ladder/fuego-erica-2-ladder-variation.sgf \
 sgf/ladder/ladder-blunder.sgf \
 sgf/ladder/ladder-breaker-2.sgf \
 sgf/ladder/ladder-breaker.sgf \
