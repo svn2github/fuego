@@ -13,7 +13,8 @@
 
 /** Iterator over all 4 neighbor points.
     Iterates in sorted order.
-    See also SgNbIterator for an iterator that filters points off board, but
+    See also SgNbIterator in SgBoardConst.h
+    for an iterator that filters points off board, but
     needs access to current board.
 
     Vertical and horizontal neighbors (a subset of SgNb8Iterator).
