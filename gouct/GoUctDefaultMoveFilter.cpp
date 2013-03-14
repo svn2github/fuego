@@ -14,29 +14,47 @@
 #include "SgWrite.h"
 
 //----------------------------------------------------------------------------
+inline bool IsEmpty2x3Box(const GoBoard& bd, SgPoint p)
+{
+    SG_ASSERT (bd.Line(p) == 1);
+    SG_ASSERT (bd.Pos(p) > 1);
+    return bd.IsEmpty(p) && bd.Num8EmptyNeighbors(p) == 5;
+}
+
+inline bool IsEmptyOrInCorner(const GoBoard& bd, SgPoint p, int direction)
+{
+    return bd.Pos(p + direction) < 3
+        || IsEmpty2x3Box(bd, p + direction);
+}
 
 /** Return true, if point is on edge line and no stone is within a
     Manhattan distance of 4. */
 bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
 {
-    if (bd.Occupied(p))
+    SG_ASSERT (bd.IsEmpty(p));
+    SG_ASSERT (bd.Line(p) == 1);
+    if (bd.Num8EmptyNeighbors(p) < 5)
         return false;
-    int size = bd.Size();
-    int col = SgPointUtil::Col(p);
-    int row = SgPointUtil::Row(p);
-    if (! (col == 1 || col == size || row == 1 || row == size))
+    const SgPoint pUp = p + bd.Up(p);
+    SG_ASSERT(bd.Line(pUp) == 2);
+    SG_ASSERT(bd.Pos(pUp) >= 2); // (1,1) goes to (2,2)
+    if (bd.Num8EmptyNeighbors(pUp) < 8)
         return false;
-    for (int deltaCol = -4; deltaCol <= 4; ++deltaCol)
-        for (int deltaRow = -4; deltaRow <= 4; ++deltaRow)
-        {
-            if (col + deltaCol < 1 || col + deltaCol > size
-                || row + deltaRow < 1 || row + deltaRow > size
-                || abs(deltaCol) + abs(deltaRow) > 4)
-                continue;
-            if (bd.Occupied(SgPointUtil::Pt(col + deltaCol, row + deltaRow)))
-                return false;
-        }
-    return true;
+
+    switch (bd.Pos(p))
+    {
+        case 1: // (1,1) point
+        case 2: // (1,2) point
+        case 3:
+            return IsEmptyOrInCorner(bd, p, bd.Left(p))
+                && IsEmptyOrInCorner(bd, p, bd.Right(p));
+            // assume in empty corner, 1st line is always
+            // dominated bymove on 2nd line above
+        default: // > 3, can test both sides easily
+            return   IsEmpty2x3Box(bd, p + 2*bd.Left(p))
+                  && IsEmpty2x3Box(bd, p + 2*bd.Right(p))
+                  ;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -146,11 +164,12 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
 
     if (m_param.m_filterFirstLine)
     {
-        // Moves on edge line, if no stone is near
-        for (GoBoard::Iterator it(m_bd); it; ++it)
+        // Moves on edge of board, if no stone is near
+        const SgBoardConst& bc = m_bd.BoardConst();
+        for (SgLineIterator it(bc, 1); it; ++it)
         {
-            SgPoint p = *it;
-            if (IsEmptyEdge(m_bd, p))
+            const SgPoint p = *it;
+            if (m_bd.IsEmpty(p) && IsEmptyEdge(m_bd, p))
                 rootFilter.push_back(p);
         }
     }
