@@ -279,6 +279,8 @@ sgf/games/2012/Blubbel-AyaBot4-2.sgf \
 sgf/games/2012/JAIST-Cup/Fuego13-Zen19S.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
+sgf/games/2013/gnugoJ-fuegoJ-48.sgf \
+sgf/games/2013/gnugoJ-fuegoJ-90.sgf \
 sgf/games/2013/KGS/AyaMC-nomiBot.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \

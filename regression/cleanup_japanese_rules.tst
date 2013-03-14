@@ -215,3 +215,19 @@ loadsgf sgf/final_moves/aja-example.sgf 26
 
 361 final_score
 #? [W\+0\.5]
+
+loadsgf sgf/games/2013/gnugoJ-fuegoJ-48.sgf 48
+370 reg_genmove w
+#? [H1]
+# connect final ko for 0.5 win
+
+loadsgf sgf/games/2013/gnugoJ-fuegoJ-48.sgf 52
+380 reg_genmove w
+#? [J1]
+# recapture final ko is the only try to win
+
+loadsgf sgf/games/2013/gnugoJ-fuegoJ-90.sgf 48
+370 reg_genmove w
+#? [PASS]*
+# W is winning and should pass. Seki not recognized?
+

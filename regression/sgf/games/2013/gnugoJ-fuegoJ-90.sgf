@@ -1,0 +1,22 @@
+(;FF[4]CA[UTF-8]AP[GoGuiTwoGtp:1.1]SZ[9]
+KM[7.5]PB[GNU Go:3.8]PW[Fuego]DT[2013-03-12]RE[B+3.5]
+C[Black command: /local/scratch/mmueller/gnugo-3.8/interface/gnugo --mode gtp --never-resign --japanese-rules
+White command: /local/scratch/mmueller/fuego/build/opt/fuegomain/fuego  --nobook --config /cshome/mmueller/exp/config/config-1K-japanese.gtp
+Black version: 3.8
+White version: 1.1.SVN
+Result[Black\]: B+22.5
+Result[White\]: B+22.5
+Referee: /local/scratch/mmueller/gnugo-3.8/interface/gnugo --mode gtp --never-resign --chinese-rules --capture-all-dead
+Result[Referee\]: B+3.5
+Host: muriel1 (Intel(R) Xeon(R) CPU           E5420  @ 2.50GHz)
+Date: March 12, 2013 10:12:32 PM MDT]
+;B[ee];W[cf];B[ce];W[ef];B[df];W[dg];B[de];W[ff];B[gd];W[cg]
+;B[hf];W[ge];B[he];W[fd];B[fe];W[gf];B[gc];W[hg];B[be];W[dc]
+;B[ed];W[bc];B[cb];W[cc];B[db];W[ec];B[eb];W[fc];B[fb];W[bf]
+;B[bb];W[gb];B[gg];W[gh];B[hb];W[hc];B[hd];W[ae];B[ad];W[af]
+;B[ac];W[bd];B[ab];W[fg];B[if];W[ig];B[];W[id];B[ga];W[ib]
+;B[];W[ic];B[];W[ia];B[];W[ba];B[];W[ca];B[];W[da]
+;B[];W[ea];B[];W[bh];B[];W[ah];B[];W[bi];B[];W[eh]
+;B[];W[eg];B[];W[fi];B[];W[fh];B[];W[ch];B[];W[gg]
+;B[];W[hi];B[];W[hh];B[];W[ei];B[];W[ie];B[gb];W[cd]
+;B[dd];W[];B[])
