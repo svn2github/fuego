@@ -199,6 +199,7 @@ GoUctCommands::GoUctCommands(const GoBoard& bd, GoPlayer*& player)
 void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
+        "dboard/Approximate Territory/approximate_territory\n"
         "none/Deterministic Mode/deterministic_mode\n"
         "gfx/Uct Additive Knowledge/uct_additive_knowledge\n"
         "gfx/Uct Bounds/uct_bounds\n"
@@ -1101,28 +1102,68 @@ void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
     }
 }
 
-/** Write average point status.
-    This command is compatible with the GoGui analyze type @c dboard. <br>
-    Statistics are only collected, if enabled with
-    <code>uct_param_global_search territory_statistics 1</code>. <br>
-    Arguments: none
-    @see GoUctGlobalSearchState::m_territoryStatistics */
-void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
+
+namespace {
+
+    // map from range [0..1] to [-1..+1]
+    SgUctValue MapMeanToTerritoryEstimate(SgUctValue mean)
+    {
+        return mean * 2 - 1;
+    }
+    
+    // map into one of: Black (+1), White (-1), neutral (0)
+    SgUctValue MapMeanToLikelyTerritory(SgUctValue mean)
+    {
+        const SgUctValue threshold = 0.25f;
+        return mean < threshold ? -1
+             : mean > 1 - threshold ? 1
+             : 0;
+    }
+    
+} // namespace
+
+SgUctValue GoUctCommands::DisplayTerritory(GtpCommand& cmd, MeanMapperFunction f)
 {
     cmd.CheckArgNone();
     SgPointArray<SgUctStatistics> territoryStatistics
         = ThreadState(0).m_territoryStatistics;
     SgPointArray<SgUctValue> array;
+    SgUctValue sum = SgUctValue(0);
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
         if (territoryStatistics[*it].Count() == 0)
             throw GtpFailure("no statistics available: "
                              "enable them and run search first");
-        array[*it] = territoryStatistics[*it].Mean() * 2 - 1;
+        array[*it] = f(territoryStatistics[*it].Mean());
+        sum += array[*it];
     }
     cmd << '\n'
         << SgWritePointArrayFloat<SgUctValue>(array, m_bd.Size(), true, 3);
+    return sum;
 }
+
+/** Write average point status.
+ This command is compatible with the GoGui analyze type @c dboard. <br>
+ Statistics are only collected, if enabled with
+ <code>uct_param_global_search territory_statistics 1</code>. <br>
+ Arguments: none
+ @see GoUctGlobalSearchState::m_territoryStatistics */
+void GoUctCommands::CmdStatTerritory(GtpCommand& cmd)
+{
+    DisplayTerritory(cmd, MapMeanToTerritoryEstimate);
+}
+
+void GoUctCommands::CmdApproximateTerritory(GtpCommand& cmd)
+{
+    SgUctValue score =
+    DisplayTerritory(cmd, MapMeanToLikelyTerritory);
+    SgDebug() << "Score = " << score << '\n';
+    //cmd << (format("TEXT Score=%.1f\n") % score);
+    // @todo does not work this way because GoGui analyze type is dboard.
+    // must change to type gfx and re-implement the dboard functionality
+    // see printing of static safe for example.
+}
+
 
 /** Return value of root node from last search.
     Arguments: none */
@@ -1308,10 +1349,12 @@ GoUctCommands::Policy(unsigned int threadId)
 
 void GoUctCommands::Register(GtpEngine& e)
 {
+    Register(e, "approximate_territory",
+             &GoUctCommands::CmdApproximateTerritory);
     Register(e, "deterministic_mode", &GoUctCommands::CmdDeterministicMode);
     Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
-    Register(e, "uct_additive_knowledge", 
+    Register(e, "uct_additive_knowledge",
              &GoUctCommands::CmdAdditiveKnowledge);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);
     Register(e, "uct_default_policy", &GoUctCommands::CmdDefaultPolicy);

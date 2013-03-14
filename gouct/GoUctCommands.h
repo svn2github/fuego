@@ -16,6 +16,8 @@ class GoPlayer;
 class GoUctBoard;
 class GoUctSearch;
 
+typedef SgUctValue (*MeanMapperFunction)(SgUctValue);
+
 //----------------------------------------------------------------------------
 
 /** GTP commands for GoUctPlayer.
@@ -35,6 +37,7 @@ public:
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
     /** @page gouctgtpcommands GoUctCommands Commands
+        - @link CmdApproximateTerritory() @c approximate_territory @endlink
         - @link CmdFinalScore() @c final_score @endlink
         - @link CmdFinalStatusList() @c final_status_list @endlink
         - @link CmdAdditiveKnowledge() @c uct_additive_knowledge @endlink
@@ -73,6 +76,7 @@ public:
     // @{
     // The callback functions are documented in the cpp file
     void CmdAdditiveKnowledge(GtpCommand& cmd);
+    void CmdApproximateTerritory(GtpCommand& cmd);
     void CmdBounds(GtpCommand& cmd);
     void CmdDefaultPolicy(GtpCommand& cmd);
     void CmdDeterministicMode(GtpCommand&);
@@ -125,6 +129,12 @@ private:
     void DisplayMoveInfo(GtpCommand& cmd, 
                          const vector<SgUctMoveInfo>& moves,
                          bool additiveKnowledge);
+
+
+    /** Display territory, with mean mapped to territory intensity by f 
+        Helper function for @see CmdApproximateTerritory
+        and @see CmdStatTerritory */
+    SgUctValue DisplayTerritory(GtpCommand& cmd, MeanMapperFunction f);
 
     SgPointSet DoFinalStatusSearch();
 
