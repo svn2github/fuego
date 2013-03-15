@@ -51,8 +51,9 @@ namespace GoEyeUtil
         *,**,***, **, ***, **, ***,  * ,  *  .
                    *   *   **  **   ***  ***
                                      *   ** */
+    bool IsNakadeShape(const SgPointSet& area, int nuPoints);
     bool IsNakadeShape(const SgPointSet& area);
-                       
+
     /** Check if point is a single point eye with one or two adjacent blocks.
         This is a fast eye detection routine, which can be used instead of
         Benson's static life detection, when end-of-game detection is a
@@ -163,7 +164,55 @@ inline bool AreSameBlocks(const SgPoint anchors1[], const SgPoint anchors2[])
     }
     return (anchors2[i] == SG_ENDPOINT);
 }
+
+/** Recognizes 2x2 block of points.
+ Relies on the current implementation
+ where SgSetIterator produces set members in sorted order,
+ such that bulky four points have values p, p + WE, p + NS, p + WE + NS */
+inline bool IsBulkyFour(const SgPointSet& points)
+{
+    SG_ASSERT(points.IsSize(4));
+    SgSetIterator it(points);
+    SgPoint p1 = *it;
+    ++it;
+    if (*it != p1 + SG_WE)
+        return false;
+    ++it;
+    if (*it != p1 + SG_NS)
+        return false;
+    ++it;
+    if (*it != p1 + SG_WE + SG_NS)
+        return false;
+    SG_ASSERT(GoEyeUtil::DegreeCode(points) == 400);
+    return true;
 }
+
+inline bool IsTShape(const SgPointSet& block)
+{
+    return GoEyeUtil::DegreeCode(block) == 1030;
+}
+
+inline bool IsBulkyFive(const SgPointSet& block)
+{
+    return GoEyeUtil::DegreeCode(block) == 1310;
+}
+
+inline bool IsCross(const SgPointSet& block)
+{
+    return GoEyeUtil::DegreeCode(block) == 10040;
+}
+
+inline bool IsRabbitySix(const SgPointSet& block)
+{
+    return GoEyeUtil::DegreeCode(block) == 10320;
+}
+
+inline bool Is2x3Area(const SgPointSet& area)
+{
+    return GoEyeUtil::DegreeCode(area) == 2400;
+}
+
+} // namespace
 
 template<class BOARD>
 SgPoint GoEyeUtil::EmptyNeighbor(const BOARD& bd, SgPoint p)
@@ -178,6 +227,26 @@ SgPoint GoEyeUtil::EmptyNeighbor(const BOARD& bd, SgPoint p)
         return p - SG_WE;
     SG_ASSERT(false);
     return SG_NULLPOINT;
+}
+
+inline bool GoEyeUtil::IsNakadeShape(const SgPointSet& area, int nuPoints)
+{
+    switch (nuPoints)
+    {
+        case 1:
+        case 2:
+        case 3: return true;
+        case 4: return IsBulkyFour(area) || IsTShape(area);
+        case 5: return IsBulkyFive(area) || IsCross(area);
+        case 6: return IsRabbitySix(area);
+        default: // too big
+            return false;
+    }
+}
+
+inline bool GoEyeUtil::IsNakadeShape(const SgPointSet& area)
+{
+    return  IsNakadeShape(area, area.Size());
 }
 
 inline bool GoEyeUtil::IsSimpleEye(const GoBoard& bd, SgPoint p,
@@ -283,7 +352,7 @@ bool GoEyeUtil::MakesNakadeShape(const BOARD& bd, SgPoint p,
                     return false;
             }
     }
-    return IsNakadeShape(area);
+    return IsNakadeShape(area, nu);
 }
 
 //----------------------------------------------------------------------------

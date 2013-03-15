@@ -20,52 +20,6 @@ int NuEdgePoints(const GoBoard& bd, const SgPointSet& points)
     return (points & bd.LineSet(1)).Size();
 }
 
-/** Recognizes 2x2 block of points.
-    Relies on the current implementation 
-    where SgSetIterator produces set members in sorted order,
-    such that bulky four points have values p, p + WE, p + NS, p + WE + NS */
-bool IsBulkyFour(const SgPointSet& points)
-{
-    SG_ASSERT(points.IsSize(4));
-    SgSetIterator it(points); 
-    SgPoint p1 = *it;
-    ++it;
-    if (*it != p1 + SG_WE)
-        return false;
-    ++it;
-    if (*it != p1 + SG_NS)
-        return false;
-    ++it;
-    if (*it != p1 + SG_WE + SG_NS)
-        return false;
-    SG_ASSERT(GoEyeUtil::DegreeCode(points) == 400);
-    return true;
-}
-
-bool IsTShape(const SgPointSet& block)
-{
-    return GoEyeUtil::DegreeCode(block) == 1030;
-}
-
-bool IsBulkyFive(const SgPointSet& block)
-{
-    return GoEyeUtil::DegreeCode(block) == 1310;
-}
-
-bool IsCross(const SgPointSet& block)
-{
-    return GoEyeUtil::DegreeCode(block) == 10040;
-}
-
-bool IsRabbitySix(const SgPointSet& block)
-{
-    return GoEyeUtil::DegreeCode(block) == 10320;
-}
-        
-bool Is2x3Area(const SgPointSet& area)
-{
-    return GoEyeUtil::DegreeCode(area) == 2400;
-}
         
 /** Block has a shape that gives the opponent two eyes,
     if it gets captured by a single opponent surrounding block.
@@ -416,7 +370,7 @@ int GoEyeUtil::DegreeCode(const SgPointSet& points)
 
 long GoEyeUtil::DegreeCode8(const SgPointSet& points)
 {
-    int degrees[9] = {0, 0, 0, 0, 0};
+    int degrees[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     
     for (SgSetIterator it(points); it; ++it)
     {
@@ -440,20 +394,6 @@ long GoEyeUtil::DegreeCode8(const SgPointSet& points)
           + 100000000 * degrees[8];
 }
 
-bool GoEyeUtil::IsNakadeShape(const SgPointSet& area)
-{
-    switch (area.Size())
-    {
-        case 1:
-        case 2:
-        case 3: return true;
-        case 4: return IsBulkyFour(area) || IsTShape(area);
-        case 5: return IsBulkyFive(area) || IsCross(area);
-        case 6: return IsRabbitySix(area);
-        default: // too big
-            return false;
-    }
-}
 
 bool GoEyeUtil::IsSinglePointEye(const GoBoard& bd, SgPoint p,
                                  SgBlackWhite color)
