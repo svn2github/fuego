@@ -709,6 +709,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
     }
     
     if (earlyPassPossible
+        && searchMove != SG_PASS
         && AllowFillinMove(bd, searchMove, territory, m_sureWinThreshold))
     {
         move = searchMove;
