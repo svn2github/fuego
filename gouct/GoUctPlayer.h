@@ -867,13 +867,6 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::DoSearch(SgBlackWhite toPlay,
         move = GoUctSearchUtil::TrompTaylorPassCheck(move, m_search);
     }
 
-    SgDebug() << "m_earlyPass " << m_earlyPass
-    << " wasEarlyAbort " << wasEarlyAbort
-    << " value " << value
-    << " m_resignThreshold " << m_resignThreshold
-    << " m_sureWinThreshold " << m_sureWinThreshold
-    << " earlyAbort.m_threshold " << earlyAbort.m_threshold
-    << '\n';
     // If SgUctSearch aborted early, use the remaining time/nodes for doing a
     // search, if an early pass is possible
     if (m_earlyPass && (wasEarlyAbort || value > m_sureWinThreshold))
