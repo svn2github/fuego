@@ -184,16 +184,16 @@ void ComputeContexts(const GoBoard &bd,
     }
 }
 
-void ReadPatternArray(unsigned short predictor[], unsigned int size,
+void ReadPatternArray(unsigned short predictor[], int size,
                       PatternEntry patternEntry[], unsigned int nuPatterns)
 {
-    for (unsigned int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         predictor[i] = NEUTRALPREDICTION;
 
     for (unsigned int i=0; i< nuPatterns; ++i)
     {
         unsigned int context = patternEntry[i].index;
-        SG_ASSERT(context < size);
+        SG_ASSERT(context < static_cast<unsigned int>(size));
         predictor[context] = patternEntry[i].code;
     }
 }
@@ -201,9 +201,9 @@ void ReadPatternArray(unsigned short predictor[], unsigned int size,
 void ReadPatterns(unsigned short predictor9[],
                   unsigned short predictor19[])
 {
-    ReadPatternArray(predictor9, (unsigned)NUMPATTERNS9X9,
+    ReadPatternArray(predictor9, NUMPATTERNS9X9,
                      greenpeepPatterns9, nuGreenpeepPatterns9);
-    ReadPatternArray(predictor19, (unsigned)NUMPATTERNS19X19,
+    ReadPatternArray(predictor19, NUMPATTERNS19X19,
                      greenpeepPatterns19, nuGreenpeepPatterns19);
 }
 
