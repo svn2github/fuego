@@ -9,6 +9,7 @@
 #include "GoUctPlayoutPolicy.h"
 #include <boost/static_assert.hpp>
 
+
 /* max 26-bit: 16-bit 8-neighbor core, 8-bit liberty & 2-away extension, 
 	1 bit "ko exists", 1 bit defensive move */
 const int NUMPATTERNS9X9 = 1<<26;

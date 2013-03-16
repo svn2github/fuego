@@ -7,8 +7,6 @@
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
 
 #include <bitset>
-#include <boost/filesystem/path.hpp>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <climits>
@@ -18,13 +16,20 @@
 #include "SgPlatform.h"
 #include "SgStringUtil.h"
 
-using boost::filesystem::path;
+struct PatternEntry // common data structure used in both 9x9 and 19x19
+{
+    unsigned int index;
+    unsigned short code;
+};
+
+#include "GoUctGreenpeepPatterns9.h"
+#include "GoUctGreenpeepPatterns19.h"
+
 using std::string;
 //----------------------------------------------------------------------------
 namespace {
 
 const short unsigned int NEUTRALPREDICTION = 512;
-
 const short unsigned int PASSPREDICTION = 2;
 
 /* 19x19-only.  Different scale from PASSPREDICTION. */
@@ -179,103 +184,27 @@ void ComputeContexts(const GoBoard &bd,
     }
 }
 
-bool ReadFile(std::istream& stream, const unsigned int nuPatterns, 
-			  unsigned short predictor[])
+void ReadPatternArray(unsigned short predictor[], unsigned int size,
+                      PatternEntry patternEntry[], unsigned int nuPatterns)
 {
-    for (unsigned int i = 0; i < nuPatterns; ++i)
+    for (unsigned int i = 0; i < size; ++i)
         predictor[i] = NEUTRALPREDICTION;
 
-    if (! stream.good())
+    for (unsigned int i=0; i< nuPatterns; ++i)
     {
-        SgDebug() << "Failed to read pattern file\n";
-        return false;
+        unsigned int context = patternEntry[i].index;
+        SG_ASSERT(context < size);
+        predictor[context] = patternEntry[i].code;
     }
-
-    int count = 0;
-    for (;; ++count)
-    {
-        unsigned int context;
-        stream >> std::hex >> context;
-        if (! stream.good())
-            break;
-        if (context >= nuPatterns)
-        {
-            SgDebug() << "pattern file: bad context " << context << '\n';
-            return false;
-        }
-        stream >> std::dec >> predictor[context];
-    }
-    SgDebug() << "Read " << count << " patterns\n";
-    return true;
 }
 
-bool ReadPatternFile(const path& file, const unsigned int nuPatterns, 
-			  unsigned short predictor[])
+void ReadPatterns(unsigned short predictor9[],
+                  unsigned short predictor19[])
 {
-    string nativeFile = SgStringUtil::GetNativeFileName(file);
-    SgDebug() << "Loading pattern file from '" << nativeFile << "'... ";
-    std::ifstream in(nativeFile.c_str());
-    if (! in)
-    {
-        SgDebug() << "not found\n";
-        return false;
-    }
-    try
-    {
-        ReadFile(in, nuPatterns, predictor);
-    }
-    catch (const SgException& e)
-    {
-        SgDebug() << "error: " << e.what() << '\n';
-        return false;
-    }
-    return true;
-}
-
-/** try to find the pattern file in the "default" locations */
-bool TryReadFile(const string& fileName, const unsigned int nuPatterns, 
-			  unsigned short predictor[])
-{
-    path topSourceDir = SgPlatform::GetTopSourceDir();
-    if (ReadPatternFile(topSourceDir / "book" / fileName, 
-                        nuPatterns, predictor))
-        return true;
-
-    path programDir = SgPlatform::GetProgramDir();
-    if (ReadPatternFile(programDir / fileName, nuPatterns, predictor))
-        return true;
-
-	// for case where program is in 
-    // fuego/build/<build-type>/fuegomain directory.
-    // and patterns are in fuego/book directory
-	path parent3Dir = programDir.parent_path().parent_path().parent_path();
-    if (ReadPatternFile(parent3Dir / "book" / fileName, 
-                        nuPatterns, predictor))
-        return true;
-    
-#ifdef ABS_TOP_SRCDIR
-    if (ReadPatternFile(path(ABS_TOP_SRCDIR) / "book" / fileName, 
-    					nuPatterns, predictor))
-        return true;
-#endif
-#if defined(DATADIR) && defined(PACKAGE)
-    if (ReadPatternFile(path(DATADIR) / PACKAGE / fileName, 
-                        nuPatterns, predictor))
-        return true;
-#endif
-    SgWarning() << "Pattern file not found: " << fileName 
-    			<< ". continuing without.\n";
-    return false;
-}
-
-void ReadPatternFiles(unsigned short predictor9[], 
-                      unsigned short predictor19[])
-{
-    const string fileName9 = "patterns9.dat";
-    const string fileName19 = "patterns19.dat";
-
-    TryReadFile(fileName9, NUMPATTERNS9X9, predictor9);
-    TryReadFile(fileName19, NUMPATTERNS19X19, predictor19);
+    ReadPatternArray(predictor9, (unsigned)NUMPATTERNS9X9,
+                     greenpeepPatterns9, nuGreenpeepPatterns9);
+    ReadPatternArray(predictor19, (unsigned)NUMPATTERNS19X19,
+                     greenpeepPatterns19, nuGreenpeepPatterns19);
 }
 
 } // namespace
@@ -284,7 +213,7 @@ void ReadPatternFiles(unsigned short predictor9[],
 
 GoUctAdditiveKnowledgeParamGreenpeep::GoUctAdditiveKnowledgeParamGreenpeep()
 {
-    ReadPatternFiles(m_predictor9x9, m_predictor19x19);
+    ReadPatterns(m_predictor9x9, m_predictor19x19);
 }
 
 //----------------------------------------------------------------------------
