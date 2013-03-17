@@ -282,6 +282,13 @@ sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-48.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-90.sgf \
 sgf/games/2013/KGS/AyaMC-nomiBot.sgf \
+sgf/games/2013/UEC/2013_uec_round1_aya.sgf \
+sgf/games/2013/UEC/2013_uec_round2_aozameta.sgf \
+sgf/games/2013/UEC/2013_uec_round3_ballade.sgf \
+sgf/games/2013/UEC/2013_uec_round4_shikousakugo.sgf \
+sgf/games/2013/UEC/2013_uec_round5_zen.sgf \
+sgf/games/2013/UEC/2013_uec_round6_crazystone.sgf \
+sgf/games/2013/UEC/2013_uec_round7_izanami.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
