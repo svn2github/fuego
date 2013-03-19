@@ -215,6 +215,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "param/Uct Param TreeFilter/uct_param_treefilter\n"
         "param/Uct Param Search/uct_param_search\n"
         "plist/Uct Patterns/uct_patterns\n"
+        "pstring/Uct Policy Corrected Moves/uct_policy_corrected_moves\n"
         "pstring/Uct Policy Moves/uct_policy_moves\n"
         "gfx/Uct Prior Knowledge/uct_prior_knowledge\n"
         "sboard/Uct Rave Values/uct_rave_values\n"
@@ -897,6 +898,31 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
             cmd << SgWritePoint(*it) << ' ';
 }
 
+
+void GoUctCommands::CmdPolicyCorrectedMoves(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    GoUctPlayoutPolicy<GoBoard> policy(m_bd, Player().m_playoutPolicyParam);
+    for (GoBoard::Iterator it(m_bd); it; ++it)
+        if (m_bd.IsLegal(*it))
+        {
+            SgPoint move = *it;
+            policy.CorrectMove(GoUctUtil::DoFalseEyeToCaptureCorrection, move,
+                            GOUCT_REPLACE_CAPTURE);
+            if (move != *it)
+                cmd << "FalseEyeToCaptureCorrection "
+                    << SgWritePoint(*it) << ' '
+                    << SgWritePoint(move) << ' ';
+            move = *it;
+            policy.CorrectMove(GoUctUtil::DoSelfAtariCorrection, move,
+                        GOUCT_SELFATARI_CORRECTION);
+            if (move != *it)
+                cmd << "SelfAtariCorrection "
+                    << SgWritePoint(*it) << ' '
+                    << SgWritePoint(move) << ' ';
+        }
+}
+
 /** Return equivalent best moves in playout policy.
     See GoUctPlayoutPolicy::GetEquivalentBestMoves() <br>
     Arguments: none <br>
@@ -1371,6 +1397,8 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_param_treefilter", &GoUctCommands::CmdParamTreeFilter);
     Register(e, "uct_param_search", &GoUctCommands::CmdParamSearch);
     Register(e, "uct_patterns", &GoUctCommands::CmdPatterns);
+    Register(e, "uct_policy_corrected_moves",
+             &GoUctCommands::CmdPolicyCorrectedMoves);
     Register(e, "uct_policy_moves", &GoUctCommands::CmdPolicyMoves);
     Register(e, "uct_prior_knowledge", &GoUctCommands::CmdPriorKnowledge);
     Register(e, "uct_rave_values", &GoUctCommands::CmdRaveValues);

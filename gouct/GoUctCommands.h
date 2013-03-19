@@ -56,6 +56,8 @@ public:
         - @link CmdParamSearch() @c uct_param_search @endlink
         - @link CmdParamTreeFilter() @c uct_param_treefilter @endlink
         - @link CmdPatterns() @c uct_patterns @endlink
+        - @link CmdPolicyCorrectedMoves() @c uct_policy_corrected_moves 
+          @endlink
         - @link CmdPolicyMoves() @c uct_policy_moves @endlink
         - @link CmdPriorKnowledge() @c uct_prior_knowledge @endlink
         - @link CmdRaveValues() @c uct_rave_values @endlink
@@ -94,6 +96,7 @@ public:
     void CmdParamSearch(GtpCommand& cmd);
     void CmdParamTreeFilter(GtpCommand& cmd);
     void CmdPatterns(GtpCommand& cmd);
+    void CmdPolicyCorrectedMoves(GtpCommand& cmd);
     void CmdPolicyMoves(GtpCommand& cmd);
     void CmdPriorKnowledge(GtpCommand& cmd);
     void CmdRaveValues(GtpCommand& cmd);

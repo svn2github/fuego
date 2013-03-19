@@ -192,7 +192,21 @@ public:
     /** @see GoUctGammaMoveGenerator */
     const GoUctGammaMoveGenerator<BOARD>& GammaGenerator() const;
 
-    /** Make defensive-move detector available for other uses. 
+    /** A function that tries to correct a given move if it is bad.
+     Returns true of the move was replaced.
+     */
+    typedef bool Corrector(const BOARD&, SgPoint&);
+
+    /** Try to correct the proposed move, typically by moving it to a
+     'better' point such as other liberty or neighbor.
+     Examples implemented: self-ataries, clumps. */
+    bool CorrectMove(typename GoUctPlayoutPolicy<BOARD>::Corrector&
+                     corrFunction,
+                     SgPoint& move,
+                     GoUctPlayoutPolicyType moveType);
+
+
+    /** Make defensive-move detector available for other uses.
         Includes calls to StartPlayout and EndPlayout, and will interfere 
         with any other in-progress use of this GoUctPlayoutPolicy.
     */
@@ -207,10 +221,6 @@ public:
 	/** Smallest allowed gamma value */
     static const float GAMMA_LOWER_LIMIT = 0.00000000001;
 private:
-    /** A function that tries to correct a given move if it is bad.
-    	Returns true of the move was replaced.
-    */
-    typedef bool Corrector(const BOARD&, SgPoint&);
 
     /** Incrementally keeps track of blocks in atari. */
     class CaptureGenerator
@@ -281,14 +291,6 @@ private:
     GoUctPureRandomGenerator<BOARD> m_pureRandomGenerator;
 
     SgBWArray<GoUctPlayoutPolicyStat> m_statistics;
-
-    /** Try to correct the proposed move, typically by moving it to a
-        'better' point such as other liberty or neighbor.
-        Examples implemented: self-ataries, clumps. */
-    bool CorrectMove(typename GoUctPlayoutPolicy<BOARD>::Corrector& 
-                     corrFunction,
-                     SgPoint& mv, 
-                     GoUctPlayoutPolicyType moveType);
 
     /** Captures if last move was self-atari */
     bool GenerateAtariCaptureMove();
