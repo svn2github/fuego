@@ -27,3 +27,9 @@ loadsgf sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf 37
 40 uct_root_filter
 #? []*
 # H7 should not be filtered here.
+
+loadsgf sgf/ladder/ladder-rootfilter.sgf
+
+50 uct_root_filter
+#? []*
+# C6 should not be filtered here.
