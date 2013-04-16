@@ -42,6 +42,7 @@ performance_icgc2008.tst \
 performance_JAIST2012.tst \
 performance_middlegame_hard_9x9.tst \
 performance_pro_9x9.tst \
+performance_UEC2013.tst \
 performance-zen-9x9.tst \
 play_deterministic_srand1.tst \
 play_deterministic_srand1_maxgames1M.tst \
@@ -282,6 +283,10 @@ sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-48.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-90.sgf \
 sgf/games/2013/KGS/AyaMC-nomiBot.sgf \
+sgf/games/2013/UEC/2013_uec_day2_round1_perstone.sgf \
+sgf/games/2013/UEC/2013_uec_day2_round2_zen.sgf \
+sgf/games/2013/UEC/2013_uec_day2_round3_manyfaces.sgf \
+sgf/games/2013/UEC/2013_uec_day2_round4_nomitan.sgf \
 sgf/games/2013/UEC/2013_uec_round1_aya.sgf \
 sgf/games/2013/UEC/2013_uec_round2_aozameta.sgf \
 sgf/games/2013/UEC/2013_uec_round3_ballade.sgf \
@@ -321,6 +326,7 @@ sgf/ladder/ladder-edge-breaker.sgf \
 sgf/ladder/ladder-edge.sgf \
 sgf/ladder/ladder-no-breaker.sgf \
 sgf/ladder/ladder-parallel.sgf \
+sgf/ladder/ladder-rootfilter.sgf \
 sgf/ladder/ladder-triple-ko.sgf \
 sgf/ladder/long-ladder-captured.sgf \
 sgf/ladder/long-ladder.sgf \
