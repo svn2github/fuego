@@ -380,10 +380,12 @@ void GoGtpEngine::CmdClearBoard(GtpCommand& cmd)
     if (! m_sentinelFile.empty() && exists(m_sentinelFile))
     {
         # if defined(BOOST_FILESYSTEM_VERSION)
-           SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
+           SG_ASSERT (  BOOST_FILESYSTEM_VERSION == 2
+                     || BOOST_FILESYSTEM_VERSION == 3);
         #endif
 
-        #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
+        #if (defined (BOOST_FILESYSTEM_VERSION) \
+             && (BOOST_FILESYSTEM_VERSION == 3))
            throw GtpFailure() << "Detected sentinel file '"
                            << m_sentinelFile.string() << "'";
         #else              
@@ -894,8 +896,7 @@ void GoGtpEngine::CmdPlaceFreeHandicap(GtpCommand& cmd)
         stones = GoGtpCommandUtil::GetHandicapStones(size, n);
     }
     catch (const GtpFailure&)
-    {
-    }
+    { }
     if (stones.Length() < n && m_player != 0)
     {
         // 9 handicap are always defined for odd sizes >= 9
@@ -1321,7 +1322,8 @@ SgPoint GoGtpEngine::GenMove(SgBlackWhite color, bool ignoreClock)
     SgTimeRecord time;
     if (ignoreClock || m_timeSettings.IsUnknown())
         time = SgTimeRecord(true, m_timeLimit);
-    else {
+    else
+    {
         time = m_game.Time();
         time.UpdateTimeLeft();
     }
@@ -1390,20 +1392,20 @@ void GoGtpEngine::InitStatistics()
     }
     if (MpiSynchronizer()->IsRootProcess())
     {
-    ofstream out(m_statisticsFile.c_str(), ios::app);
-    // TODO: What to do with an existing file? We want a single file, if
-    // twogtp or Go server experiments are interrupted and restarted, but if
-    // the file is from different player, the format is not compatible.
-    // For now, we simple append to the file.
-    out << '#'; // Start header line with a comment character
-    for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
-    {
-        out << m_statisticsSlots[i];
-        if (i < m_statisticsSlots.size() - 1)
-        out << '\t';
-        else
-        out << '\n';
-    }
+        ofstream out(m_statisticsFile.c_str(), ios::app);
+        // TODO: What to do with an existing file? We want a single file, if
+        // twogtp or Go server experiments are interrupted and restarted, but
+        // if the file is from different player, the format is not compatible.
+        // For now, we simply append to the file.
+        out << '#'; // Start header line with a comment character
+        for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
+        {
+            out << m_statisticsSlots[i];
+            if (i < m_statisticsSlots.size() - 1)
+                out << '\t';
+            else
+                out << '\n';
+        }
     }
 }
 
@@ -1481,24 +1483,23 @@ void GoGtpEngine::SaveGame(const std::string& fileName) const
 {
     if (MpiSynchronizer()->IsRootProcess())
     {
-    try
-    {
-        ofstream out(fileName.c_str());
-        SgGameWriter writer(out);
-        writer.WriteGame(m_game.Root(), true, 0, 1, 19);
-    }
-    catch (const SgException& e)
-    {
-        throw GtpFailure(e.what());
-    }
+        try
+        {
+            ofstream out(fileName.c_str());
+            SgGameWriter writer(out);
+            writer.WriteGame(m_game.Root(), true, 0, 1, 19);
+        }
+        catch (const SgException& e)
+        {
+            throw GtpFailure(e.what());
+        }
     }
 }
 
 void GoGtpEngine::SaveStatistics()
 {
-    if (MpiSynchronizer()->IsRootProcess())
-    {
-    if (m_statisticsFile == "")
+    if (  ! MpiSynchronizer()->IsRootProcess()
+       || m_statisticsFile == "")
         return;
     SG_ASSERT(m_statisticsValues.size() == m_statisticsSlots.size());
     ofstream out(m_statisticsFile.c_str(), ios::app);
@@ -1506,10 +1507,9 @@ void GoGtpEngine::SaveStatistics()
     {
         out << m_statisticsValues[i];
         if (i < m_statisticsSlots.size() - 1)
-        out << '\t';
+            out << '\t';
         else
-        out << '\n';
-    }
+            out << '\n';
     }
 }
 
@@ -1691,8 +1691,7 @@ const SgMpiSynchronizerHandle GoGtpEngine::MpiSynchronizer() const
 
 GoGtpAssertionHandler::GoGtpAssertionHandler(const GoGtpEngine& engine)
     : m_engine(engine)
-{
-}
+{ }
 
 void GoGtpAssertionHandler::Run()
 {
