@@ -635,23 +635,6 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
 }
 
 
-    /** Bias pattern moves in playouts by learned probabilities. Default true.
-        This applies to the pattern move generator in the playout policy only.
-    	If true, a probability of choosing each of the matching pattern
-        moves is computed from machine learned 3x3 pattern weights.
-        If false, the playout policy chooses uniformly random among all 
-        matching patterns as in the original MoGo paper */
-    bool m_usePatternsInPlayout;
-
-    /** Use learned pattern probabilities in prior knowledge. Default true. */
-    bool m_usePatternsInPriorKnowledge;
-
-    /** Lower threshold of gamma values for which patterns to select */
-    float m_patternGammaThreshold;
-
-    /** Parameter to control knowledge type in GoUctKnowledgeFactory */
-    KnowledgeType m_knowledgeType;
-
 /** Get and set root filter parameters.
     This command is compatible with the GoGui analyze command type "param".
 
