@@ -98,7 +98,7 @@ void ParseOptions(int argc, char** argv)
     normalOptions.add_options()
         ("config", 
          po::value<std::string>(&g_config)->default_value(""),
-         "execuate GTP commands from file before starting main command loop")
+         "execute GTP commands from file before starting main command loop")
         ("help", "Displays this help and exit")
         ("maxgames", 
          po::value<int>(&g_maxGames)->default_value(-1),
@@ -145,7 +145,7 @@ void PrintStartupMessage()
 {
     SgDebug() <<
         "Fuego " << FuegoMainUtil::Version() << "\n"
-        "Copyright (C) 2009-2012 by the authors of the Fuego project.\n"
+        "Copyright (C) 2009-2013 by the authors of the Fuego project.\n"
         "This program comes with ABSOLUTELY NO WARRANTY. This is\n"
         "free software and you are welcome to redistribute it under\n"
         "certain conditions. Type `fuego-license' for details.\n\n";
