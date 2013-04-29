@@ -36,11 +36,11 @@ namespace {
 /** @name Settings from command line options */
 // @{
 
-/** Do not use opening book */
-bool g_noBook = false;
+/** Use opening book */
+bool g_useBook = true;
 
-/** Do not allow handicap games */
-bool g_noHandicap = false;
+/** Allow handicap games */
+bool g_allowHandicap = true;
 
 bool g_quiet = false;
 
@@ -134,9 +134,9 @@ void ParseOptions(int argc, char** argv)
     if (vm.count("help"))
         Help(normalOptions, std::cout);
     if (vm.count("nobook"))
-        g_noBook = true;
+        g_useBook = false;
     if (vm.count("nohandicap"))
-        g_noHandicap = true;
+        g_allowHandicap = false;
     if (vm.count("quiet"))
         g_quiet = true;
 }
@@ -180,11 +180,11 @@ int main(int argc, char** argv)
         GoInit();
         PrintStartupMessage();
         SgRandom::SetSeed(g_srand);
-        FuegoMainEngine engine(g_fixedBoardSize, g_programPath, g_noHandicap);
+        FuegoMainEngine engine(g_fixedBoardSize, g_programPath, ! g_allowHandicap);
         GoGtpAssertionHandler assertionHandler(engine);
         if (g_maxGames >= 0)
             engine.SetMaxClearBoard(g_maxGames);
-        if (! g_noBook)
+        if (g_useBook)
             FuegoMainUtil::LoadBook(engine.Book(), 
             					    SgPlatform::GetProgramDir());
         if (g_config != "")
