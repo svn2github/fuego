@@ -14,6 +14,11 @@
 
 namespace {
 
+/*  Control whether to expand all children or only a fraction.
+    See WideningBase(), WideningFactor().
+*/
+const bool USE_WIDENING = true;
+
 inline SgEmptyBlackWhite Winner(bool isWinning, SgEmptyBlackWhite toPlay)
 {
 	return isWinning ? toPlay : SgOppBW(toPlay);
@@ -40,11 +45,6 @@ void DfpnBounds::CheckConsistency() const
 
 DfpnChildren::DfpnChildren()
 { }
-
-void DfpnChildren::SetChildren(const std::vector<SgMove>& children)
-{
-    m_children = children;
-}
 
 //----------------------------------------------------------------------------
 
@@ -138,46 +138,41 @@ size_t DfpnSolver::MID(const DfpnBounds& maxBounds, DfpnHistory& history)
     ++m_numMIDcalls;
     size_t prevWork = 0;
     SgEmptyBlackWhite colorToMove = GetColorToMove();
-    DfpnChildren children;
+
+    DfpnData data;
+    if (TTRead(data)) 
     {
-        DfpnData data;
-        if (TTRead(data)) 
+        prevWork = data.m_work;
+        if (! maxBounds.GreaterThan(data.m_bounds))
+            // Estimated bounds are larger than we had
+            // anticipated. The calling state must have computed
+            // the max bounds with out of date information, so just
+            // return here without doing anything: the caller will
+            // now update to this new info and carry on.
+            return 0;
+    }
+    else
+    {
+        SgEmptyBlackWhite winner = SG_EMPTY;
+        if (TerminalState(colorToMove, winner))
         {
-            children = data.m_children;
-            prevWork = data.m_work;
-            if (! maxBounds.GreaterThan(data.m_bounds))
-                // Estimated bounds are larger than we had
-                // anticipated. The calling state must have computed
-                // the max bounds with out of date information, so just
-                // return here without doing anything: the caller will
-                // now update to this new info and carry on.
-                return 0;
-        }
-        else
-        {
-            SgEmptyBlackWhite winner = SG_EMPTY;
-            if (TerminalState(colorToMove, winner))
+            ++m_numTerminal;
+            DfpnBounds terminal;
+            if (colorToMove == winner)
+                DfpnBounds::SetToWinning(terminal);
+            else
             {
-                ++m_numTerminal;
-                DfpnBounds terminal;
-                if (colorToMove == winner)
-                    DfpnBounds::SetToWinning(terminal);
-                else
-                {
-                	SG_ASSERT(SgOppBW(colorToMove) == winner);
-                    DfpnBounds::SetToLosing(terminal);
-                }
-                TTWrite(DfpnData(terminal, DfpnChildren(), 
-                                  SG_NULLMOVE, 1));
-                return 1;
+                SG_ASSERT(SgOppBW(colorToMove) == winner);
+                DfpnBounds::SetToLosing(terminal);
             }
-            ++m_generateMoves;
-            SG_ASSERT(children.Children().empty());
-            GenerateChildren(children.Children());
+            TTWrite(DfpnData(terminal, SG_NULLMOVE, 1));
+            return 1;
         }
     }
-
-    size_t localWork = 1;
+    
+    ++m_generateMoves;
+    DfpnChildren children;
+    GenerateChildren(children.Children());
 
     // Not thread safe: perhaps move into while loop below later...
     std::vector<DfpnData> childrenData(children.Size());
@@ -189,10 +184,10 @@ size_t DfpnSolver::MID(const DfpnBounds& maxBounds, DfpnHistory& history)
     SgHashCode currentHash = Hash();
     SgMove bestMove = SG_NULLMOVE;
     DfpnBounds currentBounds;
+    size_t localWork = 1;
     do
     {
         UpdateBounds(currentBounds, childrenData, maxChildIndex);
-
         if (! maxBounds.GreaterThan(currentBounds))
             break;
 
@@ -270,59 +265,53 @@ size_t DfpnSolver::MID(const DfpnBounds& maxBounds, DfpnHistory& history)
     }
     
     // Store search results
-    DfpnData data(currentBounds, children, bestMove, localWork + prevWork);
-    TTWrite(data);
+    TTWrite(DfpnData(currentBounds, bestMove, localWork + prevWork));
     return localWork;
 }
 
-#define WIDENING 1
-
-#if WIDENING
 size_t DfpnSolver::ComputeMaxChildIndex(const std::vector<DfpnData>&
                                         childrenData) const
 {
-    SG_ASSERT(! childrenData.empty());
-
-    int numNonLosingChildren = 0;
-    for (size_t i = 0; i < childrenData.size(); ++i)
-        if (!childrenData[i].m_bounds.IsWinning())
-            ++numNonLosingChildren;
-    if (numNonLosingChildren < 2)
-        return childrenData.size();
-
-    // this needs experimenting!
-    int childrenToLookAt = WideningBase() 
-        + int(ceil(float(numNonLosingChildren) * WideningFactor()));
-    // Must examine at least two children when have two or more live,
-    // since otherwise delta2 will be set to infinity in SelectChild.
-    SG_ASSERT(childrenToLookAt >= 2);
-
-    int numNonLosingSeen = 0;
-    for (size_t i = 0; i < childrenData.size(); ++i)
+    if (USE_WIDENING)
     {
-        if (! childrenData[i].m_bounds.IsWinning())
-            if (++numNonLosingSeen == childrenToLookAt)
+        SG_ASSERT(! childrenData.empty());
+
+        int numNonLosingChildren = 0;
+        for (size_t i = 0; i < childrenData.size(); ++i)
+            if (!childrenData[i].m_bounds.IsWinning())
+                ++numNonLosingChildren;
+        if (numNonLosingChildren < 2)
+            return childrenData.size();
+
+        // this needs experimenting!
+        int childrenToLookAt = WideningBase() 
+            + int(ceil(float(numNonLosingChildren) * WideningFactor()));
+        // Must examine at least two children when have two or more live,
+        // since otherwise delta2 will be set to infinity in SelectChild.
+        SG_ASSERT(childrenToLookAt >= 2);
+
+        int numNonLosingSeen = 0;
+        for (size_t i = 0; i < childrenData.size(); ++i)
+        {
+            if (! childrenData[i].m_bounds.IsWinning())
+                if (++numNonLosingSeen == childrenToLookAt)
+                    return i + 1;
+        }
+    }
+    else // ! USE_WIDENING
+    /** returns 1 higher than the top non-losing child */
+    {
+        for (size_t i = childrenData.size() - 1; ; --i)
+        {
+            if (! childrenData[i].m_bounds.IsWinning())
                 return i + 1;
+            if (i == 0) // cannot use i >= 0 test in loop because i is unsigned
+                break;
+        }
     }
     return childrenData.size();
 }
 
-#else // do not use widening
-/** returns 1 higher than the top non-losing child */
-size_t DfpnSolver::ComputeMaxChildIndex(const std::vector<DfpnData>&
-                                        childrenData) const
-{
-    for (size_t i = childrenData.size() - 1; ; --i)
-    {
-        if (! childrenData[i].m_bounds.IsWinning())
-            return i + 1;
-        if (i == 0) // cannot use i >= 0 test in loop because i is unsigned
-        	break;
-	}
-    //SG_ASSERT(false);
-    return childrenData.size();
-}
-#endif
 
 void DfpnSolver::PrintStatistics(SgEmptyBlackWhite winner,
                                  const PointSequence& pv) const

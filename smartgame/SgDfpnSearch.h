@@ -156,8 +156,6 @@ class DfpnChildren
 public:
     DfpnChildren();
 
-    void SetChildren(const std::vector<SgMove>& children);
-    
     const std::vector<SgMove>& Children() const;
     std::vector<SgMove>& Children();
     
@@ -166,7 +164,6 @@ public:
     SgMove MoveAt(std::size_t index) const;
 
 private:
-    friend class DfpnData;
     friend class DfpnSolver;
 
     std::vector<SgMove> m_children;
@@ -202,16 +199,13 @@ class DfpnData
 public:
     DfpnBounds m_bounds;
 
-    DfpnChildren m_children;
-
     SgMove m_bestMove;
     
     size_t m_work;
 
     DfpnData();
 
-    DfpnData(const DfpnBounds& bounds, const DfpnChildren& children, 
-             SgMove bestMove, size_t work);
+    DfpnData(const DfpnBounds& bounds, SgMove bestMove, size_t work);
 
     ~DfpnData();
 
@@ -238,10 +232,8 @@ inline DfpnData::DfpnData()
 { }
 
 inline DfpnData::DfpnData(const DfpnBounds& bounds, 
-                          const DfpnChildren& children, 
                           SgMove bestMove, size_t work)
     : m_bounds(bounds),
-      m_children(children),
       m_bestMove(bestMove),
       m_work(work),
       m_isValid(true)
@@ -255,7 +247,6 @@ inline std::string DfpnData::Print() const
     std::ostringstream os;
     os << '[' 
        << "bounds=" << m_bounds << ' '
-       << "children=" << m_children.Size() << ' '
        << "bestmove=" << m_bestMove << ' '
        << "work=" << m_work << ' '
        << ']';
