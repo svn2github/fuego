@@ -61,7 +61,7 @@ class SgDebugToString
 public:
     /** Constructor.
         @param writeToOldDebugStr Also write the content of the string to the
-        old stream, after it was reset in the desctructor. */
+        old stream, after it was reset in the destructor. */
     SgDebugToString(bool writeToOldDebugStr);
 
     ~SgDebugToString();
