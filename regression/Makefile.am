@@ -26,6 +26,7 @@ blunder_selfatari_19.tst \
 blunder_short_ladder_19.tst \
 book_moves.tst \
 cleanup_japanese_rules.tst \
+early_pass.tst \
 escape_capture_19.tst \
 eval_life_and_death.tst \
 eval_seki.tst \
@@ -280,6 +281,7 @@ sgf/games/2012/Blubbel-AyaBot4-2.sgf \
 sgf/games/2012/JAIST-Cup/Fuego13-Zen19S.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
+sgf/games/2013/Gnugo-Fuego.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-48.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-90.sgf \
 sgf/games/2013/KGS/AyaMC-nomiBot.sgf \
