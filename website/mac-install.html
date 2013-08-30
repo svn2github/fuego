@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+      pre {
+        font-family       : Andale Mono, Lucida Console, Monaco, fixed, monospace;
+        color             : #000;
+        background-color  : #eee;
+        font-size         : 12px;
+        overflow          : auto;
+        border            : 1px dashed #999999;
+        line-height       : 14px;
+        padding           : 5px;
+        width             : 98%;
+        text-indent       : 0px;
+        clear             : both;
+      }
+      h1 {
+        text-align        : center;
+      }
+      code {
+        white-space       : nowrap;
+      }
+    </style>
+	<meta charset="utf-8" />
+	<title>Fuego Installation Instructions for Mac OS X</title>
+</head>
+<body>
+<h1>Fuego installation instructions for Mac OS X</h1>
+
+<p>
+These instructions require command-line developer tools such as
+<code>svn</code> (Subversion - a version control system), 
+<code>gcc</code> (a compiler) and <code>autoreconf</code> 
+(part of the autotools collection for creating
+configuration and makefiles). These tools are installed when you
+install Xcode from the App Store, and have it install the command
+line tools. See <a href="#appendix1">appendix 1</a>
+below for how to do this.
+</p>
+
+<p>
+Apple, in its infinite wisdom, decided to leave out the autotools
+collection with Mountain Lion and its associated version of Xcode,
+so these must be installed separately if you are using OS X 10.8
+and above. See <a href="#appendix2">appendix 2</a> below for how 
+to do this.
+</p>
+
+<p>
+With developer tools installed, and paths set correctly, The first 
+task is to retrieve and install the appropriate Boost libraries. 
+Download the most recent version from boost.org. On 29 July 2013,
+that version is 1.54.0.
+</p>
+
+<p>
+Un-tar that in a directory of your choice. For my examples below,
+I will show a user called yama installing into a folder
+called igo. Assuming you have downloaded the tar.gz file into
+that directory, open the Terminal application and use the the
+following commands:
+<pre>
+cd ~/igo
+tar -zxvf boost_1_54_0.tar.gz
+</pre>
+</p>
+
+<p>
+Now build the boost libraries that are needed for Fuego, and put
+them into a separate directory:
+<pre>
+cd  boost_1_54_0/
+./bootstrap.sh --prefix=../boost --with-libraries=thread,system,date_time,filesystem,program_options,test
+./b2 install
+</pre>
+</p>
+
+<p>
+This process will take a little bit of time as it copies a lot of
+files, and compiles a few others. When completed you should have
+the following:
+<pre>
+/Users/yama/igo/boost_1_54_0.tar.gz
+/Users/yama/igo/boost_1_54_0/  &lt;-- filled with lots of stuff
+/Users/yama/igo/boost/
+/Users/yama/igo/boost/include/boost/  &lt;-- filled with lots of stuff
+/Users/yama/igo/boost/lib/  &lt;-- filled with library executables
+</pre>
+</p>
+
+<p>
+To make sure that these libraries are visible, we need to export
+the path to the libraries (assuming you are still using the default
+bash shell):
+<pre>
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/yama/igo/boost/lib
+</pre>
+Note that any time you compile or run Fuego, this variable needs to be
+in your environment. You can check if it is there by typing:
+<pre>
+echo $DYLD_LIBRARY_PATH
+</pre>
+If the response is blank, you will need to export it again.
+</p>
+
+<p>
+Now we go and get Fuego. There is no tar file that contains the 
+latest version of Fuego, so we get it directly from the repository
+using <code>svn</code>:
+<pre>
+cd ..   &lt;-- here you want to end up in the /Users/yama/igo/  directory.
+svn checkout svn://svn.code.sf.net/p/fuego/code/trunk fuego
+</pre>
+This should create a folder named fuego in the desired directory, in
+this case our example will now have a directory 
+<code>/Users/yama/igo/fuego</code>
+filled with all the Fuego code.
+</p>
+
+<p>
+Now we need to create the configure file using <code>autoreconf</code>, 
+run the produced configure file, and then finally make the project:
+<pre>
+cd fuego
+autoreconf --force --install
+./configure --with-boost=/Users/yama/igo/boost  --with-boost-libdir=/Users/yama/igo/boost/lib
+make
+</pre>
+Please note that when you run the <code>./configure</code> for Fuego here, the
+<code>--with-boost=</code> and <code>--with-boost-libdir=</code> paths 
+must be absolute paths, not relative paths: the entire pathname starting at 
+<code>/</code> must be there. For example, do not use the shortcut 
+<code>--with-boost=../boost</code>. It will not work.
+</p>
+<p>
+Another reminder: any time you run Fuego, the <code>DYLD_LIBRARY_PATH</code>
+variable must be set.
+</p>
+
+<h3>Installation on Linux</h3>
+<p>
+In order to use these instructions on a Linux install instead of Mac OS, 
+you need to change the <code>DYLD_LIBRARY_PATH</code> to 
+<code>LD_LIBRARY_PATH</code>. Additionally
+note that most Linux installations locate users home directories 
+in <code>/home</code>, not <code>/Users</code>.
+</p>
+
+
+
+<a name="appendix1" />
+<h1>Appendix 1</h1>
+
+<h2>How to install the Xcode command line tools</h2>
+
+<p>
+To install the command line tools needed such as gcc and svn,
+you must first install Xcode itself. Xcode is available through
+the Apple App Store application. 
+</p>
+<p>
+Open the "App Store" application, found in the Applications folder,
+and do a search for Xcode. Install Xcode by clicking on the 'Free' button,
+and then clicking on it again after it becomes the 'Install App' button.
+After a long download and install, you will find the Xcode application
+in your Applications folder.
+</p>
+<p>
+Start up Xcode, and open up its Preferences (from the Xcode menu). Choose
+the 'Downloads' tab, and inside that choose the 'Components' tab. One of
+the components that you can install is the "Command Line Tools". Install
+these and test that you have them installed by using the following commands
+in a Terminal window (the Terminal application is found in the Utilities
+folder inside the Applications folder):
+<pre>
+which gcc   &lt;--  should respond with /usr/bin/gcc
+which svn   &lt;--  should respond with /usr/bin/svn
+</pre>
+If these commands have given the correct responses, you are ready to proceed.
+</p>
+
+
+<a name="appendix2"/>
+<h1>Appendix 2</h1>
+
+<h2>How to install autotools on Mac OS</h2>
+
+<p>
+The <code>autoconf</code>, <code>automake</code>, and 
+<code>libtool</code> packages (all part of the
+autotools collection) should be installed in  order to be able to 
+use the autoreconf command to create Fuego's 'configure' file.
+</p>
+
+<p>
+I recommend using the following shell script to install all three
+of these tools. Alternatively you can manually type in the commands
+found in the script. You must modify the script to place the tools in
+a directory of your choice. I show this one being put into a
+devtools directory in the yama user's igo directory, but you
+may or may not want to have the tools installed into <code>/usr/local</code>.
+The advantage is that if in <code>/usr/local</code> they are already on the
+<code>PATH</code> variable. The disadvantage is that you may forget to remove
+them from there (or may damage other things when you do) should
+you ever decide you don't need them. You can also modify the script 
+to install more recent versions of the tools. You may want to visit
+the websites to investigate which version is the most recent.
+</p>
+
+<p>
+Copy and paste the following (between, but not including,
+the ---------- lines) into a file named, for example,
+<code>createDevTools.sh</code>. If you created this file in the
+<code>/Users/yama/igo</code> directory, then make the file executable by 
+typing the following commands in the Terminal application:
+<pre>
+cd /Users/yama/igo
+chmod 755 createDevTools.sh
+</pre>
+Then execute it by using:
+<pre>
+./createDevTools.sh
+</pre>
+You will have to type in your password the first time the script
+uses '<code>sudo</code>' in an install.
+</p>
+<p>
+Remember that if you want to use any of the autotools in a different
+Terminal window or shell, you will need to add the installation
+directory's bin directory to the <code>PATH</code> variable, e.g.:
+<pre>
+export PATH=$PATH:/Users/yama/igo/devtools/bin
+</pre>
+unless you installed into <code>/usr/local</code>.
+</p>
+<p>
+<pre>
+-------------------------------------------------------------
+#!/bin/sh
+ 
+##
+# Install autoconf, automake and libtool smoothly on Mac OS X.
+# Newer versions of these libraries are available and may work better on OS X
+#
+# This script is originally from 
+# http://jsdelfino.blogspot.com.au/2012/08/autoconf-and-automake-on-mac-os-x.html
+#
+ 
+export build=/Users/yama/igo/devtools # or wherever you'd like to build
+mkdir -p $build
+ 
+##
+# Autoconf
+# http://ftpmirror.gnu.org/autoconf
+ 
+cd $build
+curl -OL http://ftpmirror.gnu.org/autoconf/autoconf-2.69.tar.gz
+tar xzf autoconf-2.69.tar.gz
+cd autoconf-2.69
+#./configure --prefix=/usr/local
+./configure --prefix=/Users/yama/igo/devtools
+make
+sudo make install
+export PATH=$PATH:/Users/yama/igo/devtools/bin
+ 
+##
+# Automake
+# http://ftpmirror.gnu.org/automake
+ 
+cd $build
+curl -OL http://ftpmirror.gnu.org/automake/automake-1.14.tar.gz
+tar xzf automake-1.14.tar.gz
+cd automake-1.14
+#./configure --prefix=/usr/local
+./configure --prefix=/Users/yama/igo/devtools
+make
+sudo make install
+ 
+##
+# Libtool
+# http://ftpmirror.gnu.org/libtool
+ 
+cd $build
+curl -OL http://ftpmirror.gnu.org/libtool/libtool-2.4.tar.gz
+tar xzf libtool-2.4.tar.gz
+cd libtool-2.4
+#./configure --prefix=/usr/local
+./configure --prefix=/Users/yama/igo/devtools
+make
+sudo make install
+ 
+echo "Installation complete."
+-------------------------------------------------------------
+</pre>
+</p>
+
+</body>
+</html>
