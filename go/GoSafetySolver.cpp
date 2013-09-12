@@ -273,6 +273,7 @@ void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
 
     SgBlackWhite color = c1->Color();
     bool found = Regions()->AllChains(color).Exclude(c1);
+    SG_DEBUG_ONLY(found);
     SG_ASSERT(found);
     found = Regions()->AllChains(color).Exclude(c2);
     SG_ASSERT(found);

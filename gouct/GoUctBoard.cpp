@@ -82,6 +82,7 @@ void GoUctBoard::CheckConsistencyBlock(SgPoint point) const
     SgStack<SgPoint,SG_MAXPOINT> stack;
     stack.Push(point);
     bool anchorFound = false;
+    SG_DEBUG_ONLY(anchorFound);
     const Block* block = m_block[point];
     while (! stack.IsEmpty())
     {
