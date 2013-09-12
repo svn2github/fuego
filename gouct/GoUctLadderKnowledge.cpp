@@ -152,14 +152,10 @@ void GoUctLadderKnowledge::LadderAttack(SgPoint p)
     
     SgVector<SgPoint> liberties;
     GetLiberties(m_bd, p, liberties);
-    bool captured = false;
     for (SgVectorIterator<SgPoint> it(liberties); it; ++it)
     {
         if (IsLadderCaptureMove(m_bd, p, *it)) 
-        {
             m_knowledge.Add(*it, 1.0, LADDER_CAPTURE_BONUS);
-            captured = true;
-        }
     }
 }
 
