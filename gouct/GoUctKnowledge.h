@@ -30,6 +30,9 @@ public:
     /** Add to the existing knowledge for move */
     void Add(SgPoint move, SgUctValue value, SgUctValue count);
 
+    /** Add values and counts to vector of SgUctMoveInfo */
+    void AddValuesTo(std::vector<SgUctMoveInfo>& moves) const;
+
     /** Clear value and count for this move */
     inline void Clear(SgPoint move);
 

@@ -6,6 +6,7 @@
 #include "SgSystem.h"
 
 #include <boost/test/auto_unit_test.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 #include "GoBoard.h"
 #include "GoSetupUtil.h"
 #include "GoUctKnowledge.h"
@@ -47,9 +48,11 @@ void CheckValue(const SgUctMoveInfo& moveInfo, SgPoint p,
                 SgUctValue value, SgUctValue count)
 {
     BOOST_CHECK_EQUAL(moveInfo.m_move, p);
-    BOOST_CHECK_EQUAL(moveInfo.m_value, SgUctSearch::InverseEstimate(value));
+    BOOST_CHECK_CLOSE(moveInfo.m_value, SgUctSearch::InverseEstimate(value),
+                      0.00001);
     BOOST_CHECK_EQUAL(moveInfo.m_count, count);
-    BOOST_CHECK_EQUAL(moveInfo.m_raveValue, value);
+    BOOST_CHECK_CLOSE(moveInfo.m_raveValue, value,
+                      0.00001);
     BOOST_CHECK_EQUAL(moveInfo.m_raveCount, count);
 }
 
@@ -110,6 +113,25 @@ BOOST_AUTO_TEST_CASE(GoUctKnowledgeTest_ProcessPosition)
     CheckUndefined(moves, Pt(5, 5));
 }
 
+BOOST_AUTO_TEST_CASE(GoUctKnowledgeTest_AddValuesTo)
+{
+    GoBoard bd(9);
+    GoUctKnowledgeTester tester(bd);
+    std::vector<SgUctMoveInfo> moves;
+    Init(moves, bd);
+    tester.Add(Pt(3, 1), SgUctValue(0.6), SgUctValue(10));
+    tester.Add(Pt(3, 2), SgUctValue(0.1), SgUctValue(20));
+    tester.AddValuesTo(moves);
+    CheckValue(moves, Pt(3, 1), SgUctValue(0.6), SgUctValue(10));
+    CheckValue(moves, Pt(3, 2), SgUctValue(0.1), SgUctValue(20));
+    GoUctKnowledgeTester tester2(bd);
+    tester2.Add(Pt(3, 1), SgUctValue(0.3), SgUctValue(20));
+    tester2.Add(Pt(3, 2), SgUctValue(0.7), SgUctValue(20));
+    tester2.AddValuesTo(moves);
+    CheckValue(moves, Pt(3, 1), SgUctValue(0.4), SgUctValue(30));
+    CheckValue(moves, Pt(3, 2), SgUctValue(0.4), SgUctValue(40));
+}
+    
 //----------------------------------------------------------------------------
 
 } // namespace
