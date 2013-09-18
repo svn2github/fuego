@@ -6,6 +6,7 @@ fuego-screenshot.html \
 fuego-screenshot.jpg \
 fuego-screenshot-thumb.jpg \
 index.html \
+mac-install.html \
 publications.html \
 "
 
