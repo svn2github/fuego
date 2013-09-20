@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# scoring: tests for scoring the game under both Chinese and Japanese rules.
+# scoring_static: end-of-game scoring under both Chinese and Japanese rules.
 # Test cases where territory (Japanese) rules score differently than 
 # area (e.g. Chinese) rules.
 # Examples: play dame point or pass, do not play in own territory.
