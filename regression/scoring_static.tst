@@ -13,7 +13,7 @@ loadsgf sgf/final_moves/aja-example.sgf 22
 #? [B\+0\.5]
 
 20 static_score japanese_score
-#? [W\+0\.5]
+#? [W\+0\.5]*
 
 loadsgf sgf/final_moves/aja-example.sgf 23
 
@@ -29,7 +29,7 @@ loadsgf sgf/final_moves/aja-example.sgf 24
 #? [B\+0\.5]
 
 60 static_score japanese_score
-#? [W\+0\.5]
+#? [W\+0\.5]*
 
 loadsgf sgf/final_moves/aja-example.sgf 25
 
@@ -45,7 +45,7 @@ loadsgf sgf/final_moves/aja-example.sgf 26
 #? [B\+0\.5]
 
 100 static_score japanese_score
-#? [W\+0\.5]
+#? [W\+0\.5]*
 
 loadsgf sgf/final_moves/pass-scoring.sgf 21
 
@@ -69,7 +69,7 @@ loadsgf sgf/final_moves/pass-scoring.sgf 23
 #? [B\+0\.5]
 
 160 static_score japanese_score
-#? [B\+1\.5]
+#? [B\+1\.5]*
 
 loadsgf sgf/final_moves/pass-scoring.sgf 24
 
@@ -77,7 +77,7 @@ loadsgf sgf/final_moves/pass-scoring.sgf 24
 #? [B\+0\.5]
 
 180 static_score japanese_score
-#? [B\+1\.5]
+#? [B\+1\.5]*
 
 loadsgf sgf/final_moves/pass-scoring.sgf 25
 
@@ -85,7 +85,7 @@ loadsgf sgf/final_moves/pass-scoring.sgf 25
 #? [B\+0\.5]
 
 200 static_score japanese_score
-#? [B\+2\.5]
+#? [B\+2\.5]*
 
 loadsgf sgf/final_moves/pass-scoring.sgf 26
 
@@ -93,7 +93,7 @@ loadsgf sgf/final_moves/pass-scoring.sgf 26
 #? [B\+0\.5]
 
 220 static_score japanese_score
-#? [B\+1\.5]
+#? [B\+1\.5]*
 
 loadsgf sgf/final_moves/pass-scoring.sgf 27
 
@@ -101,7 +101,7 @@ loadsgf sgf/final_moves/pass-scoring.sgf 27
 #? [B\+0\.5]
 
 240 static_score japanese_score
-#? [B\+1\.5]
+#? [B\+1\.5]*
 
 loadsgf sgf/final_moves/pass-scoring.sgf 28
 

@@ -60,6 +60,7 @@ playout_approach_move.tst \
 playout_atari_capture.tst \
 playout_nakade.tst \
 repetition.tst \
+scoring_final.tst \
 scoring_static.tst \
 semeai_big.tst \
 simpleplayers.tst \
@@ -281,6 +282,7 @@ sgf/games/2012/Blubbel-AyaBot4-2.sgf \
 sgf/games/2012/JAIST-Cup/Fuego13-Zen19S.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot.sgf \
 sgf/games/2012/KGS/Charles60-FuegoBot-variation.sgf \
+sgf/games/2013/FX175-29.sgf \
 sgf/games/2013/Gnugo-Fuego.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-48.sgf \
 sgf/games/2013/gnugoJ-fuegoJ-90.sgf \
@@ -483,6 +485,8 @@ sgf/safetytest/static-safety.9.sgf \
 sgf/safetytest/static-safety.10.sgf \
 sgf/safetytest/static-safety.11.sgf \
 sgf/safetytest/static-safety-bug.2.sgf \
+sgf/scoring/FX175-29-variation.sgf \
+sgf/scoring/FX178-27.sgf \
 sgf/seki/case1.sgf \
 sgf/seki/case2.sgf \
 sgf/seki/case3.sgf \

@@ -1,0 +1,38 @@
+(;FF[4]CA[UTF-8]AP[GoGui:1.4.0]
+KM[7.5]PB[Fuego]PW[Pachi UCT]DT[2013-09-11]RE[B+3.5]
+C[Black command: /local/scratch/mmueller/fuego/build/opt/fuegomain/fuego --nobook --config /cshome/mmueller/exp/config/config-noresign-1K.gtp
+White command: /cshome/mmueller/exp/config/run-pachi1K.sh
+Black version: 1.1.SVN
+White version: 10.00 (Satsugen): If you believe you have won but I am still playing, please help me understand by capturing all dead stones. Anyone can send me 'winrate' in private chat to get my assessment of the position.  Have a nice game!
+Result[Black\]: B+1.5
+Result[White\]: W+0.5
+Referee: /local/scratch/mmueller/gnugo-3.8/interface/gnugo --mode gtp --never-resign --chinese-rules --capture-all-dead
+Result[Referee\]: B+3.5
+Host: muriel-c1 (Quad-Core AMD Opteron(tm) Processor 8384)
+Date: September 11, 2013 5:07:43 PM MDT]
+;B[pp];W[ec];B[dp];W[fq];B[pd];W[qc];B[jc];W[mc];B[mq];W[qd]
+;B[cj];W[cl];B[iq];W[ip];B[qk];W[ih];B[qh];W[jq];B[hq];W[hp]
+;B[cd];W[ce];B[dd];W[de];B[ed];W[ee];B[fd];W[fc];B[gd];W[gc]
+;B[jp];W[hd];B[he];W[id];B[ie];W[jd];B[je];W[kd];B[ke];W[fe]
+;B[ge];W[kq];B[kp];W[lp];B[lq];W[lr];B[mr];W[jo];B[ko];W[kn]
+;B[lo];W[ln];B[mo];W[mn];B[jn];W[io];B[le];W[no];B[mp];W[op]
+;B[po];W[pq];B[oq];W[qq];B[kc];W[ld];B[hc];W[me];B[mf];W[gp]
+;B[nn];W[ne];B[be];W[bf];B[bd];W[ic];B[hb];W[ib];B[qe];W[pe]
+;B[pf];W[oe];B[of];W[nf];B[mg];W[bi];B[ng];W[or];B[nq];W[ci]
+;B[di];W[dh];B[dj];W[eh];B[bj];W[qf];B[re];W[rf];B[ch];W[bh]
+;B[cg];W[bg];B[dl];W[jm];B[in];W[im];B[hn];W[fn];B[hm];W[nm]
+;B[on];W[hl];B[gl];W[gm];B[il];W[hk];B[km];W[jl];B[mm];W[kl]
+;B[lm];W[dm];B[el];W[cm];B[em];W[en];B[gn];W[fm];B[ik];W[pg]
+;B[gk];W[hj];B[gj];W[gi];B[hi];W[ij];B[ii];W[jj];B[ji];W[fi]
+;B[kj];W[jk];B[og];W[fl];B[hh];W[fj];B[ig];W[cr];B[cq];W[rd]
+;B[dr];W[br];B[cf];W[bp];B[bq];W[aq];B[bo];W[cp];B[dq];W[co]
+;B[fo];W[eo];B[ep];W[fp];B[go];W[df];B[fr];W[gq];B[gr];W[hr]
+;B[ir];W[lf];B[qg];W[jr];B[hs];W[ro];B[rn];W[qn];B[rp];W[qp]
+;B[qo];W[rq];B[so];W[bn];B[rg];W[sf];B[sg];W[se];B[db];W[dc]
+;B[cc];W[gb];B[lk];W[ll];B[ml];W[kn];B[ln];W[cb];B[bb];W[eb]
+;B[ca];W[da];B[ea];W[fa];B[gg];W[fg];B[ff];W[ef];B[gf];W[ae]
+;B[ad];W[af];B[cs];W[bs];B[ar];W[ds];B[es];W[as];B[cs];W[ph]
+;B[pi];W[ds];B[eq];W[da];B[cb];W[fb];B[ea];W[ha];B[mk];W[sq]
+;B[gh];W[da];B[jh];W[fh];B[lg];W[ms];B[ns];W[nr];B[ls];W[pr]
+;B[sp];W[os];B[ms];W[kk];B[lj];W[ks];B[kr];W[do];B[er];W[rs]
+;B[ea];W[ar];B[da];W[lr];B[ho];W[jo];B[io];W[ip];B[];W[])

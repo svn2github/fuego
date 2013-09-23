@@ -31,3 +31,13 @@ loadsgf sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf 81
 # Black must not pass, must play somewhere in own territory since pass loses.
 # to do: make a similar but harder test case where B has no such free moves 
 # and must play differently earlier on.
+
+loadsgf sgf/games/2013/FX175-29.sgf 259
+50 reg_genmove b
+#? [C1]*
+# Black should not pass even though the ko is his privilege.
+
+loadsgf sgf/games/2013/FX175-29.sgf 260
+60 reg_genmove w
+#? [A4]
+# White should backfill to make progress on the ko.

@@ -9,6 +9,7 @@ eval_seki.tst
 final_moves.tst
 kgs-genmove_cleanup.tst
 life_and_death_nakade.tst
+scoring_final.tst
 semeai_big.tst
 uct_basics.tst
 uct_blunder.tst
