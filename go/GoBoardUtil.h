@@ -321,29 +321,18 @@ namespace GoBoardUtil
         game. */
     bool RemainingChineseHandicap(const GoBoard& bd);
 
-    /** Check if move would be self-atari.
-        Faster than Executing the move, then calling InAtari(). */
+    /** Compute the score for the current position.
+        Depending on the setting of bd.Rules().JapaneseScoring(),
+        either Japanese or Tromp-Taylor scoring is used.
+        @param bd The board with the position to score.
+        @param komi The komi
+        @param scoreBoard Optional board to fill in the status of each
+        point (SG_EMPTY means dame)
+        @return The score, black counting positive, komi included. */
     template<class BOARD>
-    bool SelfAtari(const BOARD& bd, SgPoint p);
-
-    /** Same as above, but also compute number of stones put into selfatari.
-         numStones is set only if the return value is 'true'. */
-    template<class BOARD>
-    bool SelfAtari(const BOARD& bd, SgPoint p, int& numStones);
-
-    /** Check if move would be self-atari for given color.
-        That color may be different from bd.ToPlay(). */
-    template<class BOARD>
-    bool SelfAtariForColor(const BOARD& bd, SgPoint p,
-                           SgBlackWhite toPlay);
-
-    /** Return all points that are liberties of both 'block1' and 'block2'.
-        Not defined for empty or border points. */
-    void SharedLiberties(const GoBoard& bd, SgPoint block1, SgPoint block2,
-                         SgVector<SgPoint>* sharedLibs);
-
-    void SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor, int maxLib,
-                             SgVector<SgPoint>* blocks);
+    float Score(const BOARD& bd,
+                float komi,
+                SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
 
     /** Count score given the set of dead stones.
         Checks all regions that are surrounded by stones that are not dead,
@@ -409,11 +398,31 @@ namespace GoBoardUtil
     float ScoreSimpleEndPosition(const GoBoard& bd, float komi,
                                  bool noCheck = false);
 
+    /** Check if move would be self-atari.
+     Faster than Executing the move, then calling InAtari(). */
+    template<class BOARD>
+    bool SelfAtari(const BOARD& bd, SgPoint p);
+    
+    /** Same as above, but also compute number of stones put into selfatari.
+     numStones is set only if the return value is 'true'. */
+    template<class BOARD>
+    bool SelfAtari(const BOARD& bd, SgPoint p, int& numStones);
+    
+    /** Check if move would be self-atari for given color.
+     That color may be different from bd.ToPlay(). */
+    template<class BOARD>
+    bool SelfAtariForColor(const BOARD& bd, SgPoint p,
+                           SgBlackWhite toPlay);
+    
+    /** Return all points that are liberties of both 'block1' and 'block2'.
+     Not defined for empty or border points. */
+    void SharedLiberties(const GoBoard& bd, SgPoint block1, SgPoint block2,
+                         SgVector<SgPoint>* sharedLibs);
+    
+    void SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor, int maxLib,
+                             SgVector<SgPoint>* blocks);
+    
     /** Fill stones in an array.
-        Kishi: I added this code to store stones to an array,
-        because the list version first copies stones to an array,
-        then copies an array to a list. For me, it's not necessary because
-        I use arrays.
         @note Consider using GoBoard::StoneIterator instead, if you don't need
         to keep the array */
     int Stones(const GoBoard& bd, SgPoint p, SgPoint stones[]);
@@ -435,11 +444,14 @@ namespace GoBoardUtil
     template<class BOARD>
     float TrompTaylorScore(const BOARD& bd, float komi,
                            SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
+
+    /** Compute the Japanese score for the current positions.
+        @todo not implemented, just calls TrompTaylorScore.
+     */
     template<class BOARD>
     float JapaneseScore(const BOARD& bd, float komi,
                            SgPointArray<SgEmptyBlackWhite>* scoreBoard = 0);
 
- 
     /** Check if the last two moves were two passes in a row, the first pass
         by the current color to play, the second by the opponent. */
     bool TwoPasses(const GoBoard& bd);
@@ -853,6 +865,15 @@ inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd,
         }
     }
     return ! moves.IsEmpty();
+}
+
+template<class BOARD>
+float GoBoardUtil::Score(const BOARD& bd, float komi,
+                         SgPointArray<SgEmptyBlackWhite>* scoreBoard)
+{
+    return bd.Rules().JapaneseScoring() ?
+           GoBoardUtil::JapaneseScore(bd, komi, scoreBoard)
+         : GoBoardUtil::TrompTaylorScore(bd, komi, scoreBoard);
 }
 
 template<class BOARD>

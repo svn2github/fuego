@@ -70,6 +70,7 @@ public:
         - @link CmdSaveSgf() @c savesgf @endlink
         - @link CmdSetFreeHandicap() @c set_free_handicap @endlink
         - @link CmdShowBoard() @c showboard @endlink
+        - @link CmdStaticScore() @c static_score @endlink
         - @link CmdTimeLastMove() @c time_last_move @endlink
         - @link CmdTimeLeft() @c time_left @endlink
         - @link CmdTimeSettings() @c time_settings @endlink
@@ -118,6 +119,7 @@ public:
     virtual void CmdSetup(GtpCommand&);
     virtual void CmdSetupPlayer(GtpCommand&);
     virtual void CmdShowBoard(GtpCommand&);
+    virtual void CmdStaticScore(GtpCommand&);
     virtual void CmdTimeLastMove(GtpCommand&);
     virtual void CmdTimeLeft(GtpCommand&);
     virtual void CmdTimeSettings(GtpCommand&);

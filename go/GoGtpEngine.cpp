@@ -15,6 +15,7 @@
 #include <time.h>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem.hpp>
+#include "GoBoardRestorer.h"
 #include "GoEyeUtil.h"
 #include "GoGtpCommandUtil.h"
 #include "GoModBoard.h"
@@ -132,6 +133,7 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
     Register("play", &GoGtpEngine::CmdPlay, this);
     Register("savesgf", &GoGtpEngine::CmdSaveSgf, this);
     Register("showboard", &GoGtpEngine::CmdShowBoard, this);
+    Register("static_score", &GoGtpEngine::CmdStaticScore, this);
     Register("time_left", &GoGtpEngine::CmdTimeLeft, this);
     Register("time_settings", &GoGtpEngine::CmdTimeSettings, this);
     Register("undo", &GoGtpEngine::CmdUndo, this);
@@ -337,6 +339,8 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
         "string/CpuTime/cputime\n"
         "string/Get Komi/get_komi\n"
         "string/Get Random Seed/get_random_seed\n"
+        "string/Static Score Japanese/static_score japanese_score\n"
+        "string/Static Score Tromp-Taylor/static_score tromp_taylor_score\n"
         "plist/List Stones/list_stones %c\n"
         "none/Set Random Seed/set_random_seed %s\n"
         "none/SaveSgf/savesgf %w\n";
@@ -420,10 +424,7 @@ void GoGtpEngine::CmdFinalScore(GtpCommand& cmd)
     if (! bd.Rules().CaptureDead())
         throw GtpFailure("can only score after capturing dead");
     float komi = bd.Rules().Komi().ToFloat();
-    float score =
-        bd.Rules().JapaneseScoring() ?
-            GoBoardUtil::JapaneseScore(bd, komi)
-          : GoBoardUtil::TrompTaylorScore(bd, komi);
+    float score = GoBoardUtil::Score(bd, komi);
     cmd << GoUtil::ScoreToString(score);
 }
 
@@ -1192,7 +1193,28 @@ void GoGtpEngine::CmdShowBoard(GtpCommand& cmd)
     cmd << '\n' << Board();
 }
 
-/** Time of last ganmove command. */
+/** Compute static (no search) final score. */
+void GoGtpEngine::CmdStaticScore(GtpCommand& cmd)
+{
+    cmd.CheckNuArg(1);
+    std::string type = cmd.Arg(0);
+    bool japaneseScoring = false;
+    if (type == "tromp_taylor_score")
+    { }
+    else if (type == "japanese_score")
+        japaneseScoring = true;
+    else
+        throw GtpFailure("Unknown type of static scoring");
+    GoModBoard modBoard(Board());
+    GoBoard& bd = modBoard.Board();
+    GoBoardRestorer r(bd);
+    bd.Rules().SetJapaneseScoring(japaneseScoring);
+    float komi = bd.Rules().Komi().ToFloat();
+    float score = GoBoardUtil::Score(bd, komi);
+    cmd << GoUtil::ScoreToString(score);
+}
+
+/** Time of last genmove command. */
 void GoGtpEngine::CmdTimeLastMove(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
