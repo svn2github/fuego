@@ -6,16 +6,16 @@ deterministic_mode
 reg_genmove b
 
 10 uct_stat_search count
-#? [9000]
+#? [7500]
 
 20 uct_stat_search games_played
-#? [9000]
+#? [7500]
 
 30 uct_stat_search nodes
-#? [679055]
+#? [420885]
 
 40 uct_sequence
-#? [VAR B G6 W C3 B D3 W D2 B E3 W C2 B E2 W D1 B E1 W PASS]
+#? [VAR B D4 W C3 B C4 W D3 B E3 W E4 B E5 W F4 B F5 W G5 B G4 W F3 B E2]
 
 50 uct_value
-#? [0.497522]
+#? [0.512056]
