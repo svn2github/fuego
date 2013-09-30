@@ -10,8 +10,6 @@
 #include "GoBoard.h"
 #include "SgNode.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoPlayer::GoPlayer(const GoBoard& bd)
@@ -41,7 +39,7 @@ void GoPlayer::ClearSearchTraces()
 int GoPlayer::MoveValue(SgPoint p)
 {
     SG_UNUSED(p);
-    return numeric_limits<int>::min();
+    return std::numeric_limits<int>::min();
 }
 
 std::string GoPlayer::Name() const
@@ -50,16 +48,13 @@ std::string GoPlayer::Name() const
 }
 
 void GoPlayer::OnGameFinished()
-{
-}
+{ }
 
 void GoPlayer::OnNewGame()
-{
-}
+{ }
 
 void GoPlayer::Ponder()
-{
-}
+{ }
 
 SgNode* GoPlayer::TransferSearchTraces()
 {

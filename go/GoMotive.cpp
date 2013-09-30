@@ -8,11 +8,9 @@
 
 #include <iostream>
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
-ostream& operator<<(ostream& out, GoMotive motive)
+std::ostream& operator<<(std::ostream& out, GoMotive motive)
 {
     static const char* s_string[_GO_NU_MOTIVE] =
     {
@@ -47,7 +45,7 @@ ostream& operator<<(ostream& out, GoMotive motive)
 
 //----------------------------------------------------------------------------
 
-ostream& operator<<(ostream& out, GoModifier modifier)
+std::ostream& operator<<(std::ostream& out, GoModifier modifier)
 {
     static const char* s_string[_GO_NU_MODIFIER] =
     {

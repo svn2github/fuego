@@ -14,15 +14,13 @@
 #include "GoSafetyUtil.h"
 #include "SgPointSet.h"
 
-using namespace std;
 using GoGtpCommandUtil::BlackWhiteArg;
 
 //----------------------------------------------------------------------------
 
 GoSafetyCommands::GoSafetyCommands(const GoBoard& bd)
     : m_bd(bd)
-{
-}
+{ }
 
 void GoSafetyCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
@@ -60,7 +58,7 @@ void GoSafetyCommands::CmdDameStatic(GtpCommand& cmd)
     - Status line: point counts, percentage of safe points */
 void GoSafetyCommands::CmdGfx(GtpCommand& cmd)
 {
-    string type = cmd.Arg();
+    std::string type = cmd.Arg();
     int totalRegions = 0;
     SgBWSet safe = GetSafe(totalRegions, type);
     SgPointSet dame;
@@ -110,7 +108,7 @@ void GoSafetyCommands::CmdGfx(GtpCommand& cmd)
 void GoSafetyCommands::CmdSafe(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
-    string type = cmd.Arg(0);
+    std::string type = cmd.Arg(0);
     int totalRegions = 0;
     SgBWSet safe = GetSafe(totalRegions, type);
     SgPointSet set =
@@ -132,7 +130,7 @@ void GoSafetyCommands::CmdWinner(GtpCommand& cmd)
         cmd << "unknown";
 }
 
-SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const string& type)
+SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const std::string& type)
 {
     GoModBoard modBoard(m_bd);
     GoBoard& bd = modBoard.Board();

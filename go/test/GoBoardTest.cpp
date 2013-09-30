@@ -10,7 +10,6 @@
 #include "GoSetupUtil.h"
 #include "SgWrite.h"
 
-using namespace std;
 using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------

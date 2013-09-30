@@ -14,11 +14,14 @@
 #include "SgProp.h"
 #include "SgUctSearch.h"
 
-using namespace std;
 using boost::format;
 using SgPointUtil::PointToString;
 using SgPointUtil::Pt;
 using SgPropUtil::PointToSgfString;
+using std::fixed;
+using std::ostream;
+using std::setprecision;
+using std::vector;
 
 //----------------------------------------------------------------------------
 
@@ -33,7 +36,7 @@ bool IsRectEmpty(const GoBoard& bd, int left, int right, int top, int bottom)
 }
 
 /** Recursive function to save the UCT tree in SGF format. */
-void SaveNode(ostream& out, const SgUctTree& tree, const SgUctNode& node,
+void SaveNode(std::ostream& out, const SgUctTree& tree, const SgUctNode& node,
               SgBlackWhite toPlay, int boardSize, int maxDepth, int depth)
 {
     out << "C[MoveCount " << node.MoveCount()
@@ -243,10 +246,10 @@ bool IsMeanLess(const SgUctNode* lhs, const SgUctNode* rhs)
 
 } // namespace
 
-string GoUctUtil::ChildrenStatistics(const SgUctSearch& search,
+std::string GoUctUtil::ChildrenStatistics(const SgUctSearch& search,
                                      bool bSort, const SgUctNode& node)
 {
-    ostringstream out;
+    std::ostringstream out;
     vector<const SgUctNode*> vec;
     const SgUctTree& tree = search.Tree();
     for (SgUctChildIterator it(tree, node); it; ++it)

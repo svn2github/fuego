@@ -11,7 +11,6 @@
 #include "GoRegionBoard.h"
 #include "GoSetupUtil.h"
 
-using namespace std;
 using namespace GoEyeUtil;
 using SgPointUtil::Pt;
 

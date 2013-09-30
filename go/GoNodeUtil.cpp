@@ -8,8 +8,6 @@
 #include "GoBoard.h"
 #include "SgNode.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 

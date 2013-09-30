@@ -9,15 +9,13 @@
 #include "GoGtpCommandUtil.h"
 #include "GtpEngine.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {
 
-SgPoint ParsePoint(const string& s)
+SgPoint ParsePoint(const std::string& s)
 {
-    istringstream in(s);
+    std::istringstream in(s);
     SgPoint p;
     in >> SgReadPoint(p);
     SG_ASSERT(in);
@@ -36,14 +34,14 @@ BOOST_AUTO_TEST_CASE(GoGtpCommandUtilTest_GetHandicapStones)
 {
     // GTP locations are defined up to size 25, but SG_MAX_SIZE could be
     // smaller
-    int maxSize = min(SG_MAX_SIZE, 25);
+    int maxSize = std::min(SG_MAX_SIZE, 25);
     for (int size = 1; size <= maxSize; ++size)
     {
         for (int n = 0; n < 20; ++n)
         {
-            ostringstream buffer;
+            std::ostringstream buffer;
             buffer << "size=" << size << " n=" << n;
-            string message = buffer.str();
+            std::string message = buffer.str();
             SgVector<SgPoint> stones;
             bool didThrow = false;
             try

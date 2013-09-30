@@ -8,8 +8,6 @@
 
 #include "GoBoard.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 bool GoStaticLadder::IsEdgeLadder(const GoBoard& bd, SgPoint target,
@@ -54,7 +52,7 @@ bool GoStaticLadder::IsEdgeLadder(const GoBoard& bd, SgPoint target,
     {
         if (bd.Line(attackPoint) != 1)
             return false;
-        swap(defensePoint, attackPoint);
+        std::swap(defensePoint, attackPoint);
     }
 
     // Find direction to run ladder

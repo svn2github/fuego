@@ -9,8 +9,6 @@
 #include "GoNodeUtil.h"
 #include <boost/test/auto_unit_test.hpp>
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {
@@ -37,9 +35,9 @@ SgPoint TestPlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
 }
 
 // nullStream to avoid output of ExecuteCommand() to cerr during a unit test
-ofstream nullStream;
+std::ofstream nullStream;
 
-void Execute(GoGtpEngine& engine, const string& cmd)
+void Execute(GoGtpEngine& engine, const std::string& cmd)
 {
     engine.ExecuteCommand(cmd, nullStream);
 }
@@ -83,7 +81,7 @@ BOOST_AUTO_TEST_CASE(GoGtpEngineTest_CmdBoardsize_PlayerBoard)
     BOOST_CHECK_EQUAL(size, engine.Player().Board().Size());
     int newSize = size - 1;
     SG_ASSERT(newSize >= SG_MIN_SIZE);
-    ostringstream cmd;
+    std::ostringstream cmd;
     cmd << "boardsize " << newSize;
     Execute(engine, cmd.str());
     BOOST_CHECK_EQUAL(newSize, engine.Player().Board().Size());

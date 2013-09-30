@@ -10,9 +10,9 @@
 #include "GoSetupUtil.h"
 #include "GoUctUtil.h"
 
-using namespace std;
 using GoUctUtil::DoSelfAtariCorrection;
 using SgPointUtil::Pt;
+using std::string;
 
 //----------------------------------------------------------------------------
 

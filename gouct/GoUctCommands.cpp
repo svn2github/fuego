@@ -28,11 +28,11 @@
 #include "SgUctTreeUtil.h"
 #include "SgWrite.h"
 
-using namespace std;
 using boost::format;
 using GoGtpCommandUtil::BlackWhiteArg;
 using GoGtpCommandUtil::EmptyPointArg;
 using GoGtpCommandUtil::PointArg;
+using std::string;
 
 typedef GoUctPlayer<GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                                       GoUctPlayoutPolicyFactory<GoUctBoard> >,
@@ -289,12 +289,13 @@ void GoUctCommands::CmdBounds(GtpCommand& cmd)
             passBound = bound;
         }
         else
-            cmd << ' ' << SgWritePoint(move) << ' ' << fixed
-                << setprecision(2) << bound;
+            cmd << ' ' << SgWritePoint(move) << ' '
+                << std::fixed << std::setprecision(2) << bound;
     }
     cmd << '\n';
     if (hasPass)
-        cmd << "TEXT PASS=" << fixed << setprecision(2) << passBound << '\n';
+        cmd << "TEXT PASS="
+            << std::fixed << std::setprecision(2) << passBound << '\n';
 }
 
 
@@ -987,8 +988,8 @@ void GoUctCommands::CmdRaveValues(GtpCommand& cmd)
         SgPoint p = child.Move();
         if (p == SG_PASS || ! child.HasRaveValue())
             continue;
-        ostringstream out;
-        out << fixed << setprecision(2) << child.RaveValue();
+        std::ostringstream out;
+        out << std::fixed << std::setprecision(2) << child.RaveValue();
         array[p] = out.str();
     }
     cmd << '\n'
@@ -1018,7 +1019,7 @@ void GoUctCommands::CmdSaveTree(GtpCommand& cmd)
     int maxDepth = -1;
     if (cmd.NuArg() == 2)
         maxDepth = cmd.ArgMin<int>(1, 0);
-    ofstream out(fileName.c_str());
+    std::ofstream out(fileName.c_str());
     if (! out)
         throw GtpFailure() << "Could not open " << fileName;
     Search().SaveTree(out, maxDepth);
@@ -1348,7 +1349,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
     if (nuUndoPass > 0)
         SgDebug() << "Undoing " << nuUndoPass << " passes\n";
     vector<SgMove> sequence;
-    search.Search(MAX_GAMES, numeric_limits<double>::max(), sequence);
+    search.Search(MAX_GAMES, std::numeric_limits<double>::max(), sequence);
     SgDebug() << SgWriteLabel("Sequence")
               << SgWritePointList(sequence, "", false);
     for (int i = 0; i < nuUndoPass; ++i)
@@ -1405,7 +1406,7 @@ GoUctPlayerType& GoUctCommands::Player()
     {
         return dynamic_cast<GoUctPlayerType&>(*m_player);
     }
-    catch (const bad_cast&)
+    catch (const std::bad_cast&)
     {
         throw GtpFailure("player not GoUctPlayer");
     }
@@ -1484,7 +1485,7 @@ GoUctSearch& GoUctCommands::Search()
             dynamic_cast<GoUctObjectWithSearch&>(*m_player);
         return object.Search();
     }
-    catch (const bad_cast&)
+    catch (const std::bad_cast&)
     {
         throw GtpFailure("player is not a GoUctObjectWithSearch");
     }
@@ -1505,7 +1506,7 @@ GoUctCommands::ThreadState(unsigned int threadId)
              GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>(
                                                 search.ThreadState(threadId));
     }
-    catch (const bad_cast&)
+    catch (const std::bad_cast&)
     {
         throw GtpFailure("player has no GoUctGlobalSearchState");
     }

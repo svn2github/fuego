@@ -12,7 +12,6 @@
 #include "SgDebug.h"
 #include "SgTimeRecord.h"
 
-using namespace std;
 using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------

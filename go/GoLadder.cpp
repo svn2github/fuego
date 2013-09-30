@@ -13,7 +13,6 @@
 #include "SgVector.h"
 #include "SgStack.h"
 
-using namespace std;
 using GoBoardUtil::NeighborsOfColor;
 using GoBoardUtil::PlayIfLegal;
 
@@ -30,12 +29,11 @@ const int GOOD_FOR_HUNTER = -1000;
 //----------------------------------------------------------------------------
 
 GoLadder::GoLadder()
-{
-}
+{ }
 
 inline bool GoLadder::CheckMoveOverflow() const
 {
-    return (m_bd->MoveNumber() >= m_maxMoveNumber);
+    return m_bd->MoveNumber() >= m_maxMoveNumber;
 }
 
 void GoLadder::InitMaxMoveNumber()
@@ -43,8 +41,8 @@ void GoLadder::InitMaxMoveNumber()
     // reserve is the maximum number of moves played before recursion
     // 5 is an optimistic bound
     const int RESERVE = 5;
-    m_maxMoveNumber = min(m_bd->MoveNumber() + MAX_LADDER_MOVES,
-                          GO_MAX_NUM_MOVES - RESERVE);
+    m_maxMoveNumber = std::min(m_bd->MoveNumber() + MAX_LADDER_MOVES,
+                               GO_MAX_NUM_MOVES - RESERVE);
 }
 
 /** Marks all stones in the block p as part of the prey.
@@ -314,7 +312,7 @@ int GoLadder::HunterLadder(int depth, SgPoint lib1, SgPoint lib2,
     int result = 0;
     if (m_bd->NumEmptyNeighbors(lib1) < m_bd->NumEmptyNeighbors(lib2))
     {
-        swap(lib1, lib2);
+        std::swap(lib1, lib2);
     }
     if (m_bd->NumEmptyNeighbors(lib1) == 3
         && ! SgPointUtil::AreAdjacent(lib1, lib2))
@@ -333,7 +331,7 @@ int GoLadder::HunterLadder(int depth, SgPoint lib1, SgPoint lib2,
         if (! adjBlk.IsEmpty()
             && *GoBoard::LibertyIterator(*m_bd, adjBlk[0]) == lib2)
         {
-            swap(lib1, lib2); // protect hunter blocks in atari
+            std::swap(lib1, lib2); // protect hunter blocks in atari
         }
         result = PlayHunterMove(depth, lib1, lib1, lib2,
                                 adjBlk, sequence);

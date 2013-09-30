@@ -7,15 +7,13 @@
 
 #include <sstream>
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {
 
-string GetInvalidKomiErrorMessage(float komi)
+std::string GetInvalidKomiErrorMessage(float komi)
 {
-    ostringstream buffer;
+    std::ostringstream buffer;
     buffer << "Invalid komi value: " << komi;
     return buffer.str();
 }
@@ -29,7 +27,7 @@ GoKomi::InvalidKomi::InvalidKomi(float komi)
 {
 }
 
-GoKomi::InvalidKomi::InvalidKomi(const string& komi)
+GoKomi::InvalidKomi::InvalidKomi(const std::string& komi)
     : SgException("Invalid komi value: " + komi)
 {
 }
@@ -39,8 +37,8 @@ GoKomi::InvalidKomi::InvalidKomi(const string& komi)
 GoKomi::GoKomi(const std::string& komi)
 {
     {
-        istringstream buffer(komi);
-        string trimmedString;
+        std::istringstream buffer(komi);
+        std::string trimmedString;
         buffer >> trimmedString;
         if (! buffer)
         {
@@ -50,7 +48,7 @@ GoKomi::GoKomi(const std::string& komi)
         }
     }
     {
-        istringstream buffer(komi);
+        std::istringstream buffer(komi);
         float value;
         buffer >> value;
         if (! buffer)
@@ -59,13 +57,13 @@ GoKomi::GoKomi(const std::string& komi)
     }
 }
 
-string GoKomi::ToString() const
+std::string GoKomi::ToString() const
 {
     if (m_isUnknown)
         return "";
     if (m_value % 2 == 0)
     {
-        ostringstream buffer;
+        std::ostringstream buffer;
         buffer << (m_value / 2);
         return buffer.str();
     }
@@ -73,7 +71,7 @@ string GoKomi::ToString() const
         return "-0.5";
     else
     {
-        ostringstream buffer;
+        std::ostringstream buffer;
         buffer << (m_value / 2) << ".5";
         return buffer.str();
     }

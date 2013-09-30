@@ -9,7 +9,6 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include "GoGame.h"
 
-using namespace std;
 using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------

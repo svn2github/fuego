@@ -15,8 +15,6 @@
 #include "SgNode.h"
 #include "SgUctTreeUtil.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {
@@ -25,7 +23,7 @@ namespace {
 
 const int MOVERANGE = SG_PASS + 1;
 
-SgNode* AppendChild(SgNode* node, const string& comment)
+    SgNode* AppendChild(SgNode* node, const std::string& comment)
 {
     SgNode* child = node->NewRightMostSon();
     child->AddComment(comment);
@@ -47,7 +45,7 @@ void AppendGame(SgNode* node, SgUctValue gameNumber, unsigned int threadId,
 {
     SG_ASSERT(node != 0);
     {
-        ostringstream comment;
+        std::ostringstream comment;
         comment << "Thread " << threadId << '\n'
                 << "Game " << gameNumber << '\n';
         node = AppendChild(node, comment.str());
@@ -64,7 +62,7 @@ void AppendGame(SgNode* node, SgUctValue gameNumber, unsigned int threadId,
     {
         node = lastInTreeNode;
         toPlay = lastInTreeToPlay;
-        ostringstream comment;
+        std::ostringstream comment;
         comment << "Playout " << i << '\n'
                 << "Eval " << info.m_eval[i] << '\n'
                 << "Aborted " << info.m_aborted[i] << '\n';
@@ -105,7 +103,7 @@ GoUctState::GoUctState(unsigned int threadId, const GoBoard& bd)
     m_isInPlayout = false;
 }
 
-void GoUctState::Dump(ostream& out) const
+void GoUctState::Dump(std::ostream& out) const
 {
     out << "GoUctState[" << m_threadId << "] ";
     if (m_isInPlayout)
@@ -253,7 +251,7 @@ void GoUctSearch::OnStartSearch()
         m_stones[*it] = m_bd.All(*it);
     int size = m_bd.Size();
     // Limit to avoid very long games if m_simpleKo
-    int maxGameLength = min(3 * size * size,
+    int maxGameLength = std::min(3 * size * size,
                             GO_MAX_NUM_MOVES - m_bd.MoveNumber());
     SetMaxGameLength(maxGameLength);
     m_boardHistory.SetFromBoard(m_bd);
@@ -261,13 +259,13 @@ void GoUctSearch::OnStartSearch()
     m_nextLiveGfx = m_liveGfxInterval;
 }
 
-void GoUctSearch::SaveGames(const string& fileName) const
+void GoUctSearch::SaveGames(const std::string& fileName) const
 {
     if (MpiSynchronizer()->IsRootProcess())
     {
     if (m_root == 0)
         throw SgException("No games to save");
-    ofstream out(fileName.c_str());
+    std::ofstream out(fileName.c_str());
     SgGameWriter writer(out);
     writer.WriteGame(*m_root, true, 0, 1, 19);
     }

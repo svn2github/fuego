@@ -13,7 +13,6 @@
 #include "GoLadder.h"
 #include "GoStaticLadder.h"
 
-using namespace std;
 using boost::format;
 using GoGtpCommandUtil::PointArg;
 using GoGtpCommandUtil::StoneArg;
@@ -22,8 +21,7 @@ using GoGtpCommandUtil::StoneArg;
 
 GoGtpExtraCommands::GoGtpExtraCommands(const GoBoard& bd)
     : m_bd(bd)
-{
-}
+{ }
 
 void GoGtpExtraCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
@@ -43,16 +41,16 @@ void GoGtpExtraCommands::CmdCfgDistance(GtpCommand& cmd)
 {
     cmd.CheckNuArgLessEqual(2);
     SgPoint p = PointArg(cmd, 0, m_bd);
-    int maxDist = numeric_limits<int>::max();
+    int maxDist = std::numeric_limits<int>::max();
     if (cmd.NuArg() > 1)
         maxDist = cmd.ArgMin<int>(1, 0);
     SgPointArray<int> distance = GoBoardUtil::CfgDistance(m_bd, p, maxDist);
     // distance elements are only defined for empty points or block anchors
-    SgPointArray<string> stringArray("\"\"");
+    SgPointArray<std::string> stringArray("\"\"");
     for (GoBoard::Iterator it(m_bd); it; ++it)
         if (m_bd.IsEmpty(*it) || m_bd.Anchor(*it) == *it)
             stringArray[*it] = str(format("%i") % distance[*it]);
-    cmd << '\n' << SgWritePointArray<string>(stringArray, m_bd.Size());
+    cmd << '\n' << SgWritePointArray<std::string>(stringArray, m_bd.Size());
 }
 
 /** Return fast ladder status.

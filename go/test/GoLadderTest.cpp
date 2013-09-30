@@ -12,7 +12,6 @@
 #include "SgDebug.h"
 #include "SgWrite.h"
 
-using namespace std;
 using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------

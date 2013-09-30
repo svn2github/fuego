@@ -37,11 +37,12 @@
 #include <boost/thread/xtime.hpp>
 #endif
 
-using namespace std;
 using boost::filesystem::exists;
 using boost::filesystem::path;
 using boost::filesystem::remove;
 using SgPointUtil::Pt;
+using std::flush;
+using std::string;
 
 //----------------------------------------------------------------------------
 
@@ -317,7 +318,7 @@ void GoGtpEngine::CmdAllMoveValues(GtpCommand& cmd)
         if (! bd.Occupied(*it))
         {
             int value = player.MoveValue(*it);
-            if (value > numeric_limits<int>::min())
+            if (value > std::numeric_limits<int>::min())
                 cmd << SgWritePoint(*it) << ' ' << value << '\n';
         }
 }
@@ -455,7 +456,7 @@ void GoGtpEngine::CmdGenMove(GtpCommand& cmd)
 {
     cmd.CheckNuArg(1);
     SgBlackWhite color = BlackWhiteArg(cmd, 0);
-    auto_ptr<SgDebugToString> debugStrToString;
+    std::auto_ptr<SgDebugToString> debugStrToString;
     if (m_debugToComment)
         debugStrToString.reset(new SgDebugToString(true));
     SgPoint move = GenMove(color, false);
@@ -669,7 +670,7 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     int moveNumber = -1;
     if (cmd.NuArg() == 2)
         moveNumber = cmd.ArgMin<int>(1, 1);
-    ifstream in(fileName.c_str());
+    std::ifstream in(fileName.c_str());
     if (! in)
         throw GtpFailure("could not open file");
     SgGameReader reader(in);
@@ -868,9 +869,9 @@ void GoGtpEngine::CmdParamTimecontrol(GtpCommand& cmd)
         else if (name == "fast_open_moves")
             c->SetFastOpenMoves(cmd.ArgMin<int>(1, 0));
         else if (name == "final_space")
-            c->SetFinalSpace(max(cmd.Arg<float>(1), 0.f));
+            c->SetFinalSpace(std::max(cmd.Arg<float>(1), 0.f));
         else if (name == "remaining_constant")
-            c->SetRemainingConstant(max(cmd.Arg<double>(1), 0.));
+            c->SetRemainingConstant(std::max(cmd.Arg<double>(1), 0.));
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }
@@ -1109,7 +1110,7 @@ void GoGtpEngine::CmdSentinelFile(GtpCommand& cmd)
         {
             remove(sentinelFile);
         }
-        catch (const exception& e)
+        catch (const std::exception& e)
         {
             throw GtpFailure() << "could not remove sentinel file: "
                                << e.what();
@@ -1218,7 +1219,7 @@ void GoGtpEngine::CmdStaticScore(GtpCommand& cmd)
 void GoGtpEngine::CmdTimeLastMove(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    cmd << setprecision(2) << m_timeLastMove;
+    cmd << std::setprecision(2) << m_timeLastMove;
 }
 
 /** Standard GTP command. */
@@ -1229,7 +1230,7 @@ void GoGtpEngine::CmdTimeLeft(GtpCommand& cmd)
     // GTP draft 2 standard does not say if time left can be negative,
     // CGOS server sends negative time, but we replace a negative time by
     // zero (not sure, if SgTimeRecord::SetTimeLeft can handle negative times)
-    int timeLeft = max(0, cmd.Arg<int>(1));
+    int timeLeft = std::max(0, cmd.Arg<int>(1));
     int movesLeft = cmd.ArgMin<int>(2, 0);
     SgTimeRecord& time = m_game.Time();
     time.SetTimeLeft(color, timeLeft);
@@ -1286,12 +1287,12 @@ void GoGtpEngine::CreateAutoSaveFileName()
     struct tm* timeStruct = localtime(&timeValue);
     char timeBuffer[128];
     strftime(timeBuffer, sizeof(timeBuffer), "%Y%m%d%H%M%S", timeStruct);
-    ostringstream fileName;
+    std::ostringstream fileName;
     fileName << m_autoSavePrefix << timeBuffer << ".sgf";
     m_autoSaveFileName = fileName.str();
 }
 
-void GoGtpEngine::DumpState(ostream& out) const
+void GoGtpEngine::DumpState(std::ostream& out) const
 {
     out << "GoGtpEngine board:\n";
     GoBoardUtil::DumpBoard(Board(), out);
@@ -1414,7 +1415,7 @@ void GoGtpEngine::InitStatistics()
     }
     if (MpiSynchronizer()->IsRootProcess())
     {
-        ofstream out(m_statisticsFile.c_str(), ios::app);
+        std::ofstream out(m_statisticsFile.c_str(), std::ios::app);
         // TODO: What to do with an existing file? We want a single file, if
         // twogtp or Go server experiments are interrupted and restarted, but
         // if the file is from different player, the format is not compatible.
@@ -1507,7 +1508,7 @@ void GoGtpEngine::SaveGame(const std::string& fileName) const
     {
         try
         {
-            ofstream out(fileName.c_str());
+            std::ofstream out(fileName.c_str());
             SgGameWriter writer(out);
             writer.WriteGame(m_game.Root(), true, 0, 1, 19);
         }
@@ -1524,7 +1525,7 @@ void GoGtpEngine::SaveStatistics()
        || m_statisticsFile == "")
         return;
     SG_ASSERT(m_statisticsValues.size() == m_statisticsSlots.size());
-    ofstream out(m_statisticsFile.c_str(), ios::app);
+    std::ofstream out(m_statisticsFile.c_str(), std::ios::app);
     for (size_t i = 0; i < m_statisticsSlots.size(); ++i)
     {
         out << m_statisticsValues[i];

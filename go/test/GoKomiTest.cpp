@@ -9,8 +9,6 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include "GoKomi.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {

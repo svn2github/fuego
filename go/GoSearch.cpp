@@ -12,8 +12,6 @@
 #include "SgPoint.h"
 #include "SgWrite.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoSearch::GoSearch(GoBoard& board, SgSearchHashTable* hash)
@@ -56,7 +54,7 @@ SgBlackWhite GoSearch::GetToPlay() const
 
 std::string GoSearch::MoveString(SgMove move) const
 {
-    ostringstream buffer;
+    std::ostringstream buffer;
     buffer << SgWritePoint(move);
     return buffer.str();
 }

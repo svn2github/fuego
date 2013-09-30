@@ -10,8 +10,6 @@
 #include <iostream>
 #include "SgException.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 GoRules::GoRules(int handicap, const GoKomi& komi, bool japanese,

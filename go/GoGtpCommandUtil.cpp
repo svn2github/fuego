@@ -11,7 +11,7 @@
 #include "SgDebug.h"
 #include "SgPointArray.h"
 
-using namespace std;
+using std::string;
 using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------
@@ -166,7 +166,7 @@ SgPoint GoGtpCommandUtil::PointArg(const GtpCommand& cmd, std::size_t number,
                                    const GoBoard& board)
 {
     string arg = cmd.Arg(number);
-    istringstream in(arg);
+    std::istringstream in(arg);
     SgPoint p;
     in >> SgReadPoint(p);
     if (! in)
@@ -198,9 +198,9 @@ void GoGtpCommandUtil::RespondNumberArray(GtpCommand& cmd,
     for (GoBoard::Iterator it(board); it; ++it)
     {
         SgPoint p(*it);
-        if (array[p] != numeric_limits<int>::min())
+        if (array[p] != std::numeric_limits<int>::min())
         {
-            ostringstream out;
+            std::ostringstream out;
             out << (array[p] / scale);
             result[p] = out.str();
         }
@@ -211,12 +211,12 @@ void GoGtpCommandUtil::RespondNumberArray(GtpCommand& cmd,
 string GoGtpCommandUtil::SortResponseAnalyzeCommands(const string& response)
 {
     vector<string> allLines;
-    istringstream in(response);
+    std::istringstream in(response);
     string line;
     while (getline(in, line))
         allLines.push_back(line);        
     sort(allLines.begin(), allLines.end(), LessAnalyzeLabel);
-    ostringstream sortedResponse;
+    std::ostringstream sortedResponse;
     for (vector<string>::const_iterator it = allLines.begin();
          it != allLines.end(); ++it)
         sortedResponse << *it << '\n';

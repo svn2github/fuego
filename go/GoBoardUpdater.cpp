@@ -10,8 +10,6 @@
 #include "SgNode.h"
 #include "SgUtil.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {

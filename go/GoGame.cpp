@@ -15,7 +15,6 @@
 #include "SgSearchStatistics.h"
 #include "SgUtil.h"
 
-using namespace std;
 using GoBoardUtil::PlayIfLegal;
 using SgUtil::ForceInRange;
 
@@ -119,7 +118,7 @@ void GoGame::AddMove(SgMove move, SgBlackWhite player,
 const SgNode& GoGame::AddResignNode(SgBlackWhite player)
 {
     SgNode& node = *m_current->NewRightMostSon();
-    ostringstream comment;
+    std::ostringstream comment;
     comment << (player == SG_BLACK ? "Black" : "White") << " resigned";
     node.AddComment(comment.str());
     return node;
