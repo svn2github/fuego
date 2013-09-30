@@ -128,7 +128,7 @@ public:
     const SgNode* CurrentNode() const;
 
     /** Return the move of the current node.
-        Return NullMove if no current move. */
+        Return SG_NULLMOVE if no current move. */
     SgMove CurrentMove() const;
 
     /** Get the number of moves since root or last node with setup
