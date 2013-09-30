@@ -238,6 +238,7 @@ public:
         REQUIRES: HasNodeMove() */
     SgBlackWhite NodePlayer() const;
 
+    /** Returns SG_NULLMOVE if no move property exists. */
     SgPoint NodeMove() const;
 
     /** Return the most recent node that has the given property, starting
