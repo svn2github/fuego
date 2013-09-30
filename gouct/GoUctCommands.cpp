@@ -8,6 +8,7 @@
 #include <fstream>
 #include <boost/format.hpp>
 #include "GoEyeUtil.h"
+#include "GoGame.h"
 #include "GoGtpCommandUtil.h"
 #include "GoBoardUtil.h"
 #include "GoSafetySolver.h"
@@ -48,8 +49,31 @@ bool IsBlockedInDeterministicMode(const string& name)
 	return name == "ignore_clock"
     	|| name == "reuse_subtree"
         || name == "number_threads"
-	|| name == "max_nodes"
+        || name == "max_nodes"
         ;
+}
+
+/** Helper function for GoUctCommands::CompareMove */
+bool IsCorrected(GoUctPlayoutPolicy<GoBoard>& policy,
+                 SgPoint move)
+{
+    SgPoint corrected = move;
+    policy.CorrectMove(GoUctUtil::DoFalseEyeToCaptureCorrection, corrected,
+                       GOUCT_REPLACE_CAPTURE);
+    if (corrected != move)
+        return true;
+    else
+    {
+        policy.CorrectMove(GoUctUtil::DoSelfAtariCorrection, corrected,
+                           GOUCT_SELFATARI_CORRECTION);
+        return move != corrected;
+    }
+}
+
+/** Helper function for GoUctCommands::CompareMove */
+bool IsPolicyMove(GoUctPlayoutPolicy<GoBoard>& policy, SgPoint move)
+{
+    return move == policy.GenerateMove();
 }
 
 GoUctLiveGfx LiveGfxArg(const GtpCommand& cmd, size_t number)
@@ -190,11 +214,12 @@ void LadderKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 
 //----------------------------------------------------------------------------
 
-GoUctCommands::GoUctCommands(const GoBoard& bd, GoPlayer*& player)
+GoUctCommands::GoUctCommands(const GoBoard& bd, GoPlayer*& player,
+                             const GoGame& game)
     : m_bd(bd),
-      m_player(player)
-{
-}
+      m_player(player),
+      m_game(game)
+{ }
 
 void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
@@ -205,6 +230,8 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "gfx/Uct Bounds/uct_bounds\n"
         "plist/Uct Default Policy/uct_default_policy\n"
         "gfx/Uct Gfx/uct_gfx\n"
+        "none/IsPolicyCorrectedMove/is_policy_corrected_move\n"
+        "none/IsPolicyMove/is_policy_move\n"
         "gfx/Uct Ladder Knowledge/uct_ladder_knowledge\n"
         "none/Uct Max Memory/uct_max_memory %s\n"
         "plist/Uct Moves/uct_moves\n"
@@ -387,6 +414,16 @@ void GoUctCommands::CmdGfx(GtpCommand& cmd)
     GoUctUtil::GfxMoveValues(s, toPlay, cmd);
     GoUctUtil::GfxCounts(s.Tree(), cmd);
     GoUctUtil::GfxStatus(s, cmd);
+}
+
+void GoUctCommands::CmdIsPolicyCorrectedMove(GtpCommand& cmd)
+{
+    CompareMove(cmd, GOUCT_COMPAREMOVE_CORRECTED);
+}
+
+void GoUctCommands::CmdIsPolicyMove(GtpCommand& cmd)
+{
+    CompareMove(cmd, GOUCT_COMPAREMOVE_POLICY);
 }
 
 /** Show ladder knowledge.
@@ -881,7 +918,6 @@ void GoUctCommands::CmdPatterns(GtpCommand& cmd)
             cmd << SgWritePoint(*it) << ' ';
 }
 
-
 void GoUctCommands::CmdPolicyCorrectedMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
@@ -1173,7 +1209,6 @@ void GoUctCommands::CmdApproximateTerritory(GtpCommand& cmd)
     // see printing of static safe for example.
 }
 
-
 /** Return value of root node from last search.
     Arguments: none */
 void GoUctCommands::CmdValue(GtpCommand& cmd)
@@ -1191,6 +1226,37 @@ void GoUctCommands::CmdValueBlack(GtpCommand& cmd)
     if (Search().ToPlay() == SG_WHITE)
         value = SgUctSearch::InverseEval(value);
     cmd << value;
+}
+
+void GoUctCommands::CompareMove(GtpCommand& cmd, GoUctCompareMoveType type)
+{
+    cmd.CheckArgNone();
+    bool isCorrected = false;
+    const SgPoint move = Game().CurrentMove();
+
+    if (! SgIsSpecialMove(move))
+    {
+        GoModBoard modBoard(m_bd);
+        GoBoard& bd = modBoard.Board();
+        SG_ASSERT(bd.CanUndo());
+        bd.Undo();
+        GoUctPlayoutPolicy<GoBoard> policy(bd, Player().m_playoutPolicyParam);
+        switch (type)
+        {
+            case GOUCT_COMPAREMOVE_CORRECTED:
+            isCorrected = IsCorrected(policy, move);
+            break;
+
+            case GOUCT_COMPAREMOVE_POLICY:
+            isCorrected = IsPolicyMove(policy, move);
+            break;
+
+            default: SG_ASSERT(false);
+            break;
+        }
+        bd.Play(move);
+    }
+    cmd << isCorrected;
 }
 
 /** Show prior knowledge.
@@ -1363,6 +1429,10 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "deterministic_mode", &GoUctCommands::CmdDeterministicMode);
     Register(e, "final_score", &GoUctCommands::CmdFinalScore);
     Register(e, "final_status_list", &GoUctCommands::CmdFinalStatusList);
+    Register(e, "is_policy_corrected_move",
+             &GoUctCommands::CmdIsPolicyCorrectedMove);
+    Register(e, "is_policy_move",
+             &GoUctCommands::CmdIsPolicyMove);
     Register(e, "uct_additive_knowledge",
              &GoUctCommands::CmdAdditiveKnowledge);
     Register(e, "uct_bounds", &GoUctCommands::CmdBounds);

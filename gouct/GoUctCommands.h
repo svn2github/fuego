@@ -12,11 +12,23 @@
 #include "GoUctPlayer.h"
 
 class GoBoard;
+class GoGame;
 class GoPlayer;
 class GoUctBoard;
 class GoUctSearch;
 
 typedef SgUctValue (*MeanMapperFunction)(SgUctValue);
+
+/** Compare current move with engine-produced move types */
+enum GoUctCompareMoveType
+{
+    /**  */
+    GOUCT_COMPAREMOVE_CORRECTED,
+
+    /**  */
+    GOUCT_COMPAREMOVE_POLICY
+};
+
 
 //----------------------------------------------------------------------------
 
@@ -32,7 +44,7 @@ public:
         be null or a different player, but those commands of this class that
         need a GoUctPlayer will fail, if the current player is not
         GoUctPlayer. */
-    GoUctCommands(const GoBoard& bd, GoPlayer*& player);
+    GoUctCommands(const GoBoard& bd, GoPlayer*& player, const GoGame& game);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -46,6 +58,8 @@ public:
         - @link CmdDeterministicMode() @c deterministic_mode @endlink
         - @link CmdEstimatorStat() @c uct_estimator_stat @endlink
         - @link CmdGfx() @c uct_gfx @endlink
+        - @link CmdIsPolicyCorrectedMove() @c is_policy_corrected_move
+          @endlink
         - @link CmdLadderKnowledge() @c uct_ladder_knowledge @endlink
         - @link CmdMaxMemory() @c uct_max_memory @endlink
         - @link CmdMoves() @c uct_moves @endlink
@@ -86,6 +100,8 @@ public:
     void CmdFinalScore(GtpCommand&);
     void CmdFinalStatusList(GtpCommand&);
     void CmdGfx(GtpCommand& cmd);
+    void CmdIsPolicyCorrectedMove(GtpCommand& cmd);
+    void CmdIsPolicyMove(GtpCommand& cmd);
     void CmdLadderKnowledge(GtpCommand& cmd);
     void CmdMaxMemory(GtpCommand& cmd);
     void CmdMoves(GtpCommand& cmd);
@@ -122,6 +138,12 @@ private:
 
     GoPlayer*& m_player;
 
+    const GoGame& m_game;
+
+	/** Check if current move is produced by some engine function.
+        Used for verifying filters etc. against professional game records. */
+    void CompareMove(GtpCommand& cmd, GoUctCompareMoveType type);
+
 	/** Compute and display prior knowledge.
     	Display either additive knowledge only, or all knowledge */
     void DisplayKnowledge(GtpCommand& cmd, bool additiveKnowledge);
@@ -140,6 +162,8 @@ private:
     SgUctValue DisplayTerritory(GtpCommand& cmd, MeanMapperFunction f);
 
     SgPointSet DoFinalStatusSearch();
+
+    inline const GoGame& Game();
 
     GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
                       GoUctPlayoutPolicyFactory<GoUctBoard> >&
@@ -160,6 +184,13 @@ private:
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
     ThreadState(unsigned int threadId);
 };
+
+//----------------------------------------------------------------------------
+
+inline const GoGame& GoUctCommands::Game()
+{
+    return m_game;
+}
 
 //----------------------------------------------------------------------------
 

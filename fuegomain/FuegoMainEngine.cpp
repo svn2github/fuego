@@ -15,7 +15,7 @@
 FuegoMainEngine::FuegoMainEngine(int fixedBoardSize, const char* programPath,
                                  bool noHandicap)
     : GoGtpEngine(fixedBoardSize, programPath, false, noHandicap),
-      m_uctCommands(Board(), m_player),
+      m_uctCommands(Board(), m_player, Game()),
       m_autoBookCommands(Board(), m_player, m_autoBook),
       m_safetyCommands(Board())
 {
