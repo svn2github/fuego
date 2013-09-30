@@ -138,10 +138,8 @@ bool GoGame::CanGoInDirection(SgNode::Direction dir) const
 
 SgMove GoGame::CurrentMove() const
 {
-    SgPropMove* prop = static_cast<SgPropMove*>(m_current->Get(SG_PROP_MOVE));
-    if (prop)
-        return prop->Value();
-    return SG_NULLMOVE;
+    SG_ASSERT(m_current);
+    return m_current->NodeMove();
 }
 
 int GoGame::CurrentMoveNumber() const
