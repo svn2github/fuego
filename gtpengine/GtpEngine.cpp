@@ -25,7 +25,7 @@ using boost::xtime;
 using boost::xtime_get;
 #endif
 
-using namespace std;
+using std::string;
 
 #ifdef _MSC_VER
 // Don't report Visual C++ warning 4355 ('this' : used in base member
@@ -82,8 +82,8 @@ string ReplaceEmptyLines(const string& text)
 {
     if (text.find("\n\n") == string::npos)
         return text;
-    istringstream in(text);
-    ostringstream result;
+    std::istringstream in(text);
+    std::ostringstream result;
     bool lastWasNewLine = false;
     char c;
     while (in.get(c))
@@ -337,7 +337,7 @@ void ReadThread::Function::operator()()
 
 void ReadThread::Function::ExecuteSleepLine(const string& line)
 {
-    istringstream buffer(line);
+    std::istringstream buffer(line);
     string s;
     buffer >> s;
     assert(s == "#");
@@ -347,7 +347,7 @@ void ReadThread::Function::ExecuteSleepLine(const string& line)
     buffer >> seconds;
     if (seconds > 0)
     {
-        cerr << "GtpEngine: sleep " << seconds << '\n';
+        std::cerr << "GtpEngine: sleep " << seconds << '\n';
         xtime time;
         #if BOOST_VERSION >= 105000
             xtime_get(&time, boost::TIME_UTC_);
@@ -356,7 +356,7 @@ void ReadThread::Function::ExecuteSleepLine(const string& line)
         #endif
         time.sec += seconds;
         thread::sleep(time);
-        cerr << "GtpEngine: sleep done\n";
+        std::cerr << "GtpEngine: sleep done\n";
     }
 }
 
@@ -420,7 +420,7 @@ GtpCommand::Argument::Argument(const string& value, std::size_t end)
 
 //----------------------------------------------------------------------------
 
-ostringstream GtpCommand::s_dummy;
+std::ostringstream GtpCommand::s_dummy;
 
 const string& GtpCommand::Arg(std::size_t number) const
 {
@@ -446,7 +446,7 @@ std::size_t GtpCommand::Arg<std::size_t>(std::size_t i) const
     size_t result;
     if (! fail)
     {
-        istringstream in(arg);
+        std::istringstream in(arg);
         in >> result;
         fail = ! in;
     }
@@ -535,7 +535,7 @@ void GtpCommand::ParseCommandId()
     m_id = "";
     if (m_arguments.size() < 2)
         return;
-    istringstream in(m_arguments[0].m_value);
+    std::istringstream in(m_arguments[0].m_value);
     int id;
     in >> id;
     if (in)
@@ -585,7 +585,7 @@ void GtpCommand::SplitLine(const string& line)
     m_arguments.clear();
     bool escape = false;
     bool inString = false;
-    ostringstream element;
+    std::ostringstream element;
     for (size_t i = 0; i < line.size(); ++i)
     {
         char c = line[i];
@@ -699,7 +699,7 @@ void GtpEngine::CmdVersion(GtpCommand& cmd)
     cmd.CheckArgNone();
 }
 
-string GtpEngine::ExecuteCommand(const string& cmdline, ostream& log)
+string GtpEngine::ExecuteCommand(const string& cmdline, std::ostream& log)
 {
     if (! IsCommandLine(cmdline))
         throw GtpFailure() << "Bad command: " << cmdline;
@@ -714,9 +714,9 @@ string GtpEngine::ExecuteCommand(const string& cmdline, ostream& log)
     return response;
 }
 
-void GtpEngine::ExecuteFile(const string& name, ostream& log)
+void GtpEngine::ExecuteFile(const string& name, std::ostream& log)
 {
-    ifstream in(name.c_str());
+    std::ifstream in(name.c_str());
     if (! in)
         throw GtpFailure() << "Cannot read " << name;
     string line;
@@ -762,12 +762,12 @@ bool GtpEngine::HandleCommand(GtpCommand& cmd, GtpOutputStream& out)
     }
     response = ReplaceEmptyLines(response);
     BeforeWritingResponse();
-    ostringstream ostr;
+    std::ostringstream ostr;
     ostr << (status ? '=' : '?') << cmd.ID() << ' ' << response;
     size_t size = response.size();
     if (size == 0 || response[size - 1] != '\n')
         ostr << '\n';
-    ostr << '\n' << flush;
+    ostr << '\n' << std::flush;
     out.Write(ostr.str());
     out.Flush();
     return status;
@@ -849,7 +849,7 @@ void GtpEngine::Ponder()
 {
     // Default implementation does nothing
 #ifdef GTPENGINE_TEST
-    cerr << "GtpEngine::Ponder()\n";
+    std::cerr << "GtpEngine::Ponder()\n";
 #endif
 }
 
@@ -857,7 +857,7 @@ void GtpEngine::StopPonder()
 {
     // Default implementation does nothing
 #ifdef GTPENGINE_TEST
-    cerr << "GtpEngine::StopPonder()\n";
+    std::cerr << "GtpEngine::StopPonder()\n";
 #endif
 }
 
@@ -865,7 +865,7 @@ void GtpEngine::InitPonder()
 {
     // Default implementation does nothing
 #ifdef GTPENGINE_TEST
-    cerr << "GtpEngine::InitPonder()\n";
+    std::cerr << "GtpEngine::InitPonder()\n";
 #endif
 }
 
@@ -878,7 +878,7 @@ void GtpEngine::Interrupt()
 {
     // Default implementation does nothing
 #ifdef GTPENGINE_TEST
-    cerr << "GtpEngine::Interrupt()\n";
+    std::cerr << "GtpEngine::Interrupt()\n";
 #endif
 }
 
@@ -896,9 +896,9 @@ int main()
         GtpEngine engine(cin, cout);
         engine.MainLoop();
     }
-    catch (const exception& e)
+    catch (const std::exception& e)
     {
-        cerr << e.what() << '\n';
+        std::cerr << e.what() << '\n';
         return 1;
     }
     return 0;

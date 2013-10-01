@@ -3,20 +3,16 @@
 //----------------------------------------------------------------------------
 #include "GtpOutputStream.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
-GtpOutputStream::GtpOutputStream(ostream &out)
+GtpOutputStream::GtpOutputStream(std::ostream &out)
     : m_out(out)
-{
-}
+{ }
 
 GtpOutputStream::~GtpOutputStream()
-{
-}
+{ }
 
-void GtpOutputStream::Write(const string &line)
+void GtpOutputStream::Write(const std::string &line)
 {
     m_out << line;
 }

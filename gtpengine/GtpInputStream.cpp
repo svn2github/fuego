@@ -4,11 +4,9 @@
 
 #include "GtpInputStream.h"
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
-GtpInputStream::GtpInputStream(istream &in) 
+GtpInputStream::GtpInputStream(std::istream &in)
     : m_in(in)
 {
     // Tying of input to output stream (like used by std::cin/cout) is not
@@ -19,15 +17,14 @@ GtpInputStream::GtpInputStream(istream &in)
 }
 
 GtpInputStream::~GtpInputStream()
-{
-}
+{ }
 
 bool GtpInputStream::EndOfInput()
 {
     return m_in.fail();
 }
 
-bool GtpInputStream::GetLine(string &line)
+bool GtpInputStream::GetLine(std::string &line)
 {
     return ! getline(m_in, line).fail();
 }
