@@ -9,6 +9,10 @@
 
 //----------------------------------------------------------------------------
 
+const float GoUctAdditiveKnowledgeFuego::VALUE_MULTIPLIER = 4.0f;
+
+//----------------------------------------------------------------------------
+
 GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd)
     : GoUctAdditiveKnowledge(bd)
 {
