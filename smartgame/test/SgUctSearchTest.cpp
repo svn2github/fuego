@@ -121,8 +121,7 @@ TestThreadState::TestThreadState(unsigned int threadId,
       m_currentNode(0),
       m_toPlay(SG_BLACK),
       m_nodes(nodes)
-{
-}
+{ }
 
 inline const TestNode& TestThreadState::CurrentNode() const
 {
@@ -217,8 +216,7 @@ inline const TestNode& TestThreadState::Node(size_t index) const
 }
 
 void TestThreadState::StartSearch()
-{
-}
+{ }
 
 void TestThreadState::TakeBack(size_t nuMoves)
 {
@@ -263,8 +261,7 @@ private:
 
 TestThreadStateFactory::TestThreadStateFactory(const vector<TestNode>& nodes)
     : m_nodes(nodes)
-{
-}
+{ }
 
 SgUctThreadState* TestThreadStateFactory::Create(unsigned int threadId,
                                                  const SgUctSearch& search)
@@ -316,12 +313,10 @@ private:
 
 TestUctSearch::TestUctSearch()
     : SgUctSearch(new TestThreadStateFactory(m_nodes))
-{
-}
+{ }
 
 TestUctSearch::~TestUctSearch()
-{
-}
+{ }
 
 inline void TestUctSearch::AddLeafNode(size_t father, SgMove move, float eval)
 {

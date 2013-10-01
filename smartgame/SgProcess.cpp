@@ -108,8 +108,7 @@ SgProcess::SgProcess(const std::string& command)
 }
 
 SgProcess::~SgProcess()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

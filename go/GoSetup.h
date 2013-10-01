@@ -42,8 +42,7 @@ public:
 
 inline GoSetup::GoSetup()
     : m_player(SG_BLACK)
-{
-}
+{ }
 
 inline bool GoSetup::operator==(const GoSetup& setup) const
 {

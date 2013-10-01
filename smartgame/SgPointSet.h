@@ -234,12 +234,10 @@ inline SgPointSet operator^(const SgPointSet& L, const SgPointSet& R)
 }
 
 inline SgPointSet::SgPointSet()
-{
-}
+{ }
 
 inline SgPointSet::~SgPointSet()
-{
-}
+{ }
 
 inline void SgPointSet::Swap(SgPointSet& other) throw()
 {

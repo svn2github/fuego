@@ -83,8 +83,7 @@ void AppendGame(SgNode* node, SgUctValue gameNumber, unsigned int threadId,
 
 GoUctState::AssertionHandler::AssertionHandler(const GoUctState& state)
     : m_state(state)
-{
-}
+{ }
 
 void GoUctState::AssertionHandler::Run()
 {

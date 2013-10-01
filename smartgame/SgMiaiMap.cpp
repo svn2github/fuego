@@ -14,8 +14,7 @@ SgMiaiMap::SgMiaiMap()
     : m_forcedMove(SG_NULLPOINT),
       m_failed(false),
       m_map(SgArray<int,SG_MAXPOINT>(SG_NULLPOINT))
-{
-}
+{ }
     
 /** See SgStrategy::ExecuteMove */
 void SgMiaiMap::ExecuteMove(SgPoint p, SgBlackWhite player)

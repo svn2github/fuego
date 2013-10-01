@@ -14,8 +14,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 SgTimeControl::~SgTimeControl()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -24,8 +23,7 @@ SgDefaultTimeControl::SgDefaultTimeControl()
       m_fastOpenMoves(0),
       m_minTime(0),
       m_remainingConstant(1.0)
-{
-}
+{ }
 
 double SgDefaultTimeControl::FastOpenFactor() const
 {
@@ -117,7 +115,6 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
 //----------------------------------------------------------------------------
 
 SgObjectWithDefaultTimeControl::~SgObjectWithDefaultTimeControl()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------

@@ -35,8 +35,7 @@ GoUctBoard::GoUctBoard(const GoBoard& bd)
 }
 
 GoUctBoard::~GoUctBoard()
-{
-}
+{ }
 
 void GoUctBoard::CheckConsistency() const
 {

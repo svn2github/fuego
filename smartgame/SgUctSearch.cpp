@@ -124,8 +124,7 @@ SgUctThreadState::SgUctThreadState(unsigned int threadId, int moveRange)
 }
 
 SgUctThreadState::~SgUctThreadState()
-{
-}
+{ }
 
 void SgUctThreadState::EndPlayout()
 {
@@ -150,15 +149,13 @@ void SgUctThreadState::StartPlayouts()
 //----------------------------------------------------------------------------
 
 SgUctThreadStateFactory::~SgUctThreadStateFactory()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
 SgUctSearch::Thread::Function::Function(Thread& thread)
     : m_thread(thread)
-{
-}
+{ }
 
 void SgUctSearch::Thread::Function::operator()()
 {

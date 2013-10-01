@@ -51,8 +51,7 @@ private:
 
 inline GoBoardHistory::GoBoardHistory()
     : m_boardSize(-1)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

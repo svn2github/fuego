@@ -26,8 +26,7 @@ SpSimplePlayer::SpSimplePlayer(const GoBoard& board,
     : GoPlayer(board),
       m_generator(generator),
       m_randomGenerator(new SpRandomMoveGenerator(board))
-{
-}
+{ }
 
 SpSimplePlayer::~SpSimplePlayer()
 {

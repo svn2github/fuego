@@ -24,8 +24,7 @@ public:
 
 TestPlayer::TestPlayer(const GoBoard& bd)
     : GoPlayer(bd)
-{
-}
+{ }
 
 SgPoint TestPlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
 {

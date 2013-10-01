@@ -46,12 +46,10 @@ private:
 
 inline SgPointIterator::SgPointIterator(const SgPoint* first)
     : m_point(first)
-{
-}
+{ }
 
 inline SgPointIterator::~SgPointIterator()
-{
-}
+{ }
 
 inline void SgPointIterator::operator++()
 {
@@ -112,12 +110,10 @@ inline SgPointRangeIterator::SgPointRangeIterator(const SgPoint* first,
                                                   const SgPoint* end)
     : m_point(first),
       m_end(end)
-{
-}
+{ }
 
 inline SgPointRangeIterator::~SgPointRangeIterator()
-{
-}
+{ }
 
 inline void SgPointRangeIterator::operator++()
 {

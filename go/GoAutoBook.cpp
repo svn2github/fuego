@@ -15,8 +15,7 @@ GoAutoBookState::GoAutoBookState(const GoBoard& brd)
 }
 
 GoAutoBookState::~GoAutoBookState()
-{
-}
+{ }
 
 SgHashCode GoAutoBookState::GetHashCode() const
 {
@@ -71,8 +70,7 @@ void GoAutoBookState::ComputeHashCode()
 GoAutoBookParam::GoAutoBookParam()
     : m_usageCountThreshold(0),
       m_selectType(GO_AUTOBOOK_SELECT_VALUE)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -110,8 +108,7 @@ GoAutoBook::GoAutoBook(const std::string& filename,
 }
 
 GoAutoBook::~GoAutoBook()
-{
-}
+{ }
 
 bool GoAutoBook::Get(const GoAutoBookState& state, SgBookNode& node) const
 {

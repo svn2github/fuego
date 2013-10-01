@@ -88,16 +88,14 @@ private:
 };
 
 inline SgBookNode::SgBookNode()
-{
-}
+{ }
 
 inline SgBookNode::SgBookNode(float heuristicValue)
     : m_heurValue(heuristicValue),
       m_value(heuristicValue),
       m_priority(LEAF_PRIORITY),
       m_count(0)
-{
-}
+{ }
 
 inline SgBookNode::SgBookNode(const std::string& str)
 {

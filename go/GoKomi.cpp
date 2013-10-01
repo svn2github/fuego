@@ -24,13 +24,11 @@ std::string GetInvalidKomiErrorMessage(float komi)
 
 GoKomi::InvalidKomi::InvalidKomi(float komi)
     : SgException(GetInvalidKomiErrorMessage(komi))
-{
-}
+{ }
 
 GoKomi::InvalidKomi::InvalidKomi(const std::string& komi)
     : SgException("Invalid komi value: " + komi)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

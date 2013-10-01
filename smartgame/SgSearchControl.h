@@ -42,8 +42,7 @@ private:
 };
 
 inline SgSearchControl::SgSearchControl()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -142,8 +141,7 @@ inline SgCombinedSearchControl::SgCombinedSearchControl(double maxTime,
                                                         int maxNumNodes)
     : m_maxTime(maxTime),
       m_maxNumNodes(maxNumNodes)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -172,8 +170,7 @@ private:
 
 inline SgRelaxedSearchControl::SgRelaxedSearchControl(double maxTime)
     : m_maxTime(maxTime)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

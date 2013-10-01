@@ -40,8 +40,7 @@ FuegoTestEngine::FuegoTestEngine(int fixedBoardSize, const char* programPath,
 }
 
 FuegoTestEngine::~FuegoTestEngine()
-{
-}
+{ }
 
 void FuegoTestEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {

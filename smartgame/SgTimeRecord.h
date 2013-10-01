@@ -204,8 +204,7 @@ private:
 };
 
 inline SgTimeRecord::~SgTimeRecord()
-{
-}
+{ }
 
 inline bool SgTimeRecord::ClockIsRunning() const
 {

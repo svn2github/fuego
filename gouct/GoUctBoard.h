@@ -483,8 +483,7 @@ inline std::ostream& operator<<(std::ostream& out, const GoUctBoard& bd)
 inline GoUctBoard::Iterator::Iterator(const GoUctBoard& bd)
     : SgPointRangeIterator(bd.BoardConst().BoardIterAddress(),
                            bd.BoardConst().BoardIterEnd())
-{
-}
+{ }
 
 inline GoUctBoard::LibertyIterator::LibertyIterator(const GoUctBoard& bd,
                                                     SgPoint p)

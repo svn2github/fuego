@@ -107,12 +107,10 @@ TestSearch::TestSearch()
       m_currentNode(0),
       m_lastEvaluated(NO_NODE),
       m_toPlay(SG_BLACK)
-{
-}
+{ }
 
 TestSearch::~TestSearch()
-{
-}
+{ }
 
 
 void TestSearch::AddNode(size_t father, SgMove move, int eval)

@@ -10,18 +10,15 @@ using namespace std;
 //-----------------------------------------------------------------------------
 
 SgMpiSynchronizer::~SgMpiSynchronizer()
-{
-}
+{ }
 
 //-----------------------------------------------------------------------------
 
 SgMpiNullSynchronizer::SgMpiNullSynchronizer() 
-{
-}
+{ }
 
 SgMpiNullSynchronizer::~SgMpiNullSynchronizer()
-{
-}
+{ }
 
 SgMpiSynchronizerHandle SgMpiNullSynchronizer::Create()
 {
@@ -75,12 +72,10 @@ void SgMpiNullSynchronizer::OnSearchIteration(SgUctSearch &search,
 }
 
 void SgMpiNullSynchronizer::OnStartPonder()
-{
-}
+{ }
 
 void SgMpiNullSynchronizer::OnEndPonder()
-{
-}
+{ }
 
 void SgMpiNullSynchronizer::WriteStatistics(ostream& out) const
 {

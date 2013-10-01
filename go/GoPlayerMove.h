@@ -40,8 +40,7 @@ private:
 inline GoPlayerMove::GoPlayerMove()
     : m_color(SG_BLACK),
       m_point(SG_NULLMOVE)
-{
-}
+{ }
 
 inline GoPlayerMove::GoPlayerMove(SgBlackWhite color, SgPoint point)
     : m_color(color),
@@ -51,8 +50,7 @@ inline GoPlayerMove::GoPlayerMove(SgBlackWhite color, SgPoint point)
 }
 
 inline GoPlayerMove::~GoPlayerMove()
-{
-}
+{ }
 
 inline bool GoPlayerMove::operator==(const GoPlayerMove& move) const
 {

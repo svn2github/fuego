@@ -87,8 +87,7 @@ inline GoModBoard::GoModBoard(const GoBoard& bd, bool locked)
     : m_locked(locked),
       m_bd(const_cast<GoBoard&>(bd)),
       m_assertRestored(bd)
-{
-}
+{ }
 
 inline GoModBoard::~GoModBoard()
 {

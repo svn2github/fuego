@@ -52,8 +52,7 @@ SgWritePointList::SgWritePointList(const vector<SgPoint>& pointList,
     : m_writeSize(writeSize),
       m_pointList(pointList),
       m_label(label)
-{
-}
+{ }
 
 SgWritePointList::SgWritePointList(const SgVector<SgPoint>& pointList,
                                    string label, bool writeSize)
@@ -112,8 +111,7 @@ ostream& operator<<(ostream& out, const SgWriteBoolean &w)
 
 SgWriteBoolAsInt::SgWriteBoolAsInt(bool value)
     : m_value(value)
-{
-}
+{ }
 
 ostream& SgWriteBoolAsInt::Write(ostream& out) const
 {

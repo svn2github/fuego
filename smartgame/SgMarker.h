@@ -141,8 +141,7 @@ inline SgReserveMarker::SgReserveMarker(SgMarker& marker)
 }
 
 inline SgReserveMarker::~SgReserveMarker()
-{
-}
+{ }
 
 #endif
 

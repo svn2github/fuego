@@ -78,15 +78,13 @@ inline std::ostream& operator<<(std::ostream& out, const GoKomi& komi)
 inline GoKomi::GoKomi()
     : m_isUnknown(true),
       m_value(0)
-{
-}
+{ }
 
 inline GoKomi::GoKomi(float komi)
     : m_isUnknown(false),
       m_value(static_cast<int>(komi > 0 ?
                                komi * 2.f + 0.25f : komi * 2.f - 0.25f))
-{
-}
+{ }
 
 inline GoKomi& GoKomi::operator=(const GoKomi& komi)
 {

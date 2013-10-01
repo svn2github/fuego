@@ -9,8 +9,7 @@
 //----------------------------------------------------------------------------
 
 SgSearchControl::~SgSearchControl()
-{
-}
+{ }
 
 bool SgSearchControl::StartNextIteration(int depth, double elapsedTime,
                                          int numNodes)
@@ -25,12 +24,10 @@ bool SgSearchControl::StartNextIteration(int depth, double elapsedTime,
 
 SgTimeSearchControl::SgTimeSearchControl(double maxTime)
     : m_maxTime(maxTime)
-{
-}
+{ }
 
 SgTimeSearchControl::~SgTimeSearchControl()
-{
-}
+{ }
 
 bool SgTimeSearchControl::Abort(double elapsedTime, int ignoreNumNodes)
 {
@@ -45,8 +42,7 @@ SgNodeSearchControl::SgNodeSearchControl(int maxNumNodes)
 { }
 
 SgNodeSearchControl::~SgNodeSearchControl()
-{
-}
+{ }
 
 bool SgNodeSearchControl::Abort(double ignoreElapsedTime, int numNodes)
 {
@@ -57,8 +53,7 @@ bool SgNodeSearchControl::Abort(double ignoreElapsedTime, int numNodes)
 //----------------------------------------------------------------------------
 
 SgCombinedSearchControl::~SgCombinedSearchControl()
-{
-}
+{ }
 
 bool SgCombinedSearchControl::Abort(double elapsedTime, int numNodes)
 {
@@ -68,8 +63,7 @@ bool SgCombinedSearchControl::Abort(double elapsedTime, int numNodes)
 //----------------------------------------------------------------------------
 
 SgRelaxedSearchControl::~SgRelaxedSearchControl()
-{
-}
+{ }
 
 bool SgRelaxedSearchControl::Abort(double elapsedTime, int numNodes)
 {

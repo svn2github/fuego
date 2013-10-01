@@ -1103,8 +1103,7 @@ inline GoBoard::StoneIterator::operator bool() const
 inline GoBoard::Iterator::Iterator(const GoBoard& bd)
     : SgPointRangeIterator(bd.BoardConst().BoardIterAddress(),
                            bd.BoardConst().BoardIterEnd())
-{
-}
+{ }
 
 inline GoBoard::LibertyIterator::LibertyIterator(const GoBoard& bd, SgPoint p)
     : m_it(bd.m_state.m_block[p]->Liberties()),

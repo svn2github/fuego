@@ -71,13 +71,11 @@ ostream* SgSwapDebugStr(ostream* newStr)
 
 SgDebugToNewFile::SgDebugToNewFile(const char* filename)
     : m_old(SgSwapDebugStr(new ofstream(filename, ios::app)))
-{
-}
+{ }
 
 SgDebugToNewFile::SgDebugToNewFile()
     : m_old(NULL)
-{
-}
+{ }
 
 void SgDebugToNewFile::SetFile(const char* filename)
 {

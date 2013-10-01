@@ -235,8 +235,7 @@ private:
 
 inline SgPropListIterator::SgPropListIterator(const SgPropList& propList)
     : m_listIterator(propList.m_list)
-{
-}
+{ }
 
 inline void SgPropListIterator::operator++()
 {
@@ -387,8 +386,7 @@ private:
 
 inline SgProp::SgProp(SgPropID id)
     : m_id(id)
-{
-}
+{ }
 
 inline SgPropID SgProp::ID() const
 {
@@ -434,16 +432,14 @@ private:
 
 inline SgPropUnknown::SgPropUnknown(SgPropID id)
     : SgProp(id)
-{
-}
+{ }
 
 inline SgPropUnknown::SgPropUnknown(SgPropID id, std::string label,
                                     const std::vector<std::string>& values)
     : SgProp(id),
       m_label(label),
       m_values(values)
-{
-}
+{ }
 
 inline std::string SgPropUnknown::Label() const
 {
@@ -484,14 +480,12 @@ protected:
 inline SgPropInt::SgPropInt(SgPropID id)
     : SgProp(id),
       m_value(0)
-{
-}
+{ }
 
 inline SgPropInt::SgPropInt(SgPropID id, int value)
     : SgProp(id),
       m_value(value)
-{
-}
+{ }
 
 inline int SgPropInt::Value() const
 {
@@ -547,15 +541,13 @@ inline SgPropReal::SgPropReal(SgPropID id)
     : SgProp(id),
       m_precision(0),
       m_value(0)
-{
-}
+{ }
 
 inline SgPropReal::SgPropReal(SgPropID id, double value, int precision)
     : SgProp(id),
       m_precision(precision),
       m_value(value)
-{
-}
+{ }
 
 inline double SgPropReal::Value() const
 {
@@ -589,8 +581,7 @@ public:
 
 inline SgPropSimple::SgPropSimple(SgPropID id)
     : SgProp(id)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -610,13 +601,11 @@ public:
 
 inline SgPropMultiple::SgPropMultiple(SgPropID id)
     : SgPropInt(id, 1)
-{
-}
+{ }
 
 inline SgPropMultiple::SgPropMultiple(SgPropID id, int value)
     : SgPropInt(id, value)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -636,13 +625,11 @@ public:
 
 inline SgPropValue::SgPropValue(SgPropID id)
     : SgPropInt(id)
-{
-}
+{ }
 
 inline SgPropValue::SgPropValue(SgPropID id, int value)
     : SgPropInt(id, value)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -660,8 +647,7 @@ public:
 
 inline SgPropTime::SgPropTime(SgPropID id, double value, int precision)
     : SgPropReal(id, value, precision)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -682,13 +668,11 @@ public:
 
 inline SgPropMSec::SgPropMSec(SgPropID id)
     : SgPropTime(id, 0, 3)
-{
-}
+{ }
 
 inline SgPropMSec::SgPropMSec(SgPropID id, double value)
     : SgPropTime(id, value, 3)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -722,14 +706,12 @@ protected:
 inline SgPropMove::SgPropMove(SgPropID id)
     : SgProp(id),
       m_move(SG_NULLMOVE)
-{
-}
+{ }
 
 inline SgPropMove::SgPropMove(SgPropID id, SgMove move)
     : SgProp(id),
       m_move(move)
-{
-}
+{ }
 
 inline SgPoint SgPropMove::Value() const
 {
@@ -777,8 +759,7 @@ private:
 
 inline SgPropPointList::SgPropPointList(SgPropID id)
     : SgProp(id)
-{
-}
+{ }
 
 inline const SgVector<SgPoint>& SgPropPointList::Value() const
 {
@@ -837,14 +818,12 @@ private:
 inline SgPropText::SgPropText(SgPropID id)
     : SgProp(id),
       m_text()
-{
-}
+{ }
 
 inline SgPropText::SgPropText(SgPropID id, const std::string& text)
     : SgProp(id),
       m_text(text)
-{
-}
+{ }
 
 inline const std::string& SgPropText::Value() const
 {
@@ -920,8 +899,7 @@ inline SgPropTextList::SgPropTextList(SgPropID id)
     : SgProp(id),
       m_points(),
       m_strings()
-{
-}
+{ }
 
 inline const SgVector<SgPoint>& SgPropTextList::GetPointsWithText() const
 {
@@ -960,14 +938,12 @@ private:
 inline SgPropPlayer::SgPropPlayer(SgPropID id)
     : SgProp(id),
       m_player(SG_BLACK)
-{
-}
+{ }
 
 inline SgPropPlayer::SgPropPlayer(SgPropID id, int player)
     : SgProp(id),
       m_player(player)
-{
-}
+{ }
 
 inline SgBlackWhite SgPropPlayer::Value() const
 {
@@ -998,14 +974,12 @@ public:
 
 inline SgPropAddStone::SgPropAddStone(SgPropID id)
     : SgPropPointList(id)
-{
-}
+{ }
 
 inline SgPropAddStone::SgPropAddStone(SgPropID id,
                                       const SgVector<SgPoint>& list)
     : SgPropPointList(id, list)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

@@ -16,8 +16,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 SgCmdLineOpt::SgCmdLineOpt()
-{
-}
+{ }
 
 bool SgCmdLineOpt::Contains(const char* option) const
 {

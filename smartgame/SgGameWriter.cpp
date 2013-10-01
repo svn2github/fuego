@@ -19,8 +19,7 @@ SgGameWriter::SgGameWriter(ostream& out)
     : m_out(out),
       m_fileFormat(4),
       m_numPropsOnLine(0)
-{
-}
+{ }
 
 void SgGameWriter::WriteGame(const SgNode& root, bool allProps,
                              int fileFormat, int gameNumber, int defaultSize)

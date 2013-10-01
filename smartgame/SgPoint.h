@@ -168,8 +168,7 @@ std::ostream& operator<<(std::ostream& out, const SgWritePoint& writePoint);
 
 inline SgWritePoint::SgWritePoint(SgPoint p)
     : m_p(p)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -196,8 +195,7 @@ private:
 
 inline SgReadPoint::SgReadPoint(SgPoint& point)
     : m_point(point)
-{
-}
+{ }
 
 /** @relatesalso SgReadPoint */
 inline std::istream& operator>>(std::istream& in,

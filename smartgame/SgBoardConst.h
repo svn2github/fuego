@@ -341,8 +341,7 @@ public:
 
 inline SgNbIterator::SgNbIterator(const SgBoardConst& boardConst, SgPoint p)
     : SgPointIterator(boardConst.NeighborIterAddress(p))
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

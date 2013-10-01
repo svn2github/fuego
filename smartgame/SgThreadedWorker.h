@@ -127,8 +127,7 @@ SgThreadedWorker<I,O,W>::Thread::Thread(std::size_t threadId, W& worker,
     : m_id(threadId),
       m_worker(worker),
       m_boss(threadedWorker)
-{
-}
+{ }
 
 template<typename I, typename O, typename W>
 void SgThreadedWorker<I,O,W>::Thread::operator()()

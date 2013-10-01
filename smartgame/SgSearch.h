@@ -56,8 +56,7 @@ inline SgKiller::SgKiller()
       m_killer2(SG_NULLMOVE),
       m_count1(0),
       m_count2(0)
-{
-}
+{ }
 
 inline SgMove SgKiller::GetKiller1() const
 {
@@ -154,8 +153,7 @@ inline SgSearchHashData::SgSearchHashData(int depth, signed value,
 }
 
 inline SgSearchHashData::~SgSearchHashData()
-{
-}
+{ }
 
 inline int SgSearchHashData::Depth() const
 {

@@ -15,8 +15,7 @@ using std::max;
 GoTimeControl::GoTimeControl(const GoBoard& bd)
     : m_bd(bd),
       m_finalSpace(0.75f)
-{
-}
+{ }
 
 float GoTimeControl::FinalSpace() const
 {

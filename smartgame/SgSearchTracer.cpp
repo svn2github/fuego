@@ -26,12 +26,10 @@ using namespace std;
 
 SgSearchTracer::SgSearchTracer(SgNode* root) 
     : m_traceNode(root)
-{
-}
+{ }
 
 SgSearchTracer::~SgSearchTracer()
-{
-}
+{ }
 
 void SgSearchTracer::AddMoveProp(SgNode* node, SgMove move, 
                                  SgBlackWhite player)

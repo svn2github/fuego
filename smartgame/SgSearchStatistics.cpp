@@ -24,12 +24,10 @@ SgSearchStatistics::SgSearchStatistics(const SgSearchStatistics& stat)
       m_numPass(stat.m_numPass),
       m_depthReached(stat.m_depthReached),
       m_timeUsed(stat.m_timeUsed)
-{
-}
+{ }
 
 SgSearchStatistics::~SgSearchStatistics()
-{
-}
+{ }
 
 SgSearchStatistics&
 SgSearchStatistics::operator=(const SgSearchStatistics& rhs)

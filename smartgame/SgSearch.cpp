@@ -146,8 +146,7 @@ SgSearch::SgSearch(SgSearchHashTable* hash)
 }
 
 SgSearch::~SgSearch()
-{
-}
+{ }
 
 void SgSearch::CallGenerate(SgVector<SgMove>* moves, int depth)
 {

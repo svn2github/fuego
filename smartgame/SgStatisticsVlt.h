@@ -95,8 +95,7 @@ template<typename VALUE, typename COUNT>
 inline SgStatisticsVltBase<VALUE,COUNT>::SgStatisticsVltBase(VALUE val, COUNT count)
     : m_count(count),
       m_mean(val)
-{
-}
+{ }
 
 template<typename VALUE, typename COUNT>
 void SgStatisticsVltBase<VALUE,COUNT>::Add(VALUE val)

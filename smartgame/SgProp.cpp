@@ -384,8 +384,7 @@ string SgProp::s_label[SG_MAX_PROPCLASS];
 SgProp* SgProp::s_prop[SG_MAX_PROPCLASS];
 
 SgProp::~SgProp()
-{
-}
+{ }
 
 void SgProp::ChangeToOpponent()
 {
@@ -954,8 +953,7 @@ SgProp* SgPropValue::Duplicate() const
 //----------------------------------------------------------------------------
 
 SgPropTime::~SgPropTime()
-{
-}
+{ }
 
 SgProp* SgPropTime::Duplicate() const
 {
@@ -965,8 +963,7 @@ SgProp* SgPropTime::Duplicate() const
 //----------------------------------------------------------------------------
 
 SgPropMSec::~SgPropMSec()
-{
-}
+{ }
 
 SgProp* SgPropMSec::Duplicate() const
 {
@@ -979,12 +976,10 @@ SgPropPointList::SgPropPointList(SgPropID id,
                                 const SgVector<SgPoint>& vector)
     : SgProp(id),
       m_list(vector)
-{
-}
+{ }
 
 SgPropPointList::~SgPropPointList()
-{
-}
+{ }
 
 SgProp* SgPropPointList::Duplicate() const
 {
@@ -1234,8 +1229,7 @@ void SgPropPlayer::ChangeToOpponent()
 //----------------------------------------------------------------------------
 
 SgPropAddStone::~SgPropAddStone()
-{
-}
+{ }
 
 SgProp* SgPropAddStone::Duplicate() const
 {

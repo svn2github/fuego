@@ -37,8 +37,7 @@ SgGameReader::SgGameReader(istream& in, int defaultSize)
     : m_in(in),
       m_defaultSize(defaultSize),
       m_fileFormat(4)
-{
-}
+{ }
 
 bool SgGameReader::GetIntProp(const SgGameReader::RawProperties& properties,
                               const string& label, int& value)

@@ -185,8 +185,7 @@ private:
 
 PonderThread::Function::Function(PonderThread& ponderThread)
     : m_ponderThread(ponderThread)
-{
-}
+{ }
 
 void PonderThread::Function::operator()()
 {
@@ -299,8 +298,7 @@ private:
 
 ReadThread::Function::Function(ReadThread& readThread)
     : m_readThread(readThread)
-{
-}
+{ }
 
 void ReadThread::Function::operator()()
 {
@@ -392,8 +390,7 @@ bool ReadThread::ReadCommand(GtpCommand& cmd)
 //----------------------------------------------------------------------------
 
 GtpFailure::GtpFailure()
-{
-}
+{ }
 
 GtpFailure::GtpFailure(const GtpFailure& failure)
 {
@@ -407,16 +404,14 @@ GtpFailure::GtpFailure(const string& response)
 }
 
 GtpFailure::~GtpFailure() throw()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
 GtpCommand::Argument::Argument(const string& value, std::size_t end)
     : m_value(value),
       m_end(end)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -617,8 +612,7 @@ void GtpCommand::SplitLine(const string& line)
 //----------------------------------------------------------------------------
 
 GtpCallbackBase::~GtpCallbackBase() throw()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

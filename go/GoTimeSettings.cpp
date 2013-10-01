@@ -19,8 +19,7 @@ GoTimeSettings::GoTimeSettings()
 GoTimeSettings::GoTimeSettings(double mainTime)
     : m_mainTime(mainTime),
       m_overtime(0)
-{
-}
+{ }
 
 GoTimeSettings::GoTimeSettings(double mainTime, double overtime,
                                int overtimeMoves)

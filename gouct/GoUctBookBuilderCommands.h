@@ -120,8 +120,7 @@ GoUctBookBuilderCommands<PLAYER>
     m_book(book),
     m_bookBuilder(bd),
     m_param()
-{
-}
+{ }
 
 template<class PLAYER>
 void GoUctBookBuilderCommands<PLAYER>::AddGoGuiAnalyzeCommands(GtpCommand& cmd)

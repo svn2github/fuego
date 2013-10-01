@@ -15,8 +15,7 @@ using namespace std;
 
 SgGtpFailure::SgGtpFailure(const std::string& message)
     : SgException(message)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -24,12 +23,10 @@ SgGtpClient::SgGtpClient(istream& in, ostream& out, bool verbose)
     : m_verbose(verbose),
       m_in(in),
       m_out(out)
-{
-}
+{ }
 
 SgGtpClient::~SgGtpClient()
-{
-}
+{ }
 
 string SgGtpClient::Send(const string& command)
 {

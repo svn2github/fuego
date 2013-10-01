@@ -146,8 +146,7 @@ template<typename T, int SIZE>
 inline SgArrayList<T,SIZE>::Iterator::Iterator(const SgArrayList& list)
     : m_end(list.m_array + list.Length()),
       m_current(list.m_array)
-{
-}
+{ }
 
 template<typename T, int SIZE>
 inline const T& SgArrayList<T,SIZE>::Iterator::operator*() const
@@ -173,8 +172,7 @@ inline
 SgArrayList<T,SIZE>::NonConstIterator::NonConstIterator(SgArrayList& list)
     : m_end(list.m_array + list.Length()),
       m_current(list.m_array)
-{
-}
+{ }
 
 template<typename T, int SIZE>
 inline T& SgArrayList<T,SIZE>::NonConstIterator::operator*() const
@@ -198,8 +196,7 @@ inline SgArrayList<T,SIZE>::NonConstIterator::operator bool() const
 template<typename T, int SIZE>
 inline SgArrayList<T,SIZE>::SgArrayList()
     : m_len(0)
-{
-}
+{ }
 
 template<typename T, int SIZE>
 inline SgArrayList<T,SIZE>::SgArrayList(const T& val)

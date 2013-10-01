@@ -91,14 +91,12 @@ struct DfpnBounds
 inline DfpnBounds::DfpnBounds()
     : phi(INFTY), 
       delta(INFTY)
-{
-}
+{ }
 
 inline DfpnBounds::DfpnBounds(DfpnBoundType p, DfpnBoundType d)
     : phi(p), 
       delta(d)
-{
-}
+{ }
 
 inline std::string DfpnBounds::Print() const
 {

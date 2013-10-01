@@ -389,8 +389,7 @@ GtpCommand& operator<<(GtpCommand& cmd, TYPE& type)
 }
 
 inline GtpCommand::GtpCommand()
-{
-}
+{ }
 
 inline GtpCommand::GtpCommand(const std::string& line)
 {
@@ -552,8 +551,7 @@ GtpCallback<ENGINE>::GtpCallback(ENGINE* instance,
                                  typename GtpCallback<ENGINE>::Method method)
     : m_instance(instance),
       m_method(method)
-{
-}
+{ }
 
 template<class ENGINE>
 GtpCallback<ENGINE>::~GtpCallback() throw()

@@ -367,8 +367,7 @@ GoBookCommands::GoBookCommands(GoGtpEngine &engine, const GoBoard& bd, GoBook& b
     : m_engine(engine),
       m_bd(bd),
       m_book(book)
-{
-}
+{ }
 
 void GoBookCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {

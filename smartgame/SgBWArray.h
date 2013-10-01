@@ -49,8 +49,7 @@ private:
 
 template <class T>
 inline SgBWArray<T>::SgBWArray()
-{
-}
+{ }
 
 template <class T>
 inline SgBWArray<T>::SgBWArray(const T& val)

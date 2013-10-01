@@ -23,8 +23,7 @@ GoRules::GoRules(int handicap, const GoKomi& komi, bool japanese,
       m_japaneseHandicap(japanese),
       m_twoPassesEndGame(twoPassesEndGame),
       m_koRule(SUPERKO)
-{
-}
+{ }
 
 bool GoRules::operator==(const GoRules& rules) const
 {

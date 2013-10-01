@@ -271,8 +271,7 @@ GoUctBookBuilder<PLAYER>::GoUctBookBuilder(const GoBoard& bd)
 
 template<class PLAYER>
 GoUctBookBuilder<PLAYER>::~GoUctBookBuilder()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 
@@ -335,8 +334,7 @@ GoUctBookBuilder<PLAYER>::Worker::Worker(std::size_t id, PLAYER& player)
 
     : m_id(id), 
       m_player(&player)
-{
-}
+{ }
 
 template<class PLAYER>
 float GoUctBookBuilder<PLAYER>::Worker::operator()(const SgMove& move)
@@ -507,18 +505,15 @@ void GoUctBookBuilder<PLAYER>
 
 template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::AfterEvaluateChildren()
-{
-}
+{ }
 
 template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::StartIteration()
-{
-}
+{ }
 
 template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::EndIteration()
-{
-}
+{ }
 
 template<class PLAYER>
 void GoUctBookBuilder<PLAYER>::ClearAllVisited()

@@ -59,12 +59,10 @@ SgBookBuilder::SgBookBuilder()
       m_expandWidth(16),
       m_expandThreshold(1000),
       m_flushIterations(100)
-{
-}
+{ }
 
 SgBookBuilder::~SgBookBuilder()
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

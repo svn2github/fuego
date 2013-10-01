@@ -35,20 +35,17 @@ public:
 
 template<class T>
 inline SgPointArray<T>::SgPointArray()
-{
-}
+{ }
 
 template<class T>
 inline SgPointArray<T>::SgPointArray(const T& value)
     : SgArray<T,SG_MAXPOINT>(value)
-{
-}
+{ }
 
 template<class T>
 inline SgPointArray<T>::SgPointArray(const SgPointArray& pointArray)
     : SgArray<T,SG_MAXPOINT>(pointArray)
-{
-}
+{ }
 
 //----------------------------------------------------------------------------
 

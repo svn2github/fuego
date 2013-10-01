@@ -147,8 +147,7 @@ template<typename T, int SIZE>
 SgArray<T,SIZE>::Iterator::Iterator(const SgArray& array)
     : m_end(array.m_array + SIZE),
       m_current(array.m_array)
-{
-}
+{ }
 
 template<typename T, int SIZE>
 const T& SgArray<T,SIZE>::Iterator::operator*() const
@@ -196,8 +195,7 @@ SgArray<T,SIZE>::NonConstIterator::operator bool() const
 
 template<typename T, int SIZE>
 SgArray<T,SIZE>::SgArray()
-{
-}
+{ }
 
 template<typename T, int SIZE>
 SgArray<T,SIZE>::SgArray(const SgArray& array)
