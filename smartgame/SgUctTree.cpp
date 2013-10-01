@@ -53,6 +53,20 @@ void SgUctAllocator::SetMaxNodes(std::size_t maxNodes)
 
 //----------------------------------------------------------------------------
 
+std::ostream& operator<<(std::ostream& stream, const SgUctMoveInfo& info)
+{
+	stream << "move = " << SgWritePoint(info.m_move)
+    	   << "value = " << info.m_value
+    	   << "count = " << info.m_count
+    	   << "rave value = " << info.m_raveValue
+    	   << "rave count = " << info.m_raveCount
+    	   << "predictor value = " << info.m_predictorValue
+           ;
+    return stream;
+}
+
+//----------------------------------------------------------------------------
+
 SgUctTree::SgUctTree()
     : m_maxNodes(0),
       m_root(SG_NULLMOVE)

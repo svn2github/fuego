@@ -6,6 +6,7 @@
 #ifndef SG_UCTTREE_H
 #define SG_UCTTREE_H
 
+#include <iostream>
 #include <limits>
 #include <stack>
 #include <boost/shared_ptr.hpp>
@@ -60,6 +61,8 @@ struct SgUctMoveInfo
     SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
                SgUctValue raveValue, SgUctValue raveCount);
 };
+
+std::ostream& operator<<(std::ostream& stream, const SgUctMoveInfo& info);
 
 inline SgUctMoveInfo::SgUctMoveInfo()
     : m_move(SG_NULLMOVE),
