@@ -31,20 +31,21 @@ const SgUctNode* GetNode(const SgUctTree& tree, SgMove move1)
     return SgUctTreeUtil::FindChildWithMove(tree, tree.Root(), move1);
 }
 
-/** Get node corresponding to a sequence of moves of length 2 */
+/** Get node corresponding to a sequence of moves of length 2
 const SgUctNode* GetNode(const SgUctTree& tree, SgMove move1, SgMove move2)
 {
     const SgUctNode* node = GetNode(tree, move1);
     return SgUctTreeUtil::FindChildWithMove(tree, *node, move2);
 }
 
-/** Get node corresponding to a sequence of moves of length 3 */
+// ** Get node corresponding to a sequence of moves of length 3
 const SgUctNode* GetNode(const SgUctTree& tree, SgMove move1, SgMove move2,
                          SgMove move3)
 {
     const SgUctNode* node = GetNode(tree, move1, move2);
     return SgUctTreeUtil::FindChildWithMove(tree, *node, move3);
 }
+*/
 
 //----------------------------------------------------------------------------
 
