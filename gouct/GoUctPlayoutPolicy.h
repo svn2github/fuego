@@ -218,8 +218,6 @@ public:
 	 matcher (Use case: prior knowledge) */
     const GoUctPatterns<BOARD>& GlobalPatterns() const;
 
-	/** Smallest allowed gamma value */
-    static const float GAMMA_LOWER_LIMIT = 0.00000000001;
 private:
 
     /** Incrementally keeps track of blocks in atari. */
