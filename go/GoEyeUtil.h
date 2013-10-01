@@ -153,16 +153,17 @@ namespace GoEyeUtil
                        SgBlackWhite opp, bool checkBlocks);
 }
 
-namespace {
 inline bool AreSameBlocks(const SgPoint anchors1[], const SgPoint anchors2[])
 {
     int i = 0;
     for (; anchors1[i] != SG_ENDPOINT; ++i)
     {
+        if (anchors2[i] == SG_ENDPOINT)
+            return false;
         if (! GoBoardUtil::ContainsAnchor(anchors2, anchors1[i]))
             return false;
     }
-    return (anchors2[i] == SG_ENDPOINT);
+    return anchors2[i] == SG_ENDPOINT;
 }
 
 /** Recognizes 2x2 block of points.
@@ -212,7 +213,6 @@ inline bool Is2x3Area(const SgPointSet& area)
     return GoEyeUtil::DegreeCode(area) == 2400;
 }
 
-} // namespace
 
 template<class BOARD>
 SgPoint GoEyeUtil::EmptyNeighbor(const BOARD& bd, SgPoint p)
@@ -317,14 +317,14 @@ bool GoEyeUtil::IsTwoPointEye(const BOARD& bd, SgPoint p,
            && bd.NumNeighbors(p2, opp) == 0
            )
         {
-            // check if p1, p2 are adjacent to the same blocks
+            // check if p, p2 are adjacent to the same blocks
             SgPoint nbanchorp[4 + 1];
             SgPoint nbanchorp2[4 + 1];
             bd.NeighborBlocks(p, color, nbanchorp);
             bd.NeighborBlocks(p2, color, nbanchorp2);
             SG_ASSERT(nbanchorp[0] != SG_ENDPOINT);
             SG_ASSERT(nbanchorp2[0] != SG_ENDPOINT);
-            return AreSameBlocks(nbanchorp, nbanchorp2);
+            return ::AreSameBlocks(nbanchorp, nbanchorp2);
         }
     }
     return false;
