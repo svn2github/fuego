@@ -5,6 +5,7 @@
 
 #include "SgSystem.h"
 #include "GoUctKnowledge.h"
+#include "SgDebug.h"
 #include "SgUctSearch.h"
 
 //----------------------------------------------------------------------------
@@ -41,11 +42,16 @@ void GoUctKnowledge::ClearValues()
 
 void GoUctKnowledge::TransferValues(std::vector<SgUctMoveInfo>& moves) const
 {
+    static const bool WARN_OVERWRITE = false;
     for (std::size_t i = 0; i < moves.size(); ++i)
     {
         const SgMove p = moves[i].m_move;
         if (m_values[p].IsDefined())
         {
+            if (WARN_OVERWRITE && moves[i].m_count != 0)
+                SgDebug() << "WARNING - overwriting moves[i].m_count "
+                          << moves[i].m_count << " by "
+                          << m_values[p].Count() << '\n';
             moves[i].m_count = m_values[p].Count();
             moves[i].m_value =
             SgUctSearch::InverseEstimate(m_values[p].Mean());
@@ -67,7 +73,6 @@ inline void AddToMoveValue(
     moveInfo.m_value = SgUctSearch::InverseEstimate(v1);
     moveInfo.m_raveCount = moveInfo.m_count;
     moveInfo.m_raveValue = v1;
-
 }
 
 void GoUctKnowledge::AddValuesTo(std::vector<SgUctMoveInfo>& moves) const
