@@ -10,7 +10,6 @@
 #include "SgDebug.h"
 #include "SgTimer.h"
 
-using namespace std;
 using boost::format;
 using boost::shared_ptr;
 
@@ -32,9 +31,9 @@ bool SgUctAllocator::Contains(const SgUctNode& node) const
 
 void SgUctAllocator::Swap(SgUctAllocator& allocator)
 {
-    swap(m_start, allocator.m_start);
-    swap(m_finish, allocator.m_finish);
-    swap(m_endOfStorage, allocator.m_endOfStorage);
+    std::swap(m_start, allocator.m_start);
+    std::swap(m_finish, allocator.m_finish);
+    std::swap(m_endOfStorage, allocator.m_endOfStorage);
 }
 
 void SgUctAllocator::SetMaxNodes(std::size_t maxNodes)
@@ -57,8 +56,7 @@ void SgUctAllocator::SetMaxNodes(std::size_t maxNodes)
 SgUctTree::SgUctTree()
     : m_maxNodes(0),
       m_root(SG_NULLMOVE)
-{
-}
+{ }
 
 void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
                             const vector<SgMove>& rootFilter)
@@ -424,12 +422,12 @@ void SgUctTree::Swap(SgUctTree& tree)
 {
     SG_ASSERT(MaxNodes() == tree.MaxNodes());
     SG_ASSERT(NuAllocators() == tree.NuAllocators());
-    swap(m_root, tree.m_root);
+    std::swap(m_root, tree.m_root);
     for (size_t i = 0; i < NuAllocators(); ++i)
         Allocator(i).Swap(tree.Allocator(i));
 }
 
-void SgUctTree::ThrowConsistencyError(const string& message) const
+void SgUctTree::ThrowConsistencyError(const std::string& message) const
 {
     DumpDebugInfo(SgDebug());
     throw SgException("SgUctTree::ThrowConsistencyError: " + message);
@@ -440,8 +438,7 @@ void SgUctTree::ThrowConsistencyError(const string& message) const
 SgUctTreeIterator::SgUctTreeIterator(const SgUctTree& tree)
     : m_tree(tree),
       m_current(&tree.Root())
-{
-}
+{ }
 
 const SgUctNode& SgUctTreeIterator::operator*() const
 {
