@@ -221,6 +221,9 @@ public:
         @see GoUctLiveGfxMode, LiveGfxInterval() */
     GoUctLiveGfx LiveGfx() const;
 
+    /** Is it time for gfx? If yes, also compute next time. */
+    bool NeedLiveGfx(SgUctValue gameNumber);
+
     /** See LiveGfx() */
     void SetLiveGfx(GoUctLiveGfx mode);
 

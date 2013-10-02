@@ -190,6 +190,16 @@ std::string GoUctSearch::MoveString(SgMove move) const
     return SgPointUtil::PointToString(move);
 }
 
+bool GoUctSearch::NeedLiveGfx(SgUctValue gameNumber)
+{
+    if (gameNumber > m_nextLiveGfx)
+    {
+        m_nextLiveGfx = gameNumber + m_liveGfxInterval;
+        return true;
+    }
+    return false;
+}
+
 void GoUctSearch::OnSearchIteration(SgUctValue gameNumber,
                                     unsigned int threadId,
                                     const SgUctGameInfo& info)
@@ -197,9 +207,8 @@ void GoUctSearch::OnSearchIteration(SgUctValue gameNumber,
     SgUctSearch::OnSearchIteration(gameNumber, threadId, info);
 
     if (m_liveGfx != GOUCT_LIVEGFX_NONE && threadId == 0
-        && gameNumber > m_nextLiveGfx)
+        && NeedLiveGfx(gameNumber))
     {
-        m_nextLiveGfx = gameNumber + m_liveGfxInterval;
         DisplayGfx();
     }
     if (! LockFree() && m_root != 0)
