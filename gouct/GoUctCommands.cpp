@@ -962,6 +962,11 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
     moves.Sort();
     for (int i = 0; i < moves.Length(); ++i)
         cmd << ' ' << SgWritePoint(moves[i]);
+    if (policy.MoveType() == GOUCT_GAMMA_PATTERN)
+    {
+        cmd << ' ';
+        policy.GammaGenerator().WriteMovesAndGammas(cmd);
+    }
 }
 
 /** Show total prior knowledge */
