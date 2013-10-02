@@ -586,8 +586,7 @@ void GoUctPlayer<SEARCH, THREAD>::ClearStatistics()
 
 typedef SgPointArray<SgUctStatistics> TerrArray;
 
-namespace {
-bool HasStatsForAllMoves(const GoBoard& bd, const TerrArray& territory)
+inline bool HasStatsForAllMoves(const GoBoard& bd, const TerrArray& territory)
 {
     for (GoBoard::Iterator it(bd); it; ++it)
         if (territory[*it].Count() == 0)
@@ -610,8 +609,11 @@ inline SgUctValue ValueForPlayer(SgUctValue v, SgBlackWhite player)
         return v;
 }
     
-bool HasNonControlledLib(const GoBoard& bd, SgPoint block, SgBlackWhite toPlay,
-                     const TerrArray& territory, SgUctValue threshold)
+inline bool HasNonControlledLib(const GoBoard& bd,
+                                SgPoint block,
+                                SgBlackWhite toPlay,
+                                const TerrArray& territory,
+                                SgUctValue threshold)
 {
     SG_ASSERT(bd.IsColor(block, toPlay));
 
@@ -638,7 +640,7 @@ bool HasNonControlledLib(const GoBoard& bd, SgPoint block, SgBlackWhite toPlay,
     return false;
 }
 
-bool AllowFillinMove(const GoBoard& bd, SgPoint move,
+inline bool AllowFillinMove(const GoBoard& bd, SgPoint move,
                      const TerrArray& territory, SgUctValue threshold)
 {
     /*  Idea: if adj. block has another liberty that is not controlled by us
@@ -652,8 +654,6 @@ bool AllowFillinMove(const GoBoard& bd, SgPoint move,
                 return true;
     return false;
 }
-
-} // namespace
 
 /** Perform a search after playing a pass and see if it is still a win and
     all points are safe as determined by territory statistics.
