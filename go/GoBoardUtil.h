@@ -60,7 +60,7 @@ PrintFirstFew(const BOARD& bd,
         		  << SgWritePoint(move);
         if (move2 != SG_NULLMOVE)
         	SgDebug() << ' ' << SgWritePoint(move2);
-        SgDebug() << '\n' << bd;
+        SgDebug() << '\n' << bd << std::endl;
     }
 }
 
