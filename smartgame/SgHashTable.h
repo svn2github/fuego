@@ -47,6 +47,28 @@ template <class DATA, int BLOCK_SIZE = 1>
 class SgHashTable
 {
 public:
+    /** Local const iterator */
+    class Iterator
+    {
+    public:
+        Iterator(const SgHashTable& array);
+
+        const SgHashEntry<DATA>& operator*() const;
+
+        const SgHashEntry<DATA>* operator->() const;
+
+        void operator++();
+
+        operator bool() const;
+
+    private:
+        void SkipInvalidEntries();
+
+        const SgHashEntry<DATA>* m_end;
+        
+        const SgHashEntry<DATA>* m_current;
+    };
+
     /** Create a hash table with 'maxHash' entries. */
     explicit SgHashTable(int maxHash);
 
@@ -124,6 +146,52 @@ private:
     /** not implemented */
     SgHashTable& operator=(const SgHashTable&);
 };
+
+template <class DATA, int BLOCK_SIZE>
+SgHashTable<DATA, BLOCK_SIZE>::Iterator::Iterator(const SgHashTable& ht)
+    : m_end(ht.m_entry + ht.m_maxHash + BLOCK_SIZE - 1),
+      m_current(ht.m_entry)
+{
+    SkipInvalidEntries();
+}
+
+template <class DATA, int BLOCK_SIZE>
+const SgHashEntry<DATA>& SgHashTable<DATA, BLOCK_SIZE>::Iterator::operator*()
+const
+{
+    SG_ASSERT(*this);
+    SG_ASSERT(m_current);
+    return *m_current;
+}
+
+template <class DATA, int BLOCK_SIZE>
+const SgHashEntry<DATA>* SgHashTable<DATA, BLOCK_SIZE>::Iterator::operator->()
+const
+{
+    SG_ASSERT(*this);
+    SG_ASSERT(m_current);
+    return m_current;
+}
+
+template <class DATA, int BLOCK_SIZE>
+void SgHashTable<DATA, BLOCK_SIZE>::Iterator::operator++()
+{
+    ++m_current;
+    SkipInvalidEntries();
+}
+
+template <class DATA, int BLOCK_SIZE>
+SgHashTable<DATA, BLOCK_SIZE>::Iterator::operator bool() const
+{
+    return m_current < m_end;
+}
+
+template <class DATA, int BLOCK_SIZE>
+void SgHashTable<DATA, BLOCK_SIZE>::Iterator::SkipInvalidEntries()
+{
+    while (m_current < m_end && !m_current->m_data.IsValid())
+        ++m_current;
+}
 
 template <class DATA, int BLOCK_SIZE>
 SgHashTable<DATA, BLOCK_SIZE>::SgHashTable(int maxHash)
