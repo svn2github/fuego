@@ -276,8 +276,10 @@ protected:
         book. */
     virtual void EnsureRootExists() = 0;
 
-    /** Generates the set of moves to use in the book for this state. */
-    virtual bool GenerateMoves(std::vector<SgMove>& moves, float& value) = 0;
+    /** Generates the ordered set of moves to use in the book for this state. 
+        Returns true if state is determined, with value set in value. */
+    virtual bool GenerateMoves(std::size_t count, std::vector<SgMove>& moves, 
+                               float& value) = 0;
 
     /** Returns all legal moves; should be a superset of those moves 
         returned by GenerateMoves() */

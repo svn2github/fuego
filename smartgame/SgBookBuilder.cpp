@@ -311,7 +311,7 @@ bool SgBookBuilder::ExpandChildren(std::size_t count)
     // prevents a winning vc from being created.
     float value = 0;
     std::vector<SgMove> children;
-    if (GenerateMoves(children, value))
+    if (GenerateMoves(count, children, value))
     {
         PrintMessage("ExpandChildren: State is determined!\n");
         WriteNode(SgBookNode(value));

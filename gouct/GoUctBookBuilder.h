@@ -99,7 +99,8 @@ protected:
 
     void EnsureRootExists();
 
-    bool GenerateMoves(std::vector<SgMove>& moves, float& value);
+    bool GenerateMoves(std::size_t count, std::vector<SgMove>& moves, 
+                       float& value);
 
     void GetAllLegalMoves(std::vector<SgMove>& moves);
 
@@ -450,9 +451,11 @@ void GoUctBookBuilder<PLAYER>::EnsureRootExists()
 
 /** Computes an ordered set of moves to consider. */
 template<class PLAYER>
-bool GoUctBookBuilder<PLAYER>::GenerateMoves(std::vector<SgMove>& moves,
+bool GoUctBookBuilder<PLAYER>::GenerateMoves(std::size_t count, 
+                                             std::vector<SgMove>& moves,
                                              float& value)
 {
+    SG_UNUSED(count);
     SG_UNUSED(value);
 
     // Search for a few seconds.
