@@ -91,7 +91,7 @@ public:
 
     /** Try to store 'data' under the hash code 'code'.
         Return whether the data was stored. The only reason for not storing
-        it would be some 'better' data already hashing to the same hash code. */
+        it would be some 'better' data also hashing to the same hash code. */
     bool Store(const SgHashCode& code, const DATA& data);
 
     /** number of collisions on store */
@@ -235,7 +235,8 @@ int SgHashTable<DATA, BLOCK_SIZE>::MaxHash() const
 }
 
 template <class DATA, int BLOCK_SIZE>
-bool SgHashTable<DATA, BLOCK_SIZE>::Store(const SgHashCode& code, const DATA& data)
+bool SgHashTable<DATA, BLOCK_SIZE>::Store(const SgHashCode& code,
+                                          const DATA& data)
 {
     ++m_nuStores;
     int h = code.Hash(m_maxHash);
@@ -264,7 +265,8 @@ bool SgHashTable<DATA, BLOCK_SIZE>::Store(const SgHashCode& code, const DATA& da
 }
 
 template <class DATA, int BLOCK_SIZE>
-bool SgHashTable<DATA, BLOCK_SIZE>::Lookup(const SgHashCode& code, DATA* data) const
+bool SgHashTable<DATA, BLOCK_SIZE>::Lookup(const SgHashCode& code,
+                                           DATA* data) const
 {
     ++m_nuLookups;
     int h = code.Hash(m_maxHash);
@@ -290,7 +292,8 @@ bool SgHashTable<DATA, BLOCK_SIZE>::Lookup(const SgHashCode& code, DATA* data) c
 
 /** Writes statistics on hash table use (not the content) */
 template <class DATA, int BLOCK_SIZE>
-std::ostream& operator<<(std::ostream& out, const SgHashTable<DATA, BLOCK_SIZE>& hash)
+std::ostream& operator<<(std::ostream& out,
+                         const SgHashTable<DATA, BLOCK_SIZE>& hash)
 {    
     out << "HashTableStatistics:\n"
         << SgWriteLabel("Stores") << hash.NuStores() << '\n'
