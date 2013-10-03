@@ -178,6 +178,11 @@ namespace GoBoardUtil
     template<class BOARD>
     SgPoint FindNeighbor(const BOARD& bd, SgPoint p, SgEmptyBlackWhite c);
 
+    /** Find a diagonally neighboring point in color c.
+        Precondition: Call only if such a point exists. */
+    template<class BOARD>
+    SgPoint FindDiagNeighbor(const BOARD& bd, SgPoint p, SgEmptyBlackWhite c);
+    
     /** Include move in list if it is legal */
     bool GenerateIfLegal(const GoBoard& bd,
                          SgPoint move,
@@ -482,6 +487,20 @@ inline SgPoint GoBoardUtil::FindNeighbor(const BOARD& bd, SgPoint p,
         return p + SG_WE;
     SG_ASSERT(bd.IsColor(p - SG_WE, c));
     return p - SG_WE;
+}
+
+template<class BOARD>
+inline SgPoint GoBoardUtil::FindDiagNeighbor(const BOARD& bd, SgPoint p,
+                                         SgEmptyBlackWhite c)
+{
+    if (bd.IsColor(p + SG_NS + SG_WE, c))
+        return p + SG_NS + SG_WE;
+    if (bd.IsColor(p + SG_NS - SG_WE, c))
+        return p + SG_NS - SG_WE;
+    if (bd.IsColor(p - SG_NS + SG_WE, c))
+        return p - SG_NS + SG_WE;
+    SG_ASSERT(bd.IsColor(p - SG_NS - SG_WE, c));
+    return p - SG_NS - SG_WE;
 }
 
 inline void GoBoardUtil::GetCoordString(const GoBoard& board, SgMove move,
