@@ -17,6 +17,16 @@ namespace GoEyeUtil
     /** size of largest standard nakade shape */
     const int NAKADE_LIMIT = 6;
 
+    /** Given opponent's safe stones, can p ever become an eye?
+     Checks direct and diagonal neighbors. */
+    bool CanBecomeSinglePointEye(const GoBoard& bd, SgPoint p,
+                                 const SgPointSet& oppSafe);
+    
+    /** does playing at move make p into a single point eye? */
+    template<class BOARD>
+    bool CanMakeEye(const BOARD& bd, SgBlackWhite color,
+                    SgPoint p, SgPoint& move);
+
     /** Code for how many points of each degree there are.
         The degree measures how many of the (up to 4) neighbors
         are also in the set of points.
@@ -54,6 +64,12 @@ namespace GoEyeUtil
     bool IsNakadeShape(const SgPointSet& area, int nuPoints);
     bool IsNakadeShape(const SgPointSet& area);
 
+    /** Return true if a point can become an eye by adding one more
+        defender's move. Same logic as CanMakeEye(), but optimized since
+        it does not compute the eye-making move.
+    */
+    bool IsPossibleEye(const GoBoard& bd, SgBlackWhite color, SgPoint p);
+
     /** Check if point is a single point eye with one or two adjacent blocks.
         This is a fast eye detection routine, which can be used instead of
         Benson's static life detection, when end-of-game detection is a
@@ -67,15 +83,6 @@ namespace GoEyeUtil
 
     /**  */
     bool IsSinglePointEye(const GoBoard& bd, SgPoint p, SgBlackWhite c);
-
-    /** Return true if a point can become an eye by adding one more
-    defender's move */
-    bool IsPossibleEye(const GoBoard& board, SgBlackWhite color, SgPoint p);
-
-    /** Given opponent's safe stones, can p ever become an eye?
-        Checks direct and diagonal neighbors. */
-    bool CanBecomeSinglePointEye(const GoBoard& board, SgPoint p,
-                             const SgPointSet& oppSafe);
 
     /** does playing at p create one of the standard nakade shapes? */
     template<class BOARD>
@@ -353,6 +360,49 @@ bool GoEyeUtil::MakesNakadeShape(const BOARD& bd, SgPoint p,
             }
     }
     return IsNakadeShape(area, nu);
+}
+
+template<class BOARD>
+bool GoEyeUtil::CanMakeEye(const BOARD& bd, SgBlackWhite color,
+                           SgPoint p, SgPoint& move)
+{
+    bool isPossibleEye = false;
+    SG_ASSERT(bd.GetColor(p) != color);
+    const SgBlackWhite opp = SgOppBW(color);
+    if (bd.Line(p) == 1) // corner or edge
+    {
+        const int nuOwn = (bd.Pos(p) == 1) ? 2 : 4;
+        if ( bd.Num8Neighbors(p, color) == nuOwn
+            && bd.Num8EmptyNeighbors(p) == 1
+            )
+        {
+            isPossibleEye = true;
+            move = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);
+        }
+    }
+    else // in center
+    {
+        // have all neighbors, and 2 diagonals, and can get a third
+        if (   bd.NumNeighbors(p, color) == 4
+            && bd.NumDiagonals(p, color) == 2
+            && bd.NumEmptyDiagonals(p) > 0
+            )
+        {
+            isPossibleEye = true;
+            move = GoBoardUtil::FindDiagNeighbor(bd, p, SG_EMPTY);
+        }
+        // have 3 of 4 neighbors, can get the 4th, and have enough diagonals
+        else if (   bd.NumNeighbors(p, color) == 3
+                 && bd.NumNeighbors(p, opp) == 0
+                 && bd.NumDiagonals(p, color) >= 3
+                 )
+        {
+            isPossibleEye = true;
+            move = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);
+        }
+    }
+    
+    return isPossibleEye;
 }
 
 //----------------------------------------------------------------------------
