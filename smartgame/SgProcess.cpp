@@ -6,8 +6,8 @@
 #include "SgSystem.h"
 #include "SgProcess.h"
 
-// Not yet implemented for Windows
-#ifndef WIN32
+// Not yet implemented for Windows or clang
+#if defined(__GNUC__) && ! defined(__clang__)
 
 #include <errno.h>
 #include <fstream>
@@ -112,4 +112,4 @@ SgProcess::~SgProcess()
 
 //----------------------------------------------------------------------------
 
-#endif // ifndef WIN32
+#endif // defined(__GNUC__) && ! defined(__clang__)

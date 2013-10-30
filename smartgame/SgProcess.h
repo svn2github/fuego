@@ -5,8 +5,8 @@
 #ifndef SG_PROCESS_H
 #define SG_PROCESS_H
 
-// Not yet implemented for Windows
-#ifndef WIN32
+// Not yet implemented for Windows or clang
+#if defined(__GNUC__) && ! defined(__clang__)
 
 #include <ext/stdio_filebuf.h> // GCC specific
 #include <iosfwd>
@@ -54,6 +54,6 @@ inline std::ostream& SgProcess::Output()
 
 //----------------------------------------------------------------------------
 
-#endif // ifndef WIN32
+#endif // defined(__GNUC__) && ! defined(__clang__)
 
 #endif // SG_PROCESS_H
