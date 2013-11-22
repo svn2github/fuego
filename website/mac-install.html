@@ -133,6 +133,7 @@ must be absolute paths, not relative paths: the entire pathname starting at
 <code>/</code> must be there. For example, do not use the shortcut 
 <code>--with-boost=../boost</code>. It will not work.
 </p>
+
 <p>
 Another reminder: any time you run Fuego, the <code>DYLD_LIBRARY_PATH</code>
 variable must be set.
@@ -146,7 +147,6 @@ you need to change the <code>DYLD_LIBRARY_PATH</code> to
 note that most Linux installations locate users home directories 
 in <code>/home</code>, not <code>/Users</code>.
 </p>
-
 
 
 <a name="appendix1" />
@@ -293,6 +293,18 @@ sudo make install
 echo "Installation complete."
 -------------------------------------------------------------
 </pre>
+
+When you are done installing, make sure that the
+<code>PATH</code> environment variable contains your autotools
+installation. Type 
+<pre>which autoreconf</pre> 
+and if there is no path given in the response (the response is blank),
+then add it to your path with:
+<pre>
+export PATH=$PATH:/Users/yama/igo/devtools/bin
+</pre>
+modifying the <code>/Users/yama/igo/devtools/bin</code> to reflect 
+where you installed autotools.
 </p>
 
 </body>
