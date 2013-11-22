@@ -32,7 +32,7 @@ public:
     void SetPoint(SgPoint move);
 
 private:
-    SgBlackWhite  m_color;
+    SgBlackWhite m_color;
 
     SgPoint m_point;
 };
@@ -54,7 +54,8 @@ inline GoPlayerMove::~GoPlayerMove()
 
 inline bool GoPlayerMove::operator==(const GoPlayerMove& move) const
 {
-    return (m_color == move.m_color && m_point == move.m_point);
+    return   m_color == move.m_color
+          && m_point == move.m_point;
 }
 
 inline bool GoPlayerMove::operator!=(const GoPlayerMove& move) const
