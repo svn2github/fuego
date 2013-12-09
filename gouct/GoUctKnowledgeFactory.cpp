@@ -37,6 +37,8 @@ GoUctAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
     
     switch(type)
     {
+    case KNOWLEDGE_NONE:
+        return 0;
     case KNOWLEDGE_GREENPEEP:
     	return new GoUctAdditiveKnowledgeGreenpeep(bd,
                         GreenpeepParam());

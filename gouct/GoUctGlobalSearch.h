@@ -464,6 +464,8 @@ void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
 {
     const int moveNum = Board().MoveNumber();
     GoUctAdditiveKnowledge* kn = GetAdditiveKnowledge();
+    if (kn == 0)
+        return;
     if (kn->InMoveRange(moveNum))
         kn->ProcessPosition(moves);
     else
@@ -878,7 +880,6 @@ template<class POLICY>
 GoUctAdditiveKnowledge* 
 GoUctGlobalSearchState<POLICY>::GetAdditiveKnowledge()
 {
-	SG_ASSERT(m_additivePredictor);
     return m_additivePredictor;
 }
 
@@ -909,7 +910,6 @@ SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
     state->SetPolicy(policy);
     GoUctAdditiveKnowledge* knowledge = 
     	m_knowledgeFactory.Create(state->Board());
-    SG_ASSERT(knowledge);
     state->SetAdditiveKnowledge(knowledge);
     return state;
 }

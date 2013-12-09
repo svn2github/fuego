@@ -18,6 +18,7 @@
 /** Knowledge Type is used for GoUctKnowledgeFactory*/
 enum KnowledgeType
 {
+    KNOWLEDGE_NONE,
     KNOWLEDGE_GREENPEEP,
     KNOWLEDGE_RULEBASED
 };
