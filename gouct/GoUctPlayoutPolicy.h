@@ -31,7 +31,8 @@ public:
     bool m_statisticsEnabled;
 
     /** Use Nakade heuristic.
-        See section 6.2 of: Chatriot, Gelly, Hoock, Perez, Rimmel, Teytaud:
+        See section 6.2 of: Chaslot, Chatriot, Fiter, Gelly, Hoock, 
+        Perez, Rimmel and Teytaud:
         <a href="http://www.lri.fr/~teytaud/eg.pdf">
         Combining expert, offline, transient and online learning in
         Monte-Carlo exploration</a> */
