@@ -18,6 +18,7 @@ uct.list \
 9x9-blunder-endgame.tst \
 9x9-opening.tst \
 backfill.tst \
+bent_four.tst \
 blunder_long_ladder_19.tst \
 blunder_long_ladder_19b.tst \
 blunder_play_near_dead_19.tst \
