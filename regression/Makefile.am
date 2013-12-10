@@ -97,6 +97,9 @@ uct_selfatari.tst \
 uct_semeai.tst \
 uct_semeai_blunder.tst \
 sgf/approach_move/backfill.1.sgf \
+sgf/bent_four/bentfour1.sgf \
+sgf/bent_four/bentfour2.sgf \
+sgf/bent_four/bentfour1b.sgf \
 sgf/book_test/book.0.sgf \
 sgf/book_test/book.1.sgf \
 sgf/book_test/book.2.sgf \
