@@ -348,6 +348,7 @@ sgf/lifeanddeath/nakade-5pts-2.sgf \
 sgf/lifeanddeath/nakade-6pts-1.sgf \
 sgf/lifeanddeath/nakade-6pts-2.sgf \
 sgf/lifeanddeath/nakade-6pts-3.sgf \
+sgf/lifeanddeath/nakade-6pts-realgame.sgf \
 sgf/lifeanddeath/no-nakade-6pts-1.sgf \
 sgf/pass/tromp-taylor-pass.sgf \
 sgf/playout/playout_atari_defense_1.sgf \
