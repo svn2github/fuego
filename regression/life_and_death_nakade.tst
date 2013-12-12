@@ -20,3 +20,11 @@ loadsgf sgf/lifeanddeath/nakade-6pts-realgame.sgf 2
 loadsgf sgf/lifeanddeath/nakade-6pts-realgame.sgf 4
 30 reg_genmove w
 #? [M13]
+
+loadsgf sgf/lifeanddeath/nakade-6pts-realgame.2.sgf 4
+40 reg_genmove w
+#? [L13]
+
+loadsgf sgf/lifeanddeath/nakade-6pts-realgame.2.sgf 6
+50 reg_genmove w
+#? [N13]
