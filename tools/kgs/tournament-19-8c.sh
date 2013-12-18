@@ -3,7 +3,7 @@
 # 8 cores / 8 GB
 
 FUEGO="../../build/opt/fuegomain/fuego"
-NAME=Fuego
+NAME=Fuego19
 
 usage() {
   cat >&2 <<EOF
