@@ -1,9 +1,12 @@
 //----------------------------------------------------------------------------
 /** @file GoUctAdditiveKnowledgeFuego.h
-	A simple implementation of additive knowledge using RAVE values.
-    @todo some details.
+	A simple implementation of additive knowledge, using Fuego's
+    rule-based prior knowledge.
+    @todo hack: uses the fact that these prior values are already stored in
+    RAVE values of each SgUctMoveInfo.
 */
 //----------------------------------------------------------------------------
+
 
 #ifndef GOUCT_ADDITIVEKNOWLEDGEFUEGO_H
 #define GOUCT_ADDITIVEKNOWLEDGEFUEGO_H
@@ -14,41 +17,15 @@
 //----------------------------------------------------------------------------
 
 class GoUctAdditiveKnowledgeFuego
-    : public GoUctAdditiveKnowledge
+    : public GoUctAdditiveKnowledgeStdProb
 {
 public:
-
     static const float VALUE_MULTIPLIER;
 
     GoUctAdditiveKnowledgeFuego(const GoBoard& bd);
 
-    /** The minimum value allowed by this predictor */
-    SgUctValue Minimum() const;
-
-    bool ProbabilityBased() const;
-
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
-
-    /** The scaling factor for this predictor */
-    SgUctValue Scale() const;
 };
-
-//----------------------------------------------------------------------------
-
-inline SgUctValue GoUctAdditiveKnowledgeFuego::Minimum() const
-{
-	return 0.0001f;
-}
-
-inline bool GoUctAdditiveKnowledgeFuego::ProbabilityBased() const
-{
-	return true;
-}
-
-inline SgUctValue GoUctAdditiveKnowledgeFuego::Scale() const
-{
-	return 0.03f;
-}
 
 //----------------------------------------------------------------------------
 

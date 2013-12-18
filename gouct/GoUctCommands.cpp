@@ -192,6 +192,75 @@ std::vector<SgUctValue> KnowledgeThresholdFromString(const std::string& val)
     return v;
 }
 
+std::string KnowledgeTypeToString(KnowledgeType type)
+{
+    switch (type)
+    {
+        case KNOWLEDGE_NONE:
+            return "none";
+        case KNOWLEDGE_GREENPEEP:
+            return "greenpeep";
+        case KNOWLEDGE_RULEBASED:
+            return "rulebased";
+        case KNOWLEDGE_BOTH:
+            return "both";
+        default:
+            SG_ASSERT(false);
+            return "?";
+    }
+}
+
+KnowledgeType KnowledgeTypeArg(const GtpCommand& cmd, size_t number)
+{
+    string arg = cmd.ArgToLower(number);
+    if (arg == "none")
+        return KNOWLEDGE_NONE;
+    if (arg == "greenpeep")
+        return KNOWLEDGE_GREENPEEP;
+    if (arg == "rulebased")
+        return KNOWLEDGE_RULEBASED;
+    if (arg == "both")
+        return KNOWLEDGE_BOTH;
+    throw GtpFailure() << "unknown KnowledgeType argument \"" << arg << '"';
+}
+
+std::string CombinationTypeToString(GoUctKnowledgeCombinationType type)
+{
+    switch (type)
+    {
+        case COMBINE_MULTIPLY:
+            return "multiply";
+        case COMBINE_ARITHMETIC_MEAN:
+            return "arithmetic_mean";
+        case COMBINE_ADD:
+            return "add";
+        case COMBINE_AVERAGE:
+            return "average";
+        case COMBINE_MAX:
+            return "max";
+        default:
+            SG_ASSERT(false);
+            return "?";
+    }
+}
+
+GoUctKnowledgeCombinationType CombinationTypeArg(const GtpCommand& cmd,
+                                                 size_t number)
+{
+    string arg = cmd.ArgToLower(number);
+    if (arg == "multiply")
+        return COMBINE_MULTIPLY;
+    if (arg == "arithmetic_mean")
+        return COMBINE_ARITHMETIC_MEAN;
+    if (arg == "add")
+        return COMBINE_ADD;
+    if (arg == "average")
+        return COMBINE_AVERAGE;
+    if (arg == "max")
+        return COMBINE_MAX;
+    throw GtpFailure() << "unknown combination type argument \"" << arg << '"';
+}
+
 /** Helper class for displaying ladder knowledge */
 class LadderKnowledge : public GoUctKnowledge
 {
@@ -208,7 +277,6 @@ void LadderKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
     ladderKnowledge.ProcessPosition();
     TransferValues(moves);
 }
-
 
 } // namespace
 
@@ -640,8 +708,11 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             << "[bool] use_patterns_in_prior_knowledge " 
             << p.m_usePatternsInPriorKnowledge << '\n'
             << "[int] fillboard_tries " << p.m_fillboardTries << '\n'
-            << "[int] knowledge_type " << p.m_knowledgeType << '\n'
-            << "[float] pattern_gamma_threshold " 
+            << "[list/none/greenpeep/rulebased/both] knowledge_type "
+            << KnowledgeTypeToString(p.m_knowledgeType) << '\n'
+            << "[list/multiply/arithmetic_mean/add/average/max] combination_type "
+            << CombinationTypeToString(p.m_combinationType) << '\n'
+            << "[float] pattern_gamma_threshold "
             << p.m_patternGammaThreshold << '\n'
             ;
     }
@@ -660,7 +731,12 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             p.m_fillboardTries = cmd.Arg<int>(1);
         else if (name == "knowledge_type")
         {
-            p.m_knowledgeType = static_cast<KnowledgeType>(cmd.Arg<int>(1));
+            p.m_knowledgeType = KnowledgeTypeArg(cmd, 1);
+            Search().CreateThreads(); // need to regenerate all search states
+        }
+        else if (name == "combination_type")
+        {
+            p.m_combinationType = CombinationTypeArg(cmd, 1);
             Search().CreateThreads(); // need to regenerate all search states
         }
         else if (name == "pattern_gamma_threshold")
@@ -1153,7 +1229,6 @@ void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
     }
 }
 
-
 namespace {
 
     // map from range [0..1] to [-1..+1]
@@ -1173,7 +1248,8 @@ namespace {
     
 } // namespace
 
-SgUctValue GoUctCommands::DisplayTerritory(GtpCommand& cmd, MeanMapperFunction f)
+SgUctValue GoUctCommands::DisplayTerritory(GtpCommand& cmd,
+                                           MeanMapperFunction f)
 {
     cmd.CheckArgNone();
     SgPointArray<SgUctStatistics> territoryStatistics
@@ -1249,16 +1325,15 @@ void GoUctCommands::CompareMove(GtpCommand& cmd, GoUctCompareMoveType type)
         GoUctPlayoutPolicy<GoBoard> policy(bd, Player().m_playoutPolicyParam);
         switch (type)
         {
-            case GOUCT_COMPAREMOVE_CORRECTED:
+        case GOUCT_COMPAREMOVE_CORRECTED:
             isCorrected = IsCorrected(policy, move);
-            break;
-
-            case GOUCT_COMPAREMOVE_POLICY:
+        break;
+        case GOUCT_COMPAREMOVE_POLICY:
             isCorrected = IsPolicyMove(policy, move);
-            break;
-
-            default: SG_ASSERT(false);
-            break;
+        break;
+        default:
+            SG_ASSERT(false);
+        break;
         }
         bd.Play(move);
     }
@@ -1397,7 +1472,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
 }
 
 GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
-                      GoUctPlayoutPolicyFactory<GoUctBoard> >&
+                  GoUctPlayoutPolicyFactory<GoUctBoard> >&
 GoUctCommands::GlobalSearch()
 {
     return Player().GlobalSearch();
@@ -1421,8 +1496,8 @@ GoUctPlayoutPolicy<GoUctBoard>&
 GoUctCommands::Policy(unsigned int threadId)
 {
     GoUctPlayoutPolicy<GoUctBoard>* policy =
-        dynamic_cast<GoUctPlayoutPolicy<GoUctBoard>*>(
-                                              ThreadState(threadId).Policy());
+        dynamic_cast<GoUctPlayoutPolicy<GoUctBoard>*>
+            (ThreadState(threadId).Policy());
     if (policy == 0)
         throw GtpFailure("player has no GoUctPlayoutPolicy");
     return *policy;
@@ -1508,8 +1583,8 @@ GoUctCommands::ThreadState(unsigned int threadId)
     try
     {
         return dynamic_cast<
-             GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>(
-                                                search.ThreadState(threadId));
+            GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&>
+                (search.ThreadState(threadId));
     }
     catch (const std::bad_cast&)
     {

@@ -4,6 +4,7 @@ libfuego_gouct_a_SOURCES = \
 GoUctAdditiveKnowledge.cpp \
 GoUctAdditiveKnowledgeFuego.cpp \
 GoUctAdditiveKnowledgeGreenpeep.cpp \
+GoUctAdditiveKnowledgeMultiple.cpp \
 GoUctBoard.cpp \
 GoUctCommands.cpp \
 GoUctDefaultPriorKnowledge.cpp \
@@ -23,6 +24,7 @@ noinst_HEADERS = \
 GoUctAdditiveKnowledge.h \
 GoUctAdditiveKnowledgeFuego.h \
 GoUctAdditiveKnowledgeGreenpeep.h \
+GoUctAdditiveKnowledgeMultiple.h \
 GoUctBoard.h \
 GoUctBookBuilder.h \
 GoUctBookBuilderCommands.h \

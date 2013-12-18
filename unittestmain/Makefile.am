@@ -19,6 +19,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoTimeControlTest.cpp \
 ../go/test/GoTimeSettingsTest.cpp \
 ../go/test/GoUtilTest.cpp \
+../gouct/test/GoUctAdditiveKnowledgeMultipleTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
 ../gouct/test/GoUctKnowledgeTest.cpp \
 ../gouct/test/GoUctLadderKnowledgeTest.cpp \

@@ -9,32 +9,35 @@
 
 //----------------------------------------------------------------------------
 
+/** @todo This is a tunable constant. */
 const float GoUctAdditiveKnowledgeFuego::VALUE_MULTIPLIER = 4.0f;
 
 //----------------------------------------------------------------------------
 
 GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd)
-    : GoUctAdditiveKnowledge(bd)
+    : GoUctAdditiveKnowledgeStdProb(bd)
 {
     // Knowledge applies to all moves
     SetMoveRange(0, 10000); 
 }
 
-// Assumes that SgMoveInfo has m_raveValue (and m_raveCount) populated 
+// @todo Assumes that SgMoveInfo has m_raveValue (and m_raveCount) populated
 // by prior knowledge.
-// @todo This is a bit of a hack. Should call prior knowledge directly.
+// This is a hack. Should call prior knowledge directly.
 void 
-GoUctAdditiveKnowledgeFuego::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
+GoUctAdditiveKnowledgeFuego::ProcessPosition(std::vector<SgUctMoveInfo>&
+                                             moves)
 {
     float sum = 0.0;
+    float values[moves.size()];
     for (size_t i = 0; i < moves.size(); ++i) 
     {
-        moves[i].m_predictorValue 
-            = exp(VALUE_MULTIPLIER * moves[i].m_raveValue);
-        sum += moves[i].m_predictorValue;
+        values[i] = exp(VALUE_MULTIPLIER * moves[i].m_raveValue);
+        sum += values[i];
     }
-    for (size_t i = 0; i < moves.size(); ++i) 
-        moves[i].m_predictorValue /= sum;
+    if (sum > 0.0)
+        for (size_t i = 0; i < moves.size(); ++i)
+            moves[i].m_predictorValue = values[i] / sum;
 }
 
 //----------------------------------------------------------------------------

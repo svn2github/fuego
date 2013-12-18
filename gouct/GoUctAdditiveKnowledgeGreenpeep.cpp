@@ -30,11 +30,11 @@ using std::string;
 namespace {
 
 const short unsigned int NEUTRALPREDICTION = 512;
+const float NEUTRALPREDICTION_FLOAT = static_cast<float>(NEUTRALPREDICTION);
 const short unsigned int PASSPREDICTION = 2;
 
 /* 19x19-only.  Different scale from PASSPREDICTION. */
 const short unsigned int DEFENSIVEPREDICTION = 5 * NEUTRALPREDICTION; 
-// was 5, only used as DEFENSIVEPREDICTION * NEUTRALPREDICTION
 
 const unsigned int PASS_CONTEXT = UINT_MAX;
 const unsigned int KO_BIT = 1U << 24;
@@ -248,10 +248,11 @@ GoUctAdditiveKnowledgeGreenpeep::ProcessPosition(
     }
 
     ComputeContexts(Board(), moves.begin(), moves.end(), m_contexts);
-    for (std::size_t i = 0; i < moves.size(); ++i) 
+    for (std::size_t i = 0; i < moves.size(); ++i)
     {
+        float& value = moves[i].m_predictorValue;
         if (m_contexts[i] == PASS_CONTEXT) 
-            moves[i].m_predictorValue = PASSPREDICTION;
+            value = PASSPREDICTION;
         else
         {
             if (m_contexts[i] & ATARI_BIT)
@@ -261,24 +262,22 @@ GoUctAdditiveKnowledgeGreenpeep::ProcessPosition(
                     // Hmm, we could do this max in the feature weights at the
                     // end of training instead.
                     int altContext = m_contexts[i] & ~ATARI_BIT;
-                    moves[i].m_predictorValue = 
-                    	std::max(pred[m_contexts[i]], 
-                                 pred[altContext]);
+                    value = std::max(pred[m_contexts[i]],
+                                        pred[altContext]);
                 }
                 else 
                 {
                     /* default, for 19x19 */
-                    moves[i].m_predictorValue = 
-                    	std::max(pred[m_contexts[i]], 
-                                 DEFENSIVEPREDICTION);
+                    value = std::max(pred[m_contexts[i]],
+                                        DEFENSIVEPREDICTION);
                 }
             }
             else
             {
-                moves[i].m_predictorValue = pred[m_contexts[i]];
+                value = pred[m_contexts[i]];
             }
         }
-	    moves[i].m_predictorValue /= static_cast<float>(NEUTRALPREDICTION);
+	    value /= NEUTRALPREDICTION_FLOAT;
     }
 }
 

@@ -10,6 +10,7 @@
 #include "GoUctAdditiveKnowledge.h"
 #include "GoUctAdditiveKnowledgeFuego.h"
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
+#include "GoUctAdditiveKnowledgeMultiple.h"
 
 //----------------------------------------------------------------------------
 GoUctKnowledgeFactory::GoUctKnowledgeFactory(
@@ -45,6 +46,21 @@ GoUctAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
     break;
     case KNOWLEDGE_RULEBASED:
     	return new GoUctAdditiveKnowledgeFuego(bd);
+    break;
+    case KNOWLEDGE_BOTH:
+    {
+        GoUctAdditiveKnowledgeFuego* f = new GoUctAdditiveKnowledgeFuego(bd);
+        SgUctValue scale = f->Scale();
+        SgUctValue minimum = f->Minimum();
+
+        GoUctAdditiveKnowledgeMultiple* m =
+        new GoUctAdditiveKnowledgeMultiple(bd, scale,  minimum,
+                                           m_param.m_combinationType);
+        m->AddKnowledge(f);
+        m->AddKnowledge(
+            new GoUctAdditiveKnowledgeGreenpeep(bd, GreenpeepParam()));
+        return m;
+    }
     break;
     default:
     	SG_ASSERT(false);

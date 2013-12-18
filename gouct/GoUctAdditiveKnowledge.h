@@ -87,5 +87,38 @@ inline SgUctValue GoUctAdditiveKnowledge::CappedValue(SgUctValue value) const
 }
 
 //----------------------------------------------------------------------------
+/** Utility class to provide a standard probability-based additive predictor
+*/
+class GoUctAdditiveKnowledgeStdProb : public GoUctAdditiveKnowledge
+{
+public:
+    GoUctAdditiveKnowledgeStdProb(const GoBoard& bd)
+     : GoUctAdditiveKnowledge(bd)
+    { }
+
+    bool ProbabilityBased() const;
+    
+    /** The minimum value allowed by this predictor */
+    SgUctValue Minimum() const;
+    
+    /** The scaling factor for this predictor */
+    SgUctValue Scale() const;
+};
+//----------------------------------------------------------------------------
+
+inline SgUctValue GoUctAdditiveKnowledgeStdProb::Minimum() const
+{
+	return 0.0001f;
+}
+
+inline bool GoUctAdditiveKnowledgeStdProb::ProbabilityBased() const
+{
+	return true;
+}
+
+inline SgUctValue GoUctAdditiveKnowledgeStdProb::Scale() const
+{
+	return 0.03f;
+}
 
 #endif // GOUCT_ADDITIVEKNOWLEDGE_H
