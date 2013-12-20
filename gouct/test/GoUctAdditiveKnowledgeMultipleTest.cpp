@@ -110,12 +110,12 @@ BOOST_AUTO_TEST_CASE(GoUctAdditiveKnowledgeMultipleTest_ProcessPosition)
     BOOST_CHECK_EQUAL(moves[3].m_predictorValue, 1.0);
     
     Init(moves, bd);
-    TestType(bd, moves, COMBINE_ARITHMETIC_MEAN, 1);
+    TestType(bd, moves, COMBINE_GEOMETRIC_MEAN, 1);
     BOOST_CHECK_CLOSE(moves[0].m_predictorValue, 5.0, 1e-5f);
     BOOST_CHECK_CLOSE(moves[1].m_predictorValue, 2.0, 1e-5f);
     BOOST_CHECK_CLOSE(moves[2].m_predictorValue, 1.0, 1e-5f);
     Init(moves, bd);
-    TestType(bd, moves, COMBINE_ARITHMETIC_MEAN, 2);
+    TestType(bd, moves, COMBINE_GEOMETRIC_MEAN, 2);
     BOOST_CHECK_CLOSE(moves[0].m_predictorValue, sqrt(5.0),  1e-5f);
     BOOST_CHECK_CLOSE(moves[1].m_predictorValue, sqrt(6.0),  1e-5f);
     BOOST_CHECK_CLOSE(moves[2].m_predictorValue, sqrt(10.0), 1e-5f);

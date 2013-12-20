@@ -32,7 +32,7 @@ enum KnowledgeType
 enum GoUctKnowledgeCombinationType
 {
     COMBINE_MULTIPLY,
-    COMBINE_ARITHMETIC_MEAN,
+    COMBINE_GEOMETRIC_MEAN,
     COMBINE_ADD,
     COMBINE_AVERAGE,
     COMBINE_MAX

@@ -77,7 +77,7 @@ const
         switch (m_combinationType)
     {
         case COMBINE_MULTIPLY:
-        case COMBINE_ARITHMETIC_MEAN:
+        case COMBINE_GEOMETRIC_MEAN:
             moves[j].m_predictorValue = 1.0;
             break;
             
@@ -103,7 +103,7 @@ inline void Combine(float& v, float newV,
     switch (combinationType)
     {
         case COMBINE_MULTIPLY:
-        case COMBINE_ARITHMETIC_MEAN:
+        case COMBINE_GEOMETRIC_MEAN:
             v *= newV;
             break;
             
@@ -128,7 +128,7 @@ inline void PostProcess(InfoVector& moves,
 {
     switch (combinationType)
     {
-        case COMBINE_ARITHMETIC_MEAN:
+        case COMBINE_GEOMETRIC_MEAN:
             ComputeArithmeticMean(moves, nuPredictors);
             break;
             

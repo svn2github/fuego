@@ -230,8 +230,8 @@ std::string CombinationTypeToString(GoUctKnowledgeCombinationType type)
     {
         case COMBINE_MULTIPLY:
             return "multiply";
-        case COMBINE_ARITHMETIC_MEAN:
-            return "arithmetic_mean";
+        case COMBINE_GEOMETRIC_MEAN:
+            return "geometric_mean";
         case COMBINE_ADD:
             return "add";
         case COMBINE_AVERAGE:
@@ -250,8 +250,8 @@ GoUctKnowledgeCombinationType CombinationTypeArg(const GtpCommand& cmd,
     string arg = cmd.ArgToLower(number);
     if (arg == "multiply")
         return COMBINE_MULTIPLY;
-    if (arg == "arithmetic_mean")
-        return COMBINE_ARITHMETIC_MEAN;
+    if (arg == "geometric_mean")
+        return COMBINE_GEOMETRIC_MEAN;
     if (arg == "add")
         return COMBINE_ADD;
     if (arg == "average")
@@ -710,7 +710,7 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             << "[int] fillboard_tries " << p.m_fillboardTries << '\n'
             << "[list/none/greenpeep/rulebased/both] knowledge_type "
             << KnowledgeTypeToString(p.m_knowledgeType) << '\n'
-            << "[list/multiply/arithmetic_mean/add/average/max] combination_type "
+            << "[list/multiply/geometric_mean/add/average/max] combination_type "
             << CombinationTypeToString(p.m_combinationType) << '\n'
             << "[float] pattern_gamma_threshold "
             << p.m_patternGammaThreshold << '\n'
