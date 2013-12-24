@@ -266,6 +266,8 @@ sgf/games/2010/LittleGolem/1173624.sgf \
 sgf/games/2010/LittleGolem/1177582.sgf \
 sgf/games/2011/CGOS/Fuego-Amigo-loss-bug.sgf \
 sgf/games/2011/Fuego-1.1-vim-5-variation.sgf \
+sgf/games/2011/KGS/CzechBot-Zen19S-semeai.sgf \
+sgf/games/2011/KGS/CzechBot-Zen19S.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-3.sgf \
 sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf \
 sgf/games/2011/KGS-January/PueGo-pachi2.sgf \

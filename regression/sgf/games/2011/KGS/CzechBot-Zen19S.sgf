@@ -1,0 +1,262 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Chinese]SZ[19]KM[7.50]TM[10800]
+PW[CzechBot]PB[Zen19S]WR[1k]DT[2011-05-24]PC[The KGS Go Server at http://www.gokgs.com/]C[CzechBot [1k\]: GTP Engine for CzechBot (white): MoGo version MoGo version 4.86.Soissons: I'll resign if you win and playing until you pass if I win. If you passed and I did not, it often means that the status of some stones are not clear enough for me (I want to be sure we will agree on dead stones). Clarify them. Maybe I am losing, but have not enough time to be sure I should resign. In this case play until the end :'( (very rare cases)
+Zen19S [-\]: GTP Engine for Zen19S (black): Zen version 7.7
+]RE[W+Resign]
+;B[qd]BL[10740.466]
+;W[dd]WL[10799.779]
+;B[pp]BL[10651.981]
+;W[dp]WL[10799.537]
+;B[pj]BL[10623.747]
+;W[kp]WL[10777.808]
+;B[kc]BL[10559.778]
+;W[hl]WL[10756.164]
+;B[fd]BL[10467.433]
+;W[df]WL[10734.644]
+;B[dc]BL[10409.735]
+;W[cc]WL[10713.042]
+;B[ec]BL[10380.479]
+;W[mf]WL[10691.447]
+;B[cb]BL[10295.228]
+;W[jf]WL[10669.802]
+;B[cn]BL[10252.856]
+;W[cl]WL[10648.172]
+;B[cq]BL[10161.439]
+;W[cp]WL[10626.532]
+;B[dq]BL[10133.041]
+;W[ep]WL[10604.879]
+;B[eq]BL[10104.511]
+;W[fp]WL[10582.719]
+;B[fq]BL[10075.766]
+;W[gp]WL[10560.915]
+;B[bp]BL[10047.161]
+;W[bo]WL[10539.133]
+;B[bq]BL[9985.455]C[DaniPerrin [2k\]: big white moyo
+]
+;W[mc]WL[10517.315]
+;B[co]BL[9897.688]
+;W[bn]WL[10494.972]
+;B[bm]BL[9812.801]
+;W[cm]WL[10473.021]
+;B[an]BL[9784.115]
+;W[dn]WL[10451.038]
+;B[ao]BL[9742.63]
+;W[ic]WL[10429.121]
+;B[id]BL[9655.969]
+;W[hd]WL[10407.135]
+;B[ie]BL[9567.478]
+;W[he]WL[10385.154]
+;B[if]BL[9484.374]
+;W[jd]WL[10363.185]
+;B[hf]BL[9399.872]
+;W[hc]WL[10341.067]
+;B[ff]BL[9313.972]
+;W[jc]WL[10318.924]
+;B[oc]BL[9286.652]
+;W[cd]WL[10296.758]
+;B[jg]BL[9187.999]
+;W[je]WL[10274.655]
+;B[bc]BL[9096.239]
+;W[bd]WL[10252.414]
+;B[ab]BL[9013.901]
+;W[ba]WL[10230.145]
+;B[bb]BL[8957.479]
+;W[gf]WL[10207.913]
+;B[gg]BL[8873.863]
+;W[ge]WL[10185.544]
+;B[ik]BL[8768.827]
+;W[fg]WL[10163.172]
+;B[fh]BL[8686.253]
+;W[eg]WL[10140.751]
+;B[gh]BL[8623.677]
+;W[fb]WL[10118.396]
+;B[eb]BL[8539.906]
+;W[il]WL[10095.967]
+;B[gb]BL[8447.686]
+;W[hi]WL[10073.507]
+;B[ii]BL[8420.983]
+;W[ih]WL[10050.976]
+;B[jh]BL[8339.786]
+;W[ij]WL[10028.498]
+;B[ji]BL[8256.847]
+;W[ig]WL[10005.877]
+;B[hk]BL[8171.027]
+;W[jk]WL[9983.317]
+;B[hj]BL[8085.034]
+;W[hg]WL[9960.753]C[DaniPerrin [2k\]: zen not very well in this game
+]
+;B[jj]BL[8015.258]
+;W[kk]WL[9938.125]
+;B[mi]BL[7942.743]
+;W[gi]WL[9915.496]
+;B[gl]BL[7844.054]
+;W[fj]WL[9892.783]
+;B[fk]BL[7818.124]
+;W[mk]WL[9869.678]
+;B[ej]BL[7739.051]
+;W[ei]WL[9846.862]
+;B[ek]BL[7650.598]
+;W[gm]WL[9824.013]C[DaniPerrin [2k\]: if white cant kill black, it's lost
+]
+;B[fm]BL[7558.826]
+;W[cj]WL[9801.106]
+;B[gn]BL[7482.241]
+;W[in]WL[9778.134]
+;B[di]BL[7457.59]
+;W[eh]WL[9755.095]
+;B[ci]BL[7417.85]
+;W[dj]WL[9732.048]C[DaniPerrin [2k\]: h7?
+]
+;B[bj]BL[7344.092]
+;W[bk]WL[9708.954]
+;B[bi]BL[7269.515]
+;W[dm]WL[9685.778]
+;B[do]BL[7193.881]
+;W[en]WL[9662.648]
+;B[eo]BL[7168.924]
+;W[fn]WL[9639.413]C[DaniPerrin [2k\]: big cut
+]
+;B[fo]BL[7097.199]C[DaniPerrin [2k\]: semai algorithm should be running
+]
+;W[hm]WL[9616.089]
+;B[go]BL[7057.52]
+;W[el]WL[9592.762]
+;B[fl]BL[7032.173]
+;W[dk]WL[9569.422]C[DaniPerrin [2k\]: i suppose black can escape
+DaniPerrin [2k\]: b8?
+]
+;B[bl]BL[6959.645]C[gghideki [1k?\]: D8 should be played first
+gghideki [1k?\]: Sorry, W died
+]
+;W[gk]WL[9546.08]
+;B[gj]BL[6921.418]
+;W[fi]WL[9522.621]C[DaniPerrin [2k\]: black cant miss connecting
+]
+;B[ij]BL[6814.44]
+;W[ak]WL[9499.19]C[DaniPerrin [2k\]: white going to resign soon
+]
+;B[lg]BL[6770.475]
+;W[kg]WL[9475.662]C[DaniPerrin [2k\]: now, if white cant win the semai on b11, it's lost
+]
+;B[kh]BL[6700.702]
+;W[kj]WL[9452.15]
+;B[lh]BL[6675.857]
+;W[fc]WL[9428.432]
+;B[gc]BL[6609.187]
+;W[ni]WL[9404.697]
+;B[nj]BL[6583.311]
+;W[oj]WL[9381.143]C[DaniPerrin [2k\]: white deseperate to reduce blacks liberty
+]
+;B[oi]BL[6558.396]
+;W[nh]WL[9357.504]
+;B[mj]BL[6517.073]
+;W[ok]WL[9333.768]
+;B[oh]BL[6490.986]
+;W[mh]WL[9310.064]
+;B[li]BL[6454.132]
+;W[nk]WL[9286.104]
+;B[mg]BL[6428.811]
+;W[ng]WL[9262.076]
+;B[le]BL[6322.752]C[gghideki [1k?\]: good move
+]
+;W[ne]WL[9237.985]
+;B[lf]BL[6297.681]
+;W[nd]WL[9213.89]
+;B[og]BL[6189.612]
+;W[nf]WL[9189.772]
+;B[lc]BL[6164.676]
+;W[mb]WL[9165.647]
+;B[lb]BL[6111.289]
+;W[ld]WL[9141.392]
+;B[kd]BL[6044.642]
+;W[md]WL[9117.112]
+;B[ke]BL[5976.08]
+;W[pf]WL[9092.631]
+;B[qg]BL[5901.965]
+;W[pg]WL[9068.084]C[DaniPerrin [2k\]: it's very big now
+]
+;B[qh]BL[5830.433]
+;W[pd]WL[9043.53]
+;B[pc]BL[5749.438]
+;W[qc]WL[9018.924]C[DaniPerrin [2k\]: is white going to die both side ?
+]
+;B[rc]BL[5717.427]
+;W[qb]WL[8994.367]
+;B[rb]BL[5692.735]
+;W[qe]WL[8969.692]
+;B[rd]BL[5625.193]
+;W[ph]WL[8944.861]
+;B[pi]BL[5558.237]
+;W[qi]WL[8920.006]
+;B[ri]BL[5486.782]
+;W[la]WL[8894.8]
+;B[jb]BL[5462.048]
+;W[pb]WL[8869.802]
+;B[ob]BL[5394.305]
+;W[ib]WL[8844.713]
+;B[ka]BL[5368.733]
+;W[ma]WL[8819.671]
+;B[gk]BL[5333.988]
+;W[em]WL[8794.266]
+;B[kf]BL[5300.408]
+;W[ia]WL[8768.72]
+;B[ll]BL[5275.634]C[DaniPerrin [2k\]: what is black doing ?
+]
+;W[lk]WL[8743.065]
+;B[kb]BL[5167.016]
+;W[ja]WL[8717.292]
+;B[of]BL[5142.449]C[DaniPerrin [2k\]: that does not help the ko
+]
+;W[pe]WL[8691.109]C[gghideki [1k?\]: strange
+]
+;B[od]BL[5050.767]
+;W[oe]WL[8664.826]C[gghideki [1k?\]: Horizon?
+DaniPerrin [2k\]: yes, may be black try to block white playing n15
+]
+;B[jl]BL[5026.023]C[ZenAuthor [-\]: Zen cannot detect A8 & A10 in this case because A9 criticality is low
+]
+;W[qj]WL[8638.174]C[gghideki [1k?\]: Ah...
+]
+;B[jo]BL[5001.303]C[ajahuang [6d\]: I thought Zen is not using criticality...
+gghideki [1k?\]: Dropping 70% to 50%
+]
+;W[kl]WL[8612.234]
+;B[mq]BL[4976.424]C[ZenAuthor [-\]: Zen is using criticality in recent versions to detect some semeai moves
+gghideki [1k?\]: Back to 70%...?
+]
+;W[pk]WL[8586.12]C[ajahuang [6d\]: black is dead, gg...
+]
+;B[mo]BL[4944.606]C[gghideki [1k?\]: yes, but to ZenAuthor please
+gghideki [1k?\]: 47%
+]
+;W[me]WL[8559.876]C[ajahuang [6d\]: Zen had many chances to win this semeai
+ajahuang [6d\]: tenuki too many times
+ZenAuthor [-\]: sad
+gghideki [1k?\]: Not so many 5 and 6 or around
+GoRoGoRo [6k\]: we all learn from our mistakes - humans and bots (or bot-authors) alike :-)
+gghideki [1k?\]: haha
+]
+;B[jm]BL[4837.745]C[gghideki [1k?\]: 23%
+]
+;W[jn]WL[8533.374]C[DaniPerrin [2k\]: yes, it's sad, black didn't detect properly the semai
+ajahuang [6d\]: semeai is difficult, so it's normal
+ajahuang [6d\]: but Zen is already the best bot in semeai
+]
+;B[io]BL[4731.622]C[gghideki [1k?\]: So, unluckily, Zen's search was too selective
+ajahuang [6d\]: too many cases...
+]
+;W[km]WL[8507.13]
+;B[sf]BL[4626.59]C[DaniPerrin [2k\]: at some point black detect that central group was needing liberty, why this alert has been lost later in the game
+]
+;W[bh]WL[8480.086]C[ajahuang [6d\]: still have chance
+ajahuang [6d\]: mogo might misread
+ajahuang [6d\]: oh
+ZenAuthor [-\]: need to fix it...
+gghideki [1k?\]: Agree :)
+gghideki [1k?\]: Anyway, nice game
+conrad35 [3k\]: big mistake for zen!!!
+DaniPerrin [2k\]: yes, zen seems to be the best one
+GoRoGoRo [6k\]: "ZenAuthor [-\]: need to fix it..." --- NONONO: give peace a chance ...
+gghideki [1k?\]: lol
+bert [1d\]: anyway, congrats to czechbot, a great victory
+])
