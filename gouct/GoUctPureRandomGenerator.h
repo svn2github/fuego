@@ -53,6 +53,10 @@ public:
         board. */
     SgPoint Generate();
 
+    /** Return an unchecked point from the random candidates list.
+        Point might be non-empty, illegal, or not fulfill GeneratePoint. */
+    SgPoint GenerateRawPoint() const;
+
     /** Generate a move using the fillboard heuristic.
         Tries @c numberTries times to select a point on the board and
         returns it, if it is empty and all adjacent and diagonal neighbors are
@@ -132,6 +136,14 @@ inline bool GoUctPureRandomGenerator<BOARD>::Empty3x3(SgPoint p)
 {
     return (m_bd.NumEmptyNeighbors(p) == 4
             && m_bd.NumEmptyDiagonals(p) == 4);
+}
+
+template<class BOARD>
+inline SgPoint GoUctPureRandomGenerator<BOARD>::GenerateRawPoint() const
+{
+    if (m_candidates.empty())
+        return SG_NULLMOVE;
+    return m_candidates.back();
 }
 
 template<class BOARD>
