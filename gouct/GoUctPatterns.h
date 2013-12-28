@@ -66,7 +66,8 @@
     O . ?   o . O   ? . ? B  ? . o W  O . X W
     @endverbatim */
 
-/** Hold gamma value and MoGo-pattern flag for one move. */
+//----------------------------------------------------------------------------
+/** class PatternInfo holds gamma value and MoGo-pattern flag for one move. */
 class PatternInfo
 {
 public:
@@ -86,6 +87,28 @@ private:
     
     bool m_isPattern;
 };
+
+inline void PatternInfo::SetGammaValue(float value)
+{
+    m_gammaValue = value;
+}
+
+inline float PatternInfo::GetGammaValue() const
+{
+    return m_gammaValue;
+}
+
+inline void PatternInfo::SetIsPattern(bool is)
+{
+    m_isPattern = is;
+}
+
+inline bool PatternInfo::IsPattern() const
+{
+    return m_isPattern;
+}
+
+//----------------------------------------------------------------------------
 
 template<class BOARD>
 class GoUctPatterns
@@ -350,10 +373,8 @@ void GoUctPatterns<BOARD>::InitEdgePatternTable(
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            if (MatchAnyPattern(bd, p))
-                edgeTable[*it][i].SetIsPattern(true);
-            else
-                edgeTable[*it][i].SetIsPattern(false);
+            const bool isPattern = MatchAnyPattern(bd, p);
+            edgeTable[*it][i].SetIsPattern(isPattern);
         }
         while (count-- > 0)
             bd.Undo();
@@ -372,10 +393,8 @@ void GoUctPatterns<BOARD>::InitCenterPatternTable(
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            if (MatchAnyPattern(bd, p))
-                table[*it][i].SetIsPattern(true);
-            else
-                table[*it][i].SetIsPattern(false);
+            const bool isPattern = MatchAnyPattern(bd, p);
+            table[*it][i].SetIsPattern(isPattern);
         }
         while (count-- > 0)
             bd.Undo();
@@ -760,26 +779,6 @@ inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p, float& gamma) const
 	const PatternInfo& pi = m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
     gamma = pi.GetGammaValue();
 	return pi.IsPattern();
-}
-
-inline void PatternInfo::SetGammaValue(float value)
-{
-    m_gammaValue = value;
-}
-
-inline float PatternInfo::GetGammaValue() const
-{
-    return m_gammaValue;
-}
-
-inline void PatternInfo::SetIsPattern(bool is)
-{
-    m_isPattern = is;
-}
-
-inline bool PatternInfo::IsPattern() const
-{
-    return m_isPattern;
 }
 
 //----------------------------------------------------------------------------
