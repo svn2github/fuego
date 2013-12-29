@@ -31,6 +31,8 @@ BOOST_AUTO_TEST_CASE(SgGtpUtilTest_SgRGB)
     BOOST_CHECK_EQUAL(rgb2.m_g, 0xcd / 2);
     BOOST_CHECK_EQUAL(rgb2.m_b, 0xef / 2);
 
+    BOOST_CHECK_EQUAL(SgRGB(1,2,3) + SgRGB(10,20,30), SgRGB(11,22,33));
+
     std::string s = rgb.ToString();
     BOOST_CHECK_EQUAL(s, "#abcdef");
 
@@ -39,6 +41,15 @@ BOOST_AUTO_TEST_CASE(SgGtpUtilTest_SgRGB)
     BOOST_CHECK_EQUAL(buffer.str(), "#abcdef");
 }
 
+BOOST_AUTO_TEST_CASE(SgGtpUtilTest_SgColorGradient)
+{
+    SgRGB rgb1(0x0, 0xff, 0x0);
+    SgRGB rgb2(0xff, 0x0, 0xff);
+    SgColorGradient cg(rgb1, -1.0, rgb2, 1.0);
+    BOOST_CHECK_EQUAL(cg.ColorOf(0.0), SgRGB(0x7f, 0x7f, 0x7f));
+    BOOST_CHECK_EQUAL(cg.ColorOf(-0.5), SgRGB(0x3f, 0xbf, 0x3f));
+    BOOST_CHECK_EQUAL(cg.ColorOf(0.5), SgRGB(0xbf, 0x3f, 0xbf));
+}
 
 BOOST_AUTO_TEST_CASE(SgGtpUtilTest_RespondPointSet)
 {
