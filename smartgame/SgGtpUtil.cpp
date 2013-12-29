@@ -5,10 +5,19 @@
 #include "SgSystem.h"
 #include "SgGtpUtil.h"
 
+#include <sstream>
+#include <string>
 #include "SgPointSet.h"
 #include "GtpEngine.h"
 
-using namespace std;
+//----------------------------------------------------------------------------
+
+std::string SgRGB::ToString() const
+{
+    std::ostringstream buffer;
+    buffer << *this;
+    return buffer.str();
+}
 
 //----------------------------------------------------------------------------
 
