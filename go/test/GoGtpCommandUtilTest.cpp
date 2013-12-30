@@ -6,8 +6,13 @@
 #include "SgSystem.h"
 
 #include <boost/test/auto_unit_test.hpp>
+#include "GoBoard.h"
 #include "GoGtpCommandUtil.h"
 #include "GtpEngine.h"
+#include "SgPoint.h"
+#include "SgPointArray.h"
+
+using SgPointUtil::Pt;
 
 //----------------------------------------------------------------------------
 
@@ -108,6 +113,24 @@ BOOST_AUTO_TEST_CASE(GoGtpCommandUtilTest_GetHandicapStones)
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(GoGtpCommandUtilTest_RespondColorGradientData)
+{
+    GoBoard board(3);
+    SgPointArray<float> data(0.0);
+    data[Pt(1,1)] = 0.5;
+    data[Pt(2,1)] = -0.5;
+    data[Pt(2,2)] = -1.0;
+    data[Pt(3,3)] = 1.0;
+    float minValue = -1.0;
+    float maxValue = 1.0;
+    GtpCommand cmd;
+    GoGtpCommandUtil::RespondColorGradientData(cmd, data, minValue,
+                                               maxValue, board);
+    BOOST_CHECK_EQUAL(cmd.Response(), "#007f7f #007f7f #0000ff\n"
+                                      "#007f7f #00ff00 #007f7f\n"
+                                      "#003fbf #00bf3f #007f7f\n");
 }
 
 } // namespace

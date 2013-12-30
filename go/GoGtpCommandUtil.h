@@ -64,8 +64,18 @@ namespace GoGtpCommandUtil
     SgVector<SgPoint> PointListArg(const GtpCommand& cmd, 
                                    const GoBoard& board);
 
-    void RespondNumberArray(GtpCommand& cmd, const SgPointArray<int>& array,
-                            int scale, const GoBoard& board);
+    /** Print color gradient for board in a format understood by GoGui cboard.
+     */
+    void RespondColorGradientData(GtpCommand& cmd,
+                                  const SgPointArray<float>& data,
+                                  float minValue,
+                                  float maxValue,
+                                  const GoBoard& board);
+
+    void RespondNumberArray(GtpCommand& cmd,
+                            const SgPointArray<int>& array,
+                            int scale,
+                            const GoBoard& board);
 
     /** Sort response to gogui-analyze_commands alphabetically by label.
         Useful if the response to gogui-analyze_commands was concatenated
