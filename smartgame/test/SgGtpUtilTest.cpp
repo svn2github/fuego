@@ -36,9 +36,21 @@ BOOST_AUTO_TEST_CASE(SgGtpUtilTest_SgRGB)
     std::string s = rgb.ToString();
     BOOST_CHECK_EQUAL(s, "#abcdef");
 
-    std::ostringstream buffer;
-    buffer << rgb;
-    BOOST_CHECK_EQUAL(buffer.str(), "#abcdef");
+    {
+        std::ostringstream buffer;
+        buffer << rgb;
+        BOOST_CHECK_EQUAL(buffer.str(), "#abcdef");
+    }
+    {
+        std::ostringstream buffer;
+        buffer << SgRGB(0,0,0);
+        BOOST_CHECK_EQUAL(buffer.str(), "#000000");
+    }
+    {
+        std::ostringstream buffer;
+        buffer << SgRGB(0xff,0xff,0xff);
+        BOOST_CHECK_EQUAL(buffer.str(), "#ffffff");
+    }
 }
 
 BOOST_AUTO_TEST_CASE(SgGtpUtilTest_SgColorGradient)

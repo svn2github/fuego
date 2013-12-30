@@ -18,7 +18,8 @@ class SgPointSet;
 
 //----------------------------------------------------------------------------
 
-/** SgRGB holds color information as used by the GoGui cboard response type */
+/** SgRGB holds color information as used by the GoGui cboard response type 
+    @see http://gogui.sourceforge.net/doc/analyze.html#idp5719360 */
 struct SgRGB
 {
 public:
@@ -66,10 +67,10 @@ inline SgRGB operator*(float f, const SgRGB& color)
 inline std::ostream& operator<<(std::ostream& stream, const SgRGB& color)
 {
     boost::io::ios_flags_saver saver(stream);
-    stream << '#' << std::hex << std::setfill('0') << std::setw(2)
-           << int(color.m_r)
-           << int(color.m_g)
-           << int(color.m_b);
+    stream << '#' << std::hex << std::setfill('0')
+           << std::setw(2) << int(color.m_r)
+           << std::setw(2) << int(color.m_g)
+           << std::setw(2) << int(color.m_b);
 	return stream;
 }
 
