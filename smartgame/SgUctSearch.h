@@ -672,9 +672,9 @@ public:
 
     void SetBiasTermFrequency(int frequency);
 
-    int BiasTermDepth() const;
+    std::size_t BiasTermDepth() const;
 
-    void SetBiasTermDepth(int depth);
+    void SetBiasTermDepth(std::size_t depth);
 
     /** Points at which to recompute children.  
         Specifies the number of visits at which GenerateAllMoves() is
@@ -1213,12 +1213,12 @@ inline void SgUctSearch::SetBiasTermFrequency(int frequency)
     m_biasTermFrequency = frequency;
 }
 
-inline int SgUctSearch::BiasTermDepth() const
+inline std::size_t SgUctSearch::BiasTermDepth() const
 {
     return m_biasTermDepth;
 }
 
-inline void SgUctSearch::SetBiasTermDepth(int depth) 
+inline void SgUctSearch::SetBiasTermDepth(std::size_t depth)
 {
     m_biasTermDepth = depth;
 }
