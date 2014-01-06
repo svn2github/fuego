@@ -313,9 +313,7 @@ GoUctAdditiveKnowledgeGreenpeep::PrintContext(unsigned int context,
     unsigned int enemy = (context >> 16) & 0xff;
     unsigned int occupancy = friendly ^ enemy;
     unsigned int borders = friendly & enemy;
-
     friendly &= occupancy;
-    enemy &= occupancy;
 
     int pattern[5][5];
     memset(&pattern, -1, sizeof(pattern));
