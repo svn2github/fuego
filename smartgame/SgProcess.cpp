@@ -6,9 +6,10 @@
 #include "SgSystem.h"
 #include "SgProcess.h"
 
+#include "SgException.h"
+
 // Not yet implemented for Windows or clang
 #if defined(__GNUC__) && ! defined(__clang__)
-
 #include <errno.h>
 #include <fstream>
 #include <iostream>
@@ -18,10 +19,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "SgDebug.h"
-#include "SgException.h"
 #include "SgStringUtil.h"
 
-using namespace std;
+using std::vector;
+using std::ios;
 
 //----------------------------------------------------------------------------
 
@@ -53,7 +54,7 @@ void TerminateChild(const char* message)
 
 SgProcess::SgProcess(const std::string& command)
 {
-    vector<string> args = SgStringUtil::SplitArguments(command);
+    vector<std::string> args = SgStringUtil::SplitArguments(command);
     if (args.size() == 0)
         throw SgException("Empty command line");
     int fd1[2];
@@ -74,9 +75,9 @@ SgProcess::SgProcess(const std::string& command)
         close(fd1[0]);
         close(fd2[1]);
         m_bufOut.reset(CreateFileBuf(fd1[1], ios::out));
-        m_out.reset(new ostream(m_bufOut.get()));
+        m_out.reset(new std::ostream(m_bufOut.get()));
         m_bufIn.reset(CreateFileBuf(fd2[0], ios::in));
-        m_in.reset(new istream(m_bufIn.get()));
+        m_in.reset(new std::istream(m_bufIn.get()));
         return;
     }
     else // Child
@@ -107,9 +108,17 @@ SgProcess::SgProcess(const std::string& command)
     }
 }
 
+#else
+
+SgProcess::SgProcess(const std::string& command)
+{
+    SG_UNUSED(command);
+    throw SgException("SgProcess not implemented on this architecture");
+}
+
+#endif // defined(__GNUC__) && ! defined(__clang__)
+
 SgProcess::~SgProcess()
 { }
 
 //----------------------------------------------------------------------------
-
-#endif // defined(__GNUC__) && ! defined(__clang__)
