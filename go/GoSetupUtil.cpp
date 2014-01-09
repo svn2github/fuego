@@ -93,7 +93,7 @@ GoSetup GoSetupUtil::CreateSetupFromStream(std::streambuf& in, int& boardSize)
     return setup;
 }
 
-GoSetup GoSetupUtil::CreateSetupFromString(std::string& in,
+GoSetup GoSetupUtil::CreateSetupFromString(const std::string& in,
                                            int& boardSize)
 {
     std::stringbuf inBuf(in);

@@ -25,7 +25,7 @@ namespace GoSetupUtil
     GoSetup CreateSetupFromStream(std::streambuf& in, int& boardSize);
 
     /** Convenience function, calls CreateSetupFromStream */
-    GoSetup CreateSetupFromString(std::string& in, int& boardSize);
+    GoSetup CreateSetupFromString(const std::string& in, int& boardSize);
 
     /** Get a setup instance with the current position on board. */
     GoSetup CurrentPosSetup(const GoBoard& bd);
