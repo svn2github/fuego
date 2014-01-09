@@ -393,7 +393,7 @@ void GoUctCommands::CmdDeterministicMode(GtpCommand& cmd)
     "uct_param_player reuse_subtree false\n"
     "uct_param_search number_threads 1\n"
     "uct_param_search max_nodes 5000000\n";
-    if ( p.MaxGames() == std::numeric_limits<SgUctValue>::max())
+    if (p.MaxGames() == std::numeric_limits<SgUctValue>::max())
         SgWarning() << "Set Uct Param Player-> Max Games to finite "
                        "value in deterministic mode\n";
     p.SetIgnoreClock(true);

@@ -372,9 +372,9 @@ bool GoEyeUtil::CanMakeEye(const BOARD& bd, SgBlackWhite color,
     if (bd.Line(p) == 1) // corner or edge
     {
         const int nuOwn = (bd.Pos(p) == 1) ? 2 : 4;
-        if ( bd.Num8Neighbors(p, color) == nuOwn
-            && bd.Num8EmptyNeighbors(p) == 1
-            )
+        if (  bd.Num8Neighbors(p, color) == nuOwn
+           && bd.Num8EmptyNeighbors(p) == 1
+           )
         {
             isPossibleEye = true;
             move = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);
@@ -383,19 +383,19 @@ bool GoEyeUtil::CanMakeEye(const BOARD& bd, SgBlackWhite color,
     else // in center
     {
         // have all neighbors, and 2 diagonals, and can get a third
-        if (   bd.NumNeighbors(p, color) == 4
-            && bd.NumDiagonals(p, color) == 2
-            && bd.NumEmptyDiagonals(p) > 0
-            )
+        if (  bd.NumNeighbors(p, color) == 4
+           && bd.NumDiagonals(p, color) == 2
+           && bd.NumEmptyDiagonals(p) > 0
+           )
         {
             isPossibleEye = true;
             move = GoBoardUtil::FindDiagNeighbor(bd, p, SG_EMPTY);
         }
         // have 3 of 4 neighbors, can get the 4th, and have enough diagonals
-        else if (   bd.NumNeighbors(p, color) == 3
-                 && bd.NumNeighbors(p, opp) == 0
-                 && bd.NumDiagonals(p, color) >= 3
-                 )
+        else if (  bd.NumNeighbors(p, color) == 3
+                && bd.NumNeighbors(p, opp) == 0
+                && bd.NumDiagonals(p, color) >= 3
+                )
         {
             isPossibleEye = true;
             move = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);

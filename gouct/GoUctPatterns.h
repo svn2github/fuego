@@ -285,14 +285,14 @@ template<class BOARD>
 inline int GoUctPatterns<BOARD>::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
 {
     SG_ASSERT(bd.Line(p) > 1);
-    int code = (((((( EBWCodeOfPoint(bd, p - SG_NS - SG_WE) * 3
-                    + EBWCodeOfPoint(bd, p - SG_NS)) * 3
-                    + EBWCodeOfPoint(bd, p - SG_NS + SG_WE)) * 3
-                    + EBWCodeOfPoint(bd, p - SG_WE)) * 3
-                    + EBWCodeOfPoint(bd, p + SG_WE)) * 3
-                    + EBWCodeOfPoint(bd, p + SG_NS - SG_WE)) * 3
-                    + EBWCodeOfPoint(bd, p + SG_NS)) * 3
-                    + EBWCodeOfPoint(bd, p + SG_NS + SG_WE);
+    int code = ((((((EBWCodeOfPoint(bd, p - SG_NS - SG_WE) * 3
+                   + EBWCodeOfPoint(bd, p - SG_NS)) * 3
+                   + EBWCodeOfPoint(bd, p - SG_NS + SG_WE)) * 3
+                   + EBWCodeOfPoint(bd, p - SG_WE)) * 3
+                   + EBWCodeOfPoint(bd, p + SG_WE)) * 3
+                   + EBWCodeOfPoint(bd, p + SG_NS - SG_WE)) * 3
+                   + EBWCodeOfPoint(bd, p + SG_NS)) * 3
+                   + EBWCodeOfPoint(bd, p + SG_NS + SG_WE);
     SG_ASSERT(code >= 0);
     SG_ASSERT(code < GOUCT_POWER3_8);
     return code;
