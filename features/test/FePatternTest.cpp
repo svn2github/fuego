@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(FePatternTest_Rect_3x3_1)
            ".o.");
     p.SetMove(Pt(2,2), SG_BLACK);
     p.SetValue(23);
-    SgDebug() << p;
+    //SgDebug() << p;
 
     std::string s("...\n"
                   ".xo\n"
