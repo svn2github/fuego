@@ -20,13 +20,10 @@ namespace {
 void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features)
 {
     const SgPoint lastMove = bd.GetLastMove();
-    if (lastMove != SG_NULLMOVE)
-    {
-        if (lastMove == SG_PASS)
-            features.set(FE_PASS_CONSECUTIVE);
-        else
-            features.set(FE_PASS_NEW);
-    }
+    if (lastMove == SG_PASS)
+        features.set(FE_PASS_CONSECUTIVE);
+    else
+        features.set(FE_PASS_NEW);
 }
 
 bool PutUsIntoAtari(const GoBoard& bd, SgPoint lastMove)

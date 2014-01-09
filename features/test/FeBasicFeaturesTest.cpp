@@ -36,6 +36,20 @@ namespace {
         return features;
     }
     
+    FeBasicFeatureSet PassFeatures() // TODO make it a static variable?
+    {
+        FeBasicFeatureSet features;
+        for (FeBasicFeature f = FE_PASS_NEW; f <= FE_PASS_CONSECUTIVE; ++f)
+            features.set(f);
+        return features;
+    }
+    
+} // namespace
+
+//----------------------------------------------------------------------------
+    
+namespace {
+        
     BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Line)
     {
         GoBoard bd(9);
@@ -504,6 +518,42 @@ namespace {
         }
     }
     
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Pass)
+    {
+        GoBoard bd(9);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 7), features);
+            TestNone(features, PassFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, SG_PASS, features);
+            TestSingle(features, PassFeatures(), FE_PASS_NEW);
+        }
+        bd.Play(Pt(1,1), SG_BLACK);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 7), features);
+            TestNone(features, PassFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, SG_PASS, features);
+            TestSingle(features, PassFeatures(), FE_PASS_NEW);
+        }
+        bd.Play(SG_PASS, SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 7), features);
+            TestNone(features, PassFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, SG_PASS, features);
+            TestSingle(features, PassFeatures(), FE_PASS_CONSECUTIVE);
+        }
+    }
 } // namespace
 
 //----------------------------------------------------------------------------
