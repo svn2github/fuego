@@ -596,6 +596,30 @@ BOOST_AUTO_TEST_CASE(GoBoardTest_KoModifiesHash)
     BOOST_CHECK_EQUAL(bd.GetHashCode(), code);
 }
 
+/** Test that KoPoint is correctly re-set after undo. */
+BOOST_AUTO_TEST_CASE(GoBoardTest_KoPoint)
+{
+    // 3 . . . .
+    // 2 @ O . .
+    // 1 O . O .
+    //   A B C D
+    GoSetup setup;
+    setup.AddBlack(Pt(1, 2));
+    setup.AddWhite(Pt(1, 1));
+    setup.AddWhite(Pt(2, 2));
+    setup.AddWhite(Pt(3, 1));
+    GoBoard bd(9, setup);
+    BOOST_CHECK_EQUAL(bd.KoPoint(), SG_NULLPOINT);
+    bd.Play(Pt(2, 1), SG_BLACK);
+    BOOST_CHECK_EQUAL(bd.KoPoint(), Pt(1, 1));
+    bd.Play(Pt(1, 3), SG_WHITE);
+    BOOST_CHECK_EQUAL(bd.KoPoint(), SG_NULLPOINT);
+    bd.Undo();
+    BOOST_CHECK_EQUAL(bd.KoPoint(), Pt(1, 1));
+    bd.Undo();
+    BOOST_CHECK_EQUAL(bd.KoPoint(), SG_NULLPOINT);
+}
+
 /** Test that isCapturing flag is set after capturing. */
 BOOST_AUTO_TEST_CASE(GoBoardTest_LastMoveInfo_IsCapturing_1)
 {
