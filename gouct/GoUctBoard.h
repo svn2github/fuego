@@ -220,23 +220,23 @@ public:
         Not defined for empty points.
         @param p The block to check.
         @param maxLib The maximum number of liberties of the neighbors.
-        @param anchors Resulting neighbor anchors and an additional END_POINT.
+        @param anchors Resulting neighbor anchors and an additional SG_ENDPOINT.
         @param maxAnchors Array size of anchors (for detecting overflow in
         debug mode)
-        @return Number of anchors (without the END_POINT) */
+        @return Number of anchors (without the SG_ENDPOINT) */
     int AdjacentBlocks(SgPoint p, int maxLib, SgPoint anchors[],
                        int maxAnchors) const;
 
     /** %List anchor of each block of color 'c' adjacent to the
         empty point 'p'.
         Assert if 'p' is not empty.
-        Fill an array of points, terminated by END_POINT. */
+        Fill an array of points, terminated by SG_ENDPOINT. */
     void NeighborBlocks(SgPoint p, SgBlackWhite c, SgPoint anchors[]) const;
 
     /** %List anchor of each block of color 'c' with at most 'maxLib'
         liberties adjacent to the empty point 'p'.
         Assert if 'p' is not empty.
-        Fill an array of points, terminated by END_POINT. */
+        Fill an array of points, terminated by SG_ENDPOINT. */
     void NeighborBlocks(SgPoint p, SgBlackWhite c, int maxLib,
                         SgPoint anchors[]) const;
 

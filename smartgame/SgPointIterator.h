@@ -11,7 +11,7 @@
 //----------------------------------------------------------------------------
 
 /** Iterate through an array of points
-    terminated by END_POINT (defined to be zero for performance). */
+    terminated by SG_ENDPOINT (defined to be zero for performance). */
 class SgPointIterator
 {
 public:

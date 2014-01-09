@@ -147,7 +147,7 @@ namespace GoBoardUtil
                                int maxDist = std::numeric_limits<int>::max());
 
     /** Is p contained in anchor[] ?
-        anchor[] must be terminated by END_POINT. */
+        anchor[] must be terminated by SG_ENDPOINT. */
     bool ContainsAnchor(const SgPoint anchor[], const SgPoint p);
 
    /** Get diagonal points with a color.
