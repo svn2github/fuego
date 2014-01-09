@@ -19,6 +19,23 @@ using SgPointUtil::Pt;
 
 namespace {
     
+    FeBasicFeatureSet PrevMoveFeatures() // TODO make it a static variable?
+    {
+        FeBasicFeatureSet features;
+        for (FeBasicFeature f = FE_DIST_PREV_2; f <= FE_DIST_PREV_17; ++f)
+            features.set(f);
+        return features;
+    }
+    
+    FeBasicFeatureSet PrevOwnMoveFeatures() // TODO make it a static variable?
+    {
+        FeBasicFeatureSet features;
+        for (FeBasicFeature f = FE_DIST_PREV_OWN_2;
+             f <= FE_DIST_PREV_OWN_17; ++f)
+            features.set(f);
+        return features;
+    }
+    
     BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Line)
     {
         GoBoard bd(9);
@@ -87,6 +104,405 @@ namespace {
             BOOST_CHECK(! features.test(FE_LINE_4));
         }
     }
+
+    /** Check that f is the only feature in group that is set in features */
+    inline void TestSingle(FeBasicFeatureSet features,
+                           FeBasicFeatureSet group,
+                           FeBasicFeature f)
+    {
+        SG_ASSERT(group.test(f));
+        BOOST_CHECK(features.test(f));
+        BOOST_CHECK_EQUAL((features & group).count(), 1);
+    }
+    
+    inline void TestNone(FeBasicFeatureSet features,
+                           FeBasicFeatureSet group)
+    {
+        BOOST_CHECK((features & group).none());
+    }
+    
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_DistancePreviousMove)
+    {
+        GoBoard bd(9);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 1), features);
+            TestNone(features, PrevMoveFeatures());
+        }
+        bd.Play(Pt(1,1), SG_BLACK);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 2), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_2);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 3), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_4);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 4), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_6);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 5), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_8);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 6), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_10);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 7), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_12);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 8), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_14);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 9), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_16);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 2), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_3);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_5);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 4), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_7);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 5), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_9);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 6), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_11);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 7), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_13);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 8), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_15);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 9), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_17);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 3), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_6);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 4), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_8);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 5), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_10);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 6), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_12);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 7), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_14);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 8), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_16);
+        }
+        for (int i = 3; i <= 9; ++i)
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(i, 9), features);
+            TestNone(features, PrevMoveFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 4), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_9);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 5), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_11);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 6), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_13);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 7), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_15);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 8), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_17);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(5, 5), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_12);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(5, 6), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_14);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(5, 7), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_16);
+        }
+        for (int i = 5; i <= 9; ++i)
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(i, 8), features);
+            TestNone(features, PrevMoveFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 6), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_15);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 7), features);
+            TestSingle(features, PrevMoveFeatures(), FE_DIST_PREV_17);
+        }
+        for (int i = 7; i <= 9; ++i)
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(i, 7), features);
+            TestNone(features, PrevMoveFeatures());
+        }
+       
+        //-------------------------------------
+        {   // no second-last move exists
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 2), features);
+            TestNone(features, PrevOwnMoveFeatures());
+        }
+        
+        
+    }
+    
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_DistancePreviousOwnMove)
+    {
+        GoBoard bd(9);
+        bd.Play(Pt(1,1), SG_BLACK);
+        bd.Play(SG_PASS, SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 2), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_2);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 3), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_4);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 4), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_6);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 5), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_8);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 6), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_10);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 7), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_12);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 8), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_14);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(1, 9), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_16);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 2), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_3);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_5);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 4), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_7);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 5), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_9);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 6), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_11);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 7), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_13);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 8), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_15);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 9), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_17);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 3), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_6);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 4), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_8);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 5), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_10);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 6), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_12);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 7), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_14);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 8), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_16);
+        }
+        for (int i = 3; i <= 9; ++i)
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(i, 9), features);
+            TestNone(features, PrevOwnMoveFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 4), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_9);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 5), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_11);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 6), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_13);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 7), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_15);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 8), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_17);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(5, 5), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_12);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(5, 6), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_14);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(5, 7), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_16);
+        }
+        for (int i = 5; i <= 9; ++i)
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(i, 8), features);
+            TestNone(features, PrevOwnMoveFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 6), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_15);
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 7), features);
+            TestSingle(features, PrevOwnMoveFeatures(), FE_DIST_PREV_OWN_17);
+        }
+        for (int i = 7; i <= 9; ++i)
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(i, 7), features);
+            TestNone(features, PrevOwnMoveFeatures());
+        }
+    }
     
 } // namespace
 
@@ -109,42 +525,6 @@ FE_SELFATARI,
 FE_ATARI_LADDER,        // Ladder atari
 FE_ATARI_KO,            // Atari when there is a ko
 FE_ATARI_OTHER,         // Other atari
-FE_LINE_1,
-FE_LINE_2,
-FE_LINE_3,
-FE_LINE_4,
-FE_DIST_PREV_2, // d(dx,dy) = |dx|+|dy|+max(|dx|,|dy|)
-FE_DIST_PREV_3,
-FE_DIST_PREV_4,
-FE_DIST_PREV_5,
-FE_DIST_PREV_6,
-FE_DIST_PREV_7,
-FE_DIST_PREV_8,
-FE_DIST_PREV_9,
-FE_DIST_PREV_10,
-FE_DIST_PREV_11,
-FE_DIST_PREV_12,
-FE_DIST_PREV_13,
-FE_DIST_PREV_14,
-FE_DIST_PREV_15,
-FE_DIST_PREV_16,
-FE_DIST_PREV_17,
-FE_DIST_PREV_OWN_2,
-FE_DIST_PREV_OWN_3,
-FE_DIST_PREV_OWN_4,
-FE_DIST_PREV_OWN_5,
-FE_DIST_PREV_OWN_6,
-FE_DIST_PREV_OWN_7,
-FE_DIST_PREV_OWN_8,
-FE_DIST_PREV_OWN_9,
-FE_DIST_PREV_OWN_10,
-FE_DIST_PREV_OWN_11,
-FE_DIST_PREV_OWN_12,
-FE_DIST_PREV_OWN_13,
-FE_DIST_PREV_OWN_14,
-FE_DIST_PREV_OWN_15,
-FE_DIST_PREV_OWN_16,
-FE_DIST_PREV_OWN_17,
 FE_MC_OWNER_1, // 0−7 wins/63 sim.
 FE_MC_OWNER_2, // 8−15
 FE_MC_OWNER_3, // 16−23
