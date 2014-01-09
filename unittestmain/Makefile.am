@@ -2,6 +2,9 @@ TESTS = fuego_unittest
 check_PROGRAMS = $(TESTS)
 
 fuego_unittest_SOURCES = \
+../features/test/FeBasicFeaturesTest.cpp \
+../features/test/FePatternTest.cpp \
+../features/test/FePatternBaseTest.cpp \
 ../go/test/GoBoardTest.cpp \
 ../go/test/GoBoardSynchronizerTest.cpp \
 ../go/test/GoBoardUpdaterTest.cpp \
@@ -78,6 +81,7 @@ fuego_unittest_LDADD = \
 ../gouct/libfuego_gouct.a \
 ../simpleplayers/libfuego_simpleplayers.a \
 ../go/libfuego_go.a \
+../features/libfuego_features.a \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a \
 $(BOOST_UNIT_TEST_FRAMEWORK_LIB) \
@@ -89,6 +93,7 @@ fuego_unittest_DEPENDENCIES = \
 ../gouct/libfuego_gouct.a \
 ../simpleplayers/libfuego_simpleplayers.a \
 ../go/libfuego_go.a \
+../features/libfuego_features.a \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a
 
@@ -97,6 +102,7 @@ $(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame \
 -I@top_srcdir@/go \
+-I@top_srcdir@/features \
 -I@top_srcdir@/simpleplayers \
 -I@top_srcdir@/gouct
 

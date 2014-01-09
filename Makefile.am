@@ -8,6 +8,7 @@ gtpengine \
 smartgame \
 go \
 gouct \
+features \
 simpleplayers \
 fuegomain \
 fuegotest \

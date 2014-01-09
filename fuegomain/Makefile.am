@@ -14,6 +14,7 @@ fuego_LDFLAGS = $(BOOST_LDFLAGS)
 fuego_LDADD = \
 ../gouct/libfuego_gouct.a \
 ../go/libfuego_go.a \
+../features/libfuego_features.a \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a \
 $(BOOST_PROGRAM_OPTIONS_LIB) \
@@ -24,6 +25,7 @@ $(BOOST_THREAD_LIB)
 fuego_DEPENDENCIES = \
 ../gouct/libfuego_gouct.a \
 ../go/libfuego_go.a \
+../features/libfuego_features.a \
 ../smartgame/libfuego_smartgame.a \
 ../gtpengine/libfuego_gtpengine.a
 
@@ -33,6 +35,7 @@ fuego_CPPFLAGS = \
 $(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame \
+-I@top_srcdir@/features \
 -I@top_srcdir@/go \
 -I@top_srcdir@/gouct
 
