@@ -381,12 +381,12 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
         lengthMod = 0.5;
     if (score > std::numeric_limits<SgUctValue>::epsilon())
         return
-            (1 - m_param.m_scoreModification)
+              (1 - m_param.m_scoreModification)
             + m_param.m_scoreModification * score * m_invMaxScore
             - lengthMod;
     else if (score < -std::numeric_limits<SgUctValue>::epsilon())
         return
-            m_param.m_scoreModification
+              m_param.m_scoreModification
             + m_param.m_scoreModification * score * m_invMaxScore
             + lengthMod;
     else
