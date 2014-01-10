@@ -662,7 +662,8 @@ public:
 
     /** Constant c in the bias term.
         This constant corresponds to 2 C_p in the original UCT paper.
-        The default value is 0.7, which works well in 9x9 Go. */
+        The default value is 0.7, but must be tuned for each game. 
+        In Fuego Go, this constant is currently 0 and RAVE is used. */
     float BiasTermConstant() const;
 
     /** See BiasTermConstant() */
