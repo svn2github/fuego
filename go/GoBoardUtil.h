@@ -1261,7 +1261,7 @@ private:
 //----------------------------------------------------------------------------
 
 /** Iterate through the anchors of all the blocks adjacent to the given
-    point. */
+    empty point. */
 class GoNeighborBlockIterator
     : public SgPointIterator
 {
