@@ -29,8 +29,7 @@ void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features)
 bool PutUsIntoAtari(const GoBoard& bd, SgPoint lastMove)
 {
     SG_ASSERT(! SgIsSpecialMove(lastMove));
-    const SgBlackWhite toPlay = bd.ToPlay();
-    GoNeighborBlockIterator it(bd, lastMove, toPlay, 1);
+    GoAdjBlockIterator<GoBoard> it(bd, lastMove, 1);
     return it;
 }
 

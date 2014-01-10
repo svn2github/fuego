@@ -19,6 +19,14 @@ using SgPointUtil::Pt;
 
 namespace {
     
+    FeBasicFeatureSet CaptureFeatures() // TODO make it a static variable?
+    {
+        FeBasicFeatureSet features;
+        for (FeBasicFeature f = FE_CAPTURE_ADJ_ATARI; f <= FE_CAPTURE_LADDER; ++f)
+            features.set(f);
+        return features;
+    }
+
     FeBasicFeatureSet PrevMoveFeatures() // TODO make it a static variable?
     {
         FeBasicFeatureSet features;
@@ -26,7 +34,7 @@ namespace {
             features.set(f);
         return features;
     }
-    
+
     FeBasicFeatureSet PrevOwnMoveFeatures() // TODO make it a static variable?
     {
         FeBasicFeatureSet features;
@@ -554,12 +562,134 @@ namespace {
             TestSingle(features, PassFeatures(), FE_PASS_CONSECUTIVE);
         }
     }
+
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_Adj_Atari)
+    {
+        std::string s("......\n"
+                      "......\n"
+                      "......\n"
+                      "OOOOO.\n"
+                      "XXX.X.\n"
+                      "XXX.X.");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        bd.Play(Pt(4, 1), SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, SG_PASS, features);
+            TestNone(features, CaptureFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(6, 1), features);
+            TestNone(features, CaptureFeatures());
+        }
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 2), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_ADJ_ATARI);
+        }
+/*
+        bd.Play(Pt(6,1), SG_BLACK);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 2), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_PREVENT_CONNECTION);
+        }
+*/
+    }
+
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_Recapture)
+    {
+        std::string s("......\n"
+                      "......\n"
+                      "......\n"
+                      "......\n"
+                      "OOOXX.\n"
+                      "XXX.X.");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 1), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_NOT_LADDER);
+        }
+        bd.Play(Pt(4, 1), SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 1), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_RECAPTURE);
+        }
+    }
+
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_Recapture_2)
+    {
+        std::string s("......\n"
+                      "......\n"
+                      "......\n"
+                      "......\n"
+                      "OOOXXX\n"
+                      "XXX.OX");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(4, 1), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_NOT_LADDER);
+        }
+        bd.Play(Pt(4, 1), SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(3, 1), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_RECAPTURE);
+        }
+    }
+
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_Ladder)
+    {
+        std::string s("......\n"
+                      "......\n"
+                      "......\n"
+                      "O.....\n"
+                      "OXO...\n"
+                      ".O....");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_LADDER);
+        }
+        bd.Play(Pt(5, 5), SG_BLACK);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+            TestSingle(features, CaptureFeatures(), FE_CAPTURE_NOT_LADDER);
+        }
+    }
+
+    /*
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_PreventConnection)
+    { // TODO feature not completely implemented yet.
+    }
+
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_Multiple)
+    { // TODO feature not implemented yet.
+    }
+    */
+
 } // namespace
 
 //----------------------------------------------------------------------------
 /*
-FE_PASS_NEW,            // pass, previous move was not pass
-FE_PASS_CONSECUTIVE,    // pass, previous move was also pass
 FE_CAPTURE_ADJ_ATARI,   // String contiguous to new string in atari
 FE_CAPTURE_RECAPTURE,   // Re-capture previous move
 FE_CAPTURE_PREVENT_CONNECTION, // Prevent connection to previous move
