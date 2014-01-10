@@ -139,9 +139,10 @@ void FindAtariFeatures(const GoBoard& bd, SgPoint move,
     {
         if (IsLadderCaptureMove(bd, move))
             features.set(FE_ATARI_LADDER);
-        else if (bd.KoPoint() != SG_NULLPOINT) // not sure about the else here
+        if (bd.KoPoint() != SG_NULLPOINT)
             features.set(FE_ATARI_KO);
-        else
+        if (  ! features.test(FE_ATARI_LADDER)
+           && ! features.test(FE_ATARI_KO))
             features.set(FE_ATARI_OTHER);
     }
 }

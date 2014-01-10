@@ -19,6 +19,14 @@ using SgPointUtil::Pt;
 
 namespace {
 
+FeBasicFeatureSet AtariFeatures() // TODO make it a static variable?
+{
+    FeBasicFeatureSet features;
+    for (FeBasicFeature f = FE_ATARI_LADDER; f <= FE_ATARI_OTHER; ++f)
+        features.set(f);
+    return features;
+}
+
 FeBasicFeatureSet CaptureFeatures() // TODO make it a static variable?
 {
     FeBasicFeatureSet features;
@@ -764,16 +772,59 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_SelfAtari_2)
     }
 }
 
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Atari_Ladder)
+{
+    std::string s("......\n"
+                  "......\n"
+                  "......\n"
+                  "O.....\n"
+                  "OX....\n"
+                  ".O....");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_WHITE;
+    GoBoard bd(boardSize, setup);
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(3, 2), features);
+        TestSingle(features, AtariFeatures(), FE_ATARI_LADDER);
+    }
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+        TestSingle(features, AtariFeatures(), FE_ATARI_OTHER);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Atari_Ko)
+{
+    std::string s("...O.O\n"
+                  "....OX\n"
+                  "......\n"
+                  "O.....\n"
+                  "OX....\n"
+                  ".O....");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    bd.Play(Pt(5, 6), SG_BLACK);
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(3, 2), features);
+        BOOST_CHECK(features.test(FE_ATARI_KO));
+    }
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+        BOOST_CHECK(features.test(FE_ATARI_KO));
+    }
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
 /*
-FE_SELFATARI,
-// FE_SELFATARI_NAKADE,
-// FE_SELFATARI_THROWIN,
-FE_ATARI_LADDER,        // Ladder atari
-FE_ATARI_KO,            // Atari when there is a ko
-FE_ATARI_OTHER,         // Other atari
 FE_MC_OWNER_1, // 0−7 wins/63 sim.
 FE_MC_OWNER_2, // 8−15
 FE_MC_OWNER_3, // 16−23
@@ -782,7 +833,4 @@ FE_MC_OWNER_5, // 32−39
 FE_MC_OWNER_6, // 40−47
 FE_MC_OWNER_7, // 48−55
 FE_MC_OWNER_8,  // 56−63
-FE_NONE,
-_NU_FE_FEATURES
-
 */
