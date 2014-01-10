@@ -714,6 +714,56 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Extension)
     }
 }
 
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_SelfAtari)
+{
+    std::string s("...O..\n"
+                  "..XXOO\n"
+                  ".O.XO.\n"
+                  "O.OXOO\n"
+                  "OX.XX.\n"
+                  ".O....");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+        BOOST_CHECK(features.test(FE_SELFATARI));
+    }
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(5, 6), features);
+        BOOST_CHECK(features.test(FE_SELFATARI));
+        // TODO this is a good selfatari FE_SELFATARI_NAKADE,
+        // FE_SELFATARI_THROWIN
+    }
+}
+
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_SelfAtari_2)
+{
+    std::string s("...O.X\n"
+                  "...OXX\n"
+                  "...OO.\n"
+                  "....OO\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(6, 4), features);
+        BOOST_CHECK(features.test(FE_SELFATARI));
+    }
+    {
+        FeBasicFeatureSet features;
+        FeBasicFeatures::FindFeatures(bd, Pt(5, 6), features);
+        BOOST_CHECK(features.test(FE_SELFATARI));
+    }
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
