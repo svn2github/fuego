@@ -22,7 +22,17 @@ namespace {
     FeBasicFeatureSet CaptureFeatures() // TODO make it a static variable?
     {
         FeBasicFeatureSet features;
-        for (FeBasicFeature f = FE_CAPTURE_ADJ_ATARI; f <= FE_CAPTURE_LADDER; ++f)
+        for (FeBasicFeature f = FE_CAPTURE_ADJ_ATARI; f <= FE_CAPTURE_LADDER;
+             ++f)
+            features.set(f);
+        return features;
+    }
+
+    FeBasicFeatureSet ExtensionFeatures() // TODO make it a static variable?
+    {
+        FeBasicFeatureSet features;
+        for (FeBasicFeature f = FE_EXTENSION_NOT_LADDER;
+             f <= FE_EXTENSION_LADDER; ++f)
             features.set(f);
         return features;
     }
@@ -686,16 +696,39 @@ namespace {
     }
     */
 
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Extension)
+    {
+        std::string s("......\n"
+                      "......\n"
+                      "......\n"
+                      "O.....\n"
+                      "OX....\n"
+                      ".O....");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_WHITE;
+        GoBoard bd(boardSize, setup);
+        bd.Play(Pt(3, 2), SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+            TestSingle(features, ExtensionFeatures(), FE_EXTENSION_LADDER);
+        }
+        bd.Undo();
+        bd.Play(SG_PASS, SG_WHITE);
+        bd.Play(Pt(5, 5), SG_BLACK); // break the ladder
+        bd.Play(Pt(3, 2), SG_WHITE);
+        {
+            FeBasicFeatureSet features;
+            FeBasicFeatures::FindFeatures(bd, Pt(2, 3), features);
+            TestSingle(features, ExtensionFeatures(), FE_EXTENSION_NOT_LADDER);
+        }
+    }
+
 } // namespace
 
 //----------------------------------------------------------------------------
 /*
-FE_CAPTURE_ADJ_ATARI,   // String contiguous to new string in atari
-FE_CAPTURE_RECAPTURE,   // Re-capture previous move
-FE_CAPTURE_PREVENT_CONNECTION, // Prevent connection to previous move
-FE_CAPTURE_NOT_LADDER,  // String not in a ladder
-FE_CAPTURE_LADDER,      // String in a ladder
-// FE_CAPTURE_MULTIPLE,
 FE_EXTENSION_NOT_LADDER, // New atari, not in a ladder
 FE_EXTENSION_LADDER,    // New atari, in a ladder
 // todo distinguish extending 1 stone only?
