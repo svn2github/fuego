@@ -754,7 +754,8 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
                 else
                 {
                     SgDebug()
-                    << "GoUctPlayer: no early pass possible (unsafe point)\n";
+                    << "GoUctPlayer: no early pass possible (unsafe point "
+                    << SgWritePoint(*it) << ")\n";
                     earlyPassPossible = false;
                     break;
                 }
