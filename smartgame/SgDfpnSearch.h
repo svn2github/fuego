@@ -371,7 +371,9 @@ public:
     StartSearch(DfpnHashTable& positions, PointSequence& pv,
                          const DfpnBounds& maxBounds);
 
-    /** Validate the current position is a win for winner. */
+    /** Validate that the current position is a win for winner. 
+        Stores the proof tree in the tracer.
+    */
     bool Validate(DfpnHashTable& positions, const SgBlackWhite winner,
                   SgSearchTracer& tracer);
 
