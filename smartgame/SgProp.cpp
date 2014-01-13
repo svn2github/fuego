@@ -195,9 +195,10 @@ void SgPropList::MoveToFront(SgPropID id)
 
 bool SgPropList::Remove(const SgProp* prop)
 {
+    const bool remove = m_list.Exclude(const_cast<SgProp*>(prop));
     if (prop)
         delete prop;
-    return m_list.Exclude(const_cast<SgProp*>(prop));
+    return remove;
 }
 
 void SgPropList::Remove(SgPropID id, const SgProp* protectProp)
