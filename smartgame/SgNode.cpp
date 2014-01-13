@@ -401,6 +401,7 @@ void SgNode::ShortestPathTo(SgNode* node, int* numBack,
     path->Clear();
     for (x = node; x != common; x = x->m_father)
     {
+        SG_ASSERT(x);
         SG_ASSERT(x->IsMarked());
         x->Unmark();
         path->PushBack(x);
@@ -436,6 +437,9 @@ void SgNode::DeleteSubtree()
 {
     // 'delete' does all the work of keeping the tree pointers consistent, so
     // can just keep deleting until no nodes below the current node remain.
+    // @todo This confuses the Clang static analyzer and is probably bad
+    // practice even if it works.
+    // Rewrite to first unlink the node, then delete it.
     while (HasSon())
         delete LeftMostSon();
 }
