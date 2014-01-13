@@ -113,7 +113,8 @@ class FePatternMatcher
 {
 public:
     FePatternMatcher();
-    
+    virtual ~FePatternMatcher();
+
     /** Creates a new FePatternMatchResult and returns it. */
     FePatternMatchResult* Match(const GoBoard& bd) const;
     
@@ -128,7 +129,10 @@ class FeRectPatternMatcher : public FePatternMatcher
 {
 public:
     FeRectPatternMatcher();
-    
+    virtual ~FeRectPatternMatcher();
+
+    void Add(const FePattern* pattern);
+
 private:
 };
 

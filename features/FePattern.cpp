@@ -133,7 +133,10 @@ const FePatternMatch& FePatternMatchResult::Match(size_t index) const
 
 FePatternMatcher::FePatternMatcher()
 { }
-    
+
+FePatternMatcher::~FePatternMatcher()
+{ }
+
 FePatternMatchResult* FePatternMatcher::Match(const GoBoard& bd) const
 {
     SG_UNUSED(bd);
@@ -153,3 +156,12 @@ void FePatternMatcher::Add(const FePattern* pattern)
 FeRectPatternMatcher::FeRectPatternMatcher()
   : FePatternMatcher()
 { }
+
+FeRectPatternMatcher::~FeRectPatternMatcher()
+{ }
+
+void FeRectPatternMatcher::Add(const FePattern* pattern)
+{
+    FePatternMatcher::Add(pattern);
+    // TODO
+}
