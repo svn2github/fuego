@@ -1231,13 +1231,13 @@ void GoUctCommands::CmdStatSearch(GtpCommand& cmd)
 
 namespace {
 
-    // map from range [0..1] to [-1..+1]
+    /** Map mean from range [0..1] to [-1..+1] */
     SgUctValue MapMeanToTerritoryEstimate(SgUctValue mean)
     {
         return mean * 2 - 1;
     }
     
-    // map into one of: Black (+1), White (-1), neutral (0)
+    /** Map mean into one of: Black (+1), White (-1), neutral (0) */
     SgUctValue MapMeanToLikelyTerritory(SgUctValue mean)
     {
         const SgUctValue threshold = 0.25f;
@@ -1254,7 +1254,7 @@ SgUctValue GoUctCommands::DisplayTerritory(GtpCommand& cmd,
     cmd.CheckArgNone();
     SgPointArray<SgUctStatistics> territoryStatistics
         = ThreadState(0).m_territoryStatistics;
-    SgPointArray<SgUctValue> array;
+    SgPointArray<SgUctValue> array(0);
     SgUctValue sum = SgUctValue(0);
     for (GoBoard::Iterator it(m_bd); it; ++it)
     {
