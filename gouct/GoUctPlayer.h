@@ -723,7 +723,7 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
     {
         for (GoBoard::Iterator it(bd); it; ++it)
         {
-            SgUctValue mean = territory[*it].Mean();
+            const SgUctValue mean = territory[*it].Mean();
             if (  mean > 1 - m_sureWinThreshold
                && mean < m_sureWinThreshold)
             {
@@ -732,10 +732,10 @@ bool GoUctPlayer<SEARCH, THREAD>::DoEarlyPassSearch(SgUctValue maxGames,
                 bool isSafeOppAdj = false;
                 for (GoNbIterator it2(bd, *it); it2; ++it2)
                 {
-                    SgUctValue mean = territory[*it2].Mean();
-                    if (mean > m_sureWinThreshold)
+                    const SgUctValue nbMean = territory[*it2].Mean();
+                    if (nbMean > m_sureWinThreshold)
                         isSafeToPlayAdj = true;
-                    if (mean < 1 - m_sureWinThreshold)
+                    if (nbMean < 1 - m_sureWinThreshold)
                         isSafeOppAdj = true;
                 }
                 if (isSafeToPlayAdj && isSafeOppAdj)
@@ -966,11 +966,11 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
         else
             maxTime = m_timeControl.TimeForCurrentMove(time,
                                                        ! m_writeDebugOutput);
-        SgUctValue value;
         if (m_searchMode == GOUCT_SEARCHMODE_ONEPLY)
         {
             m_search.SetToPlay(toPlay);
-            move = m_search.SearchOnePly(m_maxGames, maxTime, value);
+            SgUctValue ignoreValue;
+            move = m_search.SearchOnePly(m_maxGames, maxTime, ignoreValue);
             if (move == SG_NULLMOVE)
                 move = SG_PASS;
             else

@@ -338,14 +338,14 @@ bool GoEyeUtil::IsTwoPointEye(const BOARD& bd, SgPoint p,
 }
 
 template<class BOARD>
-bool GoEyeUtil::MakesNakadeShape(const BOARD& bd, SgPoint p,
+bool GoEyeUtil::MakesNakadeShape(const BOARD& bd, SgPoint move,
                                  SgBlackWhite toPlay)
 {
     SgPointSet area;
-    area.Include(p);
+    area.Include(move);
     int nu = 1;
     SgVector<SgPoint> toProcess;
-    toProcess.PushBack(p);
+    toProcess.PushBack(move);
     while (toProcess.NonEmpty())
     {
         SgPoint p = toProcess.Back();

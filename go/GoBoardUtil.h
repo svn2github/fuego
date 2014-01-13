@@ -695,9 +695,9 @@ inline bool GoBoardUtil::SelfAtariForColor(const BOARD& bd, SgPoint p,
     SgPoint lib = SG_NULLPOINT;
     bool hasOwnNb = false;
     bool hasCapture = false;
-    for (GoNb4Iterator<BOARD> it(bd, p); it; ++it)
+    for (GoNb4Iterator<BOARD> nbit(bd, p); nbit; ++nbit)
     {
-        const SgPoint nb = *it;
+        const SgPoint nb = *nbit;
         const SgBlackWhite nbColor = bd.GetColor(nb);
         if (nbColor == SG_EMPTY)
         {
@@ -730,10 +730,10 @@ inline bool GoBoardUtil::SelfAtariForColor(const BOARD& bd, SgPoint p,
             {
                 if (lib == SG_NULLPOINT)
                 {
-                    lib = *it;
+                    lib = nb;
                     hasCapture = true;
                 }
-                else if (lib != *it)
+                else if (lib != nb)
                     return false;
             }
         }
@@ -769,9 +769,9 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
     SgPoint lib = SG_NULLPOINT;
     bool hasOwnNb = false;
     bool hasCapture = false;
-    for (GoNb4Iterator<BOARD> it(bd, p); it; ++it)
+    for (GoNb4Iterator<BOARD> nbit(bd, p); nbit; ++nbit)
     {
-        const SgPoint nb = *it;
+        const SgPoint nb = *nbit;
         const SgBlackWhite nbColor = bd.GetColor(nb);
         if (nbColor == SG_EMPTY)
         {
@@ -804,10 +804,10 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
             {
                 if (lib == SG_NULLPOINT)
                 {
-                    lib = *it;
+                    lib = nb;
                     hasCapture = true;
                 }
-                else if (lib != *it)
+                else if (lib != nb)
                     return false;
             }
         }
@@ -988,13 +988,14 @@ std::ostream& GoWriteBoard(std::ostream& out, const BOARD& bd)
         buffer << "   ";
     else
         buffer << "  ";
-    SgGrid col;
-    char c;
-    for (col = 1, c = 'A'; col <= size; ++col, ++c)
     {
-        if (c == 'I')
-            ++c;
-        buffer << c << ' ';
+        SgGrid col = 1;
+        for (char c = 'A'; col <= size; ++col, ++c)
+        {
+            if (c == 'I')
+                ++c;
+            buffer << c << ' ';
+        }
     }
     buffer << '\n';
     for (SgGrid row = size; row >= 1; --row)
@@ -1042,11 +1043,14 @@ std::ostream& GoWriteBoard(std::ostream& out, const BOARD& bd)
         buffer << "   ";
     else
         buffer << "  ";
-    for (col = 1, c = 'A'; col <= size; ++col, ++c)
     {
-        if (c == 'I')
-            ++c;
-        buffer << c << ' ';
+        SgGrid col = 1;
+        for (char c = 'A'; col <= size; ++col, ++c)
+        {
+            if (c == 'I')
+                ++c;
+            buffer << c << ' ';
+        }
     }
     buffer << '\n';
     out << buffer.str();

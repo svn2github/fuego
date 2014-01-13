@@ -407,9 +407,9 @@ bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
         {
             const SgPoint anchor2 = bd.Anchor(*it);
             if (anchor != anchor2)
-                for (typename BOARD::LibertyIterator it(bd, anchor2); it;
-                     ++it)
-                    if (! bd.IsLibertyOfBlock(*it, anchor))
+                for (typename BOARD::LibertyIterator lit(bd, anchor2); lit;
+                     ++lit)
+                    if (! bd.IsLibertyOfBlock(*lit, anchor))
                         if (++nu >= 0)
                             return true;
         }
