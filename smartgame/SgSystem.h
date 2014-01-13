@@ -78,8 +78,20 @@ public:
 
 #ifndef NDEBUG
 
+/** Help the Clang static analyzer use our assertions. 
+    See http://clang-analyzer.llvm.org/annotations.html#attr_analyzer_noreturn
+*/
+#ifndef CLANG_ANALYZER_NORETURN
+#if __has_feature(attribute_analyzer_noreturn)
+#define CLANG_ANALYZER_NORETURN __attribute__((analyzer_noreturn))
+#else
+#define CLANG_ANALYZER_NORETURN
+#endif
+#endif
+
 /** System-specific action when an SG_ASSERT fails */
-void SgHandleAssertion(const char* expr, const char* file, int line);
+void SgHandleAssertion(const char* expr, const char* file, int line)
+ CLANG_ANALYZER_NORETURN;
 
 #define SG_ASSERT(x) \
     do \
