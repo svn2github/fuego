@@ -115,10 +115,8 @@ void DfpnSolver::GetPVFromHash(PointSequence& pv)
     	UndoMove();
 }
 
-void DfpnSolver::LookupData(DfpnData& data, const DfpnChildren& children, 
-                            std::size_t childIndex)
+void DfpnSolver::LookupChildDataNonConst(SgMove move, DfpnData& data)
 {
-    const SgMove move = children.MoveAt(childIndex);
     PlayMove(move);
     if (! TTRead(data))
     {
@@ -127,6 +125,19 @@ void DfpnSolver::LookupData(DfpnData& data, const DfpnChildren& children,
         data.m_work = 0;
     }
     UndoMove();
+}
+
+void DfpnSolver::LookupChildData(SgMove move, DfpnData& data) const
+{
+    DfpnSolver* solver = const_cast<DfpnSolver*>(this);
+    solver->LookupChildDataNonConst(move, data);
+}
+
+void DfpnSolver::LookupData(DfpnData& data, const DfpnChildren& children,
+                            std::size_t childIndex) const
+{
+    const SgMove move = children.MoveAt(childIndex);
+    LookupChildData(move, data);
 }
 
 size_t DfpnSolver::MID(const DfpnBounds& maxBounds, DfpnHistory& history)

@@ -506,14 +506,30 @@ private:
 
     bool CheckAbort();
 
-    void LookupData(DfpnData& data, const DfpnChildren& children, 
-                    std::size_t childIndex);
+    /** Private, called by the default LookupChildData */
+    void LookupChildDataNonConst(SgMove move, DfpnData& data);
 
-    virtual bool TTRead(DfpnData& data);
+    /** Lookup data for position after move.
+        The default method executes the move, so is not efficient.
+        It is also not threadsafe if multiple threads search the same game.
+        Override if a search has a more efficient/safe method to lookup
+        a child's hash code, e.g. direct computation */
+    virtual void LookupChildData(SgMove move, DfpnData& data) const;
+
+    /** Lookup data for child with index childIndex. */
+    void LookupData(DfpnData& data, const DfpnChildren& children,
+                    std::size_t childIndex) const;
+
+    /** Try to read entry for current position from transposition table */
+    virtual bool TTRead(DfpnData& data) const;
+
+    /** Try to read entry for a position with known hash code */
+    virtual bool TTRead(SgHashCode hash, DfpnData& data) const;
 
     virtual void TTWrite(const DfpnData& data);
 
-    void PrintStatistics(SgEmptyBlackWhite winner, const PointSequence& p) const;
+    void PrintStatistics(SgEmptyBlackWhite winner, const PointSequence& p)
+    const;
 
     // reconstruct the pv by following the best moves in hash table.
     // todo make const, use ModBoard. (game-specific)
@@ -574,9 +590,15 @@ inline double DfpnSolver::Timelimit() const
     return m_timelimit;
 }
 
-inline bool DfpnSolver::TTRead(DfpnData& data)
+inline bool DfpnSolver::TTRead(SgHashCode hash, DfpnData& data) const
 {
-    return m_hashTable->Lookup(Hash(), &data);
+    return m_hashTable->Lookup(hash, &data);
+}
+
+
+inline bool DfpnSolver::TTRead(DfpnData& data) const
+{
+    return TTRead(Hash(), data);
 }
 
 inline void DfpnSolver::TTWrite(const DfpnData& data)
