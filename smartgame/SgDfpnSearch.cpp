@@ -467,7 +467,7 @@ void DfpnSolver::UpdateBounds(DfpnBounds& bounds,
     bounds = boundsAll;
 }
 
-bool DfpnSolver::Validate(DfpnHashTable& positions, const SgBlackWhite winner,
+bool DfpnSolver::Validate(DfpnHashTable& hashTable, const SgBlackWhite winner,
                           SgSearchTracer& tracer)
 {
     SG_ASSERT_BW(winner);
@@ -476,13 +476,12 @@ bool DfpnSolver::Validate(DfpnHashTable& positions, const SgBlackWhite winner,
     if (! TTRead(data))
     {
         PointSequence pv;
-        StartSearch(positions, pv);
+        StartSearch(hashTable, pv);
         const bool wasRead = TTRead(data);
         SG_DEBUG_ONLY(wasRead);
         SG_ASSERT(wasRead);
     }
 
-    std::vector<SgMove> moves;
     const bool orNode = (winner == GetColorToMove());
     if (orNode)
     {
@@ -514,18 +513,20 @@ bool DfpnSolver::Validate(DfpnHashTable& positions, const SgBlackWhite winner,
             return false;
         }
     }
-    else if (orNode)
+
+    std::vector<SgMove> moves;
+    if (orNode)
         moves.push_back(data.m_bestMove);
     else // AND node
         GenerateChildren(moves);
 
     // recurse
     for (std::vector<SgMove>::const_iterator it = moves.begin();
-        it != moves.end(); ++it)
+         it != moves.end(); ++it)
     {
         tracer.AddTraceNode(*it, GetColorToMove());
         PlayMove(*it);
-        if (! Validate(positions, winner, tracer))
+        if (! Validate(hashTable, winner, tracer))
             return false;
         UndoMove();
         tracer.TakeBackTraceNode();
