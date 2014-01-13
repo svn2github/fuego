@@ -292,8 +292,10 @@ void GoUctBookBuilder<PLAYER>::CreateWorkers()
         newPlayer->SetForcedOpeningMoves(false);
         // Ensure all games are played; ie, do not use early count abort.
         newPlayer->Search().SetMoveSelect(SG_UCTMOVESELECT_ESTIMATE);
-        newPlayer->Search().SetMaxNodes(m_maxMemory / (m_numWorkers * 2 * sizeof(SgUctNode)));
-        newPlayer->Search().SetNumberThreads(m_numThreadsPerWorker);
+        newPlayer->Search().SetMaxNodes(
+                        m_maxMemory / (m_numWorkers * 2 * sizeof(SgUctNode)));
+        newPlayer->Search().SetNumberThreads(
+                        static_cast<int>(m_numThreadsPerWorker));
         newPlayer->SetReuseSubtree(false);
         newPlayer->SetWriteDebugOutput(false);
 
