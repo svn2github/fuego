@@ -9,6 +9,7 @@
 #include "GoSafetyCommands.h"
 #include "GoUctCommands.h"
 #include "GoUctBookBuilderCommands.h"
+#include "FeCommands.h"
 
 //----------------------------------------------------------------------------
 
@@ -46,6 +47,9 @@ private:
     GoUctBookBuilderCommands<PlayerType> m_autoBookCommands;
 
     GoSafetyCommands m_safetyCommands;
+
+    FeCommands m_feCommands;
+
 };
 
 //----------------------------------------------------------------------------
