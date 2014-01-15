@@ -250,10 +250,106 @@ void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& fea
 }
 } // namespace
 
+std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
+{
+    static const char* s_string[_NU_FE_FEATURES] =
+    {
+        "FE_PASS_NEW",            // pass, previous move was not pass
+        "FE_PASS_CONSECUTIVE",    // pass, previous move was also pass
+        "FE_CAPTURE_ADJ_ATARI",   // String contiguous to new string in atari
+        "FE_CAPTURE_RECAPTURE",   // Re-capture previous move
+        "FE_CAPTURE_PREVENT_CONNECTION", // Prevent connection to previous move
+        "FE_CAPTURE_NOT_LADDER",  // String not in a ladder
+        "FE_CAPTURE_LADDER",      // String in a ladder
+                                // "FE_CAPTURE_MULTIPLE",
+        "FE_EXTENSION_NOT_LADDER", // New atari, not in a ladder
+        "FE_EXTENSION_LADDER",    // New atari, in a ladder
+                                // todo distinguish extending 1 stone only?
+        "FE_SELFATARI",
+        // "FE_SELFATARI_NAKADE",
+        // "FE_SELFATARI_THROWIN",
+        "FE_ATARI_LADDER",        // Ladder atari
+        "FE_ATARI_KO",            // Atari when there is a ko
+        "FE_ATARI_OTHER",         // Other atari
+        "FE_LINE_1",
+        "FE_LINE_2",
+        "FE_LINE_3",
+        "FE_LINE_4",
+        "FE_DIST_PREV_2", // d(dx,dy) = |dx|+|dy|+max(|dx|,|dy|)
+        "FE_DIST_PREV_3",
+        "FE_DIST_PREV_4",
+        "FE_DIST_PREV_5",
+        "FE_DIST_PREV_6",
+        "FE_DIST_PREV_7",
+        "FE_DIST_PREV_8",
+        "FE_DIST_PREV_9",
+        "FE_DIST_PREV_10",
+        "FE_DIST_PREV_11",
+        "FE_DIST_PREV_12",
+        "FE_DIST_PREV_13",
+        "FE_DIST_PREV_14",
+        "FE_DIST_PREV_15",
+        "FE_DIST_PREV_16",
+        "FE_DIST_PREV_17",
+        "FE_DIST_PREV_OWN_2",
+        "FE_DIST_PREV_OWN_3",
+        "FE_DIST_PREV_OWN_4",
+        "FE_DIST_PREV_OWN_5",
+        "FE_DIST_PREV_OWN_6",
+        "FE_DIST_PREV_OWN_7",
+        "FE_DIST_PREV_OWN_8",
+        "FE_DIST_PREV_OWN_9",
+        "FE_DIST_PREV_OWN_10",
+        "FE_DIST_PREV_OWN_11",
+        "FE_DIST_PREV_OWN_12",
+        "FE_DIST_PREV_OWN_13",
+        "FE_DIST_PREV_OWN_14",
+        "FE_DIST_PREV_OWN_15",
+        "FE_DIST_PREV_OWN_16",
+        "FE_DIST_PREV_OWN_17",
+        "FE_MC_OWNER_1", // 0−7 wins/63 sim.
+        "FE_MC_OWNER_2", // 8−15
+        "FE_MC_OWNER_3", // 16−23
+        "FE_MC_OWNER_4", // 24−31
+        "FE_MC_OWNER_5", // 32−39
+        "FE_MC_OWNER_6", // 40−47
+        "FE_MC_OWNER_7", // 48−55
+        "FE_MC_OWNER_8",  // 56−63
+        "FE_NONE"
+    };
+    stream << s_string[f];
+    return stream;
+}
 
 namespace FeBasicFeatures {
 
-void FindFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& features)
+void WriteFeatureSet(std::ostream& stream,
+                     SgPoint move,
+                     const FeBasicFeatureSet& features)
+{
+    stream << SgWritePoint(move) << ' ';
+    for (FeBasicFeature f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
+    {
+        if (features.test(f))
+            stream << ' ' << f;
+    }
+    stream << '\n';
+}
+
+void WriteBoardFeatures(std::ostream& stream,
+                        const SgPointArray<FeBasicFeatureSet>& features,
+                        int boardSize)
+{
+    for (SgGrid row = boardSize; row >= 1; --row)
+        for (SgGrid col = 1; col <= boardSize; ++col)
+        {
+            SgPoint point = SgPointUtil::Pt(col, row);
+            WriteFeatureSet(stream, point, features[point]);
+        }
+}
+
+void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
+                           FeBasicFeatureSet& features)
 {
     if (move == SG_PASS)
     {
@@ -269,4 +365,17 @@ void FindFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& features)
     FindDistPrevMoveFeatures(bd, move, features);
     FindMCOwnerFeatures(bd, move, features);
 }
+
+void FindAllBasicFeatures(const GoBoard& bd,
+                          SgPointArray<FeBasicFeatureSet>& features,
+                          FeBasicFeatureSet& passFeatures)
+{
+    for(GoBoard::Iterator it(bd); it; ++it)
+        if (bd.IsLegal(*it))
+            FindBasicMoveFeatures(bd, *it, features[*it]);
+    FindBasicMoveFeatures(bd, SG_PASS, passFeatures);
+}
+
+//----------------------------------------------------------------------------
+
 } // namespace FeBasicFeatures

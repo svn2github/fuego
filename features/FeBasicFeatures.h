@@ -10,7 +10,9 @@
 //----------------------------------------------------------------------------
 
 #include <bitset>
+#include <iosfwd>
 #include "GoLadder.h"
+#include "SgPointArray.h"
 
 //----------------------------------------------------------------------------
 
@@ -85,12 +87,26 @@ enum FeBasicFeature{
 
 typedef std::bitset<_NU_FE_FEATURES> FeBasicFeatureSet;
 
+std::ostream& operator<<(std::ostream& stream, FeBasicFeature f);
+
 //----------------------------------------------------------------------------
 
 namespace FeBasicFeatures {
     
-void FindFeatures(const GoBoard& bd, SgPoint move,
+void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                   FeBasicFeatureSet& features);
+
+void FindAllBasicFeatures(const GoBoard& bd,
+                          SgPointArray<FeBasicFeatureSet>& features,
+                          FeBasicFeatureSet& passFeatures);
+
+void WriteFeatureSet(std::ostream& stream,
+                     SgPoint move,
+                     const FeBasicFeatureSet& features);
+
+void WriteBoardFeatures(std::ostream& stream,
+                        const SgPointArray<FeBasicFeatureSet>& features,
+                        int boardSize);
 }
 
 //----------------------------------------------------------------------------
