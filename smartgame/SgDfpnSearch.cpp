@@ -471,7 +471,6 @@ bool DfpnSolver::Validate(DfpnHashTable& hashTable, const SgBlackWhite winner,
                           SgSearchTracer& tracer)
 {
     SG_ASSERT_BW(winner);
-
     DfpnData data;
     if (! TTRead(data))
     {
@@ -531,8 +530,14 @@ bool DfpnSolver::Validate(DfpnHashTable& hashTable, const SgBlackWhite winner,
         UndoMove();
         tracer.TakeBackTraceNode();
     }
-
     return true;
+}
+
+void DfpnSolver::WriteMove(std::ostream& stream, SgMove move) const
+{
+    // Most likely you will want to override this with printing the
+    // game-specific representation of the move
+    stream << "SgMove " << move;
 }
 
 //----------------------------------------------------------------------------

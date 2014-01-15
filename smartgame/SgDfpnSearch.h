@@ -413,6 +413,9 @@ public:
     
     size_t NumTerminalNodes() const;
 
+    /** Write move. Override for game-specific output */
+    virtual void WriteMove(std::ostream& stream, SgMove move) const;
+
     //------------------------------------------------------------------------
 
     /** @name Parameters */
@@ -444,8 +447,8 @@ public:
     void SetWideningFactor(float wideningFactor);
 
     /** Epsilon is the epsilon used in 1+epsilon trick,
-     *  i.e. when setting bounds for a child MID call
-     *  delta2 * (1+epsilon) is used instead delta2 + 1 */
+        i.e. when setting bounds for a child MID call
+        delta2 * (1+epsilon) is used instead delta2 + 1 */
     float Epsilon() const;
     
     /** See Epsilon() */
@@ -506,7 +509,13 @@ private:
 
     bool CheckAbort();
 
-    /** Private, called by the default LookupChildData */
+    size_t ComputeMaxChildIndex(const std::vector<DfpnData>&
+                                childrenData) const;
+    // reconstruct the pv by following the best moves in hash table.
+    // todo make const, use ModBoard. (game-specific)
+    void GetPVFromHash(PointSequence& pv);
+    
+    /** Called by the default LookupChildData */
     void LookupChildDataNonConst(SgMove move, DfpnData& data);
 
     /** Lookup data for position after move.
@@ -520,23 +529,17 @@ private:
     void LookupData(DfpnData& data, const DfpnChildren& children,
                     std::size_t childIndex) const;
 
+    void PrintStatistics(SgEmptyBlackWhite winner, const PointSequence& p)
+    const;
+
     /** Try to read entry for current position from transposition table */
     virtual bool TTRead(DfpnData& data) const;
 
     /** Try to read entry for a position with known hash code */
     virtual bool TTRead(SgHashCode hash, DfpnData& data) const;
 
+    /** Write transposition table entry for current position */
     virtual void TTWrite(const DfpnData& data);
-
-    void PrintStatistics(SgEmptyBlackWhite winner, const PointSequence& p)
-    const;
-
-    // reconstruct the pv by following the best moves in hash table.
-    // todo make const, use ModBoard. (game-specific)
-    void GetPVFromHash(PointSequence& pv);
-    
-    size_t ComputeMaxChildIndex(const std::vector<DfpnData>&
-                                childrenData) const;
 };
 
 inline float DfpnSolver::Epsilon() const
