@@ -106,8 +106,35 @@ void WriteFeatureSet(std::ostream& stream,
 
 void WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeBasicFeatureSet>& features,
-                        int boardSize);
-}
+                        const GoBoard& bd);
+
+/** Write features in the format of Wistuba's gamma learning code
+    Each candidate move is described by a list of ID of its features.
+    The first number in each line is a 0 for a non-plyed move,
+    and 1 for the played move which must be written last.
+ 
+    Example output:
+    0 23 456 1 9
+    0 45 67 999
+    1 55 87 1234
+ */
+void WriteBoardFeaturesWistuba(std::ostream& stream,
+                        const SgPointArray<FeBasicFeatureSet>& features,
+                        const FeBasicFeatureSet& passFeatures,
+                        const GoBoard& bd,
+                        SgPoint bestMove);
+
+/** Computes features for the position - preceding - the current one
+    and writes them using WriteBoardFeaturesWistuba.
+    The computation cannot be for the current positon when used as a GTP
+    command since the next move is not available to the engine, but it is
+    needed since we need the chosen move.
+*/
+
+void WriteFeaturesWistuba(std::ostream& stream,
+                                const GoBoard& bd);
+
+} // namespace FeBasicFeatures
 
 //----------------------------------------------------------------------------
 

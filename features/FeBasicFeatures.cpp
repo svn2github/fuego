@@ -323,31 +323,6 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
 
 namespace FeBasicFeatures {
 
-void WriteFeatureSet(std::ostream& stream,
-                     SgPoint move,
-                     const FeBasicFeatureSet& features)
-{
-    stream << SgWritePoint(move) << ' ';
-    for (FeBasicFeature f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
-    {
-        if (features.test(f))
-            stream << ' ' << f;
-    }
-    stream << '\n';
-}
-
-void WriteBoardFeatures(std::ostream& stream,
-                        const SgPointArray<FeBasicFeatureSet>& features,
-                        int boardSize)
-{
-    for (SgGrid row = boardSize; row >= 1; --row)
-        for (SgGrid col = 1; col <= boardSize; ++col)
-        {
-            SgPoint point = SgPointUtil::Pt(col, row);
-            WriteFeatureSet(stream, point, features[point]);
-        }
-}
-
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features)
 {
@@ -375,6 +350,81 @@ void FindAllBasicFeatures(const GoBoard& bd,
             FindBasicMoveFeatures(bd, *it, features[*it]);
     FindBasicMoveFeatures(bd, SG_PASS, passFeatures);
 }
+
+void WriteFeatureSet(std::ostream& stream,
+                     SgPoint move,
+                     const FeBasicFeatureSet& features)
+{
+    stream << SgWritePoint(move) << ' ';
+    for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
+    {
+        if (features.test(f))
+            stream << ' ' << f;
+    }
+    stream << '\n';
+}
+
+void WriteFeatureSetWistuba(std::ostream& stream,
+                            int isChosen,
+                            const FeBasicFeatureSet& features)
+{
+    stream << isChosen;
+    for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
+    {
+        if (features.test(f))
+            stream << ' ' << f;
+    }
+    stream << '\n';
+}
+
+void WriteBoardFeatures(std::ostream& stream,
+                        const SgPointArray<FeBasicFeatureSet>& features,
+                        const GoBoard& bd)
+{
+    for (GoBoard::Iterator it(bd); it; ++it)
+        WriteFeatureSet(stream, *it, features[*it]);
+}
+
+void WriteBoardFeaturesWistuba(std::ostream& stream,
+                         const SgPointArray<FeBasicFeatureSet>& features,
+                         const FeBasicFeatureSet& passFeatures,
+                         const GoBoard& bd,
+                         SgPoint chosenMove)
+{
+    for (GoBoard::Iterator it(bd); it; ++it)
+    {
+        const SgPoint p = *it;
+        if (p != chosenMove && bd.IsLegal(p))
+            WriteFeatureSetWistuba(stream, 0, features[p]);
+    }
+    if (SG_PASS != chosenMove)
+        WriteFeatureSetWistuba(stream, 0, passFeatures);
+    SG_ASSERT(bd.IsLegal(chosenMove));
+    WriteFeatureSetWistuba(stream, 1, features[chosenMove]);
+}
+
+void WriteFeaturesWistuba(std::ostream& stream,
+                                const GoBoard& constBd)
+{
+    SgPoint chosenMove = constBd.GetLastMove();
+    if (chosenMove != SG_NULLMOVE)
+    {
+        GoModBoard mod(constBd);
+        GoBoard& bd = mod.Board();
+        bd.Undo();
+        SgPointArray<FeBasicFeatureSet> features;
+        FeBasicFeatureSet passFeatures;
+        FeBasicFeatures::FindAllBasicFeatures(bd, features, passFeatures);
+        if (chosenMove != SG_NULLMOVE)
+            WriteBoardFeaturesWistuba(stream, features, passFeatures,
+                                            bd, chosenMove);
+        bd.Play(chosenMove);
+    }
+    SgDebug() << constBd
+    << "chosenMove = " << SgWritePoint(chosenMove)
+    << '\n';
+}
+
 
 //----------------------------------------------------------------------------
 
