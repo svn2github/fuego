@@ -474,14 +474,16 @@ void WriteFeatures(std::ostream& stream, const GoBoard& constBd,
     SgPoint chosenMove = constBd.GetLastMove();
     GoModBoard mod(constBd);
     GoBoard& bd = mod.Board();
-    bd.Undo();
-    SgPointArray<FeMoveFeatures> features;
-    FeMoveFeatures passFeatures;
-    FeFeatures::FindAllFeatures(bd, features, passFeatures);
     if (chosenMove != SG_NULLMOVE)
+    {
+        bd.Undo();
+        SgPointArray<FeMoveFeatures> features;
+        FeMoveFeatures passFeatures;
+        FeFeatures::FindAllFeatures(bd, features, passFeatures);
         WriteBoardFeatures(stream, features, passFeatures,
-                                  bd, chosenMove, writeComment);
-    bd.Play(chosenMove);
+                           bd, chosenMove, writeComment);
+        bd.Play(chosenMove);
+    }
 }
 
 } // namespace WistubaFormat
