@@ -125,14 +125,18 @@ public:
 
     GoUctPatterns(const BOARD& bd, PatternType patternType);
 
+    static int CodeOf8Neighbors(const BOARD& bd, SgPoint p);
+
+    static int CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p);
+    
+	float GetPatternGamma(const BOARD& bd, const SgPoint p,
+			const SgBlackWhite toPlay) const;
+
     /** Match any of the standard MoGo patterns. */
     bool MatchAny(SgPoint p) const;
 
     /** If matches any MoGo pattern, return true and lookup gamma value.*/
     bool MatchAny(SgPoint p, float& gamma) const;
-
-	float GetPatternGamma(const BOARD& bd, const SgPoint p,
-			const SgBlackWhite toPlay) const;
 
 	/** provide interface of other gamma patterns*/
 	void InitializeGammaPatternFromProcessedData(PatternType patternType);
@@ -176,10 +180,6 @@ private:
     static bool CheckHane1(const GoBoard& bd, SgPoint p, SgBlackWhite c,
                            SgBlackWhite opp, int cDir, int otherDir);
 
-    static int CodeOf8Neighbors(const BOARD& bd, SgPoint p);
-
-    static int CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p);
-
     static int EdgeDirection(GoBoard& bd, SgPoint p, int index);
 
     static int EBWCodeOfPoint(const BOARD& bd, SgPoint p);
@@ -199,13 +199,6 @@ private:
     static bool MatchHane(const GoBoard& bd, SgPoint p, const int nuBlack,
                           const int nuWhite);
 
-    static bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
-
-    static int OtherDir(int dir);
-
-    static int SetupCodedEdgePosition(GoBoard& bd, int code);
-
-    static int SetupCodedPosition(GoBoard& bd, int code);
 
     /** Match any of the center patterns. */
     bool MatchAnyCenter(SgPoint p) const;
@@ -218,6 +211,14 @@ private:
 
     /** Match any of the edge patterns, and put value to gamma */
     bool MatchAnyEdge(SgPoint p, float& gammma) const;
+
+    static bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
+
+    static int OtherDir(int dir);
+
+    static int SetupCodedEdgePosition(GoBoard& bd, int code);
+
+    static int SetupCodedPosition(GoBoard& bd, int code);
 };
 
 template<class BOARD>
