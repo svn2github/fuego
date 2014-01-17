@@ -91,13 +91,28 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f);
 
 //----------------------------------------------------------------------------
 
-namespace FeBasicFeatures {
-    
-/**  */
-void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
-                  FeBasicFeatureSet& features);
+namespace FeFeatures {
 
-/**  */
+const int INVALID_3x3_INDEX = -1;
+
+struct FeMoveFeatures
+{
+    FeBasicFeatureSet m_basicFeatures;
+    int m_3x3Index;
+
+    FeMoveFeatures() :
+    m_basicFeatures(),
+    m_3x3Index(INVALID_3x3_INDEX)
+    { }
+};
+
+void FindAllFeatures(const GoBoard& bd,
+                     SgPointArray<FeMoveFeatures>& features,
+                     FeMoveFeatures& passFeatures);
+
+void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
+                           FeBasicFeatureSet& features);
+
 void FindAllBasicFeatures(const GoBoard& bd,
                           SgPointArray<FeBasicFeatureSet>& features,
                           FeBasicFeatureSet& passFeatures);
@@ -107,11 +122,15 @@ void WriteFeatureSet(std::ostream& stream,
                      SgPoint move,
                      const FeBasicFeatureSet& features);
 
-/** Write features for whole board in human-readable format */
+void WriteFeatures(std::ostream& stream,
+                   SgPoint move,
+                   const FeMoveFeatures& features);
+    
 void WriteBoardFeatures(std::ostream& stream,
-                        const SgPointArray<FeBasicFeatureSet>& features,
+                        const SgPointArray<FeMoveFeatures>& features,
                         const GoBoard& bd);
 
+namespace WistubaFormat {
 /** Write features in the format of Wistuba's gamma learning code
     Each candidate move is described by a list of ID of its features.
     The first number in each line is a 0 for a non-plyed move,
@@ -131,9 +150,9 @@ void WriteBoardFeatures(std::ostream& stream,
     Z is the size of the largest matching pattern feature.
     Right now it is set to constant 3.
 */
-void WriteBoardFeaturesWistuba(std::ostream& stream,
-                        const SgPointArray<FeBasicFeatureSet>& features,
-                        const FeBasicFeatureSet& passFeatures,
+void WriteBoardFeatures(std::ostream& stream,
+                        const SgPointArray<FeMoveFeatures>& features,
+                        const FeMoveFeatures& passFeatures,
                         const GoBoard& bd,
                         SgPoint bestMove,
                         bool writeComment);
@@ -142,16 +161,14 @@ void WriteBoardFeaturesWistuba(std::ostream& stream,
     and writes them using WriteBoardFeaturesWistuba.
     The computation cannot be for the current positon when used as a GTP
     command since the next move is not available to the engine, but it is
-    needed since we need the chosen move.
-*/
-void WriteFeaturesWistuba(std::ostream& stream,
-                          const GoBoard& bd,
-                          bool writeComment);
-
+    needed since we need the chosen move. */
+    void WriteFeatures(std::ostream& stream,
+                       const GoBoard& bd,
+                       bool writeComment);
+} // namespace WistubaFormat
 } // namespace FeBasicFeatures
 
 //----------------------------------------------------------------------------
 
 #endif // FE_BASIC_FEATURES_H
-
 

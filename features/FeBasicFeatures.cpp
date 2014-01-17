@@ -10,6 +10,7 @@
 #include "GoBoardUtil.h"
 #include "GoLadder.h"
 #include "GoSetupUtil.h"
+#include "GoUctPatterns.h"
 #include "SgWrite.h"
 
 using SgPointUtil::Pt;
@@ -167,6 +168,29 @@ void FindLineFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& featur
         features.set(f);
 }
 
+const int CORNER_INDEX_3x3 = 1000; // we don't have features on Pt(1,1)
+const int EDGE_START_INDEX_3x3 = 1001;
+const int CENTER_START_INDEX_3x3 = 2000;
+
+inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
+{
+    return EDGE_START_INDEX_3x3
+         + GoUctPatterns<GoBoard>::CodeOfEdgeNeighbors(bd, move);
+}
+
+inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
+{
+    return CENTER_START_INDEX_3x3
+         + GoUctPatterns<GoBoard>::CodeOf8Neighbors(bd, move);
+}
+
+inline int Find3x3Feature(const GoBoard& bd, SgPoint p)
+{
+    return bd.Pos(p) == 1  ? CORNER_INDEX_3x3
+         : bd.Line(p) == 1 ? Find2x3EdgeFeature(bd, p)
+                           : Find3x3CenterFeature(bd, p);
+}
+
 int Distance(SgPoint p1, SgPoint p2)
 {
     SG_ASSERT(! SgIsSpecialMove(p1));
@@ -248,28 +272,6 @@ void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& fea
     if (f != FE_NONE)
         features.set(f);
 }
-    
-
-void WriteFeatureSetWistuba(std::ostream& stream,
-                            int isChosen,
-                            const FeBasicFeatureSet& features,
-                            int moveNumber,
-                            bool writeComment)
-{
-    const int SHAPE_SIZE = 3; // TODO make this variable
-                              // when big pattern features are implemented
-    stream << isChosen;
-    for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
-    {
-        if (features.test(f))
-            stream << ' ' << f;
-    }
-    if (writeComment)
-    {
-        stream << " #0_" << moveNumber << ' ' << SHAPE_SIZE;
-    }
-    stream << '\n';
-}
 
 } // namespace
 
@@ -344,7 +346,7 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
     return stream;
 }
 
-namespace FeBasicFeatures {
+namespace FeFeatures {
 
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features)
@@ -364,14 +366,22 @@ void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindMCOwnerFeatures(bd, move, features);
 }
 
-void FindAllBasicFeatures(const GoBoard& bd,
-                          SgPointArray<FeBasicFeatureSet>& features,
-                          FeBasicFeatureSet& passFeatures)
+void FindMoveFeatures(const GoBoard& bd, SgPoint move,
+                      FeMoveFeatures& features)
+{
+    FindBasicMoveFeatures(bd, move, features.m_basicFeatures);
+    if (move != SG_PASS)
+        features.m_3x3Index = Find3x3Feature(bd, move);
+}
+
+void FindAllFeatures(const GoBoard& bd,
+                          SgPointArray<FeMoveFeatures>& features,
+                          FeMoveFeatures& passFeatures)
 {
     for(GoBoard::Iterator it(bd); it; ++it)
         if (bd.IsLegal(*it))
-            FindBasicMoveFeatures(bd, *it, features[*it]);
-    FindBasicMoveFeatures(bd, SG_PASS, passFeatures);
+            FindMoveFeatures(bd, *it, features[*it]);
+    FindMoveFeatures(bd, SG_PASS, passFeatures);
 }
 
 void WriteFeatureSet(std::ostream& stream,
@@ -384,63 +394,97 @@ void WriteFeatureSet(std::ostream& stream,
         if (features.test(f))
             stream << ' ' << f;
     }
+}
+
+void WritePatternFeatures(std::ostream& stream,
+                          const FeMoveFeatures& features)
+{
+    if (features.m_3x3Index != INVALID_3x3_INDEX)
+        stream << ' ' << features.m_3x3Index;
+}
+
+void WriteFeatures(std::ostream& stream,
+                   SgPoint move,
+                   const FeMoveFeatures& features)
+{
+    WriteFeatureSet(stream, move, features.m_basicFeatures);
+    WritePatternFeatures(stream, features);
     stream << '\n';
 }
 
 void WriteBoardFeatures(std::ostream& stream,
-                        const SgPointArray<FeBasicFeatureSet>& features,
+                        const SgPointArray<FeMoveFeatures>& features,
                         const GoBoard& bd)
 {
     for (GoBoard::Iterator it(bd); it; ++it)
         if (bd.IsLegal(*it))
-            WriteFeatureSet(stream, *it, features[*it]);
+            WriteFeatures(stream, *it, features[*it]);
+}
+    
+namespace WistubaFormat {
+
+void WriteFeatureSet(std::ostream& stream,
+                     const FeBasicFeatureSet& features)
+{
+    for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
+        if (features.test(f))
+            stream << ' ' << f;
 }
 
-void WriteBoardFeaturesWistuba(std::ostream& stream,
-                               const SgPointArray<FeBasicFeatureSet>&
-                                    features,
-                               const FeBasicFeatureSet& passFeatures,
-                               const GoBoard& bd,
-                               SgPoint chosenMove,
-                               bool writeComment)
+void WriteFeatures(std::ostream& stream,
+                   int isChosen,
+                   const FeMoveFeatures& features,
+                   int moveNumber,
+                   bool writeComment)
+{
+    const int SHAPE_SIZE = 3; // TODO make this variable
+                              // when big pattern features are implemented
+    stream << isChosen;
+    WriteFeatureSet(stream, features.m_basicFeatures);
+    WritePatternFeatures(stream, features);
+    if (writeComment)
+    {
+        stream << " #0_" << moveNumber << ' ' << SHAPE_SIZE;
+    }
+    stream << '\n';
+}
+
+void WriteBoardFeatures(std::ostream& stream,
+                        const SgPointArray<FeMoveFeatures>& features,
+                        const FeMoveFeatures& passFeatures,
+                        const GoBoard& bd,
+                        SgPoint chosenMove,
+                        bool writeComment)
 {
     const int moveNumber = bd.MoveNumber() + 1; // + 1 because we did undo
     for (GoBoard::Iterator it(bd); it; ++it)
     {
         const SgPoint p = *it;
         if (p != chosenMove && bd.IsLegal(p))
-            WriteFeatureSetWistuba(stream, 0, features[p],
-                                   moveNumber, writeComment);
+            WriteFeatures(stream, 0, features[p], moveNumber, writeComment);
     }
     if (SG_PASS != chosenMove)
-        WriteFeatureSetWistuba(stream, 0, passFeatures,
-                               moveNumber, writeComment);
-    SG_ASSERT(bd.IsLegal(chosenMove));
-    WriteFeatureSetWistuba(stream, 1, features[chosenMove],
-                           moveNumber, writeComment);
+        WriteFeatures(stream, 0, passFeatures, moveNumber, writeComment);
+    WriteFeatures(stream, 1, features[chosenMove], moveNumber, writeComment);
 }
 
-void WriteFeaturesWistuba(std::ostream& stream,
-                          const GoBoard& constBd,
-                          bool writeComment)
+void WriteFeatures(std::ostream& stream, const GoBoard& constBd,
+                   bool writeComment)
 {
     SgPoint chosenMove = constBd.GetLastMove();
+    GoModBoard mod(constBd);
+    GoBoard& bd = mod.Board();
+    bd.Undo();
+    SgPointArray<FeMoveFeatures> features;
+    FeMoveFeatures passFeatures;
+    FeFeatures::FindAllFeatures(bd, features, passFeatures);
     if (chosenMove != SG_NULLMOVE)
-    {
-        GoModBoard mod(constBd);
-        GoBoard& bd = mod.Board();
-        bd.Undo();
-        SgPointArray<FeBasicFeatureSet> features;
-        FeBasicFeatureSet passFeatures;
-        FeBasicFeatures::FindAllBasicFeatures(bd, features, passFeatures);
-        if (chosenMove != SG_NULLMOVE)
-            WriteBoardFeaturesWistuba(stream, features, passFeatures,
-                                      bd, chosenMove, writeComment);
-        bd.Play(chosenMove);
-    }
+        WriteBoardFeatures(stream, features, passFeatures,
+                                  bd, chosenMove, writeComment);
+    bd.Play(chosenMove);
 }
 
+} // namespace WistubaFormat
+} // namespace FeBasicFeatures
 
 //----------------------------------------------------------------------------
-
-} // namespace FeBasicFeatures

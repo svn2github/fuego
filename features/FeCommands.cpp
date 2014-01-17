@@ -16,11 +16,6 @@
 #include "SgWrite.h"
 
 //----------------------------------------------------------------------------
-namespace {
-    
-
-
-} // namespace
 
 FeCommands::FeCommands(const GoBoard& bd,
                        GoPlayer*& player,
@@ -30,6 +25,7 @@ FeCommands::FeCommands(const GoBoard& bd,
         m_game(game)
 {
     SG_UNUSED(m_player);
+    SG_UNUSED(m_game);
 }
 
 void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
@@ -44,22 +40,19 @@ void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 
 void FeCommands::CmdFeatures(GtpCommand& cmd)
 {
-    SgPointArray<FeBasicFeatureSet> features;
-    FeBasicFeatureSet passFeatures;
-    FeBasicFeatures::FindAllBasicFeatures(m_bd, features, passFeatures);
+    using FeFeatures::FeMoveFeatures;
+    SgPointArray<FeMoveFeatures> features;
+    FeMoveFeatures passFeatures;
+    FeFeatures::FindAllFeatures(m_bd, features, passFeatures);
     cmd << '\n';
-    FeBasicFeatures::WriteBoardFeatures(cmd, features, m_bd);
-    FeBasicFeatures::WriteFeatureSet(cmd, SG_PASS, passFeatures);
+    FeFeatures::WriteBoardFeatures(cmd, features, m_bd);
+    FeFeatures::WriteFeatures(cmd, SG_PASS, passFeatures);
 }
 
 void FeCommands::CmdFeaturesWistuba(GtpCommand& cmd)
 {
     cmd << '\n';
-    FeBasicFeatures::WriteFeaturesWistuba(cmd, m_bd, true);
-
-    SgDebug()
-        << "CurrentMoveNumber = " << m_game.CurrentMoveNumber()
-        << '\n';
+    FeFeatures::WistubaFormat::WriteFeatures(cmd, m_bd, true);
 }
 
 /** Write features and possibly comments for validation in Wistuba's format */
@@ -67,7 +60,7 @@ void FeCommands::FeaturesWistubaToFile(GtpCommand& cmd, bool writeComments)
 {
     cmd << '\n';
     std::ofstream stream("features.txt", std::ios::app);
-    FeBasicFeatures::WriteFeaturesWistuba(stream, m_bd, writeComments);
+    FeFeatures::WistubaFormat::WriteFeatures(stream, m_bd, writeComments);
 }
 
 /** Write features only in Wistuba's format */
