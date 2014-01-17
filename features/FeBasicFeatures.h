@@ -93,17 +93,21 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f);
 
 namespace FeBasicFeatures {
     
+/**  */
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                   FeBasicFeatureSet& features);
 
+/**  */
 void FindAllBasicFeatures(const GoBoard& bd,
                           SgPointArray<FeBasicFeatureSet>& features,
                           FeBasicFeatureSet& passFeatures);
 
+/** Write features for single move in human-readable format */
 void WriteFeatureSet(std::ostream& stream,
                      SgPoint move,
                      const FeBasicFeatureSet& features);
 
+/** Write features for whole board in human-readable format */
 void WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeBasicFeatureSet>& features,
                         const GoBoard& bd);
@@ -117,12 +121,22 @@ void WriteBoardFeatures(std::ostream& stream,
     0 23 456 1 9
     0 45 67 999
     1 55 87 1234
- */
+ 
+    If writeComment is true, then the validator comment
+    of the for #X_Y Z is added.
+    Here X is supposed to be a game number, which is not available in this 
+    context. Therefore, a 0 is written and later replaced by a standalone
+    postprocessing tool.
+    Y is the move number.
+    Z is the size of the largest matching pattern feature.
+    Right now it is set to constant 3.
+*/
 void WriteBoardFeaturesWistuba(std::ostream& stream,
                         const SgPointArray<FeBasicFeatureSet>& features,
                         const FeBasicFeatureSet& passFeatures,
                         const GoBoard& bd,
-                        SgPoint bestMove);
+                        SgPoint bestMove,
+                        bool writeComment);
 
 /** Computes features for the position - preceding - the current one
     and writes them using WriteBoardFeaturesWistuba.
@@ -130,9 +144,9 @@ void WriteBoardFeaturesWistuba(std::ostream& stream,
     command since the next move is not available to the engine, but it is
     needed since we need the chosen move.
 */
-
 void WriteFeaturesWistuba(std::ostream& stream,
-                                const GoBoard& bd);
+                          const GoBoard& bd,
+                          bool writeComment);
 
 } // namespace FeBasicFeatures
 

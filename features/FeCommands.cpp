@@ -36,8 +36,9 @@ void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
     "none/Features/features\n"
-    "none/Features Wistuba Format/features_wistuba\n"
-    "none/Features Wistuba Format To File/features_wistuba_file\n"
+    "none/Features Wistuba/features_wistuba\n"
+    "none/Features Wistuba - File/features_wistuba_file\n"
+    "none/Features+Comments Wistuba - File/features_comments_wistuba_file\n"
     ;
 }
 
@@ -54,23 +55,31 @@ void FeCommands::CmdFeatures(GtpCommand& cmd)
 void FeCommands::CmdFeaturesWistuba(GtpCommand& cmd)
 {
     cmd << '\n';
-    FeBasicFeatures::WriteFeaturesWistuba(cmd, m_bd);
+    FeBasicFeatures::WriteFeaturesWistuba(cmd, m_bd, true);
 
     SgDebug()
         << "CurrentMoveNumber = " << m_game.CurrentMoveNumber()
         << '\n';
 }
 
-void FeCommands::CmdFeaturesWistubaToFile(GtpCommand& cmd)
+/** Write features and possibly comments for validation in Wistuba's format */
+void FeCommands::FeaturesWistubaToFile(GtpCommand& cmd, bool writeComments)
 {
     cmd << '\n';
     std::ofstream stream("features.txt", std::ios::app);
-    FeBasicFeatures::WriteFeaturesWistuba(stream, m_bd);
-    //stream << std::flush;
+    FeBasicFeatures::WriteFeaturesWistuba(stream, m_bd, writeComments);
+}
 
-    SgDebug() << m_bd
-    << "m_game.CurrentMoveNumber() " << m_game.CurrentMoveNumber()
-    << '\n';
+/** Write features only in Wistuba's format */
+void FeCommands::CmdFeaturesWistubaToFile(GtpCommand& cmd)
+{
+    FeaturesWistubaToFile(cmd, false);
+}
+
+/** Write features and comments for validation in Wistuba's format */
+void FeCommands::CmdFeaturesCommentsWistubaToFile(GtpCommand& cmd)
+{
+    FeaturesWistubaToFile(cmd, true);
 }
 
 void FeCommands::Register(GtpEngine& e)
@@ -79,6 +88,8 @@ void FeCommands::Register(GtpEngine& e)
     Register(e, "features_wistuba", &FeCommands::CmdFeaturesWistuba);
     Register(e, "features_wistuba_file",
              &FeCommands::CmdFeaturesWistubaToFile);
+    Register(e, "features_comments_wistuba_file",
+             &FeCommands::CmdFeaturesCommentsWistubaToFile);
 }
 
 void FeCommands::Register(GtpEngine& engine, const std::string& command,

@@ -38,9 +38,13 @@ public:
 
     void CmdFeaturesWistubaToFile(GtpCommand& cmd);
 
+    void CmdFeaturesCommentsWistubaToFile(GtpCommand& cmd);
+
     void Register(GtpEngine& engine);
 
 private:
+    void FeaturesWistubaToFile(GtpCommand& cmd, bool writeComments);
+    
     void Register(GtpEngine& engine,
                   const std::string& command,
                   GtpCallback<FeCommands>::Method method);
