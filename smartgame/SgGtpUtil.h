@@ -58,9 +58,9 @@ inline bool SgRGB::operator==(const SgRGB& color) const
     @see SgGradient */
 inline SgRGB operator*(float f, const SgRGB& color)
 {
-    return SgRGB(f * color.m_r,
-                 f * color.m_g,
-                 f * color.m_b);
+    return SgRGB(static_cast<unsigned char>(f * color.m_r),
+                 static_cast<unsigned char>(f * color.m_g),
+                 static_cast<unsigned char>(f * color.m_b));
 }
 
 /** Output to stream in the format #rrggbb used by GoGui cboard */
