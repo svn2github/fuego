@@ -82,11 +82,14 @@ public:
     See http://clang-analyzer.llvm.org/annotations.html#attr_analyzer_noreturn
 */
 #ifndef CLANG_ANALYZER_NORETURN
+#if defined(__has_feature)
 #if __has_feature(attribute_analyzer_noreturn)
 #define CLANG_ANALYZER_NORETURN __attribute__((analyzer_noreturn))
-#else
-#define CLANG_ANALYZER_NORETURN
 #endif
+#endif
+#endif
+#ifndef CLANG_ANALYZER_NORETURN
+#define CLANG_ANALYZER_NORETURN
 #endif
 
 /** System-specific action when an SG_ASSERT fails */
