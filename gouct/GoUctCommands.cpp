@@ -379,7 +379,7 @@ void GoUctCommands::CmdDefaultPolicy(GtpCommand& cmd)
 }
 
 /* Set Fuego to play in deterministic mode. srand must be set. 
-   number of threads =1 and m_checkInterval must not depend on clock. */
+   number of threads = 1 and m_checkInterval must not depend on clock. */
 void GoUctCommands::CmdDeterministicMode(GtpCommand& cmd)
 {
     cmd.CheckArgNone();

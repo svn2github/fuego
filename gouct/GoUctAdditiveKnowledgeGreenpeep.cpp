@@ -190,7 +190,7 @@ void ReadPatternArray(unsigned short predictor[], int size,
     for (int i = 0; i < size; ++i)
         predictor[i] = NEUTRALPREDICTION;
 
-    for (unsigned int i=0; i< nuPatterns; ++i)
+    for (unsigned int i = 0; i < nuPatterns; ++i)
     {
         unsigned int context = patternEntry[i].index;
         SG_ASSERT(context < static_cast<unsigned int>(size));
