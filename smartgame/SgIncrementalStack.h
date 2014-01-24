@@ -35,11 +35,15 @@ enum SgIncrementalStackEvent
 class SgIncrementalStack
 {
 public:
-    SgIncrementalStack(){}
+    SgIncrementalStack()
+    { }
 
     void Clear();
 
-    bool IsEmpty() const {return m_stack.IsEmpty();}
+    bool IsEmpty() const
+    {
+        return m_stack.IsEmpty();
+    }
 
     void PushPts(int type, SgEmptyBlackWhite col, const SgPointSet& pts);
 
@@ -109,8 +113,7 @@ private:
     union IntOrPtr
     {
         IntOrPtr()
-        {
-        }
+        { }
 
         IntOrPtr(int i)
         {

@@ -59,8 +59,7 @@ public:
     SgWritePointArray(const SgPointArray<T>& array, SgGrid boardSize)
         : m_boardSize(boardSize),
           m_array(array)
-    {
-    }
+    { }
 
     std::ostream& Write(std::ostream& out) const;
 
@@ -120,8 +119,7 @@ public:
           m_precision(precision),
           m_boardSize(boardSize),
           m_array(array)
-    {
-    }
+    { }
 
     std::ostream& Write(std::ostream& out) const;
 

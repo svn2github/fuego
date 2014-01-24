@@ -24,7 +24,8 @@ struct SgRGB
 {
 public:
     SgRGB(unsigned char r, unsigned char g, unsigned char b)
-    : m_r(r), m_g(g), m_b(b) {}
+    : m_r(r), m_g(g), m_b(b)
+    { }
 
     /** Print as string in the format #rrggbb used by GoGui cboard. */
     std::string ToString() const;

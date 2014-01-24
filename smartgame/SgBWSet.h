@@ -17,13 +17,11 @@ class SgBWSet
 {
 public:
     SgBWSet()
-    {
-    }
+    { }
 
     SgBWSet(const SgPointSet& black, const SgPointSet& white)
         : m_set(black, white)
-    {
-    }
+    { }
 
     const SgPointSet& operator[](SgBlackWhite c) const
     {

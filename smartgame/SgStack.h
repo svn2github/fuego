@@ -20,7 +20,8 @@ public:
         : m_sp(0)
     { }
 
-    ~SgStack() {}
+    ~SgStack()
+    { }
 
     /** Empty the stack */
     void Clear();

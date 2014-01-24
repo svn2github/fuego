@@ -62,8 +62,7 @@ bool ReadCommand(GtpCommand& cmd, GtpInputStream& in)
 {
     string line;
     while (in.GetLine(line) && ! IsCommandLine(line))
-    {
-    }
+    { }
     if (in.EndOfInput())
         return false;
     Trim(line);
