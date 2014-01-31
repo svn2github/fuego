@@ -117,8 +117,13 @@ void FindAllBasicFeatures(const GoBoard& bd,
                           SgPointArray<FeBasicFeatureSet>& features,
                           FeBasicFeatureSet& passFeatures);
 
-/** Write features for single move in human-readable format */
+/** Write features for single move as integer list */
 void WriteFeatureSet(std::ostream& stream,
+                     SgPoint move,
+                     const FeBasicFeatureSet& features);
+
+/** Write features for single move in human-readable strings */
+void WriteFeatureSetAsText(std::ostream& stream,
                      SgPoint move,
                      const FeBasicFeatureSet& features);
 
@@ -141,8 +146,7 @@ namespace WistubaFormat {
     0 45 67 999
     1 55 87 1234
  
-    If writeComment is true, then the validator comment
-    of the for #X_Y Z is added.
+    If writeComment is true, then the validator comment #X_Y Z is added.
     Here X is supposed to be a game number, which is not available in this 
     context. Therefore, a 0 is written and later replaced by a standalone
     postprocessing tool.

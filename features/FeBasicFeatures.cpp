@@ -191,6 +191,18 @@ inline int Find3x3Feature(const GoBoard& bd, SgPoint p)
                            : Find3x3CenterFeature(bd, p);
 }
 
+void Write3x3(std::ostream& stream, int index)
+{
+    if (index == CORNER_INDEX_3x3)
+        stream << "\nCORNER\n";
+    else if (index < CENTER_START_INDEX_3x3)
+        Pattern3x3::Write2x3EdgePattern(stream,
+                                        index - EDGE_START_INDEX_3x3);
+    else
+        Pattern3x3::Write3x3CenterPattern(stream,
+                                          index - CENTER_START_INDEX_3x3);
+}
+
 int Distance(SgPoint p1, SgPoint p2)
 {
     SG_ASSERT(! SgIsSpecialMove(p1));
@@ -388,7 +400,7 @@ void WriteFeatureSet(std::ostream& stream,
                      SgPoint move,
                      const FeBasicFeatureSet& features)
 {
-    stream << SgWritePoint(move) << ' ';
+    stream << SgWritePoint(move);
     for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
     {
         if (features.test(f))
@@ -396,18 +408,34 @@ void WriteFeatureSet(std::ostream& stream,
     }
 }
 
+void WriteFeatureSetAsText(std::ostream& stream,
+                     SgPoint move,
+                     const FeBasicFeatureSet& features)
+{
+    stream << SgWritePoint(move);
+    for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
+    {
+        if (features.test(f))
+            stream << ' ' << static_cast<FeBasicFeature>(f);
+    }
+}
+
+
 void WritePatternFeatures(std::ostream& stream,
                           const FeMoveFeatures& features)
 {
     if (features.m_3x3Index != INVALID_3x3_INDEX)
-        stream << ' ' << features.m_3x3Index;
+    {
+        stream << " 3x3-index " << features.m_3x3Index;
+        Write3x3(stream, features.m_3x3Index);
+    }
 }
 
 void WriteFeatures(std::ostream& stream,
                    SgPoint move,
                    const FeMoveFeatures& features)
 {
-    WriteFeatureSet(stream, move, features.m_basicFeatures);
+    WriteFeatureSetAsText(stream, move, features.m_basicFeatures);
     WritePatternFeatures(stream, features);
     stream << '\n';
 }

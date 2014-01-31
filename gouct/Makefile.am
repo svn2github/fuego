@@ -15,6 +15,7 @@ GoUctKnowledge.cpp \
 GoUctKnowledgeFactory.cpp \
 GoUctLadderKnowledge.cpp \
 GoUctObjectWithSearch.cpp \
+GoUctPatterns.cpp \
 GoUctPlayoutPolicy.cpp \
 GoUctMoveFilter.cpp \
 GoUctSearch.cpp \
