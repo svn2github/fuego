@@ -15,6 +15,8 @@
 
 using SgPointUtil::Pt;
 
+// @todo  NEED TO MAKE SURE that move is evaluated with last move info intact.
+
 //----------------------------------------------------------------------------
 namespace {
 
@@ -27,19 +29,61 @@ void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features)
         features.set(FE_PASS_NEW);
 }
 
+#if UNUSED
 bool PutUsIntoAtari(const GoBoard& bd, SgPoint lastMove)
 {
     SG_ASSERT(! SgIsSpecialMove(lastMove));
     GoAdjBlockIterator<GoBoard> it(bd, lastMove, 1);
     return it;
 }
+#endif
 
-// @todo  NEED TO MAKE SURE that move is evaluated with last move info intact.
+/** Check if any of these neighbors-in-atari
+    is adjacent to any us-in-atari block */
+bool HasAnyNeighborInAtari(const GoBoard& bd,
+                           SgPoint oppInAtari[4 + 1])
+{
+    for (int i = 0; oppInAtari[i] != SG_ENDPOINT; ++i)
+        if (GoBoardUtil::HasAdjacentBlocks(bd, oppInAtari[i], 1))
+            return true;
+    return false;
+}
 
+bool MoveCapturesBlock(const GoBoard& bd, SgPoint move, SgPoint lastMove)
+{
+    // assumes no suicide - lastMove cannot be empty
+    SG_ASSERT(bd.Occupied(lastMove));
+    
+    return ! SgIsSpecialMove(lastMove)
+        && bd.InAtari(lastMove)
+        && bd.TheLiberty(lastMove) == move;
+}
+
+/** move is liberty of both lastMove and some other opponent block */
+bool PreventConnection(const GoBoard& bd, SgPoint move,
+                       SgPoint lastMove, const SgBlackWhite opp)
+{
+    // assumes no suicide - lastMove cannot be empty
+    SG_ASSERT(bd.Occupied(lastMove));
+    
+    return bd.IsLibertyOfBlock(move, bd.Anchor(lastMove))
+        && GoBoardUtil::IsCuttingPoint(bd, move, opp);
+
+
+}
+                    
 // faster to globally find all such moves.
 void FindCaptureFeatures(const GoBoard& bd, SgPoint move,
                          FeBasicFeatureSet& features)
 {
+    // TODO what to do if multiple preys? FE_CAPTURE_MULTIPLE?
+    
+    // previous implementation checked only if move captures lastmove
+    // that put us into atari. Should this be a separate feature?
+    // Now we check if capture relieves any atari on one of our blocks .
+    //if (PutUsIntoAtari(bd, lastMove))
+    //    f = FE_CAPTURE_ADJ_ATARI;
+    
     const SgBlackWhite toPlay = bd.ToPlay();
     if (! bd.CanCapture(move, toPlay))
         return;
@@ -48,25 +92,26 @@ void FindCaptureFeatures(const GoBoard& bd, SgPoint move,
     SgPoint oppInAtari[4 + 1];
     const SgBlackWhite opp = SgOppBW(toPlay);
     bd.NeighborBlocks(move, opp, 1, oppInAtari);
-    // TODO what to do if multiple preys? FE_CAPTURE_MULTIPLE?
-    const SgPoint lastMove = bd.GetLastMove();
-    if (! SgIsSpecialMove(lastMove))
+    if (HasAnyNeighborInAtari(bd, oppInAtari))
+       f = FE_CAPTURE_ADJ_ATARI;
+    else
     {
-        // assume no suicide, last move is occupied
-        SG_ASSERT(bd.IsColor(lastMove, opp));
-        if (PutUsIntoAtari(bd, lastMove))
-            f = FE_CAPTURE_ADJ_ATARI;
-        if (f == FE_NONE && bd.CapturingMove() && bd.InAtari(lastMove))
-            f = FE_CAPTURE_RECAPTURE;
-        if (f == FE_NONE && bd.IsLibertyOfBlock(move, bd.Anchor(lastMove))
-            && true // TODO use oppInAtari?
-            )
-            // move is liberty of both lastmove and prey)
-            f = FE_CAPTURE_PREVENT_CONNECTION;
+        const SgPoint lastMove = bd.GetLastMove();
+        if (! SgIsSpecialMove(lastMove))
+        {
+            // assumes no suicide, last move is occupied
+            SG_ASSERT(bd.IsColor(lastMove, opp));
+            if (  bd.CapturingMove()
+               && MoveCapturesBlock(bd, move, lastMove)
+               )
+                f = FE_CAPTURE_RECAPTURE;
+            else if (PreventConnection(bd, move, lastMove, opp))
+                f = FE_CAPTURE_PREVENT_CONNECTION;
+        }
     }
     if (f != FE_NONE)
         features.set(f);
-    else
+    else // other capture
     {
         for (int i = 0; oppInAtari[i] != SG_ENDPOINT; ++i)
         {
