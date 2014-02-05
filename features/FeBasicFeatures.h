@@ -39,6 +39,7 @@ enum FeBasicFeature{
     FE_LINE_2,
     FE_LINE_3,
     FE_LINE_4,
+    FE_LINE_5_OR_MORE,
     FE_DIST_PREV_2, // d(dx,dy) = |dx|+|dy|+max(|dx|,|dy|)
     FE_DIST_PREV_3,
     FE_DIST_PREV_4,

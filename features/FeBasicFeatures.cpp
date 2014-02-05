@@ -193,24 +193,19 @@ void FindAtariFeatures(const GoBoard& bd, SgPoint move,
     }
 }
 
-void FindLineFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& features)
+inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
+                                     int baseValue, int value)
 {
-    FeBasicFeature f = FE_NONE;
-    switch (bd.Line(move))
-    {
-        case 1: f = FE_LINE_1;
-            break;
-        case 2: f = FE_LINE_2;
-            break;
-        case 3: f = FE_LINE_3;
-            break;
-        case 4: f = FE_LINE_4;
-            break;
-        default:
-            break;
-    }
-    if (f != FE_NONE)
-        features.set(f);
+    return static_cast<FeBasicFeature>(static_cast<int>(baseFeature)
+                                       + value - baseValue);
+}
+
+void FindLineFeatures(const GoBoard& bd, SgPoint move,
+                      FeBasicFeatureSet& features)
+{
+    const int line = std::min(5, bd.Line(move));
+    FeBasicFeature f = ComputeFeature(FE_LINE_1, 1, line);
+    features.set(f);
 }
 
 const int CORNER_INDEX_3x3 = 1000; // we don't have features on Pt(1,1)
@@ -255,13 +250,6 @@ int Distance(SgPoint p1, SgPoint p2)
     int dx = abs(SgPointUtil::Col(p1) - SgPointUtil::Col(p2));
     int dy = abs(SgPointUtil::Row(p1) - SgPointUtil::Row(p2));
     return dx + dy + std::max(dx, dy);
-}
-
-inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
-                                int baseValue, int value)
-{
-    return static_cast<FeBasicFeature>(static_cast<int>(baseFeature)
-                                  + value - baseValue);
 }
     
 
@@ -357,6 +345,7 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_LINE_2",
         "FE_LINE_3",
         "FE_LINE_4",
+        "FE_LINE_5+",
         "FE_DIST_PREV_2", // d(dx,dy) = |dx|+|dy|+max(|dx|,|dy|)
         "FE_DIST_PREV_3",
         "FE_DIST_PREV_4",
