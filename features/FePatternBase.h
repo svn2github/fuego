@@ -23,9 +23,22 @@ enum PaAxFlag
 };
 
 const int PA_NU_AXES = 3;
-const unsigned int PA_NU_AX_SETS = 1 << PA_NU_AXES;
 
 typedef std::bitset<PA_NU_AXES> PaAx;
+
+/** PaAxSet and PA_NU_AX_SETS provide a quick and dirty way 
+    to iterate over all possible symmetry axes.
+    Uses the bitset constructor that takes a long long bit pattern.
+    Also see FePatternBaseTest_PaAxSet_To_PaAx.
+
+    for (PaAxSet s = 0; s < PA_NU_AX_SETS; ++s)
+    {
+        PaAx ax(s);
+        ...
+    }
+*/
+const unsigned int PA_NU_AX_SETS = 1 << PA_NU_AXES;
+
 typedef unsigned int PaAxSet;
 //----------------------------------------------------------------------------
 
