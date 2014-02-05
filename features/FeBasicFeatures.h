@@ -136,7 +136,25 @@ void WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const GoBoard& bd);
 
+struct FeFeatureWeights
+{
+    FeFeatureWeights(size_t nuFeatures, size_t k);
+    bool IsEmpty() const;
+
+    size_t m_nuFeatures;
+    size_t m_k;
+    
+    // length m_nuFeatures
+    vector<float> m_w;
+    // length k of length m_nuFeatures
+    vector<vector<float> > m_v;
+};
+    
 namespace WistubaFormat {
+    
+/** Read features in the format produced by Wistuba's tool. */
+struct FeFeatureWeights ReadFeatureWeights(std::istream& stream);
+    
 /** Write features in the format of Wistuba's gamma learning code
     Each candidate move is described by a list of ID of its features.
     The first number in each line is a 0 for a non-plyed move,

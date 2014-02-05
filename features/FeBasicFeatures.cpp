@@ -465,6 +465,14 @@ void WritePatternFeatures(std::ostream& stream,
     }
 }
 
+void WritePatternFeatureIndex(std::ostream& stream,
+                              const FeMoveFeatures& features)
+{
+    if (features.m_3x3Index != INVALID_3x3_INDEX)
+        stream << ' ' << features.m_3x3Index;
+}
+    
+
 void WriteFeatures(std::ostream& stream,
                    SgPoint move,
                    const FeMoveFeatures& features)
@@ -483,8 +491,62 @@ void WriteBoardFeatures(std::ostream& stream,
             WriteFeatures(stream, *it, features[*it]);
 }
     
-namespace WistubaFormat {
+//-------------------------------------
+FeFeatureWeights::FeFeatureWeights(size_t nuFeatures, size_t k)
+        : m_nuFeatures(nuFeatures), m_k(k)
+{
+    SG_ASSERT(nuFeatures > 0);
+    SG_ASSERT(k > 0);
+    m_w.reserve(nuFeatures);
+    m_v.resize(k); // create empty vectors
+    for (size_t i=0; i < k; ++i)
+        m_v[i].reserve(nuFeatures);
+    SG_ASSERT(IsEmpty());
+}
 
+bool FeFeatureWeights::IsEmpty() const
+{
+    return m_w.size() == 0
+        && m_w.capacity() == m_nuFeatures
+        && m_v.size() == m_k
+        && m_v.capacity() == m_k
+        && m_v[0].size() == 0
+        && m_v[0].capacity() == m_nuFeatures;
+}
+
+//-------------------------------------
+    
+
+struct FeFeatureWeights
+WistubaFormat::ReadFeatureWeights(std::istream& stream)
+{
+    size_t nuFeatures;
+    size_t k;
+    stream >> nuFeatures >> k;
+    SG_ASSERT(! stream.fail());
+    struct FeFeatureWeights f(nuFeatures, k);
+    SG_ASSERT(f.IsEmpty());
+    for (size_t i = 0; i < nuFeatures; ++i)
+    {
+        float v;
+        stream >> v;
+        f.m_w.push_back(v);
+    }
+    SG_ASSERT(! stream.fail());
+    for (size_t i = 0; i < nuFeatures; ++i)
+        for (size_t j = 0; j < k; ++i)
+    {
+        float v;
+        stream >> v;
+        f.m_v[j].push_back(v);
+    }
+    SG_ASSERT(! stream.fail());
+    return f;
+}
+
+namespace WistubaFormat{
+namespace {
+    
 void WriteFeatureSet(std::ostream& stream,
                      const FeBasicFeatureSet& features)
 {
@@ -503,7 +565,7 @@ void WriteFeatures(std::ostream& stream,
                               // when big pattern features are implemented
     stream << isChosen;
     WriteFeatureSet(stream, features.m_basicFeatures);
-    WritePatternFeatures(stream, features);
+    WritePatternFeatureIndex(stream, features);
     if (writeComment)
     {
         stream << " #0_" << moveNumber << ' ' << SHAPE_SIZE;
@@ -511,7 +573,10 @@ void WriteFeatures(std::ostream& stream,
     stream << '\n';
 }
 
-void WriteBoardFeatures(std::ostream& stream,
+} // namespace
+} // namespace
+    
+void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const FeMoveFeatures& passFeatures,
                         const GoBoard& bd,
@@ -530,7 +595,7 @@ void WriteBoardFeatures(std::ostream& stream,
     WriteFeatures(stream, 1, features[chosenMove], moveNumber, writeComment);
 }
 
-void WriteFeatures(std::ostream& stream, const GoBoard& constBd,
+void WistubaFormat::WriteFeatures(std::ostream& stream, const GoBoard& constBd,
                    bool writeComment)
 {
     SgPoint chosenMove = constBd.GetLastMove();
@@ -548,7 +613,6 @@ void WriteFeatures(std::ostream& stream, const GoBoard& constBd,
     }
 }
 
-} // namespace WistubaFormat
-} // namespace FeBasicFeatures
+} // namespace FeFeatures
 
 //----------------------------------------------------------------------------
