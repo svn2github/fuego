@@ -250,20 +250,21 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
     if (  nuBlackDiag >= 2
         && nuWhite > 0
         && (  CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_NS, SG_WE)
-            || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_NS, SG_WE)
-            || CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_WE, SG_NS)
-            || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_WE, SG_NS)
-            )
+           || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_NS, SG_WE)
+           || CheckHane1(bd, p, SG_WHITE, SG_BLACK, SG_WE, SG_NS)
+           || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_WE, SG_NS)
+           )
         )
         return true;
+
     const int nuWhiteDiag = bd.NumDiagonals(p, SG_WHITE);
     if (  nuWhiteDiag >= 2
         && nuBlack > 0
         && (  CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_NS, SG_WE)
-            || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_NS, SG_WE)
-            || CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_WE, SG_NS)
-            || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_WE, SG_NS)
-            )
+           || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_NS, SG_WE)
+           || CheckHane1(bd, p, SG_BLACK, SG_WHITE, SG_WE, SG_NS)
+           || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_WE, SG_NS)
+           )
         )
         return true;
     return false;
@@ -305,9 +306,97 @@ int SetupCodedPosition(GoBoard& bd, int code)
     return count;
 }
 
+const int PA_NU_AXES = 3;
+
+const unsigned int PA_NU_AX_SETS = 1 << PA_NU_AXES;
+
+typedef unsigned int PaAxSet;
+// todo copied from features
+
+inline int EBWCodeOfPoint(const GoBoard& bd, SgPoint p)
+{
+    SG_ASSERT(bd.IsValidPoint(p));
+    BOOST_STATIC_ASSERT(SG_BLACK == 0);
+    BOOST_STATIC_ASSERT(SG_WHITE == 1);
+    BOOST_STATIC_ASSERT(SG_EMPTY == 2);
+    return bd.GetColor(p);
+}
+
+int AxCodeOf8Neighbors(const GoBoard& bd, SgPoint p, PaAxSet axes)
+{
+    using std::make_pair;
+    static const std::pair<int,int> axDir[PA_NU_AX_SETS] =
+    {
+        make_pair( SG_NS,  SG_WE),
+        make_pair( SG_NS, -SG_WE),
+        make_pair(-SG_NS,  SG_WE),
+        make_pair(-SG_NS, -SG_WE),
+        make_pair( SG_WE,  SG_NS),
+        make_pair( SG_WE, -SG_NS),
+        make_pair(-SG_WE,  SG_NS),
+        make_pair(-SG_WE, -SG_NS)
+    };
+
+    const std::pair<int,int> dir = axDir[axes];
+    SG_ASSERT(bd.Line(p) > 1);
+    int code = ((((((   EBWCodeOfPoint(bd, p + dir.first + dir.second) * 3
+                     + EBWCodeOfPoint(bd, p + dir.first)) * 3
+                    + EBWCodeOfPoint(bd, p + dir.first - dir.second)) * 3
+                   + EBWCodeOfPoint(bd, p + dir.second)) * 3
+                  + EBWCodeOfPoint(bd, p - dir.second)) * 3
+                 + EBWCodeOfPoint(bd, p - dir.first + dir.second)) * 3
+                + EBWCodeOfPoint(bd, p - dir.first)) * 3
+               + EBWCodeOfPoint(bd, p - dir.first - dir.second);
+    SG_ASSERT(code >= 0);
+    SG_ASSERT(code < Pattern3x3::GOUCT_POWER3_8);
+    return code;
+}
+
+int MinCodeOf8Neighbors(const GoBoard& bd, SgPoint p)
+{
+    int minCode = Pattern3x3::GOUCT_POWER3_8;
+    for (PaAxSet s = 0; s < PA_NU_AX_SETS; ++s)
+    {
+        const int code = AxCodeOf8Neighbors(bd, p, s);
+        minCode = std::min(minCode, code);
+    }
+    SG_ASSERT(minCode >= 0);
+    SG_ASSERT(minCode < Pattern3x3::GOUCT_POWER3_8);
+    return minCode;
+}
+
 } // namespace
 
+#include <algorithm> // for copy
+#include <iterator> // for ostream_iterator
+
 //----------------------------------------------------------------------------
+void Pattern3x3::MapCenterPatternsToMinimum()
+{
+    GoBoard bd(5);
+    int code[GOUCT_POWER3_8];
+    const SgPoint p = SgPointUtil::Pt(3, 3);
+    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    {
+        int count = SetupCodedPosition(bd, i);
+        code[i] = MinCodeOf8Neighbors(bd, p);
+        //SgDebug() << "Min Code of " << i << " is " << code[i] << '\n';
+        while (count-- > 0)
+            bd.Undo();
+    }
+    //int minCode = *std::min_element(code, code + GOUCT_POWER3_8);
+    //int maxCode = *std::max_element(code, code + GOUCT_POWER3_8);
+    //SgDebug() << "min Code " << minCode << " max Code " << maxCode << '\n';
+    std::sort(code, code + GOUCT_POWER3_8);
+    std::copy(code, code + GOUCT_POWER3_8, std::ostream_iterator<int>(SgDebug(), " "));
+    int* last = std::unique(code, code + GOUCT_POWER3_8);
+    SgDebug() <<  last - code << " unique elements " << '\n';
+    // TODO remap to consecutive ints;
+    // create mapping;
+    // collect weights and compute average (?) 
+    //std::copy(code, last, std::ostream_iterator<int>(SgDebug(), " "));
+
+}
 
 void Pattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
                                       edgeTable)
@@ -344,6 +433,8 @@ void Pattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
         while (count-- > 0)
             bd.Undo();
     }
+
+    //Pattern3x3::MapCenterPatternsToMinimum();
 }
 
 bool Pattern3x3::MatchAnyPattern(const GoBoard& bd, SgPoint p)

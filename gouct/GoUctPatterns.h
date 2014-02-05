@@ -128,6 +128,8 @@ namespace Pattern3x3
     void InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
                                      edgeTable);
 
+    void MapCenterPatternsToMinimum();
+
     /** Procedural matching function - used to initialize the table. */
     bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
 
