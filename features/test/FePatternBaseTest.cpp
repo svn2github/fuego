@@ -27,6 +27,17 @@ void CheckOffset(int deltaX, int deltaY)
     BOOST_CHECK_EQUAL(deltaY, newY);
 }
 
+BOOST_AUTO_TEST_CASE(FePatternBaseTest_PaAxSet_To_PaAx)
+{
+    for (PaAxSet s = 0; s < PA_NU_AX_SETS; ++s)
+    {
+        PaAx ax(s);
+        BOOST_CHECK_EQUAL(ax.test(PA_MIRROR_X), static_cast<bool>(s&1));
+        BOOST_CHECK_EQUAL(ax.test(PA_MIRROR_Y), static_cast<bool>(s&2));
+        BOOST_CHECK_EQUAL(ax.test(PA_SWAP_X_Y), static_cast<bool>(s&4));
+    }
+}
+
 BOOST_AUTO_TEST_CASE(FePatternBaseTest_Offset)
 {
     CheckOffset(0,0);
