@@ -199,6 +199,9 @@ public:
 
     // @} // @name
 
+    /** Return the list of all non-filtered random moves */
+    GoPointList AllRandomMoves() const;
+
     /** Return the list of equivalent best moves from last move generation.
         The played move was randomly selected from this list. */
     GoPointList GetEquivalentBestMoves() const;
@@ -228,12 +231,11 @@ public:
                      SgPoint& move,
                      GoUctPlayoutPolicyType moveType);
 
-
-    /** Make defensive-move detector available for other uses.
-        Includes calls to StartPlayout and EndPlayout, and will interfere 
-        with any other in-progress use of this GoUctPlayoutPolicy.
-    */
-    GoPointList GetAtariDefenseMoves();
+    /** Call a single move generator.
+     Includes calls to StartPlayout and EndPlayout, and will interfere
+     with any other in-progress use of this GoUctPlayoutPolicy.
+     */
+    GoPointList GetPolicyMoves(GoUctPlayoutPolicyType type);
     
     /** Make global pattern matcher available for other uses.
 	 Avoids that a user of the playout policy who also wants to use the
@@ -756,16 +758,23 @@ inline bool GoUctPlayoutPolicy<BOARD>::GeneratePoint(SgPoint p) const
 }
 
 template<class BOARD>
-GoPointList GoUctPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
+GoPointList GoUctPlayoutPolicy<BOARD>::AllRandomMoves() const
 {
     GoPointList result;
+    for (typename BOARD::Iterator it(m_bd); it; ++it)
+    if (m_bd.IsEmpty(*it) && GeneratePoint(*it))
+    result.PushBack(*it);
+    return result;
+}
+
+template<class BOARD>
+GoPointList GoUctPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
+{
     if (m_moveType == GOUCT_RANDOM)
-    {
-        for (typename BOARD::Iterator it(m_bd); it; ++it)
-            if (m_bd.IsEmpty(*it) && GeneratePoint(*it))
-                result.PushBack(*it);
-    }
+        return AllRandomMoves();
+    
     // Move in m_moves are not checked yet, if legal etc.
+    GoPointList result;
     for (GoPointList::Iterator it(m_moves); it; ++it)
         if (m_checked || GeneratePoint(*it))
             result.PushBack(*it);
@@ -773,24 +782,65 @@ GoPointList GoUctPlayoutPolicy<BOARD>::GetEquivalentBestMoves() const
 }
 
 template<class BOARD>
-GoPointList GoUctPlayoutPolicy<BOARD>::GetAtariDefenseMoves()
+GoPointList GoUctPlayoutPolicy<BOARD>::
+GetPolicyMoves(GoUctPlayoutPolicyType type)
 {
     StartPlayout();
     m_moves.Clear();
     m_lastMove = m_bd.GetLastMove();
-    if (  ! SgIsSpecialMove(m_lastMove) // skip if Pass or Null
-       && ! m_bd.IsEmpty(m_lastMove) // skip if move was suicide
-       ) 
-    { 
-        GenerateAtariDefenseMove();
+    bool hasLastMove = ! SgIsSpecialMove(m_lastMove)
+                    && ! m_bd.IsEmpty(m_lastMove); // skip if move was suicide
+    switch(type)
+    {
+        case GOUCT_FILLBOARD: SG_ASSERT(false); // changes the move list.
+//                if (m_param.m_fillboardTries > 0)
+//                {
+//                    m_moveType = GOUCT_FILLBOARD;
+//                    mv = m_pureRandomGenerator.
+//                    GenerateFillboardMove(m_param.m_fillboardTries);
+//                }
+        break;
+        
+        case GOUCT_NAKADE:
+            if (hasLastMove)
+                GenerateNakadeMove();
+            // TODO? needed? m_moves.MakeUnique();
+        break;
+        
+        case GOUCT_ATARI_CAPTURE:
+            if (hasLastMove)
+                GenerateAtariCaptureMove();
+        break;
+        
+        case GOUCT_ATARI_DEFEND:
+            if (hasLastMove)
+                GenerateAtariDefenseMove();
+        break;
+        
+        case GOUCT_LOWLIB:
+            if (hasLastMove)
+                GenerateLowLibMove(m_lastMove);
+        break;
+        
+        case GOUCT_PATTERN:
+            if (hasLastMove)
+                GeneratePatternMove();
+        break;
+        
+        case GOUCT_CAPTURE: m_captureGenerator.Generate(m_moves);
+        break;
+        
+        case GOUCT_RANDOM: m_moves = AllRandomMoves();
+        break;
+        
+        default: SG_ASSERT(false); // not implemented
     }
     EndPlayout();
     return m_moves;
 }
 
 template<class BOARD>
-GoUctPlayoutPolicyType GoUctPlayoutPolicy<BOARD>::MoveType()
-    const
+GoUctPlayoutPolicyType GoUctPlayoutPolicy<BOARD>::MoveType() const
 {
     return m_moveType;
 }

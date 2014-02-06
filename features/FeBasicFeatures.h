@@ -72,6 +72,23 @@ enum FeBasicFeature{
     FE_DIST_PREV_OWN_15,
     FE_DIST_PREV_OWN_16,
     FE_DIST_PREV_OWN_17,
+    FE_GOUCT_FILLBOARD, // FE_GOUCT features correspond to Fuego policy
+    FE_GOUCT_NAKADE,    // functions as in GoUctPlayoutPolicy.h
+    FE_GOUCT_ATARI_CAPTURE,
+    FE_GOUCT_ATARI_DEFEND,
+    FE_GOUCT_LOWLIB,
+    FE_GOUCT_PATTERN,
+    FE_GOUCT_CAPTURE,
+    FE_GOUCT_RANDOM_PRUNED, // not generated as a random move
+    FE_GOUCT_REPLACE_CAPTURE_FROM, // this move gets moved elsewhere
+    FE_GOUCT_REPLACE_CAPTURE_TO,   // some other move gets moved here
+    FE_GOUCT_REPLACE_CAPTURE_NOT_MOVED, // not changed by correction
+    FE_GOUCT_SELFATARI_CORRECTION_FROM, // this move gets moved elsewhere
+    FE_GOUCT_SELFATARI_CORRECTION_TO,   // some other move gets moved here
+    FE_GOUCT_SELFATARI_CORRECTION_NOT_MOVED, // not changed by correction
+    FE_GOUCT_CLUMP_CORRECTION_FROM, // this move gets moved elsewhere
+    FE_GOUCT_CLUMP_CORRECTION_TO,   // some other move gets moved here
+    FE_GOUCT_CLUMP_CORRECTION_NOT_MOVED, // not changed by correction
     FE_MC_OWNER_1, // 0−7 wins/63 sim.
     FE_MC_OWNER_2, // 8−15
     FE_MC_OWNER_3, // 16−23

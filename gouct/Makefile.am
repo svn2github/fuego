@@ -17,6 +17,7 @@ GoUctLadderKnowledge.cpp \
 GoUctObjectWithSearch.cpp \
 GoUctPatterns.cpp \
 GoUctPlayoutPolicy.cpp \
+GoUctPlayoutUtil.cpp \
 GoUctMoveFilter.cpp \
 GoUctSearch.cpp \
 GoUctUtil.cpp
@@ -45,6 +46,7 @@ GoUctPatternData.h \
 GoUctPatterns.h \
 GoUctPlayer.h \
 GoUctPlayoutPolicy.h \
+GoUctPlayoutUtil.h \
 GoUctPureRandomGenerator.h \
 GoUctMoveFilter.h \
 GoUctSearch.h \
