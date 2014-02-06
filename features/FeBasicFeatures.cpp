@@ -257,7 +257,8 @@ int Distance(SgPoint p1, SgPoint p2)
 }
     
 
-void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& features)
+void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
+                              FeBasicFeatureSet& features)
 {
     const SgPoint lastMove = bd.GetLastMove();
     if (! SgIsSpecialMove(lastMove))
@@ -278,7 +279,8 @@ void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet
         SG_ASSERT(distance >= 2);
         if (distance <= 17)
         {
-            FeBasicFeature f = ComputeFeature(FE_DIST_PREV_OWN_2, 2, distance);
+            FeBasicFeature f =
+                ComputeFeature(FE_DIST_PREV_OWN_2, 2, distance);
             features.set(f);
         }
     }
@@ -289,7 +291,8 @@ int NuWins()
     return 42; // TODO
 }
 
-void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move, FeBasicFeatureSet& features)
+void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move,
+                         FeBasicFeatureSet& features)
 {
     // TODO run 63 simulations
     SG_UNUSED(bd);
@@ -332,7 +335,7 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_PASS_CONSECUTIVE",    // pass, previous move was also pass
         "FE_CAPTURE_ADJ_ATARI",   // String contiguous to new string in atari
         "FE_CAPTURE_RECAPTURE",   // Re-capture previous move
-        "FE_CAPTURE_PREVENT_CONNECTION", // Prevent connection to previous move
+        "FE_CAPTURE_PREVENT_CONNECTION", // Prevent connection to prev. move
         "FE_CAPTURE_NOT_LADDER",  // String not in a ladder
         "FE_CAPTURE_LADDER",      // String in a ladder
                                 // "FE_CAPTURE_MULTIPLE",
@@ -509,8 +512,10 @@ void FindAllPolicyFeatures(const GoBoard& bd,
 {
     // FE_GOUCT_FILLBOARD
     FindPolicyFeatures(bd, features, GOUCT_NAKADE, FE_GOUCT_NAKADE);
-    FindPolicyFeatures(bd, features, GOUCT_ATARI_CAPTURE, FE_GOUCT_ATARI_CAPTURE);
-    FindPolicyFeatures(bd, features, GOUCT_ATARI_DEFEND, FE_GOUCT_ATARI_DEFEND);
+    FindPolicyFeatures(bd, features, GOUCT_ATARI_CAPTURE,
+                       FE_GOUCT_ATARI_CAPTURE);
+    FindPolicyFeatures(bd, features, GOUCT_ATARI_DEFEND,
+                       FE_GOUCT_ATARI_DEFEND);
     FindPolicyFeatures(bd, features, GOUCT_LOWLIB, FE_GOUCT_LOWLIB);
     FindPolicyFeatures(bd, features, GOUCT_PATTERN, FE_GOUCT_PATTERN);
     FindPolicyFeatures(bd, features, GOUCT_CAPTURE, FE_GOUCT_CAPTURE);
@@ -720,8 +725,9 @@ void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
     WriteFeatures(stream, 1, features[chosenMove], moveNumber, writeComment);
 }
 
-void WistubaFormat::WriteFeatures(std::ostream& stream, const GoBoard& constBd,
-                   bool writeComment)
+void WistubaFormat::WriteFeatures(std::ostream& stream,
+                                  const GoBoard& constBd,
+                                  bool writeComment)
 {
     SgPoint chosenMove = constBd.GetLastMove();
     GoModBoard mod(constBd);
