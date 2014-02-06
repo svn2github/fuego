@@ -365,6 +365,29 @@ int MinCodeOf8Neighbors(const GoBoard& bd, SgPoint p)
     return minCode;
 }
 
+int MirrorCodeOfEdgeNeighbors(const GoBoard& bd,
+                              SgPoint p)
+{
+    SG_ASSERT(bd.Line(p) == 1);
+    SG_ASSERT(bd.Pos(p) > 1);
+    const int up = bd.Up(p);
+    int other = -Pattern3x3::OtherDir(up);
+    int code = (((EBWCodeOfPoint(bd, p + other) * 3
+                  + EBWCodeOfPoint(bd, p + up + other)) * 3
+                 + EBWCodeOfPoint(bd, p + up)) * 3
+                + EBWCodeOfPoint(bd, p + up - other)) * 3
+               + EBWCodeOfPoint(bd, p - other);
+    SG_ASSERT(code >= 0);
+    SG_ASSERT(code < Pattern3x3::GOUCT_POWER3_5);
+    return code;
+}
+
+int MinEdgeCode(const GoBoard& bd, SgPoint p)
+{
+    return std::min(GoUctPatterns<GoBoard>::CodeOfEdgeNeighbors(bd, p),
+                    MirrorCodeOfEdgeNeighbors(bd, p));
+}
+
 } // namespace
 
 #include <algorithm> // for copy
@@ -394,6 +417,32 @@ void Pattern3x3::MapCenterPatternsToMinimum()
     // TODO remap to consecutive ints;
     // create mapping;
     // collect weights and compute average (?) 
+    //std::copy(code, last, std::ostream_iterator<int>(SgDebug(), " "));
+
+}
+
+void Pattern3x3::MapEdgePatternsToMinimum()
+{
+    GoBoard bd(5);
+    int code[GOUCT_POWER3_5];
+    const SgPoint p = SgPointUtil::Pt(1, 3);
+    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    {
+        int count = SetupCodedEdgePosition(bd, i);
+        code[i] = MinEdgeCode(bd, p);
+        while (--count >= 0)
+            bd.Undo();
+    }
+    //int minCode = *std::min_element(code, code + GOUCT_POWER3_8);
+    //int maxCode = *std::max_element(code, code + GOUCT_POWER3_8);
+    //SgDebug() << "min Code " << minCode << " max Code " << maxCode << '\n';
+    std::sort(code, code + GOUCT_POWER3_5);
+    std::copy(code, code + GOUCT_POWER3_5, std::ostream_iterator<int>(SgDebug(), " "));
+    int* last = std::unique(code, code + GOUCT_POWER3_5);
+    SgDebug() <<  last - code << " unique elements " << '\n';
+    // TODO remap to consecutive ints;
+    // create mapping;
+    // collect weights and compute average (?)
     //std::copy(code, last, std::ostream_iterator<int>(SgDebug(), " "));
 
 }
@@ -435,6 +484,7 @@ void Pattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
     }
 
     //Pattern3x3::MapCenterPatternsToMinimum();
+    //Pattern3x3::MapEdgePatternsToMinimum();
 }
 
 bool Pattern3x3::MatchAnyPattern(const GoBoard& bd, SgPoint p)

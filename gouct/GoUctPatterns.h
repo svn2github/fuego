@@ -130,6 +130,8 @@ namespace Pattern3x3
 
     void MapCenterPatternsToMinimum();
 
+    void MapEdgePatternsToMinimum();
+
     /** Procedural matching function - used to initialize the table. */
     bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
 
@@ -392,7 +394,8 @@ inline bool GoUctPatterns<BOARD>::MatchAny(SgPoint p, float& gamma) const
 }
 
 template<class BOARD>
-inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p, float& gamma) const
+inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p, float& gamma)
+const
 {
 	const PatternInfo& pi = m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)];
     gamma = pi.GetGammaValue();
@@ -402,7 +405,8 @@ inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p, float& gamma) const
 template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p, float& gamma) const
 {
-	const PatternInfo& pi = m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
+	const PatternInfo& pi =
+            m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
     gamma = pi.GetGammaValue();
 	return pi.IsPattern();
 }
