@@ -466,8 +466,17 @@ void FindAllCorrectionFeatures(const GoBoard& bd,
 GoPointList GetUctPolicyMoves(const GoBoard& bd,
                               GoUctPlayoutPolicyType type)
 {
-    GoUctPlayoutPolicy<GoBoard> policy(bd, GoUctPlayoutPolicyParam());
-    return policy.GetPolicyMoves(type);
+    static GoUctPlayoutPolicy<GoBoard>* s_policy = 0;
+    static const GoBoard* s_bd = 0;
+    if (&bd != s_bd)
+    {
+        delete s_policy;
+        s_policy =
+            new GoUctPlayoutPolicy<GoBoard>(bd, GoUctPlayoutPolicyParam());
+        s_bd = &bd;
+        SgDebug() << "new policy\n";
+    }
+    return s_policy->GetPolicyMoves(type);
 }
 
 void FindPolicyFeatures(const GoBoard& bd,
