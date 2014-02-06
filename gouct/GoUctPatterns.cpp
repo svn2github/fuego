@@ -6,7 +6,9 @@
 #include "SgSystem.h"
 #include "GoUctPatterns.h"
 
+#include <algorithm>
 #include "GoBoard.h"
+#include "GoBoardUtil.h"
 
 //----------------------------------------------------------------------------
 
@@ -270,10 +272,12 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
     return false;
 }
 
-int SetupCodedEdgePosition(GoBoard& bd, int code)
+void SetupCodedEdgePosition(GoBoard& bd, int code)
 {
+    const int origCode = code;
+    SG_DEBUG_ONLY(origCode);
+
     const SgPoint p = SgPointUtil::Pt(1, 3);
-    int count = 0;
     for (int i = 4; i >= 0; --i) // decoding gives points in reverse order
     {
         const SgPoint nb = p + EdgeDirection(bd, p, i);
@@ -281,17 +285,19 @@ int SetupCodedEdgePosition(GoBoard& bd, int code)
         code /= 3;
         if (c != SG_EMPTY)
         {
-            ++count;
+            SG_ASSERT(bd.IsLegal(nb, c));
             bd.Play(nb, c);
         }
     }
-    return count;
+    SG_ASSERT(GoUctPatterns<GoBoard>::CodeOfEdgeNeighbors(bd, p) == origCode);
 }
 
-int SetupCodedPosition(GoBoard& bd, int code)
+void SetupCodedPosition(GoBoard& bd, int code)
 {
+    const int origCode = code;
+    SG_DEBUG_ONLY(origCode);
+
     const SgPoint p = SgPointUtil::Pt(3, 3);
-    int count = 0;
     for (int i = 7; i >= 0; --i) // decoding gives points in reverse order
     {
         const SgPoint nb = p + SgNb8Iterator::Direction(i);
@@ -299,11 +305,11 @@ int SetupCodedPosition(GoBoard& bd, int code)
         code /= 3;
         if (c != SG_EMPTY)
         {
-            ++count;
+            SG_ASSERT(bd.IsLegal(nb, c));
             bd.Play(nb, c);
         }
     }
-    return count;
+    SG_ASSERT(GoUctPatterns<GoBoard>::CodeOf8Neighbors(bd, p) == origCode);
 }
 
 const int PA_NU_AXES = 3;
@@ -390,61 +396,120 @@ int MinEdgeCode(const GoBoard& bd, SgPoint p)
 
 } // namespace
 
-#include <algorithm> // for copy
-#include <iterator> // for ostream_iterator
-
 //----------------------------------------------------------------------------
-void Pattern3x3::MapCenterPatternsToMinimum()
+
+int Pattern3x3::Map2x3EdgeCode(int code)
+{
+    static int s_indexCode[GOUCT_POWER3_5];
+    static bool s_initialized = false;
+
+    if (! s_initialized)
+    {
+        MapEdgePatternsToMinimum(s_indexCode);
+        s_initialized = true;
+    }
+
+    SG_ASSERT(code >= 0);
+    SG_ASSERT(code < GOUCT_POWER3_5);
+    return s_indexCode[code];
+}
+
+int Pattern3x3::Map3x3CenterCode(int code)
+{
+    static int s_indexCode[GOUCT_POWER3_8];
+    static bool s_initialized = false;
+
+    if (! s_initialized)
+    {
+        MapCenterPatternsToMinimum(s_indexCode);
+        s_initialized = true;
+    }
+
+    SG_ASSERT(code >= 0);
+    SG_ASSERT(code < GOUCT_POWER3_8);
+    return s_indexCode[code];
+}
+
+int Pattern3x3::DecodeEdgeIndex(int index)
+{
+    SG_ASSERT(index >= 0);
+    SG_ASSERT(index < GOUCT_POWER3_5); // todo get, store real max. index
+    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+        if (Map2x3EdgeCode(i) == index)
+            return i;
+    SG_ASSERT(false);
+    return -1;
+}
+
+int Pattern3x3::DecodeCenterIndex(int index)
+// todo can speed up by computing reverse map if needed
+{
+    SG_ASSERT(index >= 0);
+    SG_ASSERT(index < GOUCT_POWER3_8); // todo get, store real max. index
+    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+        if (Map3x3CenterCode(i) == index)
+            return i;
+    SG_ASSERT(false);
+    return -1;
+}
+
+void Pattern3x3::MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8])
 {
     GoBoard bd(5);
-    int code[GOUCT_POWER3_8];
+    int minCode[GOUCT_POWER3_8];
     const SgPoint p = SgPointUtil::Pt(3, 3);
     for (int i = 0; i < GOUCT_POWER3_8; ++i)
     {
-        int count = SetupCodedPosition(bd, i);
-        code[i] = MinCodeOf8Neighbors(bd, p);
-        //SgDebug() << "Min Code of " << i << " is " << code[i] << '\n';
-        while (count-- > 0)
-            bd.Undo();
+        SetupCodedPosition(bd, i);
+        minCode[i] = MinCodeOf8Neighbors(bd, p);
+        GoBoardUtil::UndoAll(bd);
     }
-    //int minCode = *std::min_element(code, code + GOUCT_POWER3_8);
-    //int maxCode = *std::max_element(code, code + GOUCT_POWER3_8);
-    //SgDebug() << "min Code " << minCode << " max Code " << maxCode << '\n';
-    std::sort(code, code + GOUCT_POWER3_8);
-    std::copy(code, code + GOUCT_POWER3_8, std::ostream_iterator<int>(SgDebug(), " "));
-    int* last = std::unique(code, code + GOUCT_POWER3_8);
-    SgDebug() <<  last - code << " unique elements " << '\n';
-    // TODO remap to consecutive ints;
-    // create mapping;
-    // collect weights and compute average (?) 
-    //std::copy(code, last, std::ostream_iterator<int>(SgDebug(), " "));
-
+    int uniqueCode[GOUCT_POWER3_8];
+    std::copy(minCode, minCode + GOUCT_POWER3_8, uniqueCode);
+    std::sort(uniqueCode, uniqueCode + GOUCT_POWER3_8);
+    int* last = std::unique(uniqueCode, uniqueCode + GOUCT_POWER3_8);
+    SgDebug() <<  last - uniqueCode << " unique elements " << '\n';
+    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    {
+        int* index = std::lower_bound(uniqueCode, last, minCode[i]);
+        SG_ASSERT(index >= uniqueCode);
+        SG_ASSERT(index < last);
+        SG_ASSERT(index + 1 == std::upper_bound(uniqueCode, last, minCode[i]));
+        indexCode[i] = static_cast<int>(index - uniqueCode);
+        Write3x3CenterPattern(SgDebug(), i);
+        SgDebug() << "indexCode[" <<  i << "] = " << indexCode[i] << '\n';
+    }
 }
 
-void Pattern3x3::MapEdgePatternsToMinimum()
+void Pattern3x3::MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5])
 {
     GoBoard bd(5);
-    int code[GOUCT_POWER3_5];
+    int minCode[GOUCT_POWER3_5];
     const SgPoint p = SgPointUtil::Pt(1, 3);
     for (int i = 0; i < GOUCT_POWER3_5; ++i)
     {
-        int count = SetupCodedEdgePosition(bd, i);
-        code[i] = MinEdgeCode(bd, p);
-        while (--count >= 0)
-            bd.Undo();
+        SetupCodedEdgePosition(bd, i);
+        minCode[i] = MinEdgeCode(bd, p);
+        GoBoardUtil::UndoAll(bd);
     }
-    //int minCode = *std::min_element(code, code + GOUCT_POWER3_8);
-    //int maxCode = *std::max_element(code, code + GOUCT_POWER3_8);
-    //SgDebug() << "min Code " << minCode << " max Code " << maxCode << '\n';
-    std::sort(code, code + GOUCT_POWER3_5);
-    std::copy(code, code + GOUCT_POWER3_5, std::ostream_iterator<int>(SgDebug(), " "));
-    int* last = std::unique(code, code + GOUCT_POWER3_5);
-    SgDebug() <<  last - code << " unique elements " << '\n';
-    // TODO remap to consecutive ints;
-    // create mapping;
-    // collect weights and compute average (?)
-    //std::copy(code, last, std::ostream_iterator<int>(SgDebug(), " "));
-
+    //    SgDebug() << "minCode:\n";
+    //std::copy(minCode, minCode + GOUCT_POWER3_5,
+    //          std::ostream_iterator<int>(SgDebug(), " "));
+    int uniqueCode[GOUCT_POWER3_5];
+    std::copy(minCode, minCode + GOUCT_POWER3_5, uniqueCode);
+    std::sort(uniqueCode, uniqueCode + GOUCT_POWER3_5);
+    int* last = std::unique(uniqueCode, uniqueCode + GOUCT_POWER3_5);
+    //SgDebug() << '\n' <<  last - uniqueCode << " unique elements " << '\n';
+    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    {
+        int* index = std::lower_bound(uniqueCode, last, minCode[i]);
+        SG_ASSERT(index >= uniqueCode);
+        SG_ASSERT(index < last);
+        SG_ASSERT(index + 1 == std::upper_bound(uniqueCode, last, minCode[i]));
+        indexCode[i] = static_cast<int>(index - uniqueCode);
+        //Write2x3EdgePattern(SgDebug(), i);
+        //SgDebug() << "indexCode[" <<  i << "] = " << indexCode[i] << '\n';
+    }
 }
 
 void Pattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
@@ -454,15 +519,14 @@ void Pattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
     const SgPoint p = SgPointUtil::Pt(1, 3);
     for (int i = 0; i < GOUCT_POWER3_5; ++i)
     {
-        int count = SetupCodedEdgePosition(bd, i);
+        SetupCodedEdgePosition(bd, i);
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
             const bool isPattern = Pattern3x3::MatchAnyPattern(bd, p);
             edgeTable[*it][i].SetIsPattern(isPattern);
         }
-        while (count-- > 0)
-            bd.Undo();
+        GoBoardUtil::UndoAll(bd);
     }
 }
 
@@ -472,19 +536,27 @@ void Pattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
     const SgPoint p = SgPointUtil::Pt(3, 3);
     for (int i = 0; i < GOUCT_POWER3_8; ++i)
     {
-        int count = SetupCodedPosition(bd, i);
+        SetupCodedPosition(bd, i);
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
             const bool isPattern = Pattern3x3::MatchAnyPattern(bd, p);
             table[*it][i].SetIsPattern(isPattern);
         }
-        while (count-- > 0)
-            bd.Undo();
+        GoBoardUtil::UndoAll(bd);
     }
+}
 
-    //Pattern3x3::MapCenterPatternsToMinimum();
-    //Pattern3x3::MapEdgePatternsToMinimum();
+void Pattern3x3::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
+{
+
+}
+
+void Pattern3x3::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
+                                    edgeTable)
+{
+    int indexCode[GOUCT_POWER3_5];
+    MapEdgePatternsToMinimum(indexCode);
 }
 
 bool Pattern3x3::MatchAnyPattern(const GoBoard& bd, SgPoint p)
@@ -517,7 +589,7 @@ void Pattern3x3::Write2x3EdgePattern(std::ostream& stream, int code)
     {
         for (int j = 2; j <= 4; ++j)
         {
-            const SgPoint p = SgPointUtil::Pt(j, i); // todo rotation
+            const SgPoint p = SgPointUtil::Pt(i, j);
             stream << SgEBW(bd.GetColor(p));
         }
         stream << '\n';

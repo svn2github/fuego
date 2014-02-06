@@ -214,18 +214,22 @@ void FindLineFeatures(const GoBoard& bd, SgPoint move,
 
 const int CORNER_INDEX_3x3 = 1000; // we don't have features on Pt(1,1)
 const int EDGE_START_INDEX_3x3 = 1001;
-const int CENTER_START_INDEX_3x3 = 2000;
+const int CENTER_START_INDEX_3x3 = 1200;
+
 
 inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 {
-    return EDGE_START_INDEX_3x3
-         + GoUctPatterns<GoBoard>::CodeOfEdgeNeighbors(bd, move);
+    int code = GoUctPatterns<GoBoard>::CodeOfEdgeNeighbors(bd, move);
+    code = Pattern3x3::Map2x3EdgeCode(code);
+    SG_ASSERT(EDGE_START_INDEX_3x3 + code < CENTER_START_INDEX_3x3);
+    return EDGE_START_INDEX_3x3 + code;
 }
 
 inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
 {
-    return CENTER_START_INDEX_3x3
-         + GoUctPatterns<GoBoard>::CodeOf8Neighbors(bd, move);
+    int code = GoUctPatterns<GoBoard>::CodeOf8Neighbors(bd, move);
+    code = Pattern3x3::Map3x3CenterCode(code);
+    return CENTER_START_INDEX_3x3 + code;
 }
 
 inline int Find3x3Feature(const GoBoard& bd, SgPoint p)
@@ -241,10 +245,10 @@ void Write3x3(std::ostream& stream, int index)
         stream << "\nCORNER\n";
     else if (index < CENTER_START_INDEX_3x3)
         Pattern3x3::Write2x3EdgePattern(stream,
-                                        index - EDGE_START_INDEX_3x3);
+            Pattern3x3::DecodeEdgeIndex(index - EDGE_START_INDEX_3x3));
     else
         Pattern3x3::Write3x3CenterPattern(stream,
-                                          index - CENTER_START_INDEX_3x3);
+            Pattern3x3::DecodeCenterIndex(index - CENTER_START_INDEX_3x3));
 }
 
 int Distance(SgPoint p1, SgPoint p2)
