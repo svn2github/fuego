@@ -823,16 +823,51 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Atari_Ko)
     }
 }
 
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Empty_Board)
+    {
+        using FeFeatures::Get3x3Feature;
+        GoBoard bd(5);
+        const int f1 = Get3x3Feature(bd, Pt(3, 3));
+        const int f2 = Get3x3Feature(bd, Pt(2, 3));
+        const int f3 = Get3x3Feature(bd, Pt(4, 2));
+        const int f4 = Get3x3Feature(bd, Pt(4, 4));
+        BOOST_CHECK_EQUAL(f1, f2);
+        BOOST_CHECK_EQUAL(f1, f3);
+        BOOST_CHECK_EQUAL(f1, f4);
+        const int f5 = Get3x3Feature(bd, Pt(1, 2));
+        BOOST_CHECK(f1 != f5);
+        const int f6 = Get3x3Feature(bd, Pt(1, 3));
+        const int f7 = Get3x3Feature(bd, Pt(1, 4));
+        const int f8 = Get3x3Feature(bd, Pt(2, 1));
+        const int f9 = Get3x3Feature(bd, Pt(4, 1));
+        const int f10 = Get3x3Feature(bd, Pt(5, 2));
+        const int f11 = Get3x3Feature(bd, Pt(5, 3));
+        const int f12 = Get3x3Feature(bd, Pt(5, 4));
+        const int f13 = Get3x3Feature(bd, Pt(2, 5));
+        const int f14 = Get3x3Feature(bd, Pt(3, 5));
+        const int f15 = Get3x3Feature(bd, Pt(4, 5));
+        BOOST_CHECK_EQUAL(f5, f6);
+        BOOST_CHECK_EQUAL(f5, f7);
+        BOOST_CHECK_EQUAL(f5, f8);
+        BOOST_CHECK_EQUAL(f5, f9);
+        BOOST_CHECK_EQUAL(f5, f10);
+        BOOST_CHECK_EQUAL(f5, f11);
+        BOOST_CHECK_EQUAL(f5, f12);
+        BOOST_CHECK_EQUAL(f5, f13);
+        BOOST_CHECK_EQUAL(f5, f14);
+        BOOST_CHECK_EQUAL(f5, f15);
+        const int f16 = Get3x3Feature(bd, Pt(1, 1));
+        BOOST_CHECK(f1 != f16);
+        BOOST_CHECK(f5 != f16);
+        const int f17 = Get3x3Feature(bd, Pt(1, 5));
+        const int f18 = Get3x3Feature(bd, Pt(5, 1));
+        const int f19 = Get3x3Feature(bd, Pt(5, 5));
+        BOOST_CHECK_EQUAL(f17, f16);
+        BOOST_CHECK_EQUAL(f18, f16);
+        BOOST_CHECK_EQUAL(f19, f16);
+    }
+    
+
 } // namespace
 
 //----------------------------------------------------------------------------
-/*
-FE_MC_OWNER_1, // 0−7 wins/63 sim.
-FE_MC_OWNER_2, // 8−15
-FE_MC_OWNER_3, // 16−23
-FE_MC_OWNER_4, // 24−31
-FE_MC_OWNER_5, // 32−39
-FE_MC_OWNER_6, // 40−47
-FE_MC_OWNER_7, // 48−55
-FE_MC_OWNER_8,  // 56−63
-*/

@@ -131,10 +131,16 @@ void FindAllFeatures(const GoBoard& bd,
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features);
 
-void FindAllBasicFeatures(const GoBoard& bd,
-                          SgPointArray<FeBasicFeatureSet>& features,
-                          FeBasicFeatureSet& passFeatures);
+int Get3x3Feature(const GoBoard& bd, SgPoint p);
 
+void WriteBoardFeatures(std::ostream& stream,
+                        const SgPointArray<FeMoveFeatures>& features,
+                        const GoBoard& bd);
+
+void WriteFeatures(std::ostream& stream,
+                   SgPoint move,
+                   const FeMoveFeatures& features);
+    
 /** Write features for single move as integer list */
 void WriteFeatureSet(std::ostream& stream,
                      SgPoint move,
@@ -144,14 +150,6 @@ void WriteFeatureSet(std::ostream& stream,
 void WriteFeatureSetAsText(std::ostream& stream,
                      SgPoint move,
                      const FeBasicFeatureSet& features);
-
-void WriteFeatures(std::ostream& stream,
-                   SgPoint move,
-                   const FeMoveFeatures& features);
-    
-void WriteBoardFeatures(std::ostream& stream,
-                        const SgPointArray<FeMoveFeatures>& features,
-                        const GoBoard& bd);
 
 struct FeFeatureWeights
 {
