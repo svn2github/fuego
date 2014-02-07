@@ -453,7 +453,7 @@ int Pattern3x3::DecodeCenterIndex(int index)
     return -1;
 }
 
-void Pattern3x3::MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8])
+int Pattern3x3::MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8])
 {
     GoBoard bd(5);
     int minCode[GOUCT_POWER3_8];
@@ -468,7 +468,7 @@ void Pattern3x3::MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8])
     std::copy(minCode, minCode + GOUCT_POWER3_8, uniqueCode);
     std::sort(uniqueCode, uniqueCode + GOUCT_POWER3_8);
     int* last = std::unique(uniqueCode, uniqueCode + GOUCT_POWER3_8);
-    SgDebug() <<  last - uniqueCode << " unique elements " << '\n';
+    //SgDebug() <<  last - uniqueCode << " unique elements " << '\n';
     for (int i = 0; i < GOUCT_POWER3_8; ++i)
     {
         int* index = std::lower_bound(uniqueCode, last, minCode[i]);
@@ -476,12 +476,13 @@ void Pattern3x3::MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8])
         SG_ASSERT(index < last);
         SG_ASSERT(index + 1 == std::upper_bound(uniqueCode, last, minCode[i]));
         indexCode[i] = static_cast<int>(index - uniqueCode);
-        Write3x3CenterPattern(SgDebug(), i);
-        SgDebug() << "indexCode[" <<  i << "] = " << indexCode[i] << '\n';
+        //Write3x3CenterPattern(SgDebug(), i);
+        //SgDebug() << "indexCode[" <<  i << "] = " << indexCode[i] << '\n';
     }
+    return static_cast<int>(last - uniqueCode);
 }
 
-void Pattern3x3::MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5])
+int Pattern3x3::MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5])
 {
     GoBoard bd(5);
     int minCode[GOUCT_POWER3_5];
@@ -510,6 +511,7 @@ void Pattern3x3::MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5])
         //Write2x3EdgePattern(SgDebug(), i);
         //SgDebug() << "indexCode[" <<  i << "] = " << indexCode[i] << '\n';
     }
+    return static_cast<int>(last - uniqueCode);
 }
 
 void Pattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
@@ -528,6 +530,7 @@ void Pattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
         }
         GoBoardUtil::UndoAll(bd);
     }
+    ReduceEdgeSymmetry(edgeTable);
 }
 
 void Pattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
@@ -545,18 +548,115 @@ void Pattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
         }
         GoBoardUtil::UndoAll(bd);
     }
+    ReduceCenterSymmetry(table);
+}
+
+void PrintVector(const std::vector<int>& codes,
+                 SgBWArray<Pattern3x3::GoUctPatternTable>& table)
+{
+    SgDebug() << "Shared: ";
+
+    for (vector<int>::const_iterator it = codes.begin();
+         it != codes.end(); ++it)
+    {
+        SgDebug() << "Code " << *it <<
+           " gamma B = " << table[SG_BLACK][*it].GetGammaValue()
+        << " gamma W = " << table[SG_WHITE][*it].GetGammaValue();
+    }
+    SgDebug() << '\n';
+}
+
+#if 0
+
+GetCodesForFeature(int i)
+{
+
+}
+
+// copy symmetry-reduced features read from a file
+// into a full table
+StoreFeatureValues()
+{
+    for (int i = 0; i < nuFeatures; ++i)
+    {
+        codes = GetCodesForFeature(i);
+        for (vector<int>::const_iterator it = codes.begin();
+             it != codes.end(); ++it)
+            table[code].SetGamma(featureValue[i]);
+    }
+}
+#endif
+
+namespace Pattern3x3 {
+class TwoWay3x3Map
+{
+public:
+    TwoWay3x3Map();
+private:
+    void Init();
+public:
+    int m_nuUnique;
+    int m_indexCode[GOUCT_POWER3_8];
+    std::vector<std::vector<int> > m_uniqueCode; // length m_nuUnique
+};
+}
+
+Pattern3x3::TwoWay3x3Map::TwoWay3x3Map()
+    : m_nuUnique(0)
+{
+    Init();
+}
+
+void Pattern3x3::TwoWay3x3Map::Init()
+{
+    m_nuUnique = MapCenterPatternsToMinimum(m_indexCode);
+    m_uniqueCode.resize(m_nuUnique);
+    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    {
+        int u = m_indexCode[i];
+        SG_ASSERT(u < m_nuUnique);
+        m_uniqueCode[u].push_back(i);
+    }
 }
 
 void Pattern3x3::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
 {
-
+    TwoWay3x3Map m;
+    for (int i = 0; i < m.m_nuUnique; ++i)
+        PrintVector(m.m_uniqueCode[i], table);
 }
+
+void PrintVector(const std::vector<int>& codes,
+                SgBWArray<Pattern3x3::GoUctEdgePatternTable>& edgeTable)
+{
+    SgDebug() << "Shared: ";
+
+    for (vector<int>::const_iterator it = codes.begin();
+         it != codes.end(); ++it)
+    {
+        SgDebug() << "Code " << *it <<
+           " gamma B = " << edgeTable[SG_BLACK][*it].GetGammaValue()
+        << " gamma W = " << edgeTable[SG_WHITE][*it].GetGammaValue()
+        ;
+    }
+    SgDebug() << '\n';
+}
+
 
 void Pattern3x3::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
                                     edgeTable)
 {
     int indexCode[GOUCT_POWER3_5];
-    MapEdgePatternsToMinimum(indexCode);
+    int nuUnique = MapEdgePatternsToMinimum(indexCode);
+    std::vector<int> uCode[GOUCT_POWER3_5]; // nuUnique
+    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    {
+        int u = indexCode[i];
+        SG_ASSERT(u < nuUnique);
+        uCode[u].push_back(i);
+    }
+    for (int i = 0; i < nuUnique; ++i)
+        PrintVector(uCode[i], edgeTable);
 }
 
 bool Pattern3x3::MatchAnyPattern(const GoBoard& bd, SgPoint p)

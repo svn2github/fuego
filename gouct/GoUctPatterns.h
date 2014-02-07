@@ -140,15 +140,17 @@ namespace Pattern3x3
     /** Utility mapping function. Warning: global array, not threadsafe */
     int Map2x3EdgeCode(int code);
 
-    /** Map pattern codes to a shared code considering rotations
+    /** Map pattern codes to a shared code considering rotations.
+        Returns number of unique patterns.
         The shared code is in the range 0 .. #distinct patterns - 1.
         Use case: shared feature weights for identical patterns. */
-    void MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8]);
+    int MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8]);
 
-    /** Map pattern codes to a shared code considering rotations
-     The shared code is in the range 0 .. #distinct patterns - 1.
-     Use case: shared feature weights for identical patterns. */
-    void MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5]);
+    /** Map pattern codes to a shared code considering rotations.
+        Returns number of unique patterns.
+        The shared code is in the range 0 .. #distinct patterns - 1.
+        Use case: shared feature weights for identical patterns. */
+    int MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5]);
 
     /** Procedural matching function - used to initialize the table. */
     bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
