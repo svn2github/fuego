@@ -148,23 +148,32 @@ void WriteFeatureSet(std::ostream& stream,
 
 /** Write features for single move in human-readable strings */
 void WriteFeatureSetAsText(std::ostream& stream,
-                     SgPoint move,
-                     const FeBasicFeatureSet& features);
+                           SgPoint move,
+                           const FeBasicFeatureSet& features);
 
+//----------------------------------------------------------------------------
 struct FeFeatureWeights
 {
     FeFeatureWeights(size_t nuFeatures, size_t k);
-    bool IsEmpty() const;
+    
+    bool IsAllocated() const;
 
     size_t m_nuFeatures;
+    
     size_t m_k;
     
     // length m_nuFeatures
     vector<float> m_w;
+    
     // length k of length m_nuFeatures
     vector<vector<float> > m_v;
 };
     
+std::ostream& operator<<(std::ostream& stream,
+                         const struct FeFeatureWeights& w);
+
+//----------------------------------------------------------------------------
+
 namespace WistubaFormat {
     
 /** Read features in the format produced by Wistuba's tool. */

@@ -5,6 +5,8 @@
 #include "SgSystem.h"
 #include "FeBasicFeatures.h"
 
+#include <iostream>
+#include <string>
 #include "FePatternBase.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
@@ -634,23 +636,42 @@ void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
 FeFeatures::FeFeatureWeights::FeFeatureWeights(size_t nuFeatures, size_t k)
         : m_nuFeatures(nuFeatures), m_k(k)
 {
-    SG_ASSERT(nuFeatures > 0);
-    SG_ASSERT(k > 0);
-    m_w.reserve(nuFeatures);
+    m_w.resize(nuFeatures, 0);
     m_v.resize(k); // create empty vectors
-    for (size_t i=0; i < k; ++i)
-        m_v[i].reserve(nuFeatures);
-    SG_ASSERT(IsEmpty());
+    for (size_t i = 0; i < k; ++i)
+        m_v[i].resize(nuFeatures, 0);
+    SG_ASSERT(IsAllocated());
 }
 
-bool FeFeatures::FeFeatureWeights::IsEmpty() const
+bool FeFeatures::FeFeatureWeights::IsAllocated() const
 {
-    return m_w.size() == 0
+    return m_w.size() == m_nuFeatures
         && m_w.capacity() == m_nuFeatures
         && m_v.size() == m_k
         && m_v.capacity() == m_k
-        && m_v[0].size() == 0
-        && m_v[0].capacity() == m_nuFeatures;
+        && ( (m_v.size() == 0)
+           ||
+             (
+                m_v[0].size() == m_nuFeatures
+             && m_v[0].capacity() == m_nuFeatures
+             )
+            );
+}
+
+std::ostream& FeFeatures::operator<<(std::ostream& stream,
+                         const struct FeFeatures::FeFeatureWeights& w)
+{
+    stream << "FeFeatureWeights: Nu Features = " << w.m_nuFeatures
+    << ", K = " << w.m_k
+    << ", w = \n";
+    for (size_t i = 0; i < w.m_nuFeatures; ++i)
+    {
+        stream << "w[" << i << "] = " << w.m_w[i] << "\nv = \n";
+        for (size_t k = 0; k < w.m_k; ++k)
+            stream << "v[" << k << "]["
+                   << i << "] = " << w.m_v[k][i] << '\n';
+    }
+    return stream;
 }
 
 //-------------------------------------
@@ -660,27 +681,56 @@ namespace FeFeatures {
 struct FeFeatureWeights
 WistubaFormat::ReadFeatureWeights(std::istream& stream)
 {
+    std::string s;
+    std::getline(stream, s, ':');
+    if (s != "size")
+        throw SgException("Expected \"size\" got " + s);
     size_t nuFeatures;
+    stream >> nuFeatures;
+    std::getline(stream, s, ':');
+    if (s != ",k")
+        throw SgException("Expected \",k\" got " + s);
     size_t k;
-    stream >> nuFeatures >> k;
+    stream >> k;
     SG_ASSERT(! stream.fail());
+
     struct FeFeatureWeights f(nuFeatures, k);
-    SG_ASSERT(f.IsEmpty());
     for (size_t i = 0; i < nuFeatures; ++i)
     {
+        int index;
+        stream >> index;
+        SG_ASSERT(! stream.fail());
+        SG_ASSERT(index >= 0);
+        // TODO SG_ASSERT(index < FeFeatures::MaxIndex());
+        std::getline(stream, s, ',');
+        SG_ASSERT(! stream.fail());
         float v;
         stream >> v;
-        f.m_w.push_back(v);
+        f.m_w[i] = v;
+        //SgDebug() << "Read w[" << index << "] = " << v << '\n';
+        SG_ASSERT(! stream.fail());
     }
-    SG_ASSERT(! stream.fail());
+
     for (size_t i = 0; i < nuFeatures; ++i)
-        for (size_t j = 0; j < k; ++i)
     {
-        float v;
-        stream >> v;
-        f.m_v[j].push_back(v);
+        int index;
+        stream >> index;
+        SG_ASSERT(! stream.fail());
+        SG_ASSERT(index >= 0);
+        // TODO SG_ASSERT(index < FeFeatures::MaxIndex());
+        for (size_t j = 0; j < k; ++j)
+        {
+            std::getline(stream, s, ',');
+            SG_ASSERT(! stream.fail());
+            float v;
+            stream >> v;
+            SG_ASSERT(! stream.fail());
+            f.m_v[j][index] = v;
+            //SgDebug() << " v[" << j << "][" << index << "] = " << v;
+        }
+        //SgDebug() << '\n';
+        SG_ASSERT(! stream.fail());
     }
-    SG_ASSERT(! stream.fail());
     return f;
 }
 

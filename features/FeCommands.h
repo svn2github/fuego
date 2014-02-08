@@ -10,6 +10,8 @@
 #include <string>
 #include "GtpEngine.h"
 
+#include "FeBasicFeatures.h"
+
 class GoBoard;
 class GoGame;
 class GoPlayer;
@@ -34,6 +36,9 @@ public:
     // The callback functions are documented in the cpp file
     void CmdFeatures(GtpCommand& cmd);
 
+    /** Read weights from a file */
+    void CmdFeaturesReadWeights(GtpCommand& cmd);
+    
     void CmdFeaturesWistuba(GtpCommand& cmd);
 
     void CmdFeaturesWistubaToFile(GtpCommand& cmd);
@@ -54,6 +59,8 @@ private:
     GoPlayer*& m_player;
 
     const GoGame& m_game;
+    
+    struct FeFeatures::FeFeatureWeights m_features;
 };
 
 #endif // FE_COMMANDS_H
