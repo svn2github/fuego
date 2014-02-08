@@ -106,7 +106,14 @@ void SgHandleAssertion(const char* expr, const char* file, int line)
 #define SG_ASSERT(x) (static_cast<void>(0))
 #endif
 
-#define SG_ASSERTRANGE(i, from, to) SG_ASSERT(i >= from && i <= to)
+/** Convenience macro analogous to BOOST_CHECK_EQUAL */
+#define SG_ASSERT_EQUAL(x, y) SG_ASSERT((x) == (y))
+
+/** Check that i is within a given range.
+    In many cases, doing two separate SG_ASSERT will be clearer 
+    and give more information in case of failure.
+*/
+#define SG_ASSERTRANGE(i, from, to) SG_ASSERT((i) >= (from) && (i) <= (to))
 
 //----------------------------------------------------------------------------
 
