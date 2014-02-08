@@ -5,6 +5,10 @@
 #ifndef GOUCT_PATTERNS_H
 #define GOUCT_PATTERNS_H
 
+#include <boost/array.hpp>
+#include <cstdio>
+#include <utility>
+#include <string>
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoUctGlobalPatternData.h"
@@ -13,9 +17,6 @@
 #include "SgBoardColor.h"
 #include "SgBWArray.h"
 #include "SgPoint.h"
-#include <cstdio>
-#include <utility>
-#include <string>
 
 //----------------------------------------------------------------------------
 
@@ -119,9 +120,14 @@ namespace Pattern3x3
     
     /** See m_edgeTable. */
     typedef SgArray<PatternInfo, GOUCT_POWER3_5> GoUctEdgePatternTable;
-    
+    typedef boost::array<int, GOUCT_POWER3_5> EdgeCodeTable;
+
     /** See m_table. */
     typedef SgArray<PatternInfo, GOUCT_POWER3_8> GoUctPatternTable;
+    typedef boost::array<int, GOUCT_POWER3_8> CenterCodeTable;
+
+    /** Convert code into list of board colors */
+    std::vector<SgEmptyBlackWhite> Decode(int code, std::size_t length);
     
     /** Inverse mapping for Map3x3CenterCode */
     int DecodeCenterIndex(int index);
@@ -131,26 +137,27 @@ namespace Pattern3x3
 
     void InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table);
     
-    void InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
-                                     edgeTable);
+    void InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>& edgeTable);
+
+    int MakeCode(const std::vector<SgEmptyBlackWhite>& colors);
+    
+    /** Utility mapping function. Warning: global array, not threadsafe */
+    int Map3x3CenterCode(int code, SgBlackWhite toPlay);
 
     /** Utility mapping function. Warning: global array, not threadsafe */
-    int Map3x3CenterCode(int code);
-
-    /** Utility mapping function. Warning: global array, not threadsafe */
-    int Map2x3EdgeCode(int code);
+    int Map2x3EdgeCode(int code, SgBlackWhite toPlay);
 
     /** Map pattern codes to a shared code considering rotations.
         Returns number of unique patterns.
         The shared code is in the range 0 .. #distinct patterns - 1.
         Use case: shared feature weights for identical patterns. */
-    int MapCenterPatternsToMinimum(int indexCode[GOUCT_POWER3_8]);
+    int MapCenterPatternsToMinimum(CenterCodeTable& indexCode);
 
     /** Map pattern codes to a shared code considering rotations.
         Returns number of unique patterns.
         The shared code is in the range 0 .. #distinct patterns - 1.
         Use case: shared feature weights for identical patterns. */
-    int MapEdgePatternsToMinimum(int indexCode[GOUCT_POWER3_5]);
+    int MapEdgePatternsToMinimum(EdgeCodeTable& indexCode);
 
     /** Procedural matching function - used to initialize the table. */
     bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
@@ -161,12 +168,28 @@ namespace Pattern3x3
     void ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table);
 
     void ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>& edgeTable);
+    
+    int SwapCenterColor(int code);
+    
+    int SwapEdgeColor(int code);
 
     void Write2x3EdgePattern(std::ostream& stream, int code);
     
     void Write3x3CenterPattern(std::ostream& stream, int code);
 }
 //----------------------------------------------------------------------------
+
+inline int Pattern3x3::MakeCode(const std::vector<SgEmptyBlackWhite>& colors)
+{
+    int code = 0;
+    for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
+         it != colors.end(); ++it)
+    {
+        code *= 3;
+        code += *it;
+    }
+    return code;
+}
 
 inline int Pattern3x3::OtherDir(int dir)
 {
