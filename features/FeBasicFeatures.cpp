@@ -220,7 +220,7 @@ const int CENTER_START_INDEX_3x3 = 1200;
 inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 {
     int code = GoUctPatterns<GoBoard>::CodeOfEdgeNeighbors(bd, move);
-    code = Pattern3x3::Map2x3EdgeCode(code);
+    code = Pattern3x3::Map2x3EdgeCode(code, bd.ToPlay());
     SG_ASSERT(EDGE_START_INDEX_3x3 + code < CENTER_START_INDEX_3x3);
     return EDGE_START_INDEX_3x3 + code;
 }
@@ -228,7 +228,7 @@ inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
 {
     int code = GoUctPatterns<GoBoard>::CodeOf8Neighbors(bd, move);
-    code = Pattern3x3::Map3x3CenterCode(code);
+    code = Pattern3x3::Map3x3CenterCode(code, bd.ToPlay());
     return CENTER_START_INDEX_3x3 + code;
 }
 

@@ -867,6 +867,85 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Atari_Ko)
         BOOST_CHECK_EQUAL(f19, f16);
     }
     
+    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap)
+    {
+        using FeFeatures::Get3x3Feature;
+        // color-swapped patterns in top right and bottom left
+        std::string s("...X.\n"
+                      "....X\n"
+                      "....O\n"
+                      "O....\n"
+                      ".OX..");
+        int boardSize;
+        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+        setup.m_player = SG_BLACK;
+        GoBoard bd(boardSize, setup);
+        BOOST_CHECK_EQUAL(bd.ToPlay(), SG_BLACK);
+        int f1 = Get3x3Feature(bd, Pt(2, 2));
+        int f2 = Get3x3Feature(bd, Pt(4, 4));
+        BOOST_CHECK(f1 != f2);
+        bd.SetToPlay(SG_WHITE);
+        BOOST_CHECK_EQUAL(bd.ToPlay(), SG_WHITE);
+        int f3 = Get3x3Feature(bd, Pt(2, 2));
+        int f4 = Get3x3Feature(bd, Pt(4, 4));
+        BOOST_CHECK_EQUAL(f1, f4);
+        BOOST_CHECK_EQUAL(f2, f3);
+
+        // Edge patterns
+        int e1 = Get3x3Feature(bd, Pt(1, 3));
+        int e2 = Get3x3Feature(bd, Pt(5, 2));
+        int e3 = Get3x3Feature(bd, Pt(3, 5));
+        int e4 = Get3x3Feature(bd, Pt(4, 1));
+        BOOST_CHECK_EQUAL(e1, e2);
+        BOOST_CHECK(e1 != e3);
+        BOOST_CHECK_EQUAL(e3, e4);
+        bd.SetToPlay(SG_BLACK);
+        int e1b = Get3x3Feature(bd, Pt(1, 3));
+        int e2b = Get3x3Feature(bd, Pt(5, 2));
+        int e3b = Get3x3Feature(bd, Pt(3, 5));
+        int e4b = Get3x3Feature(bd, Pt(4, 1));
+        BOOST_CHECK_EQUAL(e1b, e2b);
+        BOOST_CHECK(e1b != e3b);
+        BOOST_CHECK_EQUAL(e3b, e4b);
+        BOOST_CHECK(e1 != e1b);
+        BOOST_CHECK_EQUAL(e1b, e3);
+        BOOST_CHECK_EQUAL(e1, e3b);
+}
+
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap_Invariant)
+{
+    using FeFeatures::Get3x3Feature;
+    // color-swap invariant patterns in top right and bottom left
+    std::string s("..X..\n"
+                  "..X.O\n"
+                  "O...O\n"
+                  "O.X..\n"
+                  "..X..");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK_EQUAL(bd.ToPlay(), SG_BLACK);
+    int f1 = Get3x3Feature(bd, Pt(2, 2));
+    int f2 = Get3x3Feature(bd, Pt(4, 4));
+    BOOST_CHECK_EQUAL(f1, f2);
+    bd.SetToPlay(SG_WHITE);
+    BOOST_CHECK_EQUAL(bd.ToPlay(), SG_WHITE);
+    int f3 = Get3x3Feature(bd, Pt(2, 2));
+    int f4 = Get3x3Feature(bd, Pt(4, 4));
+    BOOST_CHECK_EQUAL(f1, f3);
+    BOOST_CHECK_EQUAL(f1, f4);
+
+    // Edge patterns
+    int e1 = Get3x3Feature(bd, Pt(2, 1));
+    int e2 = Get3x3Feature(bd, Pt(4, 5));
+    BOOST_CHECK_EQUAL(e1, e2);
+    bd.SetToPlay(SG_BLACK);
+    int e1b = Get3x3Feature(bd, Pt(2, 1));
+    int e2b = Get3x3Feature(bd, Pt(4, 5));
+    BOOST_CHECK_EQUAL(e1b, e2b);
+    BOOST_CHECK(e1 != e1b);
+}
 
 } // namespace
 
