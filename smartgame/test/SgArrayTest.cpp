@@ -67,6 +67,37 @@ BOOST_AUTO_TEST_CASE(SgSArrayTest_Iterator)
     BOOST_CHECK(! i);
 }
 
+BOOST_AUTO_TEST_CASE(SgArrayTest_MaxValue)
+{
+    SgArray<int, 3> a;
+    a[0] = 1;
+    a[1] = 2;
+    a[2] = 3;
+    BOOST_CHECK_EQUAL(a.MaxValue(), 3);
+    a[1] = 4;
+    BOOST_CHECK_EQUAL(a.MaxValue(), 4);
+    a[1] = -4;
+    BOOST_CHECK_EQUAL(a.MaxValue(), 3);
+    a[2] = 0;
+    BOOST_CHECK_EQUAL(a.MaxValue(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(SgArrayTest_MinValue)
+{
+    SgArray<int, 3> a;
+    a[0] = 1;
+    a[1] = 2;
+    a[2] = 3;
+    BOOST_CHECK_EQUAL(a.MinValue(), 1);
+    a[0] = 4;
+    BOOST_CHECK_EQUAL(a.MinValue(), 2);
+    a[2] = -4;
+    BOOST_CHECK_EQUAL(a.MinValue(), -4);
+    a[1] = 6;
+    a[2] = 6;
+    BOOST_CHECK_EQUAL(a.MinValue(), 4);
+}
+
 BOOST_AUTO_TEST_CASE(SgArrayTest_MultiplyAssign)
 {
     SgArray<int, 3> a;

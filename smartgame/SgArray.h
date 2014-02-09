@@ -6,6 +6,7 @@
 #ifndef SG_ARRAY_H
 #define SG_ARRAY_H
 
+#include <algorithm>
 #include <cstring>
 
 //----------------------------------------------------------------------------
@@ -136,6 +137,12 @@ public:
 
     void Fill(const T& val);
 
+    /** Elements must be comparable */
+    T MinValue() const;
+
+    /** Elements must be comparable */
+    T MaxValue() const;
+
 private:
     friend class Iterator;
     friend class NonConstIterator;
@@ -250,6 +257,19 @@ void SgArray<T,SIZE>::Fill(const T& val)
     for (int i = SIZE; i--; ++v)
         *v = val;
 }
+
+template<typename T, int SIZE>
+T SgArray<T,SIZE>::MaxValue() const
+{
+    return *std::max_element(m_array, m_array + SIZE);
+}
+
+template<typename T, int SIZE>
+T SgArray<T,SIZE>::MinValue() const
+{
+    return *std::min_element(m_array, m_array + SIZE);
+}
+    
 
 //----------------------------------------------------------------------------
 
