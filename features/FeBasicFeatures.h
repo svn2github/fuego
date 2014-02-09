@@ -113,16 +113,75 @@ namespace FeFeatures {
 
 const int INVALID_3x3_INDEX = -1;
 
+//---------------------------------
+class FeFeatureWeights
+{
+public:
+    FeFeatureWeights(size_t nuFeatures, size_t k);
+
+    bool IsAllocated() const;
+
+    /** Combine v-values of features i and j */
+    float Combine(int i, int j) const;
+
+    size_t m_nuFeatures;
+
+    size_t m_k;
+
+    // length m_nuFeatures
+    vector<float> m_w;
+
+    // length k of length m_nuFeatures
+    // todo other order should be more cache friendly.
+    vector<vector<float> > m_v;
+};
+
+std::ostream& operator<<(std::ostream& stream,
+                         const FeFeatureWeights& w);
+    
+//---------------------------------
+
+inline float FeFeatureWeights::Combine(int i, int j) const
+{
+//    if (   static_cast<size_t>(i) >= m_w.size()
+//        || static_cast<size_t>(j) >= m_w.size())
+//    {
+//        SgDebug() << i << ' ' << j << ' ' << m_w.size() << std::endl;
+//    }
+    SG_ASSERT(static_cast<size_t>(i) < m_w.size());
+    SG_ASSERT(static_cast<size_t>(j) < m_w.size());
+    float sum = 0.0;
+    for (size_t k = 0; k < m_k; ++k)
+    {
+        SG_ASSERT(m_v[k].size() == m_w.size());
+        sum += m_v[k][i] * m_v[k][j];
+    }
+    return sum;
+}
+
+//---------------------------------
 struct FeMoveFeatures
 {
+    FeMoveFeatures();
+    
     FeBasicFeatureSet m_basicFeatures;
     int m_3x3Index;
 
-    FeMoveFeatures() :
+};
+    
+inline FeMoveFeatures::FeMoveFeatures()
+    :
     m_basicFeatures(),
     m_3x3Index(INVALID_3x3_INDEX)
-    { }
-};
+{ }
+
+//---------------------------------
+SgPointArray<float> EvaluateFeatures(const GoBoard& bd,
+                             const SgPointArray<FeMoveFeatures>& features,
+                             const FeFeatureWeights& weights);
+
+float EvaluateMoveFeatures(const FeMoveFeatures& features,
+                           const FeFeatureWeights& weights);
 
 void FindAllFeatures(const GoBoard& bd,
                      SgPointArray<FeMoveFeatures>& features,
@@ -152,32 +211,11 @@ void WriteFeatureSetAsText(std::ostream& stream,
                            const FeBasicFeatureSet& features);
 
 //----------------------------------------------------------------------------
-struct FeFeatureWeights
-{
-    FeFeatureWeights(size_t nuFeatures, size_t k);
-    
-    bool IsAllocated() const;
-
-    size_t m_nuFeatures;
-    
-    size_t m_k;
-    
-    // length m_nuFeatures
-    vector<float> m_w;
-    
-    // length k of length m_nuFeatures
-    vector<vector<float> > m_v;
-};
-    
-std::ostream& operator<<(std::ostream& stream,
-                         const struct FeFeatureWeights& w);
-
-//----------------------------------------------------------------------------
 
 namespace WistubaFormat {
     
 /** Read features in the format produced by Wistuba's tool. */
-struct FeFeatureWeights ReadFeatureWeights(std::istream& stream);
+FeFeatureWeights ReadFeatureWeights(std::istream& stream);
     
 /** Write features in the format of Wistuba's gamma learning code
     Each candidate move is described by a list of ID of its features.

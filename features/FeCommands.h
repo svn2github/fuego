@@ -36,6 +36,8 @@ public:
     // The callback functions are documented in the cpp file
     void CmdFeatures(GtpCommand& cmd);
 
+    void CmdFeaturesEvaluateBoard(GtpCommand& cmd);
+
     /** Read weights from a file */
     void CmdFeaturesReadWeights(GtpCommand& cmd);
     
@@ -60,7 +62,7 @@ private:
 
     const GoGame& m_game;
     
-    struct FeFeatures::FeFeatureWeights m_features;
+    FeFeatures::FeFeatureWeights m_weights;
 };
 
 #endif // FE_COMMANDS_H

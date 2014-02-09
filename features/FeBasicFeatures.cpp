@@ -554,6 +554,40 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
     return stream;
 }
 
+SgPointArray<float> FeFeatures::EvaluateFeatures(const GoBoard& bd,
+                             const SgPointArray<FeMoveFeatures>& features,
+                             const FeFeatureWeights& weights)
+{
+    SgPointArray<float> eval(0);
+    for(GoBoard::Iterator it(bd); it; ++it)
+        if (bd.IsLegal(*it))
+        {
+            SG_ASSERT(features[*it].m_3x3Index != INVALID_3x3_INDEX);
+            eval[*it] = EvaluateMoveFeatures(features[*it], weights);
+        }
+    return eval;
+}
+
+float FeFeatures::EvaluateMoveFeatures(const FeMoveFeatures& features,
+                                       const FeFeatureWeights& weights)
+{
+    float value = 0;
+    std::vector<int> basics;
+    for (int i = 0; i < _NU_FE_FEATURES; ++i)
+        if (features.m_basicFeatures.test(i))
+            basics.push_back(i);
+    if (features.m_3x3Index != INVALID_3x3_INDEX) // invalid for pass move
+        basics.push_back(features.m_3x3Index);
+    for (vector<int>::const_iterator it = basics.begin();
+         it != basics.end(); ++it)
+    {
+        value += weights.m_w[*it];
+        for (vector<int>::const_iterator it2 = it + 1;
+            it2 != basics.end(); ++it2)
+            value += weights.Combine(*it, *it2);
+    }
+    return value;
+}
 
 void FeFeatures::FindAllFeatures(const GoBoard& bd,
                           SgPointArray<FeFeatures::FeMoveFeatures>& features,
@@ -634,8 +668,9 @@ void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
 
 //-------------------------------------
 FeFeatures::FeFeatureWeights::FeFeatureWeights(size_t nuFeatures, size_t k)
-        : m_nuFeatures(nuFeatures), m_k(k)
+    : m_nuFeatures(2200), m_k(k) // TODO nuFeatures
 {
+    nuFeatures = 2200;
     m_w.resize(nuFeatures, 0);
     m_v.resize(k); // create empty vectors
     for (size_t i = 0; i < k; ++i)
@@ -659,17 +694,19 @@ bool FeFeatures::FeFeatureWeights::IsAllocated() const
 }
 
 std::ostream& FeFeatures::operator<<(std::ostream& stream,
-                         const struct FeFeatures::FeFeatureWeights& w)
+                         const FeFeatures::FeFeatureWeights& w)
 {
     stream << "FeFeatureWeights: Nu Features = " << w.m_nuFeatures
     << ", K = " << w.m_k
     << ", w = \n";
     for (size_t i = 0; i < w.m_nuFeatures; ++i)
     {
-        stream << "w[" << i << "] = " << w.m_w[i] << "\nv = \n";
+        stream << "w[" << i << "] = "
+        << w.m_w[i] << "\nv = \n";
         for (size_t k = 0; k < w.m_k; ++k)
             stream << "v[" << k << "]["
-                   << i << "] = " << w.m_v[k][i] << '\n';
+                   << i << "] = "
+                   << w.m_v[k][i] << '\n';
     }
     return stream;
 }
@@ -678,7 +715,7 @@ std::ostream& FeFeatures::operator<<(std::ostream& stream,
     
 namespace FeFeatures {
     
-struct FeFeatureWeights
+FeFeatureWeights
 WistubaFormat::ReadFeatureWeights(std::istream& stream)
 {
     std::string s;
@@ -694,7 +731,7 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
     stream >> k;
     SG_ASSERT(! stream.fail());
 
-    struct FeFeatureWeights f(nuFeatures, k);
+    FeFeatureWeights f(nuFeatures, k);
     for (size_t i = 0; i < nuFeatures; ++i)
     {
         int index;
