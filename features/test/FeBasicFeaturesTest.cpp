@@ -947,6 +947,15 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap_Invariant)
     BOOST_CHECK(e1 != e1b);
 }
 
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_FeEvalDetail)
+    {
+        const double eps = 1.0e-5;
+        FeFeatures::FeEvalDetail f(23, 0.5, -0.7);
+        BOOST_CHECK_EQUAL(f.m_feature, 23);
+        BOOST_CHECK_CLOSE(f.m_w, 0.5, eps);
+        BOOST_CHECK_CLOSE(f.m_v_sum, -0.7, eps);
+    }
+
 } // namespace
 
 //----------------------------------------------------------------------------

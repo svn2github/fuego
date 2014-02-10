@@ -35,7 +35,8 @@ void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
     cmd <<
     "none/Features/features\n"
     "cboard/Features Evaluate Board/features_evaluate_board\n"
-    "none/Features Read Weights/features_read_weights\n"
+    "none/Features Move/features_move %p\n"
+    "none/Features Read Weights/features_read_weights %r\n"
     "none/Features Wistuba/features_wistuba\n"
     "none/Features Wistuba - File/features_wistuba_file\n"
     "none/Features+Comments Wistuba - File/features_comments_wistuba_file\n"
@@ -53,13 +54,18 @@ void FeCommands::CmdFeatures(GtpCommand& cmd)
     FeFeatures::WriteFeatures(cmd, SG_PASS, passFeatures);
 }
 
+void FeCommands::CheckWeights(std::string message) const
+{
+    if (m_weights.m_nuFeatures == 0)
+        throw SgException(message + ": need to call"
+                          " features_read_weights first ");
+
+}
+
 void FeCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
 {
     using namespace FeFeatures;
-
-    if (m_weights.m_nuFeatures == 0)
-        throw SgException("features_evaluate_board: need to call"
-                          " features_read_weights first ");
+    CheckWeights("features_evaluate_board");
 
     SgPointArray<FeMoveFeatures> features;
     FeMoveFeatures passFeatures;
@@ -73,7 +79,24 @@ void FeCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
                                   eval.MaxValue(),
                                   m_bd);
 
+    SgDebug() << "Eval min = " << eval.MinValue()
+              << ", max = " << eval.MaxValue() << '\n';
+    
     cmd << "Pass: " << passEval << '\n';
+}
+
+void FeCommands::CmdFeaturesMove(GtpCommand& cmd)
+{
+    using namespace FeFeatures;
+    CheckWeights("features_move");
+
+    SgPoint move = GoGtpCommandUtil::MoveArg(cmd, 0, m_bd);
+    FeMoveFeatures f;
+    FindMoveFeaturesUI(m_bd, move, f);
+    std::vector<FeEvalDetail> detail =
+    EvaluateMoveFeaturesDetail(f, m_weights);
+    WriteEvalDetail(SgDebug(), detail);
+    SgDebug() << std::endl;
 }
 
 void FeCommands::CmdFeaturesReadWeights(GtpCommand& cmd)
@@ -126,6 +149,7 @@ void FeCommands::Register(GtpEngine& e)
     Register(e, "features", &FeCommands::CmdFeatures);
     Register(e, "features_evaluate_board",
              &FeCommands::CmdFeaturesEvaluateBoard);
+    Register(e, "features_move", &FeCommands::CmdFeaturesMove);
     Register(e, "features_read_weights", &FeCommands::CmdFeaturesReadWeights);
     Register(e, "features_wistuba", &FeCommands::CmdFeaturesWistuba);
     Register(e, "features_wistuba_file",

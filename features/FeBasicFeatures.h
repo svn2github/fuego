@@ -113,6 +113,27 @@ namespace FeFeatures {
 
 const int INVALID_3x3_INDEX = -1;
 
+typedef vector<int>::const_iterator FeIterator;
+
+//---------------------------------
+
+struct FeEvalDetail
+{
+    FeEvalDetail(int feature, float w, float v);
+    const int m_feature;
+    const float m_w;
+    const float m_v_sum;
+};
+
+inline FeEvalDetail::FeEvalDetail(int feature, float w, float v)
+    :
+    m_feature(feature),
+    m_w(w),
+    m_v_sum(v)
+{ }
+
+std::ostream& operator<<(std::ostream& stream, const FeEvalDetail& f);
+
 //---------------------------------
 class FeFeatureWeights
 {
@@ -163,7 +184,7 @@ inline float FeFeatureWeights::Combine(int i, int j) const
 struct FeMoveFeatures
 {
     FeMoveFeatures();
-    
+
     FeBasicFeatureSet m_basicFeatures;
     int m_3x3Index;
 
@@ -176,11 +197,22 @@ inline FeMoveFeatures::FeMoveFeatures()
 { }
 
 //---------------------------------
+/** List of features */
+std::vector<int> ActiveFeatures(const FeMoveFeatures& features);
+
+/** Evaluation of given list of features, using weights */
+float EvaluateActiveFeatures(const std::vector<int>& active,
+                             const FeFeatureWeights& weights);
+
 SgPointArray<float> EvaluateFeatures(const GoBoard& bd,
                              const SgPointArray<FeMoveFeatures>& features,
                              const FeFeatureWeights& weights);
 
 float EvaluateMoveFeatures(const FeMoveFeatures& features,
+                           const FeFeatureWeights& weights);
+
+std::vector<FeEvalDetail>
+EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
                            const FeFeatureWeights& weights);
 
 void FindAllFeatures(const GoBoard& bd,
@@ -190,11 +222,18 @@ void FindAllFeatures(const GoBoard& bd,
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features);
 
+/** Inefficient, calls full board function, use only for UI */
+void FindMoveFeaturesUI(const GoBoard& bd, SgPoint move,
+                        FeFeatures::FeMoveFeatures& features);
+
 int Get3x3Feature(const GoBoard& bd, SgPoint p);
 
 void WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const GoBoard& bd);
+
+void WriteEvalDetail(std::ostream& stream,
+                     const std::vector<FeEvalDetail>& detail);
 
 void WriteFeatures(std::ostream& stream,
                    SgPoint move,

@@ -465,6 +465,8 @@ void WritePatternFeatureIndex(std::ostream& stream,
 
 } // namespace
 
+//----------------------------------------------------------------------------
+
 std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
 {
     static const char* s_string[_NU_FE_FEATURES] =
@@ -554,6 +556,29 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
     return stream;
 }
 
+//----------------------------------------------------------------------------
+void WriteFeatureFromID(std::ostream& stream, int id)
+{
+    if (id < static_cast<int>(_NU_FE_FEATURES))
+        stream << static_cast<FeBasicFeature>(id);
+    else // 3x3 pattern
+        Write3x3(stream, id);
+}
+
+//----------------------------------------------------------------------------
+
+std::ostream& FeFeatures::operator<<(std::ostream& stream,
+                         const FeFeatures::FeEvalDetail& f)
+{
+    stream << '('; WriteFeatureFromID(stream, f.m_feature);
+    stream << ", w = " << std::setprecision(2) << f.m_w
+           << ", v_sum = " << f.m_v_sum << ')';
+
+    return stream;
+}
+
+//----------------------------------------------------------------------------
+
 SgPointArray<float> FeFeatures::EvaluateFeatures(const GoBoard& bd,
                              const SgPointArray<FeMoveFeatures>& features,
                              const FeFeatureWeights& weights)
@@ -568,25 +593,53 @@ SgPointArray<float> FeFeatures::EvaluateFeatures(const GoBoard& bd,
     return eval;
 }
 
-float FeFeatures::EvaluateMoveFeatures(const FeMoveFeatures& features,
-                                       const FeFeatureWeights& weights)
+std::vector<int> FeFeatures::ActiveFeatures(const FeMoveFeatures& features)
 {
-    float value = 0;
-    std::vector<int> basics;
+    std::vector<int> active;
     for (int i = 0; i < _NU_FE_FEATURES; ++i)
         if (features.m_basicFeatures.test(i))
-            basics.push_back(i);
+            active.push_back(i);
     if (features.m_3x3Index != INVALID_3x3_INDEX) // invalid for pass move
-        basics.push_back(features.m_3x3Index);
-    for (vector<int>::const_iterator it = basics.begin();
-         it != basics.end(); ++it)
+        active.push_back(features.m_3x3Index);
+    return active;
+}
+
+float FeFeatures::EvaluateActiveFeatures(const std::vector<int>& active,
+                                         const FeFeatureWeights& weights)
+{
+    float value = 0.0;
+    for (FeIterator it = active.begin(); it != active.end(); ++it)
     {
         value += weights.m_w[*it];
-        for (vector<int>::const_iterator it2 = it + 1;
-            it2 != basics.end(); ++it2)
+        for (FeIterator it2 = it + 1; it2 != active.end(); ++it2)
             value += weights.Combine(*it, *it2);
     }
     return value;
+}
+
+float FeFeatures::EvaluateMoveFeatures(const FeMoveFeatures& features,
+                                       const FeFeatureWeights& weights)
+{
+    std::vector<int> active = ActiveFeatures(features);
+    return EvaluateActiveFeatures(active, weights);
+}
+
+std::vector<FeFeatures::FeEvalDetail>
+FeFeatures::EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
+                                       const FeFeatureWeights& weights)
+{
+    std::vector<int> active = ActiveFeatures(features);
+    std::vector<FeFeatures::FeEvalDetail> detail;
+    for (FeIterator it = active.begin(); it != active.end(); ++it)
+    {
+        const float w = weights.m_w[*it];
+        float v = 0.0;
+        for (FeIterator it2 = active.begin(); it2 != active.end(); ++it2)
+            if (it != it2)
+                v += weights.Combine(*it, *it2);
+        detail.push_back(FeFeatures::FeEvalDetail(*it, w, v/2));
+    }
+    return detail;
 }
 
 void FeFeatures::FindAllFeatures(const GoBoard& bd,
@@ -598,6 +651,18 @@ void FeFeatures::FindAllFeatures(const GoBoard& bd,
             FindMoveFeatures(bd, *it, features[*it]);
     FindMoveFeatures(bd, SG_PASS, passFeatures);
     FindAllPolicyFeatures(bd, features);
+}
+
+void FeFeatures::FindMoveFeaturesUI(const GoBoard& bd, SgPoint move,
+                                    FeFeatures::FeMoveFeatures& features)
+{
+    if (! bd.IsLegal(move))
+        return;
+    FindMoveFeatures(bd, move, features);
+    // move != SG_PASS
+    SgPointArray<FeFeatures::FeMoveFeatures> boardFeatures;
+    FindAllPolicyFeatures(bd, boardFeatures);
+    features.m_basicFeatures |= boardFeatures[move].m_basicFeatures;
 }
 
 void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
@@ -631,6 +696,21 @@ void FeFeatures::WriteBoardFeatures(std::ostream& stream,
     for (GoBoard::Iterator it(bd); it; ++it)
         if (bd.IsLegal(*it))
             WriteFeatures(stream, *it, features[*it]);
+}
+
+void FeFeatures::WriteEvalDetail(std::ostream& stream,
+                     const std::vector<FeEvalDetail>& detail)
+{
+    float w = 0;
+    float v = 0;
+    for (std::vector<FeFeatures::FeEvalDetail>::const_iterator it
+         = detail.begin(); it != detail.end(); ++it)
+    {
+        stream << *it;
+        w += (*it).m_w;
+        v += (*it).m_v_sum;
+    }
+    stream << " Total w = " << w << " + v = " << v << " = " << w + v << '\n';
 }
 
 void FeFeatures::WriteFeatures(std::ostream& stream,
@@ -667,10 +747,15 @@ void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
 }
 
 //-------------------------------------
+
+// TODO get max index from computation
+const int MAX_FEATURE_INDEX = 2200;
+
 FeFeatures::FeFeatureWeights::FeFeatureWeights(size_t nuFeatures, size_t k)
-    : m_nuFeatures(2200), m_k(k) // TODO nuFeatures
+    : m_nuFeatures(nuFeatures), m_k(k)
 {
-    nuFeatures = 2200;
+    SG_ASSERT(  nuFeatures == 0
+             || nuFeatures == MAX_FEATURE_INDEX);
     m_w.resize(nuFeatures, 0);
     m_v.resize(k); // create empty vectors
     for (size_t i = 0; i < k; ++i)
@@ -714,7 +799,7 @@ std::ostream& FeFeatures::operator<<(std::ostream& stream,
 //-------------------------------------
     
 namespace FeFeatures {
-    
+
 FeFeatureWeights
 WistubaFormat::ReadFeatureWeights(std::istream& stream)
 {
@@ -731,14 +816,15 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
     stream >> k;
     SG_ASSERT(! stream.fail());
 
-    FeFeatureWeights f(nuFeatures, k);
+    FeFeatureWeights f(MAX_FEATURE_INDEX, k);
     for (size_t i = 0; i < nuFeatures; ++i)
     {
         int index;
         stream >> index;
         SG_ASSERT(! stream.fail());
         SG_ASSERT(index >= 0);
-        // TODO SG_ASSERT(index < FeFeatures::MaxIndex());
+        SG_ASSERT(index < MAX_FEATURE_INDEX);
+
         std::getline(stream, s, ',');
         SG_ASSERT(! stream.fail());
         float v;
@@ -753,7 +839,7 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
         stream >> index;
         SG_ASSERT(! stream.fail());
         SG_ASSERT(index >= 0);
-        // TODO SG_ASSERT(index < FeFeatures::MaxIndex());
+        SG_ASSERT(index < MAX_FEATURE_INDEX);
         for (size_t j = 0; j < k; ++j)
         {
             std::getline(stream, s, ',');
@@ -762,9 +848,7 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
             stream >> v;
             SG_ASSERT(! stream.fail());
             f.m_v[j][index] = v;
-            //SgDebug() << " v[" << j << "][" << index << "] = " << v;
         }
-        //SgDebug() << '\n';
         SG_ASSERT(! stream.fail());
     }
     return f;

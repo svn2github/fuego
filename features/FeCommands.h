@@ -38,6 +38,8 @@ public:
 
     void CmdFeaturesEvaluateBoard(GtpCommand& cmd);
 
+    void CmdFeaturesMove(GtpCommand& cmd);
+
     /** Read weights from a file */
     void CmdFeaturesReadWeights(GtpCommand& cmd);
     
@@ -50,6 +52,8 @@ public:
     void Register(GtpEngine& engine);
 
 private:
+    void CheckWeights(std::string message) const;
+
     void FeaturesWistubaToFile(GtpCommand& cmd, bool writeComments);
     
     void Register(GtpEngine& engine,
