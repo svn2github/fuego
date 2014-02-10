@@ -743,8 +743,7 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
         SG_ASSERT(! stream.fail());
         float v;
         stream >> v;
-        f.m_w[i] = v;
-        //SgDebug() << "Read w[" << index << "] = " << v << '\n';
+        f.m_w[index] = v;
         SG_ASSERT(! stream.fail());
     }
 
