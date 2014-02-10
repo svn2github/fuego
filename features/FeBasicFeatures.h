@@ -97,6 +97,28 @@ enum FeBasicFeature{
     FE_MC_OWNER_6, // 40−47
     FE_MC_OWNER_7, // 48−55
     FE_MC_OWNER_8,  // 56−63
+    FE_POS_1, // Position of a point p according to GoBoard::Pos(p)
+    FE_POS_2,
+    FE_POS_3,
+    FE_POS_4,
+    FE_POS_5,
+    FE_POS_6,
+    FE_POS_7,
+    FE_POS_8,
+    FE_POS_9,
+    FE_POS_10,
+    FE_GAME_PHASE_1, // Game phase as in Wistuba - 30 moves per phase
+    FE_GAME_PHASE_2,
+    FE_GAME_PHASE_3,
+    FE_GAME_PHASE_4,
+    FE_GAME_PHASE_5,
+    FE_GAME_PHASE_6,
+    FE_GAME_PHASE_7,
+    FE_GAME_PHASE_8,
+    FE_GAME_PHASE_9,
+    FE_GAME_PHASE_10,
+    FE_GAME_PHASE_11,
+    FE_GAME_PHASE_12,
     FE_NONE,
     _NU_FE_FEATURES
 

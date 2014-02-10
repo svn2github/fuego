@@ -206,14 +206,35 @@ inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
                                        + value - baseValue);
 }
 
-void FindLineFeatures(const GoBoard& bd, SgPoint move,
+void FindLineFeature(const GoBoard& bd, SgPoint move,
                       FeBasicFeatureSet& features)
 {
     const int line = std::min(5, bd.Line(move));
     FeBasicFeature f = ComputeFeature(FE_LINE_1, 1, line);
+    SG_ASSERT(f >= FE_LINE_1);
+    SG_ASSERT(f <= FE_LINE_5_OR_MORE);
     features.set(f);
 }
 
+void FindPosFeature(const GoBoard& bd, SgPoint move,
+                      FeBasicFeatureSet& features)
+{
+    const int pos = std::min(10, bd.Pos(move));
+    FeBasicFeature f = ComputeFeature(FE_POS_1, 1, pos);
+    SG_ASSERT(f >= FE_POS_1);
+    SG_ASSERT(f <= FE_POS_10);
+    features.set(f);
+}
+    
+void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
+{
+    const int phase = std::min(12, bd.MoveNumber() / 30 + 1);
+    FeBasicFeature f = ComputeFeature(FE_GAME_PHASE_1, 1, phase);
+    SG_ASSERT(f >= FE_GAME_PHASE_1);
+    SG_ASSERT(f <= FE_GAME_PHASE_12);
+    features.set(f);
+}
+    
 const int CORNER_INDEX_3x3 = 1000; // we don't have features on Pt(1,1)
 const int EDGE_START_INDEX_3x3 = 1001;
 const int CENTER_START_INDEX_3x3 = 1200;
@@ -550,8 +571,32 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_MC_OWNER_6", // 40−47
         "FE_MC_OWNER_7", // 48−55
         "FE_MC_OWNER_8",  // 56−63
+        "FE_POS_1", // Position of a point p according to GoBoard::Pos(p)
+        "FE_POS_2",
+        "FE_POS_3",
+        "FE_POS_4",
+        "FE_POS_5",
+        "FE_POS_6",
+        "FE_POS_7",
+        "FE_POS_8",
+        "FE_POS_9",
+        "FE_POS_10",
+        "FE_GAME_PHASE_1", // Game phase as in Wistuba - 30 moves per phase
+        "FE_GAME_PHASE_2",
+        "FE_GAME_PHASE_3",
+        "FE_GAME_PHASE_4",
+        "FE_GAME_PHASE_5",
+        "FE_GAME_PHASE_6",
+        "FE_GAME_PHASE_7",
+        "FE_GAME_PHASE_8",
+        "FE_GAME_PHASE_9",
+        "FE_GAME_PHASE_10",
+        "FE_GAME_PHASE_11",
+        "FE_GAME_PHASE_12",
         "FE_NONE"
     };
+    SG_ASSERT(f >= FE_PASS_NEW);
+    SG_ASSERT(f < _NU_FE_FEATURES);
     stream << s_string[f];
     return stream;
 }
@@ -678,9 +723,11 @@ void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindExtensionFeatures(bd, move, features);
     FindSelfatariFeatures(bd, move, features);
     FindAtariFeatures(bd, move, features);
-    FindLineFeatures(bd, move, features);
+    FindLineFeature(bd, move, features);
     FindDistPrevMoveFeatures(bd, move, features);
     FindMCOwnerFeatures(bd, move, features);
+    FindPosFeature(bd, move, features);
+    FindGamePhaseFeature(bd, features);
 }
 
 int FeFeatures::Get3x3Feature(const GoBoard& bd, SgPoint p)
