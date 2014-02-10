@@ -141,7 +141,7 @@ typedef vector<int>::const_iterator FeIterator;
 
 struct FeEvalDetail
 {
-    FeEvalDetail(int feature, float w, float v);
+    FeEvalDetail(const int feature, const float w, const float v);
     const int m_feature;
     const float m_w;
     const float m_v_sum;
