@@ -368,14 +368,11 @@ GoPointList GetUctPolicyMoves(const GoBoard& bd,
     return s_policy->GetPolicyMoves(type);
 }
 
-
 void FindCorrectionFeatures(const GoBoard& bd,
                         SgPointArray<FeFeatures::FeMoveFeatures>& features,
-                        GoUctPlayoutPolicy<GoBoard>::Corrector&
-                        corrFunction,
+                        GoUctPlayoutPolicy<GoBoard>::Corrector corrFunction,
                         FeBasicFeature fromFeature,
                         FeBasicFeature toFeature
-                        //,FeBasicFeature notMovedFeature
                         )
 {
     std::pair<GoPointList,GoPointList> corrected =
@@ -384,36 +381,27 @@ void FindCorrectionFeatures(const GoBoard& bd,
         features[*it].m_basicFeatures.set(fromFeature);
     for (GoPointList::Iterator it(corrected.second); it; ++it) // to
         features[*it].m_basicFeatures.set(toFeature);
-//    for (GoBoard::Iterator it(bd); it; ++it) // from
-//        if (  bd.IsLegal(*it)
-//           && ! features[*it].m_basicFeatures.test(fromFeature)
-//           && ! features[*it].m_basicFeatures.test(toFeature)
-//           )
-//            features[*it].m_basicFeatures.set(notMovedFeature);
 }
 
 void FindAllCorrectionFeatures(const GoBoard& bd,
                            SgPointArray<FeFeatures::FeMoveFeatures>& features)
 {
     FindCorrectionFeatures(bd, features,
-                           GoUctUtil::DoFalseEyeToCaptureCorrection,
+                           GoUctUtil::DoFalseEyeToCaptureCorrection<GoBoard>,
                            FE_GOUCT_REPLACE_CAPTURE_FROM,
                            FE_GOUCT_REPLACE_CAPTURE_TO
-                           //FE_GOUCT_REPLACE_CAPTURE_NOT_MOVED
                            );
 
     FindCorrectionFeatures(bd, features,
-                           GoUctUtil::DoSelfAtariCorrection,
+                           GoUctUtil::DoSelfAtariCorrection<GoBoard>,
                            FE_GOUCT_SELFATARI_CORRECTION_FROM,
                            FE_GOUCT_SELFATARI_CORRECTION_TO
-                           //FE_GOUCT_SELFATARI_CORRECTION_NOT_MOVED
                            );
 
     FindCorrectionFeatures(bd, features,
-                           GoUctUtil::DoClumpCorrection,
+                           GoUctUtil::DoClumpCorrection<GoBoard>,
                            FE_GOUCT_CLUMP_CORRECTION_FROM,
                            FE_GOUCT_CLUMP_CORRECTION_TO
-                           //FE_GOUCT_CLUMP_CORRECTION_NOT_MOVED
                            );
 }
 
@@ -430,7 +418,6 @@ void FindPolicyFeatures(const GoBoard& bd,
 void FindRandomPruned(const GoBoard& bd,
                            SgPointArray<FeFeatures::FeMoveFeatures>& features)
 {
-    // FE_GOUCT_RANDOM_PRUNED, // not generated as a random move
     const GoPointList moves = GetUctPolicyMoves(bd, GOUCT_RANDOM);
     SgPointSet moveSet;
     for (GoPointList::Iterator it(moves); it; ++it)
@@ -445,7 +432,7 @@ void FindRandomPruned(const GoBoard& bd,
 void FindAllPolicyFeatures(const GoBoard& bd,
                            SgPointArray<FeFeatures::FeMoveFeatures>& features)
 {
-    // FE_GOUCT_FILLBOARD
+    // TODO? FE_GOUCT_FILLBOARD
     FindPolicyFeatures(bd, features, GOUCT_NAKADE, FE_GOUCT_NAKADE);
     FindPolicyFeatures(bd, features, GOUCT_ATARI_CAPTURE,
                        FE_GOUCT_ATARI_CAPTURE);
@@ -796,7 +783,7 @@ void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
 //-------------------------------------
 
 // TODO get max index from computation
-const int MAX_FEATURE_INDEX = 2200;
+const size_t MAX_FEATURE_INDEX = 2200;
 
 FeFeatures::FeFeatureWeights::FeFeatureWeights(size_t nuFeatures, size_t k)
     : m_nuFeatures(nuFeatures), m_k(k)
@@ -866,10 +853,9 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
     FeFeatureWeights f(MAX_FEATURE_INDEX, k);
     for (size_t i = 0; i < nuFeatures; ++i)
     {
-        int index;
+        size_t index;
         stream >> index;
         SG_ASSERT(! stream.fail());
-        SG_ASSERT(index >= 0);
         SG_ASSERT(index < MAX_FEATURE_INDEX);
 
         std::getline(stream, s, ',');
@@ -882,10 +868,9 @@ WistubaFormat::ReadFeatureWeights(std::istream& stream)
 
     for (size_t i = 0; i < nuFeatures; ++i)
     {
-        int index;
+        size_t index;
         stream >> index;
         SG_ASSERT(! stream.fail());
-        SG_ASSERT(index >= 0);
         SG_ASSERT(index < MAX_FEATURE_INDEX);
         for (size_t j = 0; j < k; ++j)
         {
