@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include "FeBasicFeatures.h"
+#include "FePattern.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoGame.h"
@@ -34,6 +35,7 @@ void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
     "none/Features/features\n"
+    "none/Features Define Pattern/features_define_pattern\n"
     "cboard/Features Evaluate Board/features_evaluate_board\n"
     "none/Features Move/features_move %p\n"
     "none/Features Read Weights/features_read_weights %r\n"
@@ -41,6 +43,14 @@ void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
     "none/Features Wistuba - File/features_wistuba_file\n"
     "none/Features+Comments Wistuba - File/features_comments_wistuba_file\n"
     ;
+}
+
+void FeCommands::CheckWeights(std::string message) const
+{
+    if (m_weights.m_nuFeatures == 0)
+        throw SgException(message + ": need to call"
+                          " features_read_weights first ");
+
 }
 
 void FeCommands::CmdFeatures(GtpCommand& cmd)
@@ -52,14 +62,6 @@ void FeCommands::CmdFeatures(GtpCommand& cmd)
     cmd << '\n';
     FeFeatures::WriteBoardFeatures(cmd, features, m_bd);
     FeFeatures::WriteFeatures(cmd, SG_PASS, passFeatures);
-}
-
-void FeCommands::CheckWeights(std::string message) const
-{
-    if (m_weights.m_nuFeatures == 0)
-        throw SgException(message + ": need to call"
-                          " features_read_weights first ");
-
 }
 
 void FeCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
@@ -144,9 +146,31 @@ void FeCommands::CmdFeaturesCommentsWistubaToFile(GtpCommand& cmd)
     FeaturesWistubaToFile(cmd, true);
 }
 
+/** Write features and comments for validation in Wistuba's format */
+void FeCommands::CmdFeaturesDefinePattern(GtpCommand& cmd)
+{
+    SG_UNUSED(cmd);
+
+    for (PaAxSet s = 0; s < PA_NU_AX_SETS; ++s)
+    {
+        PaAx ax(s);
+        SgPoint corner = AXBoardToBoard(9, 9, ax, m_bd.Size());
+        int x = SgPointUtil::Col(corner);
+        int y = SgPointUtil::Row(corner);
+        PaSpot spot(x, y, ax, false);
+        int width = 5;
+        int height = 7;
+        FeRectPattern* p = DefineRectPattern(m_bd, spot, width, height);
+        SgDebug() << *p;
+        delete p;
+    }
+}
+
 void FeCommands::Register(GtpEngine& e)
 {
     Register(e, "features", &FeCommands::CmdFeatures);
+    Register(e, "features_define_pattern",
+             &FeCommands::CmdFeaturesDefinePattern);
     Register(e, "features_evaluate_board",
              &FeCommands::CmdFeaturesEvaluateBoard);
     Register(e, "features_move", &FeCommands::CmdFeaturesMove);

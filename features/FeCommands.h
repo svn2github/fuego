@@ -36,6 +36,8 @@ public:
     // The callback functions are documented in the cpp file
     void CmdFeatures(GtpCommand& cmd);
 
+    void CmdFeaturesDefinePattern(GtpCommand& cmd);
+    
     void CmdFeaturesEvaluateBoard(GtpCommand& cmd);
 
     void CmdFeaturesMove(GtpCommand& cmd);
