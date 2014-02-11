@@ -56,7 +56,7 @@ enum FeBasicFeature{
     FE_DIST_PREV_15,
     FE_DIST_PREV_16,
     FE_DIST_PREV_17,
-    FE_DIST_PREV_OWN_0,
+    FE_DIST_PREV_OWN_0,  // play back in at same point after capture
     FE_DIST_PREV_OWN_2,
     FE_DIST_PREV_OWN_3,
     FE_DIST_PREV_OWN_4,

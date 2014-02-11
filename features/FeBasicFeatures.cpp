@@ -235,10 +235,8 @@ void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
     features.set(f);
 }
     
-const int CORNER_INDEX_3x3 = 1000; // we don't have features on Pt(1,1)
-const int EDGE_START_INDEX_3x3 = 1001;
+const int EDGE_START_INDEX_3x3 = 1000;
 const int CENTER_START_INDEX_3x3 = 1200;
-
 
 inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 {
@@ -257,16 +255,15 @@ inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
 
 inline int Find3x3Feature(const GoBoard& bd, SgPoint p)
 {
-    return bd.Pos(p) == 1  ? CORNER_INDEX_3x3
+    return bd.Pos(p) == 1  ? FeFeatures::INVALID_3x3_INDEX
          : bd.Line(p) == 1 ? Find2x3EdgeFeature(bd, p)
                            : Find3x3CenterFeature(bd, p);
 }
 
 void Write3x3(std::ostream& stream, int index)
 {
-    if (index == CORNER_INDEX_3x3)
-        stream << "\nCORNER\n";
-    else if (index < CENTER_START_INDEX_3x3)
+    SG_ASSERT(index != FeFeatures::INVALID_3x3_INDEX); // stream << "\nCORNER\n";
+    if (index < CENTER_START_INDEX_3x3)
         Pattern3x3::Write2x3EdgePattern(stream,
             Pattern3x3::DecodeEdgeIndex(index - EDGE_START_INDEX_3x3));
     else
@@ -315,6 +312,7 @@ void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
     }
 }
 
+#if UNUSED // TODO
 int NuWins()
 {
     return 42; // TODO
@@ -353,6 +351,7 @@ void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move,
     if (f != FE_NONE)
         features.set(f);
 }
+#endif
 
 GoPointList GetUctPolicyMoves(const GoBoard& bd,
                               GoUctPlayoutPolicyType type)
@@ -519,7 +518,7 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_DIST_PREV_15",
         "FE_DIST_PREV_16",
         "FE_DIST_PREV_17",
-        "FE_DIST_PREV_OWN_0",
+        "FE_DIST_PREV_OWN_0", // play back in at same point after capture
         "FE_DIST_PREV_OWN_2",
         "FE_DIST_PREV_OWN_3",
         "FE_DIST_PREV_OWN_4",
@@ -715,7 +714,7 @@ void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindAtariFeatures(bd, move, features);
     FindLineFeature(bd, move, features);
     FindDistPrevMoveFeatures(bd, move, features);
-    FindMCOwnerFeatures(bd, move, features);
+    //FindMCOwnerFeatures(bd, move, features);
     FindPosFeature(bd, move, features);
     FindGamePhaseFeature(bd, features);
 }
