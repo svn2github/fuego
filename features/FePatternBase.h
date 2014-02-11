@@ -101,6 +101,8 @@ SgPoint AXBoardToBoard(int x, int y, PaAx ax, int boardSize);
  */
 SgPoint PatternToPoint(int n, const PaSpot& spot, int boardSize);
 
+SgPoint PatternToPoint(int dx, int dy, const PaSpot& spot, int boardSize);
+
 //----------------------------------------------------------------------------
 
 /** adding SHIFT to deltaX and deltaY to force numbers to be positive.

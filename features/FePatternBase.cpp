@@ -47,9 +47,17 @@ SgPoint AXBoardToBoard(int x, int y, PaAx ax, int boardSize)
     else return 0;
 }
 
+SgPoint PatternToPoint(int dx, int dy, const PaSpot& spot, int boardSize)
+{
+    return AXBoardToBoard(spot.m_x + dx,
+                          spot.m_y + dy,
+                          spot.m_ax,
+                          boardSize);
+}
+
 SgPoint PatternToPoint(int offset, const PaSpot& spot, int boardSize)
 {
-    return AXBoardToBoard(spot.m_x + PaConst::DeltaX(offset),
-                          spot.m_y + PaConst::DeltaY(offset),
-                          spot.m_ax, boardSize);
+    return PatternToPoint(PaConst::DeltaX(offset),
+                          PaConst::DeltaY(offset),
+                          spot, boardSize);
 }
