@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include "FePatternBase.h"
 #include "GoBoard.h"
 
 //----------------------------------------------------------------------------
@@ -16,13 +17,15 @@ class FePattern
 public:
     FePattern(size_t nuPoints);
     
-    ~FePattern();
+    virtual ~FePattern();
 
     /** Initialize pattern points from string. */
     void Init(const std::string& s);
 
     void SetMove(SgPoint p, SgBlackWhite color);
     
+    void SetPoints(const GoBoard& bd, const std::vector<SgPoint>& points);
+
     void SetValue(float value);
 
     size_t NuPoints() const {return m_nuPoints;}
@@ -32,6 +35,8 @@ public:
     SgBlackWhite Color() const {return m_color;}
     
     float Value() const {return m_value;}
+
+    virtual void Write(std::ostream& stream) const;
     
     typedef std::pair<int,SgBoardColor> PaPoint;
     
@@ -63,13 +68,18 @@ public:
     
     size_t Height() const {return m_height;}
 
+    void Write(std::ostream& stream) const;
+
 private:
     size_t m_width;
     
     size_t m_height;
 };
 
-std::ostream& operator<<(std::ostream& stream, const FeRectPattern& r);
+//----------------------------------------------------------------------------
+
+FeRectPattern* DefineRectPattern(const GoBoard& bd, PaSpot spot,
+                                 int width, int height);
 
 //----------------------------------------------------------------------------
 
@@ -83,7 +93,9 @@ public:
     SgPoint MoveColor() const {return m_color;}
     
     float Value() const {return m_value;}
+
 private:
+    
     SgPoint m_move;
     
     SgBlackWhite m_color;

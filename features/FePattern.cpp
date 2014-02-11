@@ -71,13 +71,55 @@ void FePattern::SetValue(float value)
     m_value = value;
 }
 
+inline bool CompareMove(const FePattern::PaPoint& p1,
+                        const FePattern::PaPoint& p2)
+{
+    return p1.first < p2.first;
+}
+
+SgRect EnclosingRect(const std::vector<FePattern::PaPoint>& points)
+{
+    SgRect r;
+    for (std::vector<FePattern::PaPoint>::const_iterator it
+         = points.begin(); it != points.end(); ++it)
+        r.Include(it->first);
+    return r;
+}
+
+void WritePatternMap(std::ostream& stream,
+                     const std::vector<FePattern::PaPoint>& origPoints)
+{
+    std::vector<FePattern::PaPoint> points(origPoints);
+    std::sort(points.begin(), points.end(), CompareMove);
+    SgRect enclosingRect = EnclosingRect(points);
+    std::vector<FePattern::PaPoint>::const_iterator pit = points.begin();
+    for (SgRectIterator it(enclosingRect); it; ++it)
+    {
+        if (pit == points.end() || (*it < pit->first))
+            stream << ' ';
+        else
+        {
+            SG_ASSERT(*it == pit->first);
+            stream << SgEBW(pit->second); // color of point
+            ++pit; // advance to next point in pattern
+        }
+        if (it.AtEndOfLine())
+            stream << '\n';
+    }
+    SG_ASSERT(pit == points.end());
+}
+
+void FePattern::Write(std::ostream& stream) const
+{
+    stream << "FePattern nuPoints " << NuPoints()
+    << ", move " << SgWriteMove(Move(), Color())
+    << ", value " << Value() << '\n';
+    WritePatternMap(stream, m_points);
+}
+
 std::ostream& operator<<(std::ostream& stream, const FePattern& p)
 {
-    stream << "FePattern nuPoints " << p.NuPoints()
-    << ", move " << SgWriteMove(p.Move(), p.Color())
-    << ", value " << p.Value() << '\n';
-    // @todo m_points
-    
+    p.Write(stream);
     return stream;
 }
 
@@ -92,13 +134,42 @@ FeRectPattern::FeRectPattern(size_t width, size_t height)
 FeRectPattern::~FeRectPattern()
 { }
 
-std::ostream& operator<<(std::ostream& stream, const FeRectPattern& r)
+void FeRectPattern::Write(std::ostream& stream) const
 {
-    stream << "FeRectPattern [" << r.Width() << 'x' << r.Height() << "]\n";
-    // call inherited. FePattern::Write(stream);
-    return stream;
+    stream << "FeRectPattern [" << Width() << 'x' << Height() << "]\n";
+    FePattern::Write(stream);
 }
 
+//----------------------------------------------------------------------------
+
+void FePattern::SetPoints(const GoBoard& bd,
+                          const std::vector<SgPoint>& points)
+{
+    for (std::vector<SgPoint>::const_iterator it
+         = points.begin(); it != points.end(); ++it)
+    {
+        SgEmptyBlackWhite color = bd.GetColor(*it);
+        FePattern::PaPoint pa(*it, color);
+        m_points.push_back(pa);
+    }
+}
+
+FeRectPattern* DefineRectPattern(const GoBoard& bd,
+                                 PaSpot spot,
+                                 int width, int height)
+{
+    FeRectPattern* pat = new FeRectPattern(width, height);
+    std::vector<SgPoint> points;
+    for (int w = 0; w < width; ++w)
+        for (int h = 0; h < height; ++h)
+        {
+            SgPoint p = PatternToPoint(w, h, spot, bd.Size());
+            SG_ASSERT(bd.IsValidPoint(p));
+            points.push_back(p);
+        }
+    pat->SetPoints(bd, points);
+    return pat;
+}
 
 //----------------------------------------------------------------------------
 
