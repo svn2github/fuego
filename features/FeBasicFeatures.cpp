@@ -303,7 +303,9 @@ void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
     if (! SgIsSpecialMove(lastMove2))
     {
         int distance = Distance(move, lastMove2);
-        SG_ASSERT(distance >= 2);
+        SG_ASSERT(distance == 0 || distance >= 2);
+        if (distance == 0)
+            features.set(FE_DIST_PREV_OWN_0);
         if (distance <= 17)
         {
             FeBasicFeature f =
@@ -517,6 +519,7 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_DIST_PREV_15",
         "FE_DIST_PREV_16",
         "FE_DIST_PREV_17",
+        "FE_DIST_PREV_OWN_0",
         "FE_DIST_PREV_OWN_2",
         "FE_DIST_PREV_OWN_3",
         "FE_DIST_PREV_OWN_4",
