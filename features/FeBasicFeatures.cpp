@@ -621,7 +621,6 @@ SgPointArray<float> FeFeatures::EvaluateFeatures(const GoBoard& bd,
     for(GoBoard::Iterator it(bd); it; ++it)
         if (bd.IsLegal(*it))
         {
-            SG_ASSERT(features[*it].m_3x3Index != INVALID_3x3_INDEX);
             eval[*it] = EvaluateMoveFeatures(features[*it], weights);
         }
     return eval;
@@ -633,7 +632,8 @@ std::vector<int> FeFeatures::ActiveFeatures(const FeMoveFeatures& features)
     for (int i = 0; i < _NU_FE_FEATURES; ++i)
         if (features.m_basicFeatures.test(i))
             active.push_back(i);
-    if (features.m_3x3Index != INVALID_3x3_INDEX) // invalid for pass move
+    // invalid for pass move and (1,1) points
+    if (features.m_3x3Index != INVALID_3x3_INDEX)
         active.push_back(features.m_3x3Index);
     return active;
 }
