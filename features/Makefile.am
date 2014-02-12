@@ -3,6 +3,8 @@ noinst_LIBRARIES = libfuego_features.a
 libfuego_features_a_SOURCES = \
 FeBasicFeatures.cpp \
 FeCommands.cpp \
+FeFeatureWeights.cpp \
+FeKnowledge.cpp \
 FeNestedPattern.cpp \
 FePattern.cpp \
 FePatternBase.cpp
@@ -10,6 +12,8 @@ FePatternBase.cpp
 noinst_HEADERS = \
 FeBasicFeatures.h \
 FeCommands.h \
+FeFeatureWeights.h \
+FeKnowledge.h \
 FeNestedPattern.h \
 FePattern.h \
 FePatternBase.h
