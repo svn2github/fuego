@@ -3,6 +3,7 @@ check_PROGRAMS = $(TESTS)
 
 fuego_unittest_SOURCES = \
 ../features/test/FeBasicFeaturesTest.cpp \
+../features/test/FeNestedPatternTest.cpp \
 ../features/test/FePatternTest.cpp \
 ../features/test/FePatternBaseTest.cpp \
 ../go/test/GoBoardTest.cpp \
