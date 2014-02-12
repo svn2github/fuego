@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include "FeBasicFeatures.h"
+#include "FeFeatureWeights.h"
 #include "FePattern.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
@@ -109,8 +110,7 @@ void FeCommands::CmdFeaturesReadWeights(GtpCommand& cmd)
         std::ifstream in(fileName.c_str());
         if (! in)
         throw SgException("Cannot find file " + fileName);
-        m_weights =
-            FeFeatures::WistubaFormat::ReadFeatureWeights(in);
+        m_weights = FeFeatureWeights::Read(in);
     }
     catch (const SgException& e)
     {

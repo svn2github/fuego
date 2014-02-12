@@ -11,6 +11,7 @@
 
 #include <bitset>
 #include <iosfwd>
+#include "FeFeatureWeights.h"
 #include "GoLadder.h"
 #include "SgPointArray.h"
 
@@ -158,52 +159,6 @@ inline FeEvalDetail::FeEvalDetail(int feature, float w, float v)
 std::ostream& operator<<(std::ostream& stream, const FeEvalDetail& f);
 
 //---------------------------------
-class FeFeatureWeights
-{
-public:
-    FeFeatureWeights(size_t nuFeatures, size_t k);
-
-    bool IsAllocated() const;
-
-    /** Combine v-values of features i and j */
-    float Combine(int i, int j) const;
-
-    size_t m_nuFeatures;
-
-    size_t m_k;
-
-    // length m_nuFeatures
-    vector<float> m_w;
-
-    // length k of length m_nuFeatures
-    // todo other order should be more cache friendly.
-    vector<vector<float> > m_v;
-};
-
-std::ostream& operator<<(std::ostream& stream,
-                         const FeFeatureWeights& w);
-    
-//---------------------------------
-
-inline float FeFeatureWeights::Combine(int i, int j) const
-{
-//    if (   static_cast<size_t>(i) >= m_w.size()
-//        || static_cast<size_t>(j) >= m_w.size())
-//    {
-//        SgDebug() << i << ' ' << j << ' ' << m_w.size() << std::endl;
-//    }
-    SG_ASSERT(static_cast<size_t>(i) < m_w.size());
-    SG_ASSERT(static_cast<size_t>(j) < m_w.size());
-    float sum = 0.0;
-    for (size_t k = 0; k < m_k; ++k)
-    {
-        SG_ASSERT(m_v[k].size() == m_w.size());
-        sum += m_v[k][i] * m_v[k][j];
-    }
-    return sum;
-}
-
-//---------------------------------
 struct FeMoveFeatures
 {
     FeMoveFeatures();
@@ -275,10 +230,7 @@ void WriteFeatureSetAsText(std::ostream& stream,
 //----------------------------------------------------------------------------
 
 namespace WistubaFormat {
-    
-/** Read features in the format produced by Wistuba's tool. */
-FeFeatureWeights ReadFeatureWeights(std::istream& stream);
-    
+        
 /** Write features in the format of Wistuba's gamma learning code
     Each candidate move is described by a list of ID of its features.
     The first number in each line is a 0 for a non-plyed move,

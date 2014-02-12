@@ -11,6 +11,7 @@
 #include "GtpEngine.h"
 
 #include "FeBasicFeatures.h"
+#include "FeFeatureWeights.h"
 
 class GoBoard;
 class GoGame;
@@ -68,7 +69,7 @@ private:
 
     const GoGame& m_game;
     
-    FeFeatures::FeFeatureWeights m_weights;
+    FeFeatureWeights m_weights;
 };
 
 #endif // FE_COMMANDS_H
