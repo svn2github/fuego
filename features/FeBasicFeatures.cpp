@@ -833,9 +833,14 @@ void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
         if (p != chosenMove && bd.IsLegal(p))
             WriteFeatures(stream, 0, features[p], moveNumber, writeComment);
     }
-    if (SG_PASS != chosenMove)
+    if (SG_PASS == chosenMove)
+        WriteFeatures(stream, 1, passFeatures, moveNumber, writeComment);
+    else
+    {
         WriteFeatures(stream, 0, passFeatures, moveNumber, writeComment);
-    WriteFeatures(stream, 1, features[chosenMove], moveNumber, writeComment);
+        WriteFeatures(stream, 1, features[chosenMove], moveNumber,
+                      writeComment);
+    }
 }
 
 void WistubaFormat::WriteFeatures(std::ostream& stream,
