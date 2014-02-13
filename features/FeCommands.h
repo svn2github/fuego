@@ -17,17 +17,13 @@ class GoBoard;
 class GoGame;
 class GoPlayer;
 
-/** GTP commands for features.
-*/
+/** GTP commands for features. */
 class FeCommands
 {
 public:
     /** Constructor.
      @param bd The game board.
-     @param player Reference to pointer to current player, this player can
-     be null or a different player, but those commands of this class that
-     need a GoUctPlayer will fail, if the current player is not
-     GoUctPlayer. */
+     @param player Reference to pointer to current player. Can be null. */
     FeCommands(const GoBoard& bd, GoPlayer*& player, const GoGame& game);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);

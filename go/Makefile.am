@@ -1,6 +1,7 @@
 noinst_LIBRARIES = libfuego_go.a
 
 libfuego_go_a_SOURCES = \
+Go3x3Pattern.cpp \
 GoAutoBook.cpp \
 GoBensonSolver.cpp \
 GoBlock.cpp \
@@ -43,6 +44,7 @@ GoTimeSettings.cpp \
 GoUtil.cpp
 
 noinst_HEADERS = \
+Go3x3Pattern.h \
 GoAssertBoardRestored.h \
 GoAutoBook.h \
 GoBensonSolver.h \

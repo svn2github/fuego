@@ -8,6 +8,7 @@ fuego_unittest_SOURCES = \
 ../features/test/FeNestedPatternTest.cpp \
 ../features/test/FePatternTest.cpp \
 ../features/test/FePatternBaseTest.cpp \
+../go/test/Go3x3PatternTest.cpp \
 ../go/test/GoBoardTest.cpp \
 ../go/test/GoBoardSynchronizerTest.cpp \
 ../go/test/GoBoardUpdaterTest.cpp \

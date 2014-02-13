@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <utility>
 #include <string>
+#include "Go3x3Pattern.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoUctGlobalPatternData.h"
@@ -68,137 +69,6 @@
     @endverbatim */
 
 //----------------------------------------------------------------------------
-/** class PatternInfo holds gamma value and MoGo-pattern flag for one move. */
-class PatternInfo
-{
-public:
-    PatternInfo() : m_gammaValue(0.f), m_isPattern(false)
-    { }
-
-	void SetGammaValue(float value);
-
-	float GetGammaValue() const;
-
-	void SetIsPattern(bool is);
-
-	bool IsPattern() const;
-
-private:
-    float m_gammaValue;
-    
-    bool m_isPattern;
-};
-
-inline void PatternInfo::SetGammaValue(float value)
-{
-    m_gammaValue = value;
-}
-
-inline float PatternInfo::GetGammaValue() const
-{
-    return m_gammaValue;
-}
-
-inline void PatternInfo::SetIsPattern(bool is)
-{
-    m_isPattern = is;
-}
-
-inline bool PatternInfo::IsPattern() const
-{
-    return m_isPattern;
-}
-
-//----------------------------------------------------------------------------
-namespace Pattern3x3
-{
-    /** 3^5 = size of edge pattern table */
-    static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
-    
-    /** 3^8 = size of center pattern table. */
-    static const int GOUCT_POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
-    
-    /** See m_edgeTable. */
-    typedef SgArray<PatternInfo, GOUCT_POWER3_5> GoUctEdgePatternTable;
-    typedef boost::array<int, GOUCT_POWER3_5> EdgeCodeTable;
-
-    /** See m_table. */
-    typedef SgArray<PatternInfo, GOUCT_POWER3_8> GoUctPatternTable;
-    typedef boost::array<int, GOUCT_POWER3_8> CenterCodeTable;
-
-    /** Convert code into list of board colors */
-    std::vector<SgEmptyBlackWhite> Decode(int code, std::size_t length);
-    
-    /** Inverse mapping for Map3x3CenterCode */
-    int DecodeCenterIndex(int index);
-
-    /** Inverse mapping for Map2x3EdgeCode */
-    int DecodeEdgeIndex(int index);
-
-    void InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table);
-    
-    void InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>& edgeTable);
-
-    int MakeCode(const std::vector<SgEmptyBlackWhite>& colors);
-    
-    /** Utility mapping function. Warning: global array, not threadsafe */
-    int Map3x3CenterCode(int code, SgBlackWhite toPlay);
-
-    /** Utility mapping function. Warning: global array, not threadsafe */
-    int Map2x3EdgeCode(int code, SgBlackWhite toPlay);
-
-    /** Map pattern codes to a shared code considering rotations.
-        Returns number of unique patterns.
-        The shared code is in the range 0 .. #distinct patterns - 1.
-        Use case: shared feature weights for identical patterns. */
-    int MapCenterPatternsToMinimum(CenterCodeTable& indexCode);
-
-    /** Map pattern codes to a shared code considering rotations.
-        Returns number of unique patterns.
-        The shared code is in the range 0 .. #distinct patterns - 1.
-        Use case: shared feature weights for identical patterns. */
-    int MapEdgePatternsToMinimum(EdgeCodeTable& indexCode);
-
-    /** Procedural matching function - used to initialize the table. */
-    bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
-
-    /** return NS for input WE or -WE, return WE for input NS or -NS */
-    int OtherDir(int dir);
-
-    void ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table);
-
-    void ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>& edgeTable);
-    
-    int SwapCenterColor(int code);
-    
-    int SwapEdgeColor(int code);
-
-    void Write2x3EdgePattern(std::ostream& stream, int code);
-    
-    void Write3x3CenterPattern(std::ostream& stream, int code);
-}
-//----------------------------------------------------------------------------
-
-inline int Pattern3x3::MakeCode(const std::vector<SgEmptyBlackWhite>& colors)
-{
-    int code = 0;
-    for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
-         it != colors.end(); ++it)
-    {
-        code *= 3;
-        code += *it;
-    }
-    return code;
-}
-
-inline int Pattern3x3::OtherDir(int dir)
-{
-    if (dir == SG_NS || dir == -SG_NS)
-        return SG_WE;
-    SG_ASSERT(dir == SG_WE || dir == -SG_WE);
-    return SG_NS;
-}
-
 //----------------------------------------------------------------------------
 
 template<class BOARD>
@@ -216,10 +86,6 @@ public:
 
     GoUctPatterns(const BOARD& bd, PatternType patternType);
 
-    static int CodeOf8Neighbors(const BOARD& bd, SgPoint p);
-
-    static int CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p);
-    
 	float GetPatternGamma(const BOARD& bd, const SgPoint p,
 			const SgBlackWhite toPlay) const;
 
@@ -252,12 +118,10 @@ private:
     const BOARD& m_bd;
 
     /** lookup table for 8-neighborhood of a move candidate */
-    SgBWArray<Pattern3x3::GoUctPatternTable> m_table;
+    SgBWArray<Go3x3Pattern::GoUctPatternTable> m_table;
 
     /** lookup table on the edge of board */
-    SgBWArray<Pattern3x3::GoUctEdgePatternTable> m_edgeTable;
-
-    static int EBWCodeOfPoint(const BOARD& bd, SgPoint p);
+    SgBWArray<Go3x3Pattern::GoUctEdgePatternTable> m_edgeTable;
 
     /** Match any of the center patterns. */
     bool MatchAnyCenter(SgPoint p) const;
@@ -279,16 +143,16 @@ GoUctPatterns<BOARD>::GoUctPatterns(const BOARD& bd, PatternType patternType)
     : m_bd(bd)
 {
     InitializeGammaPatternFromProcessedData(patternType);
-    Pattern3x3::InitCenterPatternTable(m_table);
-    Pattern3x3::InitEdgePatternTable(m_edgeTable);
+    Go3x3Pattern::InitCenterPatternTable(m_table);
+    Go3x3Pattern::InitEdgePatternTable(m_edgeTable);
 }
 
 template<class BOARD>
 GoUctPatterns<BOARD>::GoUctPatterns(const BOARD& bd)
     : m_bd(bd)
 {
-    Pattern3x3::InitCenterPatternTable(m_table);
-    Pattern3x3::InitEdgePatternTable(m_edgeTable);
+    Go3x3Pattern::InitCenterPatternTable(m_table);
+    Go3x3Pattern::InitEdgePatternTable(m_edgeTable);
 }
 
 template<class BOARD>
@@ -306,61 +170,18 @@ const
 }
 
 template<class BOARD>
-inline int GoUctPatterns<BOARD>::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
-{
-    SG_ASSERT(bd.Line(p) > 1);
-    int code = ((((((EBWCodeOfPoint(bd, p - SG_NS - SG_WE) * 3
-                   + EBWCodeOfPoint(bd, p - SG_NS)) * 3
-                   + EBWCodeOfPoint(bd, p - SG_NS + SG_WE)) * 3
-                   + EBWCodeOfPoint(bd, p - SG_WE)) * 3
-                   + EBWCodeOfPoint(bd, p + SG_WE)) * 3
-                   + EBWCodeOfPoint(bd, p + SG_NS - SG_WE)) * 3
-                   + EBWCodeOfPoint(bd, p + SG_NS)) * 3
-                   + EBWCodeOfPoint(bd, p + SG_NS + SG_WE);
-    SG_ASSERT(code >= 0);
-    SG_ASSERT(code < Pattern3x3::GOUCT_POWER3_8);
-    return code;
-}
-
-template<class BOARD>
-inline int GoUctPatterns<BOARD>::CodeOfEdgeNeighbors(const BOARD& bd,
-                                                     SgPoint p)
-{
-    SG_ASSERT(bd.Line(p) == 1);
-    SG_ASSERT(bd.Pos(p) > 1);
-    const int up = bd.Up(p);
-    const int other = Pattern3x3::OtherDir(up);
-    int code = (((EBWCodeOfPoint(bd, p + other) * 3
-                + EBWCodeOfPoint(bd, p + up + other)) * 3
-                + EBWCodeOfPoint(bd, p + up)) * 3
-                + EBWCodeOfPoint(bd, p + up - other)) * 3
-                + EBWCodeOfPoint(bd, p - other);
-    SG_ASSERT(code >= 0);
-    SG_ASSERT(code < Pattern3x3::GOUCT_POWER3_5);
-    return code;
-}
-
-template<class BOARD>
-inline int GoUctPatterns<BOARD>::EBWCodeOfPoint(const BOARD& bd, SgPoint p)
-{
-    SG_ASSERT(bd.IsValidPoint(p));
-    BOOST_STATIC_ASSERT(SG_BLACK == 0);
-    BOOST_STATIC_ASSERT(SG_WHITE == 1);
-    BOOST_STATIC_ASSERT(SG_EMPTY == 2);
-    return bd.GetColor(p);
-}
-
-template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p) const
 {
-    return m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)].IsPattern();
+    return m_table[m_bd.ToPlay()]
+                  [Go3x3Pattern::CodeOf8Neighbors(m_bd, p)].IsPattern();
 }
 
 template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p) const
 {
     return
-        m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)].IsPattern();
+        m_edgeTable[m_bd.ToPlay()]
+                   [Go3x3Pattern::CodeOfEdgeNeighbors(m_bd, p)].IsPattern();
 }
 
 template<class BOARD>
@@ -419,9 +240,9 @@ void GoUctPatterns<BOARD>
     m_edgeTable[SG_BLACK].Fill(PatternInfo());
     m_edgeTable[SG_WHITE].Fill(PatternInfo());
 
-    const GoUctPatternData::PatternData& pt = patternType == PATTERN_LOCAL ?
-                                              GoUctLocalPatternData::gData :
-                                              GoUctGlobalPatternData::gData;
+    const GoUctPatternData::PatternData& pt =
+        patternType == PATTERN_LOCAL ? GoUctLocalPatternData::gData :
+                                       GoUctGlobalPatternData::gData;
     SetGammaValues(pt.m_edgePatterns, m_edgeTable);
     SetGammaValues(pt.m_centerPatterns, m_table);
 }
@@ -430,14 +251,17 @@ template<class BOARD>
 inline float GoUctPatterns<BOARD>::
 MatchAnyCenterForGamma(SgPoint p, const SgBlackWhite toPlay) const
 {
-    return m_table[toPlay][CodeOf8Neighbors(m_bd, p)].GetGammaValue();
+    return m_table[toPlay]
+                  [Go3x3Pattern::CodeOf8Neighbors(m_bd, p)].GetGammaValue();
 }
 
 template<class BOARD>
 inline float GoUctPatterns<BOARD>::
 MatchAnyEdgeForGamma(SgPoint p, const SgBlackWhite toPlay) const
 {
-    return m_edgeTable[toPlay][CodeOfEdgeNeighbors(m_bd, p)].GetGammaValue();
+    return m_edgeTable[toPlay]
+                      [Go3x3Pattern::CodeOfEdgeNeighbors(m_bd, p)]
+                      .GetGammaValue();
 }
 
 template<class BOARD>
@@ -461,7 +285,8 @@ template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyCenter(SgPoint p, float& gamma)
 const
 {
-	const PatternInfo& pi = m_table[m_bd.ToPlay()][CodeOf8Neighbors(m_bd, p)];
+	const PatternInfo& pi = m_table[m_bd.ToPlay()]
+                                   [Go3x3Pattern::CodeOf8Neighbors(m_bd, p)];
     gamma = pi.GetGammaValue();
 	return pi.IsPattern();
 }
@@ -470,7 +295,8 @@ template<class BOARD>
 inline bool GoUctPatterns<BOARD>::MatchAnyEdge(SgPoint p, float& gamma) const
 {
 	const PatternInfo& pi =
-            m_edgeTable[m_bd.ToPlay()][CodeOfEdgeNeighbors(m_bd, p)];
+            m_edgeTable[m_bd.ToPlay()]
+                       [Go3x3Pattern::CodeOfEdgeNeighbors(m_bd, p)];
     gamma = pi.GetGammaValue();
 	return pi.IsPattern();
 }
