@@ -799,10 +799,10 @@ void WriteFeatureSet(std::ostream& stream,
 }
 
 void WriteFeatures(std::ostream& stream,
-                   int isChosen,
+                   const int isChosen,
                    const FeMoveFeatures& features,
-                   int moveNumber,
-                   bool writeComment)
+                   const int moveNumber,
+                   const bool writeComment)
 {
     const int SHAPE_SIZE = 3; // TODO make this variable
                               // when big pattern features are implemented
@@ -823,8 +823,8 @@ void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const FeMoveFeatures& passFeatures,
                         const GoBoard& bd,
-                        SgPoint chosenMove,
-                        bool writeComment)
+                        const SgPoint chosenMove,
+                        const bool writeComment)
 {
     const int moveNumber = bd.MoveNumber() + 1; // + 1 because we did undo
     for (GoBoard::Iterator it(bd); it; ++it)
@@ -845,7 +845,7 @@ void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
 
 void WistubaFormat::WriteFeatures(std::ostream& stream,
                                   const GoBoard& constBd,
-                                  bool writeComment)
+                                  const bool writeComment)
 {
     SgPoint chosenMove = constBd.GetLastMove();
     GoModBoard mod(constBd);

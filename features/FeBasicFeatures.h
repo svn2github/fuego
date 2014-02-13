@@ -253,8 +253,8 @@ void WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const FeMoveFeatures& passFeatures,
                         const GoBoard& bd,
-                        SgPoint bestMove,
-                        bool writeComment);
+                        const SgPoint bestMove,
+                        const bool writeComment);
 
 /** Computes features for the position - preceding - the current one
     and writes them using WriteBoardFeaturesWistuba.
@@ -263,7 +263,7 @@ void WriteBoardFeatures(std::ostream& stream,
     needed since we need the chosen move. */
     void WriteFeatures(std::ostream& stream,
                        const GoBoard& bd,
-                       bool writeComment);
+                       const bool writeComment);
 } // namespace WistubaFormat
 } // namespace FeBasicFeatures
 
