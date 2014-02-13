@@ -1,7 +1,6 @@
 noinst_LIBRARIES = libfuego_gouct.a
 
 libfuego_gouct_a_SOURCES = \
-GoUctAdditiveKnowledge.cpp \
 GoUctAdditiveKnowledgeFuego.cpp \
 GoUctAdditiveKnowledgeGreenpeep.cpp \
 GoUctAdditiveKnowledgeMultiple.cpp \
@@ -22,7 +21,6 @@ GoUctSearch.cpp \
 GoUctUtil.cpp
 
 noinst_HEADERS = \
-GoUctAdditiveKnowledge.h \
 GoUctAdditiveKnowledgeFuego.h \
 GoUctAdditiveKnowledgeGreenpeep.h \
 GoUctAdditiveKnowledgeMultiple.h \

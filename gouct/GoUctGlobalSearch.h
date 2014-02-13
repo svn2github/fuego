@@ -2,7 +2,7 @@
 /** @file GoUctGlobalSearch.h 
 	@todo General documentation.
     GoUctGlobalSearch supports Additive predictors, 
-    see @file GoUctAdditiveKnowledge.h.
+    see @file GoAdditiveKnowledge.h.
 */
 //----------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@
 #include "GoEyeUtil.h"
 #include "GoRegionBoard.h"
 #include "GoSafetySolver.h"
-#include "GoUctAdditiveKnowledge.h"
+#include "GoAdditiveKnowledge.h"
 #include "GoUctDefaultMoveFilter.h"
 #include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctKnowledgeFactory.h"
@@ -146,10 +146,10 @@ public:
     
     ~GoUctGlobalSearchState();
 
-    GoUctAdditiveKnowledge* GetAdditiveKnowledge();
+    GoAdditiveKnowledge* GetAdditiveKnowledge();
 
     /** set the predictor for additive knowledge */
-    void SetAdditiveKnowledge(GoUctAdditiveKnowledge* knowledge);
+    void SetAdditiveKnowledge(GoAdditiveKnowledge* knowledge);
 
     SgUctValue Evaluate();
 
@@ -218,7 +218,7 @@ private:
 
     GoUctDefaultPriorKnowledge m_priorKnowledge;
     
-    GoUctAdditiveKnowledge* m_additivePredictor;
+    GoAdditiveKnowledge* m_additivePredictor;
 
     boost::scoped_ptr<POLICY> m_policy;
 
@@ -463,7 +463,7 @@ void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
                                      std::vector<SgUctMoveInfo>& moves)
 {
     const int moveNum = Board().MoveNumber();
-    GoUctAdditiveKnowledge* kn = GetAdditiveKnowledge();
+    GoAdditiveKnowledge* kn = GetAdditiveKnowledge();
     if (kn == 0)
         return;
     if (kn->InMoveRange(moveNum))
@@ -877,7 +877,7 @@ SgUctValue GoUctGlobalSearch<POLICY,FACTORY>::UnknownEval() const
 }
 
 template<class POLICY>
-GoUctAdditiveKnowledge* 
+GoAdditiveKnowledge* 
 GoUctGlobalSearchState<POLICY>::GetAdditiveKnowledge()
 {
     return m_additivePredictor;
@@ -885,7 +885,7 @@ GoUctGlobalSearchState<POLICY>::GetAdditiveKnowledge()
 
 template<class POLICY>
 void GoUctGlobalSearchState<POLICY>::SetAdditiveKnowledge(
-                                          GoUctAdditiveKnowledge* knowledge)
+                                          GoAdditiveKnowledge* knowledge)
 {
 	SG_ASSERT(m_additivePredictor == 0);
     m_additivePredictor = knowledge;
@@ -908,7 +908,7 @@ SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
                                            m_safe, m_allSafe);
     POLICY* policy = m_playoutPolicyFactory.Create(state->UctBoard());
     state->SetPolicy(policy);
-    GoUctAdditiveKnowledge* knowledge = 
+    GoAdditiveKnowledge* knowledge = 
     	m_knowledgeFactory.Create(state->Board());
     state->SetAdditiveKnowledge(knowledge);
     return state;

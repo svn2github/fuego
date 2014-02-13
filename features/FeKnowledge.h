@@ -8,12 +8,12 @@
 #define FE_KNOWLEDGE_H
 
 #include "FeFeatureWeights.h"
-#include "GoUctAdditiveKnowledge.h"
+#include "GoAdditiveKnowledge.h"
 
 //----------------------------------------------------------------------------
 
 class FeKnowledge
-    : public GoUctAdditiveKnowledge
+    : public GoAdditiveKnowledge
 {
 public:
     //static const float VALUE_MULTIPLIER;

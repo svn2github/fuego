@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoUctAdditiveKnowledge.h 
+/** @file GoAdditiveKnowledge.h 
     Base classes for additive knowledge.
     See Chris Rosin, Multi-armed bandits with episode context. 
     Annals of Mathematics and Artificial Intelligence, 2011. 
@@ -30,12 +30,12 @@ public:
 /** Base class for predictors that will be used additively in UCT. 
     Constructed once per thread (as with GoUctDefaultPriorKnowledge). 
 */
-class GoUctAdditiveKnowledge
+class GoAdditiveKnowledge
 {
 public:
-    GoUctAdditiveKnowledge(const GoBoard& bd);
+    GoAdditiveKnowledge(const GoBoard& bd);
 
-    virtual ~GoUctAdditiveKnowledge();
+    virtual ~GoAdditiveKnowledge();
 
     virtual void ProcessPosition(std::vector<SgUctMoveInfo>& moves) = 0;
 
@@ -76,12 +76,12 @@ private:
 };
 
 //----------------------------------------------------------------------------
-inline const GoBoard& GoUctAdditiveKnowledge::Board() const
+inline const GoBoard& GoAdditiveKnowledge::Board() const
 {
 	return m_bd;
 }
 
-inline SgUctValue GoUctAdditiveKnowledge::CappedValue(SgUctValue value) const
+inline SgUctValue GoAdditiveKnowledge::CappedValue(SgUctValue value) const
 {
 	return std::max(value, Minimum());
 }
@@ -89,11 +89,11 @@ inline SgUctValue GoUctAdditiveKnowledge::CappedValue(SgUctValue value) const
 //----------------------------------------------------------------------------
 /** Utility class to provide a standard probability-based additive predictor
 */
-class GoUctAdditiveKnowledgeStdProb : public GoUctAdditiveKnowledge
+class GoUctAdditiveKnowledgeStdProb : public GoAdditiveKnowledge
 {
 public:
     GoUctAdditiveKnowledgeStdProb(const GoBoard& bd)
-     : GoUctAdditiveKnowledge(bd)
+     : GoAdditiveKnowledge(bd)
     { }
 
     bool ProbabilityBased() const;

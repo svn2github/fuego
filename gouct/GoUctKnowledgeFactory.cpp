@@ -7,7 +7,7 @@
 #include "SgSystem.h"
 #include "GoUctKnowledgeFactory.h"
 
-#include "GoUctAdditiveKnowledge.h"
+#include "GoAdditiveKnowledge.h"
 #include "GoUctAdditiveKnowledgeFuego.h"
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
 #include "GoUctAdditiveKnowledgeMultiple.h"
@@ -32,7 +32,7 @@ GoUctAdditiveKnowledgeParamGreenpeep& GoUctKnowledgeFactory::GreenpeepParam()
     return *m_greenpeepParam;
 }
 
-GoUctAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
+GoAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
 {
 	KnowledgeType type = m_param.m_knowledgeType;
     

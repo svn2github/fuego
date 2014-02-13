@@ -2,7 +2,7 @@
 /** @file GoUctAdditiveKnowledgeMultiple.h 
     A class for applying more than one kind of additive knowledge.
     
-    Also see GoUctAdditiveKnowledge.h
+    Also see GoAdditiveKnowledge.h
 */
 //----------------------------------------------------------------------------
 
@@ -10,7 +10,7 @@
 #define GOUCT_ADDITIVE_KNOWLEDGE_MULTIPLE_H
 
 #include "GoBoard.h"
-#include "GoUctAdditiveKnowledge.h"
+#include "GoAdditiveKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
 #include "SgVector.h"
 
@@ -31,7 +31,7 @@ typedef std::vector<SgUctMoveInfo> InfoVector;
     of combining multiple types of knowledge can be chosen - @see
     GoUctKnowledgeCombinationType.
 */
-class GoUctAdditiveKnowledgeMultiple: public GoUctAdditiveKnowledge
+class GoUctAdditiveKnowledgeMultiple: public GoAdditiveKnowledge
 {
 public:
     GoUctAdditiveKnowledgeMultiple(const GoBoard& bd,
@@ -43,7 +43,7 @@ public:
     ~GoUctAdditiveKnowledgeMultiple();
     
     /** GoUctAdditiveKnowledgeMultiple assumes ownership of added knowledge */
-    void AddKnowledge(GoUctAdditiveKnowledge* knowledge);
+    void AddKnowledge(GoAdditiveKnowledge* knowledge);
 
     const GoBoard& Board() const;
     
@@ -59,7 +59,7 @@ public:
 
 private:
 
-    SgVector<GoUctAdditiveKnowledge*> m_additiveKnowledge;
+    SgVector<GoAdditiveKnowledge*> m_additiveKnowledge;
 
     SgUctValue m_minimum;
     
@@ -67,7 +67,7 @@ private:
     
     GoUctKnowledgeCombinationType m_combinationType;
 
-    const GoUctAdditiveKnowledge* FirstKnowledge() const;
+    const GoAdditiveKnowledge* FirstKnowledge() const;
     
     void InitPredictorValues(InfoVector& moves) const;
 };

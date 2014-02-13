@@ -11,7 +11,7 @@
 
 FeKnowledge::FeKnowledge(const GoBoard& bd,
                          const FeFeatureWeights& weights)
-    : GoUctAdditiveKnowledge(bd),
+    : GoAdditiveKnowledge(bd),
       m_weights(weights)
 { }
 

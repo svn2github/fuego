@@ -5,7 +5,7 @@
 #ifndef GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 #define GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 
-#include "GoUctAdditiveKnowledge.h"
+#include "GoAdditiveKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
 #include <boost/static_assert.hpp>
 
@@ -31,7 +31,7 @@ public:
 };
 
 /** Use Greenpeep-style pattern values to make predictions. */
-class GoUctAdditiveKnowledgeGreenpeep : public GoUctAdditiveKnowledge
+class GoUctAdditiveKnowledgeGreenpeep : public GoAdditiveKnowledge
 {
 public:
     GoUctAdditiveKnowledgeGreenpeep(const GoBoard& bd,

@@ -221,7 +221,7 @@ GoUctAdditiveKnowledgeParamGreenpeep::GoUctAdditiveKnowledgeParamGreenpeep()
 GoUctAdditiveKnowledgeGreenpeep::GoUctAdditiveKnowledgeGreenpeep(
                         const GoBoard& bd,
                         const GoUctAdditiveKnowledgeParamGreenpeep& param)
-  : GoUctAdditiveKnowledge(bd),
+  : GoAdditiveKnowledge(bd),
     m_param(param)
 {
     // Knowledge applies to all moves

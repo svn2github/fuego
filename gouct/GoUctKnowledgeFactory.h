@@ -17,7 +17,7 @@ public:
 	GoUctKnowledgeFactory(const GoUctPlayoutPolicyParam& param);
 	~GoUctKnowledgeFactory();
 
-    GoUctAdditiveKnowledge* Create(const GoBoard& bd);
+    GoAdditiveKnowledge* Create(const GoBoard& bd);
 
     GoUctAdditiveKnowledgeParamGreenpeep& GreenpeepParam();
 

@@ -35,7 +35,7 @@ GoUctAdditiveKnowledgeMultiple::GoUctAdditiveKnowledgeMultiple(
         SgUctValue minimum,
         GoUctKnowledgeCombinationType combinationType)
     :
-    GoUctAdditiveKnowledge(bd),
+    GoAdditiveKnowledge(bd),
     m_minimum(minimum),
     m_scale(scale),
     m_combinationType(combinationType)
@@ -43,13 +43,13 @@ GoUctAdditiveKnowledgeMultiple::GoUctAdditiveKnowledgeMultiple(
 
 GoUctAdditiveKnowledgeMultiple::~GoUctAdditiveKnowledgeMultiple()
 {
-    for (SgVectorIterator<GoUctAdditiveKnowledge*> it(m_additiveKnowledge); 
+    for (SgVectorIterator<GoAdditiveKnowledge*> it(m_additiveKnowledge); 
          it; ++it)
         delete *it;
 }
 
 void GoUctAdditiveKnowledgeMultiple::AddKnowledge(
-	GoUctAdditiveKnowledge* knowledge)
+	GoAdditiveKnowledge* knowledge)
 {
 	if (m_additiveKnowledge.NonEmpty())
     	SG_ASSERT(   knowledge->ProbabilityBased() 
@@ -58,7 +58,7 @@ void GoUctAdditiveKnowledgeMultiple::AddKnowledge(
     m_additiveKnowledge.PushBack(knowledge);
 }
 
-const GoUctAdditiveKnowledge* 
+const GoAdditiveKnowledge* 
 	GoUctAdditiveKnowledgeMultiple::FirstKnowledge() const
 {
 	SG_ASSERT(m_additiveKnowledge.NonEmpty());
@@ -146,7 +146,7 @@ void GoUctAdditiveKnowledgeMultiple::ProcessPosition(InfoVector& moves)
     InitPredictorValues(moves);
     const int moveNum = Board().MoveNumber();
     int nuPredictors = 0;
-    for (SgVectorIterator<GoUctAdditiveKnowledge*> it(m_additiveKnowledge);
+    for (SgVectorIterator<GoAdditiveKnowledge*> it(m_additiveKnowledge);
          it; ++it)
     {
         if ((*it)->InMoveRange(moveNum))

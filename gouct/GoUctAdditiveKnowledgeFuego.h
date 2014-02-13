@@ -11,7 +11,7 @@
 #ifndef GOUCT_ADDITIVEKNOWLEDGEFUEGO_H
 #define GOUCT_ADDITIVEKNOWLEDGEFUEGO_H
 
-#include "GoUctAdditiveKnowledge.h"
+#include "GoAdditiveKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
 
 //----------------------------------------------------------------------------
