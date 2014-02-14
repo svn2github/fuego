@@ -2,7 +2,6 @@ noinst_LIBRARIES = libfuego_features.a
 
 libfuego_features_a_SOURCES = \
 FeBasicFeatures.cpp \
-FeCommands.cpp \
 FeFeatureWeights.cpp \
 FeKnowledge.cpp \
 FeNestedPattern.cpp \
@@ -11,7 +10,6 @@ FePatternBase.cpp
 
 noinst_HEADERS = \
 FeBasicFeatures.h \
-FeCommands.h \
 FeFeatureWeights.h \
 FeKnowledge.h \
 FeNestedPattern.h \
@@ -22,8 +20,7 @@ libfuego_features_a_CPPFLAGS = \
 $(BOOST_CPPFLAGS) \
 -I@top_srcdir@/gtpengine \
 -I@top_srcdir@/smartgame \
--I@top_srcdir@/go \
--I@top_srcdir@/gouct
+-I@top_srcdir@/go
 
 
 DISTCLEANFILES = *~

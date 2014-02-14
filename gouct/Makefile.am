@@ -9,6 +9,8 @@ GoUctCommands.cpp \
 GoUctDefaultPriorKnowledge.cpp \
 GoUctDefaultMoveFilter.cpp \
 GoUctEstimatorStat.cpp \
+GoUctFeatureCommands.cpp \
+GoUctFeatures.cpp \
 GoUctGlobalSearch.cpp \
 GoUctKnowledge.cpp \
 GoUctKnowledgeFactory.cpp \
@@ -31,6 +33,8 @@ GoUctCommands.h \
 GoUctDefaultPriorKnowledge.h \
 GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
+GoUctFeatureCommands.h \
+GoUctFeatures.h \
 GoUctGammaMoveGenerator.h \
 GoUctGlobalPatternData.h \
 GoUctGlobalSearch.h \
@@ -51,8 +55,9 @@ GoUctUtil.h
 
 libfuego_gouct_a_CPPFLAGS = \
 $(BOOST_CPPFLAGS) \
+-I@top_srcdir@/features \
+-I@top_srcdir@/go \
 -I@top_srcdir@/gtpengine \
--I@top_srcdir@/smartgame \
--I@top_srcdir@/go
+-I@top_srcdir@/smartgame
 
 DISTCLEANFILES = *~

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file FeBasicFeatures.h
-    Non-patterns features as in Remi Coulom's work.
+    Non-pattern as in Remi Coulom's work, and 3x3 pattern features.
 */
 //----------------------------------------------------------------------------
 
@@ -193,16 +193,11 @@ std::vector<FeEvalDetail>
 EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
                            const FeFeatureWeights& weights);
 
-void FindAllFeatures(const GoBoard& bd,
-                     SgPointArray<FeMoveFeatures>& features,
-                     FeMoveFeatures& passFeatures);
-
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features);
 
-/** Inefficient, calls full board function, use only for UI */
-void FindMoveFeaturesUI(const GoBoard& bd, SgPoint move,
-                        FeFeatures::FeMoveFeatures& features);
+void FindMoveFeatures(const GoBoard& bd, SgPoint move,
+                      FeMoveFeatures& features);
 
 int Get3x3Feature(const GoBoard& bd, SgPoint p);
 
@@ -256,14 +251,6 @@ void WriteBoardFeatures(std::ostream& stream,
                         const SgPoint bestMove,
                         const bool writeComment);
 
-/** Computes features for the position - preceding - the current one
-    and writes them using WriteBoardFeaturesWistuba.
-    The computation cannot be for the current positon when used as a GTP
-    command since the next move is not available to the engine, but it is
-    needed since we need the chosen move. */
-    void WriteFeatures(std::ostream& stream,
-                       const GoBoard& bd,
-                       const bool writeComment);
 } // namespace WistubaFormat
 } // namespace FeBasicFeatures
 

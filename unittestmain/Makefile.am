@@ -28,6 +28,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoUtilTest.cpp \
 ../gouct/test/GoUctAdditiveKnowledgeMultipleTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
+../gouct/test/GoUctFeaturesTest.cpp \
 ../gouct/test/GoUctKnowledgeTest.cpp \
 ../gouct/test/GoUctLadderKnowledgeTest.cpp \
 ../gouct/test/GoUctPatternsTest.cpp \

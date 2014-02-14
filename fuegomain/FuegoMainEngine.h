@@ -7,9 +7,9 @@
 
 #include "GoGtpEngine.h"
 #include "GoSafetyCommands.h"
-#include "GoUctCommands.h"
 #include "GoUctBookBuilderCommands.h"
-#include "FeCommands.h"
+#include "GoUctCommands.h"
+#include "GoUctFeatureCommands.h"
 
 //----------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ private:
 
     GoSafetyCommands m_safetyCommands;
 
-    FeCommands m_feCommands;
+    GoUctFeatureCommands m_feCommands;
 
 };
 

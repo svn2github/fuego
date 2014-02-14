@@ -1,9 +1,9 @@
 //----------------------------------------------------------------------------
-/** @file FeCommands.cpp  */
+/** @file GoUctFeatureCommands.cpp  */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "FeCommands.h"
+#include "GoUctFeatureCommands.h"
 
 #include <fstream>
 #include "FeBasicFeatures.h"
@@ -14,13 +14,14 @@
 #include "GoGame.h"
 #include "GoPlayer.h"
 #include "GoGtpCommandUtil.h"
+#include "GoUctFeatures.h"
 #include "SgPointArray.h"
 #include "SgNode.h"
 #include "SgWrite.h"
 
 //----------------------------------------------------------------------------
 
-FeCommands::FeCommands(const GoBoard& bd,
+GoUctFeatureCommands::GoUctFeatureCommands(const GoBoard& bd,
                        GoPlayer*& player,
                        const GoGame& game)
     :   m_bd(bd),
@@ -32,7 +33,7 @@ FeCommands::FeCommands(const GoBoard& bd,
     SG_UNUSED(m_game);
 }
 
-void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
+void GoUctFeatureCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {
     cmd <<
     "none/Features/features\n"
@@ -46,7 +47,7 @@ void FeCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
     ;
 }
 
-void FeCommands::CheckWeights(std::string message) const
+void GoUctFeatureCommands::CheckWeights(std::string message) const
 {
     if (m_weights.m_nuFeatures == 0)
         throw SgException(message + ": need to call"
@@ -54,25 +55,25 @@ void FeCommands::CheckWeights(std::string message) const
 
 }
 
-void FeCommands::CmdFeatures(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeatures(GtpCommand& cmd)
 {
     using FeFeatures::FeMoveFeatures;
     SgPointArray<FeMoveFeatures> features;
     FeMoveFeatures passFeatures;
-    FeFeatures::FindAllFeatures(m_bd, features, passFeatures);
+    GoUctFeatures::FindAllFeatures(m_bd, features, passFeatures);
     cmd << '\n';
     FeFeatures::WriteBoardFeatures(cmd, features, m_bd);
     FeFeatures::WriteFeatures(cmd, SG_PASS, passFeatures);
 }
 
-void FeCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
 {
     using namespace FeFeatures;
     CheckWeights("features_evaluate_board");
 
     SgPointArray<FeMoveFeatures> features;
     FeMoveFeatures passFeatures;
-    FindAllFeatures(m_bd, features, passFeatures);
+    GoUctFeatures::FindAllFeatures(m_bd, features, passFeatures);
     SgPointArray<float> eval = EvaluateFeatures(m_bd, features, m_weights);
     float passEval = EvaluateMoveFeatures(passFeatures, m_weights);
     cmd << '\n';
@@ -88,21 +89,21 @@ void FeCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
     cmd << "Pass: " << passEval << '\n';
 }
 
-void FeCommands::CmdFeaturesMove(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesMove(GtpCommand& cmd)
 {
     using namespace FeFeatures;
     CheckWeights("features_move");
 
     SgPoint move = GoGtpCommandUtil::MoveArg(cmd, 0, m_bd);
     FeMoveFeatures f;
-    FindMoveFeaturesUI(m_bd, move, f);
+    GoUctFeatures::FindMoveFeaturesUI(m_bd, move, f);
     std::vector<FeEvalDetail> detail =
     EvaluateMoveFeaturesDetail(f, m_weights);
     WriteEvalDetail(SgDebug(), detail);
     SgDebug() << std::endl;
 }
 
-void FeCommands::CmdFeaturesReadWeights(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesReadWeights(GtpCommand& cmd)
 {
     const std::string fileName = cmd.Arg();
     try
@@ -120,34 +121,35 @@ void FeCommands::CmdFeaturesReadWeights(GtpCommand& cmd)
               << " features with k = " << m_weights.m_k << '\n';
 }
 
-void FeCommands::CmdFeaturesWistuba(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesWistuba(GtpCommand& cmd)
 {
     cmd << '\n';
-    FeFeatures::WistubaFormat::WriteFeatures(cmd, m_bd, true);
+    GoUctFeatures::WriteFeatures(cmd, m_bd, true);
 }
 
 /** Write features and possibly comments for validation in Wistuba's format */
-void FeCommands::FeaturesWistubaToFile(GtpCommand& cmd, bool writeComments)
+void GoUctFeatureCommands::FeaturesWistubaToFile(GtpCommand& cmd,
+                                                 bool writeComments)
 {
     cmd << '\n';
     std::ofstream stream("features.txt", std::ios::app);
-    FeFeatures::WistubaFormat::WriteFeatures(stream, m_bd, writeComments);
+    GoUctFeatures::WriteFeatures(stream, m_bd, writeComments);
 }
 
 /** Write features only in Wistuba's format */
-void FeCommands::CmdFeaturesWistubaToFile(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesWistubaToFile(GtpCommand& cmd)
 {
     FeaturesWistubaToFile(cmd, false);
 }
 
 /** Write features and comments for validation in Wistuba's format */
-void FeCommands::CmdFeaturesCommentsWistubaToFile(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesCommentsWistubaToFile(GtpCommand& cmd)
 {
     FeaturesWistubaToFile(cmd, true);
 }
 
 /** Write features and comments for validation in Wistuba's format */
-void FeCommands::CmdFeaturesDefinePattern(GtpCommand& cmd)
+void GoUctFeatureCommands::CmdFeaturesDefinePattern(GtpCommand& cmd)
 {
     SG_UNUSED(cmd);
 
@@ -166,26 +168,29 @@ void FeCommands::CmdFeaturesDefinePattern(GtpCommand& cmd)
     }
 }
 
-void FeCommands::Register(GtpEngine& e)
+void GoUctFeatureCommands::Register(GtpEngine& e)
 {
-    Register(e, "features", &FeCommands::CmdFeatures);
+    Register(e, "features", &GoUctFeatureCommands::CmdFeatures);
     Register(e, "features_define_pattern",
-             &FeCommands::CmdFeaturesDefinePattern);
+             &GoUctFeatureCommands::CmdFeaturesDefinePattern);
     Register(e, "features_evaluate_board",
-             &FeCommands::CmdFeaturesEvaluateBoard);
-    Register(e, "features_move", &FeCommands::CmdFeaturesMove);
-    Register(e, "features_read_weights", &FeCommands::CmdFeaturesReadWeights);
-    Register(e, "features_wistuba", &FeCommands::CmdFeaturesWistuba);
+             &GoUctFeatureCommands::CmdFeaturesEvaluateBoard);
+    Register(e, "features_move", &GoUctFeatureCommands::CmdFeaturesMove);
+    Register(e, "features_read_weights",
+             &GoUctFeatureCommands::CmdFeaturesReadWeights);
+    Register(e, "features_wistuba",
+             &GoUctFeatureCommands::CmdFeaturesWistuba);
     Register(e, "features_wistuba_file",
-             &FeCommands::CmdFeaturesWistubaToFile);
+             &GoUctFeatureCommands::CmdFeaturesWistubaToFile);
     Register(e, "features_comments_wistuba_file",
-             &FeCommands::CmdFeaturesCommentsWistubaToFile);
+             &GoUctFeatureCommands::CmdFeaturesCommentsWistubaToFile);
 }
 
-void FeCommands::Register(GtpEngine& engine,
+void GoUctFeatureCommands::Register(GtpEngine& engine,
                           const std::string& command,
-                          GtpCallback<FeCommands>::Method method)
+                          GtpCallback<GoUctFeatureCommands>::Method method)
 {
-    engine.Register(command, new GtpCallback<FeCommands>(this, method));
+    engine.Register(command,
+                    new GtpCallback<GoUctFeatureCommands>(this, method));
 }
 

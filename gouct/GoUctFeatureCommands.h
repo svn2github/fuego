@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file FeCommands.h
+/** @file GoUctFeatureCommands.h
     GTP commands for features. */
 //----------------------------------------------------------------------------
 
@@ -18,13 +18,14 @@ class GoGame;
 class GoPlayer;
 
 /** GTP commands for features. */
-class FeCommands
+class GoUctFeatureCommands
 {
 public:
     /** Constructor.
      @param bd The game board.
      @param player Reference to pointer to current player. Can be null. */
-    FeCommands(const GoBoard& bd, GoPlayer*& player, const GoGame& game);
+    GoUctFeatureCommands(const GoBoard& bd, GoPlayer*& player,
+                         const GoGame& game);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -57,7 +58,7 @@ private:
     
     void Register(GtpEngine& engine,
                   const std::string& command,
-                  GtpCallback<FeCommands>::Method method);
+                  GtpCallback<GoUctFeatureCommands>::Method method);
 
     const GoBoard& m_bd;
 
