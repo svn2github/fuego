@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
-/** @file FeKnowledge.cpp
- See FeKnowledge.h
+/** @file GoUctFeatureKnowledge.cpp
+ See GoUctFeatureKnowledge.h
  */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "FeKnowledge.h"
+#include "GoUctFeatureKnowledge.h"
 
 #include "FeBasicFeatures.h"
 #include "GoUctFeatures.h"
@@ -13,24 +13,26 @@
 
 //----------------------------------------------------------------------------
 /** @todo This is a tunable constant. */
-const float FeKnowledge::VALUE_MULTIPLIER = 10.0f;
+const float GoUctFeatureKnowledge::VALUE_MULTIPLIER = 10.0f;
 
 namespace {
-    inline float sigmoid(float x) // it is really sigmoid(-x) computed here
+    
+inline float sigmoid(float x) // it is really sigmoid(-x) computed here
 {
     return 1 / (1 + exp(x));
 }
-}
+
+} // namespace
 //----------------------------------------------------------------------------
 
-FeKnowledge::FeKnowledge(const GoBoard& bd,
+GoUctFeatureKnowledge::GoUctFeatureKnowledge(const GoBoard& bd,
                          const FeFeatureWeights& weights)
     : GoAdditiveKnowledge(bd),
       m_weights(weights),
       m_policy(bd, GoUctPlayoutPolicyParam())
 { }
 
-void FeKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
+void GoUctFeatureKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 {
     const GoBoard& bd = Board();
     SgPointArray<FeFeatures::FeMoveFeatures> features;
@@ -49,20 +51,20 @@ void FeKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 }
 
 //----------------------------------------------------------------------------
-FeKnowledgeFactory::FeKnowledgeFactory() : m_weights(0, 0)
+GoUctFeatureKnowledgeFactory::GoUctFeatureKnowledgeFactory() : m_weights(0, 0)
 {
     ReadWeights();
 }
     
-FeKnowledgeFactory::~FeKnowledgeFactory()
+GoUctFeatureKnowledgeFactory::~GoUctFeatureKnowledgeFactory()
 { }
 
-GoAdditiveKnowledge* FeKnowledgeFactory::Create(const GoBoard& bd)
+GoAdditiveKnowledge* GoUctFeatureKnowledgeFactory::Create(const GoBoard& bd)
 {
-    return new FeKnowledge(bd, m_weights);
+    return new GoUctFeatureKnowledge(bd, m_weights);
 }
 
-void FeKnowledgeFactory::ReadWeights()
+void GoUctFeatureKnowledgeFactory::ReadWeights()
 {
     const std::string fileName =
     "/Users/mmueller/Projects/fuego/data/features.model"; // TODO
@@ -77,10 +79,9 @@ void FeKnowledgeFactory::ReadWeights()
     {
         SgDebug() << "Loading features file failed: " << e.what();
     }
-    SgDebug() << "FeKnowledgeFactory Read weights for "
+    SgDebug() << "GoUctFeatureKnowledgeFactory Read weights for "
               << m_weights.m_nuFeatures
               << " features with k = " << m_weights.m_k << '\n';
 }
-
 
 //----------------------------------------------------------------------------

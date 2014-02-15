@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
-/** @file FeKnowledge.h
+/** @file GoUctFeatureKnowledge.h
     Convert feature weights from FeFeatureWeights into additive knowledge. */
 //----------------------------------------------------------------------------
 
 
-#ifndef FE_KNOWLEDGE_H
-#define FE_KNOWLEDGE_H
+#ifndef GOUCT_FEATURE_KNOWLEDGE_H
+#define GOUCT_FEATURE_KNOWLEDGE_H
 
 #include "FeFeatureWeights.h"
 #include "GoAdditiveKnowledge.h"
@@ -14,13 +14,13 @@
 
 //----------------------------------------------------------------------------
 
-class FeKnowledge
+class GoUctFeatureKnowledge
     : public GoAdditiveKnowledge
 {
 public:
     static const float VALUE_MULTIPLIER;
 
-    FeKnowledge(const GoBoard& bd, const FeFeatureWeights& weights);
+    GoUctFeatureKnowledge(const GoBoard& bd, const FeFeatureWeights& weights);
 
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
 
@@ -39,29 +39,29 @@ private:
 };
 
 //----------------------------------------------------------------------------
-inline GoPredictorType FeKnowledge::PredictorType() const
+inline GoPredictorType GoUctFeatureKnowledge::PredictorType() const
 {
     return GO_PRED_TYPE_PLAIN;
 }
 
-inline SgUctValue FeKnowledge::Minimum() const
+inline SgUctValue GoUctFeatureKnowledge::Minimum() const
 {
     return -1; // TODO
 }
 
-inline SgUctValue FeKnowledge::Scale() const
+inline SgUctValue GoUctFeatureKnowledge::Scale() const
 {
     return 1.0; // TODO
 }
 
 //----------------------------------------------------------------------------
-class FeKnowledgeFactory
+class GoUctFeatureKnowledgeFactory
 {
 public:
     
-	FeKnowledgeFactory();
+	GoUctFeatureKnowledgeFactory();
     
-	~FeKnowledgeFactory();
+	~GoUctFeatureKnowledgeFactory();
     
     GoAdditiveKnowledge* Create(const GoBoard& bd);
     
@@ -73,4 +73,4 @@ private:
 };
 //----------------------------------------------------------------------------
 
-#endif // FE_KNOWLEDGE_H
+#endif // GOUCT_FEATURE_KNOWLEDGE_H

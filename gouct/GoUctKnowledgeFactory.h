@@ -7,9 +7,9 @@
 #ifndef GOUCT_KNOWLEDGE_FACTORY_H
 #define GOUCT_KNOWLEDGE_FACTORY_H
 
-#include "FeKnowledge.h"
 #include "GoBoard.h"
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
+#include "GoUctFeatureKnowledge.h"
 
 //----------------------------------------------------------------------------
 class GoUctKnowledgeFactory
@@ -28,7 +28,7 @@ private:
     /** The param used for additive knowledge */
     const GoUctPlayoutPolicyParam& m_param;
     
-    FeKnowledgeFactory m_featureKnowledgeFactory;
+    GoUctFeatureKnowledgeFactory m_featureKnowledgeFactory;
 };
 //----------------------------------------------------------------------------
 

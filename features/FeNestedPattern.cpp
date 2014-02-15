@@ -14,10 +14,10 @@ using SgPointUtil::Pt;
 //----------------------------------------------------------------------------
 
 FeNestedPattern::FeNestedPattern(int minSize, int maxSize)
-: FePattern(PointsForSize(maxSize)),
-    m_patterns(),
-    m_minSize(minSize),
-    m_maxSize(maxSize)
+    : FePattern(PointsForSize(maxSize)),
+      m_patterns(),
+      m_minSize(minSize),
+      m_maxSize(maxSize)
 { }
 
 int FeNestedPattern::PointsForSize(int size)

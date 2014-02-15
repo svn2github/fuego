@@ -10,7 +10,7 @@ GoUctDefaultPriorKnowledge.cpp \
 GoUctDefaultMoveFilter.cpp \
 GoUctEstimatorStat.cpp \
 GoUctFeatureCommands.cpp \
-FeKnowledge.cpp \
+GoUctFeatureKnowledge.cpp \
 GoUctFeatures.cpp \
 GoUctGlobalSearch.cpp \
 GoUctKnowledge.cpp \
@@ -35,7 +35,7 @@ GoUctDefaultPriorKnowledge.h \
 GoUctDefaultMoveFilter.h \
 GoUctEstimatorStat.h \
 GoUctFeatureCommands.h \
-FeKnowledge.h \
+GoUctFeatureKnowledge.h \
 GoUctFeatures.h \
 GoUctGammaMoveGenerator.h \
 GoUctGlobalPatternData.h \

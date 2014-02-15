@@ -7,7 +7,7 @@
 #include "SgSystem.h"
 #include "GoUctKnowledgeFactory.h"
 
-#include "FeKnowledge.h"
+#include "GoUctFeatureKnowledge.h"
 #include "GoAdditiveKnowledge.h"
 #include "GoUctAdditiveKnowledgeFuego.h"
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
