@@ -26,7 +26,8 @@ namespace {
 FeKnowledge::FeKnowledge(const GoBoard& bd,
                          const FeFeatureWeights& weights)
     : GoAdditiveKnowledge(bd),
-      m_weights(weights)
+      m_weights(weights),
+      m_policy(bd, GoUctPlayoutPolicyParam())
 { }
 
 void FeKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
@@ -34,7 +35,7 @@ void FeKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
     const GoBoard& bd = Board();
     SgPointArray<FeFeatures::FeMoveFeatures> features;
     FeFeatures::FeMoveFeatures passFeatures;
-    GoUctFeatures::FindAllFeatures(bd, features, passFeatures);
+    GoUctFeatures::FindAllFeatures(bd, m_policy, features, passFeatures);
     SgPointArray<float> eval = EvaluateFeatures(bd, features, m_weights);
     float passEval = EvaluateMoveFeatures(passFeatures, m_weights);
     

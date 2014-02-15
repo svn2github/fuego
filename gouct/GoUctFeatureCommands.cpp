@@ -15,6 +15,7 @@
 #include "GoPlayer.h"
 #include "GoGtpCommandUtil.h"
 #include "GoUctFeatures.h"
+#include "GoUctPlayoutPolicy.h"
 #include "SgPointArray.h"
 #include "SgNode.h"
 #include "SgWrite.h"
@@ -27,7 +28,8 @@ GoUctFeatureCommands::GoUctFeatureCommands(const GoBoard& bd,
     :   m_bd(bd),
         m_player(player),
         m_game(game),
-        m_weights(0, 0)
+        m_weights(0, 0),
+        m_policy(bd, GoUctPlayoutPolicyParam())
 {
     SG_UNUSED(m_player);
     SG_UNUSED(m_game);
@@ -60,7 +62,7 @@ void GoUctFeatureCommands::CmdFeatures(GtpCommand& cmd)
     using FeFeatures::FeMoveFeatures;
     SgPointArray<FeMoveFeatures> features;
     FeMoveFeatures passFeatures;
-    GoUctFeatures::FindAllFeatures(m_bd, features, passFeatures);
+    GoUctFeatures::FindAllFeatures(m_bd, m_policy, features, passFeatures);
     cmd << '\n';
     FeFeatures::WriteBoardFeatures(cmd, features, m_bd);
     FeFeatures::WriteFeatures(cmd, SG_PASS, passFeatures);
@@ -73,7 +75,7 @@ void GoUctFeatureCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
 
     SgPointArray<FeMoveFeatures> features;
     FeMoveFeatures passFeatures;
-    GoUctFeatures::FindAllFeatures(m_bd, features, passFeatures);
+    GoUctFeatures::FindAllFeatures(m_bd, m_policy, features, passFeatures);
     SgPointArray<float> eval = EvaluateFeatures(m_bd, features, m_weights);
     float passEval = EvaluateMoveFeatures(passFeatures, m_weights);
     cmd << '\n';
@@ -96,7 +98,7 @@ void GoUctFeatureCommands::CmdFeaturesMove(GtpCommand& cmd)
 
     SgPoint move = GoGtpCommandUtil::MoveArg(cmd, 0, m_bd);
     FeMoveFeatures f;
-    GoUctFeatures::FindMoveFeaturesUI(m_bd, move, f);
+    GoUctFeatures::FindMoveFeaturesUI(m_bd, m_policy, move, f);
     std::vector<FeEvalDetail> detail =
     EvaluateMoveFeaturesDetail(f, m_weights);
     WriteEvalDetail(SgDebug(), detail);
@@ -124,7 +126,7 @@ void GoUctFeatureCommands::CmdFeaturesReadWeights(GtpCommand& cmd)
 void GoUctFeatureCommands::CmdFeaturesWistuba(GtpCommand& cmd)
 {
     cmd << '\n';
-    GoUctFeatures::WriteFeatures(cmd, m_bd, true);
+    GoUctFeatures::WriteFeatures(cmd, m_policy, m_bd, true);
 }
 
 /** Write features and possibly comments for validation in Wistuba's format */
@@ -133,7 +135,7 @@ void GoUctFeatureCommands::FeaturesWistubaToFile(GtpCommand& cmd,
 {
     cmd << '\n';
     std::ofstream stream("features.txt", std::ios::app);
-    GoUctFeatures::WriteFeatures(stream, m_bd, writeComments);
+    GoUctFeatures::WriteFeatures(stream, m_policy, m_bd, writeComments);
 }
 
 /** Write features only in Wistuba's format */

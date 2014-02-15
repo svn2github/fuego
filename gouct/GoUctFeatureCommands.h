@@ -12,6 +12,7 @@
 
 #include "FeBasicFeatures.h"
 #include "FeFeatureWeights.h"
+#include "GoUctPlayoutPolicy.h"
 
 class GoBoard;
 class GoGame;
@@ -67,6 +68,8 @@ private:
     const GoGame& m_game;
     
     FeFeatureWeights m_weights;
+
+    GoUctPlayoutPolicy<GoBoard> m_policy;
 };
 
 #endif // FE_COMMANDS_H

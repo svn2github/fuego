@@ -13,25 +13,30 @@
 #include "FeBasicFeatures.h"
 #include "FeFeatureWeights.h"
 #include "GoBoard.h"
+#include "GoUctPlayoutPolicy.h"
 
 namespace GoUctFeatures {
 
-    void FindAllFeatures(const GoBoard& bd,
+void FindAllFeatures(const GoBoard& bd,
+                     GoUctPlayoutPolicy<GoBoard>& policy,
                      SgPointArray<FeFeatures::FeMoveFeatures>& features,
                      FeFeatures::FeMoveFeatures& passFeatures);
 
-    /** Inefficient, calls full board function, use only for UI */
-    void FindMoveFeaturesUI(const GoBoard& bd, SgPoint move,
-                            FeFeatures::FeMoveFeatures& features);
+/** Inefficient, calls full board function, use only for UI */
+void FindMoveFeaturesUI(const GoBoard& bd,
+                        GoUctPlayoutPolicy<GoBoard>& policy,
+                        SgPoint move,
+                        FeFeatures::FeMoveFeatures& features);
 
-    /** Computes features for the position - preceding - the current one
-     and writes them using WriteBoardFeaturesWistuba.
-     The computation cannot be for the current positon when used as a GTP
-     command since the next move is not available to the engine, but it is
-     needed since we need the chosen move. */
-    void WriteFeatures(std::ostream& stream,
-                       const GoBoard& bd,
-                       const bool writeComment);
+/** Computes features for the position - preceding - the current one
+ and writes them using WriteBoardFeaturesWistuba.
+ The computation cannot be for the current positon when used as a GTP
+ command since the next move is not available to the engine, but it is
+ needed since we need the chosen move. */
+void WriteFeatures(std::ostream& stream,
+                   GoUctPlayoutPolicy<GoBoard>& policy,
+                   const GoBoard& bd,
+                   const bool writeComment);
 
 } // namespace GoUctFeatures
 

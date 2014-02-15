@@ -9,6 +9,8 @@
 
 #include "FeFeatureWeights.h"
 #include "GoAdditiveKnowledge.h"
+#include "GoBoard.h"
+#include "GoUctPlayoutPolicy.h"
 
 //----------------------------------------------------------------------------
 
@@ -32,6 +34,8 @@ public:
 
 private:
     FeFeatureWeights m_weights;
+
+    GoUctPlayoutPolicy<GoBoard> m_policy;
 };
 
 //----------------------------------------------------------------------------
