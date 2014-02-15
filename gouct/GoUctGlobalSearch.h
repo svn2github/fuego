@@ -459,8 +459,8 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
 }
 
 template<class POLICY>
-void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
-                                     std::vector<SgUctMoveInfo>& moves)
+void GoUctGlobalSearchState<POLICY>::
+ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
 {
     const int moveNum = Board().MoveNumber();
     GoAdditiveKnowledge* kn = GetAdditiveKnowledge();
@@ -474,6 +474,16 @@ void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
         	moves[j].m_predictorValue = 1.0;
 	}
     
+    if (kn->PredictorType() == GO_PRED_TYPE_PLAIN)
+    {
+        for (size_t j = 0; j < moves.size(); ++j)
+        {
+            SgUctValue v = kn->CappedValue(moves[j].m_predictorValue);
+            moves[j].m_predictorValue = v;
+        }
+        return;
+    }
+
     SgUctValue predictorTotal = 0.0;
     SgUctValue predictorMax = kn->Minimum();
     for (size_t j = 0; j < moves.size(); ++j)
@@ -482,9 +492,8 @@ void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
         if (moves[j].m_predictorValue > predictorMax) 
             predictorMax = moves[j].m_predictorValue;
     }
-    if (kn->ProbabilityBased())  
+    if (kn->PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED)
     {
-        /* Probability-based predictor type */
         for (size_t j = 0; j < moves.size(); ++j)
         {
             SgUctValue v = kn->CappedValue(moves[j].m_predictorValue);
@@ -492,10 +501,11 @@ void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
                 * sqrt(predictorTotal / v);
         }
     } 
-    else 
+    else // PUCB-type predictor
     {  
-        /* PUCB-type predictor */
-        const SgUctValue predictorMultiplier = sqrt(predictorTotal * predictorMax);
+        SG_ASSERT(kn->PredictorType() == GO_PRED_TYPE_PUCB);
+        const SgUctValue predictorMultiplier =
+            sqrt(predictorTotal * predictorMax);
         for (size_t j = 0; j < moves.size(); ++j)
         {
             SgUctValue v = kn->CappedValue(moves[j].m_predictorValue);
@@ -506,9 +516,10 @@ void GoUctGlobalSearchState<POLICY>::ApplyAdditivePredictors(
 }
 
 template<class POLICY>
-bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(SgUctValue count, 
-                                             std::vector<SgUctMoveInfo>& moves,
-                                             SgUctProvenType& provenType)
+bool GoUctGlobalSearchState<POLICY>::
+GenerateAllMoves(SgUctValue count,
+                 std::vector<SgUctMoveInfo>& moves,
+                 SgUctProvenType& provenType)
 {
     provenType = SG_NOT_PROVEN;
     moves.clear();  // FIXME: needed?
@@ -517,15 +528,19 @@ bool GoUctGlobalSearchState<POLICY>::GenerateAllMoves(SgUctValue count,
     {
         if (m_param.m_useTreeFilter)
             ApplyFilter(moves);
-        m_priorKnowledge.ProcessPosition(moves);
+        // for now, skip prior knowledge when using feature predictor
+        // which is indicated by PredictorType GO_PRED_TYPE_PLAIN
+        const GoAdditiveKnowledge* kn = GetAdditiveKnowledge();
+        if (kn == 0 || kn->PredictorType() != GO_PRED_TYPE_PLAIN)
+            m_priorKnowledge.ProcessPosition(moves);
         ApplyAdditivePredictors(moves);
     }
     return false;
 }
 
 template<class POLICY>
-SgMove GoUctGlobalSearchState<POLICY>::GeneratePlayoutMove(
-                                                         bool& skipRaveUpdate)
+SgMove GoUctGlobalSearchState<POLICY>::
+GeneratePlayoutMove(bool& skipRaveUpdate)
 {
     SG_ASSERT(IsInPlayout());
     if (m_param.m_mercyRule && CheckMercyRule())

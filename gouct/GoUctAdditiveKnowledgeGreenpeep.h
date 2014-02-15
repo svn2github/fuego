@@ -40,7 +40,7 @@ public:
     /** The minimum value allowed by this predictor */
     SgUctValue Minimum() const;
 
-    bool ProbabilityBased() const;
+    GoPredictorType PredictorType() const;
 
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
 
@@ -90,12 +90,13 @@ private:
 
 inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::Minimum() const
 {
-	return ProbabilityBased() ? 0.0001f : 0.05f;
+	return PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED ? 0.0001f : 0.05f;
 }
 
-inline bool GoUctAdditiveKnowledgeGreenpeep::ProbabilityBased() const
+inline GoPredictorType GoUctAdditiveKnowledgeGreenpeep::PredictorType() const
 {
-	return Board().Size() >= 15;
+	return Board().Size() >= 15 ? GO_PRED_TYPE_PROBABILITY_BASED
+                                : GO_PRED_TYPE_PUCB;
 }
 
 inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::Scale() const

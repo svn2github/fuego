@@ -52,8 +52,8 @@ void GoUctAdditiveKnowledgeMultiple::AddKnowledge(
 	GoAdditiveKnowledge* knowledge)
 {
 	if (m_additiveKnowledge.NonEmpty())
-    	SG_ASSERT(   knowledge->ProbabilityBased() 
-                  == m_additiveKnowledge[0]->ProbabilityBased());
+    	SG_ASSERT(   knowledge->PredictorType()
+                  == m_additiveKnowledge[0]->PredictorType());
     SG_ASSERT(! m_additiveKnowledge.Contains(knowledge));
     m_additiveKnowledge.PushBack(knowledge);
 }
@@ -92,9 +92,9 @@ const
     }
 }
 
-bool GoUctAdditiveKnowledgeMultiple::ProbabilityBased() const
+GoPredictorType GoUctAdditiveKnowledgeMultiple::PredictorType() const
 {
-	return FirstKnowledge()->ProbabilityBased();
+	return FirstKnowledge()->PredictorType();
 }
 
 inline void Combine(float& v, float newV,

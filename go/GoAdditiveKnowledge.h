@@ -27,6 +27,12 @@ public:
     virtual ~GoUctAdditiveKnowledgeParam();
 };
 
+
+enum GoPredictorType
+{
+    GO_PRED_TYPE_PROBABILITY_BASED, GO_PRED_TYPE_PUCB, GO_PRED_TYPE_PLAIN
+};
+
 /** Base class for predictors that will be used additively in UCT. 
     Constructed once per thread (as with GoUctDefaultPriorKnowledge). 
 */
@@ -41,7 +47,7 @@ public:
 
     virtual const GoBoard& Board() const;
     
-    virtual bool ProbabilityBased() const = 0;
+    virtual GoPredictorType PredictorType() const = 0;
     
     /** return value, but lower bound capped by Minimum() */
     SgUctValue CappedValue(SgUctValue value) const;
@@ -96,7 +102,7 @@ public:
      : GoAdditiveKnowledge(bd)
     { }
 
-    bool ProbabilityBased() const;
+    GoPredictorType PredictorType() const;
     
     /** The minimum value allowed by this predictor */
     SgUctValue Minimum() const;
@@ -111,9 +117,9 @@ inline SgUctValue GoUctAdditiveKnowledgeStdProb::Minimum() const
 	return 0.0001f;
 }
 
-inline bool GoUctAdditiveKnowledgeStdProb::ProbabilityBased() const
+inline GoPredictorType GoUctAdditiveKnowledgeStdProb::PredictorType() const
 {
-	return true;
+	return GO_PRED_TYPE_PROBABILITY_BASED;
 }
 
 inline SgUctValue GoUctAdditiveKnowledgeStdProb::Scale() const

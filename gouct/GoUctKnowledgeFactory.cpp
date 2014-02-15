@@ -7,6 +7,7 @@
 #include "SgSystem.h"
 #include "GoUctKnowledgeFactory.h"
 
+#include "FeKnowledge.h"
 #include "GoAdditiveKnowledge.h"
 #include "GoUctAdditiveKnowledgeFuego.h"
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
@@ -16,7 +17,8 @@
 GoUctKnowledgeFactory::GoUctKnowledgeFactory(
     const GoUctPlayoutPolicyParam& param) :
     m_greenpeepParam(0),
-    m_param(param)
+    m_param(param),
+    m_featureKnowledgeFactory()
 { }
 
 GoUctKnowledgeFactory::~GoUctKnowledgeFactory()
@@ -46,6 +48,9 @@ GoAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
     break;
     case KNOWLEDGE_RULEBASED:
     	return new GoUctAdditiveKnowledgeFuego(bd);
+    break;
+    case KNOWLEDGE_FEATURES:
+    	return m_featureKnowledgeFactory.Create(bd);
     break;
     case KNOWLEDGE_BOTH:
     {

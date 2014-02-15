@@ -202,6 +202,8 @@ std::string KnowledgeTypeToString(KnowledgeType type)
             return "greenpeep";
         case KNOWLEDGE_RULEBASED:
             return "rulebased";
+        case KNOWLEDGE_FEATURES:
+            return "features";
         case KNOWLEDGE_BOTH:
             return "both";
         default:
@@ -219,6 +221,8 @@ KnowledgeType KnowledgeTypeArg(const GtpCommand& cmd, size_t number)
         return KNOWLEDGE_GREENPEEP;
     if (arg == "rulebased")
         return KNOWLEDGE_RULEBASED;
+    if (arg == "features")
+        return KNOWLEDGE_FEATURES;
     if (arg == "both")
         return KNOWLEDGE_BOTH;
     throw GtpFailure() << "unknown KnowledgeType argument \"" << arg << '"';
@@ -708,9 +712,10 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             << "[bool] use_patterns_in_prior_knowledge " 
             << p.m_usePatternsInPriorKnowledge << '\n'
             << "[int] fillboard_tries " << p.m_fillboardTries << '\n'
-            << "[list/none/greenpeep/rulebased/both] knowledge_type "
+            << "[list/none/greenpeep/rulebased/features/both] knowledge_type "
             << KnowledgeTypeToString(p.m_knowledgeType) << '\n'
-            << "[list/multiply/geometric_mean/add/average/max] combination_type "
+            << "[list/multiply/geometric_mean/add/average/max] "
+               "combination_type "
             << CombinationTypeToString(p.m_combinationType) << '\n'
             << "[float] pattern_gamma_threshold "
             << p.m_patternGammaThreshold << '\n'

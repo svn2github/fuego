@@ -64,7 +64,8 @@ inline void SgAdditiveKnowledge::SetPredictorDecay(SgUctValue value)
     m_predictorDecay = value;
 }
 
-inline SgUctValue SgAdditiveKnowledge::PredictorWeight(SgUctValue posCount) const
+inline SgUctValue SgAdditiveKnowledge::PredictorWeight(SgUctValue posCount)
+const
 {
     return   m_knowledgeWeight
            * sqrt(m_predictorDecay / (posCount + m_predictorDecay));
