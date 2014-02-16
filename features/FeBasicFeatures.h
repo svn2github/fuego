@@ -11,6 +11,7 @@
 
 #include <bitset>
 #include <iosfwd>
+#include <boost/array.hpp>
 #include "FeFeatureWeights.h"
 #include "GoLadder.h"
 #include "SgPointArray.h"
@@ -137,8 +138,12 @@ namespace FeFeatures {
 
 const int INVALID_3x3_INDEX = -1;
 
-typedef vector<int>::const_iterator FeIterator;
+const size_t MAX_ACTIVE_LENGTH = 20;
 
+typedef boost::array<int, MAX_ACTIVE_LENGTH> FeActiveArray;
+
+typedef boost::array<int, MAX_ACTIVE_LENGTH>::const_iterator FeActiveIterator;
+    
 //---------------------------------
 
 struct FeEvalDetail
@@ -176,10 +181,13 @@ inline FeMoveFeatures::FeMoveFeatures()
 
 //---------------------------------
 /** List of features */
-std::vector<int> ActiveFeatures(const FeMoveFeatures& features);
+
+size_t ActiveFeatures(const FeMoveFeatures& features,
+                      FeActiveArray& active);
 
 /** Evaluation of given list of features, using weights */
-float EvaluateActiveFeatures(const std::vector<int>& active,
+float EvaluateActiveFeatures(const FeActiveArray& active,
+                             size_t nuActive,
                              const FeFeatureWeights& weights);
 
 SgPointArray<float> EvaluateFeatures(const GoBoard& bd,

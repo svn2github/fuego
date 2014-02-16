@@ -509,26 +509,38 @@ std::ostream& FeFeatures::operator<<(std::ostream& stream,
 
 //----------------------------------------------------------------------------
 
-std::vector<int> FeFeatures::ActiveFeatures(const FeMoveFeatures& features)
+size_t FeFeatures::ActiveFeatures(const FeMoveFeatures& features,
+                                  FeActiveArray& active)
 {
-    std::vector<int> active;
+    size_t nuActive = 0;
     for (int i = 0; i < _NU_FE_FEATURES; ++i)
         if (features.m_basicFeatures.test(i))
-            active.push_back(i);
+        {
+            active[nuActive] = i;
+            if (++nuActive >= MAX_ACTIVE_LENGTH)
+                return nuActive;
+        }
     // invalid for pass move and (1,1) points
     if (features.m_3x3Index != INVALID_3x3_INDEX)
-        active.push_back(features.m_3x3Index);
-    return active;
+    {
+        SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
+        active[nuActive] = features.m_3x3Index;
+        ++nuActive;
+    }
+    return nuActive;
 }
 
-float FeFeatures::EvaluateActiveFeatures(const std::vector<int>& active,
+float FeFeatures::EvaluateActiveFeatures(const FeActiveArray& active,
+                                         size_t nuActive,
                                          const FeFeatureWeights& weights)
 {
     float value = 0.0;
-    for (FeIterator it = active.begin(); it != active.end(); ++it)
+    for (FeActiveIterator it = active.begin();
+                          it < active.begin() + nuActive; ++it)
     {
         value += weights.m_w[*it];
-        for (FeIterator it2 = it + 1; it2 != active.end(); ++it2)
+        for (FeActiveIterator it2 = it + 1;
+                              it2 < active.begin() + nuActive; ++it2)
             value += weights.Combine(*it, *it2);
     }
     return value;
@@ -548,21 +560,25 @@ SgPointArray<float> FeFeatures::EvaluateFeatures(const GoBoard& bd,
 float FeFeatures::EvaluateMoveFeatures(const FeMoveFeatures& features,
                                        const FeFeatureWeights& weights)
 {
-    std::vector<int> active = ActiveFeatures(features);
-    return EvaluateActiveFeatures(active, weights);
+    FeActiveArray active;
+    const size_t nuActive = ActiveFeatures(features, active);
+    return EvaluateActiveFeatures(active, nuActive, weights);
 }
 
 std::vector<FeFeatures::FeEvalDetail>
 FeFeatures::EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
                                        const FeFeatureWeights& weights)
 {
-    std::vector<int> active = ActiveFeatures(features);
+    FeActiveArray active;
+    const size_t nuActive = ActiveFeatures(features, active);
     std::vector<FeFeatures::FeEvalDetail> detail;
-    for (FeIterator it = active.begin(); it != active.end(); ++it)
+    for (FeActiveIterator it = active.begin();
+                          it < active.begin() + nuActive; ++it)
     {
         const float w = weights.m_w[*it];
         float v = 0.0;
-        for (FeIterator it2 = active.begin(); it2 != active.end(); ++it2)
+        for (FeActiveIterator it2 = active.begin();
+                              it2 < active.begin() + nuActive; ++it2)
             if (it != it2)
                 v += weights.Combine(*it, *it2);
         detail.push_back(FeFeatures::FeEvalDetail(*it, w, v/2));
@@ -697,7 +713,7 @@ void WriteFeatures(std::ostream& stream,
 }
 
 } // namespace
-} // namespace
+} // namespace WistubaFormat
     
 void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
