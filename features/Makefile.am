@@ -9,6 +9,7 @@ FePatternBase.cpp
 
 noinst_HEADERS = \
 FeBasicFeatures.h \
+FeData.h \
 FeFeatureWeights.h \
 FeNestedPattern.h \
 FePattern.h \
