@@ -66,22 +66,13 @@ GoAdditiveKnowledge* GoUctFeatureKnowledgeFactory::Create(const GoBoard& bd)
 
 void GoUctFeatureKnowledgeFactory::ReadWeights()
 {
-    const std::string fileName =
-    "/Users/mmueller/Projects/fuego/data/features.model"; // TODO
-    try
-    {
-        std::ifstream in(fileName.c_str());
-        if (! in)
-        throw SgException("Cannot find file " + fileName);
-        m_weights = FeFeatureWeights::Read(in);
-    }
-    catch (const SgException& e)
-    {
-        SgDebug() << "Loading features file failed: " << e.what();
-    }
+    m_weights = FeFeatureWeights::ReadDefaultWeights();
     SgDebug() << "GoUctFeatureKnowledgeFactory Read weights for "
               << m_weights.m_nuFeatures
-              << " features with k = " << m_weights.m_k << '\n';
+              << " features with k = " << m_weights.m_k
+              << ", minID = " << m_weights.m_minID
+              << ", maxID = " << m_weights.m_maxID
+              << '\n';
 }
 
 //----------------------------------------------------------------------------

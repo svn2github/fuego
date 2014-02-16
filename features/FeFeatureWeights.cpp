@@ -6,7 +6,10 @@
 #include "FeFeatureWeights.h"
 
 #include <iostream>
+#include <sstream>
 #include <string>
+#include "FeData.h"
+#include "SgDebug.h"
 #include "SgException.h"
 
 //----------------------------------------------------------------------------
@@ -17,10 +20,13 @@ const std::size_t FeFeatureWeights::MAX_FEATURE_INDEX = 2200;
 //----------------------------------------------------------------------------
 
 FeFeatureWeights::FeFeatureWeights(size_t nuFeatures, size_t k)
-    : m_nuFeatures(nuFeatures), m_k(k)
+    : m_nuFeatures(nuFeatures),
+      m_k(k),
+      m_minID(std::numeric_limits<size_t>::max()),
+      m_maxID(std::numeric_limits<size_t>::min())
 {
     SG_ASSERT(  nuFeatures == 0
-              || nuFeatures == MAX_FEATURE_INDEX);
+             || nuFeatures == MAX_FEATURE_INDEX);
     m_w.resize(nuFeatures, 0);
     m_v.resize(k); // create empty vectors
     for (size_t i = 0; i < k; ++i)
@@ -66,6 +72,9 @@ FeFeatureWeights FeFeatureWeights::Read(std::istream& stream)
         SG_ASSERT(! stream.fail());
         SG_ASSERT(index < MAX_FEATURE_INDEX);
 
+        f.m_minID = std::min(f.m_minID, index);
+        f.m_maxID = std::max(f.m_maxID, index);
+
         std::getline(stream, s, ',');
         SG_ASSERT(! stream.fail());
         float v;
@@ -94,13 +103,30 @@ FeFeatureWeights FeFeatureWeights::Read(std::istream& stream)
     return f;
 }
 
+FeFeatureWeights FeFeatureWeights::ReadDefaultWeights()
+{
+    try
+    {
+        std::istringstream in(gFeatureData);
+        if (! in)
+            throw SgException("Cannot open gFeatureData");
+        return FeFeatureWeights::Read(in);
+    }
+    catch (const SgException& e)
+    {
+        SgDebug() << "Loading gFeatureData failed: " << e.what();
+    }
+    return FeFeatureWeights(0, 0);
+}
 
 std::ostream& operator<<(std::ostream& stream,
                          const FeFeatureWeights& w)
 {
     stream << "FeFeatureWeights: Nu Features = " << w.m_nuFeatures
     << ", K = " << w.m_k
-    << ", w = \n";
+    << ", minID = " << w.m_minID
+    << ", maxID = " << w.m_maxID
+    << ", w[], v[] = \n";
     for (size_t i = 0; i < w.m_nuFeatures; ++i)
     {
         stream << "w[" << i << "] = "

@@ -30,9 +30,18 @@ public:
     /** Read features in the format produced by Wistuba's tool. */
     static FeFeatureWeights Read(std::istream& stream);
 
+    /** Read weights from auto-generated string in FeData.h */
+    static FeFeatureWeights ReadDefaultWeights();
+
     size_t m_nuFeatures;
 
     size_t m_k;
+
+    /** The smallest feature ID among these features */
+    size_t m_minID;
+
+    /** The largest feature ID among these features */
+    size_t m_maxID;
 
     // length m_nuFeatures
     std::vector<float> m_w;
