@@ -15,8 +15,6 @@
 #include "GoUctPlayoutPolicy.h"
 
 class GoBoard;
-class GoGame;
-class GoPlayer;
 
 /** GTP commands for features. */
 class GoUctFeatureCommands
@@ -25,8 +23,7 @@ public:
     /** Constructor.
      @param bd The game board.
      @param player Reference to pointer to current player. Can be null. */
-    GoUctFeatureCommands(const GoBoard& bd, GoPlayer*& player,
-                         const GoGame& game);
+    GoUctFeatureCommands(const GoBoard& bd);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
@@ -62,10 +59,6 @@ private:
                   GtpCallback<GoUctFeatureCommands>::Method method);
 
     const GoBoard& m_bd;
-
-    GoPlayer*& m_player;
-
-    const GoGame& m_game;
     
     FeFeatureWeights m_weights;
 

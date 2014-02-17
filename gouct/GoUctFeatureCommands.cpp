@@ -22,18 +22,11 @@
 
 //----------------------------------------------------------------------------
 
-GoUctFeatureCommands::GoUctFeatureCommands(const GoBoard& bd,
-                       GoPlayer*& player,
-                       const GoGame& game)
+GoUctFeatureCommands::GoUctFeatureCommands(const GoBoard& bd)
     :   m_bd(bd),
-        m_player(player),
-        m_game(game),
-        m_weights(0, 0),
+        m_weights(FeFeatureWeights::ReadDefaultWeights()),
         m_policy(bd, GoUctPlayoutPolicyParam())
-{
-    SG_UNUSED(m_player);
-    SG_UNUSED(m_game);
-}
+{ }
 
 void GoUctFeatureCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
 {

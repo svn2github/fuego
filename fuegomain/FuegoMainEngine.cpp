@@ -18,7 +18,7 @@ FuegoMainEngine::FuegoMainEngine(int fixedBoardSize, const char* programPath,
       m_uctCommands(Board(), m_player, Game()),
       m_autoBookCommands(Board(), m_player, m_autoBook),
       m_safetyCommands(Board()),
-      m_feCommands(Board(), m_player, Game())
+      m_feCommands(Board())
 {
     m_uctCommands.Register(*this);
     m_safetyCommands.Register(*this);
