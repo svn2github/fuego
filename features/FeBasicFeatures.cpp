@@ -638,7 +638,7 @@ void FeFeatures::WriteEvalDetail(std::ostream& stream,
     for (std::vector<FeFeatures::FeEvalDetail>::const_iterator it
          = detail.begin(); it != detail.end(); ++it)
     {
-        stream << *it;
+        stream << *it << '\n';
         w += (*it).m_w;
         v += (*it).m_v_sum;
     }
