@@ -27,6 +27,7 @@ GoKomi.cpp \
 GoLadder.cpp \
 GoMotive.cpp \
 GoNodeUtil.cpp \
+GoOpeningKnowledge.cpp \
 GoPlayer.cpp \
 GoPlayerMove.cpp \
 GoRegion.cpp \
@@ -74,6 +75,7 @@ GoModBoard.h \
 GoMotive.h \
 GoMoveExecutor.h \
 GoNodeUtil.h \
+GoOpeningKnowledge.h \
 GoPlayer.h \
 GoPlayerMove.h \
 GoRegion.h \

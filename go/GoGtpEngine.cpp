@@ -151,7 +151,7 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
         Register("reg_genmove_toplay", &GoGtpEngine::CmdRegGenMoveToPlay,
                  this);
         Register("time_lastmove", &GoGtpEngine::CmdTimeLastMove, this);
-        m_bookCommands.Register(*this);
+        // temp. disable m_bookCommands.Register(*this);
     }
     if (! noHandicap)
     {
@@ -348,7 +348,7 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
     m_sgCommands.AddGoGuiAnalyzeCommands(cmd);
     if (! m_noPlayer)
     {
-        m_bookCommands.AddGoGuiAnalyzeCommands(cmd);
+        // m_bookCommands.AddGoGuiAnalyzeCommands(cmd);
         cmd <<
             "pspairs/All Move Values/all_move_values\n"
             "string/Final Score/final_score\n"
