@@ -43,12 +43,17 @@ const unsigned int ATARI_BIT = 1U << 25;
 /** A bit is set iff point p is either of color c or off the board. */
 inline unsigned int ColorOrBorderBit(const GoBoard& bd, SgPoint p, int c)
 {
-	return static_cast<unsigned int> (bd.IsColor(p,c) || bd.IsBorder(p));
+    const SgBoardColor color = bd.GetColor(p);
+    return static_cast<unsigned int> (color == c || color == SG_BORDER);
 }
+
+// TODO optimize: Border mask is constant per p and
+// should be precomputed in a table and OR-ed in once, separately.
+// or maybe things should be recoded to use GetColor() directly as 2 bits.
 
 /** 8 bits describing the 8 neighbors of p.
 	A bit is set iff the point is either of color c or off the board. */
-unsigned int SimpleContext(const GoBoard& bd, SgMove p, int c) 
+inline unsigned int SimpleContext(const GoBoard& bd, SgMove p, int c)
 {
 	return  ColorOrBorderBit(bd, p - SG_NS - SG_WE, c)
            |
@@ -70,17 +75,17 @@ unsigned int SimpleContext(const GoBoard& bd, SgMove p, int c)
 
 /** Build extended context in one direction dir */
 inline unsigned int CheckDirection(const GoBoard &bd, 
-                           SgPoint p,
-                           int dir, 
-						   unsigned int v2, 
-                           unsigned int v1, 
-                           unsigned int occupancy,
-                           unsigned int mask,
-                           SgBlackWhite toPlay,
-                           SgBlackWhite opponent)
+                                   SgPoint p,
+                                   int dir, 
+                                   unsigned int v2, 
+                                   unsigned int v1, 
+                                   unsigned int occupancy,
+                                   unsigned int mask,
+                                   SgBlackWhite toPlay,
+                                   SgBlackWhite opponent)
 {
     unsigned int extendedcontext = 0U;
-    SgPoint p1 = p + dir;
+    const SgPoint p1 = p + dir;
     if ((occupancy & mask) > 0U)
     {
         int nuLib = bd.NumLiberties(p1);
@@ -95,7 +100,7 @@ inline unsigned int CheckDirection(const GoBoard &bd,
             extendedcontext |= (v1 | v2); /* off-edge */
         else
         {
-            SgPoint p2 = p1 + dir;
+            const SgPoint p2 = p1 + dir;
             if (bd.IsBorder(p2))
                 extendedcontext |= (v1 | v2); /* off-edge */
             else if (bd.IsColor(p2, toPlay))
@@ -108,7 +113,7 @@ inline unsigned int CheckDirection(const GoBoard &bd,
 }
 
 /** Build extended context bitset for point p */
-unsigned int ExtendedContext(const GoBoard &bd, 
+inline unsigned int ExtendedContext(const GoBoard &bd,
                              SgMove p,
                              unsigned int occupancy,
                              SgBlackWhite toPlay,
