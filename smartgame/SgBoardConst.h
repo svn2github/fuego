@@ -42,18 +42,20 @@ public:
     SgGrid Pos(SgPoint p) const;
 
     /** Offset for neighboring point away from edge of board.
-        @todo: the following seems weird, remove?
         Can also be a diagonal neighbor if no direct up-neighbor exists.
         If no up-neighbor exists at all, returns offset of 0. */
     int Up(SgPoint p) const;
 
-    /** Offset for neighbor to the left, when looking in Up() direction */
+    /** Offset for neighbor to the left, when looking in Up() direction.
+        Left and Right are opposite directions except for p on a diagonal,
+        where they are orthogonal directions "away from the corner". */
     int Left(SgPoint p) const;
 
-    /**  */
+    /** Offset for neighbor to the right, when looking in Up() direction.
+        See Left() for details. */
     int Right(SgPoint p) const;
 
-    /** @todo */
+    /** Side(p, 0) == Left(p), Side(p, 1) == Right(p) */
     int Side(SgPoint p, int i) const;
 
     /** Set of points in corners of the board.
