@@ -22,7 +22,7 @@ FuegoMainEngine::FuegoMainEngine(int fixedBoardSize, const char* programPath,
 {
     m_uctCommands.Register(*this);
     m_safetyCommands.Register(*this);
-    m_autoBookCommands.Register(*this);
+    // m_autoBookCommands.Register(*this); // temp. disable
     m_feCommands.Register(*this);
     Register("fuego-license", &FuegoMainEngine::CmdLicense, this);
     SetPlayer(new PlayerType(Board()));
@@ -35,7 +35,7 @@ void FuegoMainEngine::CmdAnalyzeCommands(GtpCommand& cmd)
 {
     GoGtpEngine::CmdAnalyzeCommands(cmd);
     m_uctCommands.AddGoGuiAnalyzeCommands(cmd);
-    m_autoBookCommands.AddGoGuiAnalyzeCommands(cmd);
+    // m_autoBookCommands.AddGoGuiAnalyzeCommands(cmd);
     m_safetyCommands.AddGoGuiAnalyzeCommands(cmd);
     m_feCommands.AddGoGuiAnalyzeCommands(cmd);
     cmd << "string/Fuego License/fuego-license\n";
