@@ -76,7 +76,7 @@ inline unsigned int CheckDirection(const GoBoard &bd,
                            unsigned int v1, 
                            unsigned int occupancy,
                            unsigned int mask,
-                           SgBlackWhite toplay,
+                           SgBlackWhite toPlay,
                            SgBlackWhite opponent)
 {
     unsigned int extendedcontext = 0U;
@@ -98,7 +98,7 @@ inline unsigned int CheckDirection(const GoBoard &bd,
             SgPoint p2 = p1 + dir;
             if (bd.IsBorder(p2))
                 extendedcontext |= (v1 | v2); /* off-edge */
-            else if (bd.IsColor(p2, toplay))
+            else if (bd.IsColor(p2, toPlay))
                 extendedcontext |= v1;
             else if (bd.IsColor(p2, opponent))
                 extendedcontext |= v2;
@@ -111,35 +111,67 @@ inline unsigned int CheckDirection(const GoBoard &bd,
 unsigned int ExtendedContext(const GoBoard &bd, 
                              SgMove p,
                              unsigned int occupancy,
-                             SgBlackWhite toplay,
+                             SgBlackWhite toPlay,
                              SgBlackWhite opponent
                              ) 
 {
-    unsigned int extendedcontext = 
+    const unsigned int extendedcontext =
       CheckDirection(bd, p, -SG_WE,  0x2U,  0x1U, occupancy, 0x2U,
-                     toplay, opponent)
+                     toPlay, opponent)
     | CheckDirection(bd, p, -SG_NS,  0x8U,  0x4U, occupancy, 0x8U,
-                     toplay, opponent)
+                     toPlay, opponent)
     | CheckDirection(bd, p, +SG_NS, 0x20U, 0x10U, occupancy, 0x10U,
-                     toplay, opponent)
+                     toPlay, opponent)
     | CheckDirection(bd, p, +SG_WE, 0x80U, 0x40U, occupancy, 0x40U,
-                     toplay, opponent);
+                     toPlay, opponent);
     return extendedcontext;
 }
 
-void ComputeContexts(const GoBoard &bd,
+inline unsigned int Context(const GoBoard& bd, SgPoint p,
+                            const SgBlackWhite toPlay,
+                            const SgBlackWhite opponent)
+{
+    const unsigned int toPlayContext = SimpleContext(bd, p, toPlay);
+    const unsigned int oppContext = SimpleContext(bd, p, opponent);
+    const unsigned int extendedcontext =
+        ExtendedContext(bd, p, toPlayContext ^ oppContext, toPlay, opponent);
+    return extendedcontext | (toPlayContext << 8) | (oppContext << 16);
+}
+
+void ComputeContexts19(const GoBoard& bd,
                      vector<SgUctMoveInfo>::const_iterator begin,
                      vector<SgUctMoveInfo>::const_iterator end,
                      unsigned int contexts[])
 {
-    bool use9x9flag = bd.Size() < 15;
+    SG_ASSERT(bd.Size() >= 15);
+    const SgBlackWhite toPlay = bd.ToPlay();
+    const SgBlackWhite opponent = bd.Opponent();
+
+    for (int i = 0; begin != end; ++begin, ++i)
+    {
+        SgMove p = begin->m_move;
+        if (p != SG_PASS)
+        {
+            unsigned int context = Context(bd, p, toPlay, opponent);
+            contexts[i] = context;
+        }
+        else // Pass
+            contexts[i] = PASS_CONTEXT;
+    }
+}
+
+void ComputeContexts9(const GoBoard& bd,
+                     vector<SgUctMoveInfo>::const_iterator begin,
+                     vector<SgUctMoveInfo>::const_iterator end,
+                     unsigned int contexts[])
+{
+    SG_ASSERT(bd.Size() < 15);
     std::bitset<SG_MAXPOINT + 1> atariBits;
-    SgBlackWhite toplay = bd.ToPlay();
-    SgBlackWhite opponent = bd.Opponent();
-    bool koExists = bd.KoPoint() != SG_NULLPOINT;
-    SgMove lastMove = bd.GetLastMove();
-    if (  use9x9flag 
-       && ! SgIsSpecialMove(lastMove) // skip if Pass or Nullmove
+    const SgBlackWhite toPlay = bd.ToPlay();
+    const SgBlackWhite opponent = bd.Opponent();
+    const bool koExists = bd.KoPoint() != SG_NULLPOINT;
+    const SgMove lastMove = bd.GetLastMove();
+    if (  ! SgIsSpecialMove(lastMove) // skip if Pass or Nullmove
        && ! bd.IsEmpty(lastMove)   // skip if last move was suicide
        )
     {
@@ -154,29 +186,11 @@ void ComputeContexts(const GoBoard &bd,
         SgMove p = begin->m_move;
         if (p != SG_PASS)
         {
-            unsigned int blackcontext = SimpleContext(bd, p, SG_BLACK);
-            unsigned int whitecontext = SimpleContext(bd, p, SG_WHITE);
-            unsigned int occupancy = blackcontext ^ whitecontext;
-            unsigned int extendedcontext = 
-                ExtendedContext(bd, p, occupancy, toplay, opponent);
-            unsigned int context = 0;
-
-            if (toplay == SG_BLACK)
-                context = extendedcontext | (blackcontext << 8) | 
-                    (whitecontext << 16);
-            else
-                context = extendedcontext | (whitecontext << 8) | 
-                    (blackcontext << 16);
-
-            if (use9x9flag) 
-            {
-                if (koExists)
-                    context |= KO_BIT;
-        
-                if (! SgIsSpecialMove(p) && atariBits[p])
-                    context |= ATARI_BIT;
-            }
-
+            unsigned int context = Context(bd, p, toPlay, opponent);
+            if (koExists)
+                context |= KO_BIT;
+            if (! SgIsSpecialMove(p) && atariBits[p])
+                context |= ATARI_BIT;
             contexts[i] = context;
         }
         else // Pass
@@ -228,55 +242,52 @@ GoUctAdditiveKnowledgeGreenpeep::GoUctAdditiveKnowledgeGreenpeep(
     SetMoveRange(0, 10000); 
 }
 
-
-void 
-GoUctAdditiveKnowledgeGreenpeep::ProcessPosition(
-									std::vector<SgUctMoveInfo>& moves)
+void GoUctAdditiveKnowledgeGreenpeep::
+ProcessPosition19(std::vector<SgUctMoveInfo>& moves)
 {
-    bool use9x9flag;
-    const unsigned short *pred;
+    SG_ASSERT(Board().Size() >= 15);
+    const unsigned short* predictor(m_param.m_predictor19x19);
+    ComputeContexts19(Board(), moves.begin(), moves.end(), m_contexts);
 
-    if (Board().Size() < 15)
-    {
-        use9x9flag = true;
-        pred = m_param.m_predictor9x9;
-    }
-    else
-    {
-        use9x9flag = false;
-        pred = m_param.m_predictor19x19;
-    }
-
-    ComputeContexts(Board(), moves.begin(), moves.end(), m_contexts);
     for (std::size_t i = 0; i < moves.size(); ++i)
     {
         float& value = moves[i].m_predictorValue;
-        if (m_contexts[i] == PASS_CONTEXT) 
-            value = PASSPREDICTION;
-        else
+        const unsigned int context = m_contexts[i];
+        if (context == PASS_CONTEXT)
         {
-            if (m_contexts[i] & ATARI_BIT)
-            {
-                if (use9x9flag) 
-                {
-                    // Hmm, we could do this max in the feature weights at the
-                    // end of training instead.
-                    int altContext = m_contexts[i] & ~ATARI_BIT;
-                    value = std::max(pred[m_contexts[i]],
-                                        pred[altContext]);
-                }
-                else 
-                {
-                    /* default, for 19x19 */
-                    value = std::max(pred[m_contexts[i]],
-                                        DEFENSIVEPREDICTION);
-                }
-            }
-            else
-            {
-                value = pred[m_contexts[i]];
-            }
+            SG_ASSERT(moves[i].m_move == SG_PASS);
+            value = PASSPREDICTION / NEUTRALPREDICTION_FLOAT;
         }
+        else
+            value = predictor[context] / NEUTRALPREDICTION_FLOAT;
+    }
+}
+
+void GoUctAdditiveKnowledgeGreenpeep::
+ProcessPosition9(std::vector<SgUctMoveInfo>& moves)
+{
+    SG_ASSERT(Board().Size() < 15);
+    const unsigned short* predictor = m_param.m_predictor9x9;
+    ComputeContexts9(Board(), moves.begin(), moves.end(), m_contexts);
+
+    for (std::size_t i = 0; i < moves.size(); ++i)
+    {
+        float& value = moves[i].m_predictorValue;
+        const unsigned int context = m_contexts[i];
+        if (context == PASS_CONTEXT)
+        {
+            SG_ASSERT(moves[i].m_move == SG_PASS);
+            value = PASSPREDICTION;
+        }
+        else if (context & ATARI_BIT)
+        {
+            // Hmm, we could do this max in the feature weights at the
+            // end of training instead.
+            const unsigned int altContext = context & ~ATARI_BIT;
+            value = std::max(predictor[context], predictor[altContext]);
+        }
+        else
+            value = predictor[context];
 	    value /= NEUTRALPREDICTION_FLOAT;
     }
 }

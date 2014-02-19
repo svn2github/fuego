@@ -81,6 +81,11 @@ public:
     SgUctValue Scale() const;
 
 private:
+
+    void ProcessPosition9(std::vector<SgUctMoveInfo>& moves);
+
+    void ProcessPosition19(std::vector<SgUctMoveInfo>& moves);
+
     const GoUctAdditiveKnowledgeParamGreenpeep& m_param;
 
     unsigned int m_contexts[SG_MAX_ONBOARD + 1];
@@ -97,6 +102,15 @@ inline GoPredictorType GoUctAdditiveKnowledgeGreenpeep::PredictorType() const
 {
 	return Board().Size() >= 15 ? GO_PRED_TYPE_PROBABILITY_BASED
                                 : GO_PRED_TYPE_PUCB;
+}
+
+inline void GoUctAdditiveKnowledgeGreenpeep::
+ProcessPosition(std::vector<SgUctMoveInfo>& moves)
+{
+    if (Board().Size() < 15)
+        ProcessPosition9(moves);
+    else
+        ProcessPosition19(moves);
 }
 
 inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::Scale() const
