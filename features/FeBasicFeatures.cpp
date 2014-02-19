@@ -12,6 +12,7 @@
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoLadder.h"
+#include "GoOpeningKnowledge.h"
 #include "GoSetupUtil.h"
 #include "SgPointSet.h"
 #include "SgWrite.h"
@@ -231,7 +232,36 @@ void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
     SG_ASSERT(f <= FE_GAME_PHASE_12);
     features.set(f);
 }
-    
+
+ void FindSideExtensionFeatures(const GoBoard& bd,
+                        SgPointArray<FeFeatures::FeMoveFeatures>& features)
+ {
+     const int MAX_BONUS = 20;
+     std::vector<GoOpeningKnowledge::MoveBonusPair>
+         extensions(GoOpeningKnowledge::FindSideExtensions(bd));
+     for (std::vector<GoOpeningKnowledge::MoveBonusPair>::const_iterator it
+          = extensions.begin(); it != extensions.end(); ++it)
+     {
+         const SgPoint p = it->first;
+         const int bonus = std::min(MAX_BONUS, it->second);
+         SG_ASSERT(bonus >= 3);
+         FeBasicFeature f = ComputeFeature(FE_SIDE_EXTENSION_3, 3, bonus);
+         features[p].m_basicFeatures.set(f);
+     }
+ }
+
+ void FindCornerMoveFeatures(const GoBoard& bd,
+                        SgPointArray<FeFeatures::FeMoveFeatures>& features)
+ {
+     const std::vector<SgPoint>
+     corner(GoOpeningKnowledge::FindCornerMoves(bd));
+     for (std::vector<SgPoint>::const_iterator it
+          = corner.begin(); it != corner.end(); ++it)
+     {
+         features[*it].m_basicFeatures.set(FE_CORNER_OPENING_MOVE);
+     }
+ }
+
 const int EDGE_START_INDEX_3x3 = 1000;
 const int CENTER_START_INDEX_3x3 = 1200;
 
@@ -478,6 +508,25 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_GAME_PHASE_10",
         "FE_GAME_PHASE_11",
         "FE_GAME_PHASE_12",
+        "FE_SIDE_EXTENSION_3",
+        "FE_SIDE_EXTENSION_4",
+        "FE_SIDE_EXTENSION_5",
+        "FE_SIDE_EXTENSION_6",
+        "FE_SIDE_EXTENSION_7",
+        "FE_SIDE_EXTENSION_8",
+        "FE_SIDE_EXTENSION_9",
+        "FE_SIDE_EXTENSION_10",
+        "FE_SIDE_EXTENSION_11",
+        "FE_SIDE_EXTENSION_12",
+        "FE_SIDE_EXTENSION_13",
+        "FE_SIDE_EXTENSION_14",
+        "FE_SIDE_EXTENSION_15",
+        "FE_SIDE_EXTENSION_16",
+        "FE_SIDE_EXTENSION_17",
+        "FE_SIDE_EXTENSION_18",
+        "FE_SIDE_EXTENSION_19",
+        "FE_SIDE_EXTENSION_20",
+        "FE_CORNER_OPENING_MOVE",
         "FE_NONE"
     };
     SG_ASSERT(f >= FE_PASS_NEW);
@@ -605,6 +654,14 @@ void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindPosFeature(bd, move, features);
     FindGamePhaseFeature(bd, features);
 }
+
+void FeFeatures::FindFullBoardFeatures(const GoBoard& bd,
+                           SgPointArray<FeFeatures::FeMoveFeatures>& features)
+{
+    FindCornerMoveFeatures(bd, features);
+    FindSideExtensionFeatures(bd, features);
+}
+
 
 void FeFeatures::FindMoveFeatures(const GoBoard& bd, SgPoint move,
                                   FeMoveFeatures& features)

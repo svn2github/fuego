@@ -98,9 +98,10 @@ FindAllFeatures(const GoBoard& bd,
                 FeFeatures::FeMoveFeatures& passFeatures)
 {
     for(GoBoard::Iterator it(bd); it; ++it)
-    if (bd.IsLegal(*it))
-        FeFeatures::FindMoveFeatures(bd, *it, features[*it]);
+        if (bd.IsLegal(*it))
+            FeFeatures::FindMoveFeatures(bd, *it, features[*it]);
     FeFeatures::FindMoveFeatures(bd, SG_PASS, passFeatures);
+    FeFeatures::FindFullBoardFeatures(bd, features);
     FindAllPolicyFeatures(bd, policy, features);
 }
 
@@ -115,6 +116,7 @@ FindMoveFeaturesUI(const GoBoard& bd,
         return;
     FindMoveFeatures(bd, move, features);
     SgPointArray<FeFeatures::FeMoveFeatures> boardFeatures;
+    FeFeatures::FindFullBoardFeatures(bd, boardFeatures);
     FindAllPolicyFeatures(bd, policy, boardFeatures);
     features.m_basicFeatures |= boardFeatures[move].m_basicFeatures;
 }

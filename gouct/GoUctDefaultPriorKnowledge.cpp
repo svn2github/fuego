@@ -5,6 +5,7 @@
 
 #include "SgSystem.h"
 #include "GoBoardUtil.h"
+#include "GoOpeningKnowledge.h"
 #include "GoUctDefaultPriorKnowledge.h"
 #include "GoUctLadderKnowledge.h"
 
@@ -471,52 +472,35 @@ GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
     }
 }
 
-namespace
-{
-    bool IsEmpty3x3Box(const GoBoard& bd, SgPoint p)
-    {
-        return bd.IsEmpty(p)
-            && bd.Num8EmptyNeighbors(p) == 8;
-    }
-    
-    int ScanSide(const GoBoard& bd, SgPoint start, int direction)
-    {
-        int dist = 0;
-        for (SgPoint p = start + direction;
-             bd.Pos(p) >= 3 && IsEmpty3x3Box(bd, p);
-             p += direction
-            )
-            ++dist;
-        return dist;
-    }
-}
-
-void
-GoUctDefaultPriorKnowledge::AddOpeningBonus()
+void GoUctDefaultPriorKnowledge::AddOpeningBonus()
 {
     const GoBoard& bd = Board();
-    const SgBoardConst& bc = bd.BoardConst();
-    // skipping corners for now, we have forced 4-4 moves
-    for (SgLineIterator it(bc, 3); it; ++it)
+    const std::vector<GoOpeningKnowledge::MoveBonusPair>
+          extensions(GoOpeningKnowledge::FindSideExtensions(bd));
+    for (std::vector<GoOpeningKnowledge::MoveBonusPair>::const_iterator it =
+         extensions.begin(); it != extensions.end(); ++it)
+    {
+        const SgPoint p = it->first;
+        const int bonus = it->second;
+                
+        SgUctValue ignoreValue;
+        SgUctValue count;
+        Get(p, ignoreValue, count);
+        Initialize(p, SgUctValue(1.0), count + bonus/3);
+    }
+
+    const std::vector<SgPoint>
+    corner(GoOpeningKnowledge::FindCornerMoves(bd));
+    for (std::vector<SgPoint>::const_iterator it = corner.begin();
+         it != corner.end(); ++it)
     {
         const SgPoint p = *it;
-        if (  IsEmpty3x3Box(bd, p)
-           && bc.SideExtensions().Contains(p)
-           )
-        {
-            int leftSpace = ScanSide(bd, p, bc.Left(p));
-            int rightSpace = ScanSide(bd, p, bc.Right(p));
-            if (leftSpace >= 1 && rightSpace >= 1)
-            {
-                const int bonus = leftSpace + rightSpace
-                          + std::min(leftSpace, rightSpace);
-                
-                SgUctValue ignoreValue;
-                SgUctValue count;
-                Get(p, ignoreValue, count);
-                Initialize(p, SgUctValue(1.0), count + bonus/3);
-            }
-        }
+        const int bonus = 21;
+
+        SgUctValue ignoreValue;
+        SgUctValue count;
+        Get(p, ignoreValue, count);
+        Initialize(p, SgUctValue(1.0), count + bonus/3);
     }
 }
 

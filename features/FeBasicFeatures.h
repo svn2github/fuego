@@ -27,16 +27,23 @@ enum FeBasicFeature{
     FE_CAPTURE_PREVENT_CONNECTION, // Prevent connection to previous move
     FE_CAPTURE_NOT_LADDER,  // String not in a ladder
     FE_CAPTURE_LADDER,      // String in a ladder
-    // FE_CAPTURE_MULTIPLE,
+    // FE_CAPTURE_MULTIPLE,    // capture more than one block
+    // FE_CAPTURE_SNAPBACK,    // set up a capture using a snapback
     FE_EXTENSION_NOT_LADDER, // New atari, not in a ladder
     FE_EXTENSION_LADDER,    // New atari, in a ladder
     // todo distinguish extending 1 stone only?
+    //FE_TWO_LIB_SAVE_LADDER, // save own 2 lib block from ladder capture
+    //FE_TWO_LIB_CAPTURE_LADDER, // capture opponent 2 lib block in ladder
+    //FE_THREE_LIB_ALLOW_LADDER, // bad move, 3->2 lib, opponent can ladder now
+    //FE_THREE_LIB_LADDER_THREAT,// reduce opponent 3->2 lib, can ladder now
     FE_SELFATARI,
     // FE_SELFATARI_NAKADE,
     // FE_SELFATARI_THROWIN,
     FE_ATARI_LADDER,        // Ladder atari
     FE_ATARI_KO,            // Atari when there is a ko
     FE_ATARI_OTHER,         // Other atari
+    //FE_DOUBLE_ATARI,        // atari two or more opponent stones
+    //FE_DOUBLE_ATARI_DEFEND, // prevent double atari move, e.g. connect
     FE_LINE_1,
     FE_LINE_2,
     FE_LINE_3,
@@ -122,6 +129,25 @@ enum FeBasicFeature{
     FE_GAME_PHASE_10,
     FE_GAME_PHASE_11,
     FE_GAME_PHASE_12,
+    FE_SIDE_EXTENSION_3,
+    FE_SIDE_EXTENSION_4,
+    FE_SIDE_EXTENSION_5,
+    FE_SIDE_EXTENSION_6,
+    FE_SIDE_EXTENSION_7,
+    FE_SIDE_EXTENSION_8,
+    FE_SIDE_EXTENSION_9,
+    FE_SIDE_EXTENSION_10,
+    FE_SIDE_EXTENSION_11,
+    FE_SIDE_EXTENSION_12,
+    FE_SIDE_EXTENSION_13,
+    FE_SIDE_EXTENSION_14,
+    FE_SIDE_EXTENSION_15,
+    FE_SIDE_EXTENSION_16,
+    FE_SIDE_EXTENSION_17,
+    FE_SIDE_EXTENSION_18,
+    FE_SIDE_EXTENSION_19,
+    FE_SIDE_EXTENSION_20,
+    FE_CORNER_OPENING_MOVE,
     FE_NONE,
     _NU_FE_FEATURES
 
@@ -203,6 +229,11 @@ EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
 
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features);
+
+/** Find some basic features for all points on board.
+    Computes: corner moves, side extensions. */
+void FindFullBoardFeatures(const GoBoard& bd,
+                        SgPointArray<FeFeatures::FeMoveFeatures>& features);
 
 void FindMoveFeatures(const GoBoard& bd, SgPoint move,
                       FeMoveFeatures& features);
