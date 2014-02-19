@@ -24,13 +24,11 @@ using SgPointUtil::Pt;
 //----------------------------------------------------------------------------
 namespace {
 
-void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features)
+inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
+                                     int baseValue, int value)
 {
-    const SgPoint lastMove = bd.GetLastMove();
-    if (lastMove == SG_PASS)
-        features.set(FE_PASS_CONSECUTIVE);
-    else
-        features.set(FE_PASS_NEW);
+    return static_cast<FeBasicFeature>(static_cast<int>(baseFeature)
+                                       + value - baseValue);
 }
 
 #if UNUSED
@@ -72,8 +70,6 @@ bool PreventConnection(const GoBoard& bd, SgPoint move,
     
     return bd.IsLibertyOfBlock(move, bd.Anchor(lastMove))
         && GoBoardUtil::IsCuttingPoint(bd, move, opp);
-
-
 }
                     
 // faster to globally find all such moves.
@@ -128,12 +124,6 @@ void FindCaptureFeatures(const GoBoard& bd, SgPoint move,
     }
 }
 
-/*
-GoLadderStatus LadderStatus(const GoBoard& bd, SgPoint prey,
-                            bool fTwoLibIsEscape = false,
-                            SgPoint* toCapture = 0, SgPoint* toEscape = 0);
-*/
-
 void FindExtensionFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features)
 {
@@ -146,14 +136,6 @@ void FindExtensionFeatures(const GoBoard& bd, SgPoint move,
         else
             features.set(FE_EXTENSION_NOT_LADDER);
     }
-}
-
-void FindSelfatariFeatures(const GoBoard& bd, SgPoint move,
-                           FeBasicFeatureSet& features)
-{
-    if (GoBoardUtil::SelfAtari(bd, move))
-        features.set(FE_SELFATARI);
- // @todo FE_SELFATARI_NAKADE, FE_SELFATARI_THROWIN
 }
 
 // TODO check that move is not SelfAtari first??
@@ -197,33 +179,58 @@ void FindAtariFeatures(const GoBoard& bd, SgPoint move,
     }
 }
 
-inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
-                                     int baseValue, int value)
+void FindCfgFeatures(const GoBoard& bd, SgPoint focus,
+                     FeBasicFeature baseFeature, int baseDistance,
+                     const GoPointList& legalBoardMoves,
+                     SgPointArray<FeFeatures::FeMoveFeatures>& features)
 {
-    return static_cast<FeBasicFeature>(static_cast<int>(baseFeature)
-                                       + value - baseValue);
+    const int MAX_DIST = 3;
+    SgPointArray<int> dist = GoBoardUtil::CfgDistance(bd, focus, MAX_DIST);
+    for (GoPointList::Iterator it(legalBoardMoves); it; ++it)
+    {
+        const SgPoint p = *it;
+        SG_ASSERT(p != SG_PASS);
+        SG_ASSERT(dist[p] >= baseDistance);
+        SG_ASSERT(  dist[p] <= MAX_DIST
+                 || dist[p] == std::numeric_limits<int>::max());
+        const int distance = std::min(dist[p], MAX_DIST + 1);
+        const FeBasicFeature f = ComputeFeature(baseFeature,
+                                             baseDistance, distance);
+        features[*it].m_basicFeatures.set(f);
+    }
 }
 
-void FindLineFeature(const GoBoard& bd, SgPoint move,
-                      FeBasicFeatureSet& features)
+void FindCfgFeatures(const GoBoard& bd,
+                     const GoPointList& legalBoardMoves,
+                     SgPointArray<FeFeatures::FeMoveFeatures>& features)
 {
-    const int line = std::min(5, bd.Line(move));
-    FeBasicFeature f = ComputeFeature(FE_LINE_1, 1, line);
-    SG_ASSERT(f >= FE_LINE_1);
-    SG_ASSERT(f <= FE_LINE_5_OR_MORE);
-    features.set(f);
+    const SgPoint lastMove = bd.GetLastMove();
+    if (! SgIsSpecialMove(lastMove))
+        FindCfgFeatures(bd, lastMove,
+                        FE_CFG_DISTANCE_LAST_1, 1,
+                        legalBoardMoves,
+                        features);
+
+    const SgPoint lastMove2 = bd.Get2ndLastMove();
+    if (! SgIsSpecialMove(lastMove2))
+        FindCfgFeatures(bd, lastMove2,
+                        FE_CFG_DISTANCE_LAST_OWN_0, 0,
+                        legalBoardMoves,
+                        features);
 }
 
-void FindPosFeature(const GoBoard& bd, SgPoint move,
-                      FeBasicFeatureSet& features)
+void FindCornerMoveFeatures(const GoBoard& bd,
+                SgPointArray<FeFeatures::FeMoveFeatures>& features)
 {
-    const int pos = std::min(10, bd.Pos(move));
-    FeBasicFeature f = ComputeFeature(FE_POS_1, 1, pos);
-    SG_ASSERT(f >= FE_POS_1);
-    SG_ASSERT(f <= FE_POS_10);
-    features.set(f);
+    const std::vector<SgPoint>
+    corner(GoOpeningKnowledge::FindCornerMoves(bd));
+    for (std::vector<SgPoint>::const_iterator it
+         = corner.begin(); it != corner.end(); ++it)
+    {
+        features[*it].m_basicFeatures.set(FE_CORNER_OPENING_MOVE);
+    }
 }
-    
+
 void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
 {
     const int phase = std::min(12, bd.MoveNumber() / 30 + 1);
@@ -233,34 +240,59 @@ void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
     features.set(f);
 }
 
- void FindSideExtensionFeatures(const GoBoard& bd,
-                        SgPointArray<FeFeatures::FeMoveFeatures>& features)
- {
-     const int MAX_BONUS = 20;
-     std::vector<GoOpeningKnowledge::MoveBonusPair>
-         extensions(GoOpeningKnowledge::FindSideExtensions(bd));
-     for (std::vector<GoOpeningKnowledge::MoveBonusPair>::const_iterator it
-          = extensions.begin(); it != extensions.end(); ++it)
-     {
-         const SgPoint p = it->first;
-         const int bonus = std::min(MAX_BONUS, it->second);
-         SG_ASSERT(bonus >= 3);
-         FeBasicFeature f = ComputeFeature(FE_SIDE_EXTENSION_3, 3, bonus);
-         features[p].m_basicFeatures.set(f);
-     }
- }
+void FindLineFeature(const GoBoard& bd, SgPoint move,
+                     FeBasicFeatureSet& features)
+{
+    const int line = std::min(5, bd.Line(move));
+    FeBasicFeature f = ComputeFeature(FE_LINE_1, 1, line);
+    SG_ASSERT(f >= FE_LINE_1);
+    SG_ASSERT(f <= FE_LINE_5_OR_MORE);
+    features.set(f);
+}
 
- void FindCornerMoveFeatures(const GoBoard& bd,
+void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features)
+{
+    const SgPoint lastMove = bd.GetLastMove();
+    if (lastMove == SG_PASS)
+        features.set(FE_PASS_CONSECUTIVE);
+    else
+        features.set(FE_PASS_NEW);
+}
+
+void FindPosFeature(const GoBoard& bd, SgPoint move,
+                    FeBasicFeatureSet& features)
+{
+    const int pos = std::min(10, bd.Pos(move));
+    FeBasicFeature f = ComputeFeature(FE_POS_1, 1, pos);
+    SG_ASSERT(f >= FE_POS_1);
+    SG_ASSERT(f <= FE_POS_10);
+    features.set(f);
+}
+    
+void FindSelfatariFeatures(const GoBoard& bd, SgPoint move,
+                           FeBasicFeatureSet& features)
+{
+    if (GoBoardUtil::SelfAtari(bd, move))
+        features.set(FE_SELFATARI);
+    // @todo FE_SELFATARI_NAKADE, FE_SELFATARI_THROWIN
+}
+
+void FindSideExtensionFeatures(const GoBoard& bd,
                         SgPointArray<FeFeatures::FeMoveFeatures>& features)
- {
-     const std::vector<SgPoint>
-     corner(GoOpeningKnowledge::FindCornerMoves(bd));
-     for (std::vector<SgPoint>::const_iterator it
-          = corner.begin(); it != corner.end(); ++it)
-     {
-         features[*it].m_basicFeatures.set(FE_CORNER_OPENING_MOVE);
-     }
- }
+{
+    const int MAX_BONUS = 20;
+    std::vector<GoOpeningKnowledge::MoveBonusPair>
+         extensions(GoOpeningKnowledge::FindSideExtensions(bd));
+    for (std::vector<GoOpeningKnowledge::MoveBonusPair>::const_iterator it
+        = extensions.begin(); it != extensions.end(); ++it)
+    {
+        const SgPoint p = it->first;
+        const int bonus = std::min(MAX_BONUS, it->second);
+        SG_ASSERT(bonus >= 3);
+        FeBasicFeature f = ComputeFeature(FE_SIDE_EXTENSION_3, 3, bonus);
+        features[p].m_basicFeatures.set(f);
+    }
+}
 
 const int EDGE_START_INDEX_3x3 = 1000;
 const int CENTER_START_INDEX_3x3 = 1200;
@@ -306,7 +338,6 @@ int Distance(SgPoint p1, SgPoint p2)
     int dy = abs(SgPointUtil::Row(p1) - SgPointUtil::Row(p2));
     return dx + dy + std::max(dx, dy);
 }
-    
 
 void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
                               FeBasicFeatureSet& features)
@@ -339,48 +370,6 @@ void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
     }
 }
 
-#if UNUSED // TODO
-int NuWins()
-{
-    return 42; // TODO
-}
-
-void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move,
-                         FeBasicFeatureSet& features)
-{
-    // TODO run 63 simulations
-    SG_UNUSED(bd);
-    SG_UNUSED(move);
-    
-    FeBasicFeature f = FE_NONE;
-    int n = NuWins() / 8;
-    switch(n)
-    {
-        case 0: f = FE_MC_OWNER_1;
-            break;
-        case 1: f = FE_MC_OWNER_2;
-            break;
-        case 2: f = FE_MC_OWNER_3;
-            break;
-        case 3: f = FE_MC_OWNER_4;
-            break;
-        case 4: f = FE_MC_OWNER_5;
-            break;
-        case 5: f = FE_MC_OWNER_6;
-            break;
-        case 6: f = FE_MC_OWNER_7;
-            break;
-        case 7: f = FE_MC_OWNER_8;
-            break;
-        default: SG_ASSERT(false);
-            break;
-    }
-    if (f != FE_NONE)
-        features.set(f);
-}
-#endif
-
-
 void WritePatternFeatures(std::ostream& stream,
                           const FeFeatures::FeMoveFeatures& features)
 {
@@ -395,7 +384,7 @@ void WritePatternFeatureIndex(std::ostream& stream,
                               const FeFeatures::FeMoveFeatures& features)
 {
     if (features.m_3x3Index != FeFeatures::INVALID_3x3_INDEX)
-    stream << ' ' << features.m_3x3Index;
+        stream << ' ' << features.m_3x3Index;
 }
 
 } // namespace
@@ -527,6 +516,15 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_SIDE_EXTENSION_19",
         "FE_SIDE_EXTENSION_20",
         "FE_CORNER_OPENING_MOVE",
+        "FE_CFG_DISTANCE_LAST_1",
+        "FE_CFG_DISTANCE_LAST_2",
+        "FE_CFG_DISTANCE_LAST_3",
+        "FE_CFG_DISTANCE_LAST_4_OR_MORE",
+        "FE_CFG_DISTANCE_LAST_OWN_0",
+        "FE_CFG_DISTANCE_LAST_OWN_1",
+        "FE_CFG_DISTANCE_LAST_OWN_2",
+        "FE_CFG_DISTANCE_LAST_OWN_3",
+        "FE_CFG_DISTANCE_LAST_OWN_4_OR_MORE",
         "FE_NONE"
     };
     SG_ASSERT(f >= FE_PASS_NEW);
@@ -552,7 +550,6 @@ std::ostream& FeFeatures::operator<<(std::ostream& stream,
     stream << '('; WriteFeatureFromID(stream, f.m_feature);
     stream << ", w = " << std::setprecision(2) << f.m_w
            << ", v_sum = " << f.m_v_sum << ')';
-
     return stream;
 }
 
@@ -650,9 +647,17 @@ void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindAtariFeatures(bd, move, features);
     FindLineFeature(bd, move, features);
     FindDistPrevMoveFeatures(bd, move, features);
-    //FindMCOwnerFeatures(bd, move, features);
     FindPosFeature(bd, move, features);
     FindGamePhaseFeature(bd, features);
+}
+
+inline GoPointList AllLegalMoves(const GoBoard& bd)
+{
+    GoPointList legalBoardMoves;
+    for (GoBoard::Iterator it(bd); it; ++it)
+    if (bd.IsLegal(*it))
+        legalBoardMoves.PushBack(*it);
+    return legalBoardMoves;
 }
 
 void FeFeatures::FindFullBoardFeatures(const GoBoard& bd,
@@ -660,23 +665,22 @@ void FeFeatures::FindFullBoardFeatures(const GoBoard& bd,
 {
     FindCornerMoveFeatures(bd, features);
     FindSideExtensionFeatures(bd, features);
+    const GoPointList legalBoardMoves(AllLegalMoves(bd));
+    FindCfgFeatures(bd, legalBoardMoves, features);
 }
-
 
 void FeFeatures::FindMoveFeatures(const GoBoard& bd, SgPoint move,
                                   FeMoveFeatures& features)
 {
     FindBasicMoveFeatures(bd, move, features.m_basicFeatures);
     if (move != SG_PASS)
-    features.m_3x3Index = Find3x3Feature(bd, move);
+        features.m_3x3Index = Find3x3Feature(bd, move);
 }
-
 
 int FeFeatures::Get3x3Feature(const GoBoard& bd, SgPoint p)
 {
     return Find3x3Feature(bd, p);
 }
-
 
 void FeFeatures::WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
@@ -717,10 +721,8 @@ void FeFeatures::WriteFeatureSet(std::ostream& stream,
 {
     stream << SgWritePoint(move);
     for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
-    {
         if (features.test(f))
-        stream << ' ' << f;
-    }
+            stream << ' ' << f;
 }
 
 void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
@@ -731,7 +733,7 @@ void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
     for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
     {
         if (features.test(f))
-        stream << ' ' << static_cast<FeBasicFeature>(f);
+            stream << ' ' << static_cast<FeBasicFeature>(f);
     }
 }
 
@@ -763,9 +765,7 @@ void WriteFeatures(std::ostream& stream,
     WriteFeatureSet(stream, features.m_basicFeatures);
     WritePatternFeatureIndex(stream, features);
     if (writeComment)
-    {
         stream << " #0_" << moveNumber << ' ' << SHAPE_SIZE;
-    }
     stream << '\n';
 }
 
@@ -795,7 +795,6 @@ void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
                       writeComment);
     }
 }
-
 
 } // namespace FeFeatures
 

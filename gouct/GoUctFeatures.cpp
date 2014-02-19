@@ -142,3 +142,44 @@ void GoUctFeatures::WriteFeatures(std::ostream& stream,
     }
 }
 
+//FindMCOwnerFeatures(bd, move, features);
+#if UNUSED // TODO
+int NuWins()
+{
+    return 42; // TODO
+}
+
+void FindMCOwnerFeatures(const GoBoard& bd, SgPoint move,
+                         FeBasicFeatureSet& features)
+{
+    // TODO run 63 simulations
+    SG_UNUSED(bd);
+    SG_UNUSED(move);
+
+    FeBasicFeature f = FE_NONE;
+    int n = NuWins() / 8;
+    switch(n)
+    {
+        case 0: f = FE_MC_OWNER_1;
+            break;
+        case 1: f = FE_MC_OWNER_2;
+            break;
+        case 2: f = FE_MC_OWNER_3;
+            break;
+        case 3: f = FE_MC_OWNER_4;
+            break;
+        case 4: f = FE_MC_OWNER_5;
+            break;
+        case 5: f = FE_MC_OWNER_6;
+            break;
+        case 6: f = FE_MC_OWNER_7;
+            break;
+        case 7: f = FE_MC_OWNER_8;
+            break;
+        default: SG_ASSERT(false);
+            break;
+    }
+    if (f != FE_NONE)
+        features.set(f);
+}
+#endif
