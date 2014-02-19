@@ -5,6 +5,7 @@
 #ifndef GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 #define GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 
+#include "FeBasicFeatures.h"
 #include "GoAdditiveKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
 #include <boost/static_assert.hpp>
@@ -16,6 +17,13 @@ const int NUMPATTERNS9X9 = 1<<26;
 
 /* 24-bit: 16-bit 8-neighbor core, 8-bit liberty & 2-away extension */
 const int NUMPATTERNS19X19 = 1<<24;
+
+namespace GoUct12PointPattern
+{
+    void Find12PointFeatures(const GoBoard& bd,
+                             SgPointArray<FeFeatures::FeMoveFeatures>&
+                             features);
+} // namespace GoUct12PointPattern
 
 //----------------------------------------------------------------------------
 

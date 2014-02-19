@@ -225,9 +225,29 @@ void ReadPatterns(unsigned short predictor9[],
     ReadPatternArray(predictor19, NUMPATTERNS19X19,
                      greenpeepPatterns19, nuGreenpeepPatterns19);
 }
+//----------------------------------------------------------------------------
+
+const int START_INDEX_12_POINT = 3000;
 
 } // namespace
 
+//----------------------------------------------------------------------------
+
+void GoUct12PointPattern::
+Find12PointFeatures(const GoBoard& bd,
+                    SgPointArray<FeFeatures::FeMoveFeatures>& features)
+{
+    const SgBlackWhite toPlay = bd.ToPlay();
+    const SgBlackWhite opponent = bd.Opponent();
+    
+    for(GoBoard::Iterator it(bd); it; ++it)
+        if (bd.IsLegal(*it))
+        {
+            const SgPoint p = *it;
+            unsigned int context = Context(bd, p, toPlay, opponent);
+            features[p].m_12PointIndex = START_INDEX_12_POINT + context;
+        }
+}
 //----------------------------------------------------------------------------
 
 GoUctAdditiveKnowledgeParamGreenpeep::GoUctAdditiveKnowledgeParamGreenpeep()

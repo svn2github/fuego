@@ -309,19 +309,20 @@ inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
 {
     int code = Go3x3Pattern::CodeOf8Neighbors(bd, move);
     code = Go3x3Pattern::Map3x3CenterCode(code, bd.ToPlay());
+    SG_ASSERT(code < 1000);
     return CENTER_START_INDEX_3x3 + code;
 }
 
 inline int Find3x3Feature(const GoBoard& bd, SgPoint p)
 {
-    return bd.Pos(p) == 1  ? FeFeatures::INVALID_3x3_INDEX
+    return bd.Pos(p) == 1  ? FeFeatures::INVALID_PATTERN_INDEX
          : bd.Line(p) == 1 ? Find2x3EdgeFeature(bd, p)
                            : Find3x3CenterFeature(bd, p);
 }
 
 void Write3x3(std::ostream& stream, int index)
 {
-    SG_ASSERT(index != FeFeatures::INVALID_3x3_INDEX); // stream << "\nCORNER\n";
+    SG_ASSERT(index != FeFeatures::INVALID_PATTERN_INDEX);
     if (index < CENTER_START_INDEX_3x3)
         Go3x3Pattern::Write2x3EdgePattern(stream,
             Go3x3Pattern::DecodeEdgeIndex(index - EDGE_START_INDEX_3x3));
@@ -373,7 +374,10 @@ void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
 void WritePatternFeatures(std::ostream& stream,
                           const FeFeatures::FeMoveFeatures& features)
 {
-    if (features.m_3x3Index != FeFeatures::INVALID_3x3_INDEX)
+    if (features.m_12PointIndex != FeFeatures::INVALID_PATTERN_INDEX)
+        stream << " m_12PointIndex " << features.m_12PointIndex;
+    // TODO print map using PrintContext in GoUct
+    if (features.m_3x3Index != FeFeatures::INVALID_PATTERN_INDEX)
     {
         stream << " 3x3-index " << features.m_3x3Index;
         Write3x3(stream, features.m_3x3Index);
@@ -383,8 +387,10 @@ void WritePatternFeatures(std::ostream& stream,
 void WritePatternFeatureIndex(std::ostream& stream,
                               const FeFeatures::FeMoveFeatures& features)
 {
-    if (features.m_3x3Index != FeFeatures::INVALID_3x3_INDEX)
+    if (features.m_3x3Index != FeFeatures::INVALID_PATTERN_INDEX)
         stream << ' ' << features.m_3x3Index;
+    if (features.m_12PointIndex != FeFeatures::INVALID_PATTERN_INDEX)
+        stream << ' ' << features.m_12PointIndex;
 }
 
 } // namespace
@@ -567,10 +573,16 @@ size_t FeFeatures::ActiveFeatures(const FeMoveFeatures& features,
                 return nuActive;
         }
     // invalid for pass move and (1,1) points
-    if (features.m_3x3Index != INVALID_3x3_INDEX)
+    if (features.m_3x3Index != INVALID_PATTERN_INDEX)
     {
         SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
         active[nuActive] = features.m_3x3Index;
+        ++nuActive;
+    }
+    if (features.m_12PointIndex != INVALID_PATTERN_INDEX)
+    {
+        SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
+        active[nuActive] = features.m_12PointIndex;
         ++nuActive;
     }
     return nuActive;

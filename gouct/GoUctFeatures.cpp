@@ -6,10 +6,13 @@
 #include "GoUctFeatures.h"
 
 #include "FeBasicFeatures.h"
+#include "GoUctAdditiveKnowledgeGreenpeep.h"
 #include "GoUctPlayoutPolicy.h"
 #include "GoUctPlayoutUtil.h"
 
 namespace {
+    
+const bool USE_12_POINT_FEATURES = false;
 
 void FindCorrectionFeatures(const GoBoard& bd,
                             SgPointArray<FeFeatures::FeMoveFeatures>& features,
@@ -103,6 +106,8 @@ FindAllFeatures(const GoBoard& bd,
     FeFeatures::FindMoveFeatures(bd, SG_PASS, passFeatures);
     FeFeatures::FindFullBoardFeatures(bd, features);
     FindAllPolicyFeatures(bd, policy, features);
+    if (USE_12_POINT_FEATURES)
+        GoUct12PointPattern::Find12PointFeatures(bd, features);
 }
 
 void GoUctFeatures::
@@ -119,6 +124,11 @@ FindMoveFeaturesUI(const GoBoard& bd,
     FeFeatures::FindFullBoardFeatures(bd, boardFeatures);
     FindAllPolicyFeatures(bd, policy, boardFeatures);
     features.m_basicFeatures |= boardFeatures[move].m_basicFeatures;
+    if (USE_12_POINT_FEATURES)
+    {
+        GoUct12PointPattern::Find12PointFeatures(bd, boardFeatures);
+        features.m_12PointIndex = boardFeatures[move].m_12PointIndex;
+    }
 }
 
 void GoUctFeatures::WriteFeatures(std::ostream& stream,

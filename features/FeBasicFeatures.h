@@ -171,7 +171,7 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f);
 
 namespace FeFeatures {
 
-const int INVALID_3x3_INDEX = -1;
+const int INVALID_PATTERN_INDEX = -1;
 
 const size_t MAX_ACTIVE_LENGTH = 20;
 
@@ -204,14 +204,18 @@ struct FeMoveFeatures
     FeMoveFeatures();
 
     FeBasicFeatureSet m_basicFeatures;
+    
     int m_3x3Index;
+    
+    int m_12PointIndex;
 
 };
     
 inline FeMoveFeatures::FeMoveFeatures()
     :
     m_basicFeatures(),
-    m_3x3Index(INVALID_3x3_INDEX)
+    m_3x3Index(INVALID_PATTERN_INDEX),
+    m_12PointIndex(INVALID_PATTERN_INDEX)
 { }
 
 //---------------------------------
