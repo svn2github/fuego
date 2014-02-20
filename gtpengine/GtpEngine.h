@@ -299,41 +299,6 @@ public:
     /** Set response to "true" or "false". */
     void SetResponseBool(bool value);
 
-
-    /** @name Deprecated functions
-        Will be removed in the future. */
-    // @{
-
-    /** Deprecated
-        @deprecated Use Arg<bool>() instead */
-    bool BoolArg(std::size_t number) const;
-
-    /** Deprecated
-        @deprecated Use Arg<double>() instead */
-    double FloatArg(std::size_t number) const;
-
-    /** Deprecated
-        @deprecated Use Arg<int>() instead */
-    int IntArg(std::size_t number) const;
-
-    /** Deprecated
-        @deprecated Use ArgMin<int>() instead */
-    int IntArg(std::size_t number, int min) const;
-
-    /** Deprecated
-        @deprecated Use ArgMinMax<int>() instead */
-    int IntArg(std::size_t number, int min, int max) const;
-
-    /** Deprecated
-        @deprecated Use Arg<size_t>() instead */
-    std::size_t SizeTypeArg(std::size_t number) const;
-
-    /** Deprecated
-        @deprecated Use ArgMin<size_t>() instead */
-    std::size_t SizeTypeArg(std::size_t number, std::size_t min) const;
-
-    // @}
-
 private:
     /** Argument in command line. */
     struct Argument
