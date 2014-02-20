@@ -295,7 +295,22 @@ void FindSideExtensionFeatures(const GoBoard& bd,
 }
 
 const int EDGE_START_INDEX_3x3 = 1000;
+const int NU_2x3_EDGE_FEATURES = 135;
 const int CENTER_START_INDEX_3x3 = 1200;
+const int NU_3x3_CENTER_FEATURES = 954;
+    
+bool Is2x3EdgeID(int id)
+{
+    return id >= EDGE_START_INDEX_3x3
+    && id < EDGE_START_INDEX_3x3 + NU_2x3_EDGE_FEATURES;
+}
+
+bool Is3x3CenterID(int id)
+{
+    return id >= CENTER_START_INDEX_3x3
+        && id < CENTER_START_INDEX_3x3 + NU_3x3_CENTER_FEATURES;
+}
+
 
 inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 {
@@ -540,20 +555,12 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
 }
 
 //----------------------------------------------------------------------------
-void WriteFeatureFromID(std::ostream& stream, int id)
-{
-    if (id < static_cast<int>(_NU_FE_FEATURES))
-        stream << static_cast<FeBasicFeature>(id);
-    else // 3x3 pattern
-        Write3x3(stream, id);
-}
-
-//----------------------------------------------------------------------------
 
 std::ostream& FeFeatures::operator<<(std::ostream& stream,
                          const FeFeatures::FeEvalDetail& f)
 {
-    stream << '('; WriteFeatureFromID(stream, f.m_feature);
+    stream << '(';
+    WriteFeatureFromID(stream, f.m_feature);
     stream << ", w = " << std::setprecision(2) << f.m_w
            << ", v_sum = " << f.m_v_sum << ')';
     return stream;
@@ -694,6 +701,16 @@ int FeFeatures::Get3x3Feature(const GoBoard& bd, SgPoint p)
     return Find3x3Feature(bd, p);
 }
 
+bool FeFeatures::IsBasicFeatureID(int id)
+{
+    return id >= 0 && id < _NU_FE_FEATURES;
+}
+    
+bool FeFeatures::Is3x3PatternID(int id)
+{
+    return Is2x3EdgeID(id) || Is3x3CenterID(id);
+}
+
 void FeFeatures::WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const GoBoard& bd)
@@ -716,6 +733,14 @@ void FeFeatures::WriteEvalDetail(std::ostream& stream,
         v += (*it).m_v_sum;
     }
     stream << " Total w = " << w << " + v = " << v << " = " << w + v << '\n';
+}
+
+void FeFeatures::WriteFeatureFromID(std::ostream& stream, int id)
+{
+    if (id < static_cast<int>(_NU_FE_FEATURES))
+        stream << static_cast<FeBasicFeature>(id);
+    else // 3x3 pattern
+        Write3x3(stream, id);
 }
 
 void FeFeatures::WriteFeatures(std::ostream& stream,

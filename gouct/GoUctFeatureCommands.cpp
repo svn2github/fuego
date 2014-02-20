@@ -36,6 +36,7 @@ void GoUctFeatureCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
     "cboard/Features Evaluate Board/features_evaluate_board\n"
     "none/Features Move/features_move %p\n"
     "none/Features Read Weights/features_read_weights %r\n"
+    "hstring/Features Write Weights/features_write_weights\n"
     "none/Features Wistuba/features_wistuba\n"
     "none/Features Wistuba - File/features_wistuba_file\n"
     "none/Features+Comments Wistuba - File/features_comments_wistuba_file\n"
@@ -163,6 +164,11 @@ void GoUctFeatureCommands::CmdFeaturesDefinePattern(GtpCommand& cmd)
     }
 }
 
+void GoUctFeatureCommands::CmdFeaturesWriteWeights(GtpCommand& cmd)
+{
+    cmd << m_weights;
+}
+
 void GoUctFeatureCommands::Register(GtpEngine& e)
 {
     Register(e, "features", &GoUctFeatureCommands::CmdFeatures);
@@ -179,6 +185,8 @@ void GoUctFeatureCommands::Register(GtpEngine& e)
              &GoUctFeatureCommands::CmdFeaturesWistubaToFile);
     Register(e, "features_comments_wistuba_file",
              &GoUctFeatureCommands::CmdFeaturesCommentsWistubaToFile);
+    Register(e, "features_write_weights",
+             &GoUctFeatureCommands::CmdFeaturesWriteWeights);
 }
 
 void GoUctFeatureCommands::Register(GtpEngine& engine,

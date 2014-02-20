@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include "FeBasicFeatures.h"
 #include "FeData.h"
 #include "SgDebug.h"
 #include "SgException.h"
@@ -119,6 +120,12 @@ FeFeatureWeights FeFeatureWeights::ReadDefaultWeights()
     return FeFeatureWeights(0, 0);
 }
 
+inline bool IsValidID(int id)
+{
+    return FeFeatures::IsBasicFeatureID(id)
+        || FeFeatures::Is3x3PatternID(id);
+}
+
 std::ostream& operator<<(std::ostream& stream,
                          const FeFeatureWeights& w)
 {
@@ -129,12 +136,15 @@ std::ostream& operator<<(std::ostream& stream,
     << ", w[], v[] = \n";
     for (size_t i = 0; i < w.m_nuFeatures; ++i)
     {
-        stream << "w[" << i << "] = "
-        << w.m_w[i] << "\nv = \n";
-        for (size_t k = 0; k < w.m_k; ++k)
-            stream << "v[" << k << "]["
-            << i << "] = "
-            << w.m_v[k][i] << '\n';
+        if (IsValidID(static_cast<int>(i)))
+        {
+            FeFeatures::WriteFeatureFromID(stream, static_cast<int>(i));
+            stream << ": w[" << i << "] = "
+                   << w.m_w[i] << "\nv = \n";
+            for (size_t k = 0; k < w.m_k; ++k)
+                stream << "v[" << k << "][" << i << "] = "
+                       << w.m_v[k][i] << '\n';
+        }
     }
     return stream;
 }

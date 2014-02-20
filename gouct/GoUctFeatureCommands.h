@@ -41,11 +41,18 @@ public:
     /** Read weights from a file */
     void CmdFeaturesReadWeights(GtpCommand& cmd);
     
+    /** write features in Wistuba's format */
     void CmdFeaturesWistuba(GtpCommand& cmd);
 
+    /** write features in Wistuba's format to features.txt file */
     void CmdFeaturesWistubaToFile(GtpCommand& cmd);
 
+    /** write features and comments in Wistuba's format to features.txt 
+        Comments are used in validation files for Learn.java */
     void CmdFeaturesCommentsWistubaToFile(GtpCommand& cmd);
+
+    /** Writes current weights in human-readable format */
+    void CmdFeaturesWriteWeights(GtpCommand& cmd);
 
     void Register(GtpEngine& engine);
 

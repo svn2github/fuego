@@ -253,6 +253,10 @@ void FindMoveFeatures(const GoBoard& bd, SgPoint move,
 
 int Get3x3Feature(const GoBoard& bd, SgPoint p);
 
+bool IsBasicFeatureID(int id);
+    
+bool Is3x3PatternID(int id);
+
 void WriteBoardFeatures(std::ostream& stream,
                         const SgPointArray<FeMoveFeatures>& features,
                         const GoBoard& bd);
@@ -260,6 +264,8 @@ void WriteBoardFeatures(std::ostream& stream,
 void WriteEvalDetail(std::ostream& stream,
                      const std::vector<FeEvalDetail>& detail);
 
+void WriteFeatureFromID(std::ostream& stream, int id);
+    
 void WriteFeatures(std::ostream& stream,
                    SgPoint move,
                    const FeMoveFeatures& features);
