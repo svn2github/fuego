@@ -20,10 +20,12 @@ class GoUctAdditiveKnowledgeFuego
     : public GoUctAdditiveKnowledgeStdProb
 {
 public:
+    /** TODO tunable constant */
     static const float VALUE_MULTIPLIER;
 
     GoUctAdditiveKnowledgeFuego(const GoBoard& bd);
 
+    /** Apply as additive predictor */
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
 };
 
