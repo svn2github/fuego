@@ -4,7 +4,6 @@ check_PROGRAMS = $(TESTS)
 fuego_unittest_SOURCES = \
 ../features/test/FeBasicFeaturesTest.cpp \
 ../features/test/FeFeatureWeightsTest.cpp \
-../features/test/FeKnowledgeTest.cpp \
 ../features/test/FeNestedPatternTest.cpp \
 ../features/test/FePatternTest.cpp \
 ../features/test/FePatternBaseTest.cpp \
@@ -29,6 +28,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoUtilTest.cpp \
 ../gouct/test/GoUctAdditiveKnowledgeMultipleTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
+../gouct/test/GoUctFeatureKnowledgeTest.cpp \
 ../gouct/test/GoUctFeaturesTest.cpp \
 ../gouct/test/GoUctKnowledgeTest.cpp \
 ../gouct/test/GoUctLadderKnowledgeTest.cpp \

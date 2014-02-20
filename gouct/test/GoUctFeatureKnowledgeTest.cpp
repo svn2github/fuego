@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file FeKnowledgeTest.cpp
+/** @file GoUctFeatureKnowledge.cpp
     Unit tests for GoUctFeatureKnowledge. */
 //----------------------------------------------------------------------------
 
@@ -19,11 +19,13 @@ using SgPointUtil::Pt;
 
 namespace {
 
-BOOST_AUTO_TEST_CASE(FeKnowledgeTest_FeKnowledge)
+BOOST_AUTO_TEST_CASE(GoUctFeatureKnowledgeTest_GoUctFeatureKnowledge)
 {
     GoBoard bd(19);
-    // TODO const FeWeights& weights = FeWeights::TheWeights();
-    //GoUctFeatureKnowledge k(bd, weights);
+    FeFeatureWeights weights(0,0);
+    GoUctFeatureKnowledge k(bd, weights);
+
+    // TODO test something...
 }
 
 } // namespace
