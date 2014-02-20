@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------------
 /** @file GoAdditiveKnowledge.cpp
-    See GoAdditiveKnowledge.h
-*/
+    See GoAdditiveKnowledge.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
 #include "GoAdditiveKnowledge.h"
+
 //----------------------------------------------------------------------------
 
 GoUctAdditiveKnowledgeParam::GoUctAdditiveKnowledgeParam()
