@@ -576,6 +576,10 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             << "[bool] mercy_rule " << p.m_mercyRule << '\n'
             << "[bool] territory_statistics " << p.m_territoryStatistics
             << '\n'
+            << "[bool] use_default_prior_knowledge "
+            << p.m_useDefaultPriorKnowledge << '\n'
+            << "[bool] use_feature_prior_knowledge "
+            << p.m_useFeaturePriorKnowledge << '\n'
             << "[bool] use_tree_filter " << p.m_useTreeFilter << '\n'
             << "[string] length_modification " << p.m_lengthModification
             << '\n'
@@ -589,10 +593,14 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             s.SetGlobalSearchLiveGfx(cmd.Arg<bool>(1));
         else if (name == "mercy_rule")
             p.m_mercyRule = cmd.Arg<bool>(1);
-        else if (name == "use_tree_filter")
-            p.m_useTreeFilter = cmd.BoolArg(1);
         else if (name == "territory_statistics")
             p.m_territoryStatistics = cmd.Arg<bool>(1);
+        else if (name == "use_default_prior_knowledge")
+            p.m_useDefaultPriorKnowledge = cmd.Arg<bool>(1);
+        else if (name == "use_feature_prior_knowledge")
+            p.m_useFeaturePriorKnowledge = cmd.Arg<bool>(1);
+        else if (name == "use_tree_filter")
+            p.m_useTreeFilter = cmd.Arg<bool>(1);
         else if (name == "length_modification")
             p.m_lengthModification = cmd.Arg<SgUctValue>(1);
         else if (name == "score_modification")
@@ -928,7 +936,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));
         else if (name == "bias_term_frequency")
-            s.SetBiasTermFrequency(cmd.IntArg(1));
+            s.SetBiasTermFrequency(cmd.Arg<int>(1));
         else if (name == "bias_term_depth")
             s.SetBiasTermDepth(cmd.Arg<size_t>(1));
         else if (name == "check_float_precision")

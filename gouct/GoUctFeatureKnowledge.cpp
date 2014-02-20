@@ -27,14 +27,18 @@ inline float sigmoid(float x) // it is really sigmoid(-x) computed here
 
 GoUctFeatureKnowledge::GoUctFeatureKnowledge(const GoBoard& bd,
                          const FeFeatureWeights& weights)
-    : GoAdditiveKnowledge(bd),
+    : GoAdditiveKnowledge(bd), GoUctKnowledge(bd),
       m_weights(weights),
-      m_policy(bd, GoUctPlayoutPolicyParam())
+      m_policy(bd, GoUctPlayoutPolicyParam()),
+      m_useAsAdditivePredictor(true),
+      m_useAsVirtualWins(false)
 { }
 
 void GoUctFeatureKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 {
-    const GoBoard& bd = Board();
+    if (m_useAsVirtualWins)
+        ClearValues();
+    const GoBoard& bd = GoAdditiveKnowledge::Board();
     SgPointArray<FeFeatures::FeMoveFeatures> features;
     FeFeatures::FeMoveFeatures passFeatures;
     GoUctFeatures::FindAllFeatures(bd, m_policy, features, passFeatures);
@@ -45,9 +49,22 @@ void GoUctFeatureKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
     {
         const SgPoint move = moves[i].m_move;
         SG_ASSERT(bd.IsLegal(move));
-        float moveVal = (move == SG_PASS) ? passEval : eval[move];
-        moves[i].m_predictorValue = sigmoid(VALUE_MULTIPLIER * moveVal);
+        float moveValue = (move == SG_PASS) ? passEval : eval[move];
+        if (m_useAsAdditivePredictor)
+            moves[i].m_predictorValue = sigmoid(VALUE_MULTIPLIER * moveValue);
+        if (m_useAsVirtualWins)
+            SetWinsLosses(move, moveValue);
     }
+    if (m_useAsVirtualWins)
+        AddValuesTo(moves);
+}
+
+/** Convert moveValue into a number of virtual wins/losses */
+void GoUctFeatureKnowledge::SetWinsLosses(SgPoint move, float moveValue)
+{
+    SgUctValue value = 1 - sigmoid(VALUE_MULTIPLIER * moveValue);
+    SgUctValue count = 23;
+    Add(move, value, count);
 }
 
 //----------------------------------------------------------------------------

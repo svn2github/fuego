@@ -10,18 +10,22 @@
 #include "FeFeatureWeights.h"
 #include "GoAdditiveKnowledge.h"
 #include "GoBoard.h"
+#include "GoUctKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
 
 //----------------------------------------------------------------------------
 
 class GoUctFeatureKnowledge
-    : public GoAdditiveKnowledge
+    : public GoAdditiveKnowledge, GoUctKnowledge
 {
 public:
-    static const float VALUE_MULTIPLIER;
-
     GoUctFeatureKnowledge(const GoBoard& bd, const FeFeatureWeights& weights);
 
+    bool DoesUseAdditivePredictor() const;
+
+    bool DoesUseAsVirtualWins() const;
+
+    /** Apply as additive predictor */
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
 
     GoPredictorType PredictorType() const;
@@ -32,10 +36,22 @@ public:
     /** The scaling factor for this predictor */
     SgUctValue Scale() const;
 
+    void UseAsAdditivePredictor(bool use);
+
+    void UseAsVirtualWins(bool use);
+
 private:
+    void SetWinsLosses(SgPoint move, float moveValue);
+
+    static const float VALUE_MULTIPLIER;
+
     FeFeatureWeights m_weights;
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
+
+    bool m_useAsAdditivePredictor;
+
+    bool m_useAsVirtualWins;
 };
 
 //----------------------------------------------------------------------------
@@ -52,6 +68,26 @@ inline SgUctValue GoUctFeatureKnowledge::Minimum() const
 inline SgUctValue GoUctFeatureKnowledge::Scale() const
 {
     return 1.0; // TODO
+}
+
+inline void GoUctFeatureKnowledge::UseAsAdditivePredictor(bool use)
+{
+    m_useAsAdditivePredictor = use;
+}
+
+inline void GoUctFeatureKnowledge::UseAsVirtualWins(bool use)
+{
+    m_useAsVirtualWins = use;
+}
+
+inline bool GoUctFeatureKnowledge::DoesUseAdditivePredictor() const
+{
+    return m_useAsAdditivePredictor;
+}
+
+inline bool GoUctFeatureKnowledge::DoesUseAsVirtualWins() const
+{
+    return m_useAsVirtualWins;
 }
 
 //----------------------------------------------------------------------------

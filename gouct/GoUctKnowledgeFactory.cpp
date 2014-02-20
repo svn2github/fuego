@@ -36,8 +36,12 @@ GoUctAdditiveKnowledgeParamGreenpeep& GoUctKnowledgeFactory::GreenpeepParam()
 
 GoAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
 {
-	KnowledgeType type = m_param.m_knowledgeType;
-    
+	return CreateByType(bd, m_param.m_knowledgeType);
+}
+
+GoAdditiveKnowledge*
+GoUctKnowledgeFactory::CreateByType(const GoBoard& bd, KnowledgeType type)
+{
     switch(type)
     {
     case KNOWLEDGE_NONE:

@@ -77,6 +77,10 @@ struct GoUctGlobalSearchStateParam
 
     bool m_useTreeFilter;
 
+    bool m_useDefaultPriorKnowledge;
+
+    bool m_useFeaturePriorKnowledge;
+
     GoUctGlobalSearchStateParam();
 
     ~GoUctGlobalSearchStateParam();
@@ -151,6 +155,14 @@ public:
     /** set the predictor for additive knowledge */
     void SetAdditiveKnowledge(GoAdditiveKnowledge* knowledge);
 
+    /** set the predictor for feature knowledge.
+        It can be the same as the one in GoAdditiveKnowledge,
+         so it is not deleted right now. TODO when to delete? */
+    void SetFeatureKnowledge(GoUctFeatureKnowledge* knowledge);
+
+    /** Set the mode of using m_featureKnowledge from current parameters */
+    void UpdateFeatureKnowledgeUse();
+
     SgUctValue Evaluate();
 
     bool GenerateAllMoves(SgUctValue count, std::vector<SgUctMoveInfo>& moves,
@@ -220,6 +232,8 @@ private:
     
     GoAdditiveKnowledge* m_additivePredictor;
 
+    GoUctFeatureKnowledge* m_featureKnowledge;
+
     boost::scoped_ptr<POLICY> m_policy;
 
     GoUctDefaultMoveFilter m_treeFilter;
@@ -257,6 +271,7 @@ GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(unsigned int threadId,
       m_treeFilterParam(treeFilterParam),
       m_priorKnowledge(Board(), m_policyParam),
       m_additivePredictor(0),
+      m_featureKnowledge(0),
       m_policy(policy),
       m_treeFilter(Board(), m_treeFilterParam)
 {
@@ -267,6 +282,7 @@ template<class POLICY>
 GoUctGlobalSearchState<POLICY>::~GoUctGlobalSearchState()
 {
     delete m_additivePredictor;
+    delete m_featureKnowledge;
 }
 
 /** See SetMercyRule() */
@@ -470,8 +486,9 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
         kn->ProcessPosition(moves);
     else
     {
-    	for (size_t j = 0; j < moves.size(); ++j)
-        	moves[j].m_predictorValue = 1.0;
+        SG_ASSERT(false);
+        for (size_t j = 0; j < moves.size(); ++j)
+        	moves[j].m_predictorValue = 1.0; // TODO bug? should be 0? Not used?
 	}
     
     if (kn->PredictorType() == GO_PRED_TYPE_PLAIN)
@@ -528,11 +545,14 @@ GenerateAllMoves(SgUctValue count,
     {
         if (m_param.m_useTreeFilter)
             ApplyFilter(moves);
-        // for now, skip prior knowledge when using feature predictor
-        // which is indicated by PredictorType GO_PRED_TYPE_PLAIN
-        const GoAdditiveKnowledge* kn = GetAdditiveKnowledge();
-        if (kn == 0 || kn->PredictorType() != GO_PRED_TYPE_PLAIN)
+        if (m_param.m_useDefaultPriorKnowledge)
             m_priorKnowledge.ProcessPosition(moves);
+        if (m_param.m_useFeaturePriorKnowledge)
+        {
+            SG_ASSERT(m_featureKnowledge);
+            SG_ASSERT(m_featureKnowledge->DoesUseAsVirtualWins());
+            m_featureKnowledge->ProcessPosition(moves);
+        }
         ApplyAdditivePredictors(moves);
     }
     return false;
@@ -631,6 +651,7 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     m_initialMoveNumber = bd.MoveNumber();
     m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
     ClearTerritoryStatistics();
+    UpdateFeatureKnowledgeUse();
 }
 
 //----------------------------------------------------------------------------
@@ -899,11 +920,30 @@ GoUctGlobalSearchState<POLICY>::GetAdditiveKnowledge()
 }
 
 template<class POLICY>
-void GoUctGlobalSearchState<POLICY>::SetAdditiveKnowledge(
-                                          GoAdditiveKnowledge* knowledge)
+void GoUctGlobalSearchState<POLICY>::
+SetAdditiveKnowledge(GoAdditiveKnowledge* knowledge)
 {
 	SG_ASSERT(m_additivePredictor == 0);
     m_additivePredictor = knowledge;
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::
+SetFeatureKnowledge(GoUctFeatureKnowledge* knowledge)
+{
+	SG_ASSERT(m_featureKnowledge == 0);
+	SG_ASSERT(knowledge != 0);
+    m_featureKnowledge = knowledge;
+    UpdateFeatureKnowledgeUse();
+}
+
+template<class POLICY>
+void GoUctGlobalSearchState<POLICY>::
+UpdateFeatureKnowledgeUse()
+{
+    SG_ASSERT(m_featureKnowledge);
+    m_featureKnowledge->
+        UseAsVirtualWins(m_param.m_useFeaturePriorKnowledge);
 }
 
 //----------------------------------------------------------------------------
@@ -926,6 +966,11 @@ SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
     GoAdditiveKnowledge* knowledge = 
     	m_knowledgeFactory.Create(state->Board());
     state->SetAdditiveKnowledge(knowledge);
+    GoUctFeatureKnowledge* featureKnowledge =
+        dynamic_cast<GoUctFeatureKnowledge*>(
+            m_knowledgeFactory.CreateByType(state->Board(),
+                                            KNOWLEDGE_FEATURES));
+    state->SetFeatureKnowledge(featureKnowledge);
     return state;
 }
 
