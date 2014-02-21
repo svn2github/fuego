@@ -89,7 +89,6 @@ std::vector<SgPoint> GoOpeningKnowledge::FindCornerMoves(const GoBoard& bd)
 std::vector<GoOpeningKnowledge::MoveBonusPair>
 GoOpeningKnowledge::FindSideExtensions(const GoBoard& bd)
 {
-    static int maxB = 0;
     std::vector<MoveBonusPair> extensions;
     const SgBoardConst& bc = bd.BoardConst();
     // skipping corners for now, we have forced 4-4 moves
@@ -107,11 +106,6 @@ GoOpeningKnowledge::FindSideExtensions(const GoBoard& bd)
                 const int bonus = leftSpace + rightSpace
                 + std::min(leftSpace, rightSpace);
                 extensions.push_back(std::make_pair(p, bonus));
-                if (bonus > maxB)
-                {
-                    SgDebug() << "bonus " << bonus << '\n';
-                    maxB = bonus;
-                }
             }
         }
     }
