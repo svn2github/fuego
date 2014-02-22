@@ -106,6 +106,7 @@ public:
     void CmdMaxMemory(GtpCommand& cmd);
     void CmdMoves(GtpCommand& cmd);
     void CmdParamGlobalSearch(GtpCommand& cmd);
+    void CmdParamFeatureKnowledge(GtpCommand& cmd);
     void CmdParamPolicy(GtpCommand& cmd);
     void CmdParamPlayer(GtpCommand& cmd);
     void CmdParamRootFilter(GtpCommand& cmd);

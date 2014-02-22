@@ -79,6 +79,8 @@ public:
 
     GoUctDefaultMoveFilterParam m_treeFilterParam;
 
+    GoUctFeatureKnowledgeParam m_featureParam;
+
     /** Constructor.
         @param bd The board. */
     GoUctPlayer(const GoBoard& bd);
@@ -559,11 +561,12 @@ GoUctPlayer<SEARCH, THREAD>::GoUctPlayer(const GoBoard& bd)
       m_maxGames(std::numeric_limits<SgUctValue>::max()),
       m_resignMinGames(5000),
       m_maxPonderTime(300),
-      m_search(Board(),
-               new GoUctPlayoutPolicyFactory<GoUctBoard>(
-                                                 m_playoutPolicyParam),
-               m_playoutPolicyParam, m_treeFilterParam),
-      
+      m_search(
+           Board(),
+           new GoUctPlayoutPolicyFactory<GoUctBoard>(m_playoutPolicyParam),
+           m_playoutPolicyParam,
+           m_treeFilterParam,
+           m_featureParam),
       m_timeControl(Board()),
       m_rootFilter(new GoUctDefaultMoveFilter(Board(), m_rootFilterParam)),
       m_mpiSynchronizer(SgMpiNullSynchronizer::Create()),

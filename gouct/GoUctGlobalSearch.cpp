@@ -13,11 +13,25 @@ GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
       m_lengthModification(0),
       m_scoreModification(0.02f),
       m_useTreeFilter(true),
-      m_useDefaultPriorKnowledge(true),
-      m_useFeaturePriorKnowledge(false)
+      m_useDefaultPriorKnowledge(true)
 { }
 
 GoUctGlobalSearchStateParam::~GoUctGlobalSearchStateParam()
 { }
 
 //----------------------------------------------------------------------------
+GoUctGlobalSearchAllParam::GoUctGlobalSearchAllParam(
+      const GoUctGlobalSearchStateParam& searchStateParam,
+      const GoUctPlayoutPolicyParam& policyParam,
+      const GoUctDefaultMoveFilterParam& moveFilterParam,
+      const GoUctFeatureKnowledgeParam& featureParam,
+      const SgBWSet& safe,
+      const SgPointArray<bool>& allSafe)
+    :
+    m_searchStateParam(searchStateParam),
+    m_policyParam(policyParam),
+    m_moveFilterParam(moveFilterParam),
+    m_featureParam(featureParam),
+    m_safe(safe),
+    m_allSafe(allSafe)
+{ }

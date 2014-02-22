@@ -12,31 +12,57 @@
 #include "SgDebug.h"
 
 //----------------------------------------------------------------------------
-/** @todo This is a tunable constant. */
-const float GoUctFeatureKnowledge::VALUE_MULTIPLIER = 10.0f;
-
 namespace {
     
-inline float sigmoid(float x) // it is really sigmoid(-x) computed here
+inline float Sigmoid(float x)
 {
-    return 1 / (1 + exp(x));
+    return 1 / (1 + exp(-x));
 }
 
 } // namespace
 //----------------------------------------------------------------------------
+GoUctFeatureKnowledgeParam::GoUctFeatureKnowledgeParam()
+    :
+    m_useAsAdditivePredictor(true),
+    m_useAsVirtualWins(false),
+    m_additiveFeatureMultiplier(1.0),
+    m_additiveFeatureSigmoidFactor(10.0)
+{ }
 
-GoUctFeatureKnowledge::GoUctFeatureKnowledge(const GoBoard& bd,
+inline float GoUctFeatureKnowledgeParam::PredictorValue(float moveValue) const
+{
+    return m_additiveFeatureMultiplier *
+    ::Sigmoid(m_additiveFeatureSigmoidFactor * moveValue);
+}
+
+inline float GoUctFeatureKnowledgeParam::
+ProbabilityValue(float moveValue) const
+{
+    return ::Sigmoid(m_additiveFeatureSigmoidFactor * moveValue);
+}
+
+//----------------------------------------------------------------------------
+
+GoUctFeatureKnowledge::GoUctFeatureKnowledge(
+                         const GoBoard& bd,
                          const FeFeatureWeights& weights)
     : GoAdditiveKnowledge(bd), GoUctKnowledge(bd),
       m_weights(weights),
-      m_policy(bd, GoUctPlayoutPolicyParam()),
-      m_useAsAdditivePredictor(true),
-      m_useAsVirtualWins(false)
+      m_policy(bd, GoUctPlayoutPolicyParam())
 { }
 
-void GoUctFeatureKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
+void GoUctFeatureKnowledge::
+ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 {
-    if (m_useAsVirtualWins)
+    SG_UNUSED(moves);
+    SG_ASSERT(false);
+}
+
+void GoUctFeatureKnowledge::
+ApplyAdditivePredictor(std::vector<SgUctMoveInfo>& moves,
+                       const GoUctFeatureKnowledgeParam& param)
+{
+    if (param.m_useAsVirtualWins)
         ClearValues();
     const GoBoard& bd = GoAdditiveKnowledge::Board();
     SgPointArray<FeFeatures::FeMoveFeatures> features;
@@ -49,20 +75,22 @@ void GoUctFeatureKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>& moves)
     {
         const SgPoint move = moves[i].m_move;
         SG_ASSERT(bd.IsLegal(move));
-        float moveValue = (move == SG_PASS) ? passEval : eval[move];
-        if (m_useAsAdditivePredictor)
-            moves[i].m_predictorValue = sigmoid(VALUE_MULTIPLIER * moveValue);
-        if (m_useAsVirtualWins)
-            SetWinsLosses(move, moveValue);
+        const float moveValue = (move == SG_PASS) ? passEval : eval[move];
+        if (param.m_useAsAdditivePredictor) // -moveValue for opp. view?
+            moves[i].m_predictorValue = param.PredictorValue(-moveValue);
+        if (param.m_useAsVirtualWins)
+            SetWinsLosses(move, moveValue, param);
     }
-    if (m_useAsVirtualWins)
+    if (param.m_useAsVirtualWins)
         AddValuesTo(moves);
 }
 
 /** Convert moveValue into a number of virtual wins/losses */
-void GoUctFeatureKnowledge::SetWinsLosses(SgPoint move, float moveValue)
+void GoUctFeatureKnowledge::
+SetWinsLosses(SgPoint move, float moveValue,
+              const GoUctFeatureKnowledgeParam& param)
 {
-    SgUctValue value = 1 - sigmoid(VALUE_MULTIPLIER * moveValue);
+    SgUctValue value = param.ProbabilityValue(moveValue);
     SgUctValue count = 23;
     Add(move, value, count);
 }

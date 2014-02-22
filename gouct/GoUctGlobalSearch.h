@@ -21,6 +21,7 @@
 #include "GoAdditiveKnowledge.h"
 #include "GoUctDefaultMoveFilter.h"
 #include "GoUctDefaultPriorKnowledge.h"
+#include "GoUctFeatureKnowledge.h"
 #include "GoUctKnowledgeFactory.h"
 #include "GoUctSearch.h"
 #include "GoUctUtil.h"
@@ -79,11 +80,35 @@ struct GoUctGlobalSearchStateParam
 
     bool m_useDefaultPriorKnowledge;
 
-    bool m_useFeaturePriorKnowledge;
-
     GoUctGlobalSearchStateParam();
 
     ~GoUctGlobalSearchStateParam();
+};
+
+//----------------------------------------------------------------------------
+
+/** collect all parameters used in GoUctGlobalSearch */
+struct GoUctGlobalSearchAllParam
+{
+    GoUctGlobalSearchAllParam(
+          const GoUctGlobalSearchStateParam& searchStateParam,
+          const GoUctPlayoutPolicyParam& policyParam,
+          const GoUctDefaultMoveFilterParam& moveFilterParam,
+          const GoUctFeatureKnowledgeParam& featureParam,
+          const SgBWSet& safe,
+          const SgPointArray<bool>& allSafe);
+    
+    const GoUctGlobalSearchStateParam& m_searchStateParam;
+    
+    const GoUctPlayoutPolicyParam& m_policyParam;
+    
+    const GoUctDefaultMoveFilterParam& m_moveFilterParam;
+    
+    const GoUctFeatureKnowledgeParam& m_featureParam;
+    
+    const SgBWSet& m_safe;
+    
+    const SgPointArray<bool>& m_allSafe;
 };
 
 //----------------------------------------------------------------------------
@@ -120,10 +145,6 @@ class GoUctGlobalSearchState
     : public GoUctState
 {
 public:
-    const SgBWSet& m_safe;
-
-    const SgPointArray<bool>& m_allSafe;
-
     /** Probabilities that a point belongs to Black in a terminal position.
         Only computed if GoUctGlobalSearchStateParam::m_territoryStatistics. */
     SgPointArray<SgUctStatistics> m_territoryStatistics;
@@ -142,26 +163,19 @@ public:
         @param allSafe Safety information. Stores a reference to the argument. */
     GoUctGlobalSearchState(unsigned int threadId, const GoBoard& bd,
                            POLICY* policy,
-                           const GoUctGlobalSearchStateParam& param,
-                           const GoUctPlayoutPolicyParam& policyParam,
-                           const GoUctDefaultMoveFilterParam& treeFilterParam,
-                           const SgBWSet& safe,
-                           const SgPointArray<bool>& allSafe);
+                           const GoUctGlobalSearchAllParam& param);
     
     ~GoUctGlobalSearchState();
 
     GoAdditiveKnowledge* GetAdditiveKnowledge();
 
-    /** set the predictor for additive knowledge */
+    /** set the predictor for additive knowledge.
+        Owned by this and deleted by destructor */
     void SetAdditiveKnowledge(GoAdditiveKnowledge* knowledge);
 
     /** set the predictor for feature knowledge.
-        It can be the same as the one in GoAdditiveKnowledge,
-         so it is not deleted right now. TODO when to delete? */
+        Owned by this and deleted by destructor */
     void SetFeatureKnowledge(GoUctFeatureKnowledge* knowledge);
-
-    /** Set the mode of using m_featureKnowledge from current parameters */
-    void UpdateFeatureKnowledgeUse();
 
     SgUctValue Evaluate();
 
@@ -194,11 +208,7 @@ public:
     void ClearTerritoryStatistics();
 
 private:
-    const GoUctGlobalSearchStateParam& m_param;
-
-    const GoUctPlayoutPolicyParam& m_policyParam;
-
-    const GoUctDefaultMoveFilterParam& m_treeFilterParam;
+    const GoUctGlobalSearchAllParam m_param;
 
     /** See SetMercyRule() */
     bool m_mercyRuleTriggered;
@@ -254,26 +264,23 @@ private:
     SgUctValue EvaluateBoard(const BOARD& bd, float komi);
 
     float GetKomi() const;
+    
+    const SgBWSet& Safe() const;
+    
+    bool AllSafe(SgPoint p) const;
 };
 
 template<class POLICY>
 GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(unsigned int threadId,
          const GoBoard& bd, POLICY* policy,
-         const GoUctGlobalSearchStateParam& param,
-         const GoUctPlayoutPolicyParam& policyParam,
-         const GoUctDefaultMoveFilterParam& treeFilterParam,                                                   
-         const SgBWSet& safe, const SgPointArray<bool>& allSafe)
+         const GoUctGlobalSearchAllParam& param)
     : GoUctState(threadId, bd),
-      m_safe(safe),
-      m_allSafe(allSafe),
       m_param(param),
-      m_policyParam(policyParam),
-      m_treeFilterParam(treeFilterParam),
-      m_priorKnowledge(Board(), m_policyParam),
+      m_priorKnowledge(Board(), m_param.m_policyParam),
       m_additivePredictor(0),
       m_featureKnowledge(0),
       m_policy(policy),
-      m_treeFilter(Board(), m_treeFilterParam)
+      m_treeFilter(Board(), m_param.m_moveFilterParam)
 {
     ClearTerritoryStatistics();
 }
@@ -289,7 +296,7 @@ GoUctGlobalSearchState<POLICY>::~GoUctGlobalSearchState()
 template<class POLICY>
 bool GoUctGlobalSearchState<POLICY>::CheckMercyRule()
 {
-    SG_ASSERT(m_param.m_mercyRule);
+    SG_ASSERT(m_param.m_searchStateParam.m_mercyRule);
     // Only used in playout; m_stoneDiff only defined in playout
     SG_ASSERT(IsInPlayout());
     if (m_stoneDiff >= m_mercyRuleThreshold)
@@ -358,11 +365,12 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
     SgUctValue score;
     SgPointArray<SgEmptyBlackWhite> scoreBoard;
     SgPointArray<SgEmptyBlackWhite>* scoreBoardPtr;
-    if (m_param.m_territoryStatistics)
+    const GoUctGlobalSearchStateParam& param = m_param.m_searchStateParam;
+    if (param.m_territoryStatistics)
         scoreBoardPtr = &scoreBoard;
     else
         scoreBoardPtr = 0;
-    if (m_param.m_mercyRule && m_mercyRuleTriggered)
+    if (param.m_mercyRule && m_mercyRuleTriggered)
         return m_mercyRuleResult;
     else if (m_passMovesPlayoutPhase < 2)
         // Two passes not in playout phase, see comment in GenerateAllMoves()
@@ -371,11 +379,11 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
     else
     {
         score = SgUctValue(
-                    GoBoardUtil::ScoreSimpleEndPosition(bd, komi, m_safe,
+                    GoBoardUtil::ScoreSimpleEndPosition(bd, komi, Safe(),
                                                         false,
                                                         scoreBoardPtr));
     }
-    if (m_param.m_territoryStatistics)
+    if (param.m_territoryStatistics)
         for (typename BOARD::Iterator it(bd); it; ++it)
             switch (scoreBoard[*it])
             {
@@ -392,18 +400,18 @@ SgUctValue GoUctGlobalSearchState<POLICY>::EvaluateBoard(const BOARD& bd,
     if (bd.ToPlay() != SG_BLACK)
         score *= -1;
     SgUctValue lengthMod =
-        SgUctValue(GameLength()) * m_param.m_lengthModification;
+        SgUctValue(GameLength()) * param.m_lengthModification;
     if (lengthMod > 0.5)
         lengthMod = 0.5;
     if (score > std::numeric_limits<SgUctValue>::epsilon())
         return
-              (1 - m_param.m_scoreModification)
-            + m_param.m_scoreModification * score * m_invMaxScore
+              (1 - param.m_scoreModification)
+            + param.m_scoreModification * score * m_invMaxScore
             - lengthMod;
     else if (score < -std::numeric_limits<SgUctValue>::epsilon())
         return
-              m_param.m_scoreModification
-            + m_param.m_scoreModification * score * m_invMaxScore
+              param.m_scoreModification
+            + param.m_scoreModification * score * m_invMaxScore
             + lengthMod;
     else
         // Draw. Can happen if komi is an integer
@@ -458,7 +466,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
         SgPoint p = *it;
         if (  bd.IsEmpty(p)
            && ! GoEyeUtil::IsSimpleEye(bd, p, toPlay)
-           && ! m_allSafe[p]
+           && ! AllSafe(p)
            && bd.IsLegal(p, toPlay)
            )
             moves.push_back(SgUctMoveInfo(p));
@@ -538,20 +546,21 @@ GenerateAllMoves(SgUctValue count,
                  std::vector<SgUctMoveInfo>& moves,
                  SgUctProvenType& provenType)
 {
+    const GoUctGlobalSearchStateParam& param = m_param.m_searchStateParam;
     provenType = SG_NOT_PROVEN;
     moves.clear();  // FIXME: needed?
     GenerateLegalMoves(moves);
     if (! moves.empty() && count == 0) 
     {
-        if (m_param.m_useTreeFilter)
+        if (param.m_useTreeFilter)
             ApplyFilter(moves);
-        if (m_param.m_useDefaultPriorKnowledge)
+        if (param.m_useDefaultPriorKnowledge)
             m_priorKnowledge.ProcessPosition(moves);
-        if (m_param.m_useFeaturePriorKnowledge)
+        if (m_param.m_featureParam.m_useAsVirtualWins)
         {
             SG_ASSERT(m_featureKnowledge);
-            SG_ASSERT(m_featureKnowledge->DoesUseAsVirtualWins());
-            m_featureKnowledge->ProcessPosition(moves);
+            m_featureKnowledge->
+                ApplyAdditivePredictor(moves, m_param.m_featureParam);
         }
         ApplyAdditivePredictors(moves);
     }
@@ -563,7 +572,7 @@ SgMove GoUctGlobalSearchState<POLICY>::
 GeneratePlayoutMove(bool& skipRaveUpdate)
 {
     SG_ASSERT(IsInPlayout());
-    if (m_param.m_mercyRule && CheckMercyRule())
+    if (m_param.m_searchStateParam.m_mercyRule && CheckMercyRule())
         return SG_NULLMOVE;
     SgPoint move = m_policy->GenerateMove();
     SG_ASSERT(move != SG_NULLMOVE);
@@ -575,13 +584,13 @@ GeneratePlayoutMove(bool& skipRaveUpdate)
         const GoUctBoard& bd = UctBoard();
         for (GoUctBoard::Iterator it(bd); it; ++it)
             SG_ASSERT(  bd.Occupied(*it)
-                     || m_safe.OneContains(*it)
+                     || Safe().OneContains(*it)
                      || GoBoardUtil::SelfAtari(bd, *it)
                      || ! GoUctUtil::GeneratePoint(bd, *it, bd.ToPlay())
                      );
     }
     else
-        SG_ASSERT(! m_safe.OneContains(move));
+        SG_ASSERT(! Safe().OneContains(move));
 #endif
     // The position guaranteed to be a terminal position, which can be
     // evaluated with GoBoardUtil::ScoreSimpleEndPosition(), only after two
@@ -615,6 +624,19 @@ template<class POLICY>
 inline POLICY* GoUctGlobalSearchState<POLICY>::Policy()
 {
     return m_policy.get();
+}
+
+
+template<class POLICY>
+const SgBWSet& GoUctGlobalSearchState<POLICY>::Safe() const
+{
+    return m_param.m_safe;
+}
+
+template<class POLICY>
+bool GoUctGlobalSearchState<POLICY>::AllSafe(SgPoint p) const
+{
+    return m_param.m_allSafe[p];
 }
 
 template<class POLICY>
@@ -651,7 +673,6 @@ void GoUctGlobalSearchState<POLICY>::StartSearch()
     m_initialMoveNumber = bd.MoveNumber();
     m_mercyRuleThreshold = static_cast<int>(0.3 * size * size);
     ClearTerritoryStatistics();
-    UpdateFeatureKnowledgeUse();
 }
 
 //----------------------------------------------------------------------------
@@ -677,6 +698,7 @@ public:
                           FACTORY& playoutPolicyFactory,
                           const GoUctPlayoutPolicyParam& policyParam,
                           const GoUctDefaultMoveFilterParam& treeFilterParam,
+                          const GoUctFeatureKnowledgeParam& featureParam,
                           const SgBWSet& safe,
                           const SgPointArray<bool>& allSafe);
 
@@ -693,7 +715,9 @@ private:
     const GoUctPlayoutPolicyParam& m_policyParam;
 
     const GoUctDefaultMoveFilterParam& m_treeFilterParam;
-
+    
+    const GoUctFeatureKnowledgeParam& m_featureParam;
+    
     const SgBWSet& m_safe;
 
     const SgPointArray<bool>& m_allSafe;
@@ -705,6 +729,7 @@ GoUctGlobalSearchStateFactory<POLICY,FACTORY>
                   FACTORY& playoutPolicyFactory,
                   const GoUctPlayoutPolicyParam& policyParam,
                   const GoUctDefaultMoveFilterParam& treeFilterParam,
+                  const GoUctFeatureKnowledgeParam& featureParam,
                   const SgBWSet& safe,
                   const SgPointArray<bool>& allSafe)
     : m_bd(bd),
@@ -712,6 +737,7 @@ GoUctGlobalSearchStateFactory<POLICY,FACTORY>
       m_knowledgeFactory(policyParam),
       m_policyParam(policyParam),
       m_treeFilterParam(treeFilterParam),
+      m_featureParam(featureParam),
       m_safe(safe),
       m_allSafe(allSafe)
 { }
@@ -738,7 +764,8 @@ public:
     GoUctGlobalSearch(GoBoard& bd,
                       FACTORY* playoutPolicyFactory,
                       const GoUctPlayoutPolicyParam& policyParam,
-                      const GoUctDefaultMoveFilterParam& treeFilterParam);
+                      const GoUctDefaultMoveFilterParam& treeFilterParam,
+                      const GoUctFeatureKnowledgeParam& featureParam);
 
     /** @name Pure virtual functions of SgUctSearch */
     // @{
@@ -789,7 +816,8 @@ template<class POLICY, class FACTORY>
 GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
                          FACTORY* playoutFactory,
                          const GoUctPlayoutPolicyParam& policyParam,
-                         const GoUctDefaultMoveFilterParam& rootFilterParam)
+                         const GoUctDefaultMoveFilterParam& rootFilterParam,
+                         const GoUctFeatureKnowledgeParam& featureParam)
     : GoUctSearch(bd, 0),
       m_playoutPolicyFactory(playoutFactory),
       m_regions(bd),
@@ -800,6 +828,7 @@ GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
                                                           *playoutFactory,
                                                           policyParam,
                                                           rootFilterParam,
+                                                          featureParam,
                                                           m_safe, m_allSafe);
     SetThreadStateFactory(stateFactory);
     SetDefaultParameters(bd.Size());
@@ -934,16 +963,6 @@ SetFeatureKnowledge(GoUctFeatureKnowledge* knowledge)
 	SG_ASSERT(m_featureKnowledge == 0);
 	SG_ASSERT(knowledge != 0);
     m_featureKnowledge = knowledge;
-    UpdateFeatureKnowledgeUse();
-}
-
-template<class POLICY>
-void GoUctGlobalSearchState<POLICY>::
-UpdateFeatureKnowledgeUse()
-{
-    SG_ASSERT(m_featureKnowledge);
-    m_featureKnowledge->
-        UseAsVirtualWins(m_param.m_useFeaturePriorKnowledge);
 }
 
 //----------------------------------------------------------------------------
@@ -957,10 +976,12 @@ SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
     const GoBoard& bd = globalSearch.Board();
     GoUctGlobalSearchState<POLICY>* state =
         new GoUctGlobalSearchState<POLICY>(threadId, bd, 0,
+            GoUctGlobalSearchAllParam(
                                            globalSearch.m_param, 
                                            m_policyParam,
                                            m_treeFilterParam,
-                                           m_safe, m_allSafe);
+                                           m_featureParam,
+                                           m_safe, m_allSafe));
     POLICY* policy = m_playoutPolicyFactory.Create(state->UctBoard());
     state->SetPolicy(policy);
     GoAdditiveKnowledge* knowledge = 

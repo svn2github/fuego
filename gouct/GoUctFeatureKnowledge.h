@@ -14,20 +14,39 @@
 #include "GoUctPlayoutPolicy.h"
 
 //----------------------------------------------------------------------------
+/** Parameters for GoUctFeatureKnowledge */
+struct GoUctFeatureKnowledgeParam
+{
+    GoUctFeatureKnowledgeParam();
+    
+    /** map moveValue to additive term */
+    float PredictorValue(float moveValue) const;
 
+    /** map moveValue to [0..1] */
+    float ProbabilityValue(float moveValue) const;
+
+    bool m_useAsAdditivePredictor;
+    
+    bool m_useAsVirtualWins;
+
+    float m_additiveFeatureMultiplier;
+    
+    float m_additiveFeatureSigmoidFactor;
+};
+
+//----------------------------------------------------------------------------
 class GoUctFeatureKnowledge
     : public GoAdditiveKnowledge, GoUctKnowledge
 {
 public:
     GoUctFeatureKnowledge(const GoBoard& bd, const FeFeatureWeights& weights);
 
-    bool DoesUseAdditivePredictor() const;
-
-    bool DoesUseAsVirtualWins() const;
-
     /** Apply as additive predictor */
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
-
+    
+    void ApplyAdditivePredictor(std::vector<SgUctMoveInfo>& moves,
+                         const GoUctFeatureKnowledgeParam& param);
+    
     GoPredictorType PredictorType() const;
     
     /** The minimum value allowed by this predictor */
@@ -36,22 +55,14 @@ public:
     /** The scaling factor for this predictor */
     SgUctValue Scale() const;
 
-    void UseAsAdditivePredictor(bool use);
-
-    void UseAsVirtualWins(bool use);
-
 private:
-    void SetWinsLosses(SgPoint move, float moveValue);
-
-    static const float VALUE_MULTIPLIER;
+    void SetWinsLosses(SgPoint move, float moveValue,
+                       const GoUctFeatureKnowledgeParam& param);
 
     FeFeatureWeights m_weights;
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
-
-    bool m_useAsAdditivePredictor;
-
-    bool m_useAsVirtualWins;
+    
 };
 
 //----------------------------------------------------------------------------
@@ -68,26 +79,6 @@ inline SgUctValue GoUctFeatureKnowledge::Minimum() const
 inline SgUctValue GoUctFeatureKnowledge::Scale() const
 {
     return 1.0; // TODO
-}
-
-inline void GoUctFeatureKnowledge::UseAsAdditivePredictor(bool use)
-{
-    m_useAsAdditivePredictor = use;
-}
-
-inline void GoUctFeatureKnowledge::UseAsVirtualWins(bool use)
-{
-    m_useAsVirtualWins = use;
-}
-
-inline bool GoUctFeatureKnowledge::DoesUseAdditivePredictor() const
-{
-    return m_useAsAdditivePredictor;
-}
-
-inline bool GoUctFeatureKnowledge::DoesUseAsVirtualWins() const
-{
-    return m_useAsVirtualWins;
 }
 
 //----------------------------------------------------------------------------

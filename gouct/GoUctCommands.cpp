@@ -308,6 +308,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "none/Uct Max Memory/uct_max_memory %s\n"
         "plist/Uct Moves/uct_moves\n"
         "param/Uct Param GlobalSearch/uct_param_globalsearch\n"
+        "param/Uct Param Feature Knowledge/uct_param_feature_knowledge\n"
         "param/Uct Param Policy/uct_param_policy\n"
         "param/Uct Param Player/uct_param_player\n"
         "param/Uct Param RootFilter/uct_param_rootfilter\n"
@@ -550,6 +551,45 @@ void GoUctCommands::CmdMoves(GtpCommand& cmd)
 }
 
 /** Get and set GoUctGlobalSearch parameters.
+ */
+void GoUctCommands::CmdParamFeatureKnowledge(GtpCommand& cmd)
+{
+    cmd.CheckNuArgLessEqual(2);
+    GoUctFeatureKnowledgeParam& p = Player().m_featureParam;
+    if (cmd.NuArg() == 0)
+    {
+        // Boolean parameters first for better layout of GoGui parameter
+        // dialog, alphabetically otherwise
+        cmd
+        << "[bool] use_as_additive_predictor "
+        << p.m_useAsAdditivePredictor << '\n'
+        << "[bool] use_as_virtual_wins "
+        << p.m_useAsVirtualWins << '\n'
+        << "[float] additive_feature_multiplier "
+        << p.m_additiveFeatureMultiplier << '\n'
+        << "[float] additive_feature_sigmoid_factor "
+        << p.m_additiveFeatureSigmoidFactor << '\n';
+       ;
+    }
+    else if (cmd.NuArg() == 2)
+    {
+        string name = cmd.Arg(0);
+        if (name == "use_as_additive_predictor")
+            p.m_useAsAdditivePredictor = cmd.Arg<bool>(1);
+        else if (name == "use_as_virtual_wins")
+            p.m_useAsVirtualWins = cmd.Arg<bool>(1);
+        else if (name == "additive_feature_multiplier")
+            p.m_additiveFeatureMultiplier = cmd.Arg<float>(1);
+        else if (name == "additive_feature_sigmoid_factor")
+            p.m_additiveFeatureSigmoidFactor = cmd.Arg<float>(1);
+        else
+            throw GtpFailure() << "unknown parameter: " << name;
+    }
+    else
+    throw GtpFailure() << "need 0 or 2 arguments";
+}
+
+/** Get and set GoUctGlobalSearch parameters.
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
@@ -578,8 +618,6 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             << '\n'
             << "[bool] use_default_prior_knowledge "
             << p.m_useDefaultPriorKnowledge << '\n'
-            << "[bool] use_feature_prior_knowledge "
-            << p.m_useFeaturePriorKnowledge << '\n'
             << "[bool] use_tree_filter " << p.m_useTreeFilter << '\n'
             << "[string] length_modification " << p.m_lengthModification
             << '\n'
@@ -597,8 +635,6 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             p.m_territoryStatistics = cmd.Arg<bool>(1);
         else if (name == "use_default_prior_knowledge")
             p.m_useDefaultPriorKnowledge = cmd.Arg<bool>(1);
-        else if (name == "use_feature_prior_knowledge")
-            p.m_useFeaturePriorKnowledge = cmd.Arg<bool>(1);
         else if (name == "use_tree_filter")
             p.m_useTreeFilter = cmd.Arg<bool>(1);
         else if (name == "length_modification")
@@ -1536,6 +1572,8 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_ladder_knowledge", &GoUctCommands::CmdLadderKnowledge);
     Register(e, "uct_max_memory", &GoUctCommands::CmdMaxMemory);
     Register(e, "uct_moves", &GoUctCommands::CmdMoves);
+    Register(e, "uct_param_feature_knowledge",
+             &GoUctCommands::CmdParamFeatureKnowledge);
     Register(e, "uct_param_globalsearch",
              &GoUctCommands::CmdParamGlobalSearch);
     Register(e, "uct_param_policy", &GoUctCommands::CmdParamPolicy);
