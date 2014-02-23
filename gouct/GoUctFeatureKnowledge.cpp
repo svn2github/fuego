@@ -46,51 +46,70 @@ ProbabilityValue(float moveValue) const
 GoUctFeatureKnowledge::GoUctFeatureKnowledge(
                          const GoBoard& bd,
                          const FeFeatureWeights& weights)
-    : GoAdditiveKnowledge(bd), GoUctKnowledge(bd),
-      m_weights(weights),
-      m_policy(bd, GoUctPlayoutPolicyParam())
+    : GoAdditiveKnowledge(bd),
+      GoUctKnowledge(bd),
+      m_code(),
+      m_eval(0),
+      m_passEval(0),
+      m_param(),
+      m_policy(bd, GoUctPlayoutPolicyParam()),
+      m_weights(weights)
 { }
 
 void GoUctFeatureKnowledge::
 ProcessPosition(std::vector<SgUctMoveInfo>& moves)
 {
-    SG_UNUSED(moves);
-    SG_ASSERT(false);
+    SG_ASSERT(UpToDate());
+    const GoBoard& bd = GoAdditiveKnowledge::Board();
+    SG_DEBUG_ONLY(bd);
+    
+    for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
+         it != moves.end(); ++it)
+    {
+        const SgPoint move = it->m_move;
+        SG_ASSERT(bd.IsLegal(move));
+        const float moveValue = MoveValue(move);
+        it->m_predictorValue = m_param.PredictorValue(-moveValue);
+    }
 }
 
 void GoUctFeatureKnowledge::
-ApplyAdditivePredictor(std::vector<SgUctMoveInfo>& moves,
-                       const GoUctFeatureKnowledgeParam& param)
+SetPriorKnowledge(std::vector<SgUctMoveInfo>& moves)
 {
-    if (param.m_useAsVirtualWins)
-        ClearValues();
+    SG_ASSERT(UpToDate());
+    const GoBoard& bd = GoAdditiveKnowledge::Board();
+    SG_DEBUG_ONLY(bd);
+
+    ClearValues();
+    for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
+         it != moves.end(); ++it)
+    {
+        const SgPoint move = it->m_move;
+        SG_ASSERT(bd.IsLegal(move));
+        const float moveValue = MoveValue(move);
+        SetWinsLosses(move, moveValue);
+    }
+    AddValuesTo(moves);
+}
+
+void GoUctFeatureKnowledge::
+Compute(const GoUctFeatureKnowledgeParam& param)
+{
+    m_param = param;
     const GoBoard& bd = GoAdditiveKnowledge::Board();
     SgPointArray<FeFeatures::FeMoveFeatures> features;
     FeFeatures::FeMoveFeatures passFeatures;
     GoUctFeatures::FindAllFeatures(bd, m_policy, features, passFeatures);
-    SgPointArray<float> eval = EvaluateFeatures(bd, features, m_weights);
-    float passEval = EvaluateMoveFeatures(passFeatures, m_weights);
-    
-    for (size_t i = 0; i < moves.size(); ++i) // todo just use iterator
-    {
-        const SgPoint move = moves[i].m_move;
-        SG_ASSERT(bd.IsLegal(move));
-        const float moveValue = (move == SG_PASS) ? passEval : eval[move];
-        if (param.m_useAsAdditivePredictor) // -moveValue for opp. view?
-            moves[i].m_predictorValue = param.PredictorValue(-moveValue);
-        if (param.m_useAsVirtualWins)
-            SetWinsLosses(move, moveValue, param);
-    }
-    if (param.m_useAsVirtualWins)
-        AddValuesTo(moves);
+    m_eval = EvaluateFeatures(bd, features, m_weights);
+    m_passEval = EvaluateMoveFeatures(passFeatures, m_weights);
+    m_code = bd.GetHashCodeInclToPlay();
 }
 
 /** Convert moveValue into a number of virtual wins/losses */
 void GoUctFeatureKnowledge::
-SetWinsLosses(SgPoint move, float moveValue,
-              const GoUctFeatureKnowledgeParam& param)
+SetWinsLosses(SgPoint move, float moveValue)
 {
-    SgUctValue value = param.ProbabilityValue(moveValue);
+    SgUctValue value = m_param.ProbabilityValue(moveValue);
     SgUctValue count = 23;
     Add(move, value, count);
 }

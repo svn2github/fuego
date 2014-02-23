@@ -61,6 +61,7 @@ GoBoardUpdater.h \
 GoBoardUtil.h \
 GoBook.h \
 GoChain.h \
+GoEvalArray.h \
 GoEyeCount.h \
 GoEyeUtil.h \
 GoGame.h \

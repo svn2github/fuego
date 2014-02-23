@@ -13,6 +13,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoBoardUpdaterTest.cpp \
 ../go/test/GoBoardUtilTest.cpp \
 ../go/test/GoBookTest.cpp \
+../go/test/GoEvalArrayTest.cpp \
 ../go/test/GoEyeUtilTest.cpp \
 ../go/test/GoGameTest.cpp \
 ../go/test/GoGtpCommandUtilTest.cpp \

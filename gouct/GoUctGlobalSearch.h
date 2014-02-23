@@ -288,7 +288,8 @@ GoUctGlobalSearchState<POLICY>::GoUctGlobalSearchState(unsigned int threadId,
 template<class POLICY>
 GoUctGlobalSearchState<POLICY>::~GoUctGlobalSearchState()
 {
-    delete m_additivePredictor;
+    if (m_additivePredictor != m_featureKnowledge)
+        delete m_additivePredictor;
     delete m_featureKnowledge;
 }
 
@@ -547,6 +548,7 @@ GenerateAllMoves(SgUctValue count,
                  SgUctProvenType& provenType)
 {
     const GoUctGlobalSearchStateParam& param = m_param.m_searchStateParam;
+    const GoUctFeatureKnowledgeParam& feParam = m_param.m_featureParam;
     provenType = SG_NOT_PROVEN;
     moves.clear();  // FIXME: needed?
     GenerateLegalMoves(moves);
@@ -556,11 +558,14 @@ GenerateAllMoves(SgUctValue count,
             ApplyFilter(moves);
         if (param.m_useDefaultPriorKnowledge)
             m_priorKnowledge.ProcessPosition(moves);
-        if (m_param.m_featureParam.m_useAsVirtualWins)
+        if (  feParam.m_useAsVirtualWins
+           || feParam.m_useAsAdditivePredictor
+           )
         {
             SG_ASSERT(m_featureKnowledge);
-            m_featureKnowledge->
-                ApplyAdditivePredictor(moves, m_param.m_featureParam);
+            m_featureKnowledge->Compute(feParam);
+            if (feParam.m_useAsVirtualWins)
+                m_featureKnowledge->ProcessPosition(moves);
         }
         ApplyAdditivePredictors(moves);
     }
@@ -988,9 +993,13 @@ SgUctThreadState* GoUctGlobalSearchStateFactory<POLICY,FACTORY>::Create(
     	m_knowledgeFactory.Create(state->Board());
     state->SetAdditiveKnowledge(knowledge);
     GoUctFeatureKnowledge* featureKnowledge =
+        dynamic_cast<GoUctFeatureKnowledge*>(knowledge);
+    if (! featureKnowledge)
+        featureKnowledge =
         dynamic_cast<GoUctFeatureKnowledge*>(
             m_knowledgeFactory.CreateByType(state->Board(),
-                                            KNOWLEDGE_FEATURES));
+            KNOWLEDGE_FEATURES));
+	SG_ASSERT(featureKnowledge);
     state->SetFeatureKnowledge(featureKnowledge);
     return state;
 }

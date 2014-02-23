@@ -41,11 +41,12 @@ class GoUctFeatureKnowledge
 public:
     GoUctFeatureKnowledge(const GoBoard& bd, const FeFeatureWeights& weights);
 
+    void Compute(const GoUctFeatureKnowledgeParam& param);
+    
     /** Apply as additive predictor */
     void ProcessPosition(std::vector<SgUctMoveInfo>& moves);
     
-    void ApplyAdditivePredictor(std::vector<SgUctMoveInfo>& moves,
-                         const GoUctFeatureKnowledgeParam& param);
+    void SetPriorKnowledge(std::vector<SgUctMoveInfo>& moves);
     
     GoPredictorType PredictorType() const;
     
@@ -56,12 +57,24 @@ public:
     SgUctValue Scale() const;
 
 private:
-    void SetWinsLosses(SgPoint move, float moveValue,
-                       const GoUctFeatureKnowledgeParam& param);
+    
+    float MoveValue(const SgPoint move) const;
+    
+    void SetWinsLosses(SgPoint move, float moveValue);
 
-    FeFeatureWeights m_weights;
+    bool UpToDate() const;
+    
+    SgHashCode m_code;
+    
+    SgPointArray<float> m_eval;
+    
+    float m_passEval;
+    
+    GoUctFeatureKnowledgeParam m_param;
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
+    
+    FeFeatureWeights m_weights;
     
 };
 
@@ -76,9 +89,20 @@ inline SgUctValue GoUctFeatureKnowledge::Minimum() const
     return -1; // TODO
 }
 
+inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const
+{
+    SG_ASSERT(UpToDate());
+    return (move == SG_PASS) ? m_passEval : m_eval[move];
+}
+
 inline SgUctValue GoUctFeatureKnowledge::Scale() const
 {
     return 1.0; // TODO
+}
+
+inline bool GoUctFeatureKnowledge::UpToDate() const
+{
+    return m_code == GoAdditiveKnowledge::Board().GetHashCodeInclToPlay();
 }
 
 //----------------------------------------------------------------------------
