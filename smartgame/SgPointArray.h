@@ -48,10 +48,40 @@ inline SgPointArray<T>::SgPointArray(const SgPointArray& pointArray)
 { }
 
 //----------------------------------------------------------------------------
+/** Write data for a Go board stored in an array.
+ Computes the maximum string representation length of each element in the
+ array to write out aligned columns with minimum space in between. */
+template<typename T, int SIZE>
+std::ostream& SgWriteBoardFromArray(std::ostream& out,
+                                    const SgArray<T,SIZE>& array,
+                                    SgGrid boardSize)
+{
+    std::ostringstream buffer;
+    int maxLength = 0;
+    for (SgGrid row = 1; row <= boardSize; ++row)
+    for (SgGrid col = 1; col <= boardSize; ++col)
+    {
+        buffer.str("");
+        buffer << array[SgPointUtil::Pt(col, row)];
+        int length = static_cast<int>(buffer.str().length());
+        maxLength = std::max(maxLength, length);
+    }
+    for (SgGrid row = boardSize; row >= 1; --row)
+    {
+        for (SgGrid col = 1; col <= boardSize; ++col)
+        {
+            SgPoint point = SgPointUtil::Pt(col, row);
+            out << std::setw(maxLength) << array[point];
+            if (col < boardSize)
+            out << ' ';
+        }
+        out << '\n';
+    }
+    return out;
+}
 
-/** Write a point array.
-    Computes the maximum string representation length of each element in the
-    array to write out aligned columns with minimum space in between. */
+//----------------------------------------------------------------------------
+/** Write a point array. See SgWriteBoardFromArray */
 template<typename T>
 class SgWritePointArray
 {
@@ -72,27 +102,7 @@ private:
 template<typename T>
 std::ostream& SgWritePointArray<T>::Write(std::ostream& out) const
 {
-    std::ostringstream buffer;
-    int maxLength = 0;
-    for (SgGrid row = 1; row <= m_boardSize; ++row)
-        for (SgGrid col = 1; col <= m_boardSize; ++col)
-        {
-            buffer.str("");
-            buffer << m_array[SgPointUtil::Pt(col, row)];            
-            int length = static_cast<int>(buffer.str().length());
-            maxLength = std::max(maxLength, length);
-        }
-    for (SgGrid row = m_boardSize; row >= 1; --row)
-    {
-        for (SgGrid col = 1; col <= m_boardSize; ++col)
-        {
-            SgPoint point = SgPointUtil::Pt(col, row);
-            out << std::setw(maxLength) << m_array[point];
-            if (col < m_boardSize)
-                out << ' ';
-        }
-        out << '\n';
-    }
+    SgWriteBoardFromArray(out, m_array, m_boardSize);
     return out;
 }
 
@@ -102,6 +112,30 @@ std::ostream& operator<<(std::ostream& out,
                          const SgWritePointArray<T>& write)
 {
     return write.Write(out);
+}
+
+//----------------------------------------------------------------------------
+template<typename FLOAT, int SIZE>
+std::ostream& SgWriteBoardFromArrayFloat(std::ostream& out,
+                                         const SgArray<FLOAT,SIZE>& array,
+                                         SgGrid boardSize,
+                                         bool fixed, int precision)
+{
+    SgArray<std::string,SIZE> stringArray;
+    std::ostringstream buffer;
+    if (fixed)
+        buffer << std::fixed;
+    buffer << std::setprecision(precision);
+    for (SgGrid row = 1; row <= boardSize; ++row)
+    for (SgGrid col = 1; col <= boardSize; ++col)
+    {
+        buffer.str("");
+        SgPoint p = SgPointUtil::Pt(col, row);
+        buffer << array[p];
+        stringArray[p] = buffer.str();
+    }
+    SgWriteBoardFromArray(out, stringArray, boardSize);
+    return out;
 }
 
 //----------------------------------------------------------------------------
@@ -136,20 +170,8 @@ private:
 template<typename FLOAT>
 std::ostream& SgWritePointArrayFloat<FLOAT>::Write(std::ostream& out) const
 {
-    SgPointArray<std::string> stringArray;
-    std::ostringstream buffer;
-    if (m_fixed)
-        buffer << std::fixed;
-    buffer << std::setprecision(m_precision);
-    for (SgGrid row = 1; row <= m_boardSize; ++row)
-        for (SgGrid col = 1; col <= m_boardSize; ++col)
-        {
-            buffer.str("");
-            SgPoint p = SgPointUtil::Pt(col, row);
-            buffer << m_array[p];
-            stringArray[p] = buffer.str();
-        }
-    out << SgWritePointArray<std::string>(stringArray, m_boardSize);
+    SgWriteBoardFromArrayFloat(out, m_array, m_boardSize,
+                               m_fixed, m_precision);
     return out;
 }
 
