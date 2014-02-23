@@ -120,6 +120,8 @@ FeFeatureWeights FeFeatureWeights::ReadDefaultWeights()
     return FeFeatureWeights(0, 0);
 }
 
+//----------------------------------------------------------------------------
+
 inline bool IsValidID(int id)
 {
     return FeFeatures::IsBasicFeatureID(id)
