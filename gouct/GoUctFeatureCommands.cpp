@@ -53,13 +53,10 @@ void GoUctFeatureCommands::CheckWeights(std::string message) const
 
 void GoUctFeatureCommands::CmdFeatures(GtpCommand& cmd)
 {
-    using FeFeatures::FeMoveFeatures;
-    SgPointArray<FeMoveFeatures> features;
-    FeMoveFeatures passFeatures;
-    GoUctFeatures::FindAllFeatures(m_bd, m_policy, features, passFeatures);
+    FeFullBoardFeatures features(m_bd);
+    GoUctFeatures::FindAllFeatures(m_bd, m_policy, features);
     cmd << '\n';
-    FeFeatures::WriteBoardFeatures(cmd, features, m_bd);
-    FeFeatures::WriteFeatures(cmd, SG_PASS, passFeatures);
+    features.WriteBoardFeatures(cmd);
 }
 
 void GoUctFeatureCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
@@ -67,11 +64,9 @@ void GoUctFeatureCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
     using namespace FeFeatures;
     CheckWeights("features_evaluate_board");
 
-    SgPointArray<FeMoveFeatures> features;
-    FeMoveFeatures passFeatures;
-    GoUctFeatures::FindAllFeatures(m_bd, m_policy, features, passFeatures);
-    SgPointArray<float> eval = EvaluateFeatures(m_bd, features, m_weights);
-    float passEval = EvaluateMoveFeatures(passFeatures, m_weights);
+    FeFullBoardFeatures features(m_bd);
+    GoUctFeatures::FindAllFeatures(m_bd, m_policy, features);
+    GoEvalArray<float> eval = features.EvaluateFeatures(m_weights);
     cmd << '\n';
     //cmd << SgWritePointArrayFloat<float>(eval, m_bd.Size(), true, 2);
     GoGtpCommandUtil::RespondColorGradientData(cmd, eval,
@@ -82,7 +77,7 @@ void GoUctFeatureCommands::CmdFeaturesEvaluateBoard(GtpCommand& cmd)
     SgDebug() << "Eval min = " << eval.MinValue()
               << ", max = " << eval.MaxValue() << '\n';
     
-    cmd << "Pass: " << passEval << '\n';
+    cmd << "Pass: " << eval[SG_PASS] << '\n';
 }
 
 void GoUctFeatureCommands::CmdFeaturesMove(GtpCommand& cmd)

@@ -19,14 +19,13 @@ namespace GoUctFeatures {
 
 void FindAllFeatures(const GoBoard& bd,
                      GoUctPlayoutPolicy<GoBoard>& policy,
-                     SgPointArray<FeFeatures::FeMoveFeatures>& features,
-                     FeFeatures::FeMoveFeatures& passFeatures);
+                     FeFullBoardFeatures& f);
 
 /** Inefficient, calls full board function, use only for UI */
 void FindMoveFeaturesUI(const GoBoard& bd,
                         GoUctPlayoutPolicy<GoBoard>& policy,
                         SgPoint move,
-                        FeFeatures::FeMoveFeatures& features);
+                        FeMoveFeatures& features);
 
 /** Computes features for the position - preceding - the current one
  and writes them using WriteBoardFeaturesWistuba.

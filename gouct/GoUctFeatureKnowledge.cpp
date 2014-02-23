@@ -97,11 +97,9 @@ Compute(const GoUctFeatureKnowledgeParam& param)
 {
     m_param = param;
     const GoBoard& bd = GoAdditiveKnowledge::Board();
-    SgPointArray<FeFeatures::FeMoveFeatures> features;
-    FeFeatures::FeMoveFeatures passFeatures;
-    GoUctFeatures::FindAllFeatures(bd, m_policy, features, passFeatures);
-    m_eval = EvaluateFeatures(bd, features, m_weights);
-    m_passEval = EvaluateMoveFeatures(passFeatures, m_weights);
+    FeFullBoardFeatures features(bd);
+    GoUctFeatures::FindAllFeatures(bd, m_policy, features);
+    m_eval = features.EvaluateFeatures(m_weights);
     m_code = bd.GetHashCodeInclToPlay();
 }
 

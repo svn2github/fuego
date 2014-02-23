@@ -15,7 +15,7 @@ namespace {
 const bool USE_12_POINT_FEATURES = false;
 
 void FindCorrectionFeatures(const GoBoard& bd,
-                            SgPointArray<FeFeatures::FeMoveFeatures>& features,
+                            GoEvalArray<FeMoveFeatures>& features,
                             GoUctPlayoutPolicy<GoBoard>::Corrector corrFunction,
                             FeBasicFeature fromFeature,
                             FeBasicFeature toFeature
@@ -24,13 +24,13 @@ void FindCorrectionFeatures(const GoBoard& bd,
     std::pair<GoPointList,GoPointList> corrected =
     GoUctPlayoutUtil::FindCorrections(corrFunction, bd);
     for (GoPointList::Iterator it(corrected.first); it; ++it) // from
-        features[*it].m_basicFeatures.set(fromFeature);
+        features[*it].Set(fromFeature);
     for (GoPointList::Iterator it(corrected.second); it; ++it) // to
-        features[*it].m_basicFeatures.set(toFeature);
+        features[*it].Set(toFeature);
 }
 
 void FindAllCorrectionFeatures(const GoBoard& bd,
-                               SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                               GoEvalArray<FeMoveFeatures>& features)
 {
     FindCorrectionFeatures(bd, features,
                            GoUctUtil::DoFalseEyeToCaptureCorrection<GoBoard>,
@@ -52,18 +52,18 @@ void FindAllCorrectionFeatures(const GoBoard& bd,
 }
 
 void FindPolicyFeatures(GoUctPlayoutPolicy<GoBoard>& policy,
-                        SgPointArray<FeFeatures::FeMoveFeatures>& features,
+                        GoEvalArray<FeMoveFeatures>& features,
                         GoUctPlayoutPolicyType type,
                         FeBasicFeature f)
 {
     const GoPointList moves = policy.GetPolicyMoves(type);
     for (GoPointList::Iterator it(moves); it; ++it)
-        features[*it].m_basicFeatures.set(f);
+        features[*it].Set(f);
 }
 
 void FindRandomPruned(const GoBoard& bd,
                       GoUctPlayoutPolicy<GoBoard>& policy,
-                      SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                      GoEvalArray<FeMoveFeatures>& features)
 {
     const GoPointList moves = policy.GetPolicyMoves(GOUCT_RANDOM);
     SgPointSet moveSet;
@@ -73,12 +73,12 @@ void FindRandomPruned(const GoBoard& bd,
         if (  bd.IsLegal(*it)
             && ! moveSet.Contains(*it)
             )
-            features[*it].m_basicFeatures.set(FE_GOUCT_RANDOM_PRUNED);
+            features[*it].Set(FE_GOUCT_RANDOM_PRUNED);
 }
 
 void FindAllPolicyFeatures(const GoBoard& bd,
                            GoUctPlayoutPolicy<GoBoard>& policy,
-                           SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                           GoEvalArray<FeMoveFeatures>& features)
 {
     FindPolicyFeatures(policy, features, GOUCT_NAKADE, FE_GOUCT_NAKADE);
     FindPolicyFeatures(policy, features, GOUCT_ATARI_CAPTURE,
@@ -97,38 +97,26 @@ void FindAllPolicyFeatures(const GoBoard& bd,
 void GoUctFeatures::
 FindAllFeatures(const GoBoard& bd,
                 GoUctPlayoutPolicy<GoBoard>& policy,
-                SgPointArray<FeFeatures::FeMoveFeatures>& features,
-                FeFeatures::FeMoveFeatures& passFeatures)
+                FeFullBoardFeatures& f)
 {
-    for(GoBoard::Iterator it(bd); it; ++it)
-        if (bd.IsLegal(*it))
-            FeFeatures::FindMoveFeatures(bd, *it, features[*it]);
-    FeFeatures::FindMoveFeatures(bd, SG_PASS, passFeatures);
-    FeFeatures::FindFullBoardFeatures(bd, features);
-    FindAllPolicyFeatures(bd, policy, features);
+    f.FindAllFeatures();
+    FindAllPolicyFeatures(bd, policy, f.Features());
     if (USE_12_POINT_FEATURES)
-        GoUct12PointPattern::Find12PointFeatures(bd, features);
+        GoUct12PointPattern::Find12PointFeatures(bd, f.Features());
 }
 
 void GoUctFeatures::
 FindMoveFeaturesUI(const GoBoard& bd,
                    GoUctPlayoutPolicy<GoBoard>& policy,
                    SgPoint move,
-                   FeFeatures::FeMoveFeatures& features)
+                   FeMoveFeatures& features)
 {
     SG_ASSERT(move != SG_PASS);
     if (! bd.IsLegal(move))
         return;
-    FindMoveFeatures(bd, move, features);
-    SgPointArray<FeFeatures::FeMoveFeatures> boardFeatures;
-    FeFeatures::FindFullBoardFeatures(bd, boardFeatures);
-    FindAllPolicyFeatures(bd, policy, boardFeatures);
-    features.m_basicFeatures |= boardFeatures[move].m_basicFeatures;
-    if (USE_12_POINT_FEATURES)
-    {
-        GoUct12PointPattern::Find12PointFeatures(bd, boardFeatures);
-        features.m_12PointIndex = boardFeatures[move].m_12PointIndex;
-    }
+    FeFullBoardFeatures f(bd);
+    FindAllFeatures(bd, policy, f);
+    features = f.Features()[move];
 }
 
 void GoUctFeatures::WriteFeatures(std::ostream& stream,
@@ -142,12 +130,9 @@ void GoUctFeatures::WriteFeatures(std::ostream& stream,
     if (chosenMove != SG_NULLMOVE)
     {
         bd.Undo();
-        SgPointArray<FeFeatures::FeMoveFeatures> features;
-        FeFeatures::FeMoveFeatures passFeatures;
-        FindAllFeatures(bd, policy, features, passFeatures);
-        FeFeatures::WistubaFormat::
-        WriteBoardFeatures(stream, features, passFeatures,
-                           bd, chosenMove, writeComment);
+        FeFullBoardFeatures f(bd);
+        FindAllFeatures(bd, policy, f);
+        f.WriteNumeric(stream, chosenMove, writeComment);
         bd.Play(chosenMove);
     }
 }

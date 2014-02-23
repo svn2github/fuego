@@ -10,6 +10,7 @@
 #include "FeFeatureWeights.h"
 #include "GoAdditiveKnowledge.h"
 #include "GoBoard.h"
+#include "GoEvalArray.h"
 #include "GoUctKnowledge.h"
 #include "GoUctPlayoutPolicy.h"
 
@@ -66,7 +67,7 @@ private:
     
     SgHashCode m_code;
     
-    SgPointArray<float> m_eval;
+    GoEvalArray<float> m_eval;
     
     float m_passEval;
     

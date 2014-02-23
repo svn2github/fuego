@@ -182,7 +182,7 @@ void FindAtariFeatures(const GoBoard& bd, SgPoint move,
 void FindCfgFeatures(const GoBoard& bd, SgPoint focus,
                      FeBasicFeature baseFeature, int baseDistance,
                      const GoPointList& legalBoardMoves,
-                     SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                     GoEvalArray<FeMoveFeatures>& features)
 {
     const int MAX_DIST = 3;
     SgPointArray<int> dist = GoBoardUtil::CfgDistance(bd, focus, MAX_DIST);
@@ -196,13 +196,13 @@ void FindCfgFeatures(const GoBoard& bd, SgPoint focus,
         const int distance = std::min(dist[p], MAX_DIST + 1);
         const FeBasicFeature f = ComputeFeature(baseFeature,
                                              baseDistance, distance);
-        features[*it].m_basicFeatures.set(f);
+        features[*it].Set(f);
     }
 }
 
 void FindCfgFeatures(const GoBoard& bd,
                      const GoPointList& legalBoardMoves,
-                     SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                     GoEvalArray<FeMoveFeatures>& features)
 {
     const SgPoint lastMove = bd.GetLastMove();
     if (! SgIsSpecialMove(lastMove))
@@ -220,14 +220,14 @@ void FindCfgFeatures(const GoBoard& bd,
 }
 
 void FindCornerMoveFeatures(const GoBoard& bd,
-                SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                GoEvalArray<FeMoveFeatures>& features)
 {
     const std::vector<SgPoint>
     corner(GoOpeningKnowledge::FindCornerMoves(bd));
     for (std::vector<SgPoint>::const_iterator it
          = corner.begin(); it != corner.end(); ++it)
     {
-        features[*it].m_basicFeatures.set(FE_CORNER_OPENING_MOVE);
+        features[*it].Set(FE_CORNER_OPENING_MOVE);
     }
 }
 
@@ -278,7 +278,7 @@ void FindSelfatariFeatures(const GoBoard& bd, SgPoint move,
 }
 
 void FindSideExtensionFeatures(const GoBoard& bd,
-                        SgPointArray<FeFeatures::FeMoveFeatures>& features)
+                        GoEvalArray<FeMoveFeatures>& features)
 {
     const int MAX_BONUS = 20;
     std::vector<GoOpeningKnowledge::MoveBonusPair>
@@ -290,7 +290,7 @@ void FindSideExtensionFeatures(const GoBoard& bd,
         const int bonus = std::min(MAX_BONUS, it->second);
         SG_ASSERT(bonus >= 3);
         FeBasicFeature f = ComputeFeature(FE_SIDE_EXTENSION_3, 3, bonus);
-        features[p].m_basicFeatures.set(f);
+        features[p].Set(f);
     }
 }
 
@@ -330,14 +330,14 @@ inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
 
 inline int Find3x3Feature(const GoBoard& bd, SgPoint p)
 {
-    return bd.Pos(p) == 1  ? FeFeatures::INVALID_PATTERN_INDEX
+    return bd.Pos(p) == 1  ? INVALID_PATTERN_INDEX
          : bd.Line(p) == 1 ? Find2x3EdgeFeature(bd, p)
                            : Find3x3CenterFeature(bd, p);
 }
 
 void Write3x3(std::ostream& stream, int index)
 {
-    SG_ASSERT(index != FeFeatures::INVALID_PATTERN_INDEX);
+    SG_ASSERT(index != INVALID_PATTERN_INDEX);
     if (index < CENTER_START_INDEX_3x3)
         Go3x3Pattern::Write2x3EdgePattern(stream,
             Go3x3Pattern::DecodeEdgeIndex(index - EDGE_START_INDEX_3x3));
@@ -384,28 +384,6 @@ void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
             features.set(f);
         }
     }
-}
-
-void WritePatternFeatures(std::ostream& stream,
-                          const FeFeatures::FeMoveFeatures& features)
-{
-    if (features.m_12PointIndex != FeFeatures::INVALID_PATTERN_INDEX)
-        stream << " m_12PointIndex " << features.m_12PointIndex;
-    // TODO print map using PrintContext in GoUct
-    if (features.m_3x3Index != FeFeatures::INVALID_PATTERN_INDEX)
-    {
-        stream << " 3x3-index " << features.m_3x3Index;
-        Write3x3(stream, features.m_3x3Index);
-    }
-}
-
-void WritePatternFeatureIndex(std::ostream& stream,
-                              const FeFeatures::FeMoveFeatures& features)
-{
-    if (features.m_3x3Index != FeFeatures::INVALID_PATTERN_INDEX)
-        stream << ' ' << features.m_3x3Index;
-    if (features.m_12PointIndex != FeFeatures::INVALID_PATTERN_INDEX)
-        stream << ' ' << features.m_12PointIndex;
 }
 
 } // namespace
@@ -568,33 +546,6 @@ std::ostream& FeFeatures::operator<<(std::ostream& stream,
 
 //----------------------------------------------------------------------------
 
-size_t FeFeatures::ActiveFeatures(const FeMoveFeatures& features,
-                                  FeActiveArray& active)
-{
-    size_t nuActive = 0;
-    for (int i = 0; i < _NU_FE_FEATURES; ++i)
-        if (features.m_basicFeatures.test(i))
-        {
-            active[nuActive] = i;
-            if (++nuActive >= MAX_ACTIVE_LENGTH)
-                return nuActive;
-        }
-    // invalid for pass move and (1,1) points
-    if (features.m_3x3Index != INVALID_PATTERN_INDEX)
-    {
-        SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
-        active[nuActive] = features.m_3x3Index;
-        ++nuActive;
-    }
-    if (features.m_12PointIndex != INVALID_PATTERN_INDEX)
-    {
-        SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
-        active[nuActive] = features.m_12PointIndex;
-        ++nuActive;
-    }
-    return nuActive;
-}
-
 float FeFeatures::EvaluateActiveFeatures(const FeActiveArray& active,
                                          size_t nuActive,
                                          const FeFeatureWeights& weights)
@@ -611,22 +562,11 @@ float FeFeatures::EvaluateActiveFeatures(const FeActiveArray& active,
     return value;
 }
 
-SgPointArray<float> FeFeatures::EvaluateFeatures(const GoBoard& bd,
-                             const SgPointArray<FeMoveFeatures>& features,
-                             const FeFeatureWeights& weights)
-{
-    SgPointArray<float> eval(0);
-    for(GoBoard::Iterator it(bd); it; ++it)
-        if (bd.IsLegal(*it))
-            eval[*it] = EvaluateMoveFeatures(features[*it], weights);
-    return eval;
-}
-
 float FeFeatures::EvaluateMoveFeatures(const FeMoveFeatures& features,
                                        const FeFeatureWeights& weights)
 {
     FeActiveArray active;
-    const size_t nuActive = ActiveFeatures(features, active);
+    const size_t nuActive = features.ActiveFeatures(active);
     return EvaluateActiveFeatures(active, nuActive, weights);
 }
 
@@ -635,7 +575,7 @@ FeFeatures::EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
                                        const FeFeatureWeights& weights)
 {
     FeActiveArray active;
-    const size_t nuActive = ActiveFeatures(features, active);
+    const size_t nuActive = features.ActiveFeatures(active);
     std::vector<FeFeatures::FeEvalDetail> detail;
     for (FeActiveIterator it = active.begin();
                           it < active.begin() + nuActive; ++it)
@@ -670,32 +610,6 @@ void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindGamePhaseFeature(bd, features);
 }
 
-inline GoPointList AllLegalMoves(const GoBoard& bd)
-{
-    GoPointList legalBoardMoves;
-    for (GoBoard::Iterator it(bd); it; ++it)
-    if (bd.IsLegal(*it))
-        legalBoardMoves.PushBack(*it);
-    return legalBoardMoves;
-}
-
-void FeFeatures::FindFullBoardFeatures(const GoBoard& bd,
-                           SgPointArray<FeFeatures::FeMoveFeatures>& features)
-{
-    FindCornerMoveFeatures(bd, features);
-    FindSideExtensionFeatures(bd, features);
-    const GoPointList legalBoardMoves(AllLegalMoves(bd));
-    FindCfgFeatures(bd, legalBoardMoves, features);
-}
-
-void FeFeatures::FindMoveFeatures(const GoBoard& bd, SgPoint move,
-                                  FeMoveFeatures& features)
-{
-    FindBasicMoveFeatures(bd, move, features.m_basicFeatures);
-    if (move != SG_PASS)
-        features.m_3x3Index = Find3x3Feature(bd, move);
-}
-
 int FeFeatures::Get3x3Feature(const GoBoard& bd, SgPoint p)
 {
     return Find3x3Feature(bd, p);
@@ -709,15 +623,6 @@ bool FeFeatures::IsBasicFeatureID(int id)
 bool FeFeatures::Is3x3PatternID(int id)
 {
     return Is2x3EdgeID(id) || Is3x3CenterID(id);
-}
-
-void FeFeatures::WriteBoardFeatures(std::ostream& stream,
-                        const SgPointArray<FeMoveFeatures>& features,
-                        const GoBoard& bd)
-{
-    for (GoBoard::Iterator it(bd); it; ++it)
-        if (bd.IsLegal(*it))
-            WriteFeatures(stream, *it, features[*it]);
 }
 
 void FeFeatures::WriteEvalDetail(std::ostream& stream,
@@ -741,15 +646,6 @@ void FeFeatures::WriteFeatureFromID(std::ostream& stream, int id)
         stream << static_cast<FeBasicFeature>(id);
     else // 3x3 pattern
         Write3x3(stream, id);
-}
-
-void FeFeatures::WriteFeatures(std::ostream& stream,
-                   SgPoint move,
-                   const FeMoveFeatures& features)
-{
-    WriteFeatureSetAsText(stream, move, features.m_basicFeatures);
-    WritePatternFeatures(stream, features);
-    stream << '\n';
 }
 
 void FeFeatures::WriteFeatureSet(std::ostream& stream,
@@ -776,63 +672,149 @@ void FeFeatures::WriteFeatureSetAsText(std::ostream& stream,
 
 //-------------------------------------
     
-namespace FeFeatures {
 
-namespace WistubaFormat{
-namespace { // TODO needs to be local within WistubaFormat for now because of
-            // name conflicts with above. Needs cleanup
+namespace {
     
-void WriteFeatureSet(std::ostream& stream,
+void WriteFeatureSetNumeric(std::ostream& stream,
                      const FeBasicFeatureSet& features)
 {
     for (int f = FE_PASS_NEW; f < _NU_FE_FEATURES; ++f)
         if (features.test(f))
             stream << ' ' << f;
 }
+} // namespace
 
-void WriteFeatures(std::ostream& stream,
-                   const int isChosen,
-                   const FeMoveFeatures& features,
-                   const int moveNumber,
-                   const bool writeComment)
+//----------------------------------------------------------------------------
+
+size_t FeMoveFeatures::ActiveFeatures(FeActiveArray& active) const
+{
+    size_t nuActive = 0;
+    for (int i = 0; i < _NU_FE_FEATURES; ++i)
+        if (m_basicFeatures.test(i))
+        {
+            active[nuActive] = i;
+            if (++nuActive >= MAX_ACTIVE_LENGTH)
+                return nuActive;
+        }
+    // invalid for pass move and (1,1) points
+    if (m_3x3Index != INVALID_PATTERN_INDEX)
+    {
+        SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
+        active[nuActive] = m_3x3Index;
+        ++nuActive;
+    }
+    if (m_12PointIndex != INVALID_PATTERN_INDEX)
+    {
+        SG_ASSERT(nuActive < MAX_ACTIVE_LENGTH);
+        active[nuActive] = m_12PointIndex;
+        ++nuActive;
+    }
+    return nuActive;
+}
+
+void FeMoveFeatures::FindMoveFeatures(const GoBoard& bd, SgPoint move)
+{
+    FeFeatures::FindBasicMoveFeatures(bd, move, m_basicFeatures);
+    if (move != SG_PASS)
+        m_3x3Index = Find3x3Feature(bd, move);
+}
+
+void FeMoveFeatures::WriteNumeric(std::ostream& stream,
+                                  const int isChosen,
+                                  const int moveNumber,
+                                  const bool writeComment) const
 {
     const int SHAPE_SIZE = 3; // TODO make this variable
                               // when big pattern features are implemented
     stream << isChosen;
-    WriteFeatureSet(stream, features.m_basicFeatures);
-    WritePatternFeatureIndex(stream, features);
+    WriteFeatureSetNumeric(stream, m_basicFeatures);
+    WritePatternFeatureIndex(stream);
     if (writeComment)
         stream << " #0_" << moveNumber << ' ' << SHAPE_SIZE;
     stream << '\n';
 }
 
-} // namespace
-} // namespace WistubaFormat
-    
-void WistubaFormat::WriteBoardFeatures(std::ostream& stream,
-                        const SgPointArray<FeMoveFeatures>& features,
-                        const FeMoveFeatures& passFeatures,
-                        const GoBoard& bd,
-                        const SgPoint chosenMove,
-                        const bool writeComment)
+void FeMoveFeatures::WritePatternFeatureIndex(std::ostream& stream) const
 {
-    const int moveNumber = bd.MoveNumber() + 1; // + 1 because we did undo
-    for (GoBoard::Iterator it(bd); it; ++it)
+    if (m_3x3Index != INVALID_PATTERN_INDEX)
+        stream << ' ' << m_3x3Index;
+    if (m_12PointIndex != INVALID_PATTERN_INDEX)
+        stream << ' ' << m_12PointIndex;
+}
+
+void FeMoveFeatures::WritePatternFeatures(std::ostream& stream) const
+{
+    if (m_12PointIndex != INVALID_PATTERN_INDEX)
+        stream << " m_12PointIndex " << m_12PointIndex;
+    // TODO print map using PrintContext in GoUct
+    if (m_3x3Index != INVALID_PATTERN_INDEX)
     {
-        const SgPoint p = *it;
-        if (p != chosenMove && bd.IsLegal(p))
-            WriteFeatures(stream, 0, features[p], moveNumber, writeComment);
-    }
-    if (SG_PASS == chosenMove)
-        WriteFeatures(stream, 1, passFeatures, moveNumber, writeComment);
-    else
-    {
-        WriteFeatures(stream, 0, passFeatures, moveNumber, writeComment);
-        WriteFeatures(stream, 1, features[chosenMove], moveNumber,
-                      writeComment);
+        stream << " 3x3-index " << m_3x3Index;
+        Write3x3(stream, m_3x3Index);
     }
 }
 
-} // namespace FeFeatures
+void FeMoveFeatures::WriteFeatures(std::ostream& stream,
+                                   SgPoint move) const
+{
+    FeFeatures::WriteFeatureSetAsText(stream, move, m_basicFeatures);
+    WritePatternFeatures(stream);
+    stream << '\n';
+}
+
+//----------------------------------------------------------------------------
+GoEvalArray<float> FeFullBoardFeatures::
+EvaluateFeatures(const FeFeatureWeights& weights) const
+{
+    GoEvalArray<float> eval(0);
+    for (GoPointList::Iterator it(m_legalMoves); it; ++it)
+            eval[*it] = FeFeatures::EvaluateMoveFeatures(m_features[*it], weights);
+    eval[SG_PASS] = FeFeatures::EvaluateMoveFeatures(m_features[SG_PASS], weights);
+    return eval;
+}
+
+void FeFullBoardFeatures::FindAllFeatures()
+{
+    for (GoPointList::Iterator it(m_legalMoves); it; ++it)
+    {
+        SG_ASSERT(m_bd.IsLegal(*it));
+        m_features[*it].FindMoveFeatures(m_bd, *it);
+    }
+    m_features[SG_PASS].FindMoveFeatures(m_bd, SG_PASS);
+    FindFullBoardFeatures();
+}
+
+void FeFullBoardFeatures::FindFullBoardFeatures()
+{
+    FindCornerMoveFeatures(m_bd, m_features);
+    FindSideExtensionFeatures(m_bd, m_features);
+    FindCfgFeatures(m_bd, m_legalMoves, m_features);
+}
+
+void FeFullBoardFeatures::WriteBoardFeatures(std::ostream& stream) const
+{
+    for (GoPointList::Iterator it(m_legalMoves); it; ++it)
+    {
+        SG_ASSERT(m_bd.IsLegal(*it));
+        m_features[*it].WriteFeatures(stream, *it);
+    }
+    m_features[SG_PASS].WriteFeatures(stream, SG_PASS);
+}
+
+void FeFullBoardFeatures::WriteNumeric(std::ostream& stream,
+             const SgPoint chosenMove,
+             const bool writeComment) const
+{
+    const int moveNumber = m_bd.MoveNumber() + 1; // + 1 because we did undo
+    for (GoPointList::Iterator it(m_legalMoves); it; ++it)
+    {
+        SG_ASSERT(m_bd.IsLegal(*it));
+        if (*it != chosenMove)
+            m_features[*it].WriteNumeric(stream, 0, moveNumber, writeComment);
+    }
+    if (SG_PASS != chosenMove)
+        m_features[SG_PASS].WriteNumeric(stream, 0, moveNumber, writeComment);
+    m_features[chosenMove].WriteNumeric(stream, 1, moveNumber, writeComment);
+}
 
 //----------------------------------------------------------------------------

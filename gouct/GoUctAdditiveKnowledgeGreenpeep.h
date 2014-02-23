@@ -21,8 +21,7 @@ const int NUMPATTERNS19X19 = 1<<24;
 namespace GoUct12PointPattern
 {
     void Find12PointFeatures(const GoBoard& bd,
-                             SgPointArray<FeFeatures::FeMoveFeatures>&
-                             features);
+                             GoEvalArray<FeMoveFeatures>& features);
 } // namespace GoUct12PointPattern
 
 //----------------------------------------------------------------------------
