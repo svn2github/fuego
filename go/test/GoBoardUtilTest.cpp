@@ -116,6 +116,44 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AdjacentBlocks_2)
     BOOST_CHECK(blocks.Contains(Pt(1, 2)));
 }
 
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AllLegalMoves)
+{
+    GoBoard bd(5);
+    GoPointList moves(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(moves.Length(), 25);
+    bd.Play(Pt(1,2));
+    GoPointList moves2(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(moves2.Length(), 24);
+    bd.Play(SG_PASS);
+    GoPointList moves3(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(moves3.Length(), 24);
+    bd.Play(Pt(2,1));
+    GoPointList moves4(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(moves4.Length(), 22); // Pt(1,1) illegal for White
+    bd.Play(SG_PASS);
+    GoPointList moves5(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(moves5.Length(), 23); // Pt(1,1) legal for Black
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_AllLegalMoves_Ko)
+{
+    // |OX
+    // |.OX
+    // ----
+    GoBoard bd(5);
+    bd.Play(Pt(2,2));
+    bd.Play(Pt(1,2));
+    bd.Play(Pt(3,1));
+    bd.Play(Pt(2,1));
+    GoPointList moves(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(bd.AllEmpty().Size(), 21);
+    BOOST_CHECK_EQUAL(moves.Length(), 21);
+    bd.Play(Pt(1,1)); // capture
+    BOOST_CHECK_EQUAL(bd.AllEmpty().Size(), 21);
+    GoPointList moves2(AllLegalMoves(bd));
+    BOOST_CHECK_EQUAL(moves2.Length(), 20);
+}
+
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiagonalsOfColor)
 {
     GoSetup setup;

@@ -102,6 +102,9 @@ namespace GoBoardUtil
     void AdjacentBlocks(const GoBoard& bd, SgPoint p, int maxLib,
                         SgVector<SgPoint>* blocks);
 
+    /** compute the legal moves on the board, not including SG_PASS */
+    GoPointList AllLegalMoves(const GoBoard& bd);
+
     /** Estimate second order liberties of point p for given block
         This is fast and approximate, may double count libs */
     int Approx2Libs(const GoBoard& board, SgPoint block, SgPoint p,
@@ -465,6 +468,16 @@ namespace GoBoardUtil
     void UndoAll(GoBoard& bd);
 
 } // namespace GoBoardUtil
+
+inline GoPointList GoBoardUtil::AllLegalMoves(const GoBoard& bd)
+{
+    GoPointList legalBoardMoves;
+    for (GoBoard::Iterator it(bd); it; ++it)
+        if (bd.IsLegal(*it))
+            legalBoardMoves.PushBack(*it);
+    return legalBoardMoves;
+}
+
 
 inline bool GoBoardUtil::ContainsAnchor(const SgPoint anchor[],
                                         const SgPoint p)
