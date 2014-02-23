@@ -191,19 +191,6 @@ SgVector<SgPoint> GoGtpCommandUtil::PointListArg(const GtpCommand& cmd,
     return result;
 }
 
-void GoGtpCommandUtil::RespondColorGradientData(GtpCommand& cmd,
-                                  const SgPointArray<float>& data,
-                                  float minValue,
-                                  float maxValue,
-                                  const GoBoard& board)
-{
-    SgColorGradient gr(SgRGB(0,255,0), minValue, SgRGB(0,0,255), maxValue);
-    SgPointArray<string> array("\"\"");
-    for (GoBoard::Iterator it(board); it; ++it)
-        array[*it] = gr.ColorOf(data[*it]).ToString();
-    cmd << SgWritePointArray<string>(array, board.Size());
-}
-
 void GoGtpCommandUtil::RespondNumberArray(GtpCommand& cmd,
                                           const SgPointArray<int>& array,
                                           int scale, const GoBoard& board)
