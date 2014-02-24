@@ -1424,8 +1424,8 @@ void GoUctCommands::DisplayMoveInfo(GtpCommand& cmd,
         SgUctValue value = additiveKnowledge ? moves[i].m_predictorValue
                            : moves[i].m_value;
         value = SgUctSearch::InverseEval(value);
-        SgUctValue count = moves[i].m_count;
-        if (count > 0)
+        const bool show = additiveKnowledge || (moves[i].m_count > 0);
+        if (show)
         {
             SgUctValue scaledValue = value * 2 - 1;
             if (m_bd.ToPlay() != SG_BLACK)
@@ -1433,13 +1433,16 @@ void GoUctCommands::DisplayMoveInfo(GtpCommand& cmd,
             cmd << ' ' << SgWritePoint(move) << ' ' << scaledValue;
         }
     }
-    cmd << "\nLABEL ";
-    for (size_t i = 0; i < moves.size(); ++i)
+    if (! additiveKnowledge) // no count for additive
     {
-        SgMove move = moves[i].m_move;
-        SgUctValue count = moves[i].m_count;
-        if (count > 0)
-            cmd << ' ' << SgWritePoint(move) << ' ' << count;
+        cmd << "\nLABEL ";
+        for (size_t i = 0; i < moves.size(); ++i)
+        {
+            SgMove move = moves[i].m_move;
+            const SgUctValue count = moves[i].m_count;
+            if (count > 0)
+                cmd << ' ' << SgWritePoint(move) << ' ' << count;
+        }
     }
     cmd << '\n';
 }
