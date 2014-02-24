@@ -500,15 +500,9 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
         	moves[j].m_predictorValue = 1.0; // TODO bug? should be 0? Not used?
 	}
     
+    /* No more processing for feature-based predictor */
     if (kn->PredictorType() == GO_PRED_TYPE_PLAIN)
-    {
-        for (size_t j = 0; j < moves.size(); ++j)
-        {
-            SgUctValue v = kn->CappedValue(moves[j].m_predictorValue);
-            moves[j].m_predictorValue = v;
-        }
-        return;
-    }
+        /* */ return; /* */
 
     SgUctValue predictorTotal = 0.0;
     SgUctValue predictorMax = kn->Minimum();
