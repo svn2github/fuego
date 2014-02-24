@@ -786,8 +786,11 @@ void FeFullBoardFeatures::FindAllFeatures()
 
 void FeFullBoardFeatures::FindFullBoardFeatures()
 {
-    FindCornerMoveFeatures(m_bd, m_features);
-    FindSideExtensionFeatures(m_bd, m_features);
+    if (m_bd.Size() >= 15)
+    {
+        FindCornerMoveFeatures(m_bd, m_features);
+        FindSideExtensionFeatures(m_bd, m_features);
+    }
     FindCfgFeatures(m_bd, m_legalMoves, m_features);
 }
 
