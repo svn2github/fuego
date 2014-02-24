@@ -1,0 +1,29 @@
+Tools for creating and using features learned from game records
+
+Workflow:
+1. Write code to define features. See fuego/features for examples
+2. Collect game records in sgf format. Partition the games into three disjoint sets:
+a. train (the largest), b. validate, and c. test
+3. Use the gogui-statistics tool in combination with the Fuego GTP command features_wistuba_file to create a file features.txt in the current directory.
+See sample script below.
+4. rename the file to e.g. my.features
+5. use validation set of sgf files to create a validation file features.txt in the current directory. See sample script below.
+
+—————————————————————————————————————————————
+Sample script for step 3:
+This uses all games from the 21st century (years following the pattern 20*)
+to define features.
+
+setenv COLLECTION <your-path>/badukmovies-pro-collection
+foreach YEARPATH ($COLLECTION/20*)
+echo $YEARPATH
+foreach GAMEDIR ($YEARPATH/*)
+echo $GAMEDIR
+gogui-statistics -program $FUEGO -commands "features_wistuba_file" -size 19 \
+-quiet -force $GAMEDIR/*sgf
+end
+end
+mv features.txt 2000-2013.features
+—————————————————————————————————————————————
+Sample script for step 5:
+This uses the games from 1999 to define the validation set.
