@@ -213,18 +213,26 @@ BOOST_AUTO_TEST_CASE(SgArrayListTest_Include)
     a.PushBack(2);
     a.PushBack(1);
     a.PushBack(3);
-    a.Include(5);
+    bool result = a.Include(5);
+    BOOST_CHECK_EQUAL(result, true);
     BOOST_CHECK_EQUAL(a.Length(), 4);
     BOOST_CHECK_EQUAL(a[0], 2);
     BOOST_CHECK_EQUAL(a[1], 1);
     BOOST_CHECK_EQUAL(a[2], 3);
     BOOST_CHECK_EQUAL(a[3], 5);
-    a.Include(5);
+    result = a.Include(5);
+    BOOST_CHECK_EQUAL(result, false);
     BOOST_CHECK_EQUAL(a.Length(), 4);
     BOOST_CHECK_EQUAL(a[0], 2);
     BOOST_CHECK_EQUAL(a[1], 1);
     BOOST_CHECK_EQUAL(a[2], 3);
     BOOST_CHECK_EQUAL(a[3], 5);
+    result = a.Include(3);
+    BOOST_CHECK_EQUAL(result, false);
+    BOOST_CHECK_EQUAL(a.Length(), 4);
+    result = a.Include(-5);
+    BOOST_CHECK_EQUAL(result, true);
+    BOOST_CHECK_EQUAL(a.Length(), 5);
 }
 
 BOOST_AUTO_TEST_CASE(SgArrayListTest_Intersect)

@@ -57,7 +57,7 @@ public:
     SgArrayList();
 
     /** Construct list with one element. */
-    explicit SgArrayList(const T& val);
+    explicit SgArrayList(const T& value);
 
     SgArrayList(const SgArrayList<T,SIZE>& list);
 
@@ -73,18 +73,18 @@ public:
 
     void Clear();
 
-    bool Contains(const T& val) const;
+    bool Contains(const T& value) const;
 
     /** Remove first occurrence of a value.
         Like RemoveFirst, but more efficient and does not preserve
         order of remaining elements. The first occurrence of the value is
         replaced by the last element.
         @return false, if element was not found */
-    bool Exclude(const T& val);
+    bool Exclude(const T& value);
 
     /** PushBack value at the end of the list if it's not already in the
-        list. */
-    void Include(const T& val);
+        list. Returns true iff value was added */
+    bool Include(const T& value);
 
     /** Build intersection with other list.
         List may not contain duplicate entries. */
@@ -103,7 +103,7 @@ public:
         element, use Last() before calling PopBack(). */
     void PopBack();
 
-    void PushBack(const T& val);
+    void PushBack(const T& value);
 
     /** Push back all elements of another list.
         Works with lists of different maximum sizes.
@@ -115,7 +115,7 @@ public:
     /** Remove first occurence of a value.
         Preserves order of remaining elements.
         @see Exclude */
-    void RemoveFirst(const T& val);
+    void RemoveFirst(const T& value);
 
     /** Resize list.
         If new length is greater than current length, then the elements
@@ -127,7 +127,7 @@ public:
 
     bool SameElements(const SgArrayList& list) const;
 
-    void SetTo(const T& val);
+    void SetTo(const T& value);
 
     void Sort();
 
@@ -199,11 +199,11 @@ inline SgArrayList<T,SIZE>::SgArrayList()
 { }
 
 template<typename T, int SIZE>
-inline SgArrayList<T,SIZE>::SgArrayList(const T& val)
+inline SgArrayList<T,SIZE>::SgArrayList(const T& value)
 {
-    SetTo(val);
+    SetTo(value);
     m_len = 1;
-    m_array[0] = val;
+    m_array[0] = value;
 }
 
 template<typename T, int SIZE>
@@ -265,24 +265,24 @@ inline void SgArrayList<T,SIZE>::Clear()
 }
 
 template<typename T, int SIZE>
-bool SgArrayList<T,SIZE>::Contains(const T& val) const
+bool SgArrayList<T,SIZE>::Contains(const T& value) const
 {
     int i;
     const T* t = m_array;
     for (i = m_len; i--; ++t)
-        if (*t == val)
+        if (*t == value)
             return true;
     return false;
  }
 
 template<typename T, int SIZE>
-bool SgArrayList<T,SIZE>::Exclude(const T& val)
+bool SgArrayList<T,SIZE>::Exclude(const T& value)
 {
     // Go backwards through list, because with game playing programs
     // it is more likely that a recently added element is removed first
     T* t = m_array + m_len - 1;
     for (int i = m_len; i--; --t)
-        if (*t == val)
+        if (*t == value)
         {
             --m_len;
             if (m_len > 0)
@@ -293,10 +293,12 @@ bool SgArrayList<T,SIZE>::Exclude(const T& val)
 }
 
 template<typename T, int SIZE>
-void SgArrayList<T,SIZE>::Include(const T& val)
+bool SgArrayList<T,SIZE>::Include(const T& value)
 {
-    if (! Contains(val))
-        PushBack(val);
+    if (Contains(value))
+        return false;
+    PushBack(value);
+    return true;
 }
 
 template<typename T, int SIZE>
@@ -348,10 +350,10 @@ inline void SgArrayList<T,SIZE>::PopBack()
 }
 
 template<typename T, int SIZE>
-inline void SgArrayList<T,SIZE>::PushBack(const T& val)
+inline void SgArrayList<T,SIZE>::PushBack(const T& value)
 {
     SG_ASSERT(m_len < SIZE);
-    m_array[m_len++] = val;
+    m_array[m_len++] = value;
 }
 
 template<typename T, int SIZE>
@@ -363,12 +365,12 @@ inline void SgArrayList<T,SIZE>::PushBackList(const SgArrayList<T,SIZE2>& list)
 }
 
 template<typename T, int SIZE>
-void SgArrayList<T,SIZE>::RemoveFirst(const T& val)
+void SgArrayList<T,SIZE>::RemoveFirst(const T& value)
 {
     int i;
     T* t = m_array;
     for (i = m_len; i--; ++t)
-        if (*t == val)
+        if (*t == value)
         {
             for ( ; i--; ++t)
                 *t = *(t + 1);
@@ -398,10 +400,10 @@ bool SgArrayList<T,SIZE>::SameElements(const SgArrayList& list) const
 }
 
 template<typename T, int SIZE>
-inline void SgArrayList<T,SIZE>::SetTo(const T& val)
+inline void SgArrayList<T,SIZE>::SetTo(const T& value)
 {
     m_len = 1;
-    m_array[0] = val;
+    m_array[0] = value;
 }
 
 template<typename T, int SIZE>
