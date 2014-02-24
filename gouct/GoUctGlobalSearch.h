@@ -565,7 +565,7 @@ GenerateAllMoves(SgUctValue count,
             SG_ASSERT(m_featureKnowledge);
             m_featureKnowledge->Compute(feParam);
             if (feParam.m_useAsVirtualWins)
-                m_featureKnowledge->ProcessPosition(moves);
+                m_featureKnowledge->SetPriorKnowledge(moves);
         }
         ApplyAdditivePredictors(moves);
     }
