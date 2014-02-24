@@ -28,7 +28,7 @@ struct GoUctFeatureKnowledgeParam
 
     bool m_useAsAdditivePredictor;
     
-    bool m_useAsVirtualWins;
+    bool m_useAsPriorKnowledge;
 
     float m_additiveFeatureMultiplier;
     

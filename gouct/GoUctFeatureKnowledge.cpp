@@ -24,7 +24,7 @@ inline float Sigmoid(float x)
 GoUctFeatureKnowledgeParam::GoUctFeatureKnowledgeParam()
     :
     m_useAsAdditivePredictor(true),
-    m_useAsVirtualWins(false),
+    m_useAsPriorKnowledge(false),
     m_additiveFeatureMultiplier(1.0),
     m_additiveFeatureSigmoidFactor(10.0)
 { }

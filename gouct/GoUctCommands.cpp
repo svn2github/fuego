@@ -563,8 +563,8 @@ void GoUctCommands::CmdParamFeatureKnowledge(GtpCommand& cmd)
         cmd
         << "[bool] use_as_additive_predictor "
         << p.m_useAsAdditivePredictor << '\n'
-        << "[bool] use_as_virtual_wins "
-        << p.m_useAsVirtualWins << '\n'
+        << "[bool] use_as_prior_knowledge "
+        << p.m_useAsPriorKnowledge << '\n'
         << "[float] additive_feature_multiplier "
         << p.m_additiveFeatureMultiplier << '\n'
         << "[float] additive_feature_sigmoid_factor "
@@ -576,8 +576,8 @@ void GoUctCommands::CmdParamFeatureKnowledge(GtpCommand& cmd)
         string name = cmd.Arg(0);
         if (name == "use_as_additive_predictor")
             p.m_useAsAdditivePredictor = cmd.Arg<bool>(1);
-        else if (name == "use_as_virtual_wins")
-            p.m_useAsVirtualWins = cmd.Arg<bool>(1);
+        else if (name == "use_as_prior_knowledge")
+            p.m_useAsPriorKnowledge = cmd.Arg<bool>(1);
         else if (name == "additive_feature_multiplier")
             p.m_additiveFeatureMultiplier = cmd.Arg<float>(1);
         else if (name == "additive_feature_sigmoid_factor")
