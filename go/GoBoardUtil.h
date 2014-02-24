@@ -135,6 +135,11 @@ namespace GoBoardUtil
     void BlocksAdjacentToPoints(const GoBoard& bd, const SgPointSet& points,
                                 SgBlackWhite c, SgVector<SgPoint>* anchors);
 
+    /** Add to moves: captures of any blocks adjacent to anchor */
+    template<class BOARD>
+    bool CaptureAdjacentBlocks(const BOARD& bd, SgPoint anchor,
+                               GoPointList& moves);
+
     /** Compute the common fate graph distance from all points to a given
         point.
         The common fate graph distance ist the shortest path between points
@@ -854,7 +859,7 @@ bool GoBoardUtil::SelfAtari(const BOARD& bd, SgPoint p, int& numStones)
 }
 
 // Need a forward-declaration for function AtariDefenseMoves()
-// @todo move Iterators its their file
+// @todo move Iterators to their own file
 template<class BOARD> class GoAdjBlockIterator;
 
 template<class BOARD>
@@ -897,6 +902,22 @@ inline bool GoBoardUtil::AtariDefenseMoves(const BOARD& bd,
         }
     }
     return ! moves.IsEmpty();
+}
+
+template<class BOARD>
+bool GoBoardUtil::CaptureAdjacentBlocks(const BOARD& bd, SgPoint anchor,
+                                        GoPointList& moves)
+{
+    SG_ASSERT(bd.Anchor(anchor) == anchor);
+    bool found = false;
+    for (GoAdjBlockIterator<BOARD> it(bd, anchor, 1); it; ++it)
+    {
+        SgPoint oppLiberty = bd.TheLiberty(*it);
+        moves.PushBack(oppLiberty);
+        // we do not check legality and duplicates here.
+        found = true;
+    }
+    return found;
 }
 
 template<class BOARD>
