@@ -20,19 +20,33 @@ struct GoUctFeatureKnowledgeParam
 {
     GoUctFeatureKnowledgeParam();
     
-    /** map moveValue to additive term */
+    /** Map moveValue to additive term .
+        Also see ProbabilityValue and m_additiveFeatureMultiplier. */
     float PredictorValue(float moveValue) const;
 
-    /** map moveValue to [0..1] */
+    /** Map moveValue to [0..1] */
     float ProbabilityValue(float moveValue) const;
 
+    /** Scale feature values so that the smallest is mapped to 0, largest to 1
+        before applying them as prior knowledge. */
+    bool m_linearlyScaleProbabilities;
+
+    /** Use feature knowledge as an additive term */
     bool m_useAsAdditivePredictor;
     
+    /** Use feature knowledge as "virtual" wins/losses */
     bool m_useAsPriorKnowledge;
 
+    /** Multiplier from probability to additive predictor value.
+        PredictorValue() = m_additiveFeatureMultiplier * ProbabilityValue()
+    */
     float m_additiveFeatureMultiplier;
     
+    /** Factor to multiply moveValue with before computing sigmoid */
     float m_additiveFeatureSigmoidFactor;
+
+    /** Number of "virtual" simulations when used as prior knowledge */
+    float m_priorKnowledgeWeight;
 };
 
 //----------------------------------------------------------------------------
@@ -61,6 +75,10 @@ private:
     
     float MoveValue(const SgPoint move) const;
     
+    void SetLinearlyScaledPriors(std::vector<SgUctMoveInfo>& moves);
+
+    void SetSimplePriors(std::vector<SgUctMoveInfo>& moves);
+
     void SetWinsLosses(SgPoint move, float moveValue);
 
     bool UpToDate() const;

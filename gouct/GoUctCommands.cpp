@@ -561,6 +561,8 @@ void GoUctCommands::CmdParamFeatureKnowledge(GtpCommand& cmd)
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
         cmd
+        << "[bool] linearly_scale_probabilities "
+        << p.m_linearlyScaleProbabilities << '\n'
         << "[bool] use_as_additive_predictor "
         << p.m_useAsAdditivePredictor << '\n'
         << "[bool] use_as_prior_knowledge "
@@ -574,7 +576,9 @@ void GoUctCommands::CmdParamFeatureKnowledge(GtpCommand& cmd)
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "use_as_additive_predictor")
+        if (name == "linearly_scale_probabilities")
+            p.m_linearlyScaleProbabilities = cmd.Arg<bool>(1);
+        else if (name == "use_as_additive_predictor")
             p.m_useAsAdditivePredictor = cmd.Arg<bool>(1);
         else if (name == "use_as_prior_knowledge")
             p.m_useAsPriorKnowledge = cmd.Arg<bool>(1);
