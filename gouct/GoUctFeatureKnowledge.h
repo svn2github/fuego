@@ -68,9 +68,7 @@ private:
     SgHashCode m_code;
     
     GoEvalArray<float> m_eval;
-    
-    float m_passEval;
-    
+        
     GoUctFeatureKnowledgeParam m_param;
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
@@ -93,7 +91,7 @@ inline SgUctValue GoUctFeatureKnowledge::Minimum() const
 inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const
 {
     SG_ASSERT(UpToDate());
-    return (move == SG_PASS) ? m_passEval : m_eval[move];
+    return m_eval[move];
 }
 
 inline SgUctValue GoUctFeatureKnowledge::Scale() const
