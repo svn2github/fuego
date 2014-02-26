@@ -144,22 +144,18 @@ inline void PostProcess(InfoVector& moves,
 void GoUctAdditiveKnowledgeMultiple::ProcessPosition(InfoVector& moves)
 {
     InitPredictorValues(moves);
-    const int moveNum = Board().MoveNumber();
     int nuPredictors = 0;
     for (SgVectorIterator<GoAdditiveKnowledge*> it(m_additiveKnowledge);
          it; ++it)
     {
-        if ((*it)->InMoveRange(moveNum))
-        {
-            ++nuPredictors; // count the predictors we are actually using.
-            std::vector<SgUctMoveInfo> movesCopy = moves;
-            InitPredictorValues(movesCopy);
-            (*it)->ProcessPosition(movesCopy);
-            for (std::size_t j = 0; j < moves.size(); ++j)
-                Combine(moves[j].m_predictorValue,
-                        movesCopy[j].m_predictorValue,
-                        m_combinationType);
-        }
+        ++nuPredictors; // count the predictors we are actually using.
+        std::vector<SgUctMoveInfo> movesCopy = moves;
+        InitPredictorValues(movesCopy);
+        (*it)->ProcessPosition(movesCopy);
+        for (std::size_t j = 0; j < moves.size(); ++j)
+            Combine(moves[j].m_predictorValue,
+                    movesCopy[j].m_predictorValue,
+                    m_combinationType);
     }
     
     if (nuPredictors > 1)

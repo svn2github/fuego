@@ -58,24 +58,7 @@ public:
     /** The scaling factor for this predictor */
     virtual SgUctValue Scale() const = 0;
 
-	/** Should predictor be appied for given move number? */
-    bool InMoveRange(int moveNumber) const;
-    
-	/** @see m_startMove, m_endMove */
-    void SetMoveRange(int startMove, int endMove);
-
 private:
-    /** Global move number where this predictor first applies. 
-        It is compared against GoBoard::MoveNumber().
-        Subclass constructor must configure it. 
-    */
-    int m_startMove;
-
-    /** Global move number where this predictor last applies. 
-        It is compared against GoBoard::MoveNumber().
-        Subclass constructor must configure it. 
-    */
-    int m_endMove;
 
     /** The board on which prior knowledge is computed */
     const GoBoard& m_bd;

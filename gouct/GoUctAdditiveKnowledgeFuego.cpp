@@ -16,10 +16,7 @@ const float GoUctAdditiveKnowledgeFuego::VALUE_MULTIPLIER = 4.0f;
 
 GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd)
     : GoUctAdditiveKnowledgeStdProb(bd)
-{
-    // Knowledge applies to all moves
-    SetMoveRange(0, 10000); 
-}
+{ }
 
 // @todo Assumes that SgMoveInfo has m_raveValue (and m_raveCount) populated
 // by prior knowledge.

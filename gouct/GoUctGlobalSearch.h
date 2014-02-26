@@ -487,19 +487,11 @@ template<class POLICY>
 void GoUctGlobalSearchState<POLICY>::
 ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
 {
-    const int moveNum = Board().MoveNumber();
     GoAdditiveKnowledge* kn = GetAdditiveKnowledge();
     if (kn == 0)
         return;
-    if (kn->InMoveRange(moveNum))
-        kn->ProcessPosition(moves);
-    else
-    {
-        SG_ASSERT(false);
-        for (size_t j = 0; j < moves.size(); ++j)
-        	moves[j].m_predictorValue = 1.0; // TODO bug? should be 0? Not used?
-	}
-    
+    kn->ProcessPosition(moves);
+
     /* No more processing for feature-based predictor */
     if (kn->PredictorType() == GO_PRED_TYPE_PLAIN)
         /* */ return; /* */

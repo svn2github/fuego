@@ -262,10 +262,7 @@ GoUctAdditiveKnowledgeGreenpeep::GoUctAdditiveKnowledgeGreenpeep(
                         const GoUctAdditiveKnowledgeParamGreenpeep& param)
   : GoAdditiveKnowledge(bd),
     m_param(param)
-{
-    // Knowledge applies to all moves
-    SetMoveRange(0, 10000); 
-}
+{ }
 
 void GoUctAdditiveKnowledgeGreenpeep::
 ProcessPosition19(std::vector<SgUctMoveInfo>& moves)
