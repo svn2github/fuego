@@ -930,9 +930,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << s.UpdateMultiplePlayoutsAsSingle() << '\n'
             << "[bool] virtual_loss " << s.VirtualLoss() << '\n'
             << "[bool] weight_rave_updates " << s.WeightRaveUpdates() << '\n'
-            << "[float] additive_knowledge_weight " 
-            << s.AdditiveKnowledge().KnowledgeWeight() << '\n'
-            << "[string] additive_predictor_decay " 
+            << "[string] additive_predictor_decay "
             << s.AdditiveKnowledge().PredictorDecay() << '\n'
             << "[string] bias_term_constant " << s.BiasTermConstant() << '\n'
             << "[string] bias_term_frequency "
@@ -969,9 +967,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             throw GtpFailure() << "Command " 
                     << name << " is blocked in deterministic mode."; 
 
-        if (name == "additive_knowledge_weight")
-        	s.AdditiveKnowledge().SetKnowledgeWeight(cmd.Arg<float>(1));
-        else if (name == "additive_predictor_decay")
+        if (name == "additive_predictor_decay")
             s.AdditiveKnowledge().SetPredictorDecay(cmd.Arg<float>(1));
         else if (name == "bias_term_constant")
             s.SetBiasTermConstant(cmd.Arg<float>(1));

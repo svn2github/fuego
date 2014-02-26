@@ -14,14 +14,7 @@
 class SgAdditiveKnowledge
 {
 public:
-
-	SgAdditiveKnowledge() : m_knowledgeWeight(1),
-                            m_predictorDecay(5.0f)
-	{ }
-
-    /** Strength of bias in upper confidence bound for child selection.
-        bound -= m_additiveknowledgeweight * additive_knowledge */
-    SgUctValue KnowledgeWeight() const;
+    SgAdditiveKnowledge();
 
     /** The rate at which the additive predictor decays */
     SgUctValue PredictorDecay() const;
@@ -29,34 +22,21 @@ public:
  	/** Compute weight from decay and posCount */
     SgUctValue PredictorWeight(SgUctValue posCount) const;
 
-    /** See KnowledgeWeight() */
-    void SetKnowledgeWeight(SgUctValue weight);
-
     /** See PredictorDecay() */
     void SetPredictorDecay(SgUctValue value);
 
 private:
-    /** See KnowledgeWeight() */
-    SgUctValue m_knowledgeWeight;
-
     /* See PredictorDecay() */
     SgUctValue m_predictorDecay;
-
 };
 
-inline SgUctValue SgAdditiveKnowledge::KnowledgeWeight() const
-{
-	return m_knowledgeWeight;
-}
+inline SgAdditiveKnowledge::SgAdditiveKnowledge()
+    : m_predictorDecay(5.0f)
+{ }
 
 inline SgUctValue SgAdditiveKnowledge::PredictorDecay() const
 {
     return m_predictorDecay;
-}
-
-inline void SgAdditiveKnowledge::SetKnowledgeWeight(SgUctValue weight)
-{
-	m_knowledgeWeight = weight;
 }
 
 inline void SgAdditiveKnowledge::SetPredictorDecay(SgUctValue value)
@@ -67,8 +47,7 @@ inline void SgAdditiveKnowledge::SetPredictorDecay(SgUctValue value)
 inline SgUctValue SgAdditiveKnowledge::PredictorWeight(SgUctValue posCount)
 const
 {
-    return   m_knowledgeWeight
-           * sqrt(m_predictorDecay / (posCount + m_predictorDecay));
+    return sqrt(m_predictorDecay / (posCount + m_predictorDecay));
 }
 
 
