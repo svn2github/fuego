@@ -45,7 +45,7 @@ public:
 				 const GoUctAdditiveKnowledgeParamGreenpeep& param);
 
     /** The minimum value allowed by this predictor */
-    SgUctValue Minimum() const;
+    SgUctValue MinValue() const;
 
     GoPredictorType PredictorType() const;
 
@@ -100,7 +100,7 @@ private:
 
 //----------------------------------------------------------------------------
 
-inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::Minimum() const
+inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::MinValue() const
 {
 	return PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED ? 0.0001f : 0.05f;
 }

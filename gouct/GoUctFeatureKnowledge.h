@@ -66,7 +66,7 @@ public:
     GoPredictorType PredictorType() const;
     
     /** The minimum value allowed by this predictor */
-    SgUctValue Minimum() const;
+    SgUctValue MinValue() const;
     
     /** The scaling factor for this predictor */
     SgUctValue Scale() const;
@@ -101,7 +101,7 @@ inline GoPredictorType GoUctFeatureKnowledge::PredictorType() const
     return GO_PRED_TYPE_PLAIN;
 }
 
-inline SgUctValue GoUctFeatureKnowledge::Minimum() const
+inline SgUctValue GoUctFeatureKnowledge::MinValue() const
 {
     return -1; // TODO
 }

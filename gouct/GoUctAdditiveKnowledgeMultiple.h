@@ -24,7 +24,7 @@ typedef std::vector<SgUctMoveInfo> InfoVector;
 /** A container used for applying multiple compatible types of knowledge.
     The container is initially empty. Knowledge must be added using
     AddKnowledge before using this container. All added knowledge must
-    share the same parameters PredictorType(), Minimum() and Scale().
+    share the same parameters PredictorType(), MinValue() and Scale().
  
     The knowledge is additive in the sense that its combined value is
     added in the UCT child selection formula. However, the method
@@ -50,7 +50,7 @@ public:
 	GoPredictorType PredictorType() const;
 
     /** The minimum value allowed by this predictor */
-    SgUctValue Minimum() const;
+    SgUctValue MinValue() const;
 
     /** The scaling factor for this predictor */
     SgUctValue Scale() const;
@@ -74,7 +74,7 @@ private:
 
 //----------------------------------------------------------------------------
 
-inline SgUctValue GoUctAdditiveKnowledgeMultiple::Minimum() const
+inline SgUctValue GoUctAdditiveKnowledgeMultiple::MinValue() const
 {
 	return m_minimum;
 }

@@ -497,10 +497,10 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
         /* */ return; /* */
 
     SgUctValue predictorTotal = 0.0;
-    SgUctValue predictorMax = kn->Minimum();
+    SgUctValue predictorMax = kn->MinValue();
     for (size_t j = 0; j < moves.size(); ++j)
     {
-        predictorTotal += kn->CappedValue(moves[j].m_predictorValue);
+        predictorTotal += kn->RaiseToMinValue(moves[j].m_predictorValue);
         if (moves[j].m_predictorValue > predictorMax) 
             predictorMax = moves[j].m_predictorValue;
     }
@@ -508,7 +508,7 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
     {
         for (size_t j = 0; j < moves.size(); ++j)
         {
-            SgUctValue v = kn->CappedValue(moves[j].m_predictorValue);
+            SgUctValue v = kn->RaiseToMinValue(moves[j].m_predictorValue);
             moves[j].m_predictorValue = kn->Scale() 
                 * sqrt(predictorTotal / v);
         }
@@ -520,7 +520,7 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
             sqrt(predictorTotal * predictorMax);
         for (size_t j = 0; j < moves.size(); ++j)
         {
-            SgUctValue v = kn->CappedValue(moves[j].m_predictorValue);
+            SgUctValue v = kn->RaiseToMinValue(moves[j].m_predictorValue);
             moves[j].m_predictorValue = kn->Scale()
                 * predictorMultiplier / v;
         }

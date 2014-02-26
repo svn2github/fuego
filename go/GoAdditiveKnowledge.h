@@ -49,11 +49,11 @@ public:
     
     virtual GoPredictorType PredictorType() const = 0;
     
-    /** return value, but lower bound capped by Minimum() */
-    SgUctValue CappedValue(SgUctValue value) const;
+    /** return value, but lower bound capped by MinValue() */
+    SgUctValue RaiseToMinValue(SgUctValue value) const;
     
     /** The minimum value allowed by this predictor */
-    virtual SgUctValue Minimum() const = 0;
+    virtual SgUctValue MinValue() const = 0;
 
     /** The scaling factor for this predictor */
     virtual SgUctValue Scale() const = 0;
@@ -70,9 +70,9 @@ inline const GoBoard& GoAdditiveKnowledge::Board() const
 	return m_bd;
 }
 
-inline SgUctValue GoAdditiveKnowledge::CappedValue(SgUctValue value) const
+inline SgUctValue GoAdditiveKnowledge::RaiseToMinValue(SgUctValue value) const
 {
-	return std::max(value, Minimum());
+	return std::max(value, MinValue());
 }
 
 //----------------------------------------------------------------------------
@@ -88,14 +88,14 @@ public:
     GoPredictorType PredictorType() const;
     
     /** The minimum value allowed by this predictor */
-    SgUctValue Minimum() const;
+    SgUctValue MinValue() const;
     
     /** The scaling factor for this predictor */
     SgUctValue Scale() const;
 };
 //----------------------------------------------------------------------------
 
-inline SgUctValue GoUctAdditiveKnowledgeStdProb::Minimum() const
+inline SgUctValue GoUctAdditiveKnowledgeStdProb::MinValue() const
 {
 	return 0.0001f;
 }
