@@ -248,6 +248,8 @@ struct FeFullBoardFeatures
 
     void FindAllFeatures();
     
+    const GoPointList& LegalMoves() const;
+
     /** Write in human-readable way */
     void WriteBoardFeatures(std::ostream& stream) const;
 
@@ -293,6 +295,11 @@ inline FeFullBoardFeatures::FeFullBoardFeatures(const GoBoard& bd)
 inline GoEvalArray<FeMoveFeatures>& FeFullBoardFeatures::Features()
 {
     return m_features;
+}
+
+inline const GoPointList& FeFullBoardFeatures::LegalMoves() const
+{
+    return m_legalMoves;
 }
 
 //----------------------------------------------------------------------------

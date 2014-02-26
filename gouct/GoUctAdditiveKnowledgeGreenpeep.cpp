@@ -12,6 +12,7 @@
 #include <climits>
 #include <algorithm>
 
+#include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "SgPlatform.h"
 #include "SgStringUtil.h"
@@ -25,7 +26,6 @@ struct PatternEntry // common data structure used in both 9x9 and 19x19
 #include "GoUctGreenpeepPatterns9.h"
 #include "GoUctGreenpeepPatterns19.h"
 
-using std::string;
 //----------------------------------------------------------------------------
 namespace {
 
@@ -227,6 +227,7 @@ void ReadPatterns(unsigned short predictor9[],
 }
 //----------------------------------------------------------------------------
 
+/** Index for Feature IDs */
 const int START_INDEX_12_POINT = 3000;
 
 } // namespace
@@ -235,18 +236,17 @@ const int START_INDEX_12_POINT = 3000;
 
 void GoUct12PointPattern::
 Find12PointFeatures(const GoBoard& bd,
-                    GoEvalArray<FeMoveFeatures>& features)
+                    GoEvalArray<FeMoveFeatures>& features,
+                    const GoPointList& legalMoves)
 {
     const SgBlackWhite toPlay = bd.ToPlay();
     const SgBlackWhite opponent = bd.Opponent();
-    
-    for(GoBoard::Iterator it(bd); it; ++it)
-        if (bd.IsLegal(*it))
-        {
-            const SgPoint p = *it;
-            unsigned int context = Context(bd, p, toPlay, opponent);
-            features[p].Set12PointIndex(START_INDEX_12_POINT + context);
-        }
+    for (GoPointList::Iterator it(legalMoves); it; ++it)
+    {
+        const SgPoint p = *it;
+        unsigned int context = Context(bd, p, toPlay, opponent);
+        features[p].Set12PointIndex(START_INDEX_12_POINT + context);
+    }
 }
 //----------------------------------------------------------------------------
 

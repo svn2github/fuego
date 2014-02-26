@@ -102,7 +102,8 @@ FindAllFeatures(const GoBoard& bd,
     f.FindAllFeatures();
     FindAllPolicyFeatures(bd, policy, f.Features());
     if (USE_12_POINT_FEATURES)
-        GoUct12PointPattern::Find12PointFeatures(bd, f.Features());
+        GoUct12PointPattern::Find12PointFeatures(bd, f.Features(),
+                                                 f.LegalMoves());
 }
 
 void GoUctFeatures::
