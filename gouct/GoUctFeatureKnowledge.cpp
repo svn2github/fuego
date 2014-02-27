@@ -51,7 +51,7 @@ GoUctFeatureKnowledge::GoUctFeatureKnowledge(
     : GoAdditiveKnowledge(bd),
       GoUctKnowledge(bd),
       m_code(),
-      m_eval(0),
+      m_moveValue(0),
       m_param(),
       m_policy(bd, GoUctPlayoutPolicyParam()),
       m_weights(weights)
@@ -64,7 +64,7 @@ Compute(const GoUctFeatureKnowledgeParam& param)
     const GoBoard& bd = GoAdditiveKnowledge::Board();
     FeFullBoardFeatures features(bd);
     GoUctFeatures::FindAllFeatures(bd, m_policy, features);
-    m_eval = features.EvaluateFeatures(m_weights);
+    m_moveValue = features.EvaluateFeatures(m_weights);
     m_code = bd.GetHashCodeInclToPlay();
 }
 

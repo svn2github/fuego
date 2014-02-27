@@ -85,7 +85,7 @@ private:
     
     SgHashCode m_code;
     
-    GoEvalArray<float> m_eval;
+    GoEvalArray<float> m_moveValue;
         
     GoUctFeatureKnowledgeParam m_param;
 
@@ -109,7 +109,7 @@ inline SgUctValue GoUctFeatureKnowledge::MinValue() const
 inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const
 {
     SG_ASSERT(UpToDate());
-    return m_eval[move];
+    return m_moveValue[move];
 }
 
 inline SgUctValue GoUctFeatureKnowledge::Scale() const
