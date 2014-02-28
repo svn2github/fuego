@@ -544,13 +544,13 @@ GenerateAllMoves(SgUctValue count,
             ApplyFilter(moves);
         if (param.m_useDefaultPriorKnowledge)
             m_priorKnowledge.ProcessPosition(moves);
-        if (  feParam.m_useAsPriorKnowledge
+        if (  feParam.m_priorKnowledgeType != PRIOR_NONE
            || feParam.m_useAsAdditivePredictor
            )
         {
             SG_ASSERT(m_featureKnowledge);
             m_featureKnowledge->Compute(feParam);
-            if (feParam.m_useAsPriorKnowledge)
+            if (feParam.m_priorKnowledgeType != PRIOR_NONE)
                 m_featureKnowledge->SetPriorKnowledge(moves);
         }
         ApplyAdditivePredictors(moves);

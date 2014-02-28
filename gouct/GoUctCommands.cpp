@@ -136,6 +136,43 @@ string MoveSelectToString(SgUctMoveSelect moveSelect)
     }
 }
 
+GoUctFeaturePriorType FeaturePriorArg(const GtpCommand& cmd, size_t number)
+{
+    string arg = cmd.ArgToLower(number);
+    if (arg == "none")
+        return PRIOR_NONE;
+    if (arg == "simple")
+        return PRIOR_SIMPLE;
+    if (arg == "scale_probabilities_linear")
+        return PRIOR_SCALE_PROBABILITIES_LINEAR;
+    if (arg == "top_n")
+        return PRIOR_TOP_N;
+    if (arg == "scale_nu_games")
+        return PRIOR_SCALE_NU_GAMES;
+    throw GtpFailure() << "unknown feature prior argument \"" << arg << '"';
+}
+
+string FeaturePriorToString(GoUctFeaturePriorType type)
+{
+    switch (type)
+    {
+        case PRIOR_NONE:
+            return "none";
+        case PRIOR_SIMPLE:
+            return "simple";
+        case PRIOR_SCALE_PROBABILITIES_LINEAR:
+            return "scale_probabilities_linear";
+        case PRIOR_TOP_N:
+            return "top_n";
+        case PRIOR_SCALE_NU_GAMES:
+            return "scale_nu_games";
+        default:
+            SG_ASSERT(false);
+            return "?";
+    }
+}
+
+
 GoUctGlobalSearchMode SearchModeArg(const GtpCommand& cmd, size_t number)
 {
     string arg = cmd.ArgToLower(number);
@@ -561,31 +598,36 @@ void GoUctCommands::CmdParamFeatureKnowledge(GtpCommand& cmd)
         // Boolean parameters first for better layout of GoGui parameter
         // dialog, alphabetically otherwise
         cmd
-        << "[bool] linearly_scale_probabilities "
-        << p.m_linearlyScaleProbabilities << '\n'
         << "[bool] use_as_additive_predictor "
         << p.m_useAsAdditivePredictor << '\n'
-        << "[bool] use_as_prior_knowledge "
-        << p.m_useAsPriorKnowledge << '\n'
+        << "[list/none/simple/scale_probabilities_linear/top_n/"
+           "scale_nu_games] prior_knowledge_type "
+        << FeaturePriorToString(p.m_priorKnowledgeType) << '\n'
         << "[float] additive_feature_multiplier "
         << p.m_additiveFeatureMultiplier << '\n'
         << "[float] additive_feature_sigmoid_factor "
-        << p.m_additiveFeatureSigmoidFactor << '\n';
-       ;
+        << p.m_additiveFeatureMultiplier << '\n'
+        << "[float] prior_weight "
+        << p.m_priorKnowledgeWeight << '\n'
+        << "[int] top_n "
+        << p.m_topN << '\n'
+        ;
     }
     else if (cmd.NuArg() == 2)
     {
         string name = cmd.Arg(0);
-        if (name == "linearly_scale_probabilities")
-            p.m_linearlyScaleProbabilities = cmd.Arg<bool>(1);
-        else if (name == "use_as_additive_predictor")
+        if (name == "use_as_additive_predictor")
             p.m_useAsAdditivePredictor = cmd.Arg<bool>(1);
-        else if (name == "use_as_prior_knowledge")
-            p.m_useAsPriorKnowledge = cmd.Arg<bool>(1);
+        else if (name == "prior_knowledge_type")
+            p.m_priorKnowledgeType = FeaturePriorArg(cmd, 1);
         else if (name == "additive_feature_multiplier")
             p.m_additiveFeatureMultiplier = cmd.Arg<float>(1);
         else if (name == "additive_feature_sigmoid_factor")
             p.m_additiveFeatureSigmoidFactor = cmd.Arg<float>(1);
+        else if (name == "prior_weight")
+            p.m_priorKnowledgeWeight = cmd.Arg<float>(1);
+        else if (name == "top_n")
+            p.m_topN = cmd.Arg<int>(1);
         else
             throw GtpFailure() << "unknown parameter: " << name;
     }

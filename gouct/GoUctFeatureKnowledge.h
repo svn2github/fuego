@@ -15,6 +15,23 @@
 #include "GoUctPlayoutPolicy.h"
 
 //----------------------------------------------------------------------------
+
+enum GoUctFeaturePriorType
+{
+    /** Do not use features as a prior */
+    PRIOR_NONE,
+    /** See SetPriorsSimple() */
+    PRIOR_SIMPLE,
+    /** Scale number of prior wins/losses depending on strength of features */
+    PRIOR_SCALE_NU_GAMES,
+    /** Scale feature values so that the smallest is mapped to 0, largest to 1
+        before applying them as prior knowledge. */
+    PRIOR_SCALE_PROBABILITIES_LINEAR,
+    /** Add a prior only to the top m_topN moves acording to features */
+    PRIOR_TOP_N
+};
+
+//----------------------------------------------------------------------------
 /** Parameters for GoUctFeatureKnowledge */
 struct GoUctFeatureKnowledgeParam
 {
@@ -27,16 +44,9 @@ struct GoUctFeatureKnowledgeParam
     /** Map moveValue to [0..1] */
     float ProbabilityValue(float moveValue) const;
 
-    /** Scale feature values so that the smallest is mapped to 0, largest to 1
-        before applying them as prior knowledge. */
-    bool m_linearlyScaleProbabilities;
-
     /** Use feature knowledge as an additive term */
     bool m_useAsAdditivePredictor;
     
-    /** Use feature knowledge as "virtual" wins/losses */
-    bool m_useAsPriorKnowledge;
-
     /** Multiplier from probability to additive predictor value.
         PredictorValue() = m_additiveFeatureMultiplier * ProbabilityValue()
     */
@@ -45,8 +55,18 @@ struct GoUctFeatureKnowledgeParam
     /** Factor to multiply moveValue with before computing sigmoid */
     float m_additiveFeatureSigmoidFactor;
 
-    /** Number of "virtual" simulations when used as prior knowledge */
+    /** If and how to use feature knowledge as "virtual" wins/losses */
+    GoUctFeaturePriorType m_priorKnowledgeType;
+
+    /** Number of "virtual" simulations when used as prior knowledge.
+        Depending on m_priorKnowledgeType this value can be used as 
+        a constant, as a maximum, or a scaling factor.
+     */
     float m_priorKnowledgeWeight;
+
+    /** Limit on number of top moves that get a prior.
+        Used if m_priorKnowledgeType == PRIOR_TOP_N */
+    int m_topN;
 };
 
 //----------------------------------------------------------------------------
@@ -73,11 +93,21 @@ public:
 
 private:
     
+    void
+    ComputeMinAndMaxValues(const std::vector<SgUctMoveInfo>& moves,
+                           float& smallest,
+                           float& largest) const;
+
     float MoveValue(const SgPoint move) const;
     
-    void SetLinearlyScaledPriors(std::vector<SgUctMoveInfo>& moves);
+    void SetPriorsScaleProbabilitiesLinearly(
+                                        std::vector<SgUctMoveInfo>& moves);
 
-    void SetSimplePriors(std::vector<SgUctMoveInfo>& moves);
+    void SetPriorsScaleNuGames(std::vector<SgUctMoveInfo>& moves);
+
+    void SetPriorsSimple(std::vector<SgUctMoveInfo>& moves);
+
+    void SetPriorsTopN(std::vector<SgUctMoveInfo>& moves);
 
     void SetWinsLosses(SgPoint move, float moveValue);
 
@@ -92,18 +122,17 @@ private:
     GoUctPlayoutPolicy<GoBoard> m_policy;
     
     FeFeatureWeights m_weights;
-    
 };
 
 //----------------------------------------------------------------------------
 inline GoPredictorType GoUctFeatureKnowledge::PredictorType() const
 {
-    return GO_PRED_TYPE_PLAIN;
+    return GO_PRED_TYPE_PROBABILITY_BASED;
 }
 
 inline SgUctValue GoUctFeatureKnowledge::MinValue() const
 {
-    return -1; // TODO
+    return 0.0001; // TODO
 }
 
 inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const
@@ -114,7 +143,7 @@ inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const
 
 inline SgUctValue GoUctFeatureKnowledge::Scale() const
 {
-    return 1.0; // TODO
+    return 0.01; // TODO
 }
 
 inline bool GoUctFeatureKnowledge::UpToDate() const

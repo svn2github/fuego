@@ -23,12 +23,12 @@ inline float Sigmoid(float x)
 //----------------------------------------------------------------------------
 GoUctFeatureKnowledgeParam::GoUctFeatureKnowledgeParam()
     :
-    m_linearlyScaleProbabilities(false),
     m_useAsAdditivePredictor(true),
-    m_useAsPriorKnowledge(false),
     m_additiveFeatureMultiplier(1.0),
     m_additiveFeatureSigmoidFactor(10.0),
-    m_priorKnowledgeWeight(23.0)
+    m_priorKnowledgeType(PRIOR_NONE),
+    m_priorKnowledgeWeight(23.0),
+    m_topN(3)
 { }
 
 inline float GoUctFeatureKnowledgeParam::PredictorValue(float moveValue) const
@@ -90,21 +90,36 @@ SetPriorKnowledge(std::vector<SgUctMoveInfo>& moves)
 {
     SG_ASSERT(UpToDate());
     ClearValues();
-    if (m_param.m_linearlyScaleProbabilities)
-        SetLinearlyScaledPriors(moves);
-    else
-        SetSimplePriors(moves);
+    switch (m_param.m_priorKnowledgeType)
+    {
+        case PRIOR_SIMPLE:
+            SetPriorsSimple(moves);
+            break;
+        case PRIOR_SCALE_NU_GAMES:
+            SetPriorsScaleNuGames(moves);
+            break;
+        case PRIOR_SCALE_PROBABILITIES_LINEAR:
+            SetPriorsScaleProbabilitiesLinearly(moves);
+            break;
+        case PRIOR_TOP_N:
+            SetPriorsTopN(moves);
+            break;
+        default:
+            SG_ASSERT(false);
+    }
     AddValuesTo(moves);
 }
 
 void GoUctFeatureKnowledge::
-SetLinearlyScaledPriors(std::vector<SgUctMoveInfo>& moves)
+ComputeMinAndMaxValues(const std::vector<SgUctMoveInfo>& moves,
+                       float& smallest,
+                       float& largest) const
 {
-    // We cannot just take the min and max of the whole eval array
+    // We cannot just take the min and max over the whole eval array
     // since it contains illegal moves with value 0, which may be smaller
     // (or larger) than the true min/max.
-    float smallest = std::numeric_limits<float>::max();
-    float largest = -std::numeric_limits<float>::max();
+    smallest = std::numeric_limits<float>::max();
+    largest = -std::numeric_limits<float>::max();
     for (std::vector<SgUctMoveInfo>::const_iterator it = moves.begin();
          it != moves.end(); ++it)
     {
@@ -113,6 +128,37 @@ SetLinearlyScaledPriors(std::vector<SgUctMoveInfo>& moves)
         smallest = std::min(smallest, moveValue);
         largest = std::max(largest, moveValue);
     }
+}
+
+void GoUctFeatureKnowledge::
+SetPriorsScaleNuGames(std::vector<SgUctMoveInfo>& moves)
+{
+    float smallest;
+    float largest;
+    ComputeMinAndMaxValues(moves, smallest, largest);
+    
+    for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
+         it != moves.end(); ++it)
+    {
+        const SgPoint move = it->m_move;
+        const float moveValue = MoveValue(move);
+        const SgUctValue value = moveValue > 0 ? 1.0 : 0.0;
+        SgUctValue weight = 0.0;
+        if (moveValue > 0.001)
+            weight = m_param.m_priorKnowledgeWeight * moveValue / largest;
+        else if (moveValue < -0.001)
+            weight = m_param.m_priorKnowledgeWeight * moveValue / smallest;
+
+        Add(move, value, weight);
+    }
+}
+
+void GoUctFeatureKnowledge::
+SetPriorsScaleProbabilitiesLinearly(std::vector<SgUctMoveInfo>& moves)
+{
+    float smallest;
+    float largest;
+    ComputeMinAndMaxValues(moves, smallest, largest);
     const float scale = largest - smallest;
     SG_ASSERT(scale >= 0.0);
     if (scale > 0.001) // skip if all values are nearly identical
@@ -134,7 +180,7 @@ SetLinearlyScaledPriors(std::vector<SgUctMoveInfo>& moves)
 }
 
 void GoUctFeatureKnowledge::
-SetSimplePriors(std::vector<SgUctMoveInfo>& moves)
+SetPriorsSimple(std::vector<SgUctMoveInfo>& moves)
 {
     for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
          it != moves.end(); ++it)
@@ -142,6 +188,34 @@ SetSimplePriors(std::vector<SgUctMoveInfo>& moves)
         const SgPoint move = it->m_move;
         const float moveValue = MoveValue(move);
         SetWinsLosses(move, moveValue);
+    }
+}
+
+typedef std::pair<SgPoint,float> EvalPair;
+
+bool CompareValue(const EvalPair& p1, const EvalPair& p2)
+{
+    return p1.second > p2.second;
+}
+
+void GoUctFeatureKnowledge::
+SetPriorsTopN(std::vector<SgUctMoveInfo>& moves)
+{
+    const int N = std::min(m_param.m_topN, static_cast<int>(moves.size()));
+    std::vector<EvalPair> sorted;
+    for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
+         it != moves.end(); ++it)
+    {
+        const SgPoint move = it->m_move;
+        sorted.push_back(std::make_pair(move, MoveValue(move)));
+    }
+    std::sort(sorted.begin(), sorted.end(), CompareValue);
+
+    for (int i=0; i < N; ++i)
+    {
+        Add(sorted[i].first, 1.0, m_param.m_priorKnowledgeWeight);
+        SgDebug() << "Good move: " << SgWritePoint(sorted[i].first)
+        << " Eval = " << sorted[i].second << 'n';
     }
 }
 
