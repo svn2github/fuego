@@ -10,7 +10,7 @@
 #include "GoSetupUtil.h"
 #include "GoUctUtil.h"
 
-using GoUctUtil::DoSelfAtariCorrection;
+using namespace GoUctUtil;
 using SgPointUtil::Pt;
 using std::string;
 
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_EmptyBoard)
     if (SG_MAX_SIZE >= 19)
     {
         GoBoard bd(19);
-        SgPoint p = GoUctUtil::GenForcedOpeningMove(bd);
+        SgPoint p = GenForcedOpeningMove(bd);
         BOOST_CHECK(   p == Pt(4, 4)
                     || p == Pt(4, 16)
                     || p == Pt(16, 4)
@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_NoEmptyCorner_1)
         GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
         setup.m_player = SG_BLACK;
         GoBoard bd(boardSize, setup);
-        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+        BOOST_CHECK_EQUAL(GenForcedOpeningMove(bd), SG_NULLMOVE);
     }
 }
 
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_NoEmptyCorner_2)
         GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
         setup.m_player = SG_WHITE;
         GoBoard bd(boardSize, setup);
-        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+        BOOST_CHECK_EQUAL(GenForcedOpeningMove(bd), SG_NULLMOVE);
     }
 }
 
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_OneEmptyCorner)
         GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
         setup. m_player = SG_WHITE;
         GoBoard bd(boardSize, setup);
-        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), Pt(4, 4));
+        BOOST_CHECK_EQUAL(GenForcedOpeningMove(bd), Pt(4, 4));
     }
 }
 
@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SmallBoard)
     if (SG_MAX_SIZE >= 12)
     {
         GoBoard bd(12);
-        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+        BOOST_CHECK_EQUAL(GenForcedOpeningMove(bd), SG_NULLMOVE);
     }
 }
 
@@ -273,7 +273,7 @@ BOOST_AUTO_TEST_CASE(GoUctUtilTest_GenForcedOpeningMove_SetupStones)
         GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
         setup.m_player = SG_WHITE;
         GoBoard bd(boardSize, setup);
-        BOOST_CHECK_EQUAL(GoUctUtil::GenForcedOpeningMove(bd), SG_NULLMOVE);
+        BOOST_CHECK_EQUAL(GenForcedOpeningMove(bd), SG_NULLMOVE);
     }
 }
 
