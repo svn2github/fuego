@@ -628,7 +628,6 @@ bool GoLadderUtil::IsLadderCaptureMove(const GoBoard& constBd,
 bool GoLadderUtil::IsLadderEscapeMove(const GoBoard& constBd, 
 									   SgPoint prey, SgPoint firstMove)
 {
-    SG_ASSERT(constBd.NumLiberties(prey) == 1);
     GoModBoard mbd(constBd);
     GoBoard& bd = mbd.Board();
     const SgBlackWhite defender = bd.GetStone(prey);
@@ -646,7 +645,6 @@ bool GoLadderUtil::IsLadderEscapeMove(const GoBoard& constBd,
     }
     else
     	return false;
-
 }
 
 void GoLadderUtil::FindLadderEscapeMoves(const GoBoard& bd, SgPoint prey, 
