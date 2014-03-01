@@ -497,7 +497,7 @@ void GoUctPlayoutPolicy<BOARD>::PlayGoodLiberties(SgPoint block)
     SgPoint ignoreOther;
     if (! GoBoardUtil::IsSimpleChain(m_bd, block, ignoreOther))
         for (typename BOARD::LibertyIterator it(m_bd, block); it; ++it)
-            if (  GoUctUtil::GainsLiberties(m_bd, block, *it)
+            if (  GoBoardUtil::GainsLiberties(m_bd, block, *it)
                && ! GoBoardUtil::SelfAtari(m_bd, *it)
                )
                 m_moves.PushBack(*it);

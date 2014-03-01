@@ -83,12 +83,6 @@ namespace GoUctUtil
     template<class BOARD>
     bool DoSelfAtariCorrection(const BOARD& bd, SgPoint& p);
 
-    /** Check, if playing at a lib gains liberties.
-        Does not handle capturing moves for efficiency. Not needed, because
-        capturing moves have a higher priority in the playout. */
-    template<class BOARD>
-    bool GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib);
-
     /** Generate a forced opening move.
         This function can be used to generate opening moves instead of doing a
         Monte Carlo tree search, which often returns random looking moves in
@@ -384,37 +378,6 @@ inline bool GoUctUtil::DoSelfAtariCorrection(const BOARD& bd, SgPoint& move)
         }
     }
     // no replacement found
-    return false;
-}
-
-template<class BOARD>
-bool GoUctUtil::GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib)
-{
-    SG_ASSERT(bd.IsEmpty(lib));
-    SG_ASSERT(bd.Anchor(anchor) == anchor);
-    const SgBlackWhite color = bd.GetStone(anchor);
-    int nu = -2; // need 2 new libs (lose 1 lib by playing on lib itself)
-    for (GoNb4Iterator<BOARD> it(bd, lib); it; ++it)
-    {
-        SgEmptyBlackWhite c = bd.GetColor(*it);
-        if (c == SG_EMPTY)
-        {
-            if (! bd.IsLibertyOfBlock(*it, anchor))
-                if (++nu >= 0)
-                    return true;
-        }
-        else if (c == color) // merge with block
-        {
-            const SgPoint anchor2 = bd.Anchor(*it);
-            if (anchor != anchor2)
-                for (typename BOARD::LibertyIterator lit(bd, anchor2); lit;
-                     ++lit)
-                    if (! bd.IsLibertyOfBlock(*lit, anchor))
-                        if (++nu >= 0)
-                            return true;
-        }
-        // else capture - not handled, see function documentation
-    }
     return false;
 }
 

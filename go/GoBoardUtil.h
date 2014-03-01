@@ -191,6 +191,12 @@ namespace GoBoardUtil
     template<class BOARD>
     SgPoint FindDiagNeighbor(const BOARD& bd, SgPoint p, SgEmptyBlackWhite c);
     
+    /** Check, if playing at a lib gains liberties.
+     Does not handle capturing moves for efficiency. Not needed, because
+     capturing moves have a higher priority in the playout. */
+    template<class BOARD>
+    bool GainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib);
+
     /** Include move in list if it is legal */
     bool GenerateIfLegal(const GoBoard& bd,
                          SgPoint move,
@@ -266,6 +272,15 @@ namespace GoBoardUtil
         legal move, if the move creates a block with more than one stone
         in atari. */
     bool IsSnapback(const GoBoard& bd, SgPoint p);
+
+    /** Check if playing at a lib reduces own liberties or not.
+     Handles connection to pther blocks, but
+     does not handle the case where we gain liberties by capture.
+     This is assumed to be a higher priority feature that is already
+     handled elsewhere.
+     */
+    template<class BOARD>
+    bool KeepsOrGainsLiberties(const BOARD& bd, SgPoint anchor, SgPoint lib);
 
     /** all points on lines [from..to] */
     SgPointSet Lines(const GoBoard& bd, SgGrid from, SgGrid to);
@@ -474,6 +489,44 @@ namespace GoBoardUtil
 
 } // namespace GoBoardUtil
 
+//----------------------------------------------------------------------------
+namespace {
+template<class BOARD>
+bool AchievesLibertyTarget(const BOARD& bd, SgPoint anchor,
+                           SgPoint lib, int nu)
+{
+    SG_ASSERT(bd.IsEmpty(lib));
+    SG_ASSERT(bd.Anchor(anchor) == anchor);
+    SG_ASSERT(bd.IsLibertyOfBlock(lib, anchor));
+
+    const SgBlackWhite color = bd.GetStone(anchor);
+    for (GoNb4Iterator<BOARD> it(bd, lib); it; ++it)
+    {
+        const SgEmptyBlackWhite c = bd.GetColor(*it);
+        if (c == SG_EMPTY)
+        {
+            if (! bd.IsLibertyOfBlock(*it, anchor))
+                if (++nu >= 0)
+                    return true;
+        }
+        else if (c == color) // merge with block
+        {
+            const SgPoint anchor2 = bd.Anchor(*it);
+            if (anchor != anchor2)
+                for (typename BOARD::LibertyIterator lit(bd, anchor2); lit;
+                     ++lit)
+                    if (! bd.IsLibertyOfBlock(*lit, anchor))
+                        if (++nu >= 0)
+                            return true;
+        }
+        // else capture - not handled, see function documentation
+    }
+    return false;
+}
+} // namespace
+
+//----------------------------------------------------------------------------
+
 inline GoPointList GoBoardUtil::AllLegalMoves(const GoBoard& bd)
 {
     GoPointList legalBoardMoves;
@@ -622,6 +675,25 @@ bool GoBoardUtil::IsSimpleChain(const BOARD& bd,
     }
     return false;
 }
+
+template<class BOARD>
+inline bool GoBoardUtil::GainsLiberties(const BOARD& bd,
+                                      SgPoint anchor,
+                                      SgPoint lib)
+{
+    int nu = -2; // need 2 new libs (lose 1 lib by playing on lib itself)
+    return AchievesLibertyTarget(bd, anchor, lib, nu);
+}
+
+template<class BOARD>
+inline bool GoBoardUtil::KeepsOrGainsLiberties(const BOARD& bd,
+                                             SgPoint anchor,
+                                             SgPoint lib)
+{
+    int nu = -1; // need 1 new liberty (loses 1 lib by playing on lib itself)
+    return AchievesLibertyTarget(bd, anchor, lib, nu);
+}
+
 
 inline bool GoBoardUtil::PlayIfLegal(GoBoard& bd, SgPoint p)
 {

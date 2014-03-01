@@ -181,6 +181,119 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_DiagonalsOfColor)
     BOOST_CHECK(diags.Contains(Pt(3, 3)));
 }
 
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_GainsLiberties)
+{
+    std::string s("XO..O.\n"
+                  ".XOO..\n"
+                  "......\n"
+                  "......\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+
+    BOOST_CHECK(GainsLiberties(bd, Pt(1,6), Pt(1,5)));
+    BOOST_CHECK(! GainsLiberties(bd, Pt(2,5), Pt(1,5)));
+    BOOST_CHECK(GainsLiberties(bd, Pt(2,5), Pt(2,4)));
+    BOOST_CHECK(GainsLiberties(bd, Pt(2,6), Pt(3,6)));
+
+    const SgPoint anchor1 = bd.Anchor( Pt(3,5));
+    BOOST_CHECK(! GainsLiberties(bd, anchor1, Pt(3,6)));
+    BOOST_CHECK(GainsLiberties(bd, anchor1, Pt(3,4)));
+    BOOST_CHECK(GainsLiberties(bd, anchor1, Pt(4,4)));
+    BOOST_CHECK(! GainsLiberties(bd, anchor1, Pt(4,6)));
+    BOOST_CHECK(GainsLiberties(bd, anchor1, Pt(5,5)));
+
+    BOOST_CHECK(GainsLiberties(bd, Pt(5,6), Pt(4,6)));
+    BOOST_CHECK(GainsLiberties(bd, Pt(5,6), Pt(5,5)));
+    BOOST_CHECK(! GainsLiberties(bd, Pt(5,6), Pt(6,6)));
+}
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_GetDirtyRegion)
+{
+    SgRect s1, s2, l1, l2;
+    GoBoard bd(9);
+
+    // ..XO
+    // .XOX
+    // ..X.
+    // ....
+    // ....
+
+    s1 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, false, true);
+    l1 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, true, true);
+    bd.Play(Pt(3, 3), SG_BLACK);
+    s2 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, false, false);
+    l2 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect(3, 3, 3, 3));
+    BOOST_CHECK_EQUAL(l1, SgRect(3, 3, 3, 3));
+    BOOST_CHECK_EQUAL(s2, SgRect(3, 3, 3, 3));
+    BOOST_CHECK_EQUAL(l2, SgRect(3, 3, 3, 3));
+
+    s1 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, false, true);
+    l1 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, true, true);
+    bd.Play(Pt(3, 4), SG_WHITE);
+    s2 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, false, false);
+    l2 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect(3, 3, 4, 4));
+    BOOST_CHECK_EQUAL(l1, SgRect(3, 3, 3, 4));
+    BOOST_CHECK_EQUAL(s2, SgRect(3, 3, 4, 4));
+    BOOST_CHECK_EQUAL(l2, SgRect(3, 3, 3, 4));
+
+    s1 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, false, true);
+    l1 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, true, true);
+    bd.Play(Pt(4, 4), SG_BLACK);
+    s2 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, false, false);
+    l2 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect(4, 4, 4, 4));
+    BOOST_CHECK_EQUAL(l1, SgRect(3, 4, 4, 4));
+    BOOST_CHECK_EQUAL(s2, SgRect(4, 4, 4, 4));
+    BOOST_CHECK_EQUAL(l2, SgRect(3, 4, 4, 4));
+
+    s1 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, false, true);
+    l1 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, true, true);
+    bd.Play(Pt(4, 5), SG_WHITE);
+    s2 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, false, false);
+    l2 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect(4, 4, 5, 5));
+    BOOST_CHECK_EQUAL(l1, SgRect(4, 4, 4, 5));
+    BOOST_CHECK_EQUAL(s2, SgRect(4, 4, 5, 5));
+    BOOST_CHECK_EQUAL(l2, SgRect(4, 4, 4, 5));
+
+    s1 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, false, true);
+    l1 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, true, true);
+    bd.Play(Pt(2, 4), SG_BLACK);
+    s2 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, false, false);
+    l2 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect(2, 2, 4, 4));
+    BOOST_CHECK_EQUAL(l1, SgRect(2, 3, 4, 4));
+    BOOST_CHECK_EQUAL(s2, SgRect(2, 2, 4, 4));
+    BOOST_CHECK_EQUAL(l2, SgRect(2, 3, 4, 4));
+
+    s1 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, false, true);
+    l1 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, true, true);
+    bd.Play(SG_PASS, SG_WHITE);
+    s2 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, false, false);
+    l2 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect());
+    BOOST_CHECK_EQUAL(l1, SgRect());
+    BOOST_CHECK_EQUAL(s2, SgRect());
+    BOOST_CHECK_EQUAL(l2, SgRect());
+
+    s1 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, false, true);
+    l1 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, true, true);
+    bd.Play(Pt(3, 5), SG_BLACK);
+    s2 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, false, false);
+    l2 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, true, false);
+    BOOST_CHECK_EQUAL(s1, SgRect(3, 3, 4, 5));
+    BOOST_CHECK_EQUAL(l1, SgRect(2, 4, 3, 5));
+    BOOST_CHECK_EQUAL(s2, SgRect(3, 3, 4, 5));
+    BOOST_CHECK_EQUAL(l2, SgRect(2, 4, 3, 5));
+}
+
+
 void TestNb(const GoBoard& bd, SgPoint p, int nuNb)
 {
     int nu = 0;
@@ -288,6 +401,36 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_IsSnapback_2)
     BOOST_CHECK(IsSnapback(bd, Pt(3, 1)));
 }
 
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_KeepsOrGainsLiberties)
+{
+    std::string s("XO..O.\n"
+                  ".XOO..\n"
+                  "......\n"
+                  "......\n"
+                  "......\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(1,6), Pt(1,5)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(2,5), Pt(1,5)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(2,5), Pt(2,4)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(2,6), Pt(3,6)));
+
+    const SgPoint anchor1 = bd.Anchor( Pt(3,5));
+    BOOST_CHECK(! KeepsOrGainsLiberties(bd, anchor1, Pt(3,6)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, anchor1, Pt(3,4)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, anchor1, Pt(4,4)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, anchor1, Pt(4,6)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, anchor1, Pt(5,5)));
+
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(5,6), Pt(4,6)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(5,6), Pt(5,5)));
+    BOOST_CHECK(KeepsOrGainsLiberties(bd, Pt(5,6), Pt(6,6)));
+}
+
 /** Test GoBoardUtil::NeighborsOfColor */
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
 {
@@ -317,7 +460,6 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor)
     BOOST_CHECK(neighbors.Contains(Pt(2, 3)));
 }
 
-
 /** Test GoBoardUtil::NeighborsOfColor (SgVector version) */
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgVector)
 {
@@ -345,88 +487,6 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgVector)
     BOOST_CHECK_EQUAL(neighbors.Length(), 2);
     BOOST_CHECK(neighbors.Contains(Pt(3, 2)));
     BOOST_CHECK(neighbors.Contains(Pt(2, 3)));
-}
-
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_GetDirtyRegion)
-{
-    SgRect s1, s2, l1, l2;
-    GoBoard bd(9);
-
-    // ..XO
-    // .XOX
-    // ..X.
-    // ....
-    // ....
-
-    s1 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, false, true);
-    l1 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, true, true);
-    bd.Play(Pt(3, 3), SG_BLACK);
-    s2 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, false, false);
-    l2 = GetDirtyRegion(bd, Pt(3, 3), SG_BLACK, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect(3, 3, 3, 3));
-    BOOST_CHECK_EQUAL(l1, SgRect(3, 3, 3, 3));
-    BOOST_CHECK_EQUAL(s2, SgRect(3, 3, 3, 3));
-    BOOST_CHECK_EQUAL(l2, SgRect(3, 3, 3, 3));
-
-    s1 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, false, true);
-    l1 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, true, true);
-    bd.Play(Pt(3, 4), SG_WHITE);
-    s2 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, false, false);
-    l2 = GetDirtyRegion(bd, Pt(3, 4), SG_WHITE, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect(3, 3, 4, 4));
-    BOOST_CHECK_EQUAL(l1, SgRect(3, 3, 3, 4));
-    BOOST_CHECK_EQUAL(s2, SgRect(3, 3, 4, 4));
-    BOOST_CHECK_EQUAL(l2, SgRect(3, 3, 3, 4));
-
-    s1 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, false, true);
-    l1 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, true, true);
-    bd.Play(Pt(4, 4), SG_BLACK);
-    s2 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, false, false);
-    l2 = GetDirtyRegion(bd, Pt(4, 4), SG_BLACK, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect(4, 4, 4, 4));
-    BOOST_CHECK_EQUAL(l1, SgRect(3, 4, 4, 4));
-    BOOST_CHECK_EQUAL(s2, SgRect(4, 4, 4, 4));
-    BOOST_CHECK_EQUAL(l2, SgRect(3, 4, 4, 4));
-
-    s1 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, false, true);
-    l1 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, true, true);
-    bd.Play(Pt(4, 5), SG_WHITE);
-    s2 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, false, false);
-    l2 = GetDirtyRegion(bd, Pt(4, 5), SG_WHITE, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect(4, 4, 5, 5));
-    BOOST_CHECK_EQUAL(l1, SgRect(4, 4, 4, 5));
-    BOOST_CHECK_EQUAL(s2, SgRect(4, 4, 5, 5));
-    BOOST_CHECK_EQUAL(l2, SgRect(4, 4, 4, 5));
-
-    s1 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, false, true);
-    l1 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, true, true);
-    bd.Play(Pt(2, 4), SG_BLACK);
-    s2 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, false, false);
-    l2 = GetDirtyRegion(bd, Pt(2, 4), SG_BLACK, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect(2, 2, 4, 4));
-    BOOST_CHECK_EQUAL(l1, SgRect(2, 3, 4, 4));
-    BOOST_CHECK_EQUAL(s2, SgRect(2, 2, 4, 4));
-    BOOST_CHECK_EQUAL(l2, SgRect(2, 3, 4, 4));
-
-    s1 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, false, true);
-    l1 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, true, true);
-    bd.Play(SG_PASS, SG_WHITE);
-    s2 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, false, false);
-    l2 = GetDirtyRegion(bd, SG_PASS, SG_WHITE, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect());
-    BOOST_CHECK_EQUAL(l1, SgRect());
-    BOOST_CHECK_EQUAL(s2, SgRect());
-    BOOST_CHECK_EQUAL(l2, SgRect());
-
-    s1 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, false, true);
-    l1 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, true, true);
-    bd.Play(Pt(3, 5), SG_BLACK);
-    s2 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, false, false);
-    l2 = GetDirtyRegion(bd, Pt(3, 5), SG_BLACK, true, false);
-    BOOST_CHECK_EQUAL(s1, SgRect(3, 3, 4, 5));
-    BOOST_CHECK_EQUAL(l1, SgRect(2, 4, 3, 5));
-    BOOST_CHECK_EQUAL(s2, SgRect(3, 3, 4, 5));
-    BOOST_CHECK_EQUAL(l2, SgRect(2, 4, 3, 5));
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorPassWins)
