@@ -79,7 +79,8 @@ namespace
 
 GoUctLadderKnowledge::GoUctLadderKnowledge(const GoBoard& bd,
                            GoUctKnowledge& knowledge)
-                           : m_bd(bd), m_knowledge(knowledge)
+                           : m_bd(bd), m_knowledge(knowledge),
+                             m_weight(1.0)
 { }
 
 void GoUctLadderKnowledge::InitializeLadderAttackMoves()
@@ -138,7 +139,7 @@ void GoUctLadderKnowledge::Initialize2LibTacticsLadderMoves()
     }
 
     for (SgVectorIterator<SgPoint> it(good2LibTacticMove); it; ++it)
-        m_knowledge.Add(*it, 1.0, GOOD_2_LIB_TACTICS_LADDER_BONUS);
+        Add(*it, 1.0, GOOD_2_LIB_TACTICS_LADDER_BONUS);
 }
 
 void GoUctLadderKnowledge::LadderAttack(SgPoint p)
@@ -155,7 +156,7 @@ void GoUctLadderKnowledge::LadderAttack(SgPoint p)
     for (SgVectorIterator<SgPoint> it(liberties); it; ++it)
     {
         if (IsLadderCaptureMove(m_bd, p, *it)) 
-            m_knowledge.Add(*it, 1.0, LADDER_CAPTURE_BONUS);
+            Add(*it, 1.0, LADDER_CAPTURE_BONUS);
     }
 }
 
@@ -170,13 +171,13 @@ void GoUctLadderKnowledge::LadderDefense(SgPoint p)
     if (escapeMoves.IsEmpty()) // Do not try to escape
     {
         if (! MightBeNakadeStones(m_bd, p))
-            m_knowledge.Initialize(m_bd.TheLiberty(p), 
-            					   0.0, BAD_LADDER_ESCAPE_PENALTY);
+            Initialize(m_bd.TheLiberty(p),
+                       0.0, BAD_LADDER_ESCAPE_PENALTY);
     }
     else // Can escape, running away may be good.
     {
         for (SgVectorIterator<SgPoint> it(escapeMoves); it; ++it)
-            m_knowledge.Add(*it, 1.0, GOOD_LADDER_ESCAPE_BONUS);
+            Add(*it, 1.0, GOOD_LADDER_ESCAPE_BONUS);
     }
 }
 

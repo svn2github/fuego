@@ -36,6 +36,8 @@ public:
     /** Compute the ladder knowledge */
     void ProcessPosition();
 
+    void SetWeight(SgUctValue weight);
+
 private:
 
     /** The board for which ladders are computed
@@ -49,7 +51,15 @@ private:
 
     /** For computing ladders. Kept as a field for efficiency. */
     GoLadder m_ladder;
+
+    SgUctValue m_weight;
     
+    /** "Raw" count, count gets multiplied by m_weight here */
+    void Add(SgPoint move, SgUctValue value, SgUctValue count);
+
+    /** "Raw" count, count gets multiplied by m_weight here */
+    void Initialize(SgPoint move, SgUctValue value, SgUctValue count);
+
     /** Defend our blocks next to last move */
     void InitializeLadderDefenseMoves();
 
@@ -68,6 +78,26 @@ private:
     /** Defend block */
 	void LadderDefense(SgPoint block);
 };
+
+//----------------------------------------------------------------------------
+
+inline void GoUctLadderKnowledge::
+Add(SgPoint move, SgUctValue value, SgUctValue count)
+{
+    m_knowledge.Add(move, value, m_weight * count);
+}
+
+inline void GoUctLadderKnowledge::
+Initialize(SgPoint move, SgUctValue value, SgUctValue count)
+{
+    m_knowledge.Initialize(move, value, m_weight * count);
+}
+
+inline void GoUctLadderKnowledge::
+SetWeight(SgUctValue weight)
+{
+    m_weight = weight;
+}
 
 //----------------------------------------------------------------------------
 
