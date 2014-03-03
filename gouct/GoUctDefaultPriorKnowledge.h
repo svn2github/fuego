@@ -30,6 +30,9 @@ public:
     bool FindGlobalPatternAndAtariMoves(SgPointSet& pattern,
                                         SgPointSet& atari,
                                         GoPointList& empty);
+
+    void SetPriorWeight(float weight);
+
 private:
 
     GoUctPlayoutPolicy<GoBoard> m_policy;
@@ -48,24 +51,34 @@ private:
     void AddOpeningBonus();
     
     void InitializeForRandomPolicyMove(const GoPointList& empty,
-                                       int nuSimulations);
+                                       SgUctValue nuSimulations);
                                        
     void InitializeForGlobalHeuristic(const GoPointList& empty,
                                       const SgPointSet& pattern,
                                       const SgPointSet& atari,
-                                      int nuSimulations);
+                                      SgUctValue nuSimulations);
 
 	void InitializeForNonRandomPolicyMove(const GoPointList& empty,
                                           const SgPointSet& pattern,
                                           const SgPointSet& atari,
-                                          int nuSimulations);
+                                          SgUctValue nuSimulations);
 
 	/** Temporary variable to hold max. of m_patternGammas for current move */
 	float m_maxPatternGamma;
 
+    /** Tunable parameter - weight to multiply everything by. */
+    float m_defaultPriorWeight;
+
 	/** Gamma values used as prior knowledge for pattern moves */
 	SgArray<float,SG_MAXPOINT> m_patternGammas;
 };
+
+//----------------------------------------------------------------------------
+
+inline void GoUctDefaultPriorKnowledge::SetPriorWeight(float weight)
+{
+    m_defaultPriorWeight = weight;
+}
 
 //----------------------------------------------------------------------------
 

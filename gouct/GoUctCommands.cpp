@@ -665,10 +665,13 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             << "[bool] use_default_prior_knowledge "
             << p.m_useDefaultPriorKnowledge << '\n'
             << "[bool] use_tree_filter " << p.m_useTreeFilter << '\n'
+            << "[float] default_prior_weight " << p.m_defaultPriorWeight
+            << '\n'
             << "[string] length_modification " << p.m_lengthModification
             << '\n'
             << "[string] score_modification " << p.m_scoreModification
-            << '\n';
+            << '\n'
+            ;
     }
     else if (cmd.NuArg() == 2)
     {
@@ -683,6 +686,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             p.m_useDefaultPriorKnowledge = cmd.Arg<bool>(1);
         else if (name == "use_tree_filter")
             p.m_useTreeFilter = cmd.Arg<bool>(1);
+        else if (name == "default_prior_weight")
+            p.m_defaultPriorWeight = cmd.Arg<float>(1);
         else if (name == "length_modification")
             p.m_lengthModification = cmd.Arg<SgUctValue>(1);
         else if (name == "score_modification")

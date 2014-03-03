@@ -326,7 +326,7 @@ void GoUctDefaultPriorKnowledge::AddLocalityBonus(GoPointList& emptyPoints,
 {
     const GoBoard& bd = Board();
     const SgPoint last = bd.GetLastMove();
-    SgUctValue count = isSmallBoard ? 4 : 5;
+    SgUctValue count = (isSmallBoard ? 4 : 5) * m_defaultPriorWeight;
     AddBonusNearPoint(emptyPoints, count, last,
                      SgUctValue(1.0),
                      SgUctValue(0.6),
@@ -387,9 +387,11 @@ GoUctDefaultPriorKnowledge::InitializeForGlobalHeuristic(
 	const GoPointList& empty,
     const SgPointSet& pattern,
     const SgPointSet& atari,
-    int nuSimulations)
+    SgUctValue nuSimulations)
 {
     const GoBoard& bd = Board();
+    const SgUctValue smallWeight = m_defaultPriorWeight * 3;
+
     for (GoPointList::Iterator it(empty); it; ++it)
     {
         const SgPoint p = *it;
@@ -397,13 +399,13 @@ GoUctDefaultPriorKnowledge::InitializeForGlobalHeuristic(
         if (BadSelfAtari(bd, p))
             Initialize(p, 0.1f, nuSimulations);
         else if (atari[p])
-            Initialize(p, 1.0f, 3);
+            Initialize(p, 1.0f, smallWeight);
         else if (pattern[p])
             Initialize(*it, 
                        0.6 + (m_patternGammas[*it] / m_maxPatternGamma) * 0.4,
-                       3);
+                       smallWeight);
 		else
-            Initialize(p, 0.5f, 3);
+            Initialize(p, 0.5f, smallWeight);
     }
 }
 
@@ -439,7 +441,7 @@ GoUctDefaultPriorKnowledge::InitializeForNonRandomPolicyMove(
 void 
 GoUctDefaultPriorKnowledge::InitializeForRandomPolicyMove(
 	const GoPointList& empty,
-    int nuSimulations)
+    SgUctValue nuSimulations)
 {
     const GoBoard& bd = Board();
     for (GoPointList::Iterator it(empty); it; ++it)
@@ -462,7 +464,7 @@ void GoUctDefaultPriorKnowledge::AddOpeningBonus()
          extensions.begin(); it != extensions.end(); ++it)
     {
         const SgPoint p = it->first;
-        const int bonus = it->second;
+        const float bonus = it->second * m_defaultPriorWeight;
                 
         SgUctValue ignoreValue;
         SgUctValue count;
@@ -476,7 +478,7 @@ void GoUctDefaultPriorKnowledge::AddOpeningBonus()
          it != corner.end(); ++it)
     {
         const SgPoint p = *it;
-        const int bonus = 21;
+        const float bonus = 21 * m_defaultPriorWeight;
 
         SgUctValue ignoreValue;
         SgUctValue count;
@@ -489,6 +491,8 @@ void
 GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>&
                                             outmoves)
 {
+    if (m_defaultPriorWeight == 0.0)
+        return;
     m_policy.StartPlayout();
     m_policy.GenerateMove();
     GoUctPlayoutPolicyType type = m_policy.MoveType();
@@ -505,8 +509,9 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>&
     // from the 9x9 experiments are used for board sizes < 15, the ones from
     // 19x19 otherwise.
     const bool isSmallBoard = (Board().Size() < 15);
-    const int defaultNuSimulations = isSmallBoard ? 9 : 18;
-
+    const float defaultNuSimulations =  (isSmallBoard ? 9 : 18)
+                                    * m_defaultPriorWeight;
+    
     Initialize(SG_PASS, 0.1f, defaultNuSimulations);
     if (isFullBoardRandom && ! anyHeuristic)
     	InitializeForRandomPolicyMove(empty, defaultNuSimulations);
@@ -521,6 +526,7 @@ GoUctDefaultPriorKnowledge::ProcessPosition(std::vector<SgUctMoveInfo>&
     if (! isSmallBoard)
         AddOpeningBonus();
     GoUctLadderKnowledge ladderKnowledge(Board(), *this);
+    ladderKnowledge.SetWeight(m_defaultPriorWeight);
     ladderKnowledge.ProcessPosition();
 
     m_policy.EndPlayout();

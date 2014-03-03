@@ -80,6 +80,8 @@ struct GoUctGlobalSearchStateParam
 
     bool m_useDefaultPriorKnowledge;
 
+    float m_defaultPriorWeight;
+
     GoUctGlobalSearchStateParam();
 
     ~GoUctGlobalSearchStateParam();
@@ -543,7 +545,10 @@ GenerateAllMoves(SgUctValue count,
         if (param.m_useTreeFilter)
             ApplyFilter(moves);
         if (param.m_useDefaultPriorKnowledge)
+        {
+            m_priorKnowledge.SetPriorWeight(param.m_defaultPriorWeight);
             m_priorKnowledge.ProcessPosition(moves);
+        }
         if (  feParam.m_priorKnowledgeType != PRIOR_NONE
            || feParam.m_useAsAdditivePredictor
            )
