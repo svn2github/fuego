@@ -489,28 +489,46 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_NeighborsOfColor_SgVector)
     BOOST_CHECK(neighbors.Contains(Pt(2, 3)));
 }
 
-BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorPassWins)
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_OtherLiberty)
 {
-    GoBoard bd(9);
-    GoRules& rules = bd.Rules();
-    rules.SetKomi(6.5);
-    rules.SetCaptureDead(true);
-    rules.SetJapaneseScoring(false);
-    bd.Play(Pt(5, 5), SG_BLACK);
-    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Last move was not a pass
-    bd.Play(SG_PASS, SG_WHITE);
-    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
-    bd.Play(SG_PASS, SG_BLACK);
-    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Black is not to play
-    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_WHITE)); // Negative score for White
-    bd.Undo();
-    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
-    rules.SetCaptureDead(false);
-    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
-    rules.SetCaptureDead(true);
-    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
-    rules.SetJapaneseScoring(true);
-    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+    std::string s("XO.XO.\n"
+                  ".XOO..\n"
+                  "..XX..\n"
+                  "......\n"
+                  "......\n"
+                  "X...OX");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    {
+        const SgPoint anchor = bd.Anchor(Pt(1,1));
+        const SgPoint lib1 = Pt(1,2);
+        const SgPoint lib2 = Pt(2,1);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib1), lib2);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib2), lib1);
+    }
+    {
+        const SgPoint anchor = bd.Anchor(Pt(5,1));
+        const SgPoint lib1 = Pt(4,1);
+        const SgPoint lib2 = Pt(5,2);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib1), lib2);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib2), lib1);
+    }
+    {
+        const SgPoint anchor = bd.Anchor(Pt(3,5));
+        const SgPoint lib1 = Pt(3,6);
+        const SgPoint lib2 = Pt(5,5);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib1), lib2);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib2), lib1);
+    }
+    {
+        const SgPoint anchor = bd.Anchor(Pt(5,6));
+        const SgPoint lib1 = Pt(5,5);
+        const SgPoint lib2 = Pt(6,6);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib1), lib2);
+        BOOST_CHECK_EQUAL(OtherLiberty(bd, anchor, lib2), lib1);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_ReduceToAnchors)
@@ -774,6 +792,30 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_3)
     //BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 9))); // atari on opp.
 }
 
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorPassWins)
+{
+    GoBoard bd(9);
+    GoRules& rules = bd.Rules();
+    rules.SetKomi(6.5);
+    rules.SetCaptureDead(true);
+    rules.SetJapaneseScoring(false);
+    bd.Play(Pt(5, 5), SG_BLACK);
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Last move was not a pass
+    bd.Play(SG_PASS, SG_WHITE);
+    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
+    bd.Play(SG_PASS, SG_BLACK);
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Black is not to play
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_WHITE)); // Negative score for White
+    bd.Undo();
+    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
+    rules.SetCaptureDead(false);
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+    rules.SetCaptureDead(true);
+    BOOST_CHECK(TrompTaylorPassWins(bd, SG_BLACK));
+    rules.SetJapaneseScoring(true);
+    BOOST_CHECK(! TrompTaylorPassWins(bd, SG_BLACK)); // Not Tromp-taylor rules
+}
+    
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorScore)
 {
     // . . . . . . . . .

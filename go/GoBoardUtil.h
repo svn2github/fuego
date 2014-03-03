@@ -312,6 +312,9 @@ namespace GoBoardUtil
     void NeighborsOfColor(const GoBoard& bd, SgPoint p, int c,
                           SgVector<SgPoint>* neighbors);
 
+    /** Given a 2 liberty block and one of its liberties, return the other. */
+    SgPoint OtherLiberty(const GoBoard& bd, SgPoint anchor, SgPoint lib1);
+
     /** Play a move if legal
         @param bd The board.
         @param p Move to play; SG_PASS or on-board point.
@@ -694,6 +697,21 @@ inline bool GoBoardUtil::KeepsOrGainsLiberties(const BOARD& bd,
     return AchievesLibertyTarget(bd, anchor, lib, nu);
 }
 
+inline SgPoint GoBoardUtil::OtherLiberty(const GoBoard& bd,
+                                         SgPoint anchor,
+                                         SgPoint lib1)
+{
+    SG_ASSERT(bd.NumLiberties(anchor) == 2);
+    SG_ASSERT(bd.IsLibertyOfBlock(lib1, anchor));
+    GoBoard::LibertyIterator it(bd, anchor);
+    SG_ASSERT(it);
+    if (*it != lib1)
+        return *it;
+    ++it;
+    SG_ASSERT(it);
+    SG_ASSERT(*it != lib1);
+    return *it;
+}
 
 inline bool GoBoardUtil::PlayIfLegal(GoBoard& bd, SgPoint p)
 {
