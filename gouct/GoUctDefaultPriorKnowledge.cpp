@@ -38,26 +38,6 @@ bool HasMinNuOfAdjBlocks(const GoBoard& bd, SgPoint p,
     return false;
 }
 
-// @todo write test cases
-inline SgPoint OtherLiberty(const GoBoard& bd, SgPoint ourStone, SgPoint p)
-{
-    SG_ASSERT(bd.NumLiberties(ourStone) == 2);
-    GoBoard::LibertyIterator it(bd, ourStone);
-    SG_ASSERT(it);
-    if (*it == p) // get next
-    {
-        ++it;
-        SG_ASSERT(it);
-        SG_ASSERT(*it != p);
-        return *it;
-    }
-    else
-    {
-        SG_ASSERT(bd.IsLibertyOfBlock(p, ourStone));
-        return *it;
-    }
-}
-
 inline SgPoint FindNeighborNotInColor(const GoBoard& bd, SgPoint p,
                                          SgEmptyBlackWhite c)
 {
@@ -269,7 +249,7 @@ bool MayMakeFalseEye(const GoBoard& bd,
         if (  bd.NumEmptyNeighbors(ourStone) != 2 // p and the other lib
            || bd.NumStones(ourStone) != 1)
             return false;
-        const SgPoint otherLib = OtherLiberty(bd, ourStone, p);
+        const SgPoint otherLib = GoBoardUtil::OtherLiberty(bd, ourStone, p);
         if (  bd.NumEmptyNeighbors(otherLib) == 0
            && bd.NumNeighbors(otherLib, toPlay) == 1)
             return true;
@@ -319,6 +299,7 @@ void GoUctDefaultPriorKnowledge::AddBonusNearPoint(GoPointList& emptyPoints,
     
     const GoBoard& bd = Board();
     SgPointArray<int> dist = GoBoardUtil::CfgDistance(bd, focus, 3);
+
     for (GoPointList::Iterator it(emptyPoints); it; ++it)
     {
         const SgPoint p = *it;
@@ -431,7 +412,7 @@ GoUctDefaultPriorKnowledge::InitializeForNonRandomPolicyMove(
 	const GoPointList& empty,
     const SgPointSet& pattern,
     const SgPointSet& atari,
-    int nuSimulations)
+    SgUctValue nuSimulations)
 {
     const GoBoard& bd = Board();
     for (GoPointList::Iterator it(empty); it; ++it)
