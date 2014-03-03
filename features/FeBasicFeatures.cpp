@@ -240,6 +240,282 @@ void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
     features.set(f);
 }
 
+inline void FindBlockAnchors(const GoBoard& bd, int maxNuLiberties,
+                             GoPointList& anchors)
+{
+    for (GoBoard::Iterator it(bd); it; ++it)
+    {
+        if (  bd.Occupied(*it)
+           && bd.Anchor(*it) == *it
+           && bd.NumLiberties(*it) <= maxNuLiberties
+           )
+            anchors.PushBack(*it);
+    }
+}
+
+void FindAtariCaptureFeatures(const GoBoard& bd, SgPoint anchor,
+                              GoEvalArray<FeMoveFeatures>& features)
+{
+    // FE_CAPTURE_MULTIPLE,    // capture more than one block
+
+    const SgBlackWhite color = bd.GetStone(anchor);
+    SG_ASSERT(bd.Opponent() == color);
+    const SgPoint theLib = bd.TheLiberty(anchor);
+    SgPoint anchors[4 + 1];
+    bd.NeighborBlocks(theLib, color, 1, anchors);
+    SG_ASSERT(anchors[0] != SG_ENDPOINT);
+    if (anchors[1] != SG_ENDPOINT)
+        features[theLib].Set(FE_CAPTURE_MULTIPLE);
+}
+
+bool IsDoubleAtari(const GoBoard& bd, SgPoint lib,
+                   const SgBlackWhite blockColor)
+{
+    SgPoint anchors[4 + 1];
+    bd.NeighborBlocks(lib, blockColor, 2, anchors);
+    SG_ASSERT(anchors[0] != SG_ENDPOINT);
+    return anchors[1] != SG_ENDPOINT;
+}
+
+void FindPlayDoubleAtariFeatures(const GoBoard& bd, SgPoint anchor,
+                             GoEvalArray<FeMoveFeatures>& features)
+{
+    // FE_DOUBLE_ATARI,        // atari two or more opponent stones
+    const SgBlackWhite color = bd.GetStone(anchor);
+    SG_ASSERT(bd.Opponent() == color);
+    SG_ASSERT(bd.NumLiberties(anchor) == 2);
+
+    for (GoBoard::LibertyIterator it(bd, anchor); it; ++it)
+        if (  IsDoubleAtari(bd, *it, color)
+           && ! GoBoardUtil::SelfAtari(bd, *it)
+           )
+            features[*it].Set(FE_DOUBLE_ATARI);
+}
+
+void FindDefendDoubleAtariFeatures(const GoBoard& bd, SgPoint anchor,
+                                 GoEvalArray<FeMoveFeatures>& features)
+{
+    // FE_DOUBLE_ATARI_DEFEND, // prevent double atari move, e.g. connect
+    const SgBlackWhite color = bd.GetStone(anchor);
+    SG_ASSERT(bd.ToPlay() == color);
+    SG_ASSERT(bd.NumLiberties(anchor) == 2);
+    for (GoBoard::LibertyIterator it(bd, anchor); it; ++it)
+        if (  IsDoubleAtari(bd, *it, color)
+           && ! GoBoardUtil::SelfAtari(bd, *it)
+           )
+            // todo other tests that it's not suicidal, e.g. bad 2-lib, 3-lib
+            features[*it].Set(FE_DOUBLE_ATARI_DEFEND);
+}
+
+inline void TryLadderEscapeMove(const GoBoard& bd, SgPoint anchor,
+                                SgPoint move,
+                                GoPointList& tried,
+                                GoPointList& works
+                                )
+{
+    if (! tried.Contains(move))
+    {
+        tried.PushBack(move);
+        if (GoLadderUtil::IsLadderEscapeMove(bd, anchor, move))
+            works.PushBack(move);
+    }
+}
+
+inline void FindOtherLadderEscapeMoves(const GoBoard& bd, SgPoint anchor,
+                                SgPoint toEscape,
+                                GoEvalArray<FeMoveFeatures>& features)
+{
+    GoPointList tried;
+    GoPointList works;
+    tried.PushBack(toEscape);
+    works.PushBack(toEscape);
+    for (GoBoard::LibertyCopyIterator it(bd, anchor); it; ++it)
+    {
+        TryLadderEscapeMove(bd, anchor, *it, tried, works);
+        // Try 1 away from liberties: diagonal and 1 point jump
+        for (GoNbIterator nb(bd, *it); nb; ++nb)
+            if (bd.IsEmpty(*nb))
+                TryLadderEscapeMove(bd, anchor, *nb, tried, works);
+    }
+
+    for (GoPointList::Iterator it(works); it; ++it)
+        features[*it].Set(FE_TWO_LIB_SAVE_LADDER);
+
+    // todo: try more moves, e.g. one point jump,
+    // liberty of adjacent weak stones, diagonal move, bamboo connection
+}
+
+void FindOpp2LibFeatures(const GoBoard& bd, SgPoint anchor,
+                         GoEvalArray<FeMoveFeatures>& features)
+{
+    FindPlayDoubleAtariFeatures(bd, anchor, features);
+}
+
+/** Check if playing our own liberty would set up a ladder for opponent */
+void CheckSelfLadder(const GoBoard& bd, SgPoint anchor,
+                     GoEvalArray<FeMoveFeatures>& features)
+{
+    //    FE_TWO_LIB_SELF_LADDER
+    for (GoBoard::LibertyCopyIterator it(bd, anchor); it; ++it)
+        if (! GoLadderUtil::IsLadderEscapeMove(bd, anchor, *it))
+            features[*it].Set(FE_TWO_LIB_SELF_LADDER);
+}
+
+bool WouldBeLadderCaptured(const GoBoard& constBd, SgPoint move)
+{
+    GoModBoard mbd(constBd);
+    GoBoard& bd = mbd.Board();
+    const SgBlackWhite toPlay = bd.ToPlay();
+    const SgBlackWhite opponent = SgOppBW(toPlay);
+    SG_ASSERT(bd.IsEmpty(move));
+    SG_ASSERT(bd.NumEmptyNeighbors(move) == 2);
+    SG_ASSERT(bd.NumNeighbors(move, toPlay) == 0);
+    bd.Play(move);
+    const bool wouldBeCaptured = GoLadderUtil::Ladder(bd, move, opponent);
+    bd.Undo();
+    return wouldBeCaptured;
+}
+
+void CheckProtectedLiberty(const GoBoard& bd,
+                            SgPoint p,
+                            GoEvalArray<FeMoveFeatures>& features)
+{
+    const SgBlackWhite toPlay = bd.ToPlay();
+    bool byLadder;
+    SG_UNUSED(byLadder);
+    bool isKoCut;
+    const bool isOurProtected =
+    GoLadderUtil::IsProtectedLiberty(bd, p, toPlay,
+                                     byLadder, isKoCut, true);
+    if (isOurProtected)
+        features[p].Set(FE_OUR_PROTECTED_LIBERTY);
+    else if (isKoCut)
+        features[p].Set(FE_OUR_CUT_WITH_KO);
+
+    const bool isOppProtected =
+    GoLadderUtil::IsProtectedLiberty(bd, p, SgOppBW(toPlay),
+                                     byLadder, isKoCut, true);
+    if (isOppProtected)
+        features[p].Set(FE_OPP_PROTECTED_LIBERTY);
+    else if (isKoCut)
+        features[p].Set(FE_OPP_CUT_WITH_KO);
+
+}
+
+void FindNewSelfLadderMoves(const GoBoard& bd,
+                            const GoPointList& legalMoves,
+                            GoEvalArray<FeMoveFeatures>& features)
+{
+    // FE_TWO_LIB_NEW_SELF_LADDER
+    // FE_OUR_PROTECTED_LIBERTY, // opponent could be captured there
+    // FE_OPP_PROTECTED_LIBERTY, // we would be captured there
+    // FE_OUR_CUT_WITH_KO, // can cut to start a ko here.
+    // FE_OPP_CUT_WITH_KO, // can cut to start a ko here.
+
+    const SgBlackWhite toPlay = bd.ToPlay();
+    for (GoPointList::Iterator it(legalMoves); it; ++it)
+        if (  bd.NumEmptyNeighbors(*it) == 2    // new stone with 2 liberties
+           && bd.NumNeighbors(*it, toPlay) == 0
+           && WouldBeLadderCaptured(bd, *it)
+           )
+            features[*it].Set(FE_TWO_LIB_NEW_SELF_LADDER);
+        else if (bd.NumEmptyNeighbors(*it) < 3)
+            CheckProtectedLiberty(bd, *it, features);
+}
+
+void FindOwn2LibFeatures(const GoBoard& bd, SgPoint anchor,
+                      GoEvalArray<FeMoveFeatures>& features)
+{
+    // FE_TWO_LIB_SAVE_LADDER, // save own 2 lib block from ladder capture
+
+    SG_ASSERT(bd.ToPlay() == bd.GetStone(anchor));
+    SgPoint toCapture(SG_NULLPOINT);
+    SgPoint toEscape(SG_NULLPOINT);
+
+    const GoLadderStatus status =
+    GoLadderUtil::LadderStatus(bd, anchor, false, &toCapture, &toEscape);
+    if (status == GO_LADDER_UNSETTLED)
+    {
+        SG_ASSERT(toEscape != SG_NULLPOINT);
+        SG_ASSERT(toEscape != SG_PASS);
+        SG_ASSERT(bd.IsLegal(toEscape));
+        features[toEscape].Set(FE_TWO_LIB_SAVE_LADDER);
+        FindOtherLadderEscapeMoves(bd, anchor, toEscape, features);
+    }
+    else if (status == GO_LADDER_CAPTURED) // no escape by playing on libs
+        for (GoBoard::LibertyIterator it(bd, anchor); it; ++it)
+            features[*it].Set(FE_TWO_LIB_STILL_LADDER);
+    else
+        CheckSelfLadder(bd, anchor, features);
+
+    FindDefendDoubleAtariFeatures(bd, anchor, features);
+}
+
+void FindOpp3LibFeatures(const GoBoard& bd, SgPoint anchor,
+                         GoEvalArray<FeMoveFeatures>& features)
+{
+    SG_ASSERT(bd.Opponent() == bd.GetStone(anchor));
+    // Play liberty of opponent 3 lib block.
+    // Todo: have some different categories? Good/bad such moves?
+    // Separate category for ladder threats. E.g. use as ko threats.
+    for (GoBoard::LibertyIterator it(bd, anchor); it; ++it)
+        features[*it].Set(FE_THREE_LIB_REDUCE_OPP_LIB);
+}
+
+void FindOwn3LibFeatures(const GoBoard& bd, SgPoint anchor,
+                       GoEvalArray<FeMoveFeatures>& features)
+{
+    SG_ASSERT(bd.ToPlay() == bd.GetStone(anchor));
+
+    // Find own-liberty-reducing moves, probably bad.
+    for (GoBoard::LibertyIterator it(bd, anchor); it; ++it)
+        if (! GoBoardUtil::KeepsOrGainsLiberties(bd, anchor, *it))
+        {
+            // todo check ladder status after move on *it
+            features[*it].Set(FE_THREE_LIB_REDUCE_OWN_LIB);
+        }
+}
+
+void FindLadderFeature(const GoBoard& bd, SgPoint anchor,
+                       GoEvalArray<FeMoveFeatures>& features)
+{
+    switch (bd.NumLiberties(anchor))
+    {
+        case 1:
+            if (bd.Opponent() == bd.GetStone(anchor))
+                FindAtariCaptureFeatures(bd, anchor, features);
+            break;
+        case 2:
+            if (bd.ToPlay() == bd.GetStone(anchor))
+                FindOwn2LibFeatures(bd, anchor, features);
+            else
+                FindOpp2LibFeatures(bd, anchor, features);
+            // parts also done by FindAtariFeatures - FE_ATARI_LADDER
+            // todo rewrite.
+            break;
+        case 3:
+            if (bd.ToPlay() == bd.GetStone(anchor))
+                FindOwn3LibFeatures(bd, anchor, features);
+            else
+                FindOpp3LibFeatures(bd, anchor, features);
+            break;
+        default:
+            SG_ASSERT(bd.InAtari(anchor));
+    }
+}
+
+void FindLadderFeatures(const GoBoard& bd,
+                        const GoPointList& legalMoves,
+                        GoEvalArray<FeMoveFeatures>& features)
+{
+    GoPointList anchors;
+    FindBlockAnchors(bd, 3, anchors);
+    for (GoPointList::Iterator it(anchors); it; ++it)
+        FindLadderFeature(bd, *it, features);
+    FindNewSelfLadderMoves(bd, legalMoves, features);
+
+}
+
 void FindLineFeature(const GoBoard& bd, SgPoint move,
                      FeBasicFeatureSet& features)
 {
@@ -310,7 +586,6 @@ bool Is3x3CenterID(int id)
     return id >= CENTER_START_INDEX_3x3
         && id < CENTER_START_INDEX_3x3 + NU_3x3_CENTER_FEATURES;
 }
-
 
 inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 {
@@ -401,16 +676,25 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_CAPTURE_PREVENT_CONNECTION", // Prevent connection to prev. move
         "FE_CAPTURE_NOT_LADDER",  // String not in a ladder
         "FE_CAPTURE_LADDER",      // String in a ladder
-                                  // "FE_CAPTURE_MULTIPLE",
+        "FE_CAPTURE_MULTIPLE",
+    // FE_CAPTURE_SNAPBACK,    // set up a capture using a snapback
         "FE_EXTENSION_NOT_LADDER", // New atari, not in a ladder
         "FE_EXTENSION_LADDER",    // New atari, in a ladder
                                   // todo distinguish extending 1 stone only?
+        "FE_TWO_LIB_SAVE_LADDER", // save own 2 lib block from ladder capture
+        "FE_TWO_LIB_STILL_LADDER", // block remains captured even when playing
+                                   // this liberty
+        "FE_TWO_LIB_SELF_LADDER", // block was safe but becomes unsettled
+        "FE_THREE_LIB_REDUCE_OWN_LIB",
+        "FE_THREE_LIB_REDUCE_OPP_LIB",
         "FE_SELFATARI",
         // "FE_SELFATARI_NAKADE",
         // "FE_SELFATARI_THROWIN",
         "FE_ATARI_LADDER",        // Ladder atari
         "FE_ATARI_KO",            // Atari when there is a ko
         "FE_ATARI_OTHER",         // Other atari
+        "FE_DOUBLE_ATARI",        // atari two or more opponent stones
+        "FE_DOUBLE_ATARI_DEFEND", // prevent double atari move, e.g. connect
         "FE_LINE_1",
         "FE_LINE_2",
         "FE_LINE_3",
@@ -459,21 +743,10 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_GOUCT_RANDOM_PRUNED",
         "FE_GOUCT_REPLACE_CAPTURE_FROM",
         "FE_GOUCT_REPLACE_CAPTURE_TO",
-        "FE_GOUCT_REPLACE_CAPTURE_NOT_MOVED",
         "FE_GOUCT_SELFATARI_CORRECTION_FROM",
         "FE_GOUCT_SELFATARI_CORRECTION_TO",
-        "FE_GOUCT_SELFATARI_CORRECTION_NOT_MOVED",
         "FE_GOUCT_CLUMP_CORRECTION_FROM",
         "FE_GOUCT_CLUMP_CORRECTION_TO",
-        "FE_GOUCT_CLUMP_CORRECTION_NOT_MOVED",
-        "FE_MC_OWNER_1", // 0−7 wins/63 sim.
-        "FE_MC_OWNER_2", // 8−15
-        "FE_MC_OWNER_3", // 16−23
-        "FE_MC_OWNER_4", // 24−31
-        "FE_MC_OWNER_5", // 32−39
-        "FE_MC_OWNER_6", // 40−47
-        "FE_MC_OWNER_7", // 48−55
-        "FE_MC_OWNER_8",  // 56−63
         "FE_POS_1", // Position of a point p according to GoBoard::Pos(p)
         "FE_POS_2",
         "FE_POS_3",
@@ -524,6 +797,11 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_CFG_DISTANCE_LAST_OWN_2",
         "FE_CFG_DISTANCE_LAST_OWN_3",
         "FE_CFG_DISTANCE_LAST_OWN_4_OR_MORE",
+        "FE_TWO_LIB_NEW_SELF_LADDER", // new 2-lib block ladder unsafe
+        "FE_OUR_PROTECTED_LIBERTY", // opponent could be captured there
+        "FE_OPP_PROTECTED_LIBERTY", // we would be captured there
+        "FE_OUR_CUT_WITH_KO", // can cut to start a ko here.
+        "FE_OPP_CUT_WITH_KO", // can cut to start a ko here.
         "FE_NONE"
     };
     SG_ASSERT(f >= FE_PASS_NEW);
@@ -792,6 +1070,7 @@ void FeFullBoardFeatures::FindFullBoardFeatures()
         FindSideExtensionFeatures(m_bd, m_features);
     }
     FindCfgFeatures(m_bd, m_legalMoves, m_features);
+    FindLadderFeatures(m_bd, m_legalMoves, m_features);
 }
 
 void FeFullBoardFeatures::WriteBoardFeatures(std::ostream& stream) const

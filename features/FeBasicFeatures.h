@@ -28,23 +28,27 @@ enum FeBasicFeature{
     FE_CAPTURE_PREVENT_CONNECTION, // Prevent connection to previous move
     FE_CAPTURE_NOT_LADDER,  // String not in a ladder
     FE_CAPTURE_LADDER,      // String in a ladder
-    // FE_CAPTURE_MULTIPLE,    // capture more than one block
+    FE_CAPTURE_MULTIPLE,    // capture more than one block
     // FE_CAPTURE_SNAPBACK,    // set up a capture using a snapback
     FE_EXTENSION_NOT_LADDER, // New atari, not in a ladder
     FE_EXTENSION_LADDER,    // New atari, in a ladder
     // todo distinguish extending 1 stone only?
-    //FE_TWO_LIB_SAVE_LADDER, // save own 2 lib block from ladder capture
-    //FE_TWO_LIB_CAPTURE_LADDER, // capture opponent 2 lib block in ladder
+    FE_TWO_LIB_SAVE_LADDER, // save own 2 lib block from ladder capture
+    FE_TWO_LIB_STILL_LADDER, // block remains captured even when playing
+                             // this liberty
+    FE_TWO_LIB_SELF_LADDER,  // block was safe but becomes unsettled
     //FE_THREE_LIB_ALLOW_LADDER, // bad move, 3->2 lib, opponent can ladder now
     //FE_THREE_LIB_LADDER_THREAT,// reduce opponent 3->2 lib, can ladder now
+    FE_THREE_LIB_REDUCE_OWN_LIB,
+    FE_THREE_LIB_REDUCE_OPP_LIB,
     FE_SELFATARI,
     // FE_SELFATARI_NAKADE,
     // FE_SELFATARI_THROWIN,
     FE_ATARI_LADDER,        // Ladder atari
     FE_ATARI_KO,            // Atari when there is a ko
     FE_ATARI_OTHER,         // Other atari
-    //FE_DOUBLE_ATARI,        // atari two or more opponent stones
-    //FE_DOUBLE_ATARI_DEFEND, // prevent double atari move, e.g. connect
+    FE_DOUBLE_ATARI,        // atari two or more opponent stones
+    FE_DOUBLE_ATARI_DEFEND, // prevent double atari move, e.g. connect
     FE_LINE_1,
     FE_LINE_2,
     FE_LINE_3,
@@ -93,21 +97,10 @@ enum FeBasicFeature{
     FE_GOUCT_RANDOM_PRUNED, // not generated as a random move
     FE_GOUCT_REPLACE_CAPTURE_FROM, // this move gets moved elsewhere
     FE_GOUCT_REPLACE_CAPTURE_TO,   // some other move gets moved here
-    FE_GOUCT_REPLACE_CAPTURE_NOT_MOVED, // not changed by correction
     FE_GOUCT_SELFATARI_CORRECTION_FROM, // this move gets moved elsewhere
     FE_GOUCT_SELFATARI_CORRECTION_TO,   // some other move gets moved here
-    FE_GOUCT_SELFATARI_CORRECTION_NOT_MOVED, // not changed by correction
     FE_GOUCT_CLUMP_CORRECTION_FROM, // this move gets moved elsewhere
     FE_GOUCT_CLUMP_CORRECTION_TO,   // some other move gets moved here
-    FE_GOUCT_CLUMP_CORRECTION_NOT_MOVED, // not changed by correction
-    FE_MC_OWNER_1, // 0−7 wins/63 sim.
-    FE_MC_OWNER_2, // 8−15
-    FE_MC_OWNER_3, // 16−23
-    FE_MC_OWNER_4, // 24−31
-    FE_MC_OWNER_5, // 32−39
-    FE_MC_OWNER_6, // 40−47
-    FE_MC_OWNER_7, // 48−55
-    FE_MC_OWNER_8,  // 56−63
     FE_POS_1, // Position of a point p according to GoBoard::Pos(p)
     FE_POS_2,
     FE_POS_3,
@@ -158,10 +151,15 @@ enum FeBasicFeature{
     FE_CFG_DISTANCE_LAST_OWN_2,
     FE_CFG_DISTANCE_LAST_OWN_3,
     FE_CFG_DISTANCE_LAST_OWN_4_OR_MORE,
+    FE_TWO_LIB_NEW_SELF_LADDER,  // new 2-lib block ladder unsafe
+    FE_OUR_PROTECTED_LIBERTY, // opponent could be captured there
+    FE_OPP_PROTECTED_LIBERTY, // we would be captured there
+    FE_OUR_CUT_WITH_KO, // can cut to start a ko here.
+    FE_OPP_CUT_WITH_KO, // can cut to start a ko here.
     FE_NONE,
     _NU_FE_FEATURES
 
-    // other ideas: cfgdistance. tacticaldistance = less for lowlib stones
+    // other ideas: tacticaldistance = less for lowlib stones
 };
 
 typedef std::bitset<_NU_FE_FEATURES> FeBasicFeatureSet;
