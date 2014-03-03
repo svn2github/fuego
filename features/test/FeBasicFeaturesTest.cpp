@@ -8,6 +8,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include "FeBasicFeatures.h"
 
+#include <sstream>
 #include "GoBoard.h"
 #include "GoSetupUtil.h"
 #include "SgDebug.h"
@@ -823,93 +824,93 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Atari_Ko)
     }
 }
 
-    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Empty_Board)
-    {
-        using FeFeatures::Get3x3Feature;
-        GoBoard bd(5);
-        const int f1 = Get3x3Feature(bd, Pt(3, 3));
-        const int f2 = Get3x3Feature(bd, Pt(2, 3));
-        const int f3 = Get3x3Feature(bd, Pt(4, 2));
-        const int f4 = Get3x3Feature(bd, Pt(4, 4));
-        BOOST_CHECK_EQUAL(f1, f2);
-        BOOST_CHECK_EQUAL(f1, f3);
-        BOOST_CHECK_EQUAL(f1, f4);
-        const int f5 = Get3x3Feature(bd, Pt(1, 2));
-        BOOST_CHECK(f1 != f5);
-        const int f6 = Get3x3Feature(bd, Pt(1, 3));
-        const int f7 = Get3x3Feature(bd, Pt(1, 4));
-        const int f8 = Get3x3Feature(bd, Pt(2, 1));
-        const int f9 = Get3x3Feature(bd, Pt(4, 1));
-        const int f10 = Get3x3Feature(bd, Pt(5, 2));
-        const int f11 = Get3x3Feature(bd, Pt(5, 3));
-        const int f12 = Get3x3Feature(bd, Pt(5, 4));
-        const int f13 = Get3x3Feature(bd, Pt(2, 5));
-        const int f14 = Get3x3Feature(bd, Pt(3, 5));
-        const int f15 = Get3x3Feature(bd, Pt(4, 5));
-        BOOST_CHECK_EQUAL(f5, f6);
-        BOOST_CHECK_EQUAL(f5, f7);
-        BOOST_CHECK_EQUAL(f5, f8);
-        BOOST_CHECK_EQUAL(f5, f9);
-        BOOST_CHECK_EQUAL(f5, f10);
-        BOOST_CHECK_EQUAL(f5, f11);
-        BOOST_CHECK_EQUAL(f5, f12);
-        BOOST_CHECK_EQUAL(f5, f13);
-        BOOST_CHECK_EQUAL(f5, f14);
-        BOOST_CHECK_EQUAL(f5, f15);
-        const int f16 = Get3x3Feature(bd, Pt(1, 1));
-        BOOST_CHECK(f1 != f16);
-        BOOST_CHECK(f5 != f16);
-        const int f17 = Get3x3Feature(bd, Pt(1, 5));
-        const int f18 = Get3x3Feature(bd, Pt(5, 1));
-        const int f19 = Get3x3Feature(bd, Pt(5, 5));
-        BOOST_CHECK_EQUAL(f17, f16);
-        BOOST_CHECK_EQUAL(f18, f16);
-        BOOST_CHECK_EQUAL(f19, f16);
-    }
-    
-    BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap)
-    {
-        using FeFeatures::Get3x3Feature;
-        // color-swapped patterns in top right and bottom left
-        std::string s("...X.\n"
-                      "....X\n"
-                      "....O\n"
-                      "O....\n"
-                      ".OX..");
-        int boardSize;
-        GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
-        setup.m_player = SG_BLACK;
-        GoBoard bd(boardSize, setup);
-        BOOST_CHECK_EQUAL(bd.ToPlay(), SG_BLACK);
-        int f1 = Get3x3Feature(bd, Pt(2, 2));
-        int f2 = Get3x3Feature(bd, Pt(4, 4));
-        BOOST_CHECK(f1 != f2);
-        bd.SetToPlay(SG_WHITE);
-        BOOST_CHECK_EQUAL(bd.ToPlay(), SG_WHITE);
-        int f3 = Get3x3Feature(bd, Pt(2, 2));
-        int f4 = Get3x3Feature(bd, Pt(4, 4));
-        BOOST_CHECK_EQUAL(f1, f4);
-        BOOST_CHECK_EQUAL(f2, f3);
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Empty_Board)
+{
+    using FeFeatures::Get3x3Feature;
+    GoBoard bd(5);
+    const int f1 = Get3x3Feature(bd, Pt(3, 3));
+    const int f2 = Get3x3Feature(bd, Pt(2, 3));
+    const int f3 = Get3x3Feature(bd, Pt(4, 2));
+    const int f4 = Get3x3Feature(bd, Pt(4, 4));
+    BOOST_CHECK_EQUAL(f1, f2);
+    BOOST_CHECK_EQUAL(f1, f3);
+    BOOST_CHECK_EQUAL(f1, f4);
+    const int f5 = Get3x3Feature(bd, Pt(1, 2));
+    BOOST_CHECK(f1 != f5);
+    const int f6 = Get3x3Feature(bd, Pt(1, 3));
+    const int f7 = Get3x3Feature(bd, Pt(1, 4));
+    const int f8 = Get3x3Feature(bd, Pt(2, 1));
+    const int f9 = Get3x3Feature(bd, Pt(4, 1));
+    const int f10 = Get3x3Feature(bd, Pt(5, 2));
+    const int f11 = Get3x3Feature(bd, Pt(5, 3));
+    const int f12 = Get3x3Feature(bd, Pt(5, 4));
+    const int f13 = Get3x3Feature(bd, Pt(2, 5));
+    const int f14 = Get3x3Feature(bd, Pt(3, 5));
+    const int f15 = Get3x3Feature(bd, Pt(4, 5));
+    BOOST_CHECK_EQUAL(f5, f6);
+    BOOST_CHECK_EQUAL(f5, f7);
+    BOOST_CHECK_EQUAL(f5, f8);
+    BOOST_CHECK_EQUAL(f5, f9);
+    BOOST_CHECK_EQUAL(f5, f10);
+    BOOST_CHECK_EQUAL(f5, f11);
+    BOOST_CHECK_EQUAL(f5, f12);
+    BOOST_CHECK_EQUAL(f5, f13);
+    BOOST_CHECK_EQUAL(f5, f14);
+    BOOST_CHECK_EQUAL(f5, f15);
+    const int f16 = Get3x3Feature(bd, Pt(1, 1));
+    BOOST_CHECK(f1 != f16);
+    BOOST_CHECK(f5 != f16);
+    const int f17 = Get3x3Feature(bd, Pt(1, 5));
+    const int f18 = Get3x3Feature(bd, Pt(5, 1));
+    const int f19 = Get3x3Feature(bd, Pt(5, 5));
+    BOOST_CHECK_EQUAL(f17, f16);
+    BOOST_CHECK_EQUAL(f18, f16);
+    BOOST_CHECK_EQUAL(f19, f16);
+}
 
-        // Edge patterns
-        int e1 = Get3x3Feature(bd, Pt(1, 3));
-        int e2 = Get3x3Feature(bd, Pt(5, 2));
-        int e3 = Get3x3Feature(bd, Pt(3, 5));
-        int e4 = Get3x3Feature(bd, Pt(4, 1));
-        BOOST_CHECK_EQUAL(e1, e2);
-        BOOST_CHECK(e1 != e3);
-        BOOST_CHECK_EQUAL(e3, e4);
-        bd.SetToPlay(SG_BLACK);
-        int e1b = Get3x3Feature(bd, Pt(1, 3));
-        int e2b = Get3x3Feature(bd, Pt(5, 2));
-        int e3b = Get3x3Feature(bd, Pt(3, 5));
-        int e4b = Get3x3Feature(bd, Pt(4, 1));
-        BOOST_CHECK_EQUAL(e1b, e2b);
-        BOOST_CHECK(e1b != e3b);
-        BOOST_CHECK_EQUAL(e3b, e4b);
-        BOOST_CHECK(e1 != e1b);
-        BOOST_CHECK_EQUAL(e1b, e3);
-        BOOST_CHECK_EQUAL(e1, e3b);
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap)
+{
+    using FeFeatures::Get3x3Feature;
+    // color-swapped patterns in top right and bottom left
+    std::string s("...X.\n"
+                  "....X\n"
+                  "....O\n"
+                  "O....\n"
+                  ".OX..");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK_EQUAL(bd.ToPlay(), SG_BLACK);
+    int f1 = Get3x3Feature(bd, Pt(2, 2));
+    int f2 = Get3x3Feature(bd, Pt(4, 4));
+    BOOST_CHECK(f1 != f2);
+    bd.SetToPlay(SG_WHITE);
+    BOOST_CHECK_EQUAL(bd.ToPlay(), SG_WHITE);
+    int f3 = Get3x3Feature(bd, Pt(2, 2));
+    int f4 = Get3x3Feature(bd, Pt(4, 4));
+    BOOST_CHECK_EQUAL(f1, f4);
+    BOOST_CHECK_EQUAL(f2, f3);
+
+    // Edge patterns
+    int e1 = Get3x3Feature(bd, Pt(1, 3));
+    int e2 = Get3x3Feature(bd, Pt(5, 2));
+    int e3 = Get3x3Feature(bd, Pt(3, 5));
+    int e4 = Get3x3Feature(bd, Pt(4, 1));
+    BOOST_CHECK_EQUAL(e1, e2);
+    BOOST_CHECK(e1 != e3);
+    BOOST_CHECK_EQUAL(e3, e4);
+    bd.SetToPlay(SG_BLACK);
+    int e1b = Get3x3Feature(bd, Pt(1, 3));
+    int e2b = Get3x3Feature(bd, Pt(5, 2));
+    int e3b = Get3x3Feature(bd, Pt(3, 5));
+    int e4b = Get3x3Feature(bd, Pt(4, 1));
+    BOOST_CHECK_EQUAL(e1b, e2b);
+    BOOST_CHECK(e1b != e3b);
+    BOOST_CHECK_EQUAL(e3b, e4b);
+    BOOST_CHECK(e1 != e1b);
+    BOOST_CHECK_EQUAL(e1b, e3);
+    BOOST_CHECK_EQUAL(e1, e3b);
 }
 
 BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap_Invariant)
@@ -948,13 +949,30 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap_Invariant)
 }
 
 BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_FeEvalDetail)
-    {
-        const double eps = 1.0e-5;
-        FeFeatures::FeEvalDetail f(23, 0.5, -0.7);
-        BOOST_CHECK_EQUAL(f.m_feature, 23);
-        BOOST_CHECK_CLOSE(f.m_w, 0.5, eps);
-        BOOST_CHECK_CLOSE(f.m_v_sum, -0.7, eps);
-    }
+{
+    const double eps = 1.0e-5;
+    FeFeatures::FeEvalDetail f(23, 0.5, -0.7);
+    BOOST_CHECK_EQUAL(f.m_feature, 23);
+    BOOST_CHECK_CLOSE(f.m_w, 0.5, eps);
+    BOOST_CHECK_CLOSE(f.m_v_sum, -0.7, eps);
+}
+
+void Test(const FeBasicFeature f, const char* fstring)
+{
+    std::ostringstream oss;
+    oss << f;
+    BOOST_CHECK_EQUAL(oss.str(), std::string(fstring));
+}
+
+/** Test a few samples of FeBasicFeature to string conversion */
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_ostream)
+{
+    Test(FE_PASS_NEW, "FE_PASS_NEW");
+    Test(FE_LINE_1, "FE_LINE_1");
+    Test(FE_GOUCT_FILLBOARD, "FE_GOUCT_FILLBOARD");
+    Test(FE_GAME_PHASE_1, "FE_GAME_PHASE_1");
+    Test(FE_NONE, "FE_NONE");
+}
 
 } // namespace
 
