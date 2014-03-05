@@ -186,7 +186,11 @@ public:
     /** Put active move features into array; return how many were found */
     size_t ActiveFeatures(FeActiveArray& active) const;
 
+    /** Find features for board move (not pass) */
     void FindMoveFeatures(const GoBoard& bd, SgPoint move);
+
+    /** Find features for pass move */
+    void FindPassFeatures(const GoBoard& bd);
 
     void Set(FeBasicFeature f);
 
@@ -339,6 +343,8 @@ EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
 
 void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features);
+
+void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features);
 
 int Get3x3Feature(const GoBoard& bd, SgPoint p);
 

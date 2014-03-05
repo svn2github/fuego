@@ -526,15 +526,6 @@ void FindLineFeature(const GoBoard& bd, SgPoint move,
     features.set(f);
 }
 
-void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features)
-{
-    const SgPoint lastMove = bd.GetLastMove();
-    if (lastMove == SG_PASS)
-        features.set(FE_PASS_CONSECUTIVE);
-    else
-        features.set(FE_PASS_NEW);
-}
-
 void FindPosFeature(const GoBoard& bd, SgPoint move,
                     FeBasicFeatureSet& features)
 {
@@ -872,12 +863,7 @@ FeFeatures::EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
 void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features)
 {
-    if (move == SG_PASS)
-    {
-        FindPassFeatures(bd, features);
-        return;
-    }
-
+    SG_ASSERT(move != SG_PASS);
     FindCaptureFeatures(bd, move, features);
     FindExtensionFeatures(bd, move, features);
     FindSelfatariFeatures(bd, move, features);
@@ -886,6 +872,16 @@ void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
     FindDistPrevMoveFeatures(bd, move, features);
     FindPosFeature(bd, move, features);
     FindGamePhaseFeature(bd, features);
+}
+
+void FeFeatures::FindPassFeatures(const GoBoard& bd,
+                                  FeBasicFeatureSet& features)
+{
+    const SgPoint lastMove = bd.GetLastMove();
+    if (lastMove == SG_PASS)
+    features.set(FE_PASS_CONSECUTIVE);
+    else
+    features.set(FE_PASS_NEW);
 }
 
 int FeFeatures::Get3x3Feature(const GoBoard& bd, SgPoint p)
@@ -992,9 +988,14 @@ size_t FeMoveFeatures::ActiveFeatures(FeActiveArray& active) const
 
 void FeMoveFeatures::FindMoveFeatures(const GoBoard& bd, SgPoint move)
 {
+    SG_ASSERT(move != SG_PASS);
     FeFeatures::FindBasicMoveFeatures(bd, move, m_basicFeatures);
-    if (move != SG_PASS)
-        m_3x3Index = Find3x3Feature(bd, move);
+    m_3x3Index = Find3x3Feature(bd, move);
+}
+
+void FeMoveFeatures::FindPassFeatures(const GoBoard& bd)
+{
+    FeFeatures::FindPassFeatures(bd, m_basicFeatures);
 }
 
 void FeMoveFeatures::WriteNumeric(std::ostream& stream,
@@ -1058,7 +1059,7 @@ void FeFullBoardFeatures::FindAllFeatures()
         SG_ASSERT(m_bd.IsLegal(*it));
         m_features[*it].FindMoveFeatures(m_bd, *it);
     }
-    m_features[SG_PASS].FindMoveFeatures(m_bd, SG_PASS);
+    m_features[SG_PASS].FindPassFeatures(m_bd);
     FindFullBoardFeatures();
 }
 

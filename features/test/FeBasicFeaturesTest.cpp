@@ -554,7 +554,7 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Pass)
     }
     {
         FeBasicFeatureSet features;
-        FeFeatures::FindBasicMoveFeatures(bd, SG_PASS, features);
+        FeFeatures::FindPassFeatures(bd, features);
         TestSingle(features, PassFeatures(), FE_PASS_NEW);
     }
     bd.Play(Pt(1,1), SG_BLACK);
@@ -565,7 +565,7 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Pass)
     }
     {
         FeBasicFeatureSet features;
-        FeFeatures::FindBasicMoveFeatures(bd, SG_PASS, features);
+        FeFeatures::FindPassFeatures(bd, features);
         TestSingle(features, PassFeatures(), FE_PASS_NEW);
     }
     bd.Play(SG_PASS, SG_WHITE);
@@ -576,7 +576,7 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Pass)
     }
     {
         FeBasicFeatureSet features;
-        FeFeatures::FindBasicMoveFeatures(bd, SG_PASS, features);
+        FeFeatures::FindPassFeatures(bd, features);
         TestSingle(features, PassFeatures(), FE_PASS_CONSECUTIVE);
     }
 }
@@ -596,7 +596,7 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_Capture_Adj_Atari)
     bd.Play(Pt(4, 1), SG_WHITE);
     {
         FeBasicFeatureSet features;
-        FeFeatures::FindBasicMoveFeatures(bd, SG_PASS, features);
+        FeFeatures::FindPassFeatures(bd, features);
         TestNone(features, CaptureFeatures());
     }
     {
