@@ -31,152 +31,153 @@ inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
                                        + value - baseValue);
 }
 
-#if UNUSED
-bool PutUsIntoAtari(const GoBoard& bd, SgPoint lastMove)
-{
-    SG_ASSERT(! SgIsSpecialMove(lastMove));
-    GoAdjBlockIterator<GoBoard> it(bd, lastMove, 1);
-    return it;
-}
-#endif
-
-/** Check if any of these neighbors-in-atari
-    is adjacent to any us-in-atari block */
-bool HasAnyNeighborInAtari(const GoBoard& bd,
-                           SgPoint oppInAtari[4 + 1])
-{
-    for (int i = 0; oppInAtari[i] != SG_ENDPOINT; ++i)
-        if (GoBoardUtil::HasAdjacentBlocks(bd, oppInAtari[i], 1))
-            return true;
-    return false;
-}
-
-bool MoveCapturesBlock(const GoBoard& bd, SgPoint move, SgPoint lastMove)
-{
-    // assumes no suicide - lastMove cannot be empty
-    SG_ASSERT(bd.Occupied(lastMove));
-    
-    return ! SgIsSpecialMove(lastMove)
-        && bd.InAtari(lastMove)
-        && bd.TheLiberty(lastMove) == move;
-}
-
 /** move is liberty of both lastMove and some other opponent block */
 bool PreventConnection(const GoBoard& bd, SgPoint move,
-                       SgPoint lastMove, const SgBlackWhite opp)
+                       SgPoint anchor, const SgBlackWhite opp)
 {
-    // assumes no suicide - lastMove cannot be empty
-    SG_ASSERT(bd.Occupied(lastMove));
-    
-    return bd.IsLibertyOfBlock(move, bd.Anchor(lastMove))
+    return bd.IsLibertyOfBlock(move, anchor)
         && GoBoardUtil::IsCuttingPoint(bd, move, opp);
 }
-                    
-// faster to globally find all such moves.
-void FindCaptureFeatures(const GoBoard& bd, SgPoint move,
-                         FeBasicFeatureSet& features)
+   
+int TotalNuStones(const GoBoard& bd,
+                  const SgPoint anchors[])
 {
-    // TODO what to do if multiple preys? FE_CAPTURE_MULTIPLE?
+    int nuStones = 0;
+    for (int i=0; anchors[i] != SG_ENDPOINT; ++i)
+    nuStones += bd.NumStones(anchors[i]);
+    return nuStones;
+}
+
+/** Map number of stones into a category 1..7,
+ then compute the corresponding feature for that category.
+ The mapping is as follows:
+ 1..3 --> category 1..3,
+ 4..6 --> category 4,
+ 7..10 --> category 5,
+ 11..20 --> category 6,
+ 21 or more --> category 7. */
+FeBasicFeature ComputeStoneFeature(const int nuStones,
+                                   FeBasicFeature baseFeature)
+{
+    SG_ASSERT(nuStones > 0);
+    int category;
+    if (nuStones <= 3)
+        category = nuStones;
+    else if (nuStones <= 6)
+        category = 4;
+    else if (nuStones <= 10)
+        category = 5;
+    else if (nuStones <= 20)
+        category = 6;
+    else
+        category = 7;
     
-    // previous implementation checked only if move captures lastmove
-    // that put us into atari. Should this be a separate feature?
-    // Now we check if capture relieves any atari on one of our blocks .
-    //if (PutUsIntoAtari(bd, lastMove))
-    //    f = FE_CAPTURE_ADJ_ATARI;
+    return ComputeFeature(baseFeature, 1, category);
+}
+
+
+int NuAdjacentStones(const GoBoard& bd, const SgPoint p,
+                     const SgBlackWhite blockColor)
+{
+    SgPoint anchors[4 + 1];
+    bd.NeighborBlocks(p, blockColor, 3, anchors);
+    int nuStones = 0;
+    for (int i = 0; anchors[i] != SG_ENDPOINT; ++i)
+    nuStones += bd.NumStones(anchors[i]);
+    return nuStones;
+}
+
+void SetStoneFeature(const GoBoard& bd,
+                     SgPoint p,
+                     const SgBlackWhite blockColor,
+                     FeBasicFeature baseFeature,
+                     FeMoveFeatures& features)
+{
+    SG_ASSERT(bd.IsEmpty(p));
+    int nuStones = NuAdjacentStones(bd, p, blockColor);
+    if (blockColor == bd.ToPlay()) // add one for the future stone on p
+        ++nuStones;
+    const FeBasicFeature f = ComputeStoneFeature(nuStones, baseFeature);
+    features.Set(f);
+}
+
+bool IsLastMove(const GoBoard& bd, SgPoint anchor)
+{
+    const SgPoint lastMove = bd.GetLastMove();
+    if (SgIsSpecialMove(lastMove))
+        return false;
+    // assumes no suicide, last move is occupied
+    SG_ASSERT(bd.IsColor(lastMove, bd.Opponent()));
+    return bd.Anchor(lastMove) == anchor;
+}
     
+void FindCaptureFeatures(const GoBoard& bd, SgPoint anchor,
+                         SgPoint theLib,
+                         FeMoveFeatures& features)
+{
     const SgBlackWhite toPlay = bd.ToPlay();
-    if (! bd.CanCapture(move, toPlay))
-        return;
+    const SgBlackWhite opp = SgOppBW(toPlay);
 
     FeBasicFeature f = FE_NONE;
-    SgPoint oppInAtari[4 + 1];
-    const SgBlackWhite opp = SgOppBW(toPlay);
-    bd.NeighborBlocks(move, opp, 1, oppInAtari);
-    if (HasAnyNeighborInAtari(bd, oppInAtari))
+    // our own neighbor is in atari
+    if (GoBoardUtil::HasAdjacentBlocks(bd, anchor, 1))
        f = FE_CAPTURE_ADJ_ATARI;
-    else
+    else if (IsLastMove(bd, anchor))
     {
-        const SgPoint lastMove = bd.GetLastMove();
-        if (! SgIsSpecialMove(lastMove))
-        {
-            // assumes no suicide, last move is occupied
-            SG_ASSERT(bd.IsColor(lastMove, opp));
-            if (  bd.CapturingMove()
-               && MoveCapturesBlock(bd, move, lastMove)
-               )
-                f = FE_CAPTURE_RECAPTURE;
-            else if (PreventConnection(bd, move, lastMove, opp))
-                f = FE_CAPTURE_PREVENT_CONNECTION;
-        }
+        if (bd.CapturingMove())
+            f = FE_CAPTURE_RECAPTURE;
+        else if (PreventConnection(bd, theLib, anchor, opp))
+            f = FE_CAPTURE_PREVENT_CONNECTION;
     }
     if (f != FE_NONE)
-        features.set(f);
+        features.Set(f);
     else // other capture
     {
-        for (int i = 0; oppInAtari[i] != SG_ENDPOINT; ++i)
-        {
-            const GoLadderStatus ls =
-                  GoLadderUtil::LadderStatus(bd, oppInAtari[i]);
-            f = (ls == GO_LADDER_CAPTURED) ? FE_CAPTURE_LADDER
-                                           : FE_CAPTURE_NOT_LADDER;
-            features.set(f);
-        }
+        const GoLadderStatus ls =
+              GoLadderUtil::LadderStatus(bd, anchor);
+        f = (ls == GO_LADDER_CAPTURED) ? FE_CAPTURE_LADDER
+                                       : FE_CAPTURE_NOT_LADDER;
+        features.Set(f);
     }
 }
 
-void FindExtensionFeatures(const GoBoard& bd, SgPoint move,
-                           FeBasicFeatureSet& features)
+void FindExtensionFeatures(const GoBoard& bd, SgPoint anchor,
+                           FeMoveFeatures& features)
 {
-    const SgBlackWhite toPlay = bd.ToPlay();
-    for (GoNeighborBlockIterator it(bd, move, toPlay, 1); it; ++it)
+    SG_ASSERT(bd.NumLiberties(anchor) == 1);
+    GoLadderStatus ls = GoLadderUtil::LadderStatus(bd, anchor);
+    if (ls == GO_LADDER_CAPTURED)
+        features.Set(FE_EXTENSION_LADDER);
+    else
     {
-        GoLadderStatus ls = GoLadderUtil::LadderStatus(bd, *it);
-        if (ls == GO_LADDER_CAPTURED)
-            features.set(FE_EXTENSION_LADDER);
-        else
-            features.set(FE_EXTENSION_NOT_LADDER);
+        features.Set(FE_EXTENSION_NOT_LADDER);
+        const FeBasicFeature saveF =
+            ComputeStoneFeature(bd.NumStones(anchor), FE_SAVE_STONES_1);
+        features.Set(saveF);
     }
 }
 
-// TODO check that move is not SelfAtari first??
-bool GivesAtari(const GoBoard& bd, SgPoint move)
-{
-    SG_ASSERT(! SgIsSpecialMove(move));
-    const SgBlackWhite opp = bd.Opponent();
-    for (GoNeighborBlockIterator it(bd, move, opp, 2); it; ++it)
-        if (bd.NumLiberties(*it) == 2)
-            return true;
-    return false;
-}
-
-bool IsLadderCaptureMove(const GoBoard& bd, SgPoint move)
-{
-    SG_ASSERT(! SgIsSpecialMove(move));
-    const SgBlackWhite opp = bd.Opponent();
-    for (GoNeighborBlockIterator it(bd, move, opp, 2); it; ++it)
-        if (  bd.NumLiberties(*it) == 2
-           && GoLadderUtil::IsLadderCaptureMove(bd, *it, move)
-           )
-            return true;
-    return false;
-}
-
-void FindAtariFeatures(const GoBoard& bd, SgPoint move,
-                       FeBasicFeatureSet& features)
+void FindAtariFeatures(const GoBoard& bd, SgPoint anchor,
+                       SgPoint move,
+                       FeMoveFeatures& features)
 {
     //FE_ATARI_LADDER,        // Ladder atari
     //FE_ATARI_KO,            // Atari when there is a ko
     //FE_ATARI_OTHER,         // Other atari
-    if (GivesAtari(bd, move))
+    SG_ASSERT(bd.NumLiberties(anchor) == 2);
+    SG_ASSERT(bd.IsLibertyOfBlock(move, anchor));
+              
+    bool hasFeature = false;
+    if (GoLadderUtil::IsLadderCaptureMove(bd, anchor, move))
     {
-        if (IsLadderCaptureMove(bd, move))
-            features.set(FE_ATARI_LADDER);
-        if (bd.KoPoint() != SG_NULLPOINT)
-            features.set(FE_ATARI_KO);
-        if (  ! features.test(FE_ATARI_LADDER)
-           && ! features.test(FE_ATARI_KO))
-            features.set(FE_ATARI_OTHER);
+        features.Set(FE_ATARI_LADDER);
+        SetStoneFeature(bd, move, bd.Opponent(), FE_KILL_STONES_1, features);
+        hasFeature = true;
     }
+    if (bd.KoPoint() != SG_NULLPOINT)
+        features.Set(FE_ATARI_KO);
+    else if (! hasFeature)
+        features.Set(FE_ATARI_OTHER);
 }
 
 void FindCfgFeatures(const GoBoard& bd, SgPoint focus,
@@ -195,7 +196,7 @@ void FindCfgFeatures(const GoBoard& bd, SgPoint focus,
                  || dist[p] == std::numeric_limits<int>::max());
         const int distance = std::min(dist[p], MAX_DIST + 1);
         const FeBasicFeature f = ComputeFeature(baseFeature,
-                                             baseDistance, distance);
+                                                baseDistance, distance);
         features[*it].Set(f);
     }
 }
@@ -231,13 +232,16 @@ void FindCornerMoveFeatures(const GoBoard& bd,
     }
 }
 
-void FindGamePhaseFeature(const GoBoard& bd, FeBasicFeatureSet& features)
+void FindGamePhaseFeature(const GoBoard& bd,
+                          const GoPointList& legalBoardMoves,
+                          GoEvalArray<FeMoveFeatures>& features)
 {
     const int phase = std::min(12, bd.MoveNumber() / 30 + 1);
     FeBasicFeature f = ComputeFeature(FE_GAME_PHASE_1, 1, phase);
     SG_ASSERT(f >= FE_GAME_PHASE_1);
     SG_ASSERT(f <= FE_GAME_PHASE_12);
-    features.set(f);
+    for (GoPointList::Iterator it(legalBoardMoves); it; ++it)
+        features[*it].Set(f);
 }
 
 inline void FindBlockAnchors(const GoBoard& bd, int maxNuLiberties,
@@ -257,6 +261,7 @@ void FindAtariCaptureFeatures(const GoBoard& bd, SgPoint anchor,
                               GoEvalArray<FeMoveFeatures>& features)
 {
     // FE_CAPTURE_MULTIPLE,    // capture more than one block
+    // FE_SNAPBACK, // move is a single stone capture but opponent can snap back
 
     const SgBlackWhite color = bd.GetStone(anchor);
     SG_ASSERT(bd.Opponent() == color);
@@ -266,6 +271,13 @@ void FindAtariCaptureFeatures(const GoBoard& bd, SgPoint anchor,
     SG_ASSERT(anchors[0] != SG_ENDPOINT);
     if (anchors[1] != SG_ENDPOINT)
         features[theLib].Set(FE_CAPTURE_MULTIPLE);
+    else if (GoBoardUtil::IsSnapback(bd, anchors[0]))
+        features[theLib].Set(FE_SNAPBACK);
+    FindCaptureFeatures(bd, anchor, theLib, features[theLib]);
+    const int nuStones = TotalNuStones(bd, anchors);
+    const FeBasicFeature stoneF =
+        ComputeStoneFeature(nuStones, FE_KILL_STONES_1);
+    features[theLib].Set(stoneF);
 }
 
 bool IsDoubleAtari(const GoBoard& bd, SgPoint lib,
@@ -289,7 +301,10 @@ void FindPlayDoubleAtariFeatures(const GoBoard& bd, SgPoint anchor,
         if (  IsDoubleAtari(bd, *it, color)
            && ! GoBoardUtil::SelfAtari(bd, *it)
            )
+        {
             features[*it].Set(FE_DOUBLE_ATARI);
+            SetStoneFeature(bd, *it, color, FE_KILL_STONES_1, features[*it]);
+        }
 }
 
 void FindDefendDoubleAtariFeatures(const GoBoard& bd, SgPoint anchor,
@@ -304,7 +319,15 @@ void FindDefendDoubleAtariFeatures(const GoBoard& bd, SgPoint anchor,
            && ! GoBoardUtil::SelfAtari(bd, *it)
            )
             // todo other tests that it's not suicidal, e.g. bad 2-lib, 3-lib
+        {
             features[*it].Set(FE_DOUBLE_ATARI_DEFEND);
+            // todo: set to min. number of stones for 2 blocks, not sum.
+            // todo what is best for 3 blocks??? 2nd largest?
+            // todo there should also be some "threat value" for attacking
+            // largest (and 3rd largest) block.
+            // maybe make these all separate features ????
+            SetStoneFeature(bd, *it, color, FE_SAVE_STONES_1, features[*it]);
+        }
 }
 
 inline void TryLadderEscapeMove(const GoBoard& bd, SgPoint anchor,
@@ -339,7 +362,16 @@ inline void FindOtherLadderEscapeMoves(const GoBoard& bd, SgPoint anchor,
     }
 
     for (GoPointList::Iterator it(works); it; ++it)
+    {
         features[*it].Set(FE_TWO_LIB_SAVE_LADDER);
+        
+        // Todo: this will set separate flags if several blocks
+        // are saved by the same move.
+        // but we do not have the information here to add up.
+        const FeBasicFeature saveF =
+        ComputeStoneFeature(bd.NumStones(anchor), FE_SAVE_STONES_1);
+        features[*it].Set(saveF);
+    }
 
     // todo: try more moves, e.g. one point jump,
     // liberty of adjacent weak stones, diagonal move, bamboo connection
@@ -348,6 +380,8 @@ inline void FindOtherLadderEscapeMoves(const GoBoard& bd, SgPoint anchor,
 void FindOpp2LibFeatures(const GoBoard& bd, SgPoint anchor,
                          GoEvalArray<FeMoveFeatures>& features)
 {
+    for (GoBoard::LibertyCopyIterator it(bd, anchor); it; ++it)
+        FindAtariFeatures(bd, anchor, *it, features[*it]);
     FindPlayDoubleAtariFeatures(bd, anchor, features);
 }
 
@@ -356,9 +390,14 @@ void CheckSelfLadder(const GoBoard& bd, SgPoint anchor,
                      GoEvalArray<FeMoveFeatures>& features)
 {
     //    FE_TWO_LIB_SELF_LADDER
+    const SgBlackWhite toPlay = bd.ToPlay();
     for (GoBoard::LibertyCopyIterator it(bd, anchor); it; ++it)
         if (! GoLadderUtil::IsLadderEscapeMove(bd, anchor, *it))
+        {
             features[*it].Set(FE_TWO_LIB_SELF_LADDER);
+            SetStoneFeature(bd, *it, toPlay, FE_KILL_OWN_STONES_1,
+                            features[*it]);
+        }
 }
 
 bool WouldBeLadderCaptured(const GoBoard& constBd, SgPoint move)
@@ -396,7 +435,11 @@ void CheckProtectedLiberty(const GoBoard& bd,
     GoLadderUtil::IsProtectedLiberty(bd, p, SgOppBW(toPlay),
                                      byLadder, isKoCut, true);
     if (isOppProtected)
+    {
         features[p].Set(FE_OPP_PROTECTED_LIBERTY);
+        if (bd.HasNeighbors(p, toPlay))
+            SetStoneFeature(bd, p, toPlay, FE_KILL_OWN_STONES_1, features[p]);
+    }
     else if (isKoCut)
         features[p].Set(FE_OPP_CUT_WITH_KO);
 
@@ -418,7 +461,10 @@ void FindNewSelfLadderMoves(const GoBoard& bd,
            && bd.NumNeighbors(*it, toPlay) == 0
            && WouldBeLadderCaptured(bd, *it)
            )
+        {
             features[*it].Set(FE_TWO_LIB_NEW_SELF_LADDER);
+            features[*it].Set(FE_KILL_OWN_STONES_1);
+        }
         else if (bd.NumEmptyNeighbors(*it) < 3)
             CheckProtectedLiberty(bd, *it, features);
 }
@@ -428,7 +474,8 @@ void FindOwn2LibFeatures(const GoBoard& bd, SgPoint anchor,
 {
     // FE_TWO_LIB_SAVE_LADDER, // save own 2 lib block from ladder capture
 
-    SG_ASSERT(bd.ToPlay() == bd.GetStone(anchor));
+    const SgBlackWhite toPlay = bd.ToPlay();
+    SG_ASSERT(toPlay == bd.GetStone(anchor));
     SgPoint toCapture(SG_NULLPOINT);
     SgPoint toEscape(SG_NULLPOINT);
 
@@ -444,7 +491,11 @@ void FindOwn2LibFeatures(const GoBoard& bd, SgPoint anchor,
     }
     else if (status == GO_LADDER_CAPTURED) // no escape by playing on libs
         for (GoBoard::LibertyIterator it(bd, anchor); it; ++it)
+        {
             features[*it].Set(FE_TWO_LIB_STILL_LADDER);
+            SetStoneFeature(bd, *it, toPlay, FE_KILL_OWN_STONES_1,
+                            features[*it]);
+        }
     else
         CheckSelfLadder(bd, anchor, features);
 
@@ -484,14 +535,17 @@ void FindLadderFeature(const GoBoard& bd, SgPoint anchor,
         case 1:
             if (bd.Opponent() == bd.GetStone(anchor))
                 FindAtariCaptureFeatures(bd, anchor, features);
+            else
+            {
+                const SgPoint theLib = bd.TheLiberty(anchor);
+                FindExtensionFeatures(bd, anchor, features[theLib]);
+            }
             break;
         case 2:
             if (bd.ToPlay() == bd.GetStone(anchor))
                 FindOwn2LibFeatures(bd, anchor, features);
             else
                 FindOpp2LibFeatures(bd, anchor, features);
-            // parts also done by FindAtariFeatures - FE_ATARI_LADDER
-            // todo rewrite.
             break;
         case 3:
             if (bd.ToPlay() == bd.GetStone(anchor))
@@ -504,6 +558,19 @@ void FindLadderFeature(const GoBoard& bd, SgPoint anchor,
     }
 }
 
+void FindSelfatariFeatures(const GoBoard& bd, SgPoint move,
+                           FeMoveFeatures& features)
+{
+    if (GoBoardUtil::SelfAtari(bd, move))
+    {
+        features.Set(FE_SELFATARI);
+        SetStoneFeature(bd, move, bd.ToPlay(),
+                        FE_KILL_OWN_STONES_1, features);
+    }
+    // @todo FE_SELFATARI_NAKADE, FE_SELFATARI_THROWIN
+}
+
+
 void FindLadderFeatures(const GoBoard& bd,
                         const GoPointList& legalMoves,
                         GoEvalArray<FeMoveFeatures>& features)
@@ -514,34 +581,28 @@ void FindLadderFeatures(const GoBoard& bd,
         FindLadderFeature(bd, *it, features);
     FindNewSelfLadderMoves(bd, legalMoves, features);
 
+    for (GoPointList::Iterator it(legalMoves); it; ++it)
+        FindSelfatariFeatures(bd, *it, features[*it]);
 }
 
-void FindLineFeature(const GoBoard& bd, SgPoint move,
-                     FeBasicFeatureSet& features)
+void FindLinePosFeatures(const GoBoard& bd,
+                         const GoPointList& legalBoardMoves,
+                         GoEvalArray<FeMoveFeatures>& features)
 {
-    const int line = std::min(5, bd.Line(move));
-    FeBasicFeature f = ComputeFeature(FE_LINE_1, 1, line);
-    SG_ASSERT(f >= FE_LINE_1);
-    SG_ASSERT(f <= FE_LINE_5_OR_MORE);
-    features.set(f);
-}
+    for (GoPointList::Iterator it(legalBoardMoves); it; ++it)
+    {
+        const int line = std::min(5, bd.Line(*it));
+        FeBasicFeature f = ComputeFeature(FE_LINE_1, 1, line);
+        SG_ASSERT(f >= FE_LINE_1);
+        SG_ASSERT(f <= FE_LINE_5_OR_MORE);
+        features[*it].Set(f);
 
-void FindPosFeature(const GoBoard& bd, SgPoint move,
-                    FeBasicFeatureSet& features)
-{
-    const int pos = std::min(10, bd.Pos(move));
-    FeBasicFeature f = ComputeFeature(FE_POS_1, 1, pos);
-    SG_ASSERT(f >= FE_POS_1);
-    SG_ASSERT(f <= FE_POS_10);
-    features.set(f);
-}
-    
-void FindSelfatariFeatures(const GoBoard& bd, SgPoint move,
-                           FeBasicFeatureSet& features)
-{
-    if (GoBoardUtil::SelfAtari(bd, move))
-        features.set(FE_SELFATARI);
-    // @todo FE_SELFATARI_NAKADE, FE_SELFATARI_THROWIN
+        const int pos = std::min(10, bd.Pos(*it));
+        FeBasicFeature fp = ComputeFeature(FE_POS_1, 1, pos);
+        SG_ASSERT(fp >= FE_POS_1);
+        SG_ASSERT(fp <= FE_POS_10);
+        features[*it].Set(fp);
+    }
 }
 
 void FindSideExtensionFeatures(const GoBoard& bd,
@@ -621,35 +682,52 @@ int Distance(SgPoint p1, SgPoint p2)
     return dx + dy + std::max(dx, dy);
 }
 
-void FindDistPrevMoveFeatures(const GoBoard& bd, SgPoint move,
-                              FeBasicFeatureSet& features)
+void SetDistancesLastMove(const SgPoint lastMove,
+                          const GoPointList& legalBoardMoves,
+                          GoEvalArray<FeMoveFeatures>& features)
 {
-    const SgPoint lastMove = bd.GetLastMove();
-    if (! SgIsSpecialMove(lastMove))
+    for (GoPointList::Iterator it(legalBoardMoves); it; ++it)
     {
-        int distance = Distance(move, lastMove);
+        const int distance = Distance(*it, lastMove);
         SG_ASSERT(distance >= 2);
         if (distance <= 17)
         {
             FeBasicFeature f = ComputeFeature(FE_DIST_PREV_2, 2, distance);
-            features.set(f);
+            features[*it].Set(f);
         }
     }
+}
+    
+void SetDistances2ndLastMove(const SgPoint lastMove2,
+                          const GoPointList& legalBoardMoves,
+                          GoEvalArray<FeMoveFeatures>& features)
+{
+    for (GoPointList::Iterator it(legalBoardMoves); it; ++it)
+    {
+        const int distance = Distance(*it, lastMove2);
+        if (distance == 0)
+            features[*it].Set(FE_DIST_PREV_OWN_0);
+        else if (distance <= 17)
+        {
+            SG_ASSERT(distance >= 2);
+            FeBasicFeature f =
+            ComputeFeature(FE_DIST_PREV_OWN_2, 2, distance);
+            features[*it].Set(f);
+        }
+    }
+}
+
+void FindDistPrevMoveFeatures(const GoBoard& bd,
+                              const GoPointList& legalBoardMoves,
+                              GoEvalArray<FeMoveFeatures>& features)
+{
+    const SgPoint lastMove = bd.GetLastMove();
+    if (! SgIsSpecialMove(lastMove))
+        SetDistancesLastMove(lastMove, legalBoardMoves, features);
 
     const SgPoint lastMove2 = bd.Get2ndLastMove();
     if (! SgIsSpecialMove(lastMove2))
-    {
-        int distance = Distance(move, lastMove2);
-        SG_ASSERT(distance == 0 || distance >= 2);
-        if (distance == 0)
-            features.set(FE_DIST_PREV_OWN_0);
-        if (distance <= 17)
-        {
-            FeBasicFeature f =
-                ComputeFeature(FE_DIST_PREV_OWN_2, 2, distance);
-            features.set(f);
-        }
-    }
+        SetDistances2ndLastMove(lastMove2, legalBoardMoves, features);
 }
 
 } // namespace
@@ -793,6 +871,33 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_OPP_PROTECTED_LIBERTY", // we would be captured there
         "FE_OUR_CUT_WITH_KO", // can cut to start a ko here.
         "FE_OPP_CUT_WITH_KO", // can cut to start a ko here.
+        "FE_SAVE_STONES_1", // save a single stone
+        "FE_SAVE_STONES_2",
+        "FE_SAVE_STONES_3",
+        "FE_SAVE_STONES_4_6",
+        "FE_SAVE_STONES_7_10",
+        "FE_SAVE_STONES_11_20",
+        "FE_SAVE_STONES_21_OR_MORE",
+        "FE_KILL_STONES_1", // kill a single stones
+        "FE_KILL_STONES_2",
+        "FE_KILL_STONES_3",
+        "FE_KILL_STONES_4_6",
+        "FE_KILL_STONES_7_10",
+        "FE_KILL_STONES_11_20",
+        "FE_KILL_STONES_21_OR_MORE",
+        "FE_KILL_OWN_STONES_1", // a single own stone can be killed after this move
+        "FE_KILL_OWN_STONES_2",
+        "FE_KILL_OWN_STONES_3",
+        "FE_KILL_OWN_STONES_4_6",
+        "FE_KILL_OWN_STONES_7_10",
+        "FE_KILL_OWN_STONES_11_20",
+        "FE_KILL_OWN_STONES_21_OR_MORE",
+        "FE_SNAPBACK", // move captures single stone, opponent can snap back
+        "FE_SAFE_TERRITORY_OWN_NO_KO", // play in own territory, no active ko
+        "FE_SAFE_TERRITORY_OWN_KO",
+        "FE_SAFE_TERRITORY_OPP_NO_KO",
+        "FE_SAFE_TERRITORY_OPP_KO", // play in opponent territory, active ko
+        "FE_POSSIBLE_SEMEAI",
         "FE_NONE"
     };
     SG_ASSERT(f >= FE_PASS_NEW);
@@ -860,18 +965,12 @@ FeFeatures::EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
     return detail;
 }
 
-void FeFeatures::FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
-                           FeBasicFeatureSet& features)
+void FeFeatures::FindBasicMoveFeaturesUI(const GoBoard& bd, SgPoint move,
+                                         FeBasicFeatureSet& features)
 {
-    SG_ASSERT(move != SG_PASS);
-    FindCaptureFeatures(bd, move, features);
-    FindExtensionFeatures(bd, move, features);
-    FindSelfatariFeatures(bd, move, features);
-    FindAtariFeatures(bd, move, features);
-    FindLineFeature(bd, move, features);
-    FindDistPrevMoveFeatures(bd, move, features);
-    FindPosFeature(bd, move, features);
-    FindGamePhaseFeature(bd, features);
+    FeFullBoardFeatures f(bd);
+    f.FindAllFeatures();
+    features = f.BasicFeatures(move);
 }
 
 void FeFeatures::FindPassFeatures(const GoBoard& bd,
@@ -879,9 +978,9 @@ void FeFeatures::FindPassFeatures(const GoBoard& bd,
 {
     const SgPoint lastMove = bd.GetLastMove();
     if (lastMove == SG_PASS)
-    features.set(FE_PASS_CONSECUTIVE);
+        features.set(FE_PASS_CONSECUTIVE);
     else
-    features.set(FE_PASS_NEW);
+        features.set(FE_PASS_NEW);
 }
 
 int FeFeatures::Get3x3Feature(const GoBoard& bd, SgPoint p)
@@ -989,7 +1088,6 @@ size_t FeMoveFeatures::ActiveFeatures(FeActiveArray& active) const
 void FeMoveFeatures::FindMoveFeatures(const GoBoard& bd, SgPoint move)
 {
     SG_ASSERT(move != SG_PASS);
-    FeFeatures::FindBasicMoveFeatures(bd, move, m_basicFeatures);
     m_3x3Index = Find3x3Feature(bd, move);
 }
 
@@ -1070,6 +1168,9 @@ void FeFullBoardFeatures::FindFullBoardFeatures()
         FindCornerMoveFeatures(m_bd, m_features);
         FindSideExtensionFeatures(m_bd, m_features);
     }
+    FindGamePhaseFeature(m_bd, m_legalMoves, m_features);
+    FindDistPrevMoveFeatures(m_bd, m_legalMoves, m_features);
+    FindLinePosFeatures(m_bd, m_legalMoves, m_features);
     FindCfgFeatures(m_bd, m_legalMoves, m_features);
     FindLadderFeatures(m_bd, m_legalMoves, m_features);
 }

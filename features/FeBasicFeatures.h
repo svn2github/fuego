@@ -156,6 +156,33 @@ enum FeBasicFeature{
     FE_OPP_PROTECTED_LIBERTY, // we would be captured there
     FE_OUR_CUT_WITH_KO, // can cut to start a ko here.
     FE_OPP_CUT_WITH_KO, // can cut to start a ko here.
+    FE_SAVE_STONES_1, // save a single stone
+    FE_SAVE_STONES_2,
+    FE_SAVE_STONES_3,
+    FE_SAVE_STONES_4_6,
+    FE_SAVE_STONES_7_10,
+    FE_SAVE_STONES_11_20,
+    FE_SAVE_STONES_21_OR_MORE,
+    FE_KILL_STONES_1, // kill a single stone
+    FE_KILL_STONES_2,
+    FE_KILL_STONES_3,
+    FE_KILL_STONES_4_6,
+    FE_KILL_STONES_7_10,
+    FE_KILL_STONES_11_20,
+    FE_KILL_STONES_21_OR_MORE,
+    FE_KILL_OWN_STONES_1, // a single own stone can be killed after this move
+    FE_KILL_OWN_STONES_2,
+    FE_KILL_OWN_STONES_3,
+    FE_KILL_OWN_STONES_4_6,
+    FE_KILL_OWN_STONES_7_10,
+    FE_KILL_OWN_STONES_11_20,
+    FE_KILL_OWN_STONES_21_OR_MORE,
+    FE_SNAPBACK, // move is a single stone capture but opponent can snap back
+    FE_SAFE_TERRITORY_OWN_NO_KO, // play in own territory, no active ko
+    FE_SAFE_TERRITORY_OWN_KO,
+    FE_SAFE_TERRITORY_OPP_NO_KO,
+    FE_SAFE_TERRITORY_OPP_KO,  // play in opponent territory, active ko
+    FE_POSSIBLE_SEMEAI,
     FE_NONE,
     _NU_FE_FEATURES
 
@@ -186,6 +213,8 @@ public:
     /** Put active move features into array; return how many were found */
     size_t ActiveFeatures(FeActiveArray& active) const;
 
+    const FeBasicFeatureSet& BasicFeatures() const;
+    
     /** Find features for board move (not pass) */
     void FindMoveFeatures(const GoBoard& bd, SgPoint move);
 
@@ -224,6 +253,12 @@ inline FeMoveFeatures::FeMoveFeatures()
     m_12PointIndex(INVALID_PATTERN_INDEX)
 { }
 
+inline const FeBasicFeatureSet&
+FeMoveFeatures::BasicFeatures() const
+{
+    return m_basicFeatures;
+}
+
 inline void FeMoveFeatures::Set(FeBasicFeature f)
 {
     m_basicFeatures.set(f);
@@ -239,6 +274,8 @@ inline void FeMoveFeatures::Set12PointIndex(int index)
 struct FeFullBoardFeatures
 {
     FeFullBoardFeatures(const GoBoard& bd);
+
+    const FeBasicFeatureSet& BasicFeatures(SgPoint move) const;
 
     GoEvalArray<float>
     EvaluateFeatures(const FeFeatureWeights& weights) const;
@@ -294,6 +331,12 @@ inline FeFullBoardFeatures::FeFullBoardFeatures(const GoBoard& bd)
     m_legalMoves(GoBoardUtil::AllLegalMoves(bd))
 { }
 
+inline const FeBasicFeatureSet&
+FeFullBoardFeatures::BasicFeatures(SgPoint move) const
+{
+    return m_features[move].BasicFeatures();
+}
+
 inline GoEvalArray<FeMoveFeatures>& FeFullBoardFeatures::Features()
 {
     return m_features;
@@ -341,7 +384,8 @@ std::vector<FeEvalDetail>
 EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
                            const FeFeatureWeights& weights);
 
-void FindBasicMoveFeatures(const GoBoard& bd, SgPoint move,
+/** Find features for a single move. Computes full board. */
+void FindBasicMoveFeaturesUI(const GoBoard& bd, SgPoint move,
                            FeBasicFeatureSet& features);
 
 void FindPassFeatures(const GoBoard& bd, FeBasicFeatureSet& features);
