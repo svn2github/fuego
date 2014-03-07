@@ -18,7 +18,7 @@ echo $YEAR
 for GAMEDIR in `ls $YEAR/`; do
 echo $GAMEDIR
 gogui-statistics -program $FUEGO -commands "features_wistuba_file" -size 19 \
--quiet -force $GAMEDIR/*sgf
+-quiet -force $YEAR/$GAMEDIR/*sgf
 done
 done
 done
