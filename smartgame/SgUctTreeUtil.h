@@ -68,11 +68,15 @@ namespace SgUctTreeUtil
                         double maxTime = std::numeric_limits<double>::max(),
                         SgUctValue minCount = 0);
 
-    /** Find move node with a given move.
-        @return The child node or 0, if the position node has no such child. */
+    /** Find child of node corresponding to a given move.
+        @return The child node, or 0 if node has no such child. */
     const SgUctNode* FindChildWithMove(const SgUctTree& tree,
                                        const SgUctNode& node, SgMove move);
 
+    /** Replay move sequence from root of tree and return the resulting node.
+        Return 0 if no node found at any stage */
+    const SgUctNode* FindMatchingNode(const SgUctTree& tree,
+                                      const std::vector<SgMove>& sequence);
 } // namespace SgUctTreeUtil
 
 //----------------------------------------------------------------------------

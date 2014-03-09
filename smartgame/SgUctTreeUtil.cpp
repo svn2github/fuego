@@ -75,6 +75,21 @@ std::ostream& operator<<(ostream& out, const SgUctTreeStatistics& stat)
 }
 
 //----------------------------------------------------------------------------
+const SgUctNode*
+SgUctTreeUtil::FindMatchingNode(const SgUctTree& tree,
+                                const std::vector<SgMove>& sequence)
+{
+    const SgUctNode* node = &tree.Root();
+    for (vector<SgMove>::const_iterator it = sequence.begin();
+         it != sequence.end(); ++it)
+    {
+        const SgMove mv = *it;
+        node = SgUctTreeUtil::FindChildWithMove(tree, *node, mv);
+        if (node == 0)
+        return 0;
+    }
+    return node;
+}
 
 void SgUctTreeUtil::ExtractSubtree(const SgUctTree& tree, SgUctTree& target,
                                    const std::vector<SgMove>& sequence,
@@ -82,16 +97,9 @@ void SgUctTreeUtil::ExtractSubtree(const SgUctTree& tree, SgUctTree& target,
                                    SgUctValue minCount)
 {
     target.Clear();
-    const SgUctNode* node = &tree.Root();
-    for (vector<SgMove>::const_iterator it = sequence.begin();
-         it != sequence.end(); ++it)
-    {
-        SgMove mv = *it;
-        node = SgUctTreeUtil::FindChildWithMove(tree, *node, mv);
-        if (node == 0)
-            return;
-    }
-    tree.ExtractSubtree(target, *node, warnTruncate, maxTime, minCount);
+    const SgUctNode* node = FindMatchingNode(tree, sequence);
+    if (node)
+        tree.ExtractSubtree(target, *node, warnTruncate, maxTime, minCount);
 }
 
 const SgUctNode* SgUctTreeUtil::FindChildWithMove(const SgUctTree& tree,
