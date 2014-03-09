@@ -33,8 +33,15 @@ DIR=8
 YEARS="2009 201[0-1]"
 run
 
+# start commented out
 if [ 1 -eq 0 ]; then
-commented out
+
+# TODO: create 2012.validate file.
+mkdir -p 9
+cd 9
+../validate.sh 2012&
+cd ..
+
 10-1959
 1960-1983
 1984-1990
@@ -44,3 +51,5 @@ commented out
 2004-2008
 2009-2011
 fi
+# end commented out
+
