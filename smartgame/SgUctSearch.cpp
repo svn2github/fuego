@@ -531,7 +531,7 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             break;
         default:
             SG_ASSERT(false);
-            value = SG_UCTMOVESELECT_VALUE;
+            value = child.MoveCount();
         }
         if (bestChild == 0 || value > bestValue)
         {
