@@ -897,11 +897,9 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
                                                double maxTime)
 {
     Board().SetToPlay(toPlay);
-    GoBoardHistory currentPosition;
-    currentPosition.SetFromBoard(Board());
-    std::vector<SgPoint> sequence;
-    if (! currentPosition.IsAlternatePlayFollowUpOf(m_search.BoardHistory(),
-                                                    sequence))
+    std::vector<SgPoint> sequence =
+        m_search.BoardHistory().SequenceToCurrent(Board());
+    if (sequence.empty())
     {
         SgDebug() << "GoUctPlayer: No tree to reuse found\n";
         return;
