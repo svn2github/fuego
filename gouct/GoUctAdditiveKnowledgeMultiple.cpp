@@ -31,13 +31,11 @@ namespace {
 
 GoUctAdditiveKnowledgeMultiple::GoUctAdditiveKnowledgeMultiple(
         const GoBoard& bd,
-        SgUctValue scale,
         SgUctValue minimum,
         GoUctKnowledgeCombinationType combinationType)
     :
     GoAdditiveKnowledge(bd),
     m_minimum(minimum),
-    m_scale(scale),
     m_combinationType(combinationType)
 { }
 

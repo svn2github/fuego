@@ -85,9 +85,6 @@ public:
     */
     static void PrintContext(unsigned int context, std::ostream& o);
 
-    /** The scaling factor for this predictor */
-    SgUctValue Scale() const;
-
 private:
 
     void ProcessPosition9(std::vector<SgUctMoveInfo>& moves);
@@ -103,7 +100,8 @@ private:
 
 inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::MinValue() const
 {
-	return PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED ? 0.0001f : 0.05f;
+	return PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED ? 0.0001f
+                                                             : 0.05f;
 }
 
 inline GoPredictorType GoUctAdditiveKnowledgeGreenpeep::PredictorType() const
@@ -119,11 +117,6 @@ ProcessPosition(std::vector<SgUctMoveInfo>& moves)
         ProcessPosition9(moves);
     else
         ProcessPosition19(moves);
-}
-
-inline SgUctValue GoUctAdditiveKnowledgeGreenpeep::Scale() const
-{
-	return 0.03f;
 }
 
 //----------------------------------------------------------------------------

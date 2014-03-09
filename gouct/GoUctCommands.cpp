@@ -667,6 +667,8 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
             << "[bool] use_tree_filter " << p.m_useTreeFilter << '\n'
             << "[float] default_prior_weight " << p.m_defaultPriorWeight
             << '\n'
+            << "[float] additive_knowledge_scale "
+            << p.m_additiveKnowledgeScale << '\n'
             << "[string] length_modification " << p.m_lengthModification
             << '\n'
             << "[string] score_modification " << p.m_scoreModification
@@ -687,7 +689,9 @@ void GoUctCommands::CmdParamGlobalSearch(GtpCommand& cmd)
         else if (name == "use_tree_filter")
             p.m_useTreeFilter = cmd.Arg<bool>(1);
         else if (name == "default_prior_weight")
-            p.m_defaultPriorWeight = cmd.Arg<float>(1);
+        p.m_defaultPriorWeight = cmd.Arg<float>(1);
+        else if (name == "additive_knowledge_scale")
+        p.m_additiveKnowledgeScale = cmd.Arg<float>(1);
         else if (name == "length_modification")
             p.m_lengthModification = cmd.Arg<SgUctValue>(1);
         else if (name == "score_modification")

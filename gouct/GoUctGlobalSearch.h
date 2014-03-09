@@ -82,6 +82,8 @@ struct GoUctGlobalSearchStateParam
 
     float m_defaultPriorWeight;
 
+    float m_additiveKnowledgeScale;
+
     GoUctGlobalSearchStateParam();
 
     ~GoUctGlobalSearchStateParam();
@@ -485,6 +487,11 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
     moves.push_back(SgUctMoveInfo(SG_PASS));
 }
 
+inline float invsqrt(float value)
+{
+    return 1 / sqrt(value);
+}
+
 template<class POLICY>
 void GoUctGlobalSearchState<POLICY>::
 ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
@@ -506,13 +513,16 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
         if (moves[j].m_predictorValue > predictorMax) 
             predictorMax = moves[j].m_predictorValue;
     }
+    const GoUctGlobalSearchStateParam& param = m_param.m_searchStateParam;
+    const float scale = param.m_additiveKnowledgeScale * sqrt(predictorTotal);
+
     if (kn->PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED)
     {
         for (size_t j = 0; j < moves.size(); ++j)
         {
-            SgUctValue v = kn->RaiseToMinValue(moves[j].m_predictorValue);
-            moves[j].m_predictorValue = kn->Scale() 
-                * sqrt(predictorTotal / v);
+            const SgUctValue v =
+                kn->RaiseToMinValue(moves[j].m_predictorValue);
+            moves[j].m_predictorValue = scale * invsqrt(v);
         }
     } 
     else // PUCB-type predictor
@@ -523,7 +533,7 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
         for (size_t j = 0; j < moves.size(); ++j)
         {
             SgUctValue v = kn->RaiseToMinValue(moves[j].m_predictorValue);
-            moves[j].m_predictorValue = kn->Scale()
+            moves[j].m_predictorValue = param.m_additiveKnowledgeScale
                 * predictorMultiplier / v;
         }
     }

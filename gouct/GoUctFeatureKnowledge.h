@@ -87,9 +87,6 @@ public:
     
     /** The minimum value allowed by this predictor */
     SgUctValue MinValue() const;
-    
-    /** The scaling factor for this predictor */
-    SgUctValue Scale() const;
 
 private:
     
@@ -139,11 +136,6 @@ inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const
 {
     SG_ASSERT(UpToDate());
     return m_moveValue[move];
-}
-
-inline SgUctValue GoUctFeatureKnowledge::Scale() const
-{
-    return 0.01; // TODO
 }
 
 inline bool GoUctFeatureKnowledge::UpToDate() const

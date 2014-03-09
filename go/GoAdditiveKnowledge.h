@@ -55,9 +55,6 @@ public:
     /** The minimum value allowed by this predictor */
     virtual SgUctValue MinValue() const = 0;
 
-    /** The scaling factor for this predictor */
-    virtual SgUctValue Scale() const = 0;
-
 private:
 
     /** The board on which prior knowledge is computed */
@@ -89,9 +86,6 @@ public:
     
     /** The minimum value allowed by this predictor */
     SgUctValue MinValue() const;
-    
-    /** The scaling factor for this predictor */
-    SgUctValue Scale() const;
 };
 //----------------------------------------------------------------------------
 
@@ -103,11 +97,6 @@ inline SgUctValue GoUctAdditiveKnowledgeStdProb::MinValue() const
 inline GoPredictorType GoUctAdditiveKnowledgeStdProb::PredictorType() const
 {
 	return GO_PRED_TYPE_PROBABILITY_BASED;
-}
-
-inline SgUctValue GoUctAdditiveKnowledgeStdProb::Scale() const
-{
-	return 0.03f;
 }
 
 #endif // GOUCT_ADDITIVEKNOWLEDGE_H

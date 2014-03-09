@@ -79,8 +79,7 @@ void TestType(const GoBoard& bd,
               int nuKnowledge)
 {
     const SgUctValue minimum = 0.0001f;
-    const SgUctValue scale = 0.03f;
-    GoUctAdditiveKnowledgeMultiple m(bd, scale, minimum, combinationType);
+    GoUctAdditiveKnowledgeMultiple m(bd, minimum, combinationType);
     Knowledge1* k1 = new Knowledge1(bd);
     m.AddKnowledge(k1);
     if (nuKnowledge >1)
