@@ -23,11 +23,11 @@ inline float Sigmoid(float x)
 //----------------------------------------------------------------------------
 GoUctFeatureKnowledgeParam::GoUctFeatureKnowledgeParam()
     :
-    m_useAsAdditivePredictor(true),
+    m_useAsAdditivePredictor(false),
     m_additiveFeatureMultiplier(1.0),
     m_additiveFeatureSigmoidFactor(10.0),
-    m_priorKnowledgeType(PRIOR_NONE),
-    m_priorKnowledgeWeight(23.0),
+    m_priorKnowledgeType(PRIOR_SCALE_NU_GAMES),
+    m_priorKnowledgeWeight(7.0),
     m_topN(3)
 { }
 
