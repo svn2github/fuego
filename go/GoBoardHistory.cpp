@@ -46,15 +46,13 @@ IsAlternatePlayFollowUpOf(const GoBoardHistory& other,
     return true;
 }
 
-std::vector<SgPoint>
-GoBoardHistory::SequenceToCurrent(const GoBoard& bd) const
+bool
+GoBoardHistory::SequenceToCurrent(const GoBoard& bd,
+                                  std::vector<SgPoint>& sequence) const
 {
     GoBoardHistory currentPosition;
     currentPosition.SetFromBoard(bd);
-    std::vector<SgPoint> sequence;
-    if (! currentPosition.IsAlternatePlayFollowUpOf(*this, sequence))
-    sequence.clear();
-    return sequence;
+    return currentPosition.IsAlternatePlayFollowUpOf(*this, sequence);
 }
 
 //----------------------------------------------------------------------------

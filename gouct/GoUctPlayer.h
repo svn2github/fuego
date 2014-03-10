@@ -897,21 +897,20 @@ void GoUctPlayer<SEARCH, THREAD>::FindInitTree(SgUctTree& initTree,
                                                double maxTime)
 {
     Board().SetToPlay(toPlay);
-    std::vector<SgPoint> sequence =
-        m_search.BoardHistory().SequenceToCurrent(Board());
-    if (sequence.empty())
+    std::vector<SgPoint> sequence;
+    if (! m_search.BoardHistory().SequenceToCurrent(Board(), sequence))
     {
         SgDebug() << "GoUctPlayer: No tree to reuse found\n";
         return;
     }
     SgUctTreeUtil::ExtractSubtree(m_search.Tree(), initTree, sequence, true,
                                   maxTime, m_search.PruneMinCount());
-    size_t initTreeNodes = initTree.NuNodes();
-    size_t oldTreeNodes = m_search.Tree().NuNodes();
+    const size_t initTreeNodes = initTree.NuNodes();
+    const size_t oldTreeNodes = m_search.Tree().NuNodes();
     if (oldTreeNodes > 1 && initTreeNodes >= 1)
     {
-        float reuse = float(initTreeNodes) / float(oldTreeNodes);
-        int reusePercent = static_cast<int>(100 * reuse);
+        const float reuse = float(initTreeNodes) / float(oldTreeNodes);
+        const int reusePercent = static_cast<int>(100 * reuse);
         SgDebug() << "GoUctPlayer: Reusing " << initTreeNodes
                   << " nodes (" << reusePercent << "%)\n";
 

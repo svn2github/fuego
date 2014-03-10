@@ -37,10 +37,13 @@ public:
     bool IsAlternatePlayFollowUpOf(const GoBoardHistory& other,
                                    std::vector<SgPoint>& sequence) const;
 
-    /** Sequence leading from end of history to current board position
-     Could be optimized by looking into GoBoard move sequence directly.
+    /** Sequence leading from end of history to current board position.
+        Returns wether such a sequence could be found.
+        Sequence is empty if the board position matches the history exactly.
+        @todo Could be optimized by looking directly into GoBoard's moves.
      */
-    std::vector<SgPoint> SequenceToCurrent(const GoBoard& bd) const;
+    bool SequenceToCurrent(const GoBoard& bd, std::vector<SgPoint>& sequence)
+    const;
 
 private:
     int m_boardSize;
