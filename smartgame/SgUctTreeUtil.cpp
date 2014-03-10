@@ -86,7 +86,7 @@ SgUctTreeUtil::FindMatchingNode(const SgUctTree& tree,
         const SgMove mv = *it;
         node = SgUctTreeUtil::FindChildWithMove(tree, *node, mv);
         if (node == 0)
-        return 0;
+            return 0;
     }
     return node;
 }
