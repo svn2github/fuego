@@ -204,8 +204,11 @@ public:
         and number of children). */
     void CopyDataFrom(const SgUctNode& node);
 
+    /** Check if node has a move (is not root node) */
+    bool HasMove() const;
+
     /** Get move.
-        Requires: Node has a move (is not root node) */
+        Requires: HasMove() */
     SgMove Move() const;
 
     /** Get RAVE count.
@@ -282,6 +285,11 @@ private:
     volatile int m_virtualLossCount;
 };
 
+//----------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& stream, const SgUctNode& node);
+
+//----------------------------------------------------------------------------
 inline SgUctNode::SgUctNode(const SgUctMoveInfo& info)
     : m_statistics(info.m_value, info.m_count),
       m_nuChildren(0),
@@ -433,6 +441,11 @@ inline void SgUctNode::DecPosCount(SgUctValue count)
     }
 }
 
+inline bool SgUctNode::HasMove() const
+{
+    return m_move != SG_NULLMOVE;
+}
+
 inline void SgUctNode::InitializeValue(SgUctValue value, SgUctValue count)
 {
     m_statistics.Initialize(value, count);
@@ -450,7 +463,7 @@ inline SgUctValue SgUctNode::Mean() const
 
 inline SgMove SgUctNode::Move() const
 {
-    SG_ASSERT(m_move != SG_NULLMOVE);
+    SG_ASSERT(HasMove());
     return m_move;
 }
 

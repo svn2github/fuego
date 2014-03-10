@@ -64,6 +64,29 @@ std::ostream& operator<<(std::ostream& stream, const SgUctMoveInfo& info)
            ;
     return stream;
 }
+//----------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& stream, const SgUctNode& node)
+{
+    if (node.HasMove())
+        stream << SgWritePoint(node.Move());
+    else
+        stream << "Root (no move)";
+    // if (node.HasMean())
+    stream  << " pos-count = " << node.PosCount()
+            << " move-count = " << node.MoveCount()
+            << " rave-value = ";
+    if (node.HasRaveValue())
+         stream << node.RaveValue();
+    else
+        stream << "undefined";
+    stream  << " predictor-value = " << node.PredictorValue()
+            << " Virtual-Loss-Count = " << node.VirtualLossCount()
+            << " Knowledge-Count = " << node.KnowledgeCount()
+            << " Proven-Type = " << node.ProvenType()
+            << '\n';
+    return stream;
+}
 
 //----------------------------------------------------------------------------
 
