@@ -344,6 +344,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "gfx/Uct Ladder Knowledge/uct_ladder_knowledge\n"
         "none/Uct Max Memory/uct_max_memory %s\n"
         "plist/Uct Moves/uct_moves\n"
+        "none/Uct Node Info/uct_node_info\n"
         "param/Uct Param GlobalSearch/uct_param_globalsearch\n"
         "param/Uct Param Feature Knowledge/uct_param_feature_knowledge\n"
         "param/Uct Param Policy/uct_param_policy\n"
@@ -1151,6 +1152,48 @@ void GoUctCommands::CmdPriorKnowledge(GtpCommand& cmd)
 	DisplayKnowledge(cmd, false);
 }
 
+namespace {
+
+bool CompareValue(const SgUctNode* p1, const SgUctNode* p2)
+{
+    return p1->PosCount() > p2->PosCount();
+}
+
+void WriteTopNMoves(std::ostream& stream, const SgUctTree& tree,
+                    const SgUctNode& node)
+{
+    if (! node.HasChildren())
+        return;
+    std::vector<const SgUctNode*> sorted;
+    for (SgUctChildIterator it(tree, node); it; ++it)
+        sorted.push_back(&(*it));
+    std::sort(sorted.begin(), sorted.end(), CompareValue);
+    const int n = std::min(6, static_cast<int>(sorted.size()));
+    stream << "Top " << n << " moves:\n";
+    for (int i = 0; i < n; ++i)
+    {
+        stream << i + 1 << ". " << *sorted[i] << '\n';
+    }
+}
+} // namespace
+
+void GoUctCommands::CmdNodeInfo(GtpCommand& cmd)
+{
+    cmd.CheckArgNone();
+    const GoUctSearch& search = Search();
+    const SgUctTree& tree = search.Tree();
+    std::vector<SgPoint> sequence;
+    if (search.BoardHistory().SequenceToCurrent(m_bd, sequence))
+    {
+        const SgUctNode* node =
+            SgUctTreeUtil::FindMatchingNode(tree, sequence);
+        cmd << *node;
+        WriteTopNMoves(cmd, tree, *node);
+    }
+    else
+        cmd << "Current position not in tree";
+}
+
 /** Show RAVE values of last search at root position.
     This command is compatible to the GoGui analyze command type @c sboard.
     The values are scaled to [-1,+1] from Black's point of view.
@@ -1626,6 +1669,7 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_ladder_knowledge", &GoUctCommands::CmdLadderKnowledge);
     Register(e, "uct_max_memory", &GoUctCommands::CmdMaxMemory);
     Register(e, "uct_moves", &GoUctCommands::CmdMoves);
+    Register(e, "uct_node_info", &GoUctCommands::CmdNodeInfo);
     Register(e, "uct_param_feature_knowledge",
              &GoUctCommands::CmdParamFeatureKnowledge);
     Register(e, "uct_param_globalsearch",

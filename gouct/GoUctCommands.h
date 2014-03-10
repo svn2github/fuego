@@ -63,6 +63,7 @@ public:
         - @link CmdLadderKnowledge() @c uct_ladder_knowledge @endlink
         - @link CmdMaxMemory() @c uct_max_memory @endlink
         - @link CmdMoves() @c uct_moves @endlink
+        - @link CmdNodeInfo() @c uct_node_info @endlink
         - @link CmdParamGlobalSearch() @c uct_param_globalsearch @endlink
         - @link CmdParamPolicy() @c uct_param_policy @endlink
         - @link CmdParamPlayer() @c uct_param_player @endlink
@@ -105,6 +106,7 @@ public:
     void CmdLadderKnowledge(GtpCommand& cmd);
     void CmdMaxMemory(GtpCommand& cmd);
     void CmdMoves(GtpCommand& cmd);
+    void CmdNodeInfo(GtpCommand& cmd);
     void CmdParamGlobalSearch(GtpCommand& cmd);
     void CmdParamFeatureKnowledge(GtpCommand& cmd);
     void CmdParamPolicy(GtpCommand& cmd);
