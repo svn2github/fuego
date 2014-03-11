@@ -72,7 +72,10 @@ std::ostream& operator<<(std::ostream& stream, const SgUctNode& node)
         stream << SgWritePoint(node.Move());
     else
         stream << "Root (no move)";
-    // if (node.HasMean())
+    if (node.HasMean())
+        stream << " mean = " << node.Mean();
+    else
+        stream << " mean undefined";
     stream  << " pos-count = " << node.PosCount()
             << " move-count = " << node.MoveCount()
             << " rave-value = ";
