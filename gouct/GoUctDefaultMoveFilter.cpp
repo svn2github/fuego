@@ -119,9 +119,13 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
                 // if current rules do no use CaptureDead(), because the UCT
                 // player always scores with Tromp-Taylor after two passes in the
                 // in-tree phase
-                if (  (isAllAlternateSafe && isAlternateSafeOpp)
+                // if (  (isAllAlternateSafe && isAlternateSafeOpp)
+                if (  isAlternateSafeOpp
                    || isUnconditionalSafeOpp
                    || (isUnconditionalSafe && ! hasOppNeighbors)
+                   || (  alternateSafe[toPlay].Contains(p)
+                      && ! safetySolver.PotentialCaptureMove(p, toPlay)
+                      )
                    )
                     rootFilter.push_back(p);
             }
