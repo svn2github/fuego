@@ -34,6 +34,11 @@ public:
     /** call virtual RegionHealthyForBlock */
     virtual void FindHealthy();
 
+    /** Will this move possibly have to be played to capture 
+        dead opponent stones? */
+    bool PotentialCaptureMove(SgPoint p,
+                              SgBlackWhite regionColor) const;
+
     /** Check if internal state matches board */
     virtual bool UpToDate() const
     {

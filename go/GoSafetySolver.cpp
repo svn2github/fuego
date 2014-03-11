@@ -366,3 +366,16 @@ void GoSafetySolver::GenBlocksRegions()
     m_code = Board().GetHashCode();
 }
 
+// @todo: as a first cut, this simply checks if the regions has any
+// stones in it. It does not check if the move is suitable for capturing the
+// stones.
+bool GoSafetySolver::PotentialCaptureMove(SgPoint p,
+                                          SgBlackWhite regionColor) const
+{
+    SG_ASSERT(UpToDate());
+    SG_ASSERT(Board().ToPlay() == regionColor);
+    const GoRegion* r = Regions()->RegionAt(p, regionColor);
+    SG_ASSERT(r);
+    return r->Points().Overlaps(Board().All(SgOppBW(regionColor)));
+}
+
