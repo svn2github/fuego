@@ -14,6 +14,7 @@
 #include "SgWrite.h"
 
 //----------------------------------------------------------------------------
+namespace {
 inline bool IsEmpty2x3Box(const GoBoard& bd, SgPoint p)
 {
     SG_ASSERT (bd.Line(p) == 1);
@@ -23,7 +24,7 @@ inline bool IsEmpty2x3Box(const GoBoard& bd, SgPoint p)
 
 inline bool IsEmptyOrInCorner(const GoBoard& bd, SgPoint p, int direction)
 {
-    return bd.Pos(p + direction) < 3
+    return bd.Pos(p + direction) == 1
         || IsEmpty2x3Box(bd, p + direction);
 }
 
@@ -33,7 +34,7 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
 {
     SG_ASSERT (bd.IsEmpty(p));
     SG_ASSERT (bd.Line(p) == 1);
-    if (bd.Num8EmptyNeighbors(p) < 5)
+    if (bd.Num8EmptyNeighbors(p) < 5 && bd.Pos(p) > 1)
         return false;
     const SgPoint pUp = p + bd.Up(p);
     SG_ASSERT(bd.Line(pUp) == 2);
@@ -57,6 +58,7 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
     }
 }
 
+} // namespace
 //----------------------------------------------------------------------------
 
 GoUctDefaultMoveFilterParam::GoUctDefaultMoveFilterParam()
@@ -126,7 +128,7 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
         }
     }
 
-    // Loosing ladder defense moves
+    // Losing ladder defense moves
     if (m_param.m_checkLadders)
     {
         for (GoBlockIterator it(m_bd); it; ++it)
