@@ -214,8 +214,8 @@ SetPriorsTopN(std::vector<SgUctMoveInfo>& moves)
     for (int i=0; i < N; ++i)
     {
         Add(sorted[i].first, 1.0, m_param.m_priorKnowledgeWeight);
-        SgDebug() << "Good move: " << SgWritePoint(sorted[i].first)
-        << " Eval = " << sorted[i].second << '\n';
+        //SgDebug() << "Good move: " << SgWritePoint(sorted[i].first)
+        //<< " Eval = " << sorted[i].second << '\n';
     }
 }
 
