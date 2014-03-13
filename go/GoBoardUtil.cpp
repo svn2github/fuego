@@ -12,9 +12,7 @@
 #include "GoBoard.h"
 #include "GoModBoard.h"
 #include "GoMoveExecutor.h"
-#include "GoSafetySolver.h"
 #include "SgDebug.h"
-#include "SgException.h"
 #include "SgNbIterator.h"
 #include "SgProp.h"
 

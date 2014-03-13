@@ -546,11 +546,8 @@ bool GoSafetyUtil::ExtendedIsTerritory(const GoBoard& board,
     return IsTerritory(board, pts, safe, color, &reason);
 }
                         
-SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& constBd)
+SgEmptyBlackWhite GoSafetyUtil::GetWinner(const GoBoard& bd)
 {
-    GoModBoard modBoard(constBd); 
-    // todo: safety solvers should take const board.
-    GoBoard& bd = modBoard.Board();
     GoRegionBoard regionAttachment(bd);
     GoSafetySolver solver(bd, &regionAttachment);
     SgBWSet safe;

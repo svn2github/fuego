@@ -19,7 +19,7 @@ class GoSafetySolver : public GoStaticSafetySolver
 {
 public:
     /** Constructor, @see GoStaticSafetySolver */
-    explicit GoSafetySolver(GoBoard& board, GoRegionBoard* regions = 0) 
+    explicit GoSafetySolver(const GoBoard& board, GoRegionBoard* regions = 0)
              : GoStaticSafetySolver(board, regions)
     {
         m_code.Invalidate();

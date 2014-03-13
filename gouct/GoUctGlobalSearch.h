@@ -890,7 +890,7 @@ void GoUctGlobalSearch<POLICY,FACTORY>::OnStartSearch()
     m_allSafe.Fill(false);
     if (GOUCT_USE_SAFETY_SOLVER)
     {
-        GoBoard& bd = Board();
+        const GoBoard& bd = Board();
         GoSafetySolver solver(bd, &m_regions);
         solver.FindSafePoints(&m_safe);
         for (GoBoard::Iterator it(bd); it; ++it)
