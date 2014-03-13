@@ -133,22 +133,54 @@ ComputeMinAndMaxValues(const std::vector<SgUctMoveInfo>& moves,
 void GoUctFeatureKnowledge::
 SetPriorsScaleNuGames(std::vector<SgUctMoveInfo>& moves)
 {
+    const float eps = 0.001;
+    const float tinyEps = 0.00001;
     float smallest;
     float largest;
     ComputeMinAndMaxValues(moves, smallest, largest);
-    
+
+    float sum = 0;
+    for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
+         it != moves.end(); ++it)
+    {
+        const float moveValue = MoveValue(it->m_move);
+        sum += std::abs(moveValue);
+    }
+
+     // todo there could be significant positive and negative values which cancel out.
+     // could compute positiveSum, negativeSum separately.
+     // avoid numerical problems
+     // average positive knowledge should be m_param.m_priorKnowledgeWeight
+    const float factor = (sum > eps) ?
+            m_param.m_priorKnowledgeWeight * moves.size() / sum
+            : 0.0;
+
     for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
          it != moves.end(); ++it)
     {
         const SgPoint move = it->m_move;
         const float moveValue = MoveValue(move);
-        const SgUctValue value = moveValue > 0 ? 1.0 : 0.0;
-        SgUctValue weight = 0.0;
-        if (moveValue > 0.001)
-            weight = m_param.m_priorKnowledgeWeight * moveValue / largest;
-        else if (moveValue < -0.001)
-            weight = m_param.m_priorKnowledgeWeight * moveValue / smallest;
-
+        SgUctValue value = 0;
+        SgUctValue weight = 0;
+        if (moveValue > 0)
+        {
+            if (largest > tinyEps)
+            {
+                value = 0.5 * (1 + moveValue / largest);
+                SG_ASSERT(value >= 0.5);
+                SG_ASSERT(value <= 1);
+                weight = factor * moveValue;
+            }
+            // else just leave as value = weight = 0
+        }
+        else if (smallest < -tinyEps)
+        {
+            value = 0.5 * (1 - moveValue / smallest);
+            SG_ASSERT(value >= 0.0);
+            SG_ASSERT(value <= 0.5);
+            weight = -factor * moveValue;
+        }
+        // else just leave as value = weight = 0
         Add(move, value, weight);
     }
 }
