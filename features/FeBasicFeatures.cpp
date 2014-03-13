@@ -13,6 +13,7 @@
 #include "GoBoardUtil.h"
 #include "GoLadder.h"
 #include "GoOpeningKnowledge.h"
+#include "GoSafetySolver.h"
 #include "GoSetupUtil.h"
 #include "SgPointSet.h"
 #include "SgWrite.h"
@@ -527,6 +528,54 @@ void FindOwn3LibFeatures(const GoBoard& bd, SgPoint anchor,
         }
 }
 
+/* Try to find one other anchor in list. */
+inline bool FindOther(const SgPoint anchors[5],
+                      const SgPoint anchor,
+                      SgPoint& other)
+{
+    SG_ASSERT(anchors[0] != SG_ENDPOINT);
+    if (anchors[1] == SG_ENDPOINT)
+        return false;
+    if (anchors[1] != anchor)
+        other = anchors[1];
+    else
+    {
+        SG_ASSERT(anchors[0] != anchor);
+        other = anchors[0];
+    }
+    return true;
+}
+
+void CheckCutConnect(const GoBoard& bd,
+                     const SgPoint anchor,
+                     const SgBlackWhite color,
+                     const SgPoint liberty,
+                     GoEvalArray<FeMoveFeatures>& features)
+{
+    SgPoint anchors[5];
+    bd.NeighborBlocks(liberty, color, anchors);
+    SgPoint other;
+    if (  FindOther(anchors, anchor, other)
+       && GoBoardUtil::GainsLiberties(bd, anchor, liberty)
+       && GoBoardUtil::GainsLiberties(bd, other, liberty)
+       )
+    {
+        const FeBasicFeature f = (bd.ToPlay() == color) ? FE_CONNECT : FE_CUT;
+        features[liberty].Set(f);
+    }
+}
+
+void FindCutConnectFeatures(const GoBoard& bd, SgPoint anchor,
+                            GoEvalArray<FeMoveFeatures>& features)
+{
+    const SgBlackWhite color = bd.GetStone(anchor);
+    for (GoBoard::LibertyCopyIterator it(bd, anchor); it; ++it)
+        if (  bd.NumNeighbors(*it, color) > 1
+           && ! GoLadderUtil::IsProtectedLiberty(bd, *it, color)
+           )
+            CheckCutConnect(bd, anchor, color, *it, features);
+}
+
 void FindLadderFeature(const GoBoard& bd, SgPoint anchor,
                        GoEvalArray<FeMoveFeatures>& features)
 {
@@ -554,7 +603,68 @@ void FindLadderFeature(const GoBoard& bd, SgPoint anchor,
                 FindOpp3LibFeatures(bd, anchor, features);
             break;
         default:
-            SG_ASSERT(bd.InAtari(anchor));
+            SG_ASSERT(false);
+    }
+    FindCutConnectFeatures(bd, anchor, features);
+}
+
+void SetFeatureForPoints(const FeBasicFeature f,
+                         const SgPointSet& points,
+                         const GoPointList& legalMoves,
+                         GoEvalArray<FeMoveFeatures>& features)
+{
+    for (GoPointList::Iterator it(legalMoves); it; ++it)
+        if (points[*it])
+            features[*it].Set(f);
+}
+
+void FindSafeOwnTerritoryFeatures(const SgPointSet& safe,
+                                  const GoPointList& legalMoves,
+                                  const bool isKo,
+                                  GoEvalArray<FeMoveFeatures>& features)
+{
+    //FE_SAFE_TERRITORY_OWN_NO_KO, // play in own territory, no active ko
+    //FE_SAFE_TERRITORY_OWN_KO,
+    if (safe.IsEmpty())
+        return;
+    const FeBasicFeature f = isKo ? FE_SAFE_TERRITORY_OWN_KO
+                                  : FE_SAFE_TERRITORY_OWN_NO_KO;
+    SetFeatureForPoints(f, safe, legalMoves, features);
+}
+
+void FindSafeOppTerritoryFeatures(const SgPointSet& safe,
+                                  const GoPointList& legalMoves,
+                                  const bool isKo,
+                                  GoEvalArray<FeMoveFeatures>& features)
+{
+    //FE_SAFE_TERRITORY_OPP_NO_KO,
+    //FE_SAFE_TERRITORY_OPP_KO,  // play in opponent territory, active ko
+    if (safe.IsEmpty())
+        return;
+    const FeBasicFeature f = isKo ? FE_SAFE_TERRITORY_OPP_KO
+                                  : FE_SAFE_TERRITORY_OPP_NO_KO;
+    SetFeatureForPoints(f, safe, legalMoves, features);
+}
+
+void FindSafeTerritoryFeatures(const GoBoard& bd,
+                               const GoPointList& legalMoves,
+                               GoEvalArray<FeMoveFeatures>& features)
+{
+    //FE_SAFE_TERRITORY_OWN_NO_KO, // play in own territory, no active ko
+    //FE_SAFE_TERRITORY_OWN_KO,
+    //FE_SAFE_TERRITORY_OPP_NO_KO,
+    //FE_SAFE_TERRITORY_OPP_KO,  // play in opponent territory, active ko
+
+    SgBWSet safe;
+    GoSafetySolver safetySolver(bd);
+    safetySolver.FindSafePoints(&safe);
+    if (! safe.BothEmpty())
+    {
+        const bool isKo = bd.KoPoint() != SG_NULLPOINT;
+        FindSafeOwnTerritoryFeatures(safe[bd.ToPlay()],
+                                     legalMoves, isKo, features);
+        FindSafeOppTerritoryFeatures(safe[bd.Opponent()],
+                                     legalMoves, isKo, features);
     }
 }
 
@@ -898,6 +1008,8 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_SAFE_TERRITORY_OPP_NO_KO",
         "FE_SAFE_TERRITORY_OPP_KO", // play in opponent territory, active ko
         "FE_POSSIBLE_SEMEAI",
+        "FE_CUT",
+        "FE_CONNECT",
         "FE_NONE"
     };
     SG_ASSERT(f >= FE_PASS_NEW);
@@ -1173,6 +1285,8 @@ void FeFullBoardFeatures::FindFullBoardFeatures()
     FindLinePosFeatures(m_bd, m_legalMoves, m_features);
     FindCfgFeatures(m_bd, m_legalMoves, m_features);
     FindLadderFeatures(m_bd, m_legalMoves, m_features);
+    if (m_bd.MoveNumber() >= m_bd.Size() * m_bd.Size() * 0.5)
+        FindSafeTerritoryFeatures(m_bd, m_legalMoves, m_features);
 }
 
 void FeFullBoardFeatures::WriteBoardFeatures(std::ostream& stream) const

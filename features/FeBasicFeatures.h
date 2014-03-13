@@ -182,7 +182,9 @@ enum FeBasicFeature{
     FE_SAFE_TERRITORY_OWN_KO,
     FE_SAFE_TERRITORY_OPP_NO_KO,
     FE_SAFE_TERRITORY_OPP_KO,  // play in opponent territory, active ko
-    FE_POSSIBLE_SEMEAI,
+    FE_POSSIBLE_SEMEAI, // TODO not implemented yet
+    FE_CUT,
+    FE_CONNECT,
     FE_NONE,
     _NU_FE_FEATURES
 
