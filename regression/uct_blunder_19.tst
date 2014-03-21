@@ -11,3 +11,15 @@ loadsgf sgf/games/2008/KGS/8/21/Hellyta-Fuego.sgf 225
 # initialization was introduced in GoUctDefaultPriorKnowledge for moves
 # that set a block into atari.
 
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 126
+20 reg_genmove w
+#? [Q7]*
+
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 126
+30 reg_genmove w
+#? [!R8]*
+# blunder
+
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 206
+40 reg_genmove w
+#? [O7]*

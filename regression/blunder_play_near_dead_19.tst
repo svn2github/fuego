@@ -19,3 +19,11 @@ loadsgf sgf/games/2008/CGOS/31423.sgf 129
 loadsgf sgf/games/2008/CGOS/31423.sgf 133
 40 reg_genmove black
 #? [!H12]
+
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 128
+50 reg_genmove w
+#? [!R9]*
+
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 174
+60 reg_genmove w
+#? [!S8]*

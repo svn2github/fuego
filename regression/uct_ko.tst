@@ -113,3 +113,11 @@ loadsgf sgf/games/2011/KGS/FuegoBot2-laska0-tsumego.sgf 6
 230 reg_genmove w
 #? [D9]
 
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 196
+240 reg_genmove w
+#? [A2|A3|M19|K14|M14]*
+# play ko threat. Do not capture ko between dead stones
+
+loadsgf sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf 202
+250 reg_genmove w
+#? [A2|A3|M19|K14|M14]*
