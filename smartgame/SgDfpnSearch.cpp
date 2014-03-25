@@ -78,16 +78,13 @@ bool DfpnSolver::CheckAbort()
                     m_aborted = true;
                     SgDebug() << "DfpnSolver::CheckAbort(): Timelimit!\n";
                 }
+                else if (m_numMIDcalls < 100)
+                    m_checkTimerAbortCalls = 10;
                 else
                 {
-                    if (m_numMIDcalls < 100)
-                        m_checkTimerAbortCalls = 10;
-                    else
-                    {
-                        size_t midsPerSec = static_cast<size_t>
-                            (double(m_numMIDcalls) / elapsed);
-                        m_checkTimerAbortCalls = midsPerSec / 2;
-                    }
+                    size_t midsPerSec = static_cast<size_t>
+                        (double(m_numMIDcalls) / elapsed);
+                    m_checkTimerAbortCalls = midsPerSec / 2;
                 }
             }
             else
