@@ -6,13 +6,14 @@
 #include "GoUctFeatures.h"
 
 #include "FeBasicFeatures.h"
+#include "GoPattern12Point.h"
 #include "GoUctAdditiveKnowledgeGreenpeep.h"
 #include "GoUctPlayoutPolicy.h"
 #include "GoUctPlayoutUtil.h"
 
 namespace {
     
-const bool USE_12_POINT_FEATURES = false;
+const bool USE_12_POINT_FEATURES = true;
 
 void FindCorrectionFeatures(const GoBoard& bd,
                             GoEvalArray<FeMoveFeatures>& features,
@@ -49,6 +50,28 @@ void FindAllCorrectionFeatures(const GoBoard& bd,
                            FE_GOUCT_CLUMP_CORRECTION_FROM,
                            FE_GOUCT_CLUMP_CORRECTION_TO
                            );
+}
+
+        void Find12PointFeatures(const GoBoard& bd,
+                                 GoEvalArray<FeMoveFeatures>& features,
+                                 const GoPointList& legalMoves);
+void
+Find12PointFeatures(const GoBoard& bd,
+                    GoEvalArray<FeMoveFeatures>& features,
+                    const GoPointList& legalMoves)
+{
+    /** Index for Feature IDs */
+    const int START_INDEX_12_POINT = 3000;
+
+    const SgBlackWhite toPlay = bd.ToPlay();
+    const SgBlackWhite opponent = bd.Opponent();
+    for (GoPointList::Iterator it(legalMoves); it; ++it)
+    {
+        const SgPoint p = *it;
+        unsigned int context =
+        GoPattern12Point::Context(bd, p, toPlay, opponent);
+        features[p].Set12PointIndex(START_INDEX_12_POINT + context);
+    }
 }
 
 void FindPolicyFeatures(GoUctPlayoutPolicy<GoBoard>& policy,
@@ -102,8 +125,7 @@ FindAllFeatures(const GoBoard& bd,
     f.FindAllFeatures();
     FindAllPolicyFeatures(bd, policy, f.Features());
     if (USE_12_POINT_FEATURES)
-        GoUct12PointPattern::Find12PointFeatures(bd, f.Features(),
-                                                 f.LegalMoves());
+        Find12PointFeatures(bd, f.Features(), f.LegalMoves());
 }
 
 void GoUctFeatures::

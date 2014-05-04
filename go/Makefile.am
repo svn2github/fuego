@@ -28,6 +28,7 @@ GoLadder.cpp \
 GoMotive.cpp \
 GoNodeUtil.cpp \
 GoOpeningKnowledge.cpp \
+GoPattern12Point.cpp \
 GoPlayer.cpp \
 GoPlayerMove.cpp \
 GoRegion.cpp \
@@ -77,6 +78,7 @@ GoMotive.h \
 GoMoveExecutor.h \
 GoNodeUtil.h \
 GoOpeningKnowledge.h \
+GoPattern12Point.h \
 GoPlayer.h \
 GoPlayerMove.h \
 GoRegion.h \
