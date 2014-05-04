@@ -13,6 +13,7 @@
 #include "GoPlayer.h"
 #include "GoTimeControl.h"
 #include "GoUctDefaultMoveFilter.h"
+#include "GoUctFeatureKnowledge.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctObjectWithSearch.h"
 #include "GoUctPlayoutPolicy.h"
