@@ -33,9 +33,6 @@ const short unsigned int NEUTRALPREDICTION = 512;
 const float NEUTRALPREDICTION_FLOAT = static_cast<float>(NEUTRALPREDICTION);
 const short unsigned int PASSPREDICTION = 2;
 
-/* 19x19-only.  Different scale from PASSPREDICTION. */
-const short unsigned int DEFENSIVEPREDICTION = 5 * NEUTRALPREDICTION; 
-
 const unsigned int PASS_CONTEXT = UINT_MAX;
 const unsigned int KO_BIT = 1U << 24;
 const unsigned int ATARI_BIT = 1U << 25;
