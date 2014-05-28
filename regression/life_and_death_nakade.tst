@@ -71,3 +71,19 @@ loadsgf sgf/lifeanddeath/nakade-6pts-corner-1.sgf 7
 120 reg_genmove b
 #? [J2]
 
+loadsgf sgf/lifeanddeath/nakade-4pts.1.sgf
+loadsgf sgf/lifeanddeath/nakade-4pts.2.sgf
+loadsgf sgf/lifeanddeath/nakade-4pts.3.sgf
+loadsgf sgf/lifeanddeath/nakade-4pts.4.sgf
+loadsgf sgf/lifeanddeath/nakade-4pts.5.sgf
+loadsgf sgf/lifeanddeath/nakade-4pts.6.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-10.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-4.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-5.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-6.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-6b.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-7.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-8.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-9.sgf
+loadsgf sgf/lifeanddeath/nakade-6pts-4.sgf
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf
