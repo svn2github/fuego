@@ -25,6 +25,8 @@ using SgPointUtil::Pt;
 //----------------------------------------------------------------------------
 namespace {
 
+
+
 inline FeBasicFeature ComputeFeature(FeBasicFeature baseFeature,
                                      int baseValue, int value)
 {
@@ -840,6 +842,55 @@ void FindDistPrevMoveFeatures(const GoBoard& bd,
         SetDistances2ndLastMove(lastMove2, legalBoardMoves, features);
 }
 
+int FindClosestStoneDistance(const GoBoard& bd,
+                             SgPoint empty, SgBlackWhite color)
+{
+    int distance = 99999;
+
+    for (GoBoard::Iterator it(bd); it; ++it) // @todo: slow, loop from
+                                             // closest to furtherst instead
+        if (  bd.GetColor(*it) == color
+           && Distance(empty, *it) < distance)
+        {
+            distance = Distance(empty, *it);
+        }
+
+    SG_ASSERT(distance < 99999);
+    return distance;
+}
+
+void FindClosestDistanceFeaturesForColor(const GoBoard& bd,
+                                         SgBlackWhite color,
+                                         const GoPointList& legalBoardMoves,
+                                         GoEvalArray<FeMoveFeatures>& features,
+                                         FeBasicFeature baseFeature)
+{
+    if (bd.All(color).IsEmpty())
+        return;
+
+    for (GoPointList::Iterator it(legalBoardMoves); it; ++it)
+    {
+        int distance = FindClosestStoneDistance(bd, *it, color);
+        SG_ASSERT(distance >= 2);
+        if (distance > MAX_CLOSEST_DISTANCE)
+            distance = MAX_CLOSEST_DISTANCE;
+        const FeBasicFeature f = ComputeFeature(baseFeature, 2, distance);
+        features[*it].Set(f);
+    }
+}
+
+void FindClosestDistanceFeatures(const GoBoard& bd,
+                                 const GoPointList& legalBoardMoves,
+                                 GoEvalArray<FeMoveFeatures>& features)
+{
+    FindClosestDistanceFeaturesForColor(bd, bd.ToPlay(),
+                                   legalBoardMoves, features,
+                                   FE_DIST_CLOSEST_OWN_STONE_2);
+    FindClosestDistanceFeaturesForColor(bd, bd.Opponent(),
+                                        legalBoardMoves, features,
+                                        FE_DIST_CLOSEST_OPP_STONE_2);
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -1010,6 +1061,44 @@ std::ostream& operator<<(std::ostream& stream, FeBasicFeature f)
         "FE_POSSIBLE_SEMEAI",
         "FE_CUT",
         "FE_CONNECT",
+        "FE_DIST_CLOSEST_OWN_STONE_2",
+        "FE_DIST_CLOSEST_OWN_STONE_3",
+        "FE_DIST_CLOSEST_OWN_STONE_4",
+        "FE_DIST_CLOSEST_OWN_STONE_5",
+        "FE_DIST_CLOSEST_OWN_STONE_6",
+        "FE_DIST_CLOSEST_OWN_STONE_7",
+        "FE_DIST_CLOSEST_OWN_STONE_8",
+        "FE_DIST_CLOSEST_OWN_STONE_9",
+        "FE_DIST_CLOSEST_OWN_STONE_10",
+        "FE_DIST_CLOSEST_OWN_STONE_11",
+        "FE_DIST_CLOSEST_OWN_STONE_12",
+        "FE_DIST_CLOSEST_OWN_STONE_13",
+        "FE_DIST_CLOSEST_OWN_STONE_14",
+        "FE_DIST_CLOSEST_OWN_STONE_15",
+        "FE_DIST_CLOSEST_OWN_STONE_16",
+        "FE_DIST_CLOSEST_OWN_STONE_17",
+        "FE_DIST_CLOSEST_OWN_STONE_18",
+        "FE_DIST_CLOSEST_OWN_STONE_19",
+        "FE_DIST_CLOSEST_OWN_STONE_20_OR_MORE",
+        "FE_DIST_CLOSEST_OPP_STONE_2",
+        "FE_DIST_CLOSEST_OPP_STONE_3",
+        "FE_DIST_CLOSEST_OPP_STONE_4",
+        "FE_DIST_CLOSEST_OPP_STONE_5",
+        "FE_DIST_CLOSEST_OPP_STONE_6",
+        "FE_DIST_CLOSEST_OPP_STONE_7",
+        "FE_DIST_CLOSEST_OPP_STONE_8",
+        "FE_DIST_CLOSEST_OPP_STONE_9",
+        "FE_DIST_CLOSEST_OPP_STONE_10",
+        "FE_DIST_CLOSEST_OPP_STONE_11",
+        "FE_DIST_CLOSEST_OPP_STONE_12",
+        "FE_DIST_CLOSEST_OPP_STONE_13",
+        "FE_DIST_CLOSEST_OPP_STONE_14",
+        "FE_DIST_CLOSEST_OPP_STONE_15",
+        "FE_DIST_CLOSEST_OPP_STONE_16",
+        "FE_DIST_CLOSEST_OPP_STONE_17",
+        "FE_DIST_CLOSEST_OPP_STONE_18",
+        "FE_DIST_CLOSEST_OPP_STONE_19",
+        "FE_DIST_CLOSEST_OPP_STONE_20_OR_MORE",
         "FE_NONE"
     };
     SG_ASSERT(f >= FE_PASS_NEW);
@@ -1285,6 +1374,7 @@ void FeFullBoardFeatures::FindFullBoardFeatures()
     FindLinePosFeatures(m_bd, m_legalMoves, m_features);
     FindCfgFeatures(m_bd, m_legalMoves, m_features);
     FindLadderFeatures(m_bd, m_legalMoves, m_features);
+    FindClosestDistanceFeatures(m_bd, m_legalMoves, m_features);
     if (m_bd.MoveNumber() >= m_bd.Size() * m_bd.Size() * 0.5)
         FindSafeTerritoryFeatures(m_bd, m_legalMoves, m_features);
 }

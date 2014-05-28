@@ -71,7 +71,23 @@ FeBasicFeatureSet PrevOwnMoveFeatures() // TODO make it a static variable?
     AddRange(features, FE_DIST_PREV_OWN_2, FE_DIST_PREV_OWN_17);
     return features;
 }
-
+    
+FeBasicFeatureSet ClosestOwnFeatures()
+{
+    FeBasicFeatureSet features;
+    AddRange(features, FE_DIST_CLOSEST_OWN_STONE_2,
+             FE_DIST_CLOSEST_OWN_STONE_20_OR_MORE);
+    return features;
+}
+    
+FeBasicFeatureSet ClosestOppFeatures() // TODO make it a static variable?
+{
+    FeBasicFeatureSet features;
+    AddRange(features, FE_DIST_CLOSEST_OPP_STONE_2,
+             FE_DIST_CLOSEST_OPP_STONE_20_OR_MORE);
+    return features;
+}
+    
 inline void TestNone(FeBasicFeatureSet features,
                      FeBasicFeatureSet group)
 {
@@ -946,6 +962,54 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_3x3_Color_Swap_Invariant)
     int e2b = Get3x3Feature(bd, Pt(4, 5));
     BOOST_CHECK_EQUAL(e1b, e2b);
     BOOST_CHECK(e1 != e1b);
+}
+
+BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_ClosestStone)
+{
+    std::string s("......\n"
+                  "...OO.\n"
+                  "......\n"
+                  "......\n"
+                  ".X....\n"
+                  "......");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+
+    const FeBasicFeatureSet closestOwn = ClosestOwnFeatures();
+    const FeBasicFeatureSet closestOpp = ClosestOppFeatures();
+
+    {
+        FeBasicFeatureSet features;
+        FeFeatures::FindBasicMoveFeaturesUI(bd, Pt(3, 2), features);
+        TestSingle(features, closestOwn, FE_DIST_CLOSEST_OWN_STONE_2);
+        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_7);
+    }
+    {
+        FeBasicFeatureSet features;
+        FeFeatures::FindBasicMoveFeaturesUI(bd, Pt(2, 3), features);
+        TestSingle(features, closestOwn, FE_DIST_CLOSEST_OWN_STONE_2);
+        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_8);
+    }
+    {
+        FeBasicFeatureSet features;
+        FeFeatures::FindBasicMoveFeaturesUI(bd, Pt(1,1), features);
+        TestSingle(features, closestOwn, FE_DIST_CLOSEST_OWN_STONE_3);
+        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_11);
+    }
+    {
+        FeBasicFeatureSet features;
+        FeFeatures::FindBasicMoveFeaturesUI(bd, Pt(6,6), features);
+        TestSingle(features, closestOwn, FE_DIST_CLOSEST_OWN_STONE_12);
+        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_3);
+    }
+    {
+        FeBasicFeatureSet features;
+        FeFeatures::FindBasicMoveFeaturesUI(bd, Pt(4,6), features);
+        TestSingle(features, closestOwn, FE_DIST_CLOSEST_OWN_STONE_10);
+        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_2);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_FeEvalDetail)
