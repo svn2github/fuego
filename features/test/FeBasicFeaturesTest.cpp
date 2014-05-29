@@ -990,7 +990,7 @@ BOOST_AUTO_TEST_CASE(FeBasicFeaturesTest_ClosestStone)
         FeBasicFeatureSet features;
         FeFeatures::FindBasicMoveFeaturesUI(bd, Pt(2, 3), features);
         TestSingle(features, closestOwn, FE_DIST_CLOSEST_OWN_STONE_2);
-        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_8);
+        TestSingle(features, closestOpp, FE_DIST_CLOSEST_OPP_STONE_6);
     }
     {
         FeBasicFeatureSet features;
