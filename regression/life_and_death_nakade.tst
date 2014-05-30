@@ -27,7 +27,7 @@ loadsgf sgf/lifeanddeath/nakade-6pts-realgame.2.sgf 4
 
 loadsgf sgf/lifeanddeath/nakade-6pts-realgame.2.sgf 6
 50 reg_genmove w
-#? [N13]*
+#? [N13]
 # unstable, sometimes finds it
 
 loadsgf sgf/lifeanddeath/seki-nakade-5pts.2.sgf 1
@@ -54,12 +54,13 @@ loadsgf sgf/lifeanddeath/nakade-6pts-corner-1.sgf 2
 loadsgf sgf/lifeanddeath/nakade-6pts-corner-1.sgf 3
 
 90 reg_genmove b
-#? [G2]*
+#? [G2]
 
 loadsgf sgf/lifeanddeath/nakade-6pts-corner-1.sgf 4
 
-100 reg_genmove w
-#? [F1]
+#100 reg_genmove w
+# #? [F1]
+# removed since W is lost, and Fuego wants to resign here
 
 loadsgf sgf/lifeanddeath/nakade-6pts-corner-1.sgf 5
 
@@ -72,18 +73,156 @@ loadsgf sgf/lifeanddeath/nakade-6pts-corner-1.sgf 7
 #? [J2]
 
 loadsgf sgf/lifeanddeath/nakade-4pts.1.sgf
+
+130 reg_genmove b
+#? [B1]
+
+140 reg_genmove w
+#? [B1]
+
 loadsgf sgf/lifeanddeath/nakade-4pts.2.sgf
+
+150 reg_genmove b
+#? [C1]
+
+160 reg_genmove w
+#? [C1]
+
 loadsgf sgf/lifeanddeath/nakade-4pts.3.sgf
+
+170 reg_genmove b
+#? [C1]
+
+180 reg_genmove w
+#? [C1]
+
 loadsgf sgf/lifeanddeath/nakade-4pts.4.sgf
+
+190 reg_genmove b
+#? [B1]
+
+200 reg_genmove w
+#? [B1]
+
 loadsgf sgf/lifeanddeath/nakade-4pts.5.sgf
-loadsgf sgf/lifeanddeath/nakade-4pts.6.sgf
-loadsgf sgf/lifeanddeath/nakade-5pts-10.sgf
+
+210 reg_genmove b
+#? [C1]
+
+220 reg_genmove w
+#? [C1|D1]
+# of course D1 is bigger but both lead to a very safe win
+
+loadsgf sgf/lifeanddeath/nakade-4pts.6.sgf 1
+
+230 reg_genmove b
+#? [D2|C2|C1]
+
+231 reg_genmove w
+#? [C1]
+
+loadsgf sgf/lifeanddeath/nakade-4pts.6.sgf 3
+
+240 reg_genmove b
+#? [C1]
+
+241 reg_genmove w
+#? [C1]
+
 loadsgf sgf/lifeanddeath/nakade-5pts-4.sgf
+
+250 reg_genmove w
+#? [C2]
+
+260 reg_genmove b
+#? [D1|C2]
+# D1 is better
+
 loadsgf sgf/lifeanddeath/nakade-5pts-5.sgf
+
+270 reg_genmove w
+#? [C2]
+
+280 reg_genmove b
+#? [D1|C2]
+# D1 is better
+
 loadsgf sgf/lifeanddeath/nakade-5pts-6.sgf
-loadsgf sgf/lifeanddeath/nakade-5pts-6b.sgf
+
+290 reg_genmove b
+#? [B2]
+
+300 reg_genmove w
+#? [B2]
+
+loadsgf sgf/lifeanddeath/nakade-5pts-6b.sgf 2
+
+310 reg_genmove b
+#? [B1|B2]
+
+320 reg_genmove w
+#? [B2]
+# ko
+
 loadsgf sgf/lifeanddeath/nakade-5pts-7.sgf
+
+330 reg_genmove b
+#? [C2]
+
+340 reg_genmove w
+#? [C2]
+
 loadsgf sgf/lifeanddeath/nakade-5pts-8.sgf
+
+350 reg_genmove b
+#? [C2]
+
+360 reg_genmove w
+#? [C2]
+
 loadsgf sgf/lifeanddeath/nakade-5pts-9.sgf
+
+370 reg_genmove b
+#? [C2]
+
+380 reg_genmove w
+#? [C2]
+
+loadsgf sgf/lifeanddeath/nakade-5pts-10.sgf
+
+390 reg_genmove b
+#? [C2]
+
+400 reg_genmove w
+#? [C2]
+
 loadsgf sgf/lifeanddeath/nakade-6pts-4.sgf
-loadsgf sgf/lifeanddeath/nakade-corner-1.sgf
+
+410 reg_genmove b
+#? [B2]
+
+420 reg_genmove w
+#? [B2]
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 3
+
+430 reg_genmove b
+#? [G2]
+# not best test case, since already dead. But want to test if it can play 
+# 6 stone selfatari
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 5
+
+440 reg_genmove b
+#? [H2]
+
+450 reg_genmove w
+#? [H1|H2]
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 7
+
+460 reg_genmove b
+#? [J2]
+
+470 reg_genmove w
+#? [J2|G2]
