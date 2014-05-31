@@ -13,7 +13,7 @@
 
 namespace {
     
-const bool USE_12_POINT_FEATURES = true;
+const bool USE_12_POINT_FEATURES = false;
 
 void FindCorrectionFeatures(const GoBoard& bd,
                             GoEvalArray<FeMoveFeatures>& features,

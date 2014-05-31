@@ -13,6 +13,7 @@
 #include "GoBoardUtil.h"
 #include "GoLadder.h"
 #include "GoOpeningKnowledge.h"
+#include "GoPattern12Point.h"
 #include "GoSafetySolver.h"
 #include "GoSetupUtil.h"
 #include "SgPointSet.h"
@@ -1155,12 +1156,20 @@ FeFeatures::EvaluateMoveFeaturesDetail(const FeMoveFeatures& features,
     for (FeActiveIterator it = active.begin();
                           it < active.begin() + nuActive; ++it)
     {
-        const float w = weights.m_w[*it];
+        const bool outOfBounds =
+            static_cast<size_t>(*it) >= weights.m_w.size();
+        if (outOfBounds)
+        {
+            //SgDebug() << "EvaluateMoveFeaturesDetail: skipping feature "
+            //          << *it << '\n';
+        }
+        const float w = outOfBounds ? 0 : weights.m_w[*it];
         float v = 0.0;
-        for (FeActiveIterator it2 = active.begin();
-                              it2 < active.begin() + nuActive; ++it2)
-            if (it != it2)
-                v += weights.Combine(*it, *it2);
+        if (! outOfBounds)
+            for (FeActiveIterator it2 = active.begin();
+                                  it2 < active.begin() + nuActive; ++it2)
+                if (it != it2)
+                    v += weights.Combine(*it, *it2);
         detail.push_back(FeFeatures::FeEvalDetail(*it, w, v/2));
     }
     return detail;
@@ -1214,12 +1223,22 @@ void FeFeatures::WriteEvalDetail(std::ostream& stream,
     stream << " Total w = " << w << " + v = " << v << " = " << w + v << '\n';
 }
 
+static bool IsPattern12PointID(int id) // @todo
+{
+    SG_UNUSED(id);
+    return true;
+}
+
 void FeFeatures::WriteFeatureFromID(std::ostream& stream, int id)
 {
-    if (id < static_cast<int>(_NU_FE_FEATURES))
+    if (IsBasicFeatureID(id))
         stream << static_cast<FeBasicFeature>(id);
-    else // 3x3 pattern
+    else if (Is3x3PatternID(id))
         Write3x3(stream, id);
+    else if (IsPattern12PointID(id))
+        GoPattern12Point::PrintContext(id, stream);
+    else
+        SG_ASSERT(false);
 }
 
 void FeFeatures::WriteFeatureSet(std::ostream& stream,
@@ -1323,8 +1342,10 @@ void FeMoveFeatures::WritePatternFeatureIndex(std::ostream& stream) const
 void FeMoveFeatures::WritePatternFeatures(std::ostream& stream) const
 {
     if (m_12PointIndex != INVALID_PATTERN_INDEX)
+    {
         stream << " m_12PointIndex " << m_12PointIndex;
-    // TODO print map using PrintContext in GoUct
+        GoPattern12Point::PrintContext(m_12PointIndex, stream);
+    }
     if (m_3x3Index != INVALID_PATTERN_INDEX)
     {
         stream << " 3x3-index " << m_3x3Index;

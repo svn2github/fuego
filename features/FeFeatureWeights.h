@@ -12,6 +12,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include "SgDebug.h"
 
 //----------------------------------------------------------------------------
 
@@ -65,8 +66,14 @@ inline float FeFeatureWeights::Combine(int i, int j) const
     //    {
     //        SgDebug() << i << ' ' << j << ' ' << m_w.size() << std::endl;
     //    }
-    SG_ASSERT(static_cast<size_t>(i) < m_w.size());
-    SG_ASSERT(static_cast<size_t>(j) < m_w.size());
+    //SG_ASSERT(static_cast<size_t>(i) < m_w.size());
+    //SG_ASSERT(static_cast<size_t>(j) < m_w.size());
+    if (  static_cast<size_t>(i) >= m_w.size()
+       || static_cast<size_t>(j) >= m_w.size())
+    {
+        //SgDebug() << "skipping feature pair " << i << ", " << j << '\n';
+        return 0.0;
+    }
     float sum = 0.0;
     for (size_t k = 0; k < m_k; ++k)
     {

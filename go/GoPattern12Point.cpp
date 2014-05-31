@@ -113,4 +113,119 @@ namespace GoPattern12Point {
         return extendedcontext | (toPlayContext << 8) | (oppContext << 16);
     }
     
+    void PrintContext(unsigned int context, std::ostream& str)
+    {
+        enum codes
+        {
+            W, W1, W2, W3, B, B1, B2, B3, EMPTY, BORDER, MOVE, ERROR, COUNT
+        };
+        
+        int friendlyCodes[] = {B, B1, B2, B3};
+        int enemyCodes[] = {W, W1, W2, W3};
+        int extraCodes[] = {ERROR, EMPTY, B, W, BORDER};
+        
+        int strWidth = 2;
+        std::string strs[COUNT];
+        strs[W] = "w ";
+        strs[W1] = "w1";
+        strs[W2] = "w2";
+        strs[W3] = "w3";
+        strs[B] = "b ";
+        strs[B1] = "b1";
+        strs[B2] = "b2";
+        strs[B3] = "b3";
+        strs[EMPTY] = "  ";
+        strs[BORDER] = "##";
+        strs[MOVE] = "@b";
+        strs[ERROR] = "?!";
+        
+        unsigned int friendly = (context >> 8) & 0xff;
+        unsigned int enemy = (context >> 16) & 0xff;
+        unsigned int occupancy = friendly ^ enemy;
+        unsigned int borders = friendly & enemy;
+        friendly &= occupancy;
+        
+        int pattern[5][5];
+        memset(&pattern, -1, sizeof(pattern));
+        pattern[2][2] = MOVE;
+        
+        const int NUM_PTS = 8;
+        int* pointMap[NUM_PTS] =
+        {
+            &pattern[3][1], &pattern[2][1], &pattern[1][1],
+            &pattern[3][2], &pattern[1][2],
+            &pattern[3][3], &pattern[2][3], &pattern[1][3]
+        };
+        
+        str << '\n';
+        for (int i = 0; i < NUM_PTS; i++)
+        {
+            int mask = 1 << i;
+            
+            int ext = -1;
+            int* extPoint;
+            switch (i)
+            {
+                case 1:
+                    ext = context & 0x3;
+                    extPoint = &pattern[2][0];
+                    break;
+                case 3:
+                    ext = (context >> 2) & 0x3;
+                    extPoint = &pattern[4][2];
+                    break;
+                case 4:
+                    ext = (context >> 4) & 0x3;
+                    extPoint = &pattern[0][2];
+                    break;
+                case 6:
+                    ext = (context >> 6) & 0x3;
+                    extPoint = &pattern[2][4];
+                    break;
+                default:
+                    break;
+            }
+            ++ext;
+            
+            if (occupancy & mask)
+            {
+                // ext represents the liberty count. Currently the value 0x3 is not
+                // used.
+                SG_ASSERT(ext <= 3);
+                
+                if (friendly & mask)
+                    *(pointMap[i]) = friendlyCodes[ext];
+                else
+                    *(pointMap[i]) = enemyCodes[ext];
+            }
+            else
+            {
+                if (borders & mask)
+                    *(pointMap[i]) = BORDER;
+                else
+                    *(pointMap[i]) = EMPTY;
+                
+                if (ext > 0)
+                    *extPoint = extraCodes[ext];
+            }
+        }
+        
+        for (int i = 0; i < 5; ++i)
+        {
+            for (int j = 0; j < 5; ++j)
+            {
+                if (pattern[i][j] < 0)
+                    str << std::string(strWidth + 2, ' ');
+                else
+                    str << '[' << strs[pattern[i][j]] << ']';
+            }
+            str << '\n';
+        }
+        
+        if (context & KO_BIT)
+            str << "Ko exists\n";
+        if (context & ATARI_BIT)
+            str << "Atari defense move\n";
+    }
+    
 } // namespace GoPattern12Point
