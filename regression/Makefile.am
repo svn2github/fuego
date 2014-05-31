@@ -378,6 +378,7 @@ sgf/lifeanddeath/nakade-6pts-1.sgf \
 sgf/lifeanddeath/nakade-6pts-2.sgf \
 sgf/lifeanddeath/nakade-6pts-3.sgf \
 sgf/lifeanddeath/nakade-6pts-4.sgf \
+sgf/lifeanddeath/nakade-6pts-4b.sgf \
 sgf/lifeanddeath/nakade-6pts-corner-1.sgf \
 sgf/lifeanddeath/nakade-6pts-realgame.sgf \
 sgf/lifeanddeath/nakade-6pts-realgame.2.sgf \

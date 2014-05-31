@@ -124,12 +124,12 @@ loadsgf sgf/lifeanddeath/nakade-4pts.6.sgf 1
 loadsgf sgf/lifeanddeath/nakade-4pts.6.sgf 3
 
 240 reg_genmove b
-#? [C1]
+#? [C2]
 
 241 reg_genmove w
-#? [C1]
+#? [C2]
 
-loadsgf sgf/lifeanddeath/nakade-5pts-4.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-4.sgf 1
 
 250 reg_genmove w
 #? [C2]
@@ -138,19 +138,19 @@ loadsgf sgf/lifeanddeath/nakade-5pts-4.sgf
 #? [D1|C2]
 # D1 is better
 
-loadsgf sgf/lifeanddeath/nakade-5pts-5.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-5.sgf 1
 
 270 reg_genmove w
 #? [C2]
 
 280 reg_genmove b
-#? [D1|C2]
+#? [C2]
 # D1 is better
 
-loadsgf sgf/lifeanddeath/nakade-5pts-6.sgf
+loadsgf sgf/lifeanddeath/nakade-5pts-6.sgf 1
 
 290 reg_genmove b
-#? [B2]
+#? [B2]*
 
 300 reg_genmove w
 #? [B2]
@@ -161,7 +161,7 @@ loadsgf sgf/lifeanddeath/nakade-5pts-6b.sgf 2
 #? [B1|B2]
 
 320 reg_genmove w
-#? [B2]
+#? [B2]*
 # ko
 
 loadsgf sgf/lifeanddeath/nakade-5pts-7.sgf
@@ -201,28 +201,81 @@ loadsgf sgf/lifeanddeath/nakade-6pts-4.sgf
 410 reg_genmove b
 #? [B2]
 
-420 reg_genmove w
+411 reg_genmove w
+#? [B2]*
+# This is difficult for Fuego as of revision 1923,
+# it cannot see that the Black
+# corner is pretty safe even after killing W
+
+loadsgf sgf/lifeanddeath/nakade-6pts-4b.sgf
+
+420 reg_genmove b
 #? [B2]
 
-loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 3
+421 reg_genmove w
+#? [B2]*
+#easier version where B corner is more stable. Fuego 1923 still has trouble.
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 1
 
 430 reg_genmove b
 #? [G2]
-# not best test case, since already dead. But want to test if it can play 
-# 6 stone selfatari
+# Test if it can play 6 stone selfatari - only way to win
 
-loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 5
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 3
 
 440 reg_genmove b
-#? [H2]
+#? [H1|H2]
+# H2 is the "clean" solution. H1 is either ko or it reverts, 
+# anyway it also wins here.
 
 450 reg_genmove w
 #? [H1|H2]
 
-loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 7
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 5
 
 460 reg_genmove b
-#? [J2]
+#? [H1|G1]
 
 470 reg_genmove w
-#? [J2|G2]
+#? [H1]
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 7
+
+480 reg_genmove b
+#? [H1]
+
+490 reg_genmove w
+#? [C1|E5|F5|G5|H5|J5]*
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 9
+
+500 reg_genmove b
+#? [J1|G2]
+
+510 reg_genmove w
+#? [C1|F5|G5|H5|J5]
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 11
+
+520 reg_genmove b
+#? [H1]
+
+530 reg_genmove w
+#? [H1]
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 13
+
+540 reg_genmove b
+#? [H2|G1|J1]
+
+550 reg_genmove w
+#? [C1|F5|H5|J5]
+
+loadsgf sgf/lifeanddeath/nakade-corner-1.sgf 15
+
+560 reg_genmove b
+#? [H2|J1]
+
+570 reg_genmove w
+#? [C1|F5|J5]
