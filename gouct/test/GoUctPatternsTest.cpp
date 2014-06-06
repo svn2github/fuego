@@ -9,6 +9,7 @@
 #include "GoUctPatterns.h"
 
 #include "GoBoard.h"
+#include "GoPatternBase.h"
 #include "GoSetupUtil.h"
 #include "SgDebug.h"
 #include "SgWrite.h"
@@ -29,8 +30,8 @@ namespace {
             black.push_back(SG_BLACK);
             white.push_back(SG_WHITE);
         }
-        int codeB = MakeCode(black);
-        int codeW = MakeCode(white);
+        int codeB = GoPatternBase::MakeCode(black);
+        int codeW = GoPatternBase::MakeCode(white);
         BOOST_CHECK_EQUAL(codeB, SwapEdgeColor(codeW));
         BOOST_CHECK_EQUAL(codeW, SwapEdgeColor(codeB));
         for(int i=0; i<3; ++i) // 5 + 3 = 8 for center
@@ -38,8 +39,8 @@ namespace {
             black.push_back(SG_BLACK);
             white.push_back(SG_WHITE);
         }
-        codeB = MakeCode(black);
-        codeW = MakeCode(white);
+        codeB = GoPatternBase::MakeCode(black);
+        codeW = GoPatternBase::MakeCode(white);
         BOOST_CHECK_EQUAL(codeB, SwapCenterColor(codeW));
         BOOST_CHECK_EQUAL(codeW, SwapCenterColor(codeB));
     }

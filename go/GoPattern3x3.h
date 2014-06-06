@@ -13,9 +13,12 @@
 #include <boost/array.hpp>
 #include <vector>
 #include "GoBoard.h"
+#include "GoPatternBase.h"
 #include "SgArray.h"
 #include "SgBWArray.h"
 #include "SgPoint.h"
+
+using GoPatternBase::EBWCodeOfPoint;
 
 /** class PatternInfo holds gamma value and MoGo-pattern flag for one move. */
 class PatternInfo
@@ -88,24 +91,16 @@ namespace GoPattern3x3
     template<class BOARD>
     int CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p);
 
-    /** Convert code into list of board colors */
-    std::vector<SgEmptyBlackWhite> Decode(int code, std::size_t length);
-    
     /** Inverse mapping for Map3x3CenterCode */
     int DecodeCenterIndex(int index);
     
     /** Inverse mapping for Map2x3EdgeCode */
     int DecodeEdgeIndex(int index);
     
-    template<class BOARD>
-    int EBWCodeOfPoint(const BOARD& bd, SgPoint p);
-
     void InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table);
     
     void InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>& edgeTable);
-    
-    int MakeCode(const std::vector<SgEmptyBlackWhite>& colors);
-    
+
     /** Utility mapping function. Warning: global array, not threadsafe */
     int Map3x3CenterCode(int code, SgBlackWhite toPlay);
     
@@ -126,10 +121,7 @@ namespace GoPattern3x3
     
     /** Procedural matching function - used to initialize the table. */
     bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
-    
-    /** return NS for input WE or -WE, return WE for input NS or -NS */
-    int OtherDir(int dir);
-    
+        
     void ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table);
     
     void ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>& edgeTable);
@@ -141,7 +133,8 @@ namespace GoPattern3x3
     void Write2x3EdgePattern(std::ostream& stream, int code);
     
     void Write3x3CenterPattern(std::ostream& stream, int code);
-}
+} // namespace GoPattern3x3
+
 //----------------------------------------------------------------------------
 
 template<class BOARD>
@@ -167,7 +160,7 @@ inline int GoPattern3x3::CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p)
     SG_ASSERT(bd.Line(p) == 1);
     SG_ASSERT(bd.Pos(p) > 1);
     const int up = bd.Up(p);
-    const int other = GoPattern3x3::OtherDir(up);
+    const int other = GoPatternBase::OtherDir(up);
     int code = (((EBWCodeOfPoint(bd, p + other) * 3
                   + EBWCodeOfPoint(bd, p + up + other)) * 3
                  + EBWCodeOfPoint(bd, p + up)) * 3
@@ -178,36 +171,6 @@ inline int GoPattern3x3::CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p)
     return code;
 }
 
-template<class BOARD>
-inline int GoPattern3x3::EBWCodeOfPoint(const BOARD& bd, SgPoint p)
-{
-    SG_ASSERT(bd.IsValidPoint(p));
-    BOOST_STATIC_ASSERT(SG_BLACK == 0);
-    BOOST_STATIC_ASSERT(SG_WHITE == 1);
-    BOOST_STATIC_ASSERT(SG_EMPTY == 2);
-    return bd.GetColor(p);
-}
-
-
-inline int GoPattern3x3::MakeCode(const std::vector<SgEmptyBlackWhite>& colors)
-{
-    int code = 0;
-    for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
-         it != colors.end(); ++it)
-    {
-        code *= 3;
-        code += *it;
-    }
-    return code;
-}
-
-inline int GoPattern3x3::OtherDir(int dir)
-{
-    if (dir == SG_NS || dir == -SG_NS)
-    return SG_WE;
-    SG_ASSERT(dir == SG_WE || dir == -SG_WE);
-    return SG_NS;
-}
 
 //----------------------------------------------------------------------------
 

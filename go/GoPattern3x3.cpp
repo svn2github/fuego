@@ -4,16 +4,13 @@
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
+#include "GoPatternBase.h"
 #include "GoPattern3x3.h"
 
 #include "GoBoardUtil.h"
 #include "SgDebug.h"
 
 //----------------------------------------------------------------------------
-
-
-//----------------------------------------------------------------------------
-
 
 namespace {
     
@@ -22,7 +19,7 @@ bool CheckCut1(const GoBoard& bd, SgPoint p,
 {
     SG_ASSERT_BW(c);
     return bd.IsColor(p + otherDir, c)
-    && bd.IsColor(p + cDir + otherDir, SgOppBW(c));
+        && bd.IsColor(p + cDir + otherDir, SgOppBW(c));
 }
 
 bool CheckCut2(const GoBoard& bd, SgPoint p,
@@ -33,16 +30,16 @@ bool CheckCut2(const GoBoard& bd, SgPoint p,
     SG_ASSERT(bd.IsColor(p + cDir, c));
     const SgBlackWhite opp = SgOppBW(c);
     return bd.IsColor(p - cDir, c)
-    && ( (  bd.IsColor(p + otherDir, opp)
-          && ! bd.IsColor(p - otherDir + cDir, c)
-          && ! bd.IsColor(p - otherDir - cDir, c)
-          )
-        ||
-        (  bd.IsColor(p - otherDir, opp)
-         && ! bd.IsColor(p + otherDir + cDir, c)
-         && ! bd.IsColor(p + otherDir - cDir, c)
-         )
-        );
+        && ( (  bd.IsColor(p + otherDir, opp)
+              && ! bd.IsColor(p - otherDir + cDir, c)
+              && ! bd.IsColor(p - otherDir - cDir, c)
+              )
+            ||
+            (  bd.IsColor(p - otherDir, opp)
+             && ! bd.IsColor(p + otherDir + cDir, c)
+             && ! bd.IsColor(p + otherDir - cDir, c)
+             )
+            );
 }
 
 bool CheckHane1(const GoBoard& bd, SgPoint p,
@@ -50,11 +47,11 @@ bool CheckHane1(const GoBoard& bd, SgPoint p,
                 int cDir, int otherDir)
 {
     return bd.IsColor(p + cDir, c)
-    && bd.IsColor(p + cDir + otherDir, opp)
-    && bd.IsColor(p + cDir - otherDir, opp)
-    && bd.IsEmpty(p + otherDir)
-    && bd.IsEmpty(p - otherDir)
-    ;
+        && bd.IsColor(p + cDir + otherDir, opp)
+        && bd.IsColor(p + cDir - otherDir, opp)
+        && bd.IsEmpty(p + otherDir)
+        && bd.IsEmpty(p - otherDir)
+        ;
 }
 
 int EdgeDirection(GoBoard& bd, SgPoint p, int index)
@@ -63,16 +60,16 @@ int EdgeDirection(GoBoard& bd, SgPoint p, int index)
     switch (index)
     {
         case 0:
-        return GoPattern3x3::OtherDir(up);
+        return GoPatternBase::OtherDir(up);
         case 1:
-        return up + GoPattern3x3::OtherDir(up);
+        return up + GoPatternBase::OtherDir(up);
         case 2:
         return up;
         case 3:
-        return up - GoPattern3x3::OtherDir(up);
+        return up - GoPatternBase::OtherDir(up);
         default:
         SG_ASSERT(index == 4);
-        return - GoPattern3x3::OtherDir(up);
+        return - GoPatternBase::OtherDir(up);
     }
 }
 
@@ -80,11 +77,11 @@ int EdgeDirection(GoBoard& bd, SgPoint p, int index)
 int FindDir(const GoBoard& bd, SgPoint p, SgBlackWhite c)
 {
     if (bd.IsColor(p + SG_NS, c))
-    return SG_NS;
+        return SG_NS;
     if (bd.IsColor(p - SG_NS, c))
-    return -SG_NS;
+        return -SG_NS;
     if (bd.IsColor(p + SG_WE, c))
-    return SG_WE;
+        return SG_WE;
     SG_ASSERT(bd.IsColor(p - SG_WE, c));
     return -SG_WE;
 }
@@ -92,7 +89,7 @@ int FindDir(const GoBoard& bd, SgPoint p, SgBlackWhite c)
 bool MatchCut(const GoBoard& bd, SgPoint p)
 {
     if (bd.Num8EmptyNeighbors(p) > 6)
-    return false;
+        return false;
     
     const int nuEmpty = bd.NumEmptyNeighbors(p);
     //cut1
@@ -104,7 +101,7 @@ bool MatchCut(const GoBoard& bd, SgPoint p)
             || CheckCut1(bd, p, c1, SG_NS, -SG_WE)
             )
         )
-    return true;
+        return true;
     const SgEmptyBlackWhite c2 = bd.GetColor(p - SG_NS);
     if (  c2 != SG_EMPTY
         && bd.NumNeighbors(p, c2) >= 2
@@ -113,7 +110,7 @@ bool MatchCut(const GoBoard& bd, SgPoint p)
             || CheckCut1(bd, p, c2, -SG_NS, -SG_WE)
             )
         )
-    return true;
+        return true;
     //cut2
     if (  c1 != SG_EMPTY
         && bd.NumNeighbors(p, c1) == 2
@@ -121,7 +118,7 @@ bool MatchCut(const GoBoard& bd, SgPoint p)
         && bd.NumDiagonals(p, c1) <= 2
         && CheckCut2(bd, p, c1, SG_NS, SG_WE)
         )
-    return true;
+        return true;
     const SgEmptyBlackWhite c3 = bd.GetColor(p + SG_WE);
     if (  c3 != SG_EMPTY
         && bd.NumNeighbors(p, c3) == 2
@@ -129,7 +126,7 @@ bool MatchCut(const GoBoard& bd, SgPoint p)
         && bd.NumDiagonals(p, c3) <= 2
         && CheckCut2(bd, p, c3, SG_WE, SG_NS)
         )
-    return true;
+        return true;
     return false;
 }
 
@@ -137,7 +134,7 @@ bool MatchEdge(const GoBoard& bd, SgPoint p,
                const int nuBlack, const int nuWhite)
 {
     const int up = bd.Up(p);
-    const int side = GoPattern3x3::OtherDir(up);
+    const int side = GoPatternBase::OtherDir(up);
     const int nuEmpty = bd.NumEmptyNeighbors(p);
     const SgEmptyBlackWhite upColor = bd.GetColor(p + up);
     // edge1
@@ -148,10 +145,10 @@ bool MatchEdge(const GoBoard& bd, SgPoint p,
     {
         const SgEmptyBlackWhite c1 = bd.GetColor(p + side);
         if (c1 != SG_EMPTY && bd.GetColor(p + side + up) == SgOppBW(c1))
-        return true;
+            return true;
         const SgEmptyBlackWhite c2 = bd.GetColor(p - side);
         if (c2 != SG_EMPTY && bd.GetColor(p - side + up) == SgOppBW(c2))
-        return true;
+            return true;
     }
     
     // edge2
@@ -160,14 +157,14 @@ bool MatchEdge(const GoBoard& bd, SgPoint p,
             || (upColor == SG_WHITE && nuWhite == 1 && nuBlack > 0)
             )
         )
-    return true;
+        return true;
     
     const SgBlackWhite toPlay = bd.ToPlay();
     // edge3
     if (  upColor == toPlay
         && bd.NumDiagonals(p, SgOppBW(upColor)) > 0
         )
-    return true;
+        return true;
     
     // edge4
     if (  upColor == SgOppBW(toPlay)
@@ -178,11 +175,11 @@ bool MatchEdge(const GoBoard& bd, SgPoint p,
         if (  bd.GetColor(p + side + up) == toPlay
             && bd.GetColor(p + side) != upColor
             )
-        return true;
+            return true;
         if (  bd.GetColor(p - side + up) == toPlay
             && bd.GetColor(p - side) != upColor
             )
-        return true;
+            return true;
     }
     // edge5
     if (  upColor == SgOppBW(toPlay)
@@ -193,11 +190,11 @@ bool MatchEdge(const GoBoard& bd, SgPoint p,
         if (  bd.GetColor(p + side + up) == toPlay
             && bd.GetColor(p + side) == upColor
             )
-        return true;
+            return true;
         if (  bd.GetColor(p - side + up) == toPlay
             && bd.GetColor(p - side) == upColor
             )
-        return true;
+            return true;
     }
     return false;
 }
@@ -207,11 +204,11 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
 {
     const int nuEmpty = bd.NumEmptyNeighbors(p);
     if (nuEmpty < 2 || nuEmpty > 3)
-    return false;
+        return false;
     if (  (nuBlack < 1 || nuBlack > 2)
         && (nuWhite < 1 || nuWhite > 2)
         )
-    return false;
+        return false;
     if (nuEmpty == 2) // hane3 pattern
     {
         if (nuBlack == 1 && nuWhite == 1)
@@ -219,7 +216,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
             const int dirB = FindDir(bd, p, SG_BLACK);
             const int dirW = FindDir(bd, p, SG_WHITE);
             if (! bd.IsEmpty(p + dirB + dirW))
-            return true;
+                return true;
         }
     }
     else if (nuEmpty == 3) // hane2 or hane4
@@ -228,15 +225,15 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
         const SgBlackWhite col = (nuBlack == 1) ? SG_BLACK : SG_WHITE;
         const SgBlackWhite opp = SgOppBW(col);
         const int dir = FindDir(bd, p, col);
-        const int otherDir = GoPattern3x3::OtherDir(dir);
+        const int otherDir = GoPatternBase::OtherDir(dir);
         if (  bd.IsEmpty(p + dir + otherDir)
             && bd.IsColor(p + dir - otherDir, opp)
             )
-        return true; // hane2
+            return true; // hane2
         if (  bd.IsEmpty(p + dir - otherDir)
             && bd.IsColor(p + dir + otherDir, opp)
             )
-        return true; // hane2
+            return true; // hane2
         if (bd.ToPlay() == opp)
         {
             const SgEmptyBlackWhite c1 = bd.GetColor(p + dir + otherDir);
@@ -245,7 +242,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
                 const SgEmptyBlackWhite c2 =
                 bd.GetColor(p + dir - otherDir);
                 if (SgOppBW(c1) == c2)
-                return true; // hane4
+                    return true; // hane4
             }
         }
     }
@@ -260,7 +257,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
             || CheckHane1(bd, p, SG_WHITE, SG_BLACK, -SG_WE, SG_NS)
             )
         )
-    return true;
+        return true;
     
     const int nuWhiteDiag = bd.NumDiagonals(p, SG_WHITE);
     if (  nuWhiteDiag >= 2
@@ -271,7 +268,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
             || CheckHane1(bd, p, SG_BLACK, SG_WHITE, -SG_WE, SG_NS)
             )
         )
-    return true;
+        return true;
     return false;
 }
 
@@ -279,7 +276,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
 int SwapColor(int origCode, size_t length)
 {
     const std::vector<SgEmptyBlackWhite> colors =
-    GoPattern3x3::Decode(origCode, length);
+    GoPatternBase::Decode(origCode, length);
 
     int code = 0;
     for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
@@ -358,18 +355,12 @@ const unsigned int PA_NU_AX_SETS = 1 << PA_NU_AXES;
 typedef unsigned int PaAxSet;
 // todo copied from features
 
-inline int EBWCodeOfPoint(const GoBoard& bd, SgPoint p)
-{
-    SG_ASSERT(bd.IsValidPoint(p));
-    BOOST_STATIC_ASSERT(SG_BLACK == 0);
-    BOOST_STATIC_ASSERT(SG_WHITE == 1);
-    BOOST_STATIC_ASSERT(SG_EMPTY == 2);
-    return bd.GetColor(p);
-}
 
 int AxCodeOf8Neighbors(const GoBoard& bd, SgPoint p, PaAxSet axes)
 {
     using std::make_pair;
+    using GoPatternBase::EBWCodeOfPoint;
+
     static const std::pair<int,int> axDir[PA_NU_AX_SETS] =
     {
         make_pair( SG_NS,  SG_WE),
@@ -413,10 +404,11 @@ int MinCodeOf8Neighbors(const GoBoard& bd, SgPoint p)
 int MirrorCodeOfEdgeNeighbors(const GoBoard& bd,
                               SgPoint p)
 {
+    using GoPatternBase::EBWCodeOfPoint;
     SG_ASSERT(bd.Line(p) == 1);
     SG_ASSERT(bd.Pos(p) > 1);
     const int up = bd.Up(p);
-    int other = -GoPattern3x3::OtherDir(up);
+    int other = -GoPatternBase::OtherDir(up);
     int code = (((EBWCodeOfPoint(bd, p + other) * 3
                   + EBWCodeOfPoint(bd, p + up + other)) * 3
                  + EBWCodeOfPoint(bd, p + up)) * 3
@@ -436,23 +428,6 @@ int MinEdgeCode(const GoBoard& bd, SgPoint p)
 } // namespace
 
 //----------------------------------------------------------------------------
-std::vector<SgEmptyBlackWhite> GoPattern3x3::Decode(int code, std::size_t length)
-{
-    const std::size_t origLength = length;
-    SG_DEBUG_ONLY(origLength);
-    
-    std::vector<SgEmptyBlackWhite> colors;
-    while (length-- > 0)
-    {
-        colors.push_back(code % 3);
-        code /= 3;
-    }
-    std::reverse(colors.begin(), colors.end());
-    // if this is time critical,
-    // could work with reversed vectors and use rbegin, rend to access.
-    SG_ASSERT_EQUAL(colors.size(), origLength);
-    return colors;
-}
 
 int GoPattern3x3::SwapCenterColor(int code)
 {

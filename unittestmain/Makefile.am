@@ -20,6 +20,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoKomiTest.cpp \
 ../go/test/GoLadderTest.cpp \
 ../go/test/GoOpeningKnowledgeTest.cpp \
+../go/test/GoPatternBaseTest.cpp \
 ../go/test/GoPattern3x3Test.cpp \
 ../go/test/GoRegionTest.cpp \
 ../go/test/GoRegionBoardTest.cpp \
