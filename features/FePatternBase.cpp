@@ -55,9 +55,11 @@ SgPoint PatternToPoint(int dx, int dy, const PaSpot& spot, int boardSize)
                           boardSize);
 }
 
+#if 0
 SgPoint PatternToPoint(int offset, const PaSpot& spot, int boardSize)
 {
     return PatternToPoint(PaConst::DeltaX(offset),
                           PaConst::DeltaY(offset),
                           spot, boardSize);
 }
+#endif

@@ -99,12 +99,13 @@ SgPoint AXBoardToBoard(int x, int y, PaAx ax, int boardSize);
  Called e.g. to get move on Board from move index in pattern
  @todo could be static, could be utility function only
  */
-SgPoint PatternToPoint(int n, const PaSpot& spot, int boardSize);
+//SgPoint PatternToPoint(int n, const PaSpot& spot, int boardSize);
 
 SgPoint PatternToPoint(int dx, int dy, const PaSpot& spot, int boardSize);
 
 //----------------------------------------------------------------------------
 
+#if 0
 /** adding SHIFT to deltaX and deltaY to force numbers to be positive.
     @todo precompute arrays faster?
 */
@@ -130,6 +131,7 @@ inline int PaConst::DeltaY(int offset)
     return offset % OFFSET - SHIFT;
 }
 
+#endif
 
 //----------------------------------------------------------------------------
 #endif // FE_PATTERN_BASE_H

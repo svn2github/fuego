@@ -18,6 +18,7 @@ using SgPointUtil::Pt;
 
 namespace {
     
+#if 0
 void CheckOffset(int deltaX, int deltaY)
 {
     int offset = PaConst::Offset(deltaX, deltaY);
@@ -26,6 +27,7 @@ void CheckOffset(int deltaX, int deltaY)
     BOOST_CHECK_EQUAL(deltaX, newX);
     BOOST_CHECK_EQUAL(deltaY, newY);
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(FePatternBaseTest_PaAxSet_To_PaAx)
 {
@@ -38,6 +40,7 @@ BOOST_AUTO_TEST_CASE(FePatternBaseTest_PaAxSet_To_PaAx)
     }
 }
 
+#if 0
 BOOST_AUTO_TEST_CASE(FePatternBaseTest_Offset)
 {
     CheckOffset(0,0);
@@ -49,6 +52,7 @@ BOOST_AUTO_TEST_CASE(FePatternBaseTest_Offset)
     CheckOffset(-1,-1);
     CheckOffset(-8,-3);
 }
+#endif
 
 BOOST_AUTO_TEST_CASE(FePatternBaseTest_PaSpot)
 {
