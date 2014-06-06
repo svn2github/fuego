@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
-/** @file Go3x3Pattern.cpp
-    See Go3x3Pattern.h */
+/** @file GoPattern3x3.cpp
+    See GoPattern3x3.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "Go3x3Pattern.h"
+#include "GoPattern3x3.h"
 
 #include "GoBoardUtil.h"
 #include "SgDebug.h"
@@ -63,16 +63,16 @@ int EdgeDirection(GoBoard& bd, SgPoint p, int index)
     switch (index)
     {
         case 0:
-        return Go3x3Pattern::OtherDir(up);
+        return GoPattern3x3::OtherDir(up);
         case 1:
-        return up + Go3x3Pattern::OtherDir(up);
+        return up + GoPattern3x3::OtherDir(up);
         case 2:
         return up;
         case 3:
-        return up - Go3x3Pattern::OtherDir(up);
+        return up - GoPattern3x3::OtherDir(up);
         default:
         SG_ASSERT(index == 4);
-        return - Go3x3Pattern::OtherDir(up);
+        return - GoPattern3x3::OtherDir(up);
     }
 }
 
@@ -137,7 +137,7 @@ bool MatchEdge(const GoBoard& bd, SgPoint p,
                const int nuBlack, const int nuWhite)
 {
     const int up = bd.Up(p);
-    const int side = Go3x3Pattern::OtherDir(up);
+    const int side = GoPattern3x3::OtherDir(up);
     const int nuEmpty = bd.NumEmptyNeighbors(p);
     const SgEmptyBlackWhite upColor = bd.GetColor(p + up);
     // edge1
@@ -228,7 +228,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
         const SgBlackWhite col = (nuBlack == 1) ? SG_BLACK : SG_WHITE;
         const SgBlackWhite opp = SgOppBW(col);
         const int dir = FindDir(bd, p, col);
-        const int otherDir = Go3x3Pattern::OtherDir(dir);
+        const int otherDir = GoPattern3x3::OtherDir(dir);
         if (  bd.IsEmpty(p + dir + otherDir)
             && bd.IsColor(p + dir - otherDir, opp)
             )
@@ -279,7 +279,7 @@ bool MatchHane(const GoBoard& bd, SgPoint p,
 int SwapColor(int origCode, size_t length)
 {
     const std::vector<SgEmptyBlackWhite> colors =
-    Go3x3Pattern::Decode(origCode, length);
+    GoPattern3x3::Decode(origCode, length);
 
     int code = 0;
     for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
@@ -298,9 +298,9 @@ void ComputeSwappedTable(const boost::array<int, SIZE>& blackTable,
 {
     SG_ASSERT(length == 5 || length == 8);
     if (length == 5)
-        SG_ASSERT(SIZE == Go3x3Pattern::GOUCT_POWER3_5);
+        SG_ASSERT(SIZE == GoPattern3x3::GOUCT_POWER3_5);
     if (length == 8)
-        SG_ASSERT(SIZE == Go3x3Pattern::GOUCT_POWER3_8);
+        SG_ASSERT(SIZE == GoPattern3x3::GOUCT_POWER3_8);
 
     for (int i = 0; i < static_cast<int>(SIZE); ++i)
     {
@@ -328,7 +328,7 @@ void SetupCodedEdgePosition(GoBoard& bd, int code)
             bd.Play(nb, c);
         }
     }
-    SG_ASSERT(Go3x3Pattern::CodeOfEdgeNeighbors(bd, p) == origCode);
+    SG_ASSERT(GoPattern3x3::CodeOfEdgeNeighbors(bd, p) == origCode);
 }
 
 void SetupCodedPosition(GoBoard& bd, int code)
@@ -348,7 +348,7 @@ void SetupCodedPosition(GoBoard& bd, int code)
             bd.Play(nb, c);
         }
     }
-    SG_ASSERT(Go3x3Pattern::CodeOf8Neighbors(bd, p) == origCode);
+    SG_ASSERT(GoPattern3x3::CodeOf8Neighbors(bd, p) == origCode);
 }
 
 const int PA_NU_AXES = 3;
@@ -393,20 +393,20 @@ int AxCodeOf8Neighbors(const GoBoard& bd, SgPoint p, PaAxSet axes)
                 + EBWCodeOfPoint(bd, p - dir.first)) * 3
     + EBWCodeOfPoint(bd, p - dir.first - dir.second);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < Go3x3Pattern::GOUCT_POWER3_8);
+    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_8);
     return code;
 }
 
 int MinCodeOf8Neighbors(const GoBoard& bd, SgPoint p)
 {
-    int minCode = Go3x3Pattern::GOUCT_POWER3_8;
+    int minCode = GoPattern3x3::GOUCT_POWER3_8;
     for (PaAxSet s = 0; s < PA_NU_AX_SETS; ++s)
     {
         const int code = AxCodeOf8Neighbors(bd, p, s);
         minCode = std::min(minCode, code);
     }
     SG_ASSERT(minCode >= 0);
-    SG_ASSERT(minCode < Go3x3Pattern::GOUCT_POWER3_8);
+    SG_ASSERT(minCode < GoPattern3x3::GOUCT_POWER3_8);
     return minCode;
 }
 
@@ -416,27 +416,27 @@ int MirrorCodeOfEdgeNeighbors(const GoBoard& bd,
     SG_ASSERT(bd.Line(p) == 1);
     SG_ASSERT(bd.Pos(p) > 1);
     const int up = bd.Up(p);
-    int other = -Go3x3Pattern::OtherDir(up);
+    int other = -GoPattern3x3::OtherDir(up);
     int code = (((EBWCodeOfPoint(bd, p + other) * 3
                   + EBWCodeOfPoint(bd, p + up + other)) * 3
                  + EBWCodeOfPoint(bd, p + up)) * 3
                 + EBWCodeOfPoint(bd, p + up - other)) * 3
     + EBWCodeOfPoint(bd, p - other);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < Go3x3Pattern::GOUCT_POWER3_5);
+    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_5);
     return code;
 }
 
 int MinEdgeCode(const GoBoard& bd, SgPoint p)
 {
-    return std::min(Go3x3Pattern::CodeOfEdgeNeighbors(bd, p),
+    return std::min(GoPattern3x3::CodeOfEdgeNeighbors(bd, p),
                     MirrorCodeOfEdgeNeighbors(bd, p));
 }
     
 } // namespace
 
 //----------------------------------------------------------------------------
-std::vector<SgEmptyBlackWhite> Go3x3Pattern::Decode(int code, std::size_t length)
+std::vector<SgEmptyBlackWhite> GoPattern3x3::Decode(int code, std::size_t length)
 {
     const std::size_t origLength = length;
     SG_DEBUG_ONLY(origLength);
@@ -454,17 +454,17 @@ std::vector<SgEmptyBlackWhite> Go3x3Pattern::Decode(int code, std::size_t length
     return colors;
 }
 
-int Go3x3Pattern::SwapCenterColor(int code)
+int GoPattern3x3::SwapCenterColor(int code)
 {
     return SwapColor(code, 8);
 }
 
-int Go3x3Pattern::SwapEdgeColor(int code)
+int GoPattern3x3::SwapEdgeColor(int code)
 {
     return SwapColor(code, 5);
 }
 
-int Go3x3Pattern::Map2x3EdgeCode(int code, SgBlackWhite toPlay)
+int GoPattern3x3::Map2x3EdgeCode(int code, SgBlackWhite toPlay)
 {
     static EdgeCodeTable s_indexCode[2];
     static bool s_initialized = false;
@@ -483,7 +483,7 @@ int Go3x3Pattern::Map2x3EdgeCode(int code, SgBlackWhite toPlay)
     return s_indexCode[toPlay][code];
 }
 
-int Go3x3Pattern::Map3x3CenterCode(int code, SgBlackWhite toPlay)
+int GoPattern3x3::Map3x3CenterCode(int code, SgBlackWhite toPlay)
 {
     //-------------------------------
     static CenterCodeTable s_indexCode[2];
@@ -502,7 +502,7 @@ int Go3x3Pattern::Map3x3CenterCode(int code, SgBlackWhite toPlay)
     return s_indexCode[toPlay][code];
 }
 
-int Go3x3Pattern::DecodeEdgeIndex(int index)
+int GoPattern3x3::DecodeEdgeIndex(int index)
 {
     SG_ASSERT(index >= 0);
     SG_ASSERT(index < GOUCT_POWER3_5); // todo get, store real max. index
@@ -513,7 +513,7 @@ int Go3x3Pattern::DecodeEdgeIndex(int index)
     return -1;
 }
 
-int Go3x3Pattern::DecodeCenterIndex(int index)
+int GoPattern3x3::DecodeCenterIndex(int index)
 // todo can speed up by computing reverse map if needed
 {
     SG_ASSERT(index >= 0);
@@ -525,7 +525,7 @@ int Go3x3Pattern::DecodeCenterIndex(int index)
     return -1;
 }
 
-int Go3x3Pattern::MapCenterPatternsToMinimum(CenterCodeTable& indexCode)
+int GoPattern3x3::MapCenterPatternsToMinimum(CenterCodeTable& indexCode)
 {
     GoBoard bd(5);
     CenterCodeTable minCode;
@@ -555,7 +555,7 @@ int Go3x3Pattern::MapCenterPatternsToMinimum(CenterCodeTable& indexCode)
     return static_cast<int>(last - uniqueCode.begin());
 }
 
-int Go3x3Pattern::MapEdgePatternsToMinimum(EdgeCodeTable& indexCode)
+int GoPattern3x3::MapEdgePatternsToMinimum(EdgeCodeTable& indexCode)
 {
     GoBoard bd(5);
     EdgeCodeTable minCode;
@@ -585,7 +585,7 @@ int Go3x3Pattern::MapEdgePatternsToMinimum(EdgeCodeTable& indexCode)
     return static_cast<int>(last - uniqueCode.begin());
 }
 
-void Go3x3Pattern::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
+void GoPattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
                                       edgeTable)
 {
     GoBoard bd(5);
@@ -596,7 +596,7 @@ void Go3x3Pattern::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            const bool isPattern = Go3x3Pattern::MatchAnyPattern(bd, p);
+            const bool isPattern = GoPattern3x3::MatchAnyPattern(bd, p);
             edgeTable[*it][i].SetIsPattern(isPattern);
         }
         GoBoardUtil::UndoAll(bd);
@@ -604,7 +604,7 @@ void Go3x3Pattern::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
     //ReduceEdgeSymmetry(edgeTable);
 }
 
-void Go3x3Pattern::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
+void GoPattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
 {
     GoBoard bd(5);
     const SgPoint p = SgPointUtil::Pt(3, 3);
@@ -614,7 +614,7 @@ void Go3x3Pattern::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
         for (SgBWIterator it; it; ++it)
         {
             bd.SetToPlay(*it);
-            const bool isPattern = Go3x3Pattern::MatchAnyPattern(bd, p);
+            const bool isPattern = GoPattern3x3::MatchAnyPattern(bd, p);
             table[*it][i].SetIsPattern(isPattern);
         }
         GoBoardUtil::UndoAll(bd);
@@ -623,7 +623,7 @@ void Go3x3Pattern::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
 }
 
 void PrintVector(const std::vector<int>& codes,
-                 SgBWArray<Go3x3Pattern::GoUctPatternTable>& table)
+                 SgBWArray<GoPattern3x3::GoUctPatternTable>& table)
 {
     SgDebug() << "Shared: ";
     
@@ -658,7 +658,7 @@ StoreFeatureValues()
 }
 #endif
 
-namespace Go3x3Pattern {
+namespace GoPattern3x3 {
 
 class TwoWay3x3Map
 {
@@ -680,15 +680,15 @@ private:
     void Init();
 };
 
-} // namespace Go3x3Pattern
+} // namespace GoPattern3x3
 
-Go3x3Pattern::TwoWay3x3Map::TwoWay3x3Map()
+GoPattern3x3::TwoWay3x3Map::TwoWay3x3Map()
     : m_nuUnique(0)
 {
     Init();
 }
 
-void Go3x3Pattern::TwoWay3x3Map::Init()
+void GoPattern3x3::TwoWay3x3Map::Init()
 {
     m_nuUnique = MapCenterPatternsToMinimum(m_indexCode);
     m_uniqueCode.resize(m_nuUnique);
@@ -705,7 +705,7 @@ void Go3x3Pattern::TwoWay3x3Map::Init()
     SG_ASSERT_EQUAL(m_centerSwapTable[m_centerSwapTable[i]], i);
 }
 
-void Go3x3Pattern::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
+void GoPattern3x3::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
 {
     TwoWay3x3Map m;
     for (int i = 0; i < m.m_nuUnique; ++i)
@@ -713,7 +713,7 @@ void Go3x3Pattern::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
 }
 
 void PrintVector(const std::vector<int>& codes,
-                 SgBWArray<Go3x3Pattern::GoUctEdgePatternTable>& edgeTable)
+                 SgBWArray<GoPattern3x3::GoUctEdgePatternTable>& edgeTable)
 {
     SgDebug() << "Shared: ";
     
@@ -729,7 +729,7 @@ void PrintVector(const std::vector<int>& codes,
 }
 
 
-void Go3x3Pattern::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
+void GoPattern3x3::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
                                     edgeTable)
 {
     boost::array<int, GOUCT_POWER3_5> indexCode;
@@ -745,7 +745,7 @@ void Go3x3Pattern::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
         PrintVector(uCode[i], edgeTable);
 }
 
-bool Go3x3Pattern::MatchAnyPattern(const GoBoard& bd, SgPoint p)
+bool GoPattern3x3::MatchAnyPattern(const GoBoard& bd, SgPoint p)
 {
     SG_ASSERT(bd.IsEmpty(p));
     const int nuBlack = bd.NumNeighbors(p, SG_BLACK);
@@ -766,7 +766,7 @@ bool Go3x3Pattern::MatchAnyPattern(const GoBoard& bd, SgPoint p)
             || MatchCut(bd, p);
 }
 
-void Go3x3Pattern::Write2x3EdgePattern(std::ostream& stream, int code)
+void GoPattern3x3::Write2x3EdgePattern(std::ostream& stream, int code)
 {
     stream << '\n';
     GoBoard bd(5);
@@ -782,7 +782,7 @@ void Go3x3Pattern::Write2x3EdgePattern(std::ostream& stream, int code)
     }
 }
 
-void Go3x3Pattern::Write3x3CenterPattern(std::ostream& stream, int code)
+void GoPattern3x3::Write3x3CenterPattern(std::ostream& stream, int code)
 {
     stream << '\n';
     GoBoard bd(5);

@@ -7,7 +7,6 @@ fuego_unittest_SOURCES = \
 ../features/test/FeNestedPatternTest.cpp \
 ../features/test/FePatternTest.cpp \
 ../features/test/FePatternBaseTest.cpp \
-../go/test/Go3x3PatternTest.cpp \
 ../go/test/GoBoardTest.cpp \
 ../go/test/GoBoardSynchronizerTest.cpp \
 ../go/test/GoBoardUpdaterTest.cpp \
@@ -21,6 +20,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoKomiTest.cpp \
 ../go/test/GoLadderTest.cpp \
 ../go/test/GoOpeningKnowledgeTest.cpp \
+../go/test/GoPattern3x3Test.cpp \
 ../go/test/GoRegionTest.cpp \
 ../go/test/GoRegionBoardTest.cpp \
 ../go/test/GoSetupUtilTest.cpp \

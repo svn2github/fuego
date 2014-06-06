@@ -1,18 +1,18 @@
 //----------------------------------------------------------------------------
-/** @file Go3x3PatternTest.cpp
- Unit tests for Go3x3Pattern. */
+/** @file GoPattern3x3Test.cpp
+ Unit tests for GoPattern3x3. */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
 
 #include <boost/test/auto_unit_test.hpp>
-#include "Go3x3Pattern.h"
+#include "GoPattern3x3.h"
 
 #include "GoBoard.h"
 #include "GoSetupUtil.h"
 
 using SgPointUtil::Pt;
-using namespace Go3x3Pattern;
+using namespace GoPattern3x3;
 
 //----------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ namespace {
 //----------------------------------------------------------------------------
 
 /** Test 3x3 pattern. */
-BOOST_AUTO_TEST_CASE(Go3x3PatternTest_EBWCodeOfPoint)
+BOOST_AUTO_TEST_CASE(GoPattern3x3Test_EBWCodeOfPoint)
 {
     std::string s(
                   "O . X X X\n"

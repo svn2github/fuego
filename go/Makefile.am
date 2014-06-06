@@ -1,7 +1,6 @@
 noinst_LIBRARIES = libfuego_go.a
 
 libfuego_go_a_SOURCES = \
-Go3x3Pattern.cpp \
 GoAdditiveKnowledge.cpp \
 GoAutoBook.cpp \
 GoBensonSolver.cpp \
@@ -29,6 +28,7 @@ GoMotive.cpp \
 GoNodeUtil.cpp \
 GoOpeningKnowledge.cpp \
 GoPattern12Point.cpp \
+GoPattern3x3.cpp \
 GoPlayer.cpp \
 GoPlayerMove.cpp \
 GoRegion.cpp \
@@ -47,7 +47,6 @@ GoTimeSettings.cpp \
 GoUtil.cpp
 
 noinst_HEADERS = \
-Go3x3Pattern.h \
 GoAdditiveKnowledge.h \
 GoAssertBoardRestored.h \
 GoAutoBook.h \
@@ -79,6 +78,7 @@ GoMoveExecutor.h \
 GoNodeUtil.h \
 GoOpeningKnowledge.h \
 GoPattern12Point.h \
+GoPattern3x3.h \
 GoPlayer.h \
 GoPlayerMove.h \
 GoRegion.h \

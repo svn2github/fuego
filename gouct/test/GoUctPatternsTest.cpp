@@ -21,7 +21,7 @@ namespace {
     
     BOOST_AUTO_TEST_CASE(GoUctPatternsTest_3x3_Color_SwapCode)
     {
-        using namespace Go3x3Pattern;
+        using namespace GoPattern3x3;
         std::vector<SgEmptyBlackWhite> black;
         std::vector<SgEmptyBlackWhite> white;
         for(int i=0; i<5; ++i)

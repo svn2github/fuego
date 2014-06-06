@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file Go3x3Pattern.h
+/** @file GoPattern3x3.h
     3x3 patterns on the center of a GoBoard, plus 2x3 edge patterns
     
     These patterns are used extensively in the GoUct playout policy
@@ -7,8 +7,8 @@
     */
 //----------------------------------------------------------------------------
 
-#ifndef GO_3x3_PATTERN_H
-#define GO_3x3_PATTERN_H
+#ifndef GO_PATTERN_3x3_H
+#define GO_PATTERN_3x3_H
 
 #include <boost/array.hpp>
 #include <vector>
@@ -66,7 +66,7 @@ inline bool PatternInfo::IsPattern() const
 
 
 //----------------------------------------------------------------------------
-namespace Go3x3Pattern
+namespace GoPattern3x3
 {
     /** 3^5 = size of edge pattern table */
     static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
@@ -145,7 +145,7 @@ namespace Go3x3Pattern
 //----------------------------------------------------------------------------
 
 template<class BOARD>
-inline int Go3x3Pattern::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
+inline int GoPattern3x3::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
 {
     SG_ASSERT(bd.Line(p) > 1);
     int code = ((((((EBWCodeOfPoint(bd, p - SG_NS - SG_WE) * 3
@@ -157,29 +157,29 @@ inline int Go3x3Pattern::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
                 + EBWCodeOfPoint(bd, p + SG_NS)) * 3
     + EBWCodeOfPoint(bd, p + SG_NS + SG_WE);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < Go3x3Pattern::GOUCT_POWER3_8);
+    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_8);
     return code;
 }
 
 template<class BOARD>
-inline int Go3x3Pattern::CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p)
+inline int GoPattern3x3::CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p)
 {
     SG_ASSERT(bd.Line(p) == 1);
     SG_ASSERT(bd.Pos(p) > 1);
     const int up = bd.Up(p);
-    const int other = Go3x3Pattern::OtherDir(up);
+    const int other = GoPattern3x3::OtherDir(up);
     int code = (((EBWCodeOfPoint(bd, p + other) * 3
                   + EBWCodeOfPoint(bd, p + up + other)) * 3
                  + EBWCodeOfPoint(bd, p + up)) * 3
                 + EBWCodeOfPoint(bd, p + up - other)) * 3
     + EBWCodeOfPoint(bd, p - other);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < Go3x3Pattern::GOUCT_POWER3_5);
+    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_5);
     return code;
 }
 
 template<class BOARD>
-inline int Go3x3Pattern::EBWCodeOfPoint(const BOARD& bd, SgPoint p)
+inline int GoPattern3x3::EBWCodeOfPoint(const BOARD& bd, SgPoint p)
 {
     SG_ASSERT(bd.IsValidPoint(p));
     BOOST_STATIC_ASSERT(SG_BLACK == 0);
@@ -189,7 +189,7 @@ inline int Go3x3Pattern::EBWCodeOfPoint(const BOARD& bd, SgPoint p)
 }
 
 
-inline int Go3x3Pattern::MakeCode(const std::vector<SgEmptyBlackWhite>& colors)
+inline int GoPattern3x3::MakeCode(const std::vector<SgEmptyBlackWhite>& colors)
 {
     int code = 0;
     for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
@@ -201,7 +201,7 @@ inline int Go3x3Pattern::MakeCode(const std::vector<SgEmptyBlackWhite>& colors)
     return code;
 }
 
-inline int Go3x3Pattern::OtherDir(int dir)
+inline int GoPattern3x3::OtherDir(int dir)
 {
     if (dir == SG_NS || dir == -SG_NS)
     return SG_WE;
@@ -211,4 +211,4 @@ inline int Go3x3Pattern::OtherDir(int dir)
 
 //----------------------------------------------------------------------------
 
-#endif // GO_3x3_PATTERN_H
+#endif // GO_PATTERN_3x3_H

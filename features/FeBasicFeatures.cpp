@@ -8,12 +8,12 @@
 #include <iostream>
 #include <string>
 #include "FePatternBase.h"
-#include "Go3x3Pattern.h"
 #include "GoBoard.h"
 #include "GoBoardUtil.h"
 #include "GoLadder.h"
 #include "GoOpeningKnowledge.h"
 #include "GoPattern12Point.h"
+#include "GoPattern3x3.h"
 #include "GoSafetySolver.h"
 #include "GoSetupUtil.h"
 #include "SgPointSet.h"
@@ -754,16 +754,16 @@ bool Is3x3CenterID(int id)
 
 inline int Find2x3EdgeFeature(const GoBoard& bd, SgPoint move)
 {
-    int code = Go3x3Pattern::CodeOfEdgeNeighbors(bd, move);
-    code = Go3x3Pattern::Map2x3EdgeCode(code, bd.ToPlay());
+    int code = GoPattern3x3::CodeOfEdgeNeighbors(bd, move);
+    code = GoPattern3x3::Map2x3EdgeCode(code, bd.ToPlay());
     SG_ASSERT(EDGE_START_INDEX_3x3 + code < CENTER_START_INDEX_3x3);
     return EDGE_START_INDEX_3x3 + code;
 }
 
 inline int Find3x3CenterFeature(const GoBoard& bd, SgPoint move)
 {
-    int code = Go3x3Pattern::CodeOf8Neighbors(bd, move);
-    code = Go3x3Pattern::Map3x3CenterCode(code, bd.ToPlay());
+    int code = GoPattern3x3::CodeOf8Neighbors(bd, move);
+    code = GoPattern3x3::Map3x3CenterCode(code, bd.ToPlay());
     SG_ASSERT(code < 1000);
     return CENTER_START_INDEX_3x3 + code;
 }
@@ -779,11 +779,11 @@ void Write3x3(std::ostream& stream, int index)
 {
     SG_ASSERT(index != INVALID_PATTERN_INDEX);
     if (index < CENTER_START_INDEX_3x3)
-        Go3x3Pattern::Write2x3EdgePattern(stream,
-            Go3x3Pattern::DecodeEdgeIndex(index - EDGE_START_INDEX_3x3));
+        GoPattern3x3::Write2x3EdgePattern(stream,
+            GoPattern3x3::DecodeEdgeIndex(index - EDGE_START_INDEX_3x3));
     else
-        Go3x3Pattern::Write3x3CenterPattern(stream,
-            Go3x3Pattern::DecodeCenterIndex(index - CENTER_START_INDEX_3x3));
+        GoPattern3x3::Write3x3CenterPattern(stream,
+            GoPattern3x3::DecodeCenterIndex(index - CENTER_START_INDEX_3x3));
 }
 
 int Distance(SgPoint p1, SgPoint p2)
