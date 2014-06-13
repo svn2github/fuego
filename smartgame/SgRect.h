@@ -67,9 +67,15 @@ public:
         std::swap(m_bottom, m_right);
     }
     
+    /** Grow to include p */
     void Include(SgPoint p);
 
+    /** Grow to include rect */
     void Include(const SgRect& rect);
+
+    /** Grow to include x,y-point */
+    void IncludeXY(int x, int y);
+
 
     void Intersect(const SgRect& rect);
 

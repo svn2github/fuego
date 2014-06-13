@@ -8,8 +8,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include "SgRect.h"
 
-using namespace std;
-
+using SgPointUtil::Pt;
 //----------------------------------------------------------------------------
 
 namespace {
@@ -57,22 +56,64 @@ BOOST_AUTO_TEST_CASE(SgRectTestDefaultConstructor)
     BOOST_CHECK(rect.IsEmpty());
 }
 
+BOOST_AUTO_TEST_CASE(SgRectTestInclude)
+{
+    SgRect rect;
+    rect.Include(Pt(1, 8));
+    BOOST_CHECK_EQUAL(rect.Left(), 1);
+    BOOST_CHECK_EQUAL(rect.Right(), 1);
+    BOOST_CHECK_EQUAL(rect.Top(), 8);
+    BOOST_CHECK_EQUAL(rect.Bottom(), 8);
+
+    rect.Include(Pt(5,2));
+    BOOST_CHECK_EQUAL(rect.Left(), 1);
+    BOOST_CHECK_EQUAL(rect.Right(), 5);
+    BOOST_CHECK_EQUAL(rect.Top(), 2);
+    BOOST_CHECK_EQUAL(rect.Bottom(), 8);
+}
+
+BOOST_AUTO_TEST_CASE(SgRectTestIncludeRect)
+{
+    SgRect rect(2, 5, 7, 9);
+    SgRect rect2(1, 4, 8, 11);
+    rect.Include(rect2);
+    BOOST_CHECK_EQUAL(rect.Left(), 1);
+    BOOST_CHECK_EQUAL(rect.Right(), 5);
+    BOOST_CHECK_EQUAL(rect.Top(), 7);
+    BOOST_CHECK_EQUAL(rect.Bottom(), 11);
+}
+
+BOOST_AUTO_TEST_CASE(SgRectTestIncludeXY)
+{
+    SgRect rect;
+    rect.IncludeXY(-1, 8);
+    BOOST_CHECK_EQUAL(rect.Left(), -1);
+    BOOST_CHECK_EQUAL(rect.Right(), -1);
+    BOOST_CHECK_EQUAL(rect.Top(), 8);
+    BOOST_CHECK_EQUAL(rect.Bottom(), 8);
+    rect.IncludeXY(-5, -6);
+    BOOST_CHECK_EQUAL(rect.Left(), -5);
+    BOOST_CHECK_EQUAL(rect.Right(), -1);
+    BOOST_CHECK_EQUAL(rect.Top(), -6);
+    BOOST_CHECK_EQUAL(rect.Bottom(), 8);
+}
+
 BOOST_AUTO_TEST_CASE(SgRectTestInRect)
 {
     SgRect rect(2, 5, 7, 9);
-    BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(1, 8)));
-    BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(2, 6)));
-    BOOST_CHECK(rect.InRect(SgPointUtil::Pt(2, 7)));
-    BOOST_CHECK(rect.InRect(SgPointUtil::Pt(2, 8)));
-    BOOST_CHECK(rect.InRect(SgPointUtil::Pt(2, 9)));
+    BOOST_CHECK(! rect.InRect(Pt(1, 8)));
+    BOOST_CHECK(! rect.InRect(Pt(2, 6)));
+    BOOST_CHECK(rect.InRect(Pt(2, 7)));
+    BOOST_CHECK(rect.InRect(Pt(2, 8)));
+    BOOST_CHECK(rect.InRect(Pt(2, 9)));
     if (SG_MAX_SIZE >= 10)
     {
-        BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(2, 10)));
-        BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(5, 10)));
+        BOOST_CHECK(! rect.InRect(Pt(2, 10)));
+        BOOST_CHECK(! rect.InRect(Pt(5, 10)));
     }
-    BOOST_CHECK(! rect.InRect(SgPointUtil::Pt(3, 5)));
-    BOOST_CHECK(rect.InRect(SgPointUtil::Pt(5, 7)));
-    BOOST_CHECK(rect.InRect(SgPointUtil::Pt(5, 9)));
+    BOOST_CHECK(! rect.InRect(Pt(3, 5)));
+    BOOST_CHECK(rect.InRect(Pt(5, 7)));
+    BOOST_CHECK(rect.InRect(Pt(5, 9)));
 }
 
 BOOST_AUTO_TEST_CASE(SgRectTestMirrorX)
