@@ -56,6 +56,18 @@ inline char SgEBW(SgEmptyBlackWhite color)
     return color == SG_EMPTY ? 'E' : color == SG_BLACK ? 'B' : 'W';
 }
 
+inline char SgBoardColorChar(SgBoardColor color)
+{
+    SG_ASSERT_COLOR(color);
+    switch (color)
+    {
+        case SG_EMPTY: return 'E';
+        case SG_BLACK: return 'B';
+        case SG_WHITE: return 'W';
+        default: return '#';
+    }
+}
+
 //----------------------------------------------------------------------------
 
 /** Iterator over three colors, Empty, Black and White.
