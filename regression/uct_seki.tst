@@ -58,8 +58,8 @@ loadsgf sgf/games/2008/KGS/7/28/dege-Fuego9.sgf 31
 
 loadsgf sgf/games/2008/KGS/8/17/AyaMC-Fuego9-variation.sgf 1
 330 reg_genmove b
-#? [G9]*
-# prevents seki.
+#? [G9|J8]*
+# G9 prevents seki. J8 also seems to work.
 # This position was analyzed by "bitti" in the German Go Bund forum
 # http://www.dgob.de/yabbse/index.php?topic=3314.msg153446#msg153446
 
