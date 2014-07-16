@@ -942,7 +942,7 @@ void GoUctCommands::CmdParamTreeFilter(GtpCommand& cmd)
     This command is compatible with the GoGui analyze command type "param".
 
     Parameters:
-    @arg @c check_float_precision See GoUctSearch::CheckFloatPrecision
+    @arg @c check_float_precision See SgUctSearch::CheckFloatPrecision
     @arg @c keep_games See GoUctSearch::KeepGames
     @arg @c lock_free See SgUctSearch::LockFree
     @arg @c log_games See SgUctSearch::LogGames
