@@ -23,6 +23,7 @@
 #include "GoUctUtil.h"
 #include "GoUtil.h"
 #include "SgException.h"
+#include "SgGtpUtil.h"
 #include "SgPointSetUtil.h"
 #include "SgRestorer.h"
 #include "SgUctTreeUtil.h"
@@ -98,38 +99,6 @@ string LiveGfxToString(GoUctLiveGfx mode)
         return "counts";
     case GOUCT_LIVEGFX_SEQUENCE:
         return "sequence";
-    default:
-        SG_ASSERT(false);
-        return "?";
-    }
-}
-
-SgUctMoveSelect MoveSelectArg(const GtpCommand& cmd, size_t number)
-{
-    string arg = cmd.ArgToLower(number);
-    if (arg == "value")
-        return SG_UCTMOVESELECT_VALUE;
-    if (arg == "count")
-        return SG_UCTMOVESELECT_COUNT;
-    if (arg == "bound")
-        return SG_UCTMOVESELECT_BOUND;
-    if (arg == "estimate")
-        return SG_UCTMOVESELECT_ESTIMATE;
-    throw GtpFailure() << "unknown move select argument \"" << arg << '"';
-}
-
-string MoveSelectToString(SgUctMoveSelect moveSelect)
-{
-    switch (moveSelect)
-    {
-    case SG_UCTMOVESELECT_VALUE:
-        return "value";
-    case SG_UCTMOVESELECT_COUNT:
-        return "count";
-    case SG_UCTMOVESELECT_BOUND:
-        return "bound";
-    case SG_UCTMOVESELECT_ESTIMATE:
-        return "estimate";
     default:
         SG_ASSERT(false);
         return "?";
@@ -999,7 +968,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
             << "[string] live_gfx_interval " << s.LiveGfxInterval() << '\n'
             << "[string] max_nodes " << s.MaxNodes() << '\n'
             << "[list/value/count/bound/estimate] move_select "
-            << MoveSelectToString(s.MoveSelect()) << '\n'
+            << SgGtpUtil::MoveSelectToString(s.MoveSelect()) << '\n'
             << "[string] number_threads " << s.NumberThreads() << '\n'
             << "[string] number_playouts " << s.NumberPlayouts() << '\n'
             << "[string] prune_min_count " << s.PruneMinCount() << '\n'
@@ -1050,7 +1019,7 @@ void GoUctCommands::CmdParamSearch(GtpCommand& cmd)
         else if (name == "max_nodes")
             s.SetMaxNodes(cmd.ArgMin<size_t>(1, 1));
         else if (name == "move_select")
-            s.SetMoveSelect(MoveSelectArg(cmd, 1));
+            s.SetMoveSelect(SgGtpUtil::MoveSelectArg(cmd, 1));
         else if (name == "number_threads")
              s.SetNumberThreads(cmd.ArgMin<unsigned int>(1, 1));
         else if (name == "number_playouts")

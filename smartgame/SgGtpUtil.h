@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include "SgUctSearch.h"
 
 //----------------------------------------------------------------------------
 
@@ -108,6 +109,10 @@ namespace SgGtpUtil
         ordered (A1, B1, ..., A2, ...) to facilitate writing GTP regression
         tests using this command. */
     void RespondPointSet(GtpCommand& cmd, const SgPointSet& pointSet);
+
+    SgUctMoveSelect MoveSelectArg(const GtpCommand& cmd, size_t number);
+    
+    std::string MoveSelectToString(SgUctMoveSelect moveSelect);
 
 } // namespace SgGtpUtil
 
