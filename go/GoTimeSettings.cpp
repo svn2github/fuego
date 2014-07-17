@@ -18,7 +18,8 @@ GoTimeSettings::GoTimeSettings()
 
 GoTimeSettings::GoTimeSettings(double mainTime)
     : m_mainTime(mainTime),
-      m_overtime(0)
+      m_overtime(0),
+      m_overtimeMoves(0)
 { }
 
 GoTimeSettings::GoTimeSettings(double mainTime, double overtime,
@@ -35,9 +36,9 @@ GoTimeSettings::GoTimeSettings(double mainTime, double overtime,
 bool GoTimeSettings::operator==(const GoTimeSettings& timeSettings)
     const
 {
-    return (timeSettings.m_mainTime == m_mainTime
-            && timeSettings.m_overtime == m_overtime
-            && timeSettings.m_overtimeMoves == m_overtimeMoves);
+    return (  timeSettings.m_mainTime == m_mainTime
+           && timeSettings.m_overtime == m_overtime
+           && timeSettings.m_overtimeMoves == m_overtimeMoves);
 }
 
 bool GoTimeSettings::IsUnknown() const
