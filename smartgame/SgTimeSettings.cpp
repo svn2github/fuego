@@ -1,14 +1,14 @@
 //----------------------------------------------------------------------------
-/** @file GoTimeSettings.cpp
-    See GoTimeSettings.h */
+/** @file SgTimeSettings.cpp
+    See SgTimeSettings.h */
 //----------------------------------------------------------------------------
 
 #include "SgSystem.h"
-#include "GoTimeSettings.h"
+#include "SgTimeSettings.h"
 
 //----------------------------------------------------------------------------
 
-GoTimeSettings::GoTimeSettings()
+SgTimeSettings::SgTimeSettings()
     : m_mainTime(0),
       m_overtime(1),
       m_overtimeMoves(0)
@@ -16,13 +16,13 @@ GoTimeSettings::GoTimeSettings()
     SG_ASSERT(IsUnknown());
 }
 
-GoTimeSettings::GoTimeSettings(double mainTime)
+SgTimeSettings::SgTimeSettings(double mainTime)
     : m_mainTime(mainTime),
       m_overtime(0),
       m_overtimeMoves(0)
 { }
 
-GoTimeSettings::GoTimeSettings(double mainTime, double overtime,
+SgTimeSettings::SgTimeSettings(double mainTime, double overtime,
                                int overtimeMoves)
     : m_mainTime(mainTime),
       m_overtime(overtime),
@@ -33,7 +33,7 @@ GoTimeSettings::GoTimeSettings(double mainTime, double overtime,
     SG_ASSERT(overtimeMoves >= 0);
 }
 
-bool GoTimeSettings::operator==(const GoTimeSettings& timeSettings)
+bool SgTimeSettings::operator==(const SgTimeSettings& timeSettings)
     const
 {
     return (  timeSettings.m_mainTime == m_mainTime
@@ -41,7 +41,7 @@ bool GoTimeSettings::operator==(const GoTimeSettings& timeSettings)
            && timeSettings.m_overtimeMoves == m_overtimeMoves);
 }
 
-bool GoTimeSettings::IsUnknown() const
+bool SgTimeSettings::IsUnknown() const
 {
     return (m_overtime > 0 && m_overtimeMoves == 0);
 }

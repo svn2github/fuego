@@ -44,7 +44,6 @@ GoSetupUtil.cpp \
 GoStaticLadder.cpp \
 GoStaticSafetySolver.cpp \
 GoTimeControl.cpp \
-GoTimeSettings.cpp \
 GoUtil.cpp
 
 noinst_HEADERS = \
@@ -97,7 +96,6 @@ GoSortedMoves.h \
 GoStaticLadder.h \
 GoStaticSafetySolver.h \
 GoTimeControl.h \
-GoTimeSettings.h \
 GoUtil.h
 
 libfuego_go_a_CPPFLAGS = \

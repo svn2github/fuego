@@ -26,7 +26,6 @@ fuego_unittest_SOURCES = \
 ../go/test/GoRegionBoardTest.cpp \
 ../go/test/GoSetupUtilTest.cpp \
 ../go/test/GoTimeControlTest.cpp \
-../go/test/GoTimeSettingsTest.cpp \
 ../go/test/GoUtilTest.cpp \
 ../gouct/test/GoUctAdditiveKnowledgeMultipleTest.cpp \
 ../gouct/test/GoUctBoardTest.cpp \
@@ -74,6 +73,7 @@ fuego_unittest_SOURCES = \
 ../smartgame/test/SgStringUtilTest.cpp \
 ../smartgame/test/SgSystemTest.cpp \
 ../smartgame/test/SgTimeControlTest.cpp \
+../smartgame/test/SgTimeSettingsTest.cpp \
 ../smartgame/test/SgUctSearchTest.cpp \
 ../smartgame/test/SgUctTreeTest.cpp \
 ../smartgame/test/SgUctTreeUtilTest.cpp \

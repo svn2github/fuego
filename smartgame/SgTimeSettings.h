@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-/** @file GoTimeSettings.h
+/** @file SgTimeSettings.h
     Time settings for a Go game. */
 //----------------------------------------------------------------------------
 
@@ -9,13 +9,13 @@
 //----------------------------------------------------------------------------
 
 /** Time settings for a Go game. */
-class GoTimeSettings
+class SgTimeSettings
 {
 public:
     /** Construct time settings with no time limit. */
-    GoTimeSettings();
+    SgTimeSettings();
 
-    GoTimeSettings(double mainTime);
+    SgTimeSettings(double mainTime);
 
     /** Construct time settings.
         Currently supports Canadian byo yomi, including absolute time (no byo
@@ -23,9 +23,9 @@ public:
         @param mainTime Main time measured in seconds.
         @param overtime Byo yomi time measured in seconds.
         @param overtimeMoves Number of stones per byo yomi period. */
-    GoTimeSettings(double mainTime, double overtime, int overtimeMoves);
+    SgTimeSettings(double mainTime, double overtime, int overtimeMoves);
 
-    bool operator==(const GoTimeSettings& timeSettings) const;
+    bool operator==(const SgTimeSettings& timeSettings) const;
 
     double MainTime() const;
 
@@ -46,17 +46,17 @@ private:
     int m_overtimeMoves;
 };
 
-inline double GoTimeSettings::MainTime() const
+inline double SgTimeSettings::MainTime() const
 {
     return m_mainTime;
 }
 
-inline double GoTimeSettings::Overtime() const
+inline double SgTimeSettings::Overtime() const
 {
     return m_overtime;
 }
 
-inline int GoTimeSettings::OvertimeMoves() const
+inline int SgTimeSettings::OvertimeMoves() const
 {
     return m_overtimeMoves;
 }

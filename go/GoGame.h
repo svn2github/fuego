@@ -10,7 +10,7 @@
 #include "GoBoard.h"
 #include "GoBoardUpdater.h"
 #include "GoBoardUtil.h"
-#include "GoTimeSettings.h"
+#include "SgTimeSettings.h"
 #include "SgNode.h"
 #include "SgPoint.h"
 #include "SgTimeRecord.h"
@@ -53,7 +53,7 @@ public:
     /** Return the root of this tree. */
     const SgNode& Root() const;
 
-    const GoTimeSettings& TimeSettings() const;
+    const SgTimeSettings& TimeSettings() const;
 
     /** Set handicap stones at explicitely given points.
         If the current node alread has children, a new child is created with
@@ -147,7 +147,7 @@ public:
         properties in the rest of the tree.
         @param timeSettings
         @param overhead See SgTimeRecord */
-    void SetTimeSettingsGlobal(const GoTimeSettings& timeSettings,
+    void SetTimeSettingsGlobal(const SgTimeSettings& timeSettings,
                                double overhead = 0);
 
     /** Get the player name.
@@ -194,7 +194,7 @@ private:
 
     GoBoardUpdater m_updater;
 
-    GoTimeSettings m_timeSettings;
+    SgTimeSettings m_timeSettings;
 
     /** A record of the clock settings and time left. */
     SgTimeRecord m_time;
@@ -244,7 +244,7 @@ inline const SgTimeRecord& GoGame::Time() const
     return m_time;
 }
 
-inline const GoTimeSettings& GoGame::TimeSettings() const
+inline const SgTimeSettings& GoGame::TimeSettings() const
 {
     return m_timeSettings;
 }

@@ -15,7 +15,7 @@
 #include "GoGame.h"
 #include "GoPlayer.h"
 #include "GoStaticLadder.h"
-#include "GoTimeSettings.h"
+#include "SgTimeSettings.h"
 #include "GtpEngine.h"
 #include "SgGtpCommands.h"
 #include "SgPointArray.h"
@@ -373,7 +373,7 @@ private:
     double m_overhead;
 
     /** Time settings for game. */
-    GoTimeSettings m_timeSettings;
+    SgTimeSettings m_timeSettings;
 
     /** Default rules.
         Will be used whenever a new game is started. */

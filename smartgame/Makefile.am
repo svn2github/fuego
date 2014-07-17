@@ -44,6 +44,7 @@ SgSystem.cpp \
 SgTime.cpp \
 SgTimeControl.cpp \
 SgTimeRecord.cpp \
+SgTimeSettings.cpp \
 SgUctSearch.cpp \
 SgUctTree.cpp \
 SgUctTreeUtil.cpp \
@@ -118,6 +119,7 @@ SgTime.h \
 SgTimeControl.h \
 SgTimeRecord.h \
 SgTimer.h \
+SgTimeSettings.h \
 SgUctSearch.h \
 SgUctTree.h \
 SgUctTreeUtil.h \

@@ -552,14 +552,14 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
     if (type == "none")
     {
         cmd.CheckNuArg(1);
-        m_timeSettings = GoTimeSettings();
+        m_timeSettings = SgTimeSettings();
         ApplyTimeSettings();
     }
     else if (type == "absolute")
     {
         cmd.CheckNuArg(2);
         int mainTime = cmd.ArgMin<int>(1, 0);
-        GoTimeSettings timeSettings(mainTime);
+        SgTimeSettings timeSettings(mainTime);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
@@ -572,7 +572,7 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
         int mainTime = cmd.ArgMin<int>(1, 0);
         int overtime = cmd.ArgMin<int>(2, 0);
         //int byoYomiPeriods = cmd.ArgMin<int>(3, 0);
-        GoTimeSettings timeSettings(mainTime, overtime, 1);
+        SgTimeSettings timeSettings(mainTime, overtime, 1);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
@@ -584,7 +584,7 @@ void GoGtpEngine::CmdKgsTimeSettings(GtpCommand& cmd)
         int mainTime = cmd.ArgMin<int>(1, 0);
         int overtime = cmd.ArgMin<int>(2, 0);
         int overtimeMoves = cmd.ArgMin<int>(3, 0);
-        GoTimeSettings timeSettings(mainTime, overtime, overtimeMoves);
+        SgTimeSettings timeSettings(mainTime, overtime, overtimeMoves);
         if (m_timeSettings == timeSettings)
             return;
         m_timeSettings = timeSettings;
@@ -1244,7 +1244,7 @@ void GoGtpEngine::CmdTimeSettings(GtpCommand& cmd)
     int mainTime = cmd.ArgMin<int>(0, 0);
     int overtime = cmd.ArgMin<int>(1, 0);
     int overtimeMoves = cmd.ArgMin<int>(2, 0);
-    GoTimeSettings timeSettings(mainTime, overtime, overtimeMoves);
+    SgTimeSettings timeSettings(mainTime, overtime, overtimeMoves);
     if (m_timeSettings == timeSettings)
         return;
     if (Board().MoveNumber() > 0)
