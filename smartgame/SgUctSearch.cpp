@@ -806,13 +806,17 @@ void SgUctSearch::PrintSearchProgress(double currTime) const
 {
     const int MAX_SEQ_PRINT_LENGTH = 15;
     const SgUctValue MIN_MOVE_COUNT = 10;
-    SgUctValue rootMoveCount = m_tree.Root().MoveCount();
-    SgUctValue rootMean = m_tree.Root().Mean();
+    const SgUctValue rootMoveCount = m_tree.Root().MoveCount();
     std::ostringstream out;
     const SgUctNode* current = &m_tree.Root();
     bool hasKnowledge = current->KnowledgeCount() > 0;
-    out << (format("%s | %.3f | %.0f | %.1f ")
-            % SgTime::Format(currTime, true) % rootMean % rootMoveCount % m_statistics.m_movesInTree.Mean());
+    if (rootMoveCount > 0)
+    {
+        const SgUctValue rootMean = m_tree.Root().Mean();
+        out << (format("%s | %.3f | %.0f | %.1f ")
+                % SgTime::Format(currTime, true)
+                % rootMean % rootMoveCount % m_statistics.m_movesInTree.Mean());
+    }
     for (int i = 0; i <= MAX_SEQ_PRINT_LENGTH && current->HasChildren(); ++i)
     {
         current = FindBestChild(*current);
@@ -1252,7 +1256,9 @@ SgPoint SgUctSearch::SearchOnePly(SgUctValue maxGames, double maxTime,
     for (size_t i = 0; i < moves.size(); ++i)
     {
         SgDebug() << MoveString(moves[i].m_move) 
-                  << ' ' << statistics[i].Mean() << '\n';
+                  << ' ' << statistics[i].Mean()
+                  << ", " << statistics[i].Count() << " Simulations"
+                  << '\n';
         if (bestMove == SG_NULLMOVE || statistics[i].Mean() > value)
         {
             bestMove = moves[i].m_move;
