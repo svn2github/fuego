@@ -974,12 +974,6 @@ SgPoint GoUctPlayer<SEARCH, THREAD>::GenMove(const SgTimeRecord& time,
             move = m_search.SearchOnePly(m_maxGames, maxTime, ignoreValue);
             if (move == SG_NULLMOVE)
                 move = SG_PASS;
-            else
-            {
-                SgUctValue value = SgUctValue(m_search.Tree().Root().Mean());
-                if (value < m_resignThreshold)
-                    move = SG_RESIGN;
-            }
         }
         else
         {
