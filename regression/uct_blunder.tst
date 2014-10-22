@@ -129,11 +129,12 @@ loadsgf sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf 35
 loadsgf sgf/games/2012/2012-11-25-zen-vs-pro/1.continuation.sgf 37
 240 reg_genmove b
 #? [J3|H7]
-# G7 is the only winning move but hard-pruned by root filter
-# since it is running away in a bad ladder...
 
 241 uct_root_filter
 #? []*
 # H7 should not be filtered here.
 
-
+loadsgf sgf/games/2014/2014-KGS/Fuego9-Orego12-2.sgf 20
+250 reg_genmove w
+#? [G3]
+# A bug in ladder pruning made Fuego play D8 instead in this game.

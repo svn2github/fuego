@@ -25,6 +25,7 @@ class GoUctDefaultMoveFilterParam
     /** See CheckLadders() */
     void SetCheckLadders(bool enable);
 
+    /** Prune unsuccessful ladder chasing moves */
     bool CheckOffensiveLadders() const;
 
     /** See CheckOffensiveLadders() */

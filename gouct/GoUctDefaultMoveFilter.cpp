@@ -58,6 +58,16 @@ bool IsEmptyEdge(const GoBoard& bd, SgPoint p)
     }
 }
 
+bool LibertiesAreDiagonal(const GoBoard& bd, SgPoint anchor)
+    {
+        SG_ASSERT(bd.NumLiberties(anchor) == 2);
+        GoBoard::LibertyIterator it(bd, anchor);
+        SgPoint lib1 = *it;
+        ++it;
+        SG_ASSERT(it);
+        return SgPointUtil::AreDiagonal(lib1, *it);
+    }
+
 } // namespace
 //----------------------------------------------------------------------------
 
@@ -152,9 +162,14 @@ vector<SgPoint> GoUctDefaultMoveFilter::Get()
         for (GoBlockIterator it(m_bd); it; ++it)
         {
             const SgPoint p = *it;
+            // LibertiesAreDiagonal: quick check to avoid cases where
+            // move may be a good "squeeze" play.
+            // @todo: need better filtering to remove only clearly bad
+            // fake ladder chases
             if (m_bd.GetStone(p) == opp
                 && m_bd.NumStones(p) >= 5
                 && m_bd.NumLiberties(p) == 2
+                && LibertiesAreDiagonal(m_bd, p)
                 && m_ladder.Ladder(m_bd, p, toPlay, &m_ladderSequence,
                                     false/*twoLibIsEscape*/) > 0
                 && m_ladderSequence.Length() >= m_param.m_minLadderLength
