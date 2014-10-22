@@ -13,6 +13,7 @@
 #ifndef GOUCT_ADDITIVEKNOWLEDGE_H
 #define GOUCT_ADDITIVEKNOWLEDGE_H
 
+#include <vector>
 #include "GoBoard.h"
 #include "SgUctSearch.h"
 
