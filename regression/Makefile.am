@@ -307,6 +307,7 @@ sgf/games/2013/UEC/2013_uec_round4_shikousakugo.sgf \
 sgf/games/2013/UEC/2013_uec_round5_zen.sgf \
 sgf/games/2013/UEC/2013_uec_round6_crazystone.sgf \
 sgf/games/2013/UEC/2013_uec_round7_izanami.sgf \
+sgf/games/2014/2014-KGS/Fuego9-Orego12-2.sgf \
 sgf/games/2014/2014-UEC-Cup/crazystone-fuego.sgf \
 sgf/games/2014/2014-UEC-Cup/katsunari-fuego.sgf \
 sgf/games/2014/2014-UEC-Cup/fuego-mayoigo.sgf \
