@@ -20,7 +20,7 @@
 class GoBensonSolver : public GoStaticSafetySolver
 {
 public:
-    /** If regions = 0, creates its own */
+    /** If regions = 0, creates its own GoRegionBoard */
     explicit GoBensonSolver(const GoBoard& board, GoRegionBoard* regions = 0)
         : GoStaticSafetySolver(board, regions)
     { }
