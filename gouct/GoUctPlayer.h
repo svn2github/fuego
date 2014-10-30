@@ -663,6 +663,8 @@ inline bool AllowFillinMove(const GoBoard& bd, SgPoint move,
     all points are safe as determined by territory statistics.
     @param maxGames Maximum simulations for the search
     @param maxTime Maximum time for the search
+    @param searchMove A proposed move that is checked if early pass 
+           is possible. If SG_PASS, the engine tries to find its own move.
     @param[out] move The move to play (pass or a neutral point to fill)
     @return @c true, if still winning and everything is safe after a pass */
 template <class SEARCH, class THREAD>

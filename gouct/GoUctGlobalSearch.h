@@ -150,7 +150,8 @@ class GoUctGlobalSearchState
 {
 public:
     /** Probabilities that a point belongs to Black in a terminal position.
-        Only computed if GoUctGlobalSearchStateParam::m_territoryStatistics. */
+        Only computed if GoUctGlobalSearchStateParam::m_territoryStatistics
+        is true. */
     SgPointArray<SgUctStatistics> m_territoryStatistics;
 
     /** Constructor.
@@ -161,10 +162,7 @@ public:
         set the policy to null at construction time to allowed a multi-step
         construction; but then a policy has to be set with SetPolicy(), before
         the search is used.
-        @param param Parameters. Stores a reference to the argument.
-        @param policyParam Stores a reference to the argument.
-        @param safe Safety information. Stores a reference to the argument.
-        @param allSafe Safety information. Stores a reference to the argument. */
+        @param param Struct with all parameters. */
     GoUctGlobalSearchState(unsigned int threadId, const GoBoard& bd,
                            POLICY* policy,
                            const GoUctGlobalSearchAllParam& param);
@@ -698,8 +696,9 @@ public:
         @param treeFilterParam
         Stores a reference. Lifetime of parameter must exceed the lifetime of
         this instance.
-        @param safe
-        @param allSafe */
+        @param featureParam
+        @param safe SgBWSet of proven safe points separated by color
+        @param allSafe Set of all proven safe points */
     GoUctGlobalSearchStateFactory(GoBoard& bd,
                           FACTORY& playoutPolicyFactory,
                           const GoUctPlayoutPolicyParam& policyParam,
@@ -766,7 +765,10 @@ public:
         policies. Takes ownership. playoutPolicyFactory should not have
         SetSafe() and SetAllSafe() already set, because the search will call
         these functions using its own safety information.
-        @param policyParam */
+        @param policyParam Parameters for GoUctPlayoutPolicy
+        @param treeFilterParam Parameters for GoUctDefaultMoveFilter
+        @param featureParam Parameters for GoUctFeatureKnowledge
+     */
     GoUctGlobalSearch(GoBoard& bd,
                       FACTORY* playoutPolicyFactory,
                       const GoUctPlayoutPolicyParam& policyParam,

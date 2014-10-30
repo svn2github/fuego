@@ -9,7 +9,6 @@
 #include "boost/filesystem/path.hpp"
 
 class GoBook;
-using boost::filesystem::path;
 
 //----------------------------------------------------------------------------
 
@@ -25,7 +24,7 @@ namespace FuegoMainUtil
         @param programDir the directory of the executable (may be a relative
         path or an empty string)
         @throws SgException, if book is not found */
-    void LoadBook(GoBook& book, const path& programDir);
+    void LoadBook(GoBook& book, const boost::filesystem::path& programDir);
 
     /** Return Fuego version.
         If the macro VERSION was defined by the build system during compile

@@ -13,13 +13,11 @@
 #include "SgDebug.h"
 #include "SgStringUtil.h"
 
-using namespace boost::filesystem;
-
 //----------------------------------------------------------------------------
 
 namespace {
 
-bool LoadBookFile(GoBook& book, const path& file)
+bool LoadBookFile(GoBook& book, const boost::filesystem::path& file)
 {
     std::string nativeFile = SgStringUtil::GetNativeFileName(file);
     SgDebug() << "Loading opening book from '" << nativeFile << "'... ";
@@ -50,6 +48,7 @@ void FuegoMainUtil::LoadBook(GoBook& book,
                              const boost::filesystem::path& programDir)
 {
     const std::string fileName = "book.dat";
+    using boost::filesystem::path;
     #ifdef ABS_TOP_SRCDIR
         if (LoadBookFile(book, path(ABS_TOP_SRCDIR) / "book" / fileName))
             return;
