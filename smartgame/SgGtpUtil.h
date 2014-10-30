@@ -28,7 +28,7 @@ public:
     : m_r(r), m_g(g), m_b(b)
     { }
 
-    /** Print as string in the format #rrggbb used by GoGui cboard. */
+    /** Print as string in the format rrggbb used by GoGui cboard. */
     std::string ToString() const;
 
     SgRGB operator+(const SgRGB& color) const;
@@ -65,7 +65,7 @@ inline SgRGB operator*(float f, const SgRGB& color)
                  static_cast<unsigned char>(f * color.m_b));
 }
 
-/** Output to stream in the format #rrggbb used by GoGui cboard */
+/** Output to stream in the format rrggbb used by GoGui cboard */
 inline std::ostream& operator<<(std::ostream& stream, const SgRGB& color)
 {
     boost::io::ios_flags_saver saver(stream);

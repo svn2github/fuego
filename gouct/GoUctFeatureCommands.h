@@ -21,8 +21,7 @@ class GoUctFeatureCommands
 {
 public:
     /** Constructor.
-     @param bd The game board.
-     @param player Reference to pointer to current player. Can be null. */
+     @param bd The game board. */
     GoUctFeatureCommands(const GoBoard& bd);
 
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);

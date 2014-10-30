@@ -136,7 +136,7 @@ namespace GoPattern12Point {
         strs[B3] = "b3";
         strs[EMPTY] = "  ";
         strs[BORDER] = "##";
-        strs[MOVE] = "@b";
+        strs[MOVE] = "*b";
         strs[ERROR] = "?!";
         
         unsigned int friendly = (context >> 8) & 0xff;

@@ -109,13 +109,13 @@ namespace GoPattern3x3
     
     /** Map pattern codes to a shared code considering rotations.
      Returns number of unique patterns.
-     The shared code is in the range 0 .. #distinct patterns - 1.
+     The shared code is in the range 0 .. number of distinct patterns - 1.
      Use case: shared feature weights for identical patterns. */
     int MapCenterPatternsToMinimum(CenterCodeTable& indexCode);
     
     /** Map pattern codes to a shared code considering rotations.
      Returns number of unique patterns.
-     The shared code is in the range 0 .. #distinct patterns - 1.
+     The shared code is in the range 0 .. number of distinct patterns - 1.
      Use case: shared feature weights for identical patterns. */
     int MapEdgePatternsToMinimum(EdgeCodeTable& indexCode);
     
