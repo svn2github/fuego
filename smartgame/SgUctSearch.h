@@ -1117,7 +1117,7 @@ private:
 
     void ApplyRootFilter(std::vector<SgUctMoveInfo>& moves);
 
-    void PropagateProvenStatus(const vector<const SgUctNode*>& nodes);
+    void PropagateProvenStatus(const std::vector<const SgUctNode*>& nodes);
 
     bool CheckAbortSearch(SgUctThreadState& state);
 

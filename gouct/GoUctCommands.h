@@ -155,7 +155,7 @@ private:
     	Either show additive knowledge only, or all knowledge
      */
     void DisplayMoveInfo(GtpCommand& cmd, 
-                         const vector<SgUctMoveInfo>& moves,
+                         const std::vector<SgUctMoveInfo>& moves,
                          bool additiveKnowledge);
 
 

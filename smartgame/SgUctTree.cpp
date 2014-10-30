@@ -98,8 +98,9 @@ SgUctTree::SgUctTree()
       m_root(SG_NULLMOVE)
 { }
 
-void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
-                            const vector<SgMove>& rootFilter)
+void SgUctTree::ApplyFilter(std::size_t allocatorId,
+                            const SgUctNode& node,
+                            const std::vector<SgMove>& rootFilter)
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(Allocator(allocatorId).HasCapacity(node.NuChildren()));
@@ -136,7 +137,7 @@ void SgUctTree::ApplyFilter(std::size_t allocatorId, const SgUctNode& node,
 }
 
 void SgUctTree::SetChildren(std::size_t allocatorId, const SgUctNode& node,
-                            const vector<SgMove>& moves)
+                            const std::vector<SgMove>& moves)
 {
     SG_ASSERT(Contains(node));
     SG_ASSERT(Allocator(allocatorId).HasCapacity(moves.size()));

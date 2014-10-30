@@ -279,7 +279,7 @@ int SwapColor(int origCode, size_t length)
     GoPatternBase::Decode(origCode, length);
 
     int code = 0;
-    for (vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
+    for (std::vector<SgEmptyBlackWhite>::const_iterator it = colors.begin();
          it != colors.end(); ++it)
     {
         code *= 3;
@@ -602,7 +602,7 @@ void PrintVector(const std::vector<int>& codes,
 {
     SgDebug() << "Shared: ";
     
-    for (vector<int>::const_iterator it = codes.begin();
+    for (std::vector<int>::const_iterator it = codes.begin();
          it != codes.end(); ++it)
     {
         SgDebug() << "Code " << *it <<
@@ -692,7 +692,7 @@ void PrintVector(const std::vector<int>& codes,
 {
     SgDebug() << "Shared: ";
     
-    for (vector<int>::const_iterator it = codes.begin();
+    for (std::vector<int>::const_iterator it = codes.begin();
          it != codes.end(); ++it)
     {
         SgDebug() << "Code " << *it <<

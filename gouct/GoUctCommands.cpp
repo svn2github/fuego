@@ -550,7 +550,7 @@ void GoUctCommands::CmdMaxMemory(GtpCommand& cmd)
 void GoUctCommands::CmdMoves(GtpCommand& cmd)
 {
     cmd.CheckArgNone();
-    vector<SgUctMoveInfo> moves;
+    std::vector<SgUctMoveInfo> moves;
     Search().GenerateAllMoves(moves);
     for (std::size_t i = 0; i < moves.size(); ++i)
         cmd << SgWritePoint(moves[i].m_move) << ' ';
@@ -1466,7 +1466,7 @@ void GoUctCommands::DisplayKnowledge(GtpCommand& cmd,
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >& state
         = ThreadState(0);
     state.StartSearch(); // Updates thread state board
-    vector<SgUctMoveInfo> moves;
+    std::vector<SgUctMoveInfo> moves;
     SgUctProvenType ignoreProvenType;
     state.GenerateAllMoves(count, moves, ignoreProvenType);
     DisplayMoveInfo(cmd, moves, additiveKnowledge);
@@ -1477,7 +1477,7 @@ void GoUctCommands::DisplayKnowledge(GtpCommand& cmd,
     gfx and shows the values as influence and the
     counts as labels. */
 void GoUctCommands::DisplayMoveInfo(GtpCommand& cmd, 
-                                    const vector<SgUctMoveInfo>& moves,
+                                    const std::vector<SgUctMoveInfo>& moves,
                                     bool additiveKnowledge)
 {
     cmd << "INFLUENCE ";
@@ -1543,7 +1543,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
     m_player->UpdateSubscriber();
     if (nuUndoPass > 0)
         SgDebug() << "Undoing " << nuUndoPass << " passes\n";
-    vector<SgMove> sequence;
+    std::vector<SgMove> sequence;
     search.Search(MAX_GAMES, std::numeric_limits<double>::max(), sequence);
     SgDebug() << SgWriteLabel("Sequence")
               << SgWritePointList(sequence, "", false);

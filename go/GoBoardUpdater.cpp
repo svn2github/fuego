@@ -45,7 +45,7 @@ void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
         SG_ASSERT(SgUtil::InRange(size, SG_MIN_SIZE, SG_MAX_SIZE));
     }
     bd.Init(size);
-    for (vector<const SgNode*>::reverse_iterator it = m_nodes.rbegin();
+    for (std::vector<const SgNode*>::reverse_iterator it = m_nodes.rbegin();
          it != m_nodes.rend(); ++it)
     {
         const SgNode* node = *it;

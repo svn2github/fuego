@@ -1272,7 +1272,7 @@ void GoGtpEngine::CheckMoveStackOverflow() const
 
 std::vector<std::string> GoGtpEngine::CreateStatisticsSlots()
 {
-    return vector<string>();
+    return std::vector<string>();
 }
 
 SgBlackWhite GoGtpEngine::BlackWhiteArg(const GtpCommand& cmd,
@@ -1400,8 +1400,9 @@ void GoGtpEngine::InitStatistics()
     m_statisticsSlots.push_back("MOVE");
     m_statisticsSlots.push_back("TIME");
     m_statisticsSlots.push_back("BOOK");
-    vector<string> slots = CreateStatisticsSlots();
-    for (vector<string>::const_iterator i = slots.begin(); i != slots.end();
+    std::vector<string> slots = CreateStatisticsSlots();
+    for (std::vector<string>::const_iterator i = slots.begin();
+         i != slots.end();
          ++i)
     {
         if (i->find('\t') != string::npos)

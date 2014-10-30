@@ -211,14 +211,14 @@ void GoGtpCommandUtil::RespondNumberArray(GtpCommand& cmd,
 
 string GoGtpCommandUtil::SortResponseAnalyzeCommands(const string& response)
 {
-    vector<string> allLines;
+    std::vector<string> allLines;
     std::istringstream in(response);
     string line;
     while (getline(in, line))
         allLines.push_back(line);        
     sort(allLines.begin(), allLines.end(), LessAnalyzeLabel);
     std::ostringstream sortedResponse;
-    for (vector<string>::const_iterator it = allLines.begin();
+    for (std::vector<string>::const_iterator it = allLines.begin();
          it != allLines.end(); ++it)
         sortedResponse << *it << '\n';
     return sortedResponse.str();

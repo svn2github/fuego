@@ -938,7 +938,7 @@ void SgUctSearch::PlayGame(SgUctThreadState& state, GlobalLock* lock)
 
 /** Backs up proven information. Last node of nodes is the newly
     proven node. */
-void SgUctSearch::PropagateProvenStatus(const vector<const SgUctNode*>& nodes)
+void SgUctSearch::PropagateProvenStatus(const std::vector<const SgUctNode*>& nodes)
 {
     if (nodes.size() <= 1) 
         return;

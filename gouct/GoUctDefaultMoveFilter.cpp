@@ -86,9 +86,9 @@ GoUctDefaultMoveFilter::GoUctDefaultMoveFilter(const GoBoard& bd, const GoUctDef
       m_param(param)
 { }
 
-vector<SgPoint> GoUctDefaultMoveFilter::Get()
+std::vector<SgPoint> GoUctDefaultMoveFilter::Get()
 {
-    vector<SgPoint> rootFilter;
+    std::vector<SgPoint> rootFilter;
     const SgBlackWhite toPlay = m_bd.ToPlay();
     const SgBlackWhite opp = SgOppBW(toPlay);
 

@@ -11,8 +11,6 @@
 #include <limits>
 #include <vector>
 
-using std::vector;
-
 template<typename T>
 class SgVector
 {
@@ -333,7 +331,7 @@ public:
 private:
     const SgVector<T>& m_vec;
 
-    typename vector<T>::const_iterator m_it;
+    typename std::vector<T>::const_iterator m_it;
     
     /** Not implemented.
         Prevent unintended usage of operator bool() as an int.
@@ -504,8 +502,9 @@ void SgVector<T>::Concat(SgVector<T>* tail)
 template<typename T>
 bool SgVector<T>::Contains(const T& elt) const
 {
-    typename vector<T>::const_iterator end = m_vec.end();
-    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
+    typename std::vector<T>::const_iterator end = m_vec.end();
+    typename std::vector<T>::const_iterator pos = find(m_vec.begin(),
+                                                       end, elt);
     return pos != end;
 }
 
@@ -520,8 +519,8 @@ void SgVector<T>::DeleteAt(int index)
 template<typename T>
 bool SgVector<T>::Exclude(const T& elt)
 {
-    typename vector<T>::iterator end = m_vec.end();
-    typename vector<T>::iterator pos = find(m_vec.begin(), end, elt);
+    typename std::vector<T>::iterator end = m_vec.end();
+    typename std::vector<T>::iterator pos = find(m_vec.begin(), end, elt);
     if (pos != end)
     {
         m_vec.erase(pos);
@@ -540,8 +539,8 @@ void SgVector<T>::Exclude(const SgVector<T>& vector)
 template<typename T>
 int SgVector<T>::Index(const T& elt) const
 {
-    typename vector<T>::const_iterator end = m_vec.end();
-    typename vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
+    typename std::vector<T>::const_iterator end = m_vec.end();
+    typename std::vector<T>::const_iterator pos = find(m_vec.begin(), end, elt);
     if (pos == end)
         return -1;
     else
@@ -552,7 +551,7 @@ template<typename T>
 bool SgVector<T>::Insert(const T& elt)
 {
     SG_ASSERT(IsSorted());
-    typename vector<T>::iterator location = 
+    typename std::vector<T>::iterator location =
     lower_bound(m_vec.begin(), m_vec.end(), elt);
 
     if (   location != m_vec.end()
@@ -570,7 +569,7 @@ bool SgVector<T>::Insert(const T& elt)
 template<typename T>
 bool SgVector<T>::IsSorted(bool ascending) const
 {
-    typename vector<T>::const_iterator result;
+    typename std::vector<T>::const_iterator result;
     if (ascending)
         result = adjacent_find(m_vec.begin(), m_vec.end(), std::greater<T>());
     else
@@ -581,7 +580,7 @@ bool SgVector<T>::IsSorted(bool ascending) const
 template<typename T>
 bool SgVector<T>::IsSortedAndUnique(bool ascending) const
 {
-    typename vector<T>::const_iterator result;
+    typename std::vector<T>::const_iterator result;
     if (ascending)
         result = adjacent_find(m_vec.begin(), m_vec.end(), 
                                std::greater_equal<T>());

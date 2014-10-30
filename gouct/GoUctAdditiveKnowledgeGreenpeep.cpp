@@ -37,8 +37,8 @@ const short unsigned int PASSPREDICTION = 2;
 const unsigned int PASS_CONTEXT = UINT_MAX;
 
 void ComputeContexts19(const GoBoard& bd,
-                     vector<SgUctMoveInfo>::const_iterator begin,
-                     vector<SgUctMoveInfo>::const_iterator end,
+                     std::vector<SgUctMoveInfo>::const_iterator begin,
+                     std::vector<SgUctMoveInfo>::const_iterator end,
                      unsigned int contexts[])
 {
     SG_ASSERT(bd.Size() >= 15);
@@ -60,8 +60,8 @@ void ComputeContexts19(const GoBoard& bd,
 }
 
 void ComputeContexts9(const GoBoard& bd,
-                     vector<SgUctMoveInfo>::const_iterator begin,
-                     vector<SgUctMoveInfo>::const_iterator end,
+                     std::vector<SgUctMoveInfo>::const_iterator begin,
+                     std::vector<SgUctMoveInfo>::const_iterator end,
                      unsigned int contexts[])
 {
     SG_ASSERT(bd.Size() < 15);

@@ -859,7 +859,7 @@ public:
         are pruned, children missing from moves are added as leaves.
         Requires: Allocator(allocatorId).HasCapacity(moves.size()) */
     void SetChildren(std::size_t allocatorId, const SgUctNode& node,
-                     const vector<SgMove>& moves);
+                     const std::vector<SgMove>& moves);
 
     /** @name Functions for debugging */
     // @{
