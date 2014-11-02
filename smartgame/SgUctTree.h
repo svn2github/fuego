@@ -108,6 +108,8 @@ typedef enum
 
 } SgUctProvenType;
 
+std::ostream& operator<<(std::ostream& stream, const SgUctProvenType& type);
+
 //----------------------------------------------------------------------------
 
 /** Node used in SgUctTree.

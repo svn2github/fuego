@@ -72,22 +72,39 @@ std::ostream& operator<<(std::ostream& stream, const SgUctNode& node)
         stream << SgWritePoint(node.Move());
     else
         stream << "Root (no move)";
+    stream << " mean = ";
     if (node.HasMean())
-        stream << " mean = " << node.Mean();
+        stream << node.Mean();
     else
-        stream << " mean undefined";
+        stream << "undefined";
     stream  << " pos-count = " << node.PosCount()
             << " move-count = " << node.MoveCount()
             << " rave-value = ";
     if (node.HasRaveValue())
-         stream << node.RaveValue();
+        stream << node.RaveValue();
     else
         stream << "undefined";
     stream  << " predictor-value = " << node.PredictorValue()
             << " Virtual-Loss-Count = " << node.VirtualLossCount()
             << " Knowledge-Count = " << node.KnowledgeCount()
-            << " Proven-Type = " << node.ProvenType()
+            << ' ' << node.ProvenType()
             << '\n';
+    return stream;
+}
+
+//----------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& stream, const SgUctProvenType& type)
+{
+    static const char* s_string[3] =
+    {
+        "not proven",
+        "proven win",
+        "proven loss"
+    };
+    SG_ASSERT(type >= SG_NOT_PROVEN);
+    SG_ASSERT(type <= SG_PROVEN_LOSS);
+    stream << s_string[type];
     return stream;
 }
 
