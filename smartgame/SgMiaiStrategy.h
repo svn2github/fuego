@@ -7,7 +7,6 @@
 #define SG_MIAISTRATEGY_H
 
 #include <utility>
-#include "SgArray.h"
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 #include "SgHash.h"

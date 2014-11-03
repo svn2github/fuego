@@ -10,7 +10,6 @@
 #include <list>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_01.hpp>
-#include "SgArray.h"
 
 //----------------------------------------------------------------------------
 

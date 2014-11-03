@@ -10,7 +10,6 @@
 #ifndef SG_STRATEGY_H
 #define SG_STRATEGY_H
 
-#include "SgArray.h"
 #include "SgBlackWhite.h"
 #include "SgBWArray.h"
 #include "SgHash.h"
