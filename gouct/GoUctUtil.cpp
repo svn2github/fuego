@@ -41,7 +41,8 @@ void SaveNode(std::ostream& out, const SgUctTree& tree, const SgUctNode& node,
 {
     out << "C[MoveCount " << node.MoveCount()
         << "\nPosCount " << node.PosCount()
-        << "\nMean " << fixed << setprecision(2) << node.Mean();
+        << "\nMean " << fixed << setprecision(2) << node.Mean()
+        << "\n" << node.ProvenType();
     if (! node.HasChildren())
     {
         out << "]\n";
