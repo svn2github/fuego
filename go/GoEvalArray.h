@@ -20,9 +20,9 @@ BOOST_STATIC_ASSERT(SG_PASS > SG_MAXPOINT);
 
 /** An array of GO_MAX_MOVE values of type T, indexed by Go moves
     including moves on the board and SG_PASS.
- Also enforces that all elements are initialized in the constructor,
- either with T(0), if T can be constructed in such a way or be providing
- an initialization value. */
+    Also enforces that all elements are initialized in the constructor,
+    either with T(0) - if T can be constructed in such a way - or by providing
+    an initialization value. */
 template<class T>
 class GoEvalArray
     : public SgArray<T,GO_MAX_MOVE>
