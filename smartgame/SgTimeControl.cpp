@@ -6,10 +6,9 @@
 #include "SgSystem.h"
 #include "SgTimeControl.h"
 
+#include <algorithm>
 #include "SgDebug.h"
 #include "SgTimeRecord.h"
-
-using namespace std;
 
 //----------------------------------------------------------------------------
 
@@ -83,7 +82,7 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
         remainingMoves = m_remainingConstant * estimatedTotalMoves;
         if (useOvertime && remainingMoves > estimatedRemainingMoves)
             remainingMoves = estimatedRemainingMoves;
-        remainingMoves = max(remainingMoves, 1.0);
+        remainingMoves = std::max(remainingMoves, 1.0);
         timeForMove = time.TimeLeft(toPlay) / remainingMoves - time.Overhead();
         if (useOvertime)
         {
@@ -98,7 +97,7 @@ double SgDefaultTimeControl::TimeForCurrentMove(const SgTimeRecord& time,
     if (m_fastOpenMoves > 0 && movesPlayed <= m_fastOpenMoves)
         timeForMove *= m_fastOpenFactor;
 
-    timeForMove = max(timeForMove, m_minTime);
+    timeForMove = std::max(timeForMove, m_minTime);
 
     if (! quiet)
     {
