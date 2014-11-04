@@ -6,6 +6,7 @@
 #define SG_PROCESS_H
 
 #include <iosfwd>
+#include <string>
 
 // Not yet implemented for Windows or clang
 #if defined(__GNUC__) && ! defined(__clang__)
