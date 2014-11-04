@@ -7,6 +7,8 @@
 #include "SgSystem.h"
 #include "GoUctAdditiveKnowledgeFuego.h"
 
+#include "SgPoint.h"
+
 //----------------------------------------------------------------------------
 
 /** @todo This is a tunable constant. */
@@ -26,7 +28,8 @@ GoUctAdditiveKnowledgeFuego::ProcessPosition(std::vector<SgUctMoveInfo>&
                                              moves)
 {
     float sum = 0.0;
-    float values[moves.size()];
+    float values[SG_MAX_MOVES];
+    SG_ASSERT(moves.size() <= SG_MAX_MOVES);
     for (size_t i = 0; i < moves.size(); ++i) 
     {
         values[i] = exp(VALUE_MULTIPLIER * moves[i].m_raveValue);
