@@ -27,3 +27,5 @@ mv features.txt 2000-2013.features
 —————————————————————————————————————————————
 Sample script for step 5:
 This uses the games from 1999 to define the validation set.
+
+@todo: this information is incomplete
