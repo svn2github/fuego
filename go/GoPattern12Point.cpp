@@ -161,9 +161,8 @@ namespace GoPattern12Point {
         for (int i = 0; i < NUM_PTS; i++)
         {
             int mask = 1 << i;
-            
             int ext = -1;
-            int* extPoint;
+            int* extPoint = 0;
             switch (i)
             {
                 case 1:
@@ -189,8 +188,8 @@ namespace GoPattern12Point {
             
             if (occupancy & mask)
             {
-                // ext represents the liberty count. Currently the value 0x3 is not
-                // used.
+                // ext represents the liberty count. Currently the value 0x3
+                // is not used.
                 SG_ASSERT(ext <= 3);
                 
                 if (friendly & mask)
@@ -206,7 +205,10 @@ namespace GoPattern12Point {
                     *(pointMap[i]) = EMPTY;
                 
                 if (ext > 0)
+                {
+                    SG_ASSERT(extPoint);
                     *extPoint = extraCodes[ext];
+                }
             }
         }
         
