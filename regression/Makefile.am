@@ -99,6 +99,7 @@ uct_seki.tst \
 uct_selfatari.tst \
 uct_semeai.tst \
 uct_semeai_blunder.tst \
+urgent.tst \
 sgf/approach_move/backfill.1.sgf \
 sgf/bent_four/bentfour1.sgf \
 sgf/bent_four/bentfour2.sgf \
@@ -317,6 +318,7 @@ sgf/games/2014/2014-UEC-Cup/fuego-aya-friendly-2014.sgf \
 sgf/games/2014/2014-UEC-Cup/fuego-caren.sgf \
 sgf/games/2014/2014-UEC-Cup/milago-fuego.sgf \
 sgf/games/2014/2014-10-22-Fuego-sacrifice2-bug.sgf \
+sgf/games/2014/Fuego-GnuGo-2014-10-26.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
