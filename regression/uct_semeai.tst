@@ -555,3 +555,13 @@ loadsgf sgf/games/2013/KGS/AyaMC-nomiBot.sgf 269
 1810 reg_genmove b
 #? [N19]*
 # Black still loses but this is the only move.
+
+loadsgf sgf/games/2014/2014-10-22-Fuego-sacrifice2-bug.sgf 75
+1820 reg_genmove b
+#? [M6]*
+# Black needs to make an eye. 
+
+loadsgf sgf/games/2014/2014-10-22-Fuego-sacrifice2-bug.sgf 76
+1830 reg_genmove w
+#? [M6]
+# White needs to sacrifice two stones to destroy the eye. 

@@ -316,6 +316,7 @@ sgf/games/2014/2014-UEC-Cup/aya-fuego-friendly-2014.sgf \
 sgf/games/2014/2014-UEC-Cup/fuego-aya-friendly-2014.sgf \
 sgf/games/2014/2014-UEC-Cup/fuego-caren.sgf \
 sgf/games/2014/2014-UEC-Cup/milago-fuego.sgf \
+sgf/games/2014/2014-10-22-Fuego-sacrifice2-bug.sgf \
 sgf/games/pro-9x9/mz1.sgf \
 sgf/games/pro-9x9/zhou9a.sgf \
 sgf/gnugo-games/seki01.sgf \
