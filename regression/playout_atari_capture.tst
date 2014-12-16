@@ -47,3 +47,23 @@ loadsgf sgf/playout/playout_two_liberties_semeai.3.sgf 4
 201 uct_policy_moves
 #? [AtariCapture J7]*
 # current policy captures F4...
+
+#-----------------------------------------------------------------------------
+# Good capture vs. Selfatari capture
+
+loadsgf sgf/playout/playout_capture_no_selfatari.1.sgf
+210 reg_genmove w
+#? [H2]
+
+211 uct_policy_moves
+#? [AtariCapture H2]*
+# current policy captures J8, selfatari
+
+loadsgf sgf/playout/playout_capture_no_selfatari.2.sgf
+220 reg_genmove w
+#? [H2]*
+
+221 uct_policy_moves
+#? [AtariCapture H2]*
+# current policy captures J8, selfatari
+

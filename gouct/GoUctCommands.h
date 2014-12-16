@@ -75,6 +75,7 @@ public:
         - @link CmdPolicyCorrectedMoves() @c uct_policy_corrected_moves 
           @endlink
         - @link CmdPolicyMoves() @c uct_policy_moves @endlink
+        - @link CmdPolicyMovesSimple() @c uct_policy_moves_simple @endlink
         - @link CmdPriorKnowledge() @c uct_prior_knowledge @endlink
         - @link CmdRaveValues() @c uct_rave_values @endlink
         - @link CmdRootFilter() @c uct_root_filter @endlink
@@ -118,6 +119,7 @@ public:
     void CmdPatterns(GtpCommand& cmd);
     void CmdPolicyCorrectedMoves(GtpCommand& cmd);
     void CmdPolicyMoves(GtpCommand& cmd);
+    void CmdPolicyMovesSimple(GtpCommand& cmd);
     void CmdPriorKnowledge(GtpCommand& cmd);
     void CmdRaveValues(GtpCommand& cmd);
     void CmdRootFilter(GtpCommand& cmd);
@@ -187,6 +189,8 @@ private:
 
     GoUctGlobalSearchState<GoUctPlayoutPolicy<GoUctBoard> >&
     ThreadState(unsigned int threadId);
+
+    void WritePolicyMoves(GtpCommand& cmd, bool writeGammas);
 };
 
 //----------------------------------------------------------------------------

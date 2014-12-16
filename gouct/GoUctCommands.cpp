@@ -324,6 +324,7 @@ void GoUctCommands::AddGoGuiAnalyzeCommands(GtpCommand& cmd)
         "plist/Uct Patterns/uct_patterns\n"
         "pstring/Uct Policy Corrected Moves/uct_policy_corrected_moves\n"
         "pstring/Uct Policy Moves/uct_policy_moves\n"
+        "pstring/Uct Policy Moves Simple List/uct_policy_moves_simple\n"
         "gfx/Uct Prior Knowledge/uct_prior_knowledge\n"
         "sboard/Uct Rave Values/uct_rave_values\n"
         "plist/Uct Root Filter/uct_root_filter\n"
@@ -1093,7 +1094,7 @@ void GoUctCommands::CmdPolicyCorrectedMoves(GtpCommand& cmd)
     See GoUctPlayoutPolicy::GetEquivalentBestMoves() <br>
     Arguments: none <br>
     Returns: Move type string followed by move list on a single line. */
-void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
+void GoUctCommands::WritePolicyMoves(GtpCommand& cmd, bool writeGammas)
 {
     cmd.CheckArgNone();
     GoUctPlayoutPolicy<GoBoard> policy(m_bd, Player().m_playoutPolicyParam);
@@ -1111,8 +1112,28 @@ void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
     if (policy.MoveType() == GOUCT_GAMMA_PATTERN)
     {
         cmd << ' ';
-        policy.GammaGenerator().WriteMovesAndGammas(cmd);
+        policy.GammaGenerator().WriteMovesAndGammas(cmd, writeGammas);
     }
+}
+
+/** Return equivalent best moves in playout policy.
+ See GoUctPlayoutPolicy::GetEquivalentBestMoves() <br>
+ Arguments: none <br>
+ Returns: Move type string followed by move list on a single line. 
+ For non-uniform generators, also write selection weights (gammas)
+*/
+void GoUctCommands::CmdPolicyMoves(GtpCommand& cmd)
+{
+    WritePolicyMoves(cmd, true); // do write move weights (gammas)
+}
+
+/** Return equivalent best moves in playout policy.
+ See GoUctPlayoutPolicy::GetEquivalentBestMoves() <br>
+ Arguments: none <br>
+ Returns: Move type string followed by move list on a single line. */
+void GoUctCommands::CmdPolicyMovesSimple(GtpCommand& cmd)
+{
+    WritePolicyMoves(cmd, false); // don't write move weights (gammas)
 }
 
 /** Show total prior knowledge */
@@ -1652,6 +1673,8 @@ void GoUctCommands::Register(GtpEngine& e)
     Register(e, "uct_policy_corrected_moves",
              &GoUctCommands::CmdPolicyCorrectedMoves);
     Register(e, "uct_policy_moves", &GoUctCommands::CmdPolicyMoves);
+    Register(e, "uct_policy_moves_simple",
+             &GoUctCommands::CmdPolicyMovesSimple);
     Register(e, "uct_prior_knowledge", &GoUctCommands::CmdPriorKnowledge);
     Register(e, "uct_rave_values", &GoUctCommands::CmdRaveValues);
     Register(e, "uct_root_filter", &GoUctCommands::CmdRootFilter);

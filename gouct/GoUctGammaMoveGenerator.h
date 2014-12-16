@@ -29,7 +29,7 @@ public:
     
     int NuMoves() const;
 
-    void WriteMovesAndGammas(std::ostream& stream) const;
+    void WriteMovesAndGammas(std::ostream& stream, bool writeGammas) const;
 
 private:
     /** Generate pattern moves with gamma values */
@@ -222,12 +222,15 @@ std::ostream& operator<<(std::ostream& stream,
 
 template<class BOARD>
 void GoUctGammaMoveGenerator<BOARD>::
-	 WriteMovesAndGammas(std::ostream& stream) const
+	 WriteMovesAndGammas(std::ostream& stream, bool writeGammas) const
 {
     for (int i = 0; i < NuMoves(); ++i)
     {
-        stream << SgWritePoint(GetGammaMoveAt(i)) << ":"
-               << GetGammaValueForMoveAt(i) << "  ";
+        stream << SgWritePoint(GetGammaMoveAt(i));
+        if (writeGammas)
+            stream << ":"
+                   << GetGammaValueForMoveAt(i);
+        stream << ' ';
     }
     stream << std::endl;
 }

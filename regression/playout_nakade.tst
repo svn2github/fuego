@@ -29,6 +29,14 @@ loadsgf sgf/playout/playout_nakade.1.sgf 7
 #? [J8]
 # must kill on vital point.
 
-31 uct_policy_moves
-#? [Pattern J8]
+31 uct_policy_moves_simple
+#? [GammaPattern J8]
 # Should be different move reason in future ???
+
+loadsgf sgf/playout/playout_nakade.2.sgf
+40 uct_policy_moves
+#? [GammaPattern E1:1 F1:550.309]
+# F1 is much more likely, but E1 would be fatal...
+
+41 uct_policy_moves_simple
+#? [GammaPattern F1]*
