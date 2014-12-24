@@ -402,6 +402,7 @@ sgf/playout/playout_capture_no_selfatari.2.sgf \
 sgf/playout/playout_nakade.1.sgf \
 sgf/playout/playout_nakade.2.sgf \
 sgf/playout/playout_nakade.3.sgf \
+sgf/playout/playout_nakade.4.sgf \
 sgf/playout/playout_nakade_approach.sgf \
 sgf/playout/playout_two_liberties_semeai.1.sgf \
 sgf/playout/playout_two_liberties_semeai.2.sgf \

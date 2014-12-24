@@ -40,3 +40,13 @@ loadsgf sgf/playout/playout_nakade.2.sgf
 
 41 uct_policy_moves_simple
 #? [GammaPattern F1]*
+
+loadsgf sgf/playout/playout_nakade.3.sgf
+50 uct_policy_moves_simple
+#? [GammaPattern F2]*
+# Feature knowledge has a high prior for f2, but gamma patterns don't.
+
+loadsgf sgf/playout/playout_nakade.4.sgf 1
+60 uct_policy_moves_simple
+#? [GammaPattern F1]*
+# should know to play in center of 3 point nakade
