@@ -737,7 +737,7 @@ void GoUctCommands::CmdParamPlayer(GtpCommand& cmd)
         else if (name == "use_root_filter")
             p.SetUseRootFilter(cmd.Arg<bool>(1));
         else if (name == "max_games")
-            p.SetMaxGames(cmd.ArgMin<SgUctValue>(1, SgUctValue(1)));
+            p.SetMaxGames(cmd.ArgMin<SgUctValue>(1, SgUctValue(0)));
         else if (name == "max_ponder_time")
             p.SetMaxPonderTime(cmd.ArgMin<SgUctValue>(1, 0));
         else if (name == "resign_min_games")
