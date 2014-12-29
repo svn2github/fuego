@@ -1,0 +1,15 @@
+#-----------------------------------------------------------------------------
+# GTP snippet to set Fuego to play using only prior knowedge, no search.
+# Can be used with the command-line --config option, or in GoGui with
+# Tools -> Send File.
+#-----------------------------------------------------------------------------
+
+uct_param_player max_games 0
+uct_param_player early_pass 0
+uct_param_player forced_opening_moves 0
+uct_param_search expand_threshold 0
+uct_param_search move_select value
+uct_param_search number_threads 1
+uct_param_globalsearch use_default_prior_knowledge 0
+uct_param_globalsearch default_prior_weight 0
+book_clear
