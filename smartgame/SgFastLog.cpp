@@ -9,8 +9,6 @@
 #include <cmath>
 #include <boost/static_assert.hpp>
 
-using namespace std;
-
 //----------------------------------------------------------------------------
 
 namespace {
@@ -19,7 +17,7 @@ namespace {
 BOOST_STATIC_ASSERT(sizeof(int) == 4);
 
 // The fast log algorithm requires that floats use IEEE 754 format
-BOOST_STATIC_ASSERT(numeric_limits<float>::is_iec559);
+BOOST_STATIC_ASSERT(std::numeric_limits<float>::is_iec559);
 
 } // namespace
 
@@ -28,7 +26,10 @@ BOOST_STATIC_ASSERT(numeric_limits<float>::is_iec559);
 SgFastLog::SgFastLog(int mantissaBits)
     : m_mantissaBitsDiff(MAX_MANTISSA_BITS - mantissaBits)
 {
-    m_lookupTable = new float[1 << mantissaBits];
+    // Store the result of the shift operation in a variable to prevent a
+    // compiler warning in 64-bit VC++ builds (C4334)
+    size_t sizeOfLookupTable = 1 << mantissaBits;
+    m_lookupTable = new float[sizeOfLookupTable];
     IntFloat x;
     x.m_int = 0x3F800000;
     int incr = (1 << m_mantissaBitsDiff);
