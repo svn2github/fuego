@@ -1,9 +1,10 @@
 #-----------------------------------------------------------------------------
-# GTP snippet to set Fuego to play using only prior knowedge, no search.
+# GTP snippet to set Fuego to play using only feature knowedge, no search.
 # Can be used with the command-line --config option, or in GoGui with
 # Tools -> Send File.
 #-----------------------------------------------------------------------------
 
+uct_param_player auto_param 0
 uct_param_player max_games 0
 uct_param_player early_pass 0
 uct_param_player forced_opening_moves 0
