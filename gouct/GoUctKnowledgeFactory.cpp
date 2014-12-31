@@ -59,7 +59,7 @@ GoUctKnowledgeFactory::CreateByType(const GoBoard& bd, KnowledgeType type)
     case KNOWLEDGE_BOTH:
     {
         GoUctAdditiveKnowledgeFuego* f = new GoUctAdditiveKnowledgeFuego(bd);
-        SgUctValue minimum = f->MinValue();
+        float minimum = f->MinValue();
 
         GoUctAdditiveKnowledgeMultiple* m =
         new GoUctAdditiveKnowledgeMultiple(bd, minimum,

@@ -487,7 +487,7 @@ void GoUctGlobalSearchState<POLICY>::GenerateLegalMoves(
 
 inline float invsqrt(float value)
 {
-    return 1 / sqrt(value);
+    return 1 / sqrtf(value);
 }
 
 template<class POLICY>
@@ -503,8 +503,8 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
     if (kn->PredictorType() == GO_PRED_TYPE_PLAIN)
         /* */ return; /* */
 
-    SgUctValue predictorTotal = 0.0;
-    SgUctValue predictorMax = kn->MinValue();
+    float predictorTotal = 0.0;
+    float predictorMax = kn->MinValue();
     for (size_t j = 0; j < moves.size(); ++j)
     {
         predictorTotal += kn->RaiseToMinValue(moves[j].m_predictorValue);
@@ -512,27 +512,26 @@ ApplyAdditivePredictors(std::vector<SgUctMoveInfo>& moves)
             predictorMax = moves[j].m_predictorValue;
     }
     const GoUctGlobalSearchStateParam& param = m_param.m_searchStateParam;
-    const float scale = param.m_additiveKnowledgeScale * sqrt(predictorTotal);
 
     if (kn->PredictorType() == GO_PRED_TYPE_PROBABILITY_BASED)
     {
+        const float scale = param.m_additiveKnowledgeScale
+                          * sqrtf(predictorTotal);
         for (size_t j = 0; j < moves.size(); ++j)
         {
-            const SgUctValue v =
-                kn->RaiseToMinValue(moves[j].m_predictorValue);
+            const float v = kn->RaiseToMinValue(moves[j].m_predictorValue);
             moves[j].m_predictorValue = scale * invsqrt(v);
         }
     } 
     else // PUCB-type predictor
     {  
         SG_ASSERT(kn->PredictorType() == GO_PRED_TYPE_PUCB);
-        const SgUctValue predictorMultiplier =
-            sqrt(predictorTotal * predictorMax);
+        const float scale = param.m_additiveKnowledgeScale
+                          * sqrtf(predictorTotal * predictorMax);
         for (size_t j = 0; j < moves.size(); ++j)
         {
-            SgUctValue v = kn->RaiseToMinValue(moves[j].m_predictorValue);
-            moves[j].m_predictorValue = param.m_additiveKnowledgeScale
-                * predictorMultiplier / v;
+            const float v = kn->RaiseToMinValue(moves[j].m_predictorValue);
+            moves[j].m_predictorValue = scale / v;
         }
     }
 }

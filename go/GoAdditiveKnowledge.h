@@ -35,7 +35,11 @@ enum GoPredictorType
 };
 
 /** Base class for predictors that will be used additively in UCT. 
-    Constructed once per thread (as with GoUctDefaultPriorKnowledge). 
+    Constructed once per thread (as with GoUctDefaultPriorKnowledge).
+    Note that all predictors are assumed to be of type float.
+    In contrast, values used in SgUctSearch are of type SgUctValue,
+    which is user definable but is a double by default.
+    Care must be taken to minimize expensive conversions.
 */
 class GoAdditiveKnowledge
 {
@@ -51,10 +55,10 @@ public:
     virtual GoPredictorType PredictorType() const = 0;
     
     /** return value, but lower bound capped by MinValue() */
-    SgUctValue RaiseToMinValue(SgUctValue value) const;
+    float RaiseToMinValue(float value) const;
     
     /** The minimum value allowed by this predictor */
-    virtual SgUctValue MinValue() const = 0;
+    virtual float MinValue() const = 0;
 
 private:
 
@@ -68,7 +72,7 @@ inline const GoBoard& GoAdditiveKnowledge::Board() const
 	return m_bd;
 }
 
-inline SgUctValue GoAdditiveKnowledge::RaiseToMinValue(SgUctValue value) const
+inline float GoAdditiveKnowledge::RaiseToMinValue(float value) const
 {
 	return std::max(value, MinValue());
 }
@@ -86,11 +90,11 @@ public:
     GoPredictorType PredictorType() const;
     
     /** The minimum value allowed by this predictor */
-    SgUctValue MinValue() const;
+    float MinValue() const;
 };
 //----------------------------------------------------------------------------
 
-inline SgUctValue GoUctAdditiveKnowledgeStdProb::MinValue() const
+inline float GoUctAdditiveKnowledgeStdProb::MinValue() const
 {
 	return 0.0001f;
 }

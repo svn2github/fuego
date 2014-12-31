@@ -86,7 +86,7 @@ public:
     GoPredictorType PredictorType() const;
     
     /** The minimum value allowed by this predictor */
-    SgUctValue MinValue() const;
+    float MinValue() const;
 
 private:
     
@@ -127,9 +127,9 @@ inline GoPredictorType GoUctFeatureKnowledge::PredictorType() const
     return GO_PRED_TYPE_PROBABILITY_BASED;
 }
 
-inline SgUctValue GoUctFeatureKnowledge::MinValue() const
+inline float GoUctFeatureKnowledge::MinValue() const
 {
-    return 0.0001; // TODO
+    return 0.0001f; // TODO
 }
 
 inline float GoUctFeatureKnowledge::MoveValue(const SgPoint move) const

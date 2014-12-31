@@ -35,7 +35,7 @@ class GoUctAdditiveKnowledgeMultiple: public GoAdditiveKnowledge
 {
 public:
     GoUctAdditiveKnowledgeMultiple(const GoBoard& bd,
-                                   SgUctValue minimum,
+                                   float minimum,
                                    GoUctKnowledgeCombinationType
                                    combinationType);
     
@@ -49,7 +49,7 @@ public:
 	GoPredictorType PredictorType() const;
 
     /** The minimum value allowed by this predictor */
-    SgUctValue MinValue() const;
+    float MinValue() const;
 
     void ProcessPosition(InfoVector& moves);
 
@@ -57,7 +57,7 @@ private:
 
     SgVector<GoAdditiveKnowledge*> m_additiveKnowledge;
 
-    SgUctValue m_minimum;
+    float m_minimum;
 
     GoUctKnowledgeCombinationType m_combinationType;
 
@@ -68,7 +68,7 @@ private:
 
 //----------------------------------------------------------------------------
 
-inline SgUctValue GoUctAdditiveKnowledgeMultiple::MinValue() const
+inline float GoUctAdditiveKnowledgeMultiple::MinValue() const
 {
 	return m_minimum;
 }

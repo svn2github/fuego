@@ -14,8 +14,8 @@ GoUctGlobalSearchStateParam::GoUctGlobalSearchStateParam()
       m_scoreModification(0.02f),
       m_useTreeFilter(true),
       m_useDefaultPriorKnowledge(true),
-      m_defaultPriorWeight(0.15),
-      m_additiveKnowledgeScale(0.03)
+      m_defaultPriorWeight(0.15f),
+      m_additiveKnowledgeScale(0.03f)
 { }
 
 GoUctGlobalSearchStateParam::~GoUctGlobalSearchStateParam()

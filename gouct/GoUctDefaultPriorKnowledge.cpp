@@ -354,7 +354,7 @@ bool GoUctDefaultPriorKnowledge::FindGlobalPatternAndAtariMoves(
                                                      GoPointList& empty)
 {
 	// Minimum value for pattern gamma to be used.
-    static const float EPSILON = 0.00000000001;
+    static const float EPSILON = 0.00000000001f;
     const GoBoard& bd = Board();
     SG_ASSERT(empty.IsEmpty());
     const GoUctPatterns<GoBoard>& patterns = m_policy.GlobalPatterns();

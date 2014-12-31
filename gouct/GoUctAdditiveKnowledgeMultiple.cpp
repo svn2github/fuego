@@ -14,7 +14,7 @@ namespace {
     void ComputeArithmeticMean(std::vector<SgUctMoveInfo>& moves,
                                int nuPredictors)
     {
-        const float exponent = 1.0/nuPredictors;
+        const float exponent = 1.0f / nuPredictors;
         for (size_t j = 0; j < moves.size(); ++j)
             moves[j].m_predictorValue =
             std::pow(moves[j].m_predictorValue, exponent);
@@ -31,7 +31,7 @@ namespace {
 
 GoUctAdditiveKnowledgeMultiple::GoUctAdditiveKnowledgeMultiple(
         const GoBoard& bd,
-        SgUctValue minimum,
+        float minimum,
         GoUctKnowledgeCombinationType combinationType)
     :
     GoAdditiveKnowledge(bd),

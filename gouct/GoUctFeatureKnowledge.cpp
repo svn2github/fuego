@@ -16,7 +16,7 @@ namespace {
     
 inline float Sigmoid(float x)
 {
-    return 1 / (1 + exp(-x));
+    return 1 / (1 + expf(-x));
 }
 
 } // namespace
@@ -133,8 +133,8 @@ ComputeMinAndMaxValues(const std::vector<SgUctMoveInfo>& moves,
 void GoUctFeatureKnowledge::
 SetPriorsScaleNuGames(std::vector<SgUctMoveInfo>& moves)
 {
-    const float eps = 0.001;
-    const float tinyEps = 0.00001;
+    const float eps = 0.001f;
+    const float tinyEps = 0.00001f;
     float smallest;
     float largest;
     ComputeMinAndMaxValues(moves, smallest, largest);
@@ -153,7 +153,7 @@ SetPriorsScaleNuGames(std::vector<SgUctMoveInfo>& moves)
      // average positive knowledge should be m_param.m_priorKnowledgeWeight
     const float factor = (sum > eps) ?
             m_param.m_priorKnowledgeWeight * moves.size() / sum
-            : 0.0;
+            : 0.0f;
 
     for (std::vector<SgUctMoveInfo>::iterator it = moves.begin();
          it != moves.end(); ++it)
@@ -225,7 +225,7 @@ SetPriorsSimple(std::vector<SgUctMoveInfo>& moves)
 
 typedef std::pair<SgPoint,float> EvalPair;
 
-bool CompareValue(const EvalPair& p1, const EvalPair& p2)
+inline bool CompareValue(const EvalPair& p1, const EvalPair& p2)
 {
     return p1.second > p2.second;
 }
