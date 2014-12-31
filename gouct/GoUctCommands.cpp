@@ -1541,7 +1541,7 @@ SgPointSet GoUctCommands::DoFinalStatusSearch()
         // Everything is alive if end position and Tromp-Taylor rules
         return deadStones;
 
-    const size_t MAX_GAMES = 10000;
+    const SgUctValue MAX_GAMES = 10000;
     SgDebug() << "GoUctCommands::DoFinalStatusSearch: doing a search with "
               << MAX_GAMES << " games to determine final status\n";
     GoUctGlobalSearch<GoUctPlayoutPolicy<GoUctBoard>,
