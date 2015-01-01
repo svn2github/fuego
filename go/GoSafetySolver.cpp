@@ -203,7 +203,7 @@ bool GoSafetySolver::FindSurroundedSingleRegion(SgBWSet* safe,
         std::string reason;
         if (  ! r->GetFlag(GO_REGION_SAFE)
            && r->SomeBlockIsSafe()
-           && ! r->Points().Overlaps(anySafe)
+           && ! r->PointsPlusInteriorBlocks().Overlaps(anySafe)
            && GoSafetyUtil::ExtendedIsTerritory(Board(), Regions(),
                                    r->PointsPlusInteriorBlocks(),
                                    (*safe)[color],
