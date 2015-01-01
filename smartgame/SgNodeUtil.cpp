@@ -48,7 +48,7 @@ void SgNodeUtil::UpdateTime(SgTimeRecord& time, const SgNode* node)
     for (vector<const SgNode*>::reverse_iterator it = nodes.rbegin();
          it != nodes.rend(); ++it)
     {
-        const SgNode* node = *it;
+        node = *it;
         if (node->HasProp(SG_PROP_LOSE_TIME))
             time.SetLoseOnTime(true);
         if (node->HasProp(SG_PROP_OT_NU_MOVES))

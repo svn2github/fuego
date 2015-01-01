@@ -38,9 +38,9 @@ void SgUctTreeStatistics::Compute(const SgUctTree& tree)
             ++m_moveCounts[static_cast<size_t>(count)];
         if (! node.HasChildren())
             continue;
-        for (SgUctChildIterator it(tree, node); it; ++it)
+        for (SgUctChildIterator childIt(tree, node); childIt; ++childIt)
         {
-            const SgUctNode& child = *it;
+            const SgUctNode& child = *childIt;
             if (child.HasRaveValue() && child.HasMean())
             {
                 SgUctValue childValue =
