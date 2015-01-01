@@ -425,6 +425,38 @@ int MinEdgeCode(const GoBoard& bd, SgPoint p)
                     MirrorCodeOfEdgeNeighbors(bd, p));
 }
     
+void PrintVector(const std::vector<int>& codes,
+                 SgBWArray<GoPattern3x3::GoUctEdgePatternTable>& edgeTable)
+{
+    SgDebug() << "Shared: ";
+    
+    for (std::vector<int>::const_iterator it = codes.begin();
+         it != codes.end(); ++it)
+    {
+        SgDebug() << "Code " << *it <<
+        " gamma B = " << edgeTable[SG_BLACK][*it].GetGammaValue()
+        << " gamma W = " << edgeTable[SG_WHITE][*it].GetGammaValue()
+        ;
+    }
+    SgDebug() << '\n';
+}
+
+void PrintVector(const std::vector<int>& codes,
+                 SgBWArray<GoPattern3x3::GoUctPatternTable>& table)
+{
+    SgDebug() << "Shared: ";
+    
+    for (std::vector<int>::const_iterator it = codes.begin();
+         it != codes.end(); ++it)
+    {
+        SgDebug() << "Code " << *it <<
+        " gamma B = " << table[SG_BLACK][*it].GetGammaValue()
+        << " gamma W = " << table[SG_WHITE][*it].GetGammaValue();
+    }
+    SgDebug() << '\n';
+}
+
+    
 } // namespace
 
 //----------------------------------------------------------------------------
@@ -597,20 +629,6 @@ void GoPattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
     //ReduceCenterSymmetry(table);
 }
 
-void PrintVector(const std::vector<int>& codes,
-                 SgBWArray<GoPattern3x3::GoUctPatternTable>& table)
-{
-    SgDebug() << "Shared: ";
-    
-    for (std::vector<int>::const_iterator it = codes.begin();
-         it != codes.end(); ++it)
-    {
-        SgDebug() << "Code " << *it <<
-        " gamma B = " << table[SG_BLACK][*it].GetGammaValue()
-        << " gamma W = " << table[SG_WHITE][*it].GetGammaValue();
-    }
-    SgDebug() << '\n';
-}
 
 #if 0
 
@@ -686,23 +704,6 @@ void GoPattern3x3::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
     for (int i = 0; i < m.m_nuUnique; ++i)
     PrintVector(m.m_uniqueCode[i], table); // TODO white
 }
-
-void PrintVector(const std::vector<int>& codes,
-                 SgBWArray<GoPattern3x3::GoUctEdgePatternTable>& edgeTable)
-{
-    SgDebug() << "Shared: ";
-    
-    for (std::vector<int>::const_iterator it = codes.begin();
-         it != codes.end(); ++it)
-    {
-        SgDebug() << "Code " << *it <<
-        " gamma B = " << edgeTable[SG_BLACK][*it].GetGammaValue()
-        << " gamma W = " << edgeTable[SG_WHITE][*it].GetGammaValue()
-        ;
-    }
-    SgDebug() << '\n';
-}
-
 
 void GoPattern3x3::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
                                     edgeTable)

@@ -179,7 +179,7 @@ bool TestThreadState::GenerateAllMoves(SgUctValue count,
     // Test knowledge expansion: give all children boost of one win,
     // remove last child, and add new move with move 100 and (value, count)
     // of (1.0, 10)
-    if (count)
+    if (count > 0)
     {
         moves.pop_back();
         for (size_t i = 0; i < moves.size(); ++i) 

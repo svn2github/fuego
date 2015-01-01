@@ -782,7 +782,7 @@ bool SgUctSearch::NeedToComputeKnowledge(const SgUctNode* current)
                 // threads fall through and do not waste time
                 // re-computing this knowledge.
                 m_tree.SetKnowledgeCount(*current, threshold);
-                SG_ASSERT(current->MoveCount());
+                SG_ASSERT(current->MoveCount() > 0);
                 return true;
             }
             return false;

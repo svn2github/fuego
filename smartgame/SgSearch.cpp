@@ -350,7 +350,7 @@ void SgSearch::AddSequenceToHash(const SgVector<SgMove>& sequence, int depth)
                 SgDebug() << "SgSearch::AddSequenceToHash: "
                           << MoveString(move) << '\n';
             // Execute move again.
-            int delta = DEPTH_UNIT;
+            delta = DEPTH_UNIT;
             if (CallExecute(move, &delta, depth))
                 ++numMovesToUndo;
             else // it just worked, should not fail now.

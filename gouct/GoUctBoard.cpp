@@ -248,8 +248,8 @@ void GoUctBoard::Init(const GoBoard& bd)
     m_toPlay = bd.ToPlay();
     for (GoBoard::Iterator it(bd); it; ++it)
     {
-        SgPoint p = *it;
-        SgBoardColor c = bd.GetColor(p);
+        const SgPoint p = *it;
+        const SgBoardColor c = bd.GetColor(p);
         m_color[p] = c;
         m_nuNeighbors[SG_BLACK][p] = bd.NumNeighbors(p, SG_BLACK);
         m_nuNeighbors[SG_WHITE][p] = bd.NumNeighbors(p, SG_WHITE);
@@ -258,7 +258,7 @@ void GoUctBoard::Init(const GoBoard& bd)
             m_block[p] = 0;
         else if (bd.Anchor(p) == p)
         {
-            SgBoardColor c = m_color[p];
+            SG_ASSERT(c == m_color[p]);
             Block& block = m_blockArray[p];
             block.InitNewBlock(c, p);
             for (GoBoard::StoneIterator it2(bd, p); it2; ++it2)

@@ -223,13 +223,13 @@ bool MayMakeFalseEye(const GoBoard& bd,
     SG_ASSERT(nuInsideNb == 1); // check case 1 and 2
     if (! IsFalseEyePoint(bd, p, eyeColor))
         return false;
-    SgPoint other;
+    SgPoint otherP;
     if (nuEmpty == 1)
     /*  Case 1: OOOX    OOOX    |OOX
                 O.aO    O.aO    |.aO
                 OOOX    ----    ---- */
     {
-        if (! Is2PointEye(bd, p, eyeColor, other))
+        if (! Is2PointEye(bd, p, eyeColor, otherP))
             return false;
         const SgPoint theEmpty = GoBoardUtil::FindNeighbor(bd, p, SG_EMPTY);
         bool result =    bd.NumEmptyNeighbors(theEmpty) == 1 // p
