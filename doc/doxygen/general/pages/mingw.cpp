@@ -18,50 +18,89 @@
 
     Here are the necessary steps to compile Fuego with MinGW. There are some
     workarounds for problems that may not be necessary in future versions
-    of MinGW. The version used were MinGW GCC version 4.5.0 and Boost 1.45.0.
+    of MinGW. The version used were MinGW GCC version 4.8.1 and Boost 1.57.0.
     
     -# Check out the Fuego code from SVN or download a distribution of Fuego.
-    On Windows, <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a> is
-    an excellent SVN client. 
-	-# Determine whether you want to compile Fuego for a 32-bit or 64-bit system.
-	The Fuego source code can be compiled for either version, but will require either the 32-bit
-	or 64-bit versions of the Boost Libraries and MinGW depending on which one you choose.
-    -# Install MinGW and MSYS using the MinGW installer. (For 64-bit you will need <a href="http://mingw-w64.sourceforge.net/">MinGW-w64</a>, but this is not yet tested)
-    -# Download the source for the <a href="http://www.boost.org/">Boost
-    libraries</a> and (if not already included in the Boost download) a pre-compiled version of BJam (e.g. 
-    boost-jam-3.1.18-1-ntx86.zip). Unpack the files and copy bjam.exe in the
-    Boost source directory.
-    -# Compile Boost with MinGW in the MSYS shell with the following command
-    (this compiles only the libraries used by Fuego):
+       On Windows, <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a> is
+       an excellent SVN client. 
+    -# Determine whether you want to compile Fuego for a 32-bit or 64-bit system.
+       The Fuego source code can be compiled for either version, but will require
+       either the 32-bit or 64-bit versions of the Boost Libraries and MinGW
+       depending on which one you choose.
+    -# Install MinGW and MSYS
+       - For 64-bit you will need
+         <a href="http://mingw-w64.sourceforge.net/">MinGW-w64</a>, but this has
+         not been tested.
+       - For 32-bit, follow the instructions in MinGW's
+         <a href="http://mingw.org/wiki/Getting_Started">Getting Started</a>
+         guide.
+       - In the GUI installer make sure to select the @c mingw32-autotools
+         package in the "MINGW" section. This is required so that @c autoreconf
+         is available later on during the Fuego configure process.
+       - After the GUI installer has finished installing MinGW, open an MSYS
+         shell and type the following command to manually install the POSIX
+         threads library. Without this step the Fuego configure process will
+         fail.
     @verbatim
-    bjam.exe --toolset=gcc --layout=tagged --with-thread \
-      --with-program_options --with-filesystem --with-system \
-      --with-date_time --with-test --prefix=/usr install @endverbatim
-    This should create static libraries, for example:
+    mingw-get install pthreads
+    @endverbatim
+
+    -# Install and compile Boost
+       - Download and unpack the source for the
+         <a href="http://www.boost.org/">Boost libraries</a>. For example, with
+         Boost version 1.57, download and unpack @c boost_1_57_0.7z from
+         http://sourceforge.net/projects/boost/files/boost/1.57.0/.
+       - Open a CMD shell (<em>not</em> an MSYS shell!), then type the following
+         commands. This will compile Boost's build tool BJam.
     @verbatim
-    /usr/lib/libboost_thread-mt.a @endverbatim
-    -# Compile Fuego in the MSYS shell.  Note that if you are compiling as a 32-bit program you may want to set the /LARGEADDRESSAWARE flag to YES. This allows up to
-	~3.5 GB of memory usage (as opposed to 2 GB) and can be done by adding 
-	@verbatim
-	LDFLAGS="-Wl,--large-address-aware" @endverbatim
-	between env and CXXFLAGS below.
+    set PATH=C:\MinGW\bin;%PATH%
+    cd \path\to\boost
+    bootstrap.bat mingw
+    @endverbatim
+    
+       - Open an MSYS shell, then type the following commands. This will compile the
+         Boost libraries (not all, only those used by Fuego).
     @verbatim
-    cd fuego
+    b2 --toolset=gcc --layout=tagged --with-thread \
+       --with-program_options --with-filesystem --with-system \
+       --with-date_time --with-test --prefix=/usr install
+    @endverbatim
+    
+       - Be sure to use the @c b2 command line option "--layout=tagged" so that
+         the library names that are generated look like this
+    @verbatim
+    /usr/lib/libboost_thread-mt.a
+    @endverbatim
+         instead of this
+    @verbatim
+    /usr/lib/libboost_thread-mgw48-mt.a
+    @endverbatim
+         Also, the header files are installed in
+    @verbatim
+    /usr/include/boost
+    @endverbatim
+         instead of
+    @verbatim
+    /usr/include/boost-1_57
+    @endverbatim
+    
+    -# Compile Fuego
+       - Note that if you are compiling as a 32-bit program you may want to
+         set the @c /LARGEADDRESSAWARE flag to YES. This allows up to ~3.5 GB
+         of memory usage (as opposed to 2 GB) and can be done by adding
+    @verbatim
+    LDFLAGS="-Wl,--large-address-aware"
+    @endverbatim
+         between @c env and @c CXXFLAGS below.
+       - Open an MSYS shell, then type the following commands. This should
+         create the executable named @c fuegomain/fuego.exe.
+    @verbatim
+    cd \path\to\fuego
+    autoreconf -i
     mkdir mingw
     cd mingw
-    env CXXFLAGS="-O3 -ffast-math -DBOOST_THREAD_USE_LIB -static-libgcc -static-libstdc++" \
-      ../configure \
-      --with-boost-thread=boost_thread-mt \
-      --with-boost-program-options=boost_program_options-mt \
-      --with-boost-date-time=boost_date_time-mt \
-      --with-boost-filesystem=boost_filesystem-mt \
-      --with-boost-system=boost_system-mt \
-      --with-boost-unit-test-framework=boost_unit_test_framework-mt
-    make @endverbatim
-    The explicit boost library options are currently necessary because the automatic
-    detection of the library fails. The macro BOOST_THREAD_USE_LIB is a workaround
-    for a compilation problem with Boost 1.45.0 that may not be necessary in the future.
-    This should create an executable named fuegomain/fuego.exe.
-    -# Copy the file fuego/book/book.dat into the directory of fuego.exe
+    env CXXFLAGS="-O3 -ffast-math -static-libgcc -static-libstdc++" ../configure
+    make
+    @endverbatim
+    -# Copy the file @c fuego/book/book.dat into the directory of @c fuego.exe
 */
-
