@@ -677,6 +677,13 @@ void GoGtpEngine::CmdLoadSgf(GtpCommand& cmd)
     SgNode* root = reader.ReadGame();
     if (root == 0)
         throw GtpFailure("no games in file");
+    int boardSize = GoNodeUtil::GetBoardSize(root);
+    if (boardSize < SG_MIN_SIZE || boardSize > SG_MAX_SIZE)
+    {
+        throw GtpFailure()
+            << "file contains invalid board size, must be between "
+            << SG_MIN_SIZE << " and " << SG_MAX_SIZE;
+    }
     if (reader.GetWarnings().any())
     {
         SgWarning() << fileName << ":\n";

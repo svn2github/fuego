@@ -55,5 +55,18 @@ int GoNodeUtil::GetHandicap(const SgNode* node)
     return 0;
 }
 
+int GoNodeUtil::GetBoardSize(const SgNode* node)
+{
+    while (node != 0)
+    {
+        SgPropInt* boardSizeProp =
+            static_cast<SgPropInt*>(node->Get(SG_PROP_SIZE));
+        if (boardSizeProp)
+          return boardSizeProp->Value();
+        node = node->Father();
+    }
+    return GO_DEFAULT_SIZE;
+}
+
 //----------------------------------------------------------------------------
 

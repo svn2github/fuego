@@ -8,6 +8,7 @@
 
 #include "GoBoardUtil.h"
 #include "GoInit.h"
+#include "GoNodeUtil.h"
 #include "GoPlayer.h"
 #include "SgNode.h"
 #include "SgNodeUtil.h"
@@ -220,14 +221,8 @@ void GoGame::Init(SgNode* root)
 {
     m_root->DeleteTree();
     m_root = root;
-    int size = GO_DEFAULT_SIZE;
-    SgPropInt* boardSizeProp =
-        static_cast<SgPropInt*>(m_root->Get(SG_PROP_SIZE));
-    if (boardSizeProp)
-    {
-        size = boardSizeProp->Value();
-        ForceInRange(SG_MIN_SIZE, &size, SG_MAX_SIZE);
-    }
+    int size = GoNodeUtil::GetBoardSize(m_root);
+    ForceInRange(SG_MIN_SIZE, &size, SG_MAX_SIZE);
     const GoRules& rules = m_board.Rules();
     m_board.Init(size, GoRules(rules.Handicap(), rules.Komi()));
 

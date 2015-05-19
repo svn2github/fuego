@@ -34,6 +34,10 @@ namespace GoNodeUtil
     /** Find handicap that is valid for this node.
         Search parent nodes until a node with a handicap property is found. */
     int GetHandicap(const SgNode* node);
+
+    /** Find board size that is valid for this node.
+        Search parent nodes until a node with a size property is found. */
+    int GetBoardSize(const SgNode* node);
 }
 
 //----------------------------------------------------------------------------
