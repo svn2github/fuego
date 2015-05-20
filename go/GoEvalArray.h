@@ -59,7 +59,7 @@ inline void GoEvalArray<T>::Write(std::ostream& out,
                                   SgGrid boardSize) const
 {
     SgWriteBoardFromArray(out, *this, boardSize);
-    out << "Pass: " /* TODO << operator[](SG_PASS) */ << '\n';
+    out << "Pass: " << (*this)[SG_PASS] << '\n';
 }
 
 
