@@ -56,7 +56,7 @@ std::size_t SgPlatform::TotalMemory()
         return 0;
     size_t totalVirtual = static_cast<size_t>(status.ullTotalVirtual);
     size_t totalPhys = static_cast<size_t>(status.ullTotalPhys);
-    return min(totalVirtual, totalPhys);
+    return std::min(totalVirtual, totalPhys);
 #elif defined _SC_PHYS_PAGES
     long pages = sysconf(_SC_PHYS_PAGES);
     if (pages < 0)
