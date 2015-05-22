@@ -20,6 +20,7 @@
 #include "SgBWArray.h"
 #include "SgTimer.h"
 #include "SgUctTree.h"
+#include "SgUctValue.h"
 #include "SgMpiSynchronizer.h"
 
 #define SG_UCTFASTLOG 1
@@ -1231,12 +1232,12 @@ inline SgUctValue SgUctSearch::FirstPlayUrgency() const
 
 inline SgUctValue SgUctSearch::InverseEval(SgUctValue eval)
 {
-    return (1 - eval);
+    return SgUctValueUtil::InverseValue(eval);
 }
 
 inline SgUctValue SgUctSearch::InverseEstimate(SgUctValue eval)
 {
-    return (1 - eval);
+    return SgUctValueUtil::InverseValue(eval);
 }
 
 inline bool SgUctSearch::IsPartialMove(SgMove move) const

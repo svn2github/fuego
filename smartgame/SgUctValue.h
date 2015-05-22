@@ -57,6 +57,11 @@ inline bool IsPrecise(T val)
     return val <= max;
 }
 
+inline SgUctValue InverseValue(SgUctValue v)
+{
+    return 1 - v;
+}
+
 }
 
 //----------------------------------------------------------------------------
