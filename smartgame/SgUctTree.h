@@ -60,6 +60,9 @@ struct SgUctMoveInfo
 
     SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue count,
                SgUctValue raveValue, SgUctValue raveCount);
+
+    void Add(const SgUctValue mean, const SgUctValue count);
+
 };
 
 std::ostream& operator<<(std::ostream& stream, const SgUctMoveInfo& info);
@@ -91,6 +94,19 @@ inline SgUctMoveInfo::SgUctMoveInfo(SgMove move, SgUctValue value, SgUctValue co
       m_raveCount(raveCount),
       m_predictorValue(0.0)
 { }
+
+inline void SgUctMoveInfo::Add(const SgUctValue mean, const SgUctValue count)
+{
+    m_count += count;
+    SgUctValue v1 = SgUctValueUtil::InverseValue(m_value);
+    SgUctValue v2 = mean;
+    v2 -= v1; // same formula for weighted mean as in SgStatisticsBase::Add
+    v1 += (v2 * count) / m_count;
+    m_value = SgUctValueUtil::InverseValue(v1);
+
+    m_raveCount = m_count;
+    m_raveValue = v1;
+}
 
 //----------------------------------------------------------------------------
 

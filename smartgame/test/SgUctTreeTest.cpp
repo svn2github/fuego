@@ -10,12 +10,44 @@
 #include "SgUctTree.h"
 #include "SgUctTreeUtil.h"
 
-using namespace std;
+using std::vector;
 using SgUctTreeUtil::FindChildWithMove;
+using SgUctValueUtil::InverseValue;
 
 //----------------------------------------------------------------------------
 
 namespace {
+
+const float EPSILON = 1e-6f;
+
+/** Test adding statistics to SgUctMoveInfo. */
+BOOST_AUTO_TEST_CASE(SgUctMoveInfo_Add)
+{
+    SgMove move = 0;
+    const SgUctValue v = 0.8;
+    const SgUctValue count = 10;
+    SgUctMoveInfo info(move, InverseValue(v), count, v, count);
+    info.Add(0.0, 10);
+    BOOST_CHECK_CLOSE(info.m_value, InverseValue(0.4), EPSILON);
+    BOOST_CHECK_EQUAL(info.m_count, 20);
+    BOOST_CHECK_CLOSE(info.m_raveValue, 0.4, EPSILON);
+    BOOST_CHECK_EQUAL(info.m_raveCount, 20);
+}
+
+/** Test adding statistics to SgUctMoveInfo. */
+BOOST_AUTO_TEST_CASE(SgUctMoveInfo_Add_2)
+{
+    SgMove move = 0;
+    const SgUctValue v = 0.5;
+    const SgUctValue count = 1;
+    SgUctMoveInfo info(move, InverseValue(v), count, v, count);
+    info.Add(1.0, 3);
+    BOOST_CHECK_CLOSE(info.m_value, InverseValue(7.0/8), EPSILON);
+    BOOST_CHECK_EQUAL(info.m_count, 4);
+    BOOST_CHECK_CLOSE(info.m_raveValue, 7.0/8, EPSILON);
+    BOOST_CHECK_EQUAL(info.m_raveCount, 4);
+}
+
 
 /** Test SgUctTreeIterator on a small tree. */
 BOOST_AUTO_TEST_CASE(SgUctTreeIteratorTest_Simple)
