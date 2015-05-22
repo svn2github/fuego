@@ -8,7 +8,7 @@ history.
 Current development version
 ===========================
 
-* Support for additive knowedge term in UCT child selection formula
+* Support for additive knowledge term in UCT child selection formula
 * Use Greenpeep-style patterns for "additive" knowledge in tree
 * Use learned 3x3 pattern weights to bias selection of MoGo-style patterns
 * Extend search if most-simulated and highest-percentage move differ
