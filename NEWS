@@ -14,7 +14,7 @@ Current development version
 * Extend search if most-simulated and highest-percentage move differ
 * Deterministic mode to make search results reproducible
 * Fixed bugs for handling negative (reverse) komi
-* Support both boost filesystem v2 and v3
+* Updated to boost filesystem v3
 * Capture instead of connecting on false-eye point in playouts
 * More efficient hash table using four probes
 * setup-build.sh script for easier creation of separate dbg, opt bullds
@@ -96,7 +96,7 @@ but a new release with new and incompatible features from the main branch.]
 * In SgSearch::SearchEngine, use a stack instead of a vector for efficiency
 * New max_memory option to uct_param_search makes Fuego easier to configure
 * Implement forced opening moves in GoUctPlayer
-* Set bias term constant to 0 by default on all boardsizes
+* Set bias term constant to 0 by default on all board sizes
 
 Version 0.4 - 2009 May 22
 =========================
@@ -136,7 +136,7 @@ Version 0.3 - 2008 Dec 17
 Version 0.2 - 2008 Aug 28
 =========================
 
-* Declare data members of UCT nodes and signature statistis as volatile.
+* Declare data members of UCT nodes and signature statistics as volatile.
   This avoids that the compiler reorders writes, which could cause crashes
   if the UCT search is used in lock-free mode.
 * Fix bug that caused reusing the subtree not to work (if options

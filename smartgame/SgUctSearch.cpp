@@ -28,9 +28,6 @@ using std::setprecision;
 using std::numeric_limits;
 using std::fixed;
 
-#define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
-#define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
-
 //----------------------------------------------------------------------------
 
 namespace {
@@ -169,11 +166,7 @@ SgUctSearch::Thread::Thread(SgUctSearch& search,
       m_quit(false),
       m_threadReady(2),
       m_playFinishedLock(m_playFinishedMutex),
-#if BOOST_VERSION_MAJOR == 1 && BOOST_VERSION_MINOR <= 34
-      m_globalLock(search.m_globalMutex, false),
-#else
       m_globalLock(search.m_globalMutex, boost::defer_lock),
-#endif
       m_thread(Function(*this))
 {
     m_threadReady.wait();

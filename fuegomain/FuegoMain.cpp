@@ -40,16 +40,7 @@ path GetProgramDir(const char* programPath)
 {
     if (programPath == 0)
         return "";
-    # if defined(BOOST_FILESYSTEM_VERSION)
-        SG_ASSERT (  BOOST_FILESYSTEM_VERSION == 2
-                  || BOOST_FILESYSTEM_VERSION == 3);
-    #endif
-
-    #if (defined(BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
-        return path(programPath).branch_path();
-    #else
-        return path(programPath, boost::filesystem::native).branch_path();
-    #endif	
+    return path(programPath).branch_path();
 }
 
 path GetTopSourceDir()

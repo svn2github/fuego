@@ -18,15 +18,7 @@ string SgStringUtil::GetNativeFileName(const boost::filesystem::path& file)
 {
     boost::filesystem::path normalizedFile = file;
     normalizedFile.normalize();
-    # if defined(BOOST_FILESYSTEM_VERSION)
-       SG_ASSERT (BOOST_FILESYSTEM_VERSION == 2 || BOOST_FILESYSTEM_VERSION == 3);
-    #endif
-
-    #if (defined (BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION == 3))
-        return normalizedFile.string();
-    #else
-        return normalizedFile.native_file_string();
-    #endif
+    return normalizedFile.string();
 }
 
 vector<string> SgStringUtil::SplitArguments(string s)

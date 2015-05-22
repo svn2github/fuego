@@ -26,9 +26,6 @@
 #include "GoUctSearch.h"
 #include "GoUctUtil.h"
 
-#define BOOST_VERSION_MAJOR (BOOST_VERSION / 100000)
-#define BOOST_VERSION_MINOR (BOOST_VERSION / 100 % 1000)
-
 //----------------------------------------------------------------------------
 
 /** Enable the usage of the safety solver (currently not functional).
@@ -846,7 +843,6 @@ GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
     // Multi-threaded search can be detrimental if lock-free mode is not used
     // and the default value should be good on all board sizes. The code uses
     // thread::hardware_concurrency() which was introduced in Boost 1.35.
-#if BOOST_VERSION_MAJOR == 1 && BOOST_VERSION_MINOR >= 35
     if (LockFree())
     {
         unsigned int nuThreads = boost::thread::hardware_concurrency();
@@ -857,7 +853,6 @@ GoUctGlobalSearch<POLICY,FACTORY>::GoUctGlobalSearch(GoBoard& bd,
             << nuThreads << '\n';
         SetNumberThreads(nuThreads);
     }
-#endif
 }
 
 template<class POLICY, class FACTORY>

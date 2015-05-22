@@ -12,9 +12,8 @@
 #include <iostream>
 #include <limits>
 #include <list>
+#include <boost/static_assert.hpp>
 #include "SgTime.h"
-
-using namespace std;
 
 namespace SgDeterministic {
 
@@ -36,15 +35,20 @@ bool DeterministicMode()
 
 namespace {
 
+/** Check that no old version of Boost libraries is used. */
+#if defined(BOOST_FILESYSTEM_VERSION)
+     BOOST_STATIC_ASSERT(BOOST_FILESYSTEM_VERSION >= 3);
+#endif
+
 volatile bool s_userAbort = false;
 
 /** Assertion handlers.
     Stored in a static function variable to ensure, that they exist at
     first usage, if this function is called from global variables in
     different compilation units. */
-list<SgAssertionHandler*>& AssertionHandlers()
+std::list<SgAssertionHandler*>& AssertionHandlers()
 {
-    static list<SgAssertionHandler*> s_assertionHandlers;
+    static std::list<SgAssertionHandler*> s_assertionHandlers;
     return s_assertionHandlers;
 }
 
@@ -73,10 +77,10 @@ static bool s_assertContinue = (std::getenv("SMARTGAME_ASSERT_CONTINUE") != 0);
 void SgHandleAssertion(const char* expr, const char* file, int line)
 {
     /** Set a breakpoint on the next line to drop into the debugger */
-    cerr << "Assertion failed "
+    std::cerr << "Assertion failed "
          << file << ':' << line << ": " << expr << '\n';
     for_each(AssertionHandlers().begin(), AssertionHandlers().end(),
-             mem_fun(&SgAssertionHandler::Run));
+             std::mem_fun(&SgAssertionHandler::Run));
     if (! s_assertContinue)
         abort();
 }
