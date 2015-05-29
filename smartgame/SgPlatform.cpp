@@ -8,6 +8,12 @@
 #include <algorithm>
 
 #ifdef WIN32
+
+// MinGW already defines NOMINMAX
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include <windows.h>
 #else
 #include <unistd.h>
