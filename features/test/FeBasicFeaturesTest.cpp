@@ -101,7 +101,7 @@ inline void TestSingle(FeBasicFeatureSet features,
 {
     SG_ASSERT(group.test(f));
     BOOST_CHECK(features.test(f));
-    BOOST_CHECK_EQUAL((features & group).count(), 1);
+    BOOST_CHECK_EQUAL((features & group).count(), 1u);
 }
 
 } // namespace

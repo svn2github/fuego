@@ -27,7 +27,7 @@ namespace {
 
         std::vector<SgPoint> moves(FindCornerMoves(bd));
 
-        BOOST_CHECK_EQUAL(moves.size(), 4*8); // 8 moves each corner
+        BOOST_CHECK_EQUAL(moves.size(), 4*8u); // 8 moves each corner
         BOOST_CHECK(std::find(moves.begin(), moves.end(), Pt(3, 3)) !=
                     moves.end());
         BOOST_CHECK(std::find(moves.begin(), moves.end(), Pt(3, 4)) !=
@@ -67,7 +67,7 @@ namespace {
         GoBoard bd(19);
         std::vector<MoveBonusPair> moves(FindSideExtensions(bd));
 
-        BOOST_CHECK_EQUAL(moves.size(), 13*4); // 4 sides, no corners
+        BOOST_CHECK_EQUAL(moves.size(), 13*4u); // 4 sides, no corners
     }
     
     //----------------------------------------------------------------------------

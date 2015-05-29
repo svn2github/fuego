@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(FePatternTest_Rect_3x3_1)
     FeRectPatternMatcher m;
     m.Add(&p);
     FePatternMatchResult* r = m.Match(bd);
-    BOOST_CHECK_EQUAL(r->Length(), 1);
+    BOOST_CHECK_EQUAL(r->Length(), 1u);
     const FePatternMatch& pm = r->Match(0);
     BOOST_CHECK_EQUAL(pm.Move(), Pt(3,3));
     BOOST_CHECK_EQUAL(pm.MoveColor(), SG_BLACK);
