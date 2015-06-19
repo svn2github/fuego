@@ -52,9 +52,9 @@ void GoRegionBoard::Fini()
 
 void GoRegionBoard::SetSafeFlags(const SgBWSet& safe)
 {
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             if ((*it)->Points().Overlaps(safe[color]))
                 (*it)->SetToSafe();
@@ -238,9 +238,9 @@ void GoRegionBoard::OnExecutedUncodedMove(int move, SgBlackWhite moveColor)
     }
 
     {
-        for (SgBWIterator it; it; ++it)
+        for (SgBWIterator cit; cit; ++cit)
         {
-            SgBlackWhite color(*it);
+            SgBlackWhite color(*cit);
             for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             {   GoRegion* r1 = *it;
                 if (! r1->IsValid())
@@ -253,9 +253,9 @@ void GoRegionBoard::OnExecutedUncodedMove(int move, SgBlackWhite moveColor)
 void GoRegionBoard::CheckConsistency() const
 {
     SG_ASSERT(CHECK && UpToDate());
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         SgPointSet blockArea, regionArea;
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
         {
@@ -572,9 +572,9 @@ void GoRegionBoard::OnUndoneMove()
 
     if (HEAVYCHECK)
     {
-        for (SgBWIterator it; it; ++it)
+        for (SgBWIterator cit; cit; ++cit)
         {
-            SgBlackWhite color(*it);
+            SgBlackWhite color(*cit);
             for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             {
                 const GoRegion* r = *it;
@@ -593,9 +593,9 @@ void GoRegionBoard::ReInitializeBlocksRegions()
 {
     SG_ASSERT(UpToDate());
 
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
             (*it)->ReInitialize();
         for (SgVectorIteratorOf<GoRegion> it2(AllRegions(color)); it2; ++it2)
@@ -632,9 +632,9 @@ void GoRegionBoard::AddRegion(GoRegion* r, bool isExecute)
 
 void GoRegionBoard::FindBlocksWithEye()
 {
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             if ((*it)->Blocks().IsLength(1))
             {
@@ -652,9 +652,9 @@ void GoRegionBoard::GenBlocksRegions()
     Clear();
     GenBlocks();
 
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgConnCompIterator it(AllPoints() - All(color), Board().Size());
              it; ++it)
             GenRegion(*it, color);
@@ -673,9 +673,9 @@ void GoRegionBoard::GenChains()
     if (ChainsUpToDate())
         return;
 
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         SG_ASSERT(AllChains(color).IsEmpty());
 
         for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
@@ -688,9 +688,9 @@ void GoRegionBoard::GenChains()
 
 void GoRegionBoard::WriteBlocks(std::ostream& stream) const
 {
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoBlock> it(AllBlocks(color)); it; ++it)
             stream << **it;
     }
@@ -698,9 +698,9 @@ void GoRegionBoard::WriteBlocks(std::ostream& stream) const
 
 void GoRegionBoard::WriteRegions(std::ostream& stream) const
 {
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             (*it)->Write(stream);
     }
@@ -749,9 +749,9 @@ void GoRegionBoard::GenBlocks()
 void GoRegionBoard::SetComputedFlagForAll(GoRegionFlag flag)
 {
     // mark all regions that their safety has been computed.
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion> it(AllRegions(color)); it; ++it)
             (*it)->SetComputedFlag(flag);
     }

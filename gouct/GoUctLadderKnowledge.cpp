@@ -31,9 +31,9 @@ namespace
                       const SgVector<SgPoint>& targetBlocks,
                       SgVector<SgPoint>& ladderCaptureBlocks)
     {
-        for (SgVectorIterator<SgPoint> it(targetBlocks); it; ++it)
+        for (SgVectorIterator<SgPoint> blit(targetBlocks); blit; ++blit)
         {
-            const SgPoint block = *it;
+            const SgPoint block = *blit;
             if (  bd.NumLiberties(block) == 2
                && bd.IsColor(block, bd.ToPlay())
                )
@@ -117,12 +117,13 @@ void GoUctLadderKnowledge::Initialize2LibTacticsLadderMoves()
     CheckLadders(m_bd, atMostTwoLibBlocks, blocks2LibsLadder);
 
     SgVector<SgPoint> good2LibTacticMove; // ladder moves to capture opponents
-    for (SgVectorIterator<SgPoint> it(blocks2LibsLadder);  it; ++it)
+    for (SgVectorIterator<SgPoint> blit(blocks2LibsLadder); blit; ++blit)
     {
-        const SgPoint anchor = *it;
-        for (GoAdjBlockIterator<GoBoard> it(m_bd, anchor, 2); it; ++it)
+        const SgPoint anchor = *blit;
+        for (GoAdjBlockIterator<GoBoard> oppit(m_bd, anchor, 2);
+             oppit; ++oppit)
         {
-            const SgPoint oppAnchor = *it;
+            const SgPoint oppAnchor = *oppit;
             SG_ASSERT(oppAnchor == m_bd.Anchor(oppAnchor));
             if (m_bd.NumLiberties(oppAnchor) == 2)
             {

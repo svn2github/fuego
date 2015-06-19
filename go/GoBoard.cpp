@@ -387,9 +387,11 @@ void GoBoard::UpdateBlocksAfterUndo(const StackEntry& entry)
     if (IsPass(p))
         return;
     SgBlackWhite c = entry.m_color;
-    Block* block = entry.m_suicide;
-    if (block != 0)
-        RestoreKill(block, c);
+    {
+        Block* block = entry.m_suicide;
+        if (block != 0)
+            RestoreKill(block, c);
+    }
     RemoveStone(p);
     --m_state.m_numStones[c];
     m_state.m_block[p] = 0;

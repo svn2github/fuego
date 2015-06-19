@@ -59,9 +59,9 @@ void GoStaticSafetySolver::FindHealthy()
 {
     if (Regions()->ComputedHealthy())
         return;
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion>
              it(Regions()->AllRegions(color)); it; ++it)
         {
@@ -108,9 +108,9 @@ void GoStaticSafetySolver::TestAlive(SgVectorOf<GoBlock>* blocks,
             if (has2)
             {
                 int nuRegions = 0;
-                for (SgVectorIteratorOf<GoRegion> it(br); it; ++it)
+                for (SgVectorIteratorOf<GoRegion> rit(br); rit; ++rit)
                 {
-                    if (regions.Contains(*it))
+                    if (regions.Contains(*rit))
                     {
                         ++nuRegions;
                         if (nuRegions >= 2)
@@ -165,9 +165,9 @@ void GoStaticSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
     {
         const GoBlock* b = toTest.Back();
         toTest.PopBack();
-        for (SgVectorIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
+        for (SgVectorIteratorOf<GoRegion> rit(b->Healthy()); rit; ++rit)
         {
-            const GoRegion* r = *it;
+            const GoRegion* r = *rit;
             for (SgVectorIteratorOf<GoBlock> it(r->Blocks()); it; ++it)
             {
                 const GoBlock* b2 = *it;
@@ -208,9 +208,9 @@ void GoStaticSafetySolver::FindSafePoints(SgBWSet* safe)
     GenBlocksRegions(); // find all blocks and regions on whole board
     FindHealthy(); // find healthy regions of blocks
 
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         SgVectorOf<SgVectorOf<GoBlock> > sets;
         // find maximal sets for aliveness testing
         FindTestSets(&sets, color);

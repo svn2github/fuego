@@ -54,10 +54,10 @@ void GoLadder::MarkStonesAsPrey(SgPoint p, SgVector<SgPoint>* stones)
     {
         for (GoBoard::StoneIterator it(*m_bd, p); it; ++it)
         {
-            SgPoint p = *it;
-            m_partOfPrey.Include(p);
+            SgPoint s = *it;
+            m_partOfPrey.Include(s);
             if (stones)
-                stones->PushBack(p);
+                stones->PushBack(s);
         }
     }
 }
@@ -381,8 +381,8 @@ void GoLadder::ReduceToBlocks(GoPointList& stones)
             if (m_bd->Occupied(stone) && ! visited.Contains(stone))
             {
                 result.PushBack(stone);
-                for (GoBoard::StoneIterator it(*m_bd, stone); it; ++it)
-                    visited.PushBack(*it);
+                for (GoBoard::StoneIterator sit(*m_bd, stone); sit; ++sit)
+                    visited.PushBack(*sit);
             }
         }
         stones = result;
@@ -653,11 +653,11 @@ void GoLadderUtil::FindLadderEscapeMoves(const GoBoard& bd, SgPoint prey,
     SG_ASSERT(bd.NumLiberties(prey) == 1);
     SG_ASSERT(escapeMoves.IsEmpty());
     
-    SgPoint p = bd.TheLiberty(prey);
+    const SgPoint lib = bd.TheLiberty(prey);
     SgVector<SgPoint> candidates;
-    candidates.PushBack(p);
-    if (IsLadderEscapeMove(bd, prey, p))
-    	escapeMoves.PushBack(p);
+    candidates.PushBack(lib);
+    if (IsLadderEscapeMove(bd, prey, lib))
+    	escapeMoves.PushBack(lib);
     for (GoAdjBlockIterator<GoBoard> it(bd, prey, 1); it; ++it)
     {
         // check if prey can escape by capturing *it on p.

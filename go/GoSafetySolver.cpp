@@ -31,9 +31,9 @@ bool HaveSharedUnsafe(const SgVectorOf<GoBlock>& list1,
 
 void GoSafetySolver::FindHealthy()
 {        
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion>
              it(Regions()->AllRegions(color)); it; ++it)
             (*it)->ComputeFlag(GO_REGION_STATIC_1VITAL);
@@ -43,9 +43,9 @@ void GoSafetySolver::FindHealthy()
     // but that works with GoBlock's and now we use GoChain's.
     // Code is duplicated though. Can maybe use a template function.
    
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion>
              it(Regions()->AllRegions(color)); it; ++it)
         {
@@ -63,8 +63,8 @@ void GoSafetySolver::FindClosure(SgVectorOf<GoBlock>* blocks) const
     {
         const GoBlock* b = toTest.Back();
         toTest.PopBack();
-        for (SgVectorIteratorOf<GoRegion> it(b->Healthy()); it; ++it)
-        {   GoRegion* r = *it;
+        for (SgVectorIteratorOf<GoRegion> rit(b->Healthy()); rit; ++rit)
+        {   GoRegion* r = *rit;
             for (SgVectorIteratorOf<GoChain> it(r->Chains()); it; ++it)
             {   GoBlock* b2 = *it;
                 if (! blocks->Contains(b2))
@@ -112,9 +112,9 @@ void GoSafetySolver::Test2Vital(GoRegion* r, SgBWSet* safe)
 
 void GoSafetySolver::Find2VitalAreas(SgBWSet* safe)
 {
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion>
              it(Regions()->AllRegions(color)); it; ++it)
             if (  (*it)->Points().Disjoint((*safe)[SG_BLACK]) 
@@ -253,10 +253,10 @@ void GoSafetySolver::FindSafePoints(SgBWSet* safe)
 }
 
 void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
-                           GoRegion* r, bool bySearch)
+                           GoRegion* rg, bool bySearch)
 {
-    SG_ASSERT(! r->GetFlag(GO_REGION_USED_FOR_MERGE));
-    r->SetFlag(GO_REGION_USED_FOR_MERGE, true);
+    SG_ASSERT(! rg->GetFlag(GO_REGION_USED_FOR_MERGE));
+    rg->SetFlag(GO_REGION_USED_FOR_MERGE, true);
     
     GoChainCondition* c = 0;
     if (bySearch)
@@ -264,7 +264,7 @@ void GoSafetySolver::Merge(GoChain* c1, GoChain* c2,
     else
     {
         SgPoint lib1, lib2;
-        r->Find2FreeLibs(c1, c2, &lib1, &lib2);
+        rg->Find2FreeLibs(c1, c2, &lib1, &lib2);
         c = new GoChainCondition(GO_CHAIN_TWO_LIBERTIES_IN_REGION,
                                  lib1, lib2);
     }
@@ -318,9 +318,9 @@ void GoSafetySolver::GenBlocksRegions()
     Regions()->GenChains();
     
     // merge blocks adjacent to 1-vital with 2 conn. points
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color(*it);
+        SgBlackWhite color(*cit);
         for (SgVectorIteratorOf<GoRegion> 
              it(Regions()->AllRegions(color)); it; ++it)
         {

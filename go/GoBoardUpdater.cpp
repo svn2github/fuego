@@ -27,14 +27,14 @@ SgEmptyBlackWhite GetPlayer(const SgNode* node)
 
 //----------------------------------------------------------------------------
 
-void GoBoardUpdater::Update(const SgNode* node, GoBoard& bd)
+void GoBoardUpdater::Update(const SgNode* start, GoBoard& bd)
 {
-    SG_ASSERT(node != 0);
+    SG_ASSERT(start != 0);
     m_nodes.clear();
-    while (node != 0)
+    while (start != 0)
     {
-        m_nodes.push_back(node);
-        node = node->Father();
+        m_nodes.push_back(start);
+        start = start->Father();
     }
     const SgNode* root = m_nodes[m_nodes.size() - 1];
     int size = GO_DEFAULT_SIZE;

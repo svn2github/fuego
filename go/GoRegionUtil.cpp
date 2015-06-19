@@ -49,14 +49,14 @@ bool Has2IntersectionPoints(const GoBoard& board, const SgPointSet& region,
         if (sharedLibs.MaxLength(1))
             return false;
         bool first = true;
-        for (SgVectorIterator<SgPoint> it(boundaryAnchors); it; ++it)
+        for (SgVectorIterator<SgPoint> bit(boundaryAnchors); bit; ++bit)
         {
             if (first) // we already have the liberties of first block.
                 first = false;
             else // keep those sharedLibs that are libs of block
             {
                 SgVector<SgPoint> newShared;
-                const SgPoint block = *it;
+                const SgPoint block = *bit;
                 for (GoBoard::LibertyIterator it(board, block); it; ++it)
                     if (sharedLibs.Contains(*it))
                         newShared.PushBack(*it);

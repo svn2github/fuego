@@ -146,9 +146,9 @@ SgBWSet GoSafetyCommands::GetSafe(int& totalRegions, const std::string& type)
     else
         throw GtpFailure() << "invalid safety solver: " << type;
     SgPointSet proved = safe.Both();
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite c = *it;
+        SgBlackWhite c = *cit;
         for (SgVectorIteratorOf<GoRegion> it(regionAttachment.AllRegions(c));
              it; ++it)
             if ((*it)->Points().SubsetOf(proved))

@@ -687,9 +687,9 @@ void GoBoardUtil::SharedLibertyBlocks(const GoBoard& bd, SgPoint anchor,
     mark.Clear();
     for (GoBoard::StoneIterator it1(bd, anchor); it1; ++it1)
         mark.Include(*it1);
-    for (SgVectorIterator<SgPoint> it(*blocks); it; ++it)
+    for (SgVectorIterator<SgPoint> blit(*blocks); blit; ++blit)
     {
-        SgPoint a = *it;
+        SgPoint a = *blit;
         for (GoBoard::StoneIterator it(bd, a); it; ++it)
             mark.Include(*it);
     }

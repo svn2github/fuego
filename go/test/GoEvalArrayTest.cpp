@@ -27,13 +27,14 @@ BOOST_AUTO_TEST_CASE(GoEvalArrayTest_GoEvalArray)
     BOOST_CHECK_EQUAL(eval[Pt(5, 5)], 0);
     eval[SG_PASS] = 9;
     BOOST_CHECK_EQUAL(eval[SG_PASS], 9);
+}
 
-    {
-        GoEvalArray<int> eval(5);
-        BOOST_CHECK_EQUAL(eval[0], 5);
-        BOOST_CHECK_EQUAL(eval[SG_PASS], 5);
-        BOOST_CHECK_EQUAL(eval[Pt(5, 5)], 5);
-    }
+BOOST_AUTO_TEST_CASE(GoEvalArrayTest_GoEvalArray_2)
+{
+    GoEvalArray<int> eval(5);
+    BOOST_CHECK_EQUAL(eval[0], 5);
+    BOOST_CHECK_EQUAL(eval[SG_PASS], 5);
+    BOOST_CHECK_EQUAL(eval[Pt(5, 5)], 5);
 }
 
     //----------------------------------------------------------------------------

@@ -75,9 +75,9 @@ void GoInfluence::ComputeInfluence(const GoBoard& bd,
                       SgBWArray<SgPointArray<int> >* influence)
 {
     const int MAX_INFLUENCE = 64;
-    for (SgBWIterator it; it; ++it)
+    for (SgBWIterator cit; cit; ++cit)
     {
-        SgBlackWhite color = *it;
+        SgBlackWhite color = *cit;
         ((*influence)[color]).Fill(0);
         for (GoBoard::Iterator it(bd); it; ++it)
         {

@@ -353,9 +353,9 @@ int GoEyeUtil::DegreeCode(const SgPointSet& points)
 {
     int degrees[5] = {0, 0, 0, 0, 0};
     
-    for (SgSetIterator it(points); it; ++it)
+    for (SgSetIterator pit(points); pit; ++pit)
     {
-        const SgPoint p(*it);
+        const SgPoint p(*pit);
         int nbs = 0;
         for (SgNb4Iterator it(p); it; ++it)
         {
@@ -375,9 +375,9 @@ long GoEyeUtil::DegreeCode8(const SgPointSet& points)
 {
     int degrees[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     
-    for (SgSetIterator it(points); it; ++it)
+    for (SgSetIterator pit(points); pit; ++pit)
     {
-        const SgPoint p(*it);
+        const SgPoint p(*pit);
         int nbs = 0;
         for (SgNb8Iterator it(p); it; ++it)
         {
