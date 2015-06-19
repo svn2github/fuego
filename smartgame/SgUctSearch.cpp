@@ -493,6 +493,11 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
             if (find(begin, end, child.Move()) != end)
                 continue;
         }
+        if (child.IsProvenLoss()) // Always choose winning move!
+        {
+            bestChild = &child;
+            break;
+        }
         if (  ! child.HasMean()
            && ! (  (  m_moveSelect == SG_UCTMOVESELECT_BOUND
                    || m_moveSelect == SG_UCTMOVESELECT_ESTIMATE
@@ -502,11 +507,6 @@ SgUctSearch::FindBestChild(const SgUctNode& node,
                 )
             )
             continue;
-        if (child.IsProvenLoss()) // Always choose winning move!
-        {
-            bestChild = &child;
-            break;
-        }
         SgUctValue value;
         switch (m_moveSelect)
         {
