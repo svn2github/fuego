@@ -9,7 +9,7 @@ loadsgf sgf/uct/vital-1.sgf
 # RAVE, depends on the random seed. Currently B1 also gets no prior knowledge
 # initialization. Therefor, we run the test w/o RAVE for now.
 uct_param_player max_games 500
-uct_param_search rave 0
+#uct_param_search rave 0
 
 10 reg_genmove b
 #? [B1]
