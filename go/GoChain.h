@@ -155,6 +155,7 @@ public:
     static void Fini();
 private:
     
+    /** Delete all GoChainCondition's owned by m_chainConditions and clear vector */
     void FreeChainConditions();
     
     /** Does the chain consist of a single block, or more than one?*/
