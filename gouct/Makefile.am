@@ -16,10 +16,10 @@ GoUctGlobalSearch.cpp \
 GoUctKnowledge.cpp \
 GoUctKnowledgeFactory.cpp \
 GoUctLadderKnowledge.cpp \
+GoUctMoveFilter.cpp \
 GoUctObjectWithSearch.cpp \
 GoUctPatterns.cpp \
 GoUctPlayoutPolicy.cpp \
-GoUctMoveFilter.cpp \
 GoUctSearch.cpp \
 GoUctUtil.cpp
 
@@ -44,6 +44,7 @@ GoUctKnowledge.h \
 GoUctKnowledgeFactory.h \
 GoUctLadderKnowledge.h \
 GoUctLocalPatternData.h \
+GoUctMoveFilter.h \
 GoUctObjectWithSearch.h \
 GoUctPatternData.h \
 GoUctPatterns.h \
@@ -51,7 +52,6 @@ GoUctPlayer.h \
 GoUctPlayoutPolicy.h \
 GoUctPlayoutUtil.h \
 GoUctPureRandomGenerator.h \
-GoUctMoveFilter.h \
 GoUctSearch.h \
 GoUctUtil.h
 
