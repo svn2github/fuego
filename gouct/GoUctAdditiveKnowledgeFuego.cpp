@@ -37,7 +37,7 @@ GoUctAdditiveKnowledgeFuego::ProcessPosition(std::vector<SgUctMoveInfo>&
 {
     float sum = 0.0f;
     float values[SG_MAX_MOVES];
-    SG_ASSERT(moves.size() <= SG_MAX_MOVES);
+    SG_ASSERT(moves.size() <= static_cast<unsigned int>(SG_MAX_MOVES));
     for (size_t i = 0; i < moves.size(); ++i) 
     {
         values[i] = expf(VALUE_MULTIPLIER * RaveValueAsFloat(moves[i]));
