@@ -7,9 +7,10 @@
 
 #include <boost/test/auto_unit_test.hpp>
 #include "SgHash.h"
+#include "SgRandom.h"
 
-using namespace std;
-using namespace SgHashUtil;
+using SgHashUtil::XorInteger;
+using SgHashUtil::XorZobrist;
 
 //----------------------------------------------------------------------------
 
@@ -19,7 +20,8 @@ namespace {
 
 BOOST_AUTO_TEST_CASE(SgHashCodeTest_Clear)
 {
-    SgHashCode hash = SgHashCode::Random();
+    SgRandom r;
+    SgHashCode hash = SgHashCode::Random(r);
     hash.Clear();
     BOOST_CHECK(hash.IsZero());
 }
@@ -43,7 +45,8 @@ BOOST_AUTO_TEST_CASE(SgHashCodeTest_Constructor2)
 
 BOOST_AUTO_TEST_CASE(SgHashCodeTest_Random)
 {
-    SgHashCode hash = SgHashCode::Random();
+    SgRandom r;
+    SgHashCode hash = SgHashCode::Random(r);
     BOOST_CHECK(! hash.IsZero());
 }
 
@@ -105,7 +108,8 @@ BOOST_AUTO_TEST_CASE(SgHashUtilTest_XorInteger)
     Tests only consecutive values for distinctness, not all pairs. */
 BOOST_AUTO_TEST_CASE(SgHashZobristTest_Initialization)
 {
-    SgHashZobrist<64> t;
+    SgRandom r;
+    SgHashZobrist<64> t(r);
     SgHash<64> emptyHash;
     SgHash<64> prev = t.Get(0);
     BOOST_CHECK(prev != emptyHash);
