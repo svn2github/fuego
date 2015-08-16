@@ -17,6 +17,7 @@ fuego_unittest_SOURCES = \
 ../go/test/GoGameTest.cpp \
 ../go/test/GoGtpCommandUtilTest.cpp \
 ../go/test/GoGtpEngineTest.cpp \
+../go/test/GoInfluenceTest.cpp \
 ../go/test/GoKomiTest.cpp \
 ../go/test/GoLadderTest.cpp \
 ../go/test/GoOpeningKnowledgeTest.cpp \
