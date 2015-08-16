@@ -74,8 +74,8 @@ GoRegionBoard::GoRegionBoard(const GoBoard& board)
       m_computedHealthy(false),
       m_boardSize(board.Size())
 {
-    m_code.Invalidate();
-    m_chainsCode.Invalidate();
+    m_code.Clear();
+    m_chainsCode.Clear();
     GenBlocksRegions();
     ++s_alloc;
 }
@@ -107,7 +107,7 @@ void GoRegionBoard::Clear()
     m_allChains[SG_BLACK].Clear();
     m_allChains[SG_WHITE].Clear();
     m_stack.Clear();
-    m_code.Invalidate();
+    m_code.Clear();
     m_invalid = true;
     m_computedHealthy = false;
     m_boardSize = m_board.Size();
