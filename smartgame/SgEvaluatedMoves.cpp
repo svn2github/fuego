@@ -46,7 +46,10 @@ SgPoint SgEvaluatedMoves::BestMove()
     if (m_moveList.IsEmpty())
         return SG_PASS;
     else
-        return m_moveList[SgRandom::Global().Int(m_moveList.Length())];
+        return m_moveList[0];
+        // TODO implement RandomBestMove() if needed
+        // return m_moveList[SgRandom::Global().Int(m_moveList.Length())];
+
 }
 
 void SgEvaluatedMoves::BestMoves(SgVector<SgPoint>& best, int nuMoves) const
