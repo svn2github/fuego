@@ -40,9 +40,6 @@ public:
         Caution: after Clear() hash code matches code of empty board. */
     void Clear();
 
-    /** Set to random value. */
-    void Invalidate();
-
     bool operator<(const SgHash& code) const;
 
     bool operator==(const SgHash& code) const;
@@ -69,7 +66,7 @@ public:
 
     /** Return a random hash code.
         @return A random hash code, which is not zero. */
-    static SgHash Random();
+    static SgHash Random(SgRandom& random);
 
     /** Roll bits n places to the left */
     void RollLeft(int n);
@@ -190,12 +187,6 @@ unsigned int SgHash<N>::Hash(int max) const
 }
 
 template<int N>
-void SgHash<N>::Invalidate()
-{
-    *this = Random();
-}
-
-template<int N>
 bool SgHash<N>::IsZero() const
 {
     return m_code.none();
@@ -214,14 +205,14 @@ unsigned int SgHash<N>::Mix32(int key) const
 }
 
 template<int N>
-SgHash<N> SgHash<N>::Random()
+SgHash<N> SgHash<N>::Random(SgRandom& random)
 {
     SgHash hashcode;
-    hashcode.m_code = SgRandom::Global().Int();
+    hashcode.m_code = random.Int();
     for (int i = 1; i < (N / 32); ++i)
     {
         hashcode.m_code <<= 32;
-        hashcode.m_code |= SgRandom::Global().Int();
+        hashcode.m_code |= random.Int();
     }
 
     return hashcode;
@@ -296,9 +287,10 @@ public:
         2 * SG_MAXPOINT, plus capture hash */
     static const int MAX_HASH_INDEX = 1500;
 
-    SgHashZobrist();
+    /** Initialize table using random generator */
+    SgHashZobrist(SgRandom& random);
 
-    const SgHash<N>& Get(int index) const 
+    const SgHash<N>& Get(int index) const
     { 
     	return m_hash[index]; 
     }
@@ -307,7 +299,8 @@ public:
     static const SgHashZobrist& GetTable();
 
 private:
-    static SgHashZobrist m_globalTable;
+    static SgRandom s_random;
+    static SgHashZobrist s_globalTable;
 
     SgArray<SgHash<N>, MAX_HASH_INDEX> m_hash;
 };
@@ -315,20 +308,24 @@ private:
 /** For backwards compatibility */
 typedef SgHashZobrist<64> SgHashZobristTable;
 
+/**  */
 template<int N>
-SgHashZobrist<N> SgHashZobrist<N>::m_globalTable;
+SgRandom SgHashZobrist<N>::s_random;
 
 template<int N>
-SgHashZobrist<N>::SgHashZobrist()
+SgHashZobrist<N> SgHashZobrist<N>::s_globalTable(s_random);
+
+template<int N>
+SgHashZobrist<N>::SgHashZobrist(SgRandom& random)
 {
     for (int i = 0; i < MAX_HASH_INDEX; ++i)
-        m_hash[i] = SgHash<N>::Random();
+        m_hash[i] = SgHash<N>::Random(random);
 }
 
 template<int N>
 const SgHashZobrist<N>& SgHashZobrist<N>::GetTable()
 {
-    return m_globalTable;
+    return s_globalTable;
 }
 
 //----------------------------------------------------------------------------
