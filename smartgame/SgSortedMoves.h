@@ -108,6 +108,8 @@ public:
     /** The best move is sorted first in the table */
     const MOVE& BestMove() const {return Move(0);}
 
+    void SwapMoves(int index1, int index2);
+
     /** See m_value */
     VALUE Value(int i) const 
     {
@@ -136,9 +138,6 @@ public:
         SG_ASSERTRANGE(i, 0, m_nuMoves - 1);
     }
 
-    /** randomly shuffle all the moves of equal value. */
-    void Shuffle();
-
 private:
     /**  */
     int m_maxNuMoves;
@@ -166,9 +165,6 @@ private:
 
     /**  */
     void CheckMoves() const;
-
-    /** Randomly shuffle all moves in interval. They must be of equal value */
-    void ShuffleInterval(int from, int to);
 };
 
 template<typename MOVE, typename VALUE, int SIZE>
@@ -222,7 +218,7 @@ void SgSortedMoves<MOVE, VALUE, SIZE>::DeleteEqual()
         {
             if (m_value[i] == m_value[j])
             {
-                Delete(SgRandom::Global().Int(2) ? j : i);
+                Delete(i);
                 /* */ return; /* */
             }
         }
@@ -312,37 +308,6 @@ bool SgSortedMoves<MOVE, VALUE, SIZE>::GetMove(const MOVE& move,
 }
 
 template<typename MOVE, typename VALUE, int SIZE>
-void SgSortedMoves<MOVE, VALUE, SIZE>::ShuffleInterval(int from, int to)
-{
-    AssertIndexRange(from);
-    AssertIndexRange(to);
-    SG_ASSERT(m_value[from] == m_value[to]);
-
-    for (; to > from; --to)
-    {// put random element in [from..to] into to
-        int i = from + SgRandom::Global().Int(to - from + 1);
-        SG_ASSERT(m_value[i] == m_value[to]);
-        MOVE t = m_move[i];
-        m_move[i] = m_move[to];
-        m_move[to] = t;
-    }
-}
-
-template<typename MOVE, typename VALUE, int SIZE>
-void SgSortedMoves<MOVE, VALUE, SIZE>::Shuffle()
-{
-    for (int i = 0; i < m_nuMoves; ++i)
-    {
-        int val = m_value[i];
-        int j;
-        for (j = i + 1; j < m_nuMoves && (val == m_value[j]); ++j)
-        { }
-        if (j > i + 1)
-            ShuffleInterval(i, j - 1);
-    }
-}
-
-template<typename MOVE, typename VALUE, int SIZE>
 void SgSortedMoves<MOVE, VALUE, SIZE>::GetMoves(SgVector<MOVE>* moves) const
 {
     for (int i = 0; i < m_nuMoves; ++i)
@@ -396,6 +361,12 @@ void SgSortedMoves<MOVE, VALUE, SIZE>::SetMaxMoves(int nu)
               )
             --m_nuMoves; // same as: Delete(m_nuMoves - 1);
     }
+}
+
+template<typename MOVE, typename VALUE, int SIZE>
+void SgSortedMoves<MOVE, VALUE, SIZE>::SwapMoves(int index1, int index2)
+{
+    std::swap(m_move[index1], m_move[index2]);
 }
 
 //----------------------------------------------------------------------------
