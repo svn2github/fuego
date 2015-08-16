@@ -18,6 +18,7 @@
 #include "GoBoardRestorer.h"
 #include "GoEyeUtil.h"
 #include "GoGtpCommandUtil.h"
+#include "GoInfluence.h"
 #include "GoModBoard.h"
 #include "GoNodeUtil.h"
 #include "GoPlayer.h"
@@ -111,6 +112,7 @@ GoGtpEngine::GoGtpEngine(int fixedBoardSize, const char* programPath,
     Register("get_komi", &GoGtpEngine::CmdGetKomi, this);
     Register("gg-undo", &GoGtpEngine::CmdGGUndo, this);
     Register("go_board", &GoGtpEngine::CmdBoard, this);
+    Register("go_distance", &GoGtpEngine::CmdDistance, this);
     Register("go_param", &GoGtpEngine::CmdParam, this);
     Register("go_param_rules", &GoGtpEngine::CmdParamRules, this);
     Register("go_player_board", &GoGtpEngine::CmdPlayerBoard, this);
@@ -336,6 +338,7 @@ void GoGtpEngine::CmdAnalyzeCommands(GtpCommand& cmd)
         "sboard/Go Point Numbers/go_point_numbers\n"
         "none/Go Rules/go_rules %s\n"
         "plist/All Legal/all_legal %c\n"
+        "sboard/Go Distance/go_distance %c\n"
         "string/ShowBoard/showboard\n"
         "string/CpuTime/cputime\n"
         "string/Get Komi/get_komi\n"
@@ -402,6 +405,16 @@ void GoGtpEngine::CmdClock(GtpCommand& cmd)
     m_game.Time().UpdateTimeLeft();
     cmd << '\n' << m_game.Time();
 }
+
+void GoGtpEngine::CmdDistance(GtpCommand& cmd)
+{
+    cmd.CheckNuArg(1);
+    SgBlackWhite color = GoGtpCommandUtil::BlackWhiteArg(cmd, 0);
+    SgPointArray<int> distance;
+    GoInfluence::FindDistanceToStones(Board(), color, distance);
+    cmd << '\n' << SgWritePointArray<int>(distance, Board().Size());
+}
+
 
 /** Compute final score.
     Computes score only if GoRules::CaptureDead() == true.

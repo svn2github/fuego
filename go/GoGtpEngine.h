@@ -85,6 +85,7 @@ public:
     virtual void CmdBoardSize(GtpCommand&);
     virtual void CmdClearBoard(GtpCommand&);
     virtual void CmdClock(GtpCommand&);
+    virtual void CmdDistance(GtpCommand& cmd);
     virtual void CmdFinalScore(GtpCommand&);
     virtual void CmdFixedHandicap(GtpCommand&);
     virtual void CmdGameOver(GtpCommand&);

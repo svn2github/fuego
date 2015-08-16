@@ -6,7 +6,9 @@
 #include "SgSystem.h"
 #include "GoInfluence.h"
 
+#include <vector>
 #include "SgNbIterator.h"
+#include "SgPointset.h"
 
 //----------------------------------------------------------------------------
 namespace {
@@ -31,11 +33,65 @@ void Spread(const GoBoard& bd, SgPoint p, const SgPointSet& stopPts,
 } // namespace
 //----------------------------------------------------------------------------
 
+void GoInfluence::ComputeInfluence(const GoBoard& bd,
+                                   const SgBWSet& stopPts,
+                                   SgBWArray<SgPointArray<int> >* influence)
+{
+    const int MAX_INFLUENCE = 64;
+    for (SgBWIterator cit; cit; ++cit)
+    {
+        SgBlackWhite color = *cit;
+        ((*influence)[color]).Fill(0);
+        for (GoBoard::Iterator it(bd); it; ++it)
+        {
+            SgPoint p(*it);
+            if (bd.IsColor(p, color))
+                Spread(bd, p, stopPts[color], MAX_INFLUENCE, 
+                       (*influence)[color]);
+        }
+    }
+}
+
+void GoInfluence::FindDistanceToStones(const GoBoard& bd,
+                                       SgBlackWhite color,
+                                       SgPointArray<int>& distance)
+{
+    for (GoBoard::Iterator it(bd); it; ++it)
+        distance[*it] = DISTANCE_INFINITE;
+    
+    std::vector<SgPoint> queue;
+    SgMarker marker;
+    for (SgSetIterator it(bd.All(color)); it; ++it)
+    {
+        queue.push_back(*it);
+        marker.Include(*it);
+    }
+    
+    int d = 0;
+    while (! queue.empty())
+    {
+        std::vector<SgPoint> next;
+        for(std::vector<int>::const_iterator it = queue.begin(); it != queue.end(); ++it)
+        {
+            const SgPoint p = *it;
+            distance[p] = d;
+            for (GoNbIterator it2(bd, p); it2; ++it2)
+            {
+                const SgPoint nb = *it2;
+                if (marker.NewMark(nb) && bd.IsEmpty(nb))
+                    next.push_back(nb);
+            }
+        }
+        ++d;
+        queue.swap(next);
+    }
+}
+
 void GoInfluence::FindInfluence(const GoBoard& board,
-                    int nuExpand,
-                    int nuShrink,
-                    SgBWSet* influence)
-{   
+                                int nuExpand,
+                                int nuShrink,
+                                SgBWSet* influence)
+{
     SgBWSet result = SgBWSet(board.All(SG_BLACK), board.All(SG_WHITE));
     SgBWSet next;
     const int size = board.Size();
@@ -68,25 +124,3 @@ int GoInfluence::Influence(const GoBoard& board,
     FindInfluence(board, nuExpand, nuShrink, &result);
     return result[color].Size();
 }
-
-
-void GoInfluence::ComputeInfluence(const GoBoard& bd,
-                      const SgBWSet& stopPts,
-                      SgBWArray<SgPointArray<int> >* influence)
-{
-    const int MAX_INFLUENCE = 64;
-    for (SgBWIterator cit; cit; ++cit)
-    {
-        SgBlackWhite color = *cit;
-        ((*influence)[color]).Fill(0);
-        for (GoBoard::Iterator it(bd); it; ++it)
-        {
-            SgPoint p(*it);
-            if (bd.IsColor(p, color))
-                Spread(bd, p, stopPts[color], MAX_INFLUENCE, 
-                       (*influence)[color]);
-        }
-    }
-}
-
-

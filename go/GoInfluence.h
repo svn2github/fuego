@@ -13,6 +13,14 @@
 
 namespace GoInfluence {
 
+const int DISTANCE_INFINITE = 99;
+
+/** Find Manhattan distance to nearest stone of color. Does not
+    go through opponent stones. Set distance to DISTANCE_INFINITE if no stone
+    is reachable. */
+void FindDistanceToStones(const GoBoard& board, SgBlackWhite color,
+                          SgPointArray<int>& distance);
+
 /** Compute influence by nuExpand expansions followed by nuShrink
     contractions.
     Starts from the player's stones.
