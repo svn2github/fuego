@@ -29,13 +29,6 @@ public:
 
     ~SgRandom();
 
-    /** Return the global random number generator.
-        The global generator is stored as a static variable in this function
-        to ensure that it is initialized at first call if SgRandom is used
-        in global variables of other compilation units.
-        @note The global random number generator is not thread-safe. */
-    static SgRandom& Global();
-
     /** Set random seed for all existing and future instances of SgRandom.
         @param seed The seed. If negative, no seed will be set. If zero, a
         non-deterministic random seed will be used (e.g. derived from the

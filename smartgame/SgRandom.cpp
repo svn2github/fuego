@@ -30,12 +30,6 @@ SgRandom::~SgRandom()
     GetGlobalData().m_allGenerators.remove(this);
 }
 
-SgRandom& SgRandom::Global()
-{
-    static SgRandom s_globalGenerator;
-    return s_globalGenerator;
-}
-
 SgRandom::GlobalData& SgRandom::GetGlobalData()
 {
     static GlobalData s_data;
