@@ -20,10 +20,9 @@ class GoSafetySolver : public GoStaticSafetySolver
 public:
     /** Constructor, @see GoStaticSafetySolver */
     explicit GoSafetySolver(const GoBoard& board, GoRegionBoard* regions = 0)
-             : GoStaticSafetySolver(board, regions)
-    {
-        m_code.Invalidate();
-    }
+             : GoStaticSafetySolver(board, regions),
+             m_code()
+    { }
 
     /** Main function, compute safe points */
     void FindSafePoints(SgBWSet* safe);
