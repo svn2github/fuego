@@ -26,7 +26,7 @@ public:
     void AddGoGuiAnalyzeCommands(GtpCommand& cmd);
 
     /** @page gogtpextracommands GoGtpExtraCommands Commands
-        - @link CmdCfgDistance() @c go_distance @endlink
+        - @link CmdCfgDistance() @c go_cfg_distance @endlink
         - @link CmdLadder() @c go_ladder @endlink
         - @link CmdStaticLadder() @c go_static_ladder @endlink */
     /** @name Command Callbacks */
