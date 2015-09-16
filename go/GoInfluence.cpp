@@ -8,7 +8,7 @@
 
 #include <vector>
 #include "SgNbIterator.h"
-#include "SgPointset.h"
+#include "SgPointSet.h"
 
 //----------------------------------------------------------------------------
 namespace {
