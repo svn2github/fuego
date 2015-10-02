@@ -16,7 +16,6 @@
 #include "GoBoardUtil.h"
 #include "GoPattern12Point.h"
 #include "SgPlatform.h"
-#include "SgStringUtil.h"
 
 struct PatternEntry // common data structure used in both 9x9 and 19x19
 {
