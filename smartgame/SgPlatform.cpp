@@ -22,6 +22,7 @@
 #include <sys/sysctl.h>
 #endif
 
+#include "SgStringUtil.h"
 //----------------------------------------------------------------------------
 /** The program directory. Used for finding data files */
 boost::filesystem::path s_programDir;
@@ -49,6 +50,13 @@ const boost::filesystem::path& SgPlatform::GetTopSourceDir()
 void SgPlatform::SetTopSourceDir(const boost::filesystem::path& dir)
 {
     s_topSourceDir = dir;
+}
+
+std::string SgPlatform::GetDataFileNativePath(const std::string& filename)
+{
+    const boost::filesystem::path& filePath = SgPlatform::GetTopSourceDir()
+                                                / "data" / filename;
+    return SgStringUtil::GetNativeFileName(filePath);
 }
 
 //----------------------------------------------------------------------------

@@ -13,6 +13,9 @@
 /** Get information about the current computer. */
 namespace SgPlatform
 {
+    /** Get native path for a file in fuego/data directory */
+    std::string GetDataFileNativePath(const std::string& filename);
+
     /** @see SetProgramDir */
     const boost::filesystem::path& GetProgramDir();
 
