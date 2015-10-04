@@ -14,6 +14,10 @@ fi
 # Optimization options for the GCC compiler.
 GCC_OPTIMIZE="-O3 -ffast-math"
 
+# If you get a Configure: Error: Could Not Find A Version Of The Library!
+# Uncomment the next line and replace '/usr/lib/x86_64-linux-gnu' with the boost libraries location for your system
+#BOOST_LIBDIR_FLAG="--with-boost-libdir=/usr/lib/x86_64-linux-gnu"
+
 aclocal
 autoheader
 autoreconf -i
@@ -62,7 +66,7 @@ setup() {
 	cd "build/$TARGET"
 	export CXX      # Used by configure script
 	export CXXFLAGS # Used by configure script
-	../../configure --enable-maintainer-mode $CONFIGUREFLAGS
+	../../configure --enable-maintainer-mode $BOOST_LIBDIR_FLAG $CONFIGUREFLAGS
 	make clean
     )
 }
