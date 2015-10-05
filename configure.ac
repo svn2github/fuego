@@ -15,7 +15,7 @@ AX_BOOST_DATE_TIME
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_UNIT_TEST_FRAMEWORK
-
+AX_PTHREAD
 
 AC_ARG_ENABLE(max-size,
   [  --enable-max-size=n     define maximum board size (2..25, default 19)])
