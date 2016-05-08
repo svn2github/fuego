@@ -56,6 +56,7 @@ noinst_HEADERS = \
 SgAdditiveKnowledge.h \
 SgArray.h \
 SgArrayList.h \
+SgAutoUnitTest.h \
 SgBookBuilder.h \
 SgBWArray.h \
 SgBWSet.h \
