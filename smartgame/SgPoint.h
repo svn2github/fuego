@@ -158,7 +158,7 @@ typedef int SgGrid;
     because SgPoint is a typedef int. */
 struct SgWritePoint
 {
-    SgPoint m_p;
+    const SgPoint m_p;
 
     explicit SgWritePoint(SgPoint p);
 };
@@ -169,6 +169,25 @@ std::ostream& operator<<(std::ostream& out, const SgWritePoint& writePoint);
 inline SgWritePoint::SgWritePoint(SgPoint p)
     : m_p(p)
 { }
+
+//----------------------------------------------------------------------------
+
+/** Write player color and move for games in which a move is a SgPoint. */
+class SgWriteMove
+{
+public:
+    SgWriteMove(SgPoint point, SgBlackWhite color)
+        : m_point(point),
+          m_color(color)
+    { }
+
+private:
+    friend std::ostream& operator<<(std::ostream& out, const SgWriteMove &w);
+
+    const SgPoint m_point;
+
+    const SgBlackWhite m_color;
+};
 
 //----------------------------------------------------------------------------
 

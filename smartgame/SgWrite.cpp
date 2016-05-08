@@ -39,14 +39,6 @@ ostream& operator<<(ostream& out, const SgWriteLine &w)
 
 //----------------------------------------------------------------------------
 
-ostream& operator<<(ostream& out, const SgWriteMove& w)
-{
-    out << SgBW(w.m_color) << ' ' << SgWritePoint(w.m_point) << ' ';
-    return out;
-}
-
-//----------------------------------------------------------------------------
-
 SgWritePointList::SgWritePointList(const vector<SgPoint>& pointList,
                                    std::string label, bool writeSize)
     : m_writeSize(writeSize),

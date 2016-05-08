@@ -5,7 +5,7 @@
 
 #include "SgSystem.h"
 
-#include <boost/test/auto_unit_test.hpp>
+#include "SgAutoUnitTest.h"
 #include "SgPoint.h"
 
 using namespace std;
@@ -108,6 +108,32 @@ BOOST_AUTO_TEST_CASE(SgWritePointTestAll)
     if (SG_MAX_SIZE >= 19)
         SgWritePointTest(Pt(19, 19), "T19");
     SgWritePointTest(SG_PASS, "PASS");
+}
+
+//----------------------------------------------------------------------------
+
+void SgWriteMoveTest(SgPoint p, SgBlackWhite color, const char* s)
+{
+    ostringstream out;
+    out << SgWriteMove(p, color);
+    BOOST_CHECK_EQUAL(out.str(), s);
+}
+
+BOOST_AUTO_TEST_CASE(SgWriteMoveTestAll)
+{
+    SgWriteMoveTest(Pt(1, 1), SG_BLACK, "B A1 ");
+    SgWriteMoveTest(Pt(1, 1), SG_WHITE, "W A1 ");
+    SgWriteMoveTest(Pt(8, 1), SG_BLACK, "B H1 ");
+    SgWriteMoveTest(Pt(8, 1), SG_WHITE, "W H1 ");
+    SgWriteMoveTest(Pt(9, 1), SG_BLACK, "B J1 ");
+    SgWriteMoveTest(Pt(9, 1), SG_WHITE, "W J1 ");
+    if (SG_MAX_SIZE >= 19)
+    {
+        SgWriteMoveTest(Pt(19, 19), SG_BLACK, "B T19 ");
+        SgWriteMoveTest(Pt(19, 19), SG_WHITE, "W T19 ");
+    }
+    SgWriteMoveTest(SG_PASS, SG_BLACK, "B PASS ");
+    SgWriteMoveTest(SG_PASS, SG_WHITE, "W PASS ");
 }
 
 //----------------------------------------------------------------------------

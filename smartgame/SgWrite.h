@@ -116,26 +116,6 @@ std::ostream& operator<<(std::ostream& out,
 
 //----------------------------------------------------------------------------
 
-/** Write player color and move for games in which a move is a SgPoint.
-    @todo Move to SgPoint, merge class with SgWritePoint. */
-class SgWriteMove
-{
-public:
-    SgWriteMove(SgPoint point, SgBlackWhite color)
-        : m_point(point),
-          m_color(color)
-    { }
-
-private:
-    friend std::ostream& operator<<(std::ostream& out, const SgWriteMove &w);
-
-    SgPoint m_point;
-
-    SgBlackWhite m_color;
-};
-
-//----------------------------------------------------------------------------
-
 /** Write line of dashes. */
 class SgWriteLine
 {
@@ -149,7 +129,9 @@ public:
 
 //----------------------------------------------------------------------------
 
-/** Only writes "not" if value is false */
+/** write "true" or "false"
+    @todo just use boolalpha
+*/
 class SgWriteBoolean
 {
 public:
@@ -164,7 +146,9 @@ private:
 
 //----------------------------------------------------------------------------
 
-/** Writes boolean as 0/1. */
+/** Writes boolean as 0/1. 
+    @todo just use noboolalpha
+*/
 class SgWriteBoolAsInt
 {
 public:

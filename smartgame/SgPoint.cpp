@@ -151,3 +151,11 @@ ostream& operator<<(ostream& out, const SgWritePoint& writePoint)
 
 //----------------------------------------------------------------------------
 
+ostream& operator<<(ostream& out, const SgWriteMove& w)
+{
+    out << SgBW(w.m_color) << ' ' << SgWritePoint(w.m_point) << ' ';
+    return out;
+}
+
+//----------------------------------------------------------------------------
+
