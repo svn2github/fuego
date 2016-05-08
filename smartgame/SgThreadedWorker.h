@@ -6,13 +6,17 @@
 #define SG_THREADEDWORKER_HPP
 
 #include "SgDebug.h"
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-parameter"
+#endif
     #include <boost/thread.hpp>
     #include <boost/thread/barrier.hpp>
     #include <boost/thread/mutex.hpp>
     #include <boost/shared_ptr.hpp>
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 
 //----------------------------------------------------------------------------
 

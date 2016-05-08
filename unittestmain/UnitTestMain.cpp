@@ -39,10 +39,14 @@ void Fini()
 #include <cstdlib>
 #define BOOST_TEST_DYN_LINK // Must be defined before including unit_test.hpp
 
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-parameter"
+#endif
     #include <boost/test/unit_test.hpp>
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 
 
 bool init_unit_test()
