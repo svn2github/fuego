@@ -4,7 +4,7 @@ AC_INIT([fuego], [1.1.SVN])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([go/GoBoard.cpp])
 AC_CONFIG_HEADERS(config.h)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 AC_PROG_CXX
 AC_PROG_RANLIB
@@ -15,7 +15,7 @@ AX_BOOST_DATE_TIME
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_UNIT_TEST_FRAMEWORK
-
+AX_PTHREAD
 
 AC_ARG_ENABLE(max-size,
   [  --enable-max-size=n     define maximum board size (2..25, default 19)])
