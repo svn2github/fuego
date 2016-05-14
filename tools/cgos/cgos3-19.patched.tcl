@@ -4,8 +4,9 @@
 # http://cgos.boardspace.net) to inform the player about the opponent's name
 # and game result using the command go_set_info used by fuego/go/GoGtpEngine.
 # Patched lines are marked with the comment PATCHED
+# changed server to yss-aya.com, 2016-05-13
 
-set server cgos.boardspace.net
+set server yss-aya.com
 set port   6819
 
 
