@@ -723,63 +723,20 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_2)
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_3)
 {
     // sacrifice moves
-    // O . @ O . O @ . . 9
-    // @ @ @ O . O @ @ @ 8
-    // O O O . . O O O O 7
-    // @ O . . . . @ @ @ 6
-    // @ O . . . . @ O O 5
-    // . @ . . . . @ O O 4
-    // @ . . . . . @ @ O 3
-    // . . . . . . . O . 2
-    // . . . . . . . . O 1
-    // 1 2 3 4 5 6 7 8 9
+    std::string   s("O.XO.OX..\n"
+                    "XXXO.OXXX\n"
+                    "OOO..OOOO\n"
+                    "XO....XXX\n"
+                    "XO....XOO\n"
+                    ".X....XOO\n"
+                    "X.....XXO\n"
+                    ".......O.\n"
+                    "........O");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
 
-    GoSetup setup;
-    setup.AddBlack(Pt(1, 3));
-    setup.AddBlack(Pt(7, 3));
-    setup.AddBlack(Pt(8, 3));
-    setup.AddBlack(Pt(2, 4));
-    setup.AddBlack(Pt(7, 4));
-    setup.AddBlack(Pt(1, 5));
-    setup.AddBlack(Pt(7, 5));
-    setup.AddBlack(Pt(1, 6));
-    setup.AddBlack(Pt(7, 6));
-    setup.AddBlack(Pt(8, 6));
-    setup.AddBlack(Pt(9, 6));
-    setup.AddBlack(Pt(1, 8));
-    setup.AddBlack(Pt(2, 8));
-    setup.AddBlack(Pt(3, 8));
-    setup.AddBlack(Pt(7, 8));
-    setup.AddBlack(Pt(8, 8));
-    setup.AddBlack(Pt(9, 8));
-    setup.AddBlack(Pt(3, 9));
-    setup.AddBlack(Pt(7, 9));
-    
-    setup.AddWhite(Pt(9, 1));
-    setup.AddWhite(Pt(8, 2));
-    setup.AddWhite(Pt(9, 3));
-    setup.AddWhite(Pt(8, 4));
-    setup.AddWhite(Pt(9, 4));
-    setup.AddWhite(Pt(2, 5));
-    setup.AddWhite(Pt(8, 5));
-    setup.AddWhite(Pt(9, 5));
-    setup.AddWhite(Pt(2, 6));
-    setup.AddWhite(Pt(1, 7));
-    setup.AddWhite(Pt(2, 7));
-    setup.AddWhite(Pt(3, 7));
-    setup.AddWhite(Pt(6, 7));
-    setup.AddWhite(Pt(7, 7));
-    setup.AddWhite(Pt(8, 7));
-    setup.AddWhite(Pt(9, 7));
-    setup.AddWhite(Pt(4, 8));
-    setup.AddWhite(Pt(6, 8));
-    setup.AddWhite(Pt(1, 9));
-    setup.AddWhite(Pt(4, 9));
-    setup.AddWhite(Pt(6, 9));
-    
-    GoBoard bd(9, setup);
-
-    bd.SetToPlay(SG_BLACK);
     BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 2))); // allow capture
     CheckSelfAtari(bd, Pt(2, 9), 5); // capture 1 within eye, still in atari
     CheckSelfAtari(bd, Pt(8, 9), 5);
@@ -791,6 +748,27 @@ BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_3)
     //BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(8, 9))); // atari on opp.
     //BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(9, 9))); // atari on opp.
 }
+
+BOOST_AUTO_TEST_CASE(GoBoardUtilTest_SelfAtari_4)
+{
+    // Some examples of good self ataries
+    std::string s(".XXOO..\n"
+                  "XO..O..\n"
+                  ".XXOO..\n"
+                  "XOO.O..\n"
+                  ".XXOOOO\n"
+                  "XOO.XXO\n"
+                  ".XXOOOO\n");
+    int boardSize;
+    GoSetup setup = GoSetupUtil::CreateSetupFromString(s, boardSize);
+    setup.m_player = SG_BLACK;
+    GoBoard bd(boardSize, setup);
+    BOOST_CHECK(! GoBoardUtil::SelfAtari(bd, Pt(4, 4))); // capture 2, recapture 1
+    CheckSelfAtari(bd, Pt(4, 2), 3); // capture 2, recapture 3
+    bd.SetToPlay(SG_WHITE);
+    CheckSelfAtari(bd, Pt(3, 6), 2); // sacrifice 2 to recapture 1
+}
+
 
 BOOST_AUTO_TEST_CASE(GoBoardUtilTest_TrompTaylorPassWins)
 {
