@@ -10,14 +10,37 @@
 */
 //----------------------------------------------------------------------------
 
-#ifndef GOUCT_ADDITIVEKNOWLEDGE_H
-#define GOUCT_ADDITIVEKNOWLEDGE_H
+#ifndef GO_ADDITIVEKNOWLEDGE_H
+#define GO_ADDITIVEKNOWLEDGE_H
 
 #include <vector>
 #include "GoBoard.h"
 #include "SgUctSearch.h"
 
 //----------------------------------------------------------------------------
+
+/** Knowledge type is used for knowledge factories. */
+enum KnowledgeType
+{
+    KNOWLEDGE_NONE,
+    KNOWLEDGE_GREENPEEP,
+    KNOWLEDGE_RULEBASED,
+    KNOWLEDGE_FEATURES,
+    KNOWLEDGE_BOTH
+};
+
+/** Combination Type is used for combining multiple additive knowledge. */
+enum GoUctKnowledgeCombinationType
+{
+    COMBINE_MULTIPLY,
+    COMBINE_GEOMETRIC_MEAN,
+    COMBINE_ADD,
+    COMBINE_AVERAGE,
+    COMBINE_MAX
+};
+
+//----------------------------------------------------------------------------
+
 
 /** Base class for predictor param; constructed once and shared by threads. */
 class GoUctAdditiveKnowledgeParam
@@ -104,4 +127,4 @@ inline GoPredictorType GoUctAdditiveKnowledgeStdProb::PredictorType() const
 	return GO_PRED_TYPE_PROBABILITY_BASED;
 }
 
-#endif // GOUCT_ADDITIVEKNOWLEDGE_H
+#endif // GO_ADDITIVEKNOWLEDGE_H

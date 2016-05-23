@@ -12,7 +12,6 @@
 #define GOUCT_ADDITIVEKNOWLEDGEFUEGO_H
 
 #include "GoAdditiveKnowledge.h"
-#include "GoUctPlayoutPolicy.h"
 
 //----------------------------------------------------------------------------
 

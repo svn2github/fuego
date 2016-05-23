@@ -6,8 +6,6 @@
 #define GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 
 #include "GoAdditiveKnowledge.h"
-#include "GoUctPlayoutPolicy.h"
-#include <boost/static_assert.hpp>
 
 
 /* max 26-bit: 16-bit 8-neighbor core, 8-bit liberty & 2-away extension, 

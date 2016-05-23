@@ -8,7 +8,6 @@
 #include <string>
 #include <typeinfo>
 #include "GtpEngine.h"
-#include "GoUctPlayoutPolicy.h"
 #include "GoUctGlobalSearch.h"
 #include "GoUctPlayer.h"
 #include "GoUctBookBuilder.h"

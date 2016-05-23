@@ -11,7 +11,6 @@
 
 #include "GoBoard.h"
 #include "GoAdditiveKnowledge.h"
-#include "GoUctPlayoutPolicy.h"
 #include "SgVector.h"
 
 //----------------------------------------------------------------------------
