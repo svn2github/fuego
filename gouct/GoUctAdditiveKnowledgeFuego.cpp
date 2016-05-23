@@ -18,7 +18,7 @@ const float GoUctAdditiveKnowledgeFuego::VALUE_MULTIPLIER = 4.0f;
 //----------------------------------------------------------------------------
 
 GoUctAdditiveKnowledgeFuego::GoUctAdditiveKnowledgeFuego(const GoBoard& bd)
-    : GoUctAdditiveKnowledgeStdProb(bd)
+    : GoAdditiveKnowledgeStdProb(bd)
 { }
 
 // m_raveValue is a SgUctValue which is double by default, but holds

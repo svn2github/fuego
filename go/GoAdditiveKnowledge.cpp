@@ -8,10 +8,10 @@
 
 //----------------------------------------------------------------------------
 
-GoUctAdditiveKnowledgeParam::GoUctAdditiveKnowledgeParam()
+GoAdditiveKnowledgeParam::GoAdditiveKnowledgeParam()
 { }
 
-GoUctAdditiveKnowledgeParam::~GoUctAdditiveKnowledgeParam()
+GoAdditiveKnowledgeParam::~GoAdditiveKnowledgeParam()
 { }
 
 //----------------------------------------------------------------------------

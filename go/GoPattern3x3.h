@@ -78,11 +78,11 @@ namespace GoPattern3x3
     static const int POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
     
     /** See m_edgeTable. */
-    typedef SgArray<PatternInfo, POWER3_5> GoUctEdgePatternTable;
+    typedef SgArray<PatternInfo, POWER3_5> GoEdgePatternTable;
     typedef boost::array<int, POWER3_5> EdgeCodeTable;
     
     /** See m_table. */
-    typedef SgArray<PatternInfo, POWER3_8> GoUctPatternTable;
+    typedef SgArray<PatternInfo, POWER3_8> GoPatternTable;
     typedef boost::array<int, POWER3_8> CenterCodeTable;
     
     template<class BOARD>
@@ -97,9 +97,9 @@ namespace GoPattern3x3
     /** Inverse mapping for Map2x3EdgeCode */
     int DecodeEdgeIndex(int index);
     
-    void InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table);
+    void InitCenterPatternTable(SgBWArray<GoPatternTable>& table);
     
-    void InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>& edgeTable);
+    void InitEdgePatternTable(SgBWArray<GoEdgePatternTable>& edgeTable);
 
     /** Utility mapping function. Warning: global array, not threadsafe */
     int Map3x3CenterCode(int code, SgBlackWhite toPlay);
@@ -122,9 +122,9 @@ namespace GoPattern3x3
     /** Procedural matching function - used to initialize the table. */
     bool MatchAnyPattern(const GoBoard& bd, SgPoint p);
         
-    void ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table);
+    void ReduceCenterSymmetry(SgBWArray<GoPatternTable>& table);
     
-    void ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>& edgeTable);
+    void ReduceEdgeSymmetry(SgBWArray<GoEdgePatternTable>& edgeTable);
     
     int SwapCenterColor(int code);
     

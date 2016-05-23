@@ -26,7 +26,7 @@ const int NUMPATTERNS19X19 = 1<<24;
 
 //----------------------------------------------------------------------------
 
-class GoUctAdditiveKnowledgeParamGreenpeep: public GoUctAdditiveKnowledgeParam
+class GoUctAdditiveKnowledgeParamGreenpeep: public GoAdditiveKnowledgeParam
 {
 private:
 public:

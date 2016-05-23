@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------
 
 class GoUctAdditiveKnowledgeFuego
-    : public GoUctAdditiveKnowledgeStdProb
+    : public GoAdditiveKnowledgeStdProb
 {
 public:
     /** TODO tunable constant */

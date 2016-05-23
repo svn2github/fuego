@@ -118,10 +118,10 @@ private:
     const BOARD& m_bd;
 
     /** lookup table for 8-neighborhood of a move candidate */
-    SgBWArray<GoPattern3x3::GoUctPatternTable> m_table;
+    SgBWArray<GoPattern3x3::GoPatternTable> m_table;
 
     /** lookup table on the edge of board */
-    SgBWArray<GoPattern3x3::GoUctEdgePatternTable> m_edgeTable;
+    SgBWArray<GoPattern3x3::GoEdgePatternTable> m_edgeTable;
 
     /** Match any of the center patterns. */
     bool MatchAnyCenter(SgPoint p) const;

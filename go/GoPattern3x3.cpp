@@ -426,7 +426,7 @@ int MinEdgeCode(const GoBoard& bd, SgPoint p)
 }
     
 void PrintVector(const std::vector<int>& codes,
-                 SgBWArray<GoPattern3x3::GoUctEdgePatternTable>& edgeTable)
+                 SgBWArray<GoPattern3x3::GoEdgePatternTable>& edgeTable)
 {
     SgDebug() << "Shared: ";
     
@@ -442,7 +442,7 @@ void PrintVector(const std::vector<int>& codes,
 }
 
 void PrintVector(const std::vector<int>& codes,
-                 SgBWArray<GoPattern3x3::GoUctPatternTable>& table)
+                 SgBWArray<GoPattern3x3::GoPatternTable>& table)
 {
     SgDebug() << "Shared: ";
     
@@ -592,7 +592,7 @@ int GoPattern3x3::MapEdgePatternsToMinimum(EdgeCodeTable& indexCode)
     return static_cast<int>(last - uniqueCode.begin());
 }
 
-void GoPattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
+void GoPattern3x3::InitEdgePatternTable(SgBWArray<GoEdgePatternTable>&
                                       edgeTable)
 {
     GoBoard bd(5);
@@ -611,7 +611,7 @@ void GoPattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
     //ReduceEdgeSymmetry(edgeTable);
 }
 
-void GoPattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
+void GoPattern3x3::InitCenterPatternTable(SgBWArray<GoPatternTable>& table)
 {
     GoBoard bd(5);
     const SgPoint p = SgPointUtil::Pt(3, 3);
@@ -698,14 +698,14 @@ void GoPattern3x3::TwoWay3x3Map::Init()
     SG_ASSERT_EQUAL(m_centerSwapTable[m_centerSwapTable[i]], i);
 }
 
-void GoPattern3x3::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
+void GoPattern3x3::ReduceCenterSymmetry(SgBWArray<GoPatternTable>& table)
 {
     TwoWay3x3Map m;
     for (int i = 0; i < m.m_nuUnique; ++i)
     PrintVector(m.m_uniqueCode[i], table); // TODO white
 }
 
-void GoPattern3x3::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
+void GoPattern3x3::ReduceEdgeSymmetry(SgBWArray<GoEdgePatternTable>&
                                     edgeTable)
 {
     boost::array<int, POWER3_5> indexCode;

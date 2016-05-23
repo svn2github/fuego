@@ -43,12 +43,12 @@ enum GoKnowledgeCombinationType
 
 
 /** Base class for predictor param; constructed once and shared by threads. */
-class GoUctAdditiveKnowledgeParam
+class GoAdditiveKnowledgeParam
 {
 public:
-    GoUctAdditiveKnowledgeParam();
+    GoAdditiveKnowledgeParam();
 
-    virtual ~GoUctAdditiveKnowledgeParam();
+    virtual ~GoAdditiveKnowledgeParam();
 };
 
 
@@ -103,10 +103,10 @@ inline float GoAdditiveKnowledge::RaiseToMinValue(float value) const
 //----------------------------------------------------------------------------
 /** Utility class to provide a standard probability-based additive predictor
 */
-class GoUctAdditiveKnowledgeStdProb : public GoAdditiveKnowledge
+class GoAdditiveKnowledgeStdProb : public GoAdditiveKnowledge
 {
 public:
-    GoUctAdditiveKnowledgeStdProb(const GoBoard& bd)
+    GoAdditiveKnowledgeStdProb(const GoBoard& bd)
      : GoAdditiveKnowledge(bd)
     { }
 
@@ -117,12 +117,12 @@ public:
 };
 //----------------------------------------------------------------------------
 
-inline float GoUctAdditiveKnowledgeStdProb::MinValue() const
+inline float GoAdditiveKnowledgeStdProb::MinValue() const
 {
 	return 0.0001f;
 }
 
-inline GoPredictorType GoUctAdditiveKnowledgeStdProb::PredictorType() const
+inline GoPredictorType GoAdditiveKnowledgeStdProb::PredictorType() const
 {
 	return GO_PRED_TYPE_PROBABILITY_BASED;
 }
