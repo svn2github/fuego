@@ -198,7 +198,7 @@ std::vector<SgUctValue> KnowledgeThresholdFromString(const std::string& val)
     return v;
 }
 
-std::string KnowledgeTypeToString(KnowledgeType type)
+std::string GoKnowledgeTypeToString(GoKnowledgeType type)
 {
     switch (type)
     {
@@ -218,7 +218,7 @@ std::string KnowledgeTypeToString(KnowledgeType type)
     }
 }
 
-KnowledgeType KnowledgeTypeArg(const GtpCommand& cmd, size_t number)
+GoKnowledgeType GoKnowledgeTypeArg(const GtpCommand& cmd, size_t number)
 {
     string arg = cmd.ArgToLower(number);
     if (arg == "none")
@@ -231,10 +231,10 @@ KnowledgeType KnowledgeTypeArg(const GtpCommand& cmd, size_t number)
         return KNOWLEDGE_FEATURES;
     if (arg == "both")
         return KNOWLEDGE_BOTH;
-    throw GtpFailure() << "unknown KnowledgeType argument \"" << arg << '"';
+    throw GtpFailure() << "unknown GoKnowledgeType argument \"" << arg << '"';
 }
 
-std::string CombinationTypeToString(GoUctKnowledgeCombinationType type)
+std::string CombinationTypeToString(GoKnowledgeCombinationType type)
 {
     switch (type)
     {
@@ -254,7 +254,7 @@ std::string CombinationTypeToString(GoUctKnowledgeCombinationType type)
     }
 }
 
-GoUctKnowledgeCombinationType CombinationTypeArg(const GtpCommand& cmd,
+GoKnowledgeCombinationType CombinationTypeArg(const GtpCommand& cmd,
                                                  size_t number)
 {
     string arg = cmd.ArgToLower(number);
@@ -783,7 +783,7 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             << p.m_usePatternsInPriorKnowledge << '\n'
             << "[int] fillboard_tries " << p.m_fillboardTries << '\n'
             << "[list/none/greenpeep/rulebased/features/both] knowledge_type "
-            << KnowledgeTypeToString(p.m_knowledgeType) << '\n'
+            << GoKnowledgeTypeToString(p.m_knowledgeType) << '\n'
             << "[list/multiply/geometric_mean/add/average/max] "
                "combination_type "
             << CombinationTypeToString(p.m_combinationType) << '\n'
@@ -806,7 +806,7 @@ void GoUctCommands::CmdParamPolicy(GtpCommand& cmd)
             p.m_fillboardTries = cmd.Arg<int>(1);
         else if (name == "knowledge_type")
         {
-            p.m_knowledgeType = KnowledgeTypeArg(cmd, 1);
+            p.m_knowledgeType = GoKnowledgeTypeArg(cmd, 1);
             Search().CreateThreads(); // need to regenerate all search states
         }
         else if (name == "combination_type")

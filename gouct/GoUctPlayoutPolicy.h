@@ -51,10 +51,10 @@ public:
     float m_patternGammaThreshold;
 
     /** To select knowledge type in GoUctKnowledgeFactory */
-    KnowledgeType m_knowledgeType;
+    GoKnowledgeType m_knowledgeType;
     
     /** How to combine multiple additive knowledge */
-    GoUctKnowledgeCombinationType m_combinationType;
+    GoKnowledgeCombinationType m_combinationType;
 
     GoUctPlayoutPolicyParam();
 };

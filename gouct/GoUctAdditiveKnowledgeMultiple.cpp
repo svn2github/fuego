@@ -32,7 +32,7 @@ namespace {
 GoUctAdditiveKnowledgeMultiple::GoUctAdditiveKnowledgeMultiple(
         const GoBoard& bd,
         float minimum,
-        GoUctKnowledgeCombinationType combinationType)
+        GoKnowledgeCombinationType combinationType)
     :
     GoAdditiveKnowledge(bd),
     m_minimum(minimum),
@@ -96,7 +96,7 @@ GoPredictorType GoUctAdditiveKnowledgeMultiple::PredictorType() const
 }
 
 inline void Combine(float& v, float newV,
-                    GoUctKnowledgeCombinationType combinationType)
+                    GoKnowledgeCombinationType combinationType)
 {
     switch (combinationType)
     {
@@ -122,7 +122,7 @@ inline void Combine(float& v, float newV,
 
 inline void PostProcess(InfoVector& moves,
                         int nuPredictors,
-                        GoUctKnowledgeCombinationType combinationType)
+                        GoKnowledgeCombinationType combinationType)
 {
     switch (combinationType)
     {

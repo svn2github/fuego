@@ -28,14 +28,14 @@ typedef std::vector<SgUctMoveInfo> InfoVector;
     The knowledge is additive in the sense that its combined value is
     added in the UCT child selection formula. However, the method
     of combining multiple types of knowledge can be chosen - @see
-    GoUctKnowledgeCombinationType.
+    GoKnowledgeCombinationType.
 */
 class GoUctAdditiveKnowledgeMultiple: public GoAdditiveKnowledge
 {
 public:
     GoUctAdditiveKnowledgeMultiple(const GoBoard& bd,
                                    float minimum,
-                                   GoUctKnowledgeCombinationType
+                                   GoKnowledgeCombinationType
                                    combinationType);
     
     ~GoUctAdditiveKnowledgeMultiple();
@@ -58,7 +58,7 @@ private:
 
     float m_minimum;
 
-    GoUctKnowledgeCombinationType m_combinationType;
+    GoKnowledgeCombinationType m_combinationType;
 
     const GoAdditiveKnowledge* FirstKnowledge() const;
     

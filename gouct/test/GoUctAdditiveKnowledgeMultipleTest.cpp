@@ -75,7 +75,7 @@ void Init(std::vector<SgUctMoveInfo>& moves, const GoBoard& bd)
     
 void TestType(const GoBoard& bd,
               std::vector<SgUctMoveInfo>& moves,
-              GoUctKnowledgeCombinationType combinationType,
+              GoKnowledgeCombinationType combinationType,
               int nuKnowledge)
 {
     const SgUctValue minimum = 0.0001f;

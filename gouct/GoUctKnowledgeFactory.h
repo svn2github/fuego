@@ -20,7 +20,7 @@ public:
 
     GoAdditiveKnowledge* Create(const GoBoard& bd);
 
-    GoAdditiveKnowledge* CreateByType(const GoBoard& bd, KnowledgeType type);
+    GoAdditiveKnowledge* CreateByType(const GoBoard& bd, GoKnowledgeType type);
 
     GoUctAdditiveKnowledgeParamGreenpeep& GreenpeepParam();
 

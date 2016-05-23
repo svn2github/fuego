@@ -40,7 +40,7 @@ GoAdditiveKnowledge* GoUctKnowledgeFactory::Create(const GoBoard& bd)
 }
 
 GoAdditiveKnowledge*
-GoUctKnowledgeFactory::CreateByType(const GoBoard& bd, KnowledgeType type)
+GoUctKnowledgeFactory::CreateByType(const GoBoard& bd, GoKnowledgeType type)
 {
     switch(type)
     {

@@ -20,7 +20,7 @@
 //----------------------------------------------------------------------------
 
 /** Knowledge type is used for knowledge factories. */
-enum KnowledgeType
+enum GoKnowledgeType
 {
     KNOWLEDGE_NONE,
     KNOWLEDGE_GREENPEEP,
@@ -30,7 +30,7 @@ enum KnowledgeType
 };
 
 /** Combination Type is used for combining multiple additive knowledge. */
-enum GoUctKnowledgeCombinationType
+enum GoKnowledgeCombinationType
 {
     COMBINE_MULTIPLY,
     COMBINE_GEOMETRIC_MEAN,
