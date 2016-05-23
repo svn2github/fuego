@@ -295,9 +295,9 @@ void ComputeSwappedTable(const boost::array<int, SIZE>& blackTable,
 {
     SG_ASSERT(length == 5 || length == 8);
     if (length == 5)
-        SG_ASSERT(SIZE == GoPattern3x3::GOUCT_POWER3_5);
+        SG_ASSERT(SIZE == GoPattern3x3::POWER3_5);
     if (length == 8)
-        SG_ASSERT(SIZE == GoPattern3x3::GOUCT_POWER3_8);
+        SG_ASSERT(SIZE == GoPattern3x3::POWER3_8);
 
     for (int i = 0; i < static_cast<int>(SIZE); ++i)
     {
@@ -384,20 +384,20 @@ int AxCodeOf8Neighbors(const GoBoard& bd, SgPoint p, PaAxSet axes)
                 + EBWCodeOfPoint(bd, p - dir.first)) * 3
     + EBWCodeOfPoint(bd, p - dir.first - dir.second);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_8);
+    SG_ASSERT(code < GoPattern3x3::POWER3_8);
     return code;
 }
 
 int MinCodeOf8Neighbors(const GoBoard& bd, SgPoint p)
 {
-    int minCode = GoPattern3x3::GOUCT_POWER3_8;
+    int minCode = GoPattern3x3::POWER3_8;
     for (PaAxSet s = 0; s < PA_NU_AX_SETS; ++s)
     {
         const int code = AxCodeOf8Neighbors(bd, p, s);
         minCode = std::min(minCode, code);
     }
     SG_ASSERT(minCode >= 0);
-    SG_ASSERT(minCode < GoPattern3x3::GOUCT_POWER3_8);
+    SG_ASSERT(minCode < GoPattern3x3::POWER3_8);
     return minCode;
 }
 
@@ -415,7 +415,7 @@ int MirrorCodeOfEdgeNeighbors(const GoBoard& bd,
                 + EBWCodeOfPoint(bd, p + up - other)) * 3
     + EBWCodeOfPoint(bd, p - other);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_5);
+    SG_ASSERT(code < GoPattern3x3::POWER3_5);
     return code;
 }
 
@@ -486,7 +486,7 @@ int GoPattern3x3::Map2x3EdgeCode(int code, SgBlackWhite toPlay)
     }
     
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < GOUCT_POWER3_5);
+    SG_ASSERT(code < POWER3_5);
     return s_indexCode[toPlay][code];
 }
 
@@ -505,15 +505,15 @@ int GoPattern3x3::Map3x3CenterCode(int code, SgBlackWhite toPlay)
     //-------------------------------
 
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < GOUCT_POWER3_8);
+    SG_ASSERT(code < POWER3_8);
     return s_indexCode[toPlay][code];
 }
 
 int GoPattern3x3::DecodeEdgeIndex(int index)
 {
     SG_ASSERT(index >= 0);
-    SG_ASSERT(index < GOUCT_POWER3_5); // todo get, store real max. index
-    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    SG_ASSERT(index < POWER3_5); // todo get, store real max. index
+    for (int i = 0; i < POWER3_5; ++i)
         if (Map2x3EdgeCode(i, SG_BLACK) == index) // TODO review
             return i;
     SG_ASSERT(false);
@@ -524,8 +524,8 @@ int GoPattern3x3::DecodeCenterIndex(int index)
 // todo can speed up by computing reverse map if needed
 {
     SG_ASSERT(index >= 0);
-    SG_ASSERT(index < GOUCT_POWER3_8); // todo get, store real max. index
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    SG_ASSERT(index < POWER3_8); // todo get, store real max. index
+    for (int i = 0; i < POWER3_8; ++i)
         if (Map3x3CenterCode(i, SG_BLACK) == index)  // TODO review
             return i;
     SG_ASSERT(false);
@@ -537,7 +537,7 @@ int GoPattern3x3::MapCenterPatternsToMinimum(CenterCodeTable& indexCode)
     GoBoard bd(5);
     CenterCodeTable minCode;
     const SgPoint p = SgPointUtil::Pt(3, 3);
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    for (int i = 0; i < POWER3_8; ++i)
     {
         SetupCodedPosition(bd, i);
         minCode[i] = MinCodeOf8Neighbors(bd, p);
@@ -548,7 +548,7 @@ int GoPattern3x3::MapCenterPatternsToMinimum(CenterCodeTable& indexCode)
     std::sort(uniqueCode.begin(), uniqueCode.end());
     int* last = std::unique(uniqueCode.begin(), uniqueCode.end());
     //SgDebug() <<  last - uniqueCode << " unique elements " << '\n';
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    for (int i = 0; i < POWER3_8; ++i)
     {
         int* index = std::lower_bound(uniqueCode.begin(), last, minCode[i]);
         SG_ASSERT(index >= uniqueCode.begin());
@@ -567,7 +567,7 @@ int GoPattern3x3::MapEdgePatternsToMinimum(EdgeCodeTable& indexCode)
     GoBoard bd(5);
     EdgeCodeTable minCode;
     const SgPoint p = SgPointUtil::Pt(1, 3);
-    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    for (int i = 0; i < POWER3_5; ++i)
     {
         SetupCodedEdgePosition(bd, i);
         minCode[i] = MinEdgeCode(bd, p);
@@ -578,7 +578,7 @@ int GoPattern3x3::MapEdgePatternsToMinimum(EdgeCodeTable& indexCode)
     std::sort(uniqueCode.begin(), uniqueCode.end());
     int* last = std::unique(uniqueCode.begin(), uniqueCode.end());
     //SgDebug() << '\n' <<  last - uniqueCode.begin() << " unique elements " << '\n';
-    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    for (int i = 0; i < POWER3_5; ++i)
     {
         int* index = std::lower_bound(uniqueCode.begin(), last, minCode[i]);
         SG_ASSERT(index >= uniqueCode.begin());
@@ -597,7 +597,7 @@ void GoPattern3x3::InitEdgePatternTable(SgBWArray<GoUctEdgePatternTable>&
 {
     GoBoard bd(5);
     const SgPoint p = SgPointUtil::Pt(1, 3);
-    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    for (int i = 0; i < POWER3_5; ++i)
     {
         SetupCodedEdgePosition(bd, i);
         for (SgBWIterator it; it; ++it)
@@ -615,7 +615,7 @@ void GoPattern3x3::InitCenterPatternTable(SgBWArray<GoUctPatternTable>& table)
 {
     GoBoard bd(5);
     const SgPoint p = SgPointUtil::Pt(3, 3);
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    for (int i = 0; i < POWER3_8; ++i)
     {
         SetupCodedPosition(bd, i);
         for (SgBWIterator it; it; ++it)
@@ -685,16 +685,16 @@ void GoPattern3x3::TwoWay3x3Map::Init()
 {
     m_nuUnique = MapCenterPatternsToMinimum(m_indexCode);
     m_uniqueCode.resize(m_nuUnique);
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    for (int i = 0; i < POWER3_8; ++i)
     {
         int u = m_indexCode[i];
         SG_ASSERT(u < m_nuUnique);
         m_uniqueCode[u].push_back(i);
     }
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    for (int i = 0; i < POWER3_8; ++i)
     m_centerSwapTable[i] = SwapCenterColor(i);
     // swap twice gives original TODO move to unit test.
-    for (int i = 0; i < GOUCT_POWER3_8; ++i)
+    for (int i = 0; i < POWER3_8; ++i)
     SG_ASSERT_EQUAL(m_centerSwapTable[m_centerSwapTable[i]], i);
 }
 
@@ -708,10 +708,10 @@ void GoPattern3x3::ReduceCenterSymmetry(SgBWArray<GoUctPatternTable>& table)
 void GoPattern3x3::ReduceEdgeSymmetry(SgBWArray<GoUctEdgePatternTable>&
                                     edgeTable)
 {
-    boost::array<int, GOUCT_POWER3_5> indexCode;
+    boost::array<int, POWER3_5> indexCode;
     int nuUnique = MapEdgePatternsToMinimum(indexCode);
-    std::vector<int> uCode[GOUCT_POWER3_5]; // nuUnique
-    for (int i = 0; i < GOUCT_POWER3_5; ++i)
+    std::vector<int> uCode[POWER3_5]; // nuUnique
+    for (int i = 0; i < POWER3_5; ++i)
     {
         int u = indexCode[i];
         SG_ASSERT(u < nuUnique);

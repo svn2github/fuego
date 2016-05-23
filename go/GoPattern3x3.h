@@ -72,18 +72,18 @@ inline bool PatternInfo::IsPattern() const
 namespace GoPattern3x3
 {
     /** 3^5 = size of edge pattern table */
-    static const int GOUCT_POWER3_5 = 3 * 3 * 3 * 3 * 3;
+    static const int POWER3_5 = 3 * 3 * 3 * 3 * 3;
     
     /** 3^8 = size of center pattern table. */
-    static const int GOUCT_POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
+    static const int POWER3_8 = 3 * 3 * 3 * 3 * 3 * 3 * 3 * 3;
     
     /** See m_edgeTable. */
-    typedef SgArray<PatternInfo, GOUCT_POWER3_5> GoUctEdgePatternTable;
-    typedef boost::array<int, GOUCT_POWER3_5> EdgeCodeTable;
+    typedef SgArray<PatternInfo, POWER3_5> GoUctEdgePatternTable;
+    typedef boost::array<int, POWER3_5> EdgeCodeTable;
     
     /** See m_table. */
-    typedef SgArray<PatternInfo, GOUCT_POWER3_8> GoUctPatternTable;
-    typedef boost::array<int, GOUCT_POWER3_8> CenterCodeTable;
+    typedef SgArray<PatternInfo, POWER3_8> GoUctPatternTable;
+    typedef boost::array<int, POWER3_8> CenterCodeTable;
     
     template<class BOARD>
     int CodeOf8Neighbors(const BOARD& bd, SgPoint p);
@@ -150,7 +150,7 @@ inline int GoPattern3x3::CodeOf8Neighbors(const BOARD& bd, SgPoint p)
                 + EBWCodeOfPoint(bd, p + SG_NS)) * 3
     + EBWCodeOfPoint(bd, p + SG_NS + SG_WE);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_8);
+    SG_ASSERT(code < GoPattern3x3::POWER3_8);
     return code;
 }
 
@@ -167,7 +167,7 @@ inline int GoPattern3x3::CodeOfEdgeNeighbors(const BOARD& bd, SgPoint p)
                 + EBWCodeOfPoint(bd, p + up - other)) * 3
     + EBWCodeOfPoint(bd, p - other);
     SG_ASSERT(code >= 0);
-    SG_ASSERT(code < GoPattern3x3::GOUCT_POWER3_5);
+    SG_ASSERT(code < GoPattern3x3::POWER3_5);
     return code;
 }
 
