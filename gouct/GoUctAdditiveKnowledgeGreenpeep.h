@@ -1,12 +1,21 @@
 //----------------------------------------------------------------------------
-/** @file GoUctAdditiveKnowledgeGreenpeep.h */
+/** @file GoUctAdditiveKnowledgeGreenpeep.h 
+    Two types of predictors as originally received by Chris Rosin, and
+    following his approach in his Go program Greenpeep.
+    The pattern knowledge here comes in two flavors, with slightly different 
+    format and is learned with different learning strategies.
+    The size of the patterns is 12 points "diamond" shape patterns,
+    consisting of the 4 neighbors, the 4 diagonal neighbors
+    and the 4 points at distance (2,0) away from the center.
+    The center point of the pattern must be empty, and the learned knowledge 
+    estimates the value of a move in the center.
+*/
 //----------------------------------------------------------------------------
 
 #ifndef GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 #define GOUCT_ADDITIVEKNOWLEDGEGREENPEEP_H
 
 #include "GoAdditiveKnowledge.h"
-
 
 /* max 26-bit: 16-bit 8-neighbor core, 8-bit liberty & 2-away extension, 
 	1 bit "ko exists", 1 bit defensive move */
