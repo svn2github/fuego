@@ -9,7 +9,9 @@
 #include <ctime>
 #include <functional>
 #include "SgDebug.h"
-
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+//#include <boost/date_time/date_defs.hpp>
+//#include <boost/date_time/date.hpp>
 //----------------------------------------------------------------------------
 
 SgRandom::GlobalData::GlobalData()
@@ -49,6 +51,21 @@ void SgRandom::SetSeed()
     m_generator.seed(seed);
 }
 
+void SgRandom::SetGlobalRandomSeed()
+{
+    using boost::posix_time::microsec_clock;
+    using boost::posix_time::ptime;
+    using boost::posix_time::time_duration;
+    using namespace boost::gregorian;
+
+    const boost::posix_time::ptime currentTime =
+        boost::posix_time::microsec_clock::universal_time();
+    time_duration diff = currentTime - ptime(date(2000, Jan, 1));
+    GetGlobalData().m_seed =
+        static_cast<boost::mt19937::result_type>(
+            diff.total_microseconds());
+}
+
 void SgRandom::SetSeed(int seed)
 {
     if (seed < 0)
@@ -57,10 +74,10 @@ void SgRandom::SetSeed(int seed)
         return;
     }
     if (seed == 0)
-        GetGlobalData().m_seed =
-            static_cast<boost::mt19937::result_type>(std::time(0));
+        SetGlobalRandomSeed();
     else
         GetGlobalData().m_seed = seed;
+
     SgDebug() << "SgRandom::SetSeed: " << GetGlobalData().m_seed << '\n';
     for_each(GetGlobalData().m_allGenerators.begin(),
              GetGlobalData().m_allGenerators.end(),

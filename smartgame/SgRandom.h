@@ -117,6 +117,7 @@ private:
     boost::uniform_01<boost::mt19937, float> m_floatGenerator;
 
     void SetSeed();
+    static void SetGlobalRandomSeed();
 };
 
 inline float SgRandom::Float_01()
