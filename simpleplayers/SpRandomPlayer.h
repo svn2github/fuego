@@ -23,6 +23,9 @@ public:
     { }
 
     virtual int Score(SgPoint p);
+
+private:
+    SgRandom m_randomGenerator;
 };
 
 //----------------------------------------------------------------------------
@@ -33,8 +36,10 @@ class SpRandomPlayer
 {
 public:
     SpRandomPlayer(const GoBoard& board)
-        : SpSimplePlayer(board, new SpRandomMoveGenerator(board))
-    { }
+        : SpSimplePlayer(board, 0)
+    {
+        SgRandom::SetSeed(0); // non-deterministic random seed, see SgRandom
+    }
 
     std::string Name() const
     {

@@ -16,7 +16,7 @@ int SpRandomMoveGenerator::Score(SgPoint p)
        && m_board.IsLegal(p)
        && ! GoEyeUtil::IsSinglePointEye(m_board, p, m_board.ToPlay())
        )
-        return 1;
+        return m_randomGenerator.Int();
     else
         return INT_MIN;
 }
