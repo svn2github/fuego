@@ -30,7 +30,6 @@ SpSimplePlayer::SpSimplePlayer(const GoBoard& board,
 
 SpSimplePlayer::~SpSimplePlayer()
 {
-    SG_ASSERT(m_generator);
     SG_ASSERT(m_randomGenerator);
     delete m_generator;
     m_generator = 0;
@@ -49,7 +48,7 @@ int SpSimplePlayer::MoveValue(SgPoint p)
         relevant -= safe[SG_BLACK];
         relevant -= safe[SG_WHITE];
     }
-    if (relevant[p])
+    if (relevant[p] && m_generator)
     {
         return m_generator->EvaluateMove(p);
     }
@@ -66,7 +65,8 @@ SgPoint SpSimplePlayer::GenMove(const SgTimeRecord& time, SgBlackWhite toPlay)
     
     // note: generators can disable certain unwanted moves by calling
     // Disable(p)
-    m_generator->GenerateMoves(moves, toPlay);
+    if (m_generator)
+        m_generator->GenerateMoves(moves, toPlay);
     // Generate random moves if no other found
     if ((moves.BestMove() == SG_PASS) && m_randomGenerator)
         m_randomGenerator->GenerateMoves(moves, toPlay);
