@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 /** @file SgSystem.h
-    System specific definitions for SmartGo.
+    System specific definitions for Fuego.
 
     This file contains system specific defines and includes.
     It always needs to be the first header file included by any .cpp file. */
