@@ -29,7 +29,8 @@ namespace {
 
 bool IsRectEmpty(const GoBoard& bd, int left, int right, int top, int bottom)
 {
-    for (SgRectIterator it(SgRect(left, right, top, bottom)); it; ++it)
+    SgRect rect(left, right, top, bottom);
+    for (SgRectIterator it(rect); it; ++it)
         if (! bd.IsEmpty(*it))
             return false;
     return true;
